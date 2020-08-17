@@ -6,7 +6,7 @@
 
   <div class="panel-body">
     <div class="col-md-6 col-md-offset-3 margin">
-      <taskana-shared-type-ahead #accesId="ngModel" name="accessIdSelected" [(ngModel)]="accessIdSelected"
+      <taskana-shared-type-ahead name="accessIdSelected" [(ngModel)]="accessIdSelected"
                                  placeHolderMessage="Search for access id..."
                                  (selectedItem)="onSelectAccessId($event)"
                                  displayError=true>

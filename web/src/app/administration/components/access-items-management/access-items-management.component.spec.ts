@@ -1,16 +1,8 @@
-import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import {
-  Component,
-  CUSTOM_ELEMENTS_SCHEMA,
-  DebugElement,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
@@ -19,20 +11,26 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EngineConfigurationState } from '../../../shared/store/engine-configuration-store/engine-configuration.state';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { AccessItemsManagementState } from '../../../shared/store/access-items-management-store/access-items-management.state';
-import { Observable, zip } from 'rxjs';
+import { Observable } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Sorting } from '../../../shared/models/sorting';
-import { AccessIdDefinition } from '../../../shared/models/access-id';
+import { Direction, Sorting } from '../../../shared/models/sorting';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
   (): Partial<FormsValidatorService> => ({
     isFieldValid: isFieldValidFn
+  })
+);
+
+const showDialogFn = jest.fn().mockReturnValue(true);
+const notificationServiceSpy = jest.fn().mockImplementation(
+  (): Partial<NotificationService> => ({
+    showDialog: showDialogFn
   })
 );
 
@@ -77,14 +75,8 @@ describe('AccessItemsManagementComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  @Component({ selector: 'taskana-shared-type-ahead', template: '' })
-  class TaskanaSharedTypeAheadStub {
-    @Input() validationValue;
-    @Input() displayError;
-    @Input() disable;
-    @Output() selectedItem = new EventEmitter<AccessIdDefinition>();
-    @Output() inputField = new EventEmitter<ElementRef>();
-  }
+  @Component({ selector: 'taskana-shared-spinner', template: '' })
+  class TaskanaSharedSpinnerStub {}
 
   @Component({ selector: 'taskana-shared-sort', template: '' })
   class TaskanaSharedSortStub {
@@ -105,10 +97,15 @@ describe('AccessItemsManagementComponent', () => {
         TypeaheadModule.forRoot(),
         BrowserAnimationsModule
       ],
-      declarations: [AccessItemsManagementComponent, TaskanaSharedTypeAheadStub, TaskanaSharedSortStub],
+      declarations: [
+        AccessItemsManagementComponent,
+        TypeAheadComponent,
+        TaskanaSharedSortStub,
+        TaskanaSharedSpinnerStub
+      ],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
-        NotificationService,
+        { provide: NotificationService, useClass: notificationServiceSpy },
         RequestInProgressService,
         ClassificationCategoriesService
       ]
@@ -123,9 +120,7 @@ describe('AccessItemsManagementComponent', () => {
       ...store.snapshot(),
       engineConfiguration: engineConfigInitState
     });
-    app.accessId = { accessId: '1', name: '' };
     app.accessIdSelected = '1';
-    app.groups = [];
     fixture.detectChanges();
   }));
 
@@ -172,31 +167,48 @@ describe('AccessItemsManagementComponent', () => {
   });
 
   it('should dispatch GetAccessItems action in searchForAccessItemsWorkbaskets', async((done) => {
+    app.accessId = { accessId: '1', name: 'max' };
+    app.groups = [
+      { accessId: '1', name: 'users' },
+      { accessId: '2', name: 'users' }
+    ];
+    app.sortModel = { sortBy: 'access-id', sortDirection: 'desc' };
     app.searchForAccessItemsWorkbaskets();
+    fixture.detectChanges();
     let actionDispatched = false;
-    zip(actions$.pipe(ofActionDispatched(GetAccessItems))).subscribe(() => {
+    actions$.pipe(ofActionDispatched(GetAccessItems)).subscribe(() => {
       actionDispatched = true;
       expect(actionDispatched).toBe(true);
-      expect(app.setAccessItemsGroups).toBeCalled();
+      expect(app.setAccessItemsGroups).toHaveBeenCalled();
       done();
     });
   }));
 
   it('should display a dialog in when access is revoked', async(() => {
-    inject([NotificationService], (notificationService: NotificationService) => {
-      app.revokeAccess();
-      expect(app.revokeAccess).toHaveBeenCalled();
-
-      // Currently not working
-      expect(notificationService.showDialog).toHaveBeenCalledWith(
-        `Y1231231ou are going to delete all access related: ${app.accessIdSelected}. Can you confirm this action?`
-      );
-    });
+    app.accessIdSelected = '';
+    const notificationService = TestBed.inject(NotificationService);
+    const showDialogSpy = jest.spyOn(notificationService, 'showDialog').mockImplementation();
+    app.revokeAccess();
+    fixture.detectChanges();
+    expect(showDialogSpy).toHaveBeenCalled();
   }));
 
   it('should create accessItemsForm in setAccessItemsGroups', () => {
     app.setAccessItemsGroups([]);
     expect(app.accessItemsForm).toBeTruthy();
     expect(app.accessItemsForm).not.toBeNull();
+  });
+
+  it('should invoke sorting function correctly', () => {
+    const newSort = new Sorting('access-id', Direction.DESC);
+    app.accessId = { accessId: '1', name: 'max' };
+    app.groups = [{ accessId: '1', name: 'users' }];
+    app.sorting(newSort);
+    expect(app.sortModel).toMatchObject(newSort);
+  });
+
+  it('should return accessItemsGroups', () => {
+    app.accessItemsForm = null;
+    expect(app.accessItemsGroups).toBeNull();
   });
 });
