@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
-<<<<<<< HEAD
 import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
@@ -8,16 +7,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from '../../../shared/pipes/remove-empty-type.pipe';
-=======
-import { Component, DebugElement, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { Actions, NgxsModule, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { ICONTYPES } from '../../../shared/models/icon-types';
-import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
-import { RemoveNoneTypePipe } from '../../../shared/pipes/remove-empty-type.pipe';
-import { AccessIdDefinition } from '../../../shared/models/access-id';
->>>>>>> TSK-1349: init workbasket-information test
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
@@ -33,13 +22,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { ACTION } from '../../../shared/models/action';
-<<<<<<< HEAD
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { Workbasket } from '../../../shared/models/workbasket';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-=======
->>>>>>> TSK-1349: init workbasket-information test
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -58,32 +44,14 @@ class IconTypeStub {
   @Input() type: ICONTYPES = ICONTYPES.ALL;
   @Input() text: string;
 }
-<<<<<<< HEAD
-=======
-@Component({ selector: 'taskana-shared-type-ahead', template: '' })
-class TypeAheadStub {
-  @Input() placeHolderMessage;
-  @Input() validationValue;
-  @Input() displayError;
-  @Input() width;
-  @Input() disable;
-  @Input() isRequired = true;
-  @Output() selectedItem = new EventEmitter<AccessIdDefinition>();
-  @Output() inputField = new EventEmitter<ElementRef>();
-}
->>>>>>> TSK-1349: init workbasket-information test
 
 const triggerWorkbasketSavedFn = jest.fn().mockReturnValue(true);
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
-<<<<<<< HEAD
     triggerWorkBasketSaved: triggerWorkbasketSavedFn,
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
     createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasket }))
-=======
-    triggerWorkBasketSaved: triggerWorkbasketSavedFn
->>>>>>> TSK-1349: init workbasket-information test
   })
 );
 
@@ -135,11 +103,7 @@ export const engineConfigurationMock = {
   language: 'EN'
 };
 
-<<<<<<< HEAD
 const selectedWorkbasket: Workbasket = {
-=======
-const selectedWorkbasket = {
->>>>>>> TSK-1349: init workbasket-information test
   workbasketId: 'WBI:000000000000000000000000000000000902',
   key: 'sOrt003',
   name: 'bAsxet2',
@@ -180,7 +144,6 @@ const selectedWorkbasket = {
   }
 };
 
-<<<<<<< HEAD
 export const workbasketReadState = {
   selectedWorkbasket,
   paginatedWorkbasketsSummary: {
@@ -325,22 +288,6 @@ const notificationServiceSpy = jest.fn().mockImplementation(
     triggerError: showDialogFn
   })
 );
-=======
-export const workbasketCopyState = {
-  selectedWorkbasket,
-  action: ACTION.COPY
-};
-
-export const workbasketCreateState = {
-  selectedWorkbasket,
-  action: ACTION.CREATE
-};
-
-export const workbasketReadState = {
-  selectedWorkbasket,
-  action: ACTION.READ
-};
->>>>>>> TSK-1349: init workbasket-information test
 
 describe('WorkbasketInformationComponent', () => {
   let fixture: ComponentFixture<WorkbasketInformationComponent>;
@@ -356,44 +303,27 @@ describe('WorkbasketInformationComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
-<<<<<<< HEAD
         NgxsModule.forRoot([EngineConfigurationState, WorkbasketState]),
         TypeaheadModule.forRoot(),
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([]),
         BrowserAnimationsModule
-=======
-        NgxsModule.forRoot([EngineConfigurationState]),
-        NgxsModule.forRoot([WorkbasketState]),
-        RouterTestingModule.withRoutes([])
->>>>>>> TSK-1349: init workbasket-information test
       ],
       declarations: [
         WorkbasketInformationComponent,
         SpinnerStub,
         FieldErrorDisplayStub,
         IconTypeStub,
-<<<<<<< HEAD
         TypeAheadComponent,
-=======
-        TypeAheadStub,
->>>>>>> TSK-1349: init workbasket-information test
         MapValuesPipe,
         RemoveNoneTypePipe
       ],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceMock },
-<<<<<<< HEAD
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
         SavingWorkbasketService,
         RequestInProgressService,
-=======
-        SavingWorkbasketService,
-        RequestInProgressService,
-        FormsValidatorService,
-        NotificationService,
->>>>>>> TSK-1349: init workbasket-information test
         DomainService,
         SelectedRouteService,
         ClassificationCategoriesService
@@ -411,16 +341,7 @@ describe('WorkbasketInformationComponent', () => {
       workbasket: workbasketReadState
     });
     component.workbasket = selectedWorkbasket;
-<<<<<<< HEAD
 
-=======
-    component.action = ACTION.READ;
-
-    console.log(store.selectSnapshot((state) => state).engineConfiguration.customisation['EN'].workbaskets);
-    component.workbasketsCustomisation$.subscribe((value) => {
-      console.log(value);
-    });
->>>>>>> TSK-1349: init workbasket-information test
     fixture.detectChanges();
   }));
 
@@ -428,7 +349,6 @@ describe('WorkbasketInformationComponent', () => {
     expect(component).toBeTruthy();
   });
 
-<<<<<<< HEAD
   //HTML Tests
   it('', () => {});
 
@@ -462,13 +382,8 @@ describe('WorkbasketInformationComponent', () => {
     expect(formsValidatorService.formSubmitAttempt).toBe(true);
   });
 
-  it('should reset workbasket information when onUndo is called', () => {
-    component.workbasketClone = selectedWorkbasket;
-    const notificationService = TestBed.inject(NotificationService);
-    const toastSpy = jest.spyOn(notificationService, 'showToast');
+  it('onUndo', () => {
     component.onUndo();
-    expect(toastSpy).toHaveBeenCalled();
-    expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 
   it('onSave', () => {
@@ -488,7 +403,4 @@ describe('WorkbasketInformationComponent', () => {
     delete component.workbasket.workbasketId;
     component.onSave();
   });
-=======
-  it('', () => {});
->>>>>>> TSK-1349: init workbasket-information test
 });
