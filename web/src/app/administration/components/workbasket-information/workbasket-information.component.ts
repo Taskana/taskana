@@ -129,7 +129,9 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   }
 
   copyWorkbasket() {
-    this.store.dispatch(new CopyWorkbasket(this.workbasket));
+    this.store.dispatch(new CopyWorkbasket(this.workbasket)).subscribe((state) => {
+      console.log(state);
+    });
   }
 
   removeDistributionTargets() {
