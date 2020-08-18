@@ -701,7 +701,6 @@ public class TaskController extends AbstractPagingController {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from applySortingParams(), returning {}", query);
     }
-
   }
 
   private int[] extractPriorities(String[] prioritiesInString) {

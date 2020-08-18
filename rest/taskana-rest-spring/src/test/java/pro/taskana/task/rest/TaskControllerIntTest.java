@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,6 +37,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
+import pro.taskana.task.rest.models.TaskRepresentationModel.CustomAttribute;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
@@ -238,6 +241,71 @@ class TaskControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(4);
+  }
+
+  @Test
+  void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValu4c() {
+    TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+
+    List<CustomAttribute> customAttributesWithNullKey = new ArrayList<>();
+    customAttributesWithNullKey.add(CustomAttribute.of(null, "value"));
+
+    taskRepresentationModel.setCustomAttributes(customAttributesWithNullKey);
+
+    ThrowingCallable httpCall =
+        () -> {
+          TEMPLATE.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS),
+              HttpMethod.POST,
+              new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
+              TASK_MODEL_TYPE);
+        };
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("Format of custom attributes is not valid")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+
+    List<CustomAttribute> customAttributesWithEmptyKey = new ArrayList<>();
+    customAttributesWithEmptyKey.add(CustomAttribute.of("", "value"));
+
+    taskRepresentationModel.setCustomAttributes(customAttributesWithEmptyKey);
+
+    httpCall =
+        () -> {
+          TEMPLATE.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS),
+              HttpMethod.POST,
+              new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
+              TASK_MODEL_TYPE);
+        };
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("Format of custom attributes is not valid")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+
+    List<CustomAttribute> customAttributesWithNullValue = new ArrayList<>();
+    customAttributesWithNullValue.add(CustomAttribute.of("key", null));
+
+    taskRepresentationModel.setCustomAttributes(customAttributesWithNullValue);
+
+    httpCall =
+        () -> {
+          TEMPLATE.exchange(
+              restHelper.toUrl(Mapping.URL_TASKS),
+              HttpMethod.POST,
+              new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
+              TASK_MODEL_TYPE);
+        };
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining("Format of custom attributes is not valid")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

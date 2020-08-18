@@ -11,6 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
@@ -106,7 +107,8 @@ public class TaskRepresentationModelAssembler
     return repModel;
   }
 
-  public Task toEntityModel(TaskRepresentationModel repModel) {
+  public Task toEntityModel(TaskRepresentationModel repModel) throws InvalidArgumentException {
+    verifyCorrectCustomAttributesFormat(repModel);
     TaskImpl task =
         (TaskImpl) taskService.newTask(repModel.getWorkbasketSummary().getWorkbasketId());
     task.setId(repModel.getTaskId());
@@ -154,12 +156,26 @@ public class TaskRepresentationModelAssembler
             .collect(Collectors.toList()));
     task.setCustomAttributeMap(
         repModel.getCustomAttributes().stream()
-            .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));
     task.setCallbackInfo(
         repModel.getCallbackInfo().stream()
             .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));
     return task;
+  }
+
+  private void verifyCorrectCustomAttributesFormat(TaskRepresentationModel repModel)
+      throws InvalidArgumentException {
+
+    if (repModel.getCustomAttributes().stream()
+        .anyMatch(
+            customAttribute ->
+                customAttribute.getKey() == null
+                    || customAttribute.getKey().isEmpty()
+                    || customAttribute.getValue() == null)) {
+      throw new InvalidArgumentException(
+          "Format of custom attributes is not valid. Please provide the following format: "
+              + "\"customAttributes\": [{\"key\": \"someKey\",\"value\": \"someValue\"},{...}])");
+    }
   }
 }

@@ -20,6 +20,7 @@ import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
@@ -50,7 +51,7 @@ class AsyncUpdateJobIntTest {
   }
 
   @Test
-  void testUpdateClassificationPrioServiceLevel() {
+  void testUpdateClassificationPrioServiceLevel() throws InvalidArgumentException {
 
     // 1st step: get old classification :
     final Instant before = Instant.now();
@@ -145,7 +146,8 @@ class AsyncUpdateJobIntTest {
     }
   }
 
-  private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before) {
+  private void verifyTaskIsModifiedAfterOrEquals(String taskId, Instant before)
+      throws InvalidArgumentException {
 
     ResponseEntity<TaskRepresentationModel> taskResponse =
         TEMPLATE.exchange(
