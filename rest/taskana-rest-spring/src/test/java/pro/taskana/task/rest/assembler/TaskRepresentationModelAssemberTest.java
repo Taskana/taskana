@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskCustomField;
@@ -178,7 +179,7 @@ class TaskRepresentationModelAssemberTest {
   }
 
   @Test
-  void should_Equal_When_ComparingEntityWithConvertedEntity() {
+  void should_Equal_When_ComparingEntityWithConvertedEntity() throws InvalidArgumentException {
     // given
     ObjectReference primaryObjRef = new ObjectReference();
     primaryObjRef.setId("abc");
