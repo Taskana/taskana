@@ -1,14 +1,11 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
-
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
-
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -60,8 +57,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   constructor(
     private workbasketService: WorkbasketService,
-    private route: ActivatedRoute,
-    private router: Router,
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formsValidatorService: FormsValidatorService,
@@ -133,7 +128,9 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   }
 
   copyWorkbasket() {
-    this.store.dispatch(new CopyWorkbasket(this.workbasket));
+    this.store.dispatch(new CopyWorkbasket(this.workbasket)).subscribe((state) => {
+      console.log(state);
+    });
   }
 
   removeDistributionTargets() {
@@ -146,7 +143,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
       this.postNewWorkbasket();
       return;
     }
-    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe((state) => {
+    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe(() => {
       this.requestInProgressService.setRequestInProgress(false);
       this.workbasketClone = { ...this.workbasket };
     });
