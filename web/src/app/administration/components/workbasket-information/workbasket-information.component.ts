@@ -71,6 +71,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
       ['CLEARANCE', 'Clearance'],
       ['TOPIC', 'Topic']
     ]);
+
     this.customFields$ = this.workbasketsCustomisation$.pipe(
       map((customisation) => customisation.information),
       getCustomFields(customFieldCount)
@@ -88,7 +89,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     };
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes?: SimpleChanges) {
     this.workbasketClone = { ...this.workbasket };
     if (this.action === ACTION.CREATE) {
       this.badgeMessage = 'Creating new workbasket';
@@ -128,16 +129,14 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   }
 
   copyWorkbasket() {
-    this.store.dispatch(new CopyWorkbasket(this.workbasket)).subscribe((state) => {
-      console.log(state);
-    });
+    this.store.dispatch(new CopyWorkbasket(this.workbasket));
   }
 
   removeDistributionTargets() {
     this.store.dispatch(new RemoveDistributionTarget(this.workbasket._links.removeDistributionTargets.href));
   }
 
-  private onSave() {
+  onSave() {
     this.beforeRequest();
     if (!this.workbasket.workbasketId) {
       this.postNewWorkbasket();
@@ -149,16 +148,16 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     });
   }
 
-  private beforeRequest() {
+  beforeRequest() {
     this.requestInProgressService.setRequestInProgress(true);
   }
 
-  private afterRequest() {
+  afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.workbasketService.triggerWorkBasketSaved();
   }
 
-  private postNewWorkbasket() {
+  postNewWorkbasket() {
     this.addDateToWorkbasket();
     this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(() => {
       this.afterRequest();
@@ -173,13 +172,13 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     });
   }
 
-  private addDateToWorkbasket() {
+  addDateToWorkbasket() {
     const date = TaskanaDate.getDate();
     this.workbasket.created = date;
     this.workbasket.modified = date;
   }
 
-  private onRemoveConfirmed() {
+  onRemoveConfirmed() {
     this.beforeRequest();
     this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href)).subscribe(() => {
       this.afterRequest();

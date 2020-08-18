@@ -1,13 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
-import { Component, DebugElement, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from '../../../shared/pipes/remove-empty-type.pipe';
-import { AccessIdDefinition } from '../../../shared/models/access-id';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
@@ -23,6 +22,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { ACTION } from '../../../shared/models/action';
+import { TypeaheadModule } from 'ngx-bootstrap';
+import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
+import { Workbasket } from '../../../shared/models/workbasket';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -41,22 +44,14 @@ class IconTypeStub {
   @Input() type: ICONTYPES = ICONTYPES.ALL;
   @Input() text: string;
 }
-@Component({ selector: 'taskana-shared-type-ahead', template: '' })
-class TypeAheadStub {
-  @Input() placeHolderMessage;
-  @Input() validationValue;
-  @Input() displayError;
-  @Input() width;
-  @Input() disable;
-  @Input() isRequired = true;
-  @Output() selectedItem = new EventEmitter<AccessIdDefinition>();
-  @Output() inputField = new EventEmitter<ElementRef>();
-}
 
 const triggerWorkbasketSavedFn = jest.fn().mockReturnValue(true);
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
-    triggerWorkBasketSaved: triggerWorkbasketSavedFn
+    triggerWorkBasketSaved: triggerWorkbasketSavedFn,
+    updateWorkbasket: jest.fn().mockReturnValue(of(true)),
+    markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
+    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasket }))
   })
 );
 
@@ -108,7 +103,7 @@ export const engineConfigurationMock = {
   language: 'EN'
 };
 
-const selectedWorkbasket = {
+const selectedWorkbasket: Workbasket = {
   workbasketId: 'WBI:000000000000000000000000000000000902',
   key: 'sOrt003',
   name: 'bAsxet2',
@@ -149,20 +144,150 @@ const selectedWorkbasket = {
   }
 };
 
-export const workbasketCopyState = {
-  selectedWorkbasket,
-  action: ACTION.COPY
-};
-
-export const workbasketCreateState = {
-  selectedWorkbasket,
-  action: ACTION.CREATE
-};
-
 export const workbasketReadState = {
   selectedWorkbasket,
+  paginatedWorkbasketsSummary: {
+    _links: {
+      self: {
+        href:
+          'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page=3&page-size=8'
+      },
+      first: {
+        href:
+          'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=1'
+      },
+      last: {
+        href:
+          'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=3'
+      },
+      prev: {
+        href:
+          'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=2'
+      }
+    },
+    workbaskets: [
+      {
+        workbasketId: 'WBI:100000000000000000000000000000000008',
+        key: 'USER-2-1',
+        name: 'PPK User 1 KSC 2',
+        domain: 'DOMAIN_A',
+        type: 'PERSONAL',
+        description: 'PPK User 1 KSC 2',
+        owner: '',
+        custom1: '',
+        custom2: '',
+        custom3: '',
+        custom4: '',
+        orgLevel1: '',
+        orgLevel2: '',
+        orgLevel3: '',
+        orgLevel4: '',
+        markedForDeletion: false
+      },
+      {
+        workbasketId: 'WBI:100000000000000000000000000000000007',
+        key: 'USER-1-2',
+        name: 'PPK User 2 KSC 1',
+        domain: 'DOMAIN_A',
+        type: 'PERSONAL',
+        description: 'PPK User 2 KSC 1',
+        owner: 'Peter Maier',
+        custom1: 'custom1',
+        custom2: 'custom2',
+        custom3: 'custom3',
+        custom4: 'custom4',
+        orgLevel1: 'versicherung',
+        orgLevel2: 'abteilung',
+        orgLevel3: 'projekt',
+        orgLevel4: 'team',
+        markedForDeletion: false
+      },
+      {
+        workbasketId: 'WBI:100000000000000000000000000000000009',
+        key: 'USER-2-2',
+        name: 'PPK User 2 KSC 2',
+        domain: 'DOMAIN_A',
+        type: 'PERSONAL',
+        description: 'PPK User 2 KSC 2',
+        owner: '',
+        custom1: '',
+        custom2: '',
+        custom3: '',
+        custom4: '',
+        orgLevel1: '',
+        orgLevel2: '',
+        orgLevel3: '',
+        orgLevel4: '',
+        markedForDeletion: false
+      },
+      {
+        workbasketId: 'WBI:100000000000000000000000000000000010',
+        key: 'TPK_VIP',
+        name: 'Themenpostkorb VIP',
+        domain: 'DOMAIN_A',
+        type: 'TOPIC',
+        description: 'Themenpostkorb VIP',
+        owner: '',
+        custom1: '',
+        custom2: '',
+        custom3: '',
+        custom4: '',
+        orgLevel1: '',
+        orgLevel2: '',
+        orgLevel3: '',
+        orgLevel4: '',
+        markedForDeletion: false
+      },
+      {
+        workbasketId: 'WBI:100000000000000000000000000000000016',
+        key: 'TPK_VIP_2',
+        name: 'Themenpostkorb VIP 2',
+        domain: 'DOMAIN_A',
+        type: 'TOPIC',
+        description: 'Themenpostkorb VIP',
+        owner: '',
+        custom1: '',
+        custom2: '',
+        custom3: '',
+        custom4: '',
+        orgLevel1: '',
+        orgLevel2: '',
+        orgLevel3: '',
+        orgLevel4: '',
+        markedForDeletion: false
+      }
+    ],
+    page: {
+      size: 8,
+      totalElements: 21,
+      totalPages: 3,
+      number: 3
+    }
+  },
   action: ACTION.READ
 };
+
+const isFieldValidFn = jest.fn().mockReturnValue(true);
+const validateFormInformationFn = jest.fn().mockImplementation((): Promise<any> => Promise.resolve(true));
+const formValidatorServiceSpy = jest.fn().mockImplementation(
+  (): Partial<FormsValidatorService> => ({
+    isFieldValid: isFieldValidFn,
+    validateInputOverflow: jest.fn(),
+    validateFormInformation: validateFormInformationFn,
+    get inputOverflowObservable(): Observable<Map<string, boolean>> {
+      return of(new Map<string, boolean>());
+    }
+  })
+);
+
+const showDialogFn = jest.fn().mockReturnValue(true);
+const notificationServiceSpy = jest.fn().mockImplementation(
+  (): Partial<NotificationService> => ({
+    showDialog: showDialogFn,
+    showToast: showDialogFn,
+    triggerError: showDialogFn
+  })
+);
 
 describe('WorkbasketInformationComponent', () => {
   let fixture: ComponentFixture<WorkbasketInformationComponent>;
@@ -178,25 +303,27 @@ describe('WorkbasketInformationComponent', () => {
         HttpClientTestingModule,
         MatSnackBarModule,
         MatDialogModule,
-        NgxsModule.forRoot([EngineConfigurationState]),
-        NgxsModule.forRoot([WorkbasketState]),
-        RouterTestingModule.withRoutes([])
+        NgxsModule.forRoot([EngineConfigurationState, WorkbasketState]),
+        TypeaheadModule.forRoot(),
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([]),
+        BrowserAnimationsModule
       ],
       declarations: [
         WorkbasketInformationComponent,
         SpinnerStub,
         FieldErrorDisplayStub,
         IconTypeStub,
-        TypeAheadStub,
+        TypeAheadComponent,
         MapValuesPipe,
         RemoveNoneTypePipe
       ],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceMock },
+        { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
+        { provide: NotificationService, useClass: notificationServiceSpy },
         SavingWorkbasketService,
         RequestInProgressService,
-        FormsValidatorService,
-        NotificationService,
         DomainService,
         SelectedRouteService,
         ClassificationCategoriesService
@@ -214,12 +341,7 @@ describe('WorkbasketInformationComponent', () => {
       workbasket: workbasketReadState
     });
     component.workbasket = selectedWorkbasket;
-    component.action = ACTION.READ;
 
-    console.log(store.selectSnapshot((state) => state).engineConfiguration.customisation['EN'].workbaskets);
-    component.workbasketsCustomisation$.subscribe((value) => {
-      console.log(value);
-    });
     fixture.detectChanges();
   }));
 
@@ -227,5 +349,58 @@ describe('WorkbasketInformationComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  //HTML Tests
   it('', () => {});
+
+  it('should create clone of workbasket when workbasket value changes', () => {
+    component.action = ACTION.READ;
+    component.ngOnChanges();
+    expect(component.workbasketClone).toMatchObject(component.workbasket);
+  });
+
+  it('should display create badge message when action is CREATE', () => {
+    component.action = ACTION.CREATE;
+    component.ngOnChanges();
+    expect(component.badgeMessage).toMatch('Creating new workbasket');
+  });
+
+  it('should display copy badge message when action is COPY', () => {
+    component.action = ACTION.COPY;
+    component.ngOnChanges();
+    expect(component.badgeMessage).toContain(`Copying workbasket: ${component.workbasket.key}`);
+  });
+
+  it('should set type variable in selectType', () => {
+    const type = ICONTYPES.GROUP;
+    component.selectType(type);
+    expect(component.workbasket.type).toMatch(type);
+  });
+
+  it('should submit if validatorService is true', () => {
+    const formsValidatorService = TestBed.inject(FormsValidatorService);
+    component.onSubmit();
+    expect(formsValidatorService.formSubmitAttempt).toBe(true);
+  });
+
+  it('onUndo', () => {
+    component.onUndo();
+  });
+
+  it('onSave', () => {
+    component.onSave();
+  });
+
+  it('postNewWOrkbasket', () => {
+    component.action = ACTION.COPY;
+    component.postNewWorkbasket();
+  });
+
+  it('onRemoveConfirmed', () => {
+    component.onRemoveConfirmed();
+  });
+
+  it('onSave no id', () => {
+    delete component.workbasket.workbasketId;
+    component.onSave();
+  });
 });
