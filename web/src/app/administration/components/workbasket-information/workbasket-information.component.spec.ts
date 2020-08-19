@@ -382,8 +382,13 @@ describe('WorkbasketInformationComponent', () => {
     expect(formsValidatorService.formSubmitAttempt).toBe(true);
   });
 
-  it('onUndo', () => {
+  it('should reset workbasket information when onUndo is called', () => {
+    component.workbasketClone = selectedWorkbasket;
+    const notificationService = TestBed.inject(NotificationService);
+    const toastSpy = jest.spyOn(notificationService, 'showToast');
     component.onUndo();
+    expect(toastSpy).toHaveBeenCalled();
+    expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 
   it('onSave', () => {
