@@ -15,6 +15,7 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { selectedWorkbasket } from '../../../shared/store/mock-data/mock-store';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -40,47 +41,6 @@ class WorkbasketDistributionTargetsStub {
   @Input() action: ACTION;
   @Input() active: string;
 }
-
-const selectedWorkbasket = {
-  workbasketId: 'WBI:000000000000000000000000000000000902',
-  key: 'sOrt003',
-  name: 'bAsxet2',
-  domain: 'DOMAIN_A',
-  type: 'TOPIC',
-  description: 'Lorem ipsum dolor sit amet.',
-  owner: 'Max',
-  custom1: '',
-  custom2: '',
-  custom3: '',
-  custom4: '',
-  orgLevel1: '',
-  orgLevel2: '',
-  orgLevel3: '',
-  orgLevel4: '',
-  markedForDeletion: false,
-  created: '2020-08-18T09:14:41.353Z',
-  modified: '2020-08-18T09:14:41.353Z',
-  _links: {
-    self: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902'
-    },
-    distributionTargets: {
-      href:
-        'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
-    },
-    accessItems: {
-      href:
-        'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/workbasketAccessItems'
-    },
-    allWorkbaskets: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets'
-    },
-    removeDistributionTargets: {
-      href:
-        'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
-    }
-  }
-};
 
 export const workbasketCopyState = {
   selectedWorkbasket,

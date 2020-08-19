@@ -19,6 +19,7 @@ import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-a
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Direction, Sorting } from '../../../shared/models/sorting';
+import { engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -33,40 +34,6 @@ const notificationServiceSpy = jest.fn().mockImplementation(
     showDialog: showDialogFn
   })
 );
-
-export const engineConfigInitState = {
-  customisation: {
-    EN: {
-      workbaskets: {
-        'access-items': {
-          accessId: {
-            lookupField: true
-          },
-          custom3: {
-            field: '',
-            visible: false
-          },
-          custom9: {
-            field: 'Some custom field',
-            visible: true
-          },
-          custom10: {
-            field: '',
-            visible: false
-          },
-          custom11: {
-            field: '',
-            visible: false
-          },
-          custom12: {
-            field: '',
-            visible: false
-          }
-        }
-      }
-    }
-  }
-};
 
 describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
@@ -120,7 +87,7 @@ describe('AccessItemsManagementComponent', () => {
     actions$ = TestBed.inject(Actions);
     store.reset({
       ...store.snapshot(),
-      engineConfiguration: engineConfigInitState
+      engineConfiguration: engineConfigurationMock
     });
     app.accessIdSelected = '1';
     fixture.detectChanges();

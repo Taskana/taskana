@@ -158,7 +158,7 @@
           <div *ngIf="inputOverflowMap.get(orgLevel4.name)" class="error">{{lengthError}}</div>
         </div>
         <ng-container *ngFor="let customField of customFields$ | async; let index = index">
-          <div *ngIf="customField.visible" class="form-group">
+          <div *ngIf="customField.visible" class="custom-fields form-group">
             <label for='wb-custom-{{index+1}}' class="control-label">{{customField.field}}</label>
             <input type="text" class="form-control" id="wb-custom-{{index+1}}"
                    [placeholder]="customField.field"
