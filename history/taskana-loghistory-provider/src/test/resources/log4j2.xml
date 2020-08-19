@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <!--
+        - Abweichungen der Log4j Struktur muessen mit dem Anwendungsbetrieb abgesprochen werden
+        - SCHEMA_ID, BUSINESS_APPLICATION und GLOBAL_ID werden in ARA gesetzt
+        - LOG_FOLDER fuer jboss ${sys:jboss.server.log.dir} | fuer weblogic ${env:LOG_PATH}/${SCHEMA_ID} | fuer tomcat ${sys:catalina.base}/logs
+    -->
+  <Properties>
+    <Property name="LOG_FOLDER"></Property>
+    <Property name="SCHEMA_ID"></Property>
+    <Property name="BUSINESS_APPLICATION"></Property>
+    <Property name="GLOBAL_ID"></Property>
+    <Property name="DOMAIN_ID"></Property>
+    <Property name="SUBCATEGORIZATION"></Property>
+    <Property name="SERVICE_ID"></Property>
+    <Property name="VERSION"></Property>
+    <Property name="QUALIFIED_SERVICE_NAME"></Property>
+  </Properties>
+ 
+  <Appenders>
+ 
+    <RollingFile name="auditFileJson"
+        fileName="target/_audit.json"
+        filePattern="${LOG_FOLDER}/${QUALIFIED_SERVICE_NAME}_audit-%d{yyyy-MM-dd}-%i.json">
+      <JsonLayout compact="true" complete="false" properties="true" locationInfo="true"
+        propertiesAsList="false" eventEol="true" stacktraceAsString="true">
+        <KeyValuePair key="datetime" value="$${date:yyyy-MM-dd'T'HH:mm:ss.SSSXXX}" />
+        <KeyValuePair key="globalId" value="${GLOBAL_ID}" />
+        <KeyValuePair key="schemaId" value="${SCHEMA_ID}" />
+        <KeyValuePair key="serviceId" value="${SERVICE_ID}" />
+        <KeyValuePair key="domainId" value="${DOMAIN_ID}" />
+        <KeyValuePair key="businessApplication" value="${BUSINESS_APPLICATION}" />
+        <KeyValuePair key="subcategorization" value="${SUBCATEGORIZATION}" />
+        <KeyValuePair key="version" value="${VERSION}" />
+        <KeyValuePair key="logstream" value="audit" />
+      </JsonLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="1 MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="10" />
+    </RollingFile>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+    </Console>
+
+  </Appenders>
+ 
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="Console" />
+    </Root>
+ 
+    <Logger name="AUDIT" level="INFO" additivity="false">
+      <AppenderRef ref="auditFileJson" />
+    </Logger>
+
+  </Loggers>
+</Configuration>

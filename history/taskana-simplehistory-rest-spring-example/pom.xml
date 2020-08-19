@@ -9,15 +9,15 @@
     <description>Demo project for taskana-simplehistory-rest-spring</description>
 
     <parent>
-        <groupId>pro.taskana.simplehistory</groupId>
-        <artifactId>taskana-simplehistory-parent</artifactId>
-        <version>3.2.1-SNAPSHOT</version>
+        <groupId>pro.taskana.history</groupId>
+        <artifactId>taskana-history-parent</artifactId>
+        <version>4.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>pro.taskana.simplehistory</groupId>
+            <groupId>pro.taskana.history</groupId>
             <artifactId>taskana-simplehistory-rest-spring</artifactId>
             <version>${project.version}</version>
         </dependency>

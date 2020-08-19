@@ -3,11 +3,6 @@ package pro.taskana.task.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +13,6 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -57,83 +51,6 @@ class TaskServiceImplTest {
     cut =
         new TaskServiceImpl(
             internalTaskanaEngineMock, taskMapperMock, taskCommentMapperMock, attachmentMapperMock);
-  }
-
-  @Test
-  void should_DetermineDifferences_When_ComparingEmptyTaskWithNonEmptyTask() {
-
-    TaskImpl oldTask = (TaskImpl) cut.newTask();
-
-    TaskImpl newTask = (TaskImpl) cut.newTask();
-    newTask.setOwner("new Owner");
-    newTask.setCreator("new Creator");
-    newTask.setId("new ID");
-    newTask.setCreated(Instant.now());
-    newTask.setModified(Instant.now());
-    newTask.setClassificationKey("new ClassificationKey");
-    newTask.setWorkbasketKey("new WorkbasketKey");
-    newTask.setBusinessProcessId("new BusinessProcessId");
-    newTask.setCallbackState(CallbackState.CALLBACK_PROCESSING_REQUIRED);
-
-    JSONArray changedAttributes =
-        new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))
-            .getJSONArray("changes");
-
-    assertThat(changedAttributes).hasSize(9);
-  }
-
-  @Test
-  void should_DetermineDifferences_When_ComparingNonEmptyTaskWithNonEmptyTask() {
-
-    TaskImpl oldTask = (TaskImpl) cut.newTask();
-    oldTask.setOwner("old Owner");
-    oldTask.setCreator("old  Creator");
-    oldTask.setId("old  ID");
-    oldTask.setCreated(Instant.now().minusMillis(100));
-    oldTask.setModified(Instant.now().minusMillis(100));
-    oldTask.setClassificationKey("old  ClassificationKey");
-    oldTask.setWorkbasketKey("old  WorkbasketKey");
-    oldTask.setBusinessProcessId("old  BusinessProcessId");
-    oldTask.setCallbackState(CallbackState.NONE);
-
-    TaskImpl newTask = (TaskImpl) cut.newTask();
-    newTask.setOwner("new Owner");
-    newTask.setCreator("new Creator");
-    newTask.setId("new ID");
-    newTask.setCreated(Instant.now());
-    newTask.setModified(Instant.now());
-    newTask.setClassificationKey("new ClassificationKey");
-    newTask.setWorkbasketKey("new WorkbasketKey");
-    newTask.setBusinessProcessId("new BusinessProcessId");
-    newTask.setCallbackState(CallbackState.CALLBACK_PROCESSING_REQUIRED);
-
-    JSONArray changedAttributes =
-        new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))
-            .getJSONArray("changes");
-
-    assertThat(changedAttributes).hasSize(9);
-  }
-
-  @Test
-  void should_IgnoreDifferencesInCustomAttributes_When_CustomAttributesHaveChanged() {
-
-    TaskImpl oldTask = (TaskImpl) cut.newTask();
-    oldTask.setOwner("old Owner");
-    oldTask.setCreator("old  Creator");
-
-    TaskImpl newTask = (TaskImpl) cut.newTask();
-    newTask.setOwner("new Owner");
-    newTask.setCreator("new Creator");
-
-    Map<String, String> customAttriutes = new HashMap<>();
-    customAttriutes.put("new key", "new value");
-    newTask.setCustomAttributeMap(customAttriutes);
-
-    JSONArray changedAttributes =
-        new JSONObject(cut.determineChangesInTaskAttributes(oldTask, newTask))
-            .getJSONArray("changes");
-
-    assertThat(changedAttributes).hasSize(2);
   }
 
   @Test

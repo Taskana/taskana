@@ -13,12 +13,12 @@ public final class SampleDataProvider {
   static final String TEST_CLASSIFICATION = "/sql/test-data/classification.sql";
   static final String TEST_OBJECT_REFERENCE = "/sql/test-data/object-reference.sql";
   static final String TEST_ATTACHMENT = "/sql/test-data/attachment.sql";
-  static final String TEST_HISTORY_EVENT = "/sql/test-data/history-event.sql";
+  static final String TEST_TASK_HISTORY_EVENT = "/sql/test-data/task-history-event.sql";
+  static final String TEST_WORKBASKET_HISTORY_EVENT = "/sql/test-data/workbasket-history-event.sql";
   static final String MONITOR_SAMPLE_DATA = "/sql/monitor-data/monitor-sample-data.sql";
   private static final String DB_CLEAR_TABLES_SCRIPT = "/sql/clear/clear-db.sql";
   private static final String DB_DROP_TABLES_SCRIPT = "/sql/clear/drop-tables.sql";
-  private static final String CLEAR_HISTORY_EVENTS = "/sql/clear/clear-history-events.sql";
-  private static final String SAMPLE_HISTORY_EVENT = "/sql/sample-data/history-event.sql";
+  private static final String SAMPLE_TASK_HISTORY_EVENT = "/sql/sample-data/task-history-event.sql";
   private static final String SAMPLE_TASK = "/sql/sample-data/task.sql";
   private static final String SAMPLE_TASK_COMMENT = "/sql/sample-data/task-comment.sql";
   private static final String SAMPLE_WORKBASKET = "/sql/sample-data/workbasket.sql";
@@ -46,7 +46,7 @@ public final class SampleDataProvider {
 
   static Stream<String> getScriptsWithEvents() {
     return Stream.concat(
-        getSampleDataCreationScripts(), Stream.of(CLEAR_HISTORY_EVENTS, SAMPLE_HISTORY_EVENT));
+        getSampleDataCreationScripts(), Stream.of(SAMPLE_TASK_HISTORY_EVENT));
   }
 
   static Stream<String> getScriptsToClearDatabase() {
@@ -62,7 +62,8 @@ public final class SampleDataProvider {
         TEST_CLASSIFICATION,
         TEST_WORKBASKET,
         TEST_TASK,
-        TEST_HISTORY_EVENT,
+        TEST_TASK_HISTORY_EVENT,
+        TEST_WORKBASKET_HISTORY_EVENT,
         TEST_TASK_COMMENT,
         TEST_WORKBASKET_ACCESS_LIST,
         TEST_DISTRIBUTION_TARGETS,

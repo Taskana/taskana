@@ -9,18 +9,18 @@
 	<description>The taskana history events plugin, spring based REST API.</description>
 
 	<parent>
-		<groupId>pro.taskana.simplehistory</groupId>
-		<artifactId>taskana-simplehistory-parent</artifactId>
-		<version>3.2.1-SNAPSHOT</version>
+		<groupId>pro.taskana.history</groupId>
+		<artifactId>taskana-history-parent</artifactId>
+		<version>4.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>pro.taskana.simplehistory</groupId>
-			<artifactId>taskana-simplehistory-provider</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+			<groupId>pro.taskana.history</groupId>
+      <artifactId>taskana-simplehistory-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>pro.taskana</groupId>
 			<artifactId>taskana-rest-spring</artifactId>

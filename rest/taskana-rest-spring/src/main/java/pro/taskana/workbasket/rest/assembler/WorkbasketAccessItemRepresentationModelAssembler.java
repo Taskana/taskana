@@ -11,11 +11,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
-import pro.taskana.resource.rest.PageLinks;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
@@ -106,18 +104,15 @@ public class WorkbasketAccessItemRepresentationModelAssembler
     TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> pageModel =
         toPageModel(workbasketAccessItems, pageMetadata);
     pageModel.add(
-        linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(workbasketId))
-            .withSelfRel());
-    pageModel.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasket(workbasketId))
             .withRel("workbasket"));
     return pageModel;
   }
 
-  @PageLinks(Mapping.URL_WORKBASKET_ACCESS_ITEMS)
   public TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> toPageModel(
       List<WorkbasketAccessItem> workbasketAccessItems, PageMetadata pageMetadata) {
-    return TaskanaPagingAssembler.super.toPageModel(workbasketAccessItems, pageMetadata);
+    return addLinksToPagedResource(
+        TaskanaPagingAssembler.super.toPageModel(workbasketAccessItems, pageMetadata));
   }
 
   @Override

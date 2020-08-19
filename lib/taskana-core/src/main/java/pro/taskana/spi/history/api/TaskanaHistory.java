@@ -2,10 +2,11 @@ package pro.taskana.spi.history.api;
 
 import java.util.List;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
 /** Interface for TASKANA History Service Provider. */
 public interface TaskanaHistory {
@@ -13,17 +14,23 @@ public interface TaskanaHistory {
   /**
    * Initialize TaskanaHistory service.
    *
-   * @param taskanaEngineConfiguration {@link TaskanaEngineConfiguration} The Taskana engine
-   *     configuration for needed initialization.
+   * @param taskanaEngine {@link TaskanaEngine} The Taskana engine for needed initialization.
    */
-  void initialize(TaskanaEngineConfiguration taskanaEngineConfiguration);
+  void initialize(TaskanaEngine taskanaEngine);
 
   /**
-   * Create a new history event.
+   * Create a new task history event.
    *
-   * @param event {@link TaskanaHistoryEvent} The event to be created.
+   * @param event {@link TaskHistoryEvent} The event to be created.
    */
-  void create(TaskanaHistoryEvent event);
+  void create(TaskHistoryEvent event);
+
+  /**
+   * Create a new workbasket history event.
+   *
+   * @param event {@link WorkbasketHistoryEvent} The event to be created.
+   */
+  void create(WorkbasketHistoryEvent event);
 
   /**
    * Delete history events by taskIds. Invalid/non-existing taskIds will be ignored

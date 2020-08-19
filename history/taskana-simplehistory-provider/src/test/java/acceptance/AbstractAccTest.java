@@ -20,10 +20,12 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
-import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
-import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
+import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.task.api.models.ObjectReference;
 
 /** Set up database for tests. */
@@ -55,7 +57,7 @@ public abstract class AbstractAccTest {
   }
 
   /**
-   * create historyEvent object.
+   * create taskHistoryEvent object.
    *
    * @param workbasketKey the workbasketKey, the task currently resides in.
    * @param taskId the taskid the event belongs to.
@@ -63,22 +65,43 @@ public abstract class AbstractAccTest {
    * @param previousWorkbasketId the workbasketId of the previous workbasket (if applicable).
    * @param userid the ID of the user that triggered the event.
    * @param details the details of the changes that happened.
-   * @return History event object created.
+   * @return Task History event object created.
    */
-  public static HistoryEventImpl createHistoryEvent(
+  public static TaskHistoryEvent createTaskHistoryEvent(
       String workbasketKey,
       String taskId,
       String type,
       String previousWorkbasketId,
       String userid,
       String details) {
-    HistoryEventImpl historyEvent =
-        new HistoryEventImpl(
-            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT), userid, details);
+    TaskHistoryEvent historyEvent = new TaskHistoryEvent();
+    historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    historyEvent.setUserId(userid);
+    historyEvent.setDetails(details);
     historyEvent.setWorkbasketKey(workbasketKey);
     historyEvent.setTaskId(taskId);
     historyEvent.setEventType(type);
     historyEvent.setOldValue(previousWorkbasketId);
+    return historyEvent;
+  }
+
+  /**
+   * create workbasketHistoryEvent object.
+   *
+   * @param workbasketKey the workbasketKey.
+   * @param type the type of the event.
+   * @param userid the ID of the user that triggered the event.
+   * @param details the details of the changes that happened.
+   * @return Workbasket History event object created.
+   */
+  public static WorkbasketHistoryEvent createWorkbasketHistoryEvent(
+      String workbasketKey, String type, String userid, String details) {
+    WorkbasketHistoryEvent historyEvent = new WorkbasketHistoryEvent();
+    historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    historyEvent.setUserId(userid);
+    historyEvent.setDetails(details);
+    historyEvent.setKey(workbasketKey);
+    historyEvent.setEventType(type);
     return historyEvent;
   }
 
@@ -94,7 +117,7 @@ public abstract class AbstractAccTest {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     historyService = new SimpleHistoryServiceImpl();
-    historyService.initialize(taskanaEngineConfiguration);
+    historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, getSchemaName());
     sampleDataGenerator.clearDb();
@@ -135,7 +158,7 @@ public abstract class AbstractAccTest {
     return historyService;
   }
 
-  protected HistoryQueryMapper getHistoryQueryMapper()
+  protected TaskHistoryQueryMapper getHistoryQueryMapper()
       throws NoSuchFieldException, IllegalAccessException {
 
     Field sessionManagerField = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
@@ -143,7 +166,7 @@ public abstract class AbstractAccTest {
     SqlSessionManager sqlSessionManager =
         (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
 
-    return sqlSessionManager.getMapper(HistoryQueryMapper.class);
+    return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
   }
 
   protected ObjectReference createObjectRef(
@@ -155,6 +178,24 @@ public abstract class AbstractAccTest {
     objectRef.setType(type);
     objectRef.setValue(value);
     return objectRef;
+  }
+
+  protected static WorkbasketHistoryEventMapper getWorkbasketHistoryEventMapper() {
+
+    SqlSessionManager manager = null;
+
+    Field sessionManager;
+    try {
+      sessionManager = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+
+      sessionManager.setAccessible(true);
+
+      manager = (SqlSessionManager) sessionManager.get(taskanaHistoryEngine);
+
+    } catch (Exception e) {
+      LOGGER.warn("Caught unexpected exception ", e);
+    }
+    return manager.getMapper(WorkbasketHistoryEventMapper.class);
   }
 
   @BeforeAll

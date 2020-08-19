@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -27,6 +27,7 @@
 
         <version.mybatis>3.5.5</version.mybatis>
         <version.json>20200518</version.json>
+        <version.jackson-databind>2.11.2</version.jackson-databind>
 
         <!-- build dependencies -->
         <version.checkstyle>8.35</version.checkstyle>
@@ -35,7 +36,7 @@
         <version.maven.compiler>3.8.1</version.maven.compiler>
         <version.maven.source>3.2.1</version.maven.source>
         <version.maven.javadoc>3.2.0</version.maven.javadoc>
-        <version.maven.resources>3.1.0</version.maven.resources>
+        <version.maven.resources>3.2.0</version.maven.resources>
         <version.maven.surefire>3.0.0-M5</version.maven.surefire>
         <version.maven.asciidoctor>1.6.0</version.maven.asciidoctor>
         <version.maven.clean>3.1.0</version.maven.clean>
@@ -47,7 +48,7 @@
 
         <!-- spring dependencies -->
         <version.spring.core>2.0.0.RELEASE</version.spring.core>
-        <version.spring.boot>2.3.2.RELEASE</version.spring.boot>
+        <version.spring.boot>2.3.3.RELEASE</version.spring.boot>
         <version.spring.mybatis>2.0.5</version.spring.mybatis>
 
         <!-- wildfly dependencies -->
@@ -65,6 +66,7 @@
         <version.equalsverifier>3.4.1</version.equalsverifier>
         <version.openpojo>0.8.13</version.openpojo>
         <version.jacoco>0.8.5</version.jacoco>
+        <version.slf4j-test>1.2.0</version.slf4j-test>
 
         <!-- database driver versions -->
         <version.db2>11.1.1.1</version.db2>

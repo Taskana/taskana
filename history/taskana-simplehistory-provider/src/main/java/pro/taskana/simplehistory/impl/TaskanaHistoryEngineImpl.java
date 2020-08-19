@@ -23,8 +23,10 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
-import pro.taskana.simplehistory.impl.mappings.HistoryEventMapper;
-import pro.taskana.simplehistory.impl.mappings.HistoryQueryMapper;
+import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
+import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
+import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryMapper;
 import pro.taskana.spi.history.api.TaskanaHistory;
 
 /** This is the implementation of TaskanaHistoryEngine. */
@@ -54,7 +56,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   public TaskanaHistory getTaskanaHistoryService() {
     if (taskanaHistoryService == null) {
       SimpleHistoryServiceImpl historyService = new SimpleHistoryServiceImpl();
-      historyService.initialize(taskanaEngineConfiguration);
+      historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
       this.taskanaHistoryService = historyService;
     }
     return this.taskanaHistoryService;
@@ -98,8 +100,10 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     Configuration configuration = new Configuration(environment);
 
     // add mappers
-    configuration.addMapper(HistoryEventMapper.class);
-    configuration.addMapper(HistoryQueryMapper.class);
+    configuration.addMapper(TaskHistoryEventMapper.class);
+    configuration.addMapper(TaskHistoryQueryMapper.class);
+    configuration.addMapper(WorkbasketHistoryEventMapper.class);
+    configuration.addMapper(WorkbasketHistoryQueryMapper.class);
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }

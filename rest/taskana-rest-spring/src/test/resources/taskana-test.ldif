@@ -119,6 +119,19 @@ ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Elena Eifrig
 userPassword: user-1-2
 
+dn: uid=Max,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Max
+description: desc
+uid: Max
+sn: Mustermann
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Max Mustermann
+userPassword: Max
+
 ########################
 # Users KSC 2
 ########################
@@ -160,6 +173,19 @@ sn:: U2NobMOkZnJpZw==
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn:: VGltIFNjaGzDpGZyaWc=
 userPassword: user-2-1
+
+dn: uid=owner0815,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Hans
+description: desc
+uid: owner0815
+sn: Hafer
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Hans Hafer
+userPassword: owner0815
 
 ########################
 # Users Domäne B

@@ -6,11 +6,12 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.spi.history.api.TaskanaHistory;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
 /** Creates and deletes events and emits them to the registered history service providers. */
 public final class HistoryEventManager {
@@ -20,10 +21,10 @@ public final class HistoryEventManager {
   private boolean enabled = false;
   private ServiceLoader<TaskanaHistory> serviceLoader;
 
-  private HistoryEventManager(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  private HistoryEventManager(TaskanaEngine taskanaEngine) {
     serviceLoader = ServiceLoader.load(TaskanaHistory.class);
     for (TaskanaHistory history : serviceLoader) {
-      history.initialize(taskanaEngineConfiguration);
+      history.initialize(taskanaEngine);
       LOGGER.info("Registered history provider: {}", history.getClass().getName());
       enabled = true;
     }
@@ -32,10 +33,9 @@ public final class HistoryEventManager {
     }
   }
 
-  public static synchronized HistoryEventManager getInstance(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  public static synchronized HistoryEventManager getInstance(TaskanaEngine taskanaEngine) {
     if (singleton == null) {
-      singleton = new HistoryEventManager(taskanaEngineConfiguration);
+      singleton = new HistoryEventManager(taskanaEngine);
     }
     return singleton;
   }
@@ -44,7 +44,12 @@ public final class HistoryEventManager {
     return Objects.nonNull(singleton) && singleton.enabled;
   }
 
-  public void createEvent(TaskanaHistoryEvent event) {
+  public void createEvent(TaskHistoryEvent event) {
+    LOGGER.debug("Sending event to history service providers: {}", event);
+    serviceLoader.forEach(historyProvider -> historyProvider.create(event));
+  }
+
+  public void createEvent(WorkbasketHistoryEvent event) {
     LOGGER.debug("Sending event to history service providers: {}", event);
     serviceLoader.forEach(historyProvider -> historyProvider.create(event));
   }

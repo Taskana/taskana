@@ -24,15 +24,14 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.AbstractPagingController;
 import pro.taskana.common.rest.QueryHelper;
-import pro.taskana.simplehistory.impl.HistoryEventImpl;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
-import pro.taskana.simplehistory.query.HistoryQuery;
+import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventListResourceAssembler;
 import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventRepresentationModelAssembler;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
-import pro.taskana.spi.history.api.events.TaskHistoryCustomField;
-import pro.taskana.spi.history.api.events.TaskanaHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 
 /** Controller for all TaskHistoryEvent related endpoints. */
@@ -94,7 +93,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
       TaskHistoryEventRepresentationModelAssembler taskHistoryEventRepresentationModelAssembler) {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
-    this.simpleHistoryService.initialize(taskanaEngineConfiguration);
+    this.simpleHistoryService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
     this.taskHistoryEventRepresentationModelAssembler =
         taskHistoryEventRepresentationModelAssembler;
   }
@@ -107,12 +106,12 @@ public class TaskHistoryEventController extends AbstractPagingController {
       LOGGER.debug("Entry to getTaskHistoryEvents(params= {})", params);
     }
 
-    HistoryQuery query = simpleHistoryService.createHistoryQuery();
+    TaskHistoryQuery query = simpleHistoryService.createTaskHistoryQuery();
     applySortingParams(query, params);
     applyFilterParams(query, params);
 
     PageMetadata pageMetadata = null;
-    List<HistoryEventImpl> historyEvents;
+    List<TaskHistoryEvent> historyEvents;
     final String page = params.getFirst(PAGING_PAGE);
     final String pageSize = params.getFirst(PAGING_PAGE_SIZE);
     params.remove(PAGING_PAGE);
@@ -150,7 +149,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
       LOGGER.debug("Entry to getTaskHistoryEvent(historyEventId= {})", historyEventId);
     }
 
-    TaskanaHistoryEvent resultEvent = simpleHistoryService.getHistoryEvent(historyEventId);
+    TaskHistoryEvent resultEvent = simpleHistoryService.getTaskHistoryEvent(historyEventId);
 
     TaskHistoryEventRepresentationModel taskEventResource =
         taskHistoryEventRepresentationModelAssembler.toModel(resultEvent);
@@ -164,7 +163,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
     return new ResponseEntity<>(taskEventResource, HttpStatus.OK);
   }
 
-  private void applySortingParams(HistoryQuery query, MultiValueMap<String, String> params)
+  private void applySortingParams(TaskHistoryQuery query, MultiValueMap<String, String> params)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applySortingParams(params= {})", params);
@@ -244,7 +243,7 @@ public class TaskHistoryEventController extends AbstractPagingController {
     }
   }
 
-  private void applyFilterParams(HistoryQuery query, MultiValueMap<String, String> params) {
+  private void applyFilterParams(TaskHistoryQuery query, MultiValueMap<String, String> params) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
     }
