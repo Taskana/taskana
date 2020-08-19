@@ -2,7 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
+<<<<<<< HEAD
 import { Observable } from 'rxjs';
+=======
+import { Observable, zip } from 'rxjs';
+>>>>>>> 5ea9b0a0fbe229c629dcfb3c24bad4a497658c32
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
@@ -76,7 +80,11 @@ describe('WorkbasketListToolbarComponent', () => {
   it('should dispatch CreateWorkbasket when addWorkbasket is called', async((done) => {
     component.action = ACTION.COPY;
     let actionDispatched = false;
+<<<<<<< HEAD
     actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => (actionDispatched = true));
+=======
+    zip(actions$.pipe(ofActionDispatched(CreateWorkbasket))).subscribe(() => (actionDispatched = true));
+>>>>>>> 5ea9b0a0fbe229c629dcfb3c24bad4a497658c32
     component.addWorkbasket();
     expect(actionDispatched).toBe(true);
   }));
@@ -84,7 +92,11 @@ describe('WorkbasketListToolbarComponent', () => {
   it('should not dispatch action in addWorkbasket when action is CREATE', async((done) => {
     component.action = ACTION.CREATE;
     let actionDispatched = false;
+<<<<<<< HEAD
     actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => (actionDispatched = true));
+=======
+    zip(actions$.pipe(ofActionDispatched(CreateWorkbasket))).subscribe(() => (actionDispatched = true));
+>>>>>>> 5ea9b0a0fbe229c629dcfb3c24bad4a497658c32
     component.addWorkbasket();
     expect(actionDispatched).toBe(false);
   }));

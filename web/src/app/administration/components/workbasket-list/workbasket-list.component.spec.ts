@@ -2,7 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
+<<<<<<< HEAD
 import { Observable, of } from 'rxjs';
+=======
+import { Observable, of, zip } from 'rxjs';
+>>>>>>> 5ea9b0a0fbe229c629dcfb3c24bad4a497658c32
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -114,7 +118,11 @@ describe('WorkbasketListComponent', () => {
     component.selectedId = undefined;
     fixture.detectChanges();
     let actionDispatched = false;
+<<<<<<< HEAD
     actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
+=======
+    zip(actions$.pipe(ofActionDispatched(SelectWorkbasket))).subscribe(() => (actionDispatched = true));
+>>>>>>> 5ea9b0a0fbe229c629dcfb3c24bad4a497658c32
     component.selectWorkbasket('1');
     expect(actionDispatched).toBe(true);
   }));
@@ -123,7 +131,11 @@ describe('WorkbasketListComponent', () => {
     component.selectedId = '123';
     fixture.detectChanges();
     let actionDispatched = false;
+<<<<<<< HEAD
     actions$.pipe(ofActionDispatched(DeselectWorkbasket)).subscribe(() => (actionDispatched = true));
+=======
+    zip(actions$.pipe(ofActionDispatched(DeselectWorkbasket))).subscribe(() => (actionDispatched = true));
+>>>>>>> 5ea9b0a0fbe229c629dcfb3c24bad4a497658c32
     const mockId = '123';
     component.selectWorkbasket(mockId);
     expect(actionDispatched).toBe(true);
