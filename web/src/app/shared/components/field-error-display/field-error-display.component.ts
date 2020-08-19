@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { highlight } from 'theme/animations/validation.animation';
+import { highlight } from 'app/shared/animations/validation.animation';
 
 @Component({
   selector: 'taskana-shared-field-error-display',

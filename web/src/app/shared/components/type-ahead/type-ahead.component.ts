@@ -13,7 +13,7 @@ import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { highlight } from 'theme/animations/validation.animation';
+import { highlight } from 'app/shared/animations/validation.animation';
 import { mergeMap } from 'rxjs/operators';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 

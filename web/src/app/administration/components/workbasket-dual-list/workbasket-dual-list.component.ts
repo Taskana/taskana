@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
-import { expandDown } from 'theme/animations/expand.animation';
+import { expandDown } from 'app/shared/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 
 @Component({
