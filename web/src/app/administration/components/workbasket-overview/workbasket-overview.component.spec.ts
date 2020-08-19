@@ -97,15 +97,13 @@ describe('WorkbasketOverviewComponent', () => {
   });
 
   it('should display details when params id exists', async((done) => {
-    expect(component.routerParams.id).toBeTruthy();
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => (actionDispatched = true));
+    component.ngOnInit();
+    expect(actionDispatched).toBe(true);
+    expect(component.routerParams.id).toMatch('new-workbasket');
     expect(component.showDetail).toBeTruthy();
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
-    let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => {
-      actionDispatched = true;
-      expect(actionDispatched).toBe(true);
-      done();
-    });
   }));
 });
 
@@ -138,11 +136,9 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
   it('should display details when params id exists', async((done) => {
     expect(component.routerParams.id).toBeTruthy();
     let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => {
-      actionDispatched = true;
-      expect(actionDispatched).toBe(true);
-      done();
-    });
+    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
+    component.ngOnInit();
+    expect(actionDispatched).toBe(true);
   }));
 });
 
