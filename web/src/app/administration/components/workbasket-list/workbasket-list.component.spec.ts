@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListComponent } from './workbasket-list.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, zip } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -111,39 +111,38 @@ describe('WorkbasketListComponent', () => {
   });
 
   it('should dispatch SelectWorkbasket when selecting a workbasket', async((done) => {
-    component.selectWorkbasket('1');
+    component.selectedId = undefined;
+    fixture.detectChanges();
     let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => {
-      actionDispatched = true;
-      expect(actionDispatched).toBe(true);
-      done();
-    });
+    zip(actions$.pipe(ofActionDispatched(SelectWorkbasket))).subscribe(() => (actionDispatched = true));
+    component.selectWorkbasket('1');
+    expect(actionDispatched).toBe(true);
   }));
 
   it('should dispatch DeselectWorkbasket when selecting a workbasket again', async((done) => {
-    component.selectedId = '1';
-    component.selectWorkbasket('1');
+    component.selectedId = '123';
+    fixture.detectChanges();
     let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(DeselectWorkbasket)).subscribe(() => {
-      actionDispatched = true;
-      expect(actionDispatched).toBe(true);
-      done();
-    });
+    zip(actions$.pipe(ofActionDispatched(DeselectWorkbasket))).subscribe(() => (actionDispatched = true));
+    const mockId = '123';
+    component.selectWorkbasket(mockId);
+    expect(actionDispatched).toBe(true);
+    expect(component.selectedId).toEqual(undefined); //because Deselect action sets selectedId to undefined
   }));
 
-  it('performSorting should set sort value', () => {
+  it('should set sort value when performSorting is called', () => {
     const sort = { sortBy: '1', sortDirection: 'asc' };
     component.performSorting(sort);
     expect(component.sort).toMatchObject(sort);
   });
 
-  it('performFilter should set filter value', () => {
+  it('should set filter value when performFilter is called', () => {
     const filter = { filterParams: '123' };
     component.performFilter(filter);
     expect(component.filterBy).toMatchObject(filter);
   });
 
-  it('change page function should change page value', () => {
+  it('should change page value when change page function is called ', () => {
     const page = 2;
     component.changePage(page);
     expect(TaskanaQueryParameters.page).toBe(page);

@@ -79,11 +79,7 @@ describe('WorkbasketOverviewComponent', () => {
   }));
 
   it('should create the component', () => {
-    let activatedRoute = TestBed.inject(ActivatedRoute);
     expect(component).toBeTruthy();
-    activatedRoute.firstChild.params.subscribe((params) => {
-      expect(component.routerParams).toMatchObject(params);
-    });
   });
 
   it('should always displays workbasket-list', () => {
@@ -100,7 +96,7 @@ describe('WorkbasketOverviewComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   });
 
-  it('should display details when params id exists', async(() => {
+  it('should display details when params id exists', async((done) => {
     expect(component.routerParams.id).toBeTruthy();
     expect(component.showDetail).toBeTruthy();
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
@@ -108,6 +104,7 @@ describe('WorkbasketOverviewComponent', () => {
     actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => {
       actionDispatched = true;
       expect(actionDispatched).toBe(true);
+      done();
     });
   }));
 });
@@ -138,12 +135,13 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
     fixture.detectChanges();
   }));
 
-  it('should display details when params id exists', async(() => {
+  it('should display details when params id exists', async((done) => {
     expect(component.routerParams.id).toBeTruthy();
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => {
       actionDispatched = true;
       expect(actionDispatched).toBe(true);
+      done();
     });
   }));
 });

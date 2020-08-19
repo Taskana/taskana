@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, zip } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
@@ -66,6 +66,7 @@ describe('WorkbasketListToolbarComponent', () => {
     store = TestBed.inject(Store);
     actions$ = TestBed.inject(Actions);
     component.action = ACTION.COPY;
+    fixture.detectChanges();
   }));
 
   it('should create the component', () => {
@@ -73,25 +74,19 @@ describe('WorkbasketListToolbarComponent', () => {
   });
 
   it('should dispatch CreateWorkbasket when addWorkbasket is called', async((done) => {
-    component.addWorkbasket();
+    component.action = ACTION.COPY;
     let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => {
-      actionDispatched = true;
-      expect(actionDispatched).toBe(true);
-      done();
-    });
+    zip(actions$.pipe(ofActionDispatched(CreateWorkbasket))).subscribe(() => (actionDispatched = true));
+    component.addWorkbasket();
+    expect(actionDispatched).toBe(true);
   }));
 
-  it('should not do anything in addWorkbasket if action is create ', async((done) => {
+  it('should not dispatch action in addWorkbasket when action is CREATE', async((done) => {
     component.action = ACTION.CREATE;
-    fixture.detectChanges();
-    component.addWorkbasket();
     let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => {
-      actionDispatched = true;
-      expect(actionDispatched).toBe(false);
-      done();
-    });
+    zip(actions$.pipe(ofActionDispatched(CreateWorkbasket))).subscribe(() => (actionDispatched = true));
+    component.addWorkbasket();
+    expect(actionDispatched).toBe(false);
   }));
 
   it('should emit value when sorting is called', (done) => {
