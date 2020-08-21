@@ -186,7 +186,7 @@ describe('AccessItemsManagementComponent', () => {
     });
   }));
 
-  it('should display a dialog in when access is revoked', async(() => {
+  it('should display a dialog when access is revoked', async(() => {
     app.accessIdSelected = '';
     const notificationService = TestBed.inject(NotificationService);
     const showDialogSpy = jest.spyOn(notificationService, 'showDialog').mockImplementation();
