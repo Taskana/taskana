@@ -181,7 +181,7 @@ public class ScheduledJob {
     UPDATETASKSJOB(TaskRefreshJob.class.getName()),
     TASKCLEANUPJOB(TaskCleanupJob.class.getName()),
     WORKBASKETCLEANUPJOB(WorkbasketCleanupJob.class.getName()),
-    HISTORYCLEANUPJOB("pro.taskana.simplehistory.impl.HistoryCleanupJob");
+    HISTORYCLEANUPJOB("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob");
 
     private String clazz;
 
