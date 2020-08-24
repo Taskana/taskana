@@ -16,6 +16,10 @@ import { SelectedRouteService } from '../../../shared/services/selected-route/se
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { selectedWorkbasketMock } from '../../../shared/store/mock-data/mock-store';
+import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
+import { StartupService } from '../../../shared/services/startup/startup.service';
+import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { WindowRefService } from '../../../shared/services/window/window.service';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -79,7 +83,16 @@ describe('WorkbasketDetailsComponent', () => {
         WorkbasketDistributionTargetsStub,
         WorkbasketInformationStub
       ],
-      providers: [DomainService, ImportExportService, WorkbasketService, RequestInProgressService, SelectedRouteService]
+      providers: [
+        DomainService,
+        ImportExportService,
+        WorkbasketService,
+        RequestInProgressService,
+        SelectedRouteService,
+        StartupService,
+        TaskanaEngineService,
+        WindowRefService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkbasketDetailsComponent);

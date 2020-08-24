@@ -31,6 +31,9 @@ import {
   engineConfigurationMock,
   workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
+import { StartupService } from '../../../shared/services/startup/startup.service';
+import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { WindowRefService } from '../../../shared/services/window/window.service';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -119,7 +122,10 @@ describe('WorkbasketInformationComponent', () => {
         RequestInProgressService,
         DomainService,
         SelectedRouteService,
-        ClassificationCategoriesService
+        ClassificationCategoriesService,
+        StartupService,
+        TaskanaEngineService,
+        WindowRefService
       ]
     }).compileComponents();
 
