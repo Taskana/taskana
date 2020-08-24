@@ -3,10 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ACTION } from 'app/shared/models/action';
-import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { Select, Store } from '@ngxs/store';
+import { Select } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { TaskanaDate } from '../../../shared/util/taskana.date';
@@ -20,7 +19,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   workbasket: Workbasket;
   workbasketCopy: Workbasket;
   selectedId: string;
-  showDetail = false;
   requestInProgress = false;
   action: ACTION;
   tabSelected = 'information';
@@ -84,6 +82,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     this.workbasket = emptyWorkbasket;
   }
 
+  backClicked(): void {
+    this.router.navigate(['./'], { relativeTo: this.route.parent });
+  }
+
   selectTab(tab) {
     this.tabSelected = this.action === ACTION.CREATE ? 'information' : tab;
   }
@@ -97,6 +99,12 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     if (!workbasketIdSelected && this.action === ACTION.CREATE) {
       // CREATE
       this.workbasket = {};
+      this.domainService
+        .getSelectedDomain()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((domain) => {
+          this.workbasket.domain = domain;
+        });
       this.requestInProgress = false;
     } else if (!workbasketIdSelected && this.action === ACTION.COPY) {
       // COPY
@@ -107,7 +115,19 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     if (workbasketIdSelected) {
       this.workbasket = selectedWorkbasket;
       this.requestInProgress = false;
+      this.checkDomainAndRedirect();
     }
+  }
+
+  checkDomainAndRedirect() {
+    this.domainService
+      .getSelectedDomain()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((domain) => {
+        if (domain !== '' && this.workbasket && this.workbasket.domain !== domain) {
+          this.backClicked();
+        }
+      });
   }
 
   ngOnDestroy(): void {

@@ -15,7 +15,7 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { selectedWorkbasket } from '../../../shared/store/mock-data/mock-store';
+import { selectedWorkbasketMock } from '../../../shared/store/mock-data/mock-store';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -43,17 +43,17 @@ class WorkbasketDistributionTargetsStub {
 }
 
 export const workbasketCopyState = {
-  selectedWorkbasket,
+  selectedWorkbasket: selectedWorkbasketMock,
   action: ACTION.COPY
 };
 
 export const workbasketCreateState = {
-  selectedWorkbasket,
+  selectedWorkbasket: selectedWorkbasketMock,
   action: ACTION.CREATE
 };
 
 export const workbasketReadState = {
-  selectedWorkbasket,
+  selectedWorkbasket: selectedWorkbasketMock,
   action: ACTION.READ
 };
 describe('WorkbasketDetailsComponent', () => {
@@ -144,7 +144,7 @@ describe('WorkbasketDetailsComponent', () => {
     expect(component.workbasketCopy).toEqual(component.workbasket);
   });
 
-  it('should render copied workbasket when action is READ', () => {
+  it('should render workbasket when action is READ', () => {
     store.reset({
       ...store.snapshot(),
       workbasket: workbasketReadState
@@ -152,7 +152,7 @@ describe('WorkbasketDetailsComponent', () => {
     fixture.detectChanges();
     expect(component.workbasket).not.toBeUndefined();
     expect(component.workbasket).not.toBeNull();
-    expect(component.workbasket).toEqual(selectedWorkbasket);
+    expect(component.workbasket).toEqual(selectedWorkbasketMock);
   });
 
   it('should select information tab when action is CREATE', () => {

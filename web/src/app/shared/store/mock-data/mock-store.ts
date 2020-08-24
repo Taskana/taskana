@@ -50,7 +50,7 @@ export const engineConfigurationMock = {
   language: 'EN'
 };
 
-export const selectedWorkbasket: Workbasket = {
+export const selectedWorkbasketMock: Workbasket = {
   workbasketId: 'WBI:000000000000000000000000000000000902',
   key: 'sOrt003',
   name: 'bAsxet2',
@@ -91,8 +91,8 @@ export const selectedWorkbasket: Workbasket = {
   }
 };
 
-export const workbasketReadState = {
-  selectedWorkbasket,
+export const workbasketReadStateMock = {
+  selectedWorkbasket: selectedWorkbasketMock,
   paginatedWorkbasketsSummary: {
     _links: {
       self: {

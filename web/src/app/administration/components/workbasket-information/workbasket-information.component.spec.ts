@@ -27,9 +27,9 @@ import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-a
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MarkWorkbasketForDeletion, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import {
-  selectedWorkbasket,
+  selectedWorkbasketMock,
   engineConfigurationMock,
-  workbasketReadState
+  workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
@@ -56,7 +56,7 @@ const workbasketServiceMock = jest.fn().mockImplementation(
     triggerWorkBasketSaved: triggerWorkbasketSavedFn,
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
-    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasket }))
+    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
   })
 );
 
@@ -131,9 +131,9 @@ describe('WorkbasketInformationComponent', () => {
     store.reset({
       ...store.snapshot(),
       engineConfiguration: engineConfigurationMock,
-      workbasket: workbasketReadState
+      workbasket: workbasketReadStateMock
     });
-    component.workbasket = selectedWorkbasket;
+    component.workbasket = selectedWorkbasketMock;
 
     fixture.detectChanges();
   }));
@@ -171,14 +171,14 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasket.type).toMatch(type);
   });
 
-  it('should submit if validatorService is true', () => {
+  it('should submit when validatorService is true', () => {
     const formsValidatorService = TestBed.inject(FormsValidatorService);
     component.onSubmit();
     expect(formsValidatorService.formSubmitAttempt).toBe(true);
   });
 
   it('should reset workbasket information when onUndo is called', () => {
-    component.workbasketClone = selectedWorkbasket;
+    component.workbasketClone = selectedWorkbasketMock;
     const notificationService = TestBed.inject(NotificationService);
     const toastSpy = jest.spyOn(notificationService, 'showToast');
     component.onUndo();
@@ -186,8 +186,8 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 
-  it('should save workbasket if workbasketId there', () => {
-    component.workbasket = { ...selectedWorkbasket };
+  it('should save workbasket when workbasketId there', async(() => {
+    component.workbasket = { ...selectedWorkbasketMock };
     component.workbasket.workbasketId = '1';
     component.action = ACTION.COPY;
     let actionDispatched = false;
@@ -195,16 +195,16 @@ describe('WorkbasketInformationComponent', () => {
     component.onSave();
     expect(actionDispatched).toBe(true);
     expect(component.workbasketClone).toMatchObject(component.workbasket);
-  });
+  }));
 
-  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', () => {
+  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', async(() => {
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
     component.onRemoveConfirmed();
     expect(actionDispatched).toBe(true);
-  });
+  }));
 
-  it('should create new workbasket if workbasketId is undefined', () => {
+  it('should create new workbasket when workbasketId is undefined', () => {
     component.workbasket.workbasketId = undefined;
     const postNewWorkbasketSpy = jest.spyOn(component, 'postNewWorkbasket');
     component.onSave();
