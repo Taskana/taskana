@@ -7,14 +7,17 @@ import { Direction } from 'app/shared/models/sorting';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
+import { StartupService } from '../../../shared/services/startup/startup.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskQueryService {
-  private url = environment.taskanaRestUrl;
+  constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
-  constructor(private httpClient: HttpClient) {}
+  get url(): string {
+    return this.startupService.getTaskanaRestUrl();
+  }
 
   queryTask(
     orderBy: string = 'created',

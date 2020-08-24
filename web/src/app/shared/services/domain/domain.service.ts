@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { environment } from '../../../../environments/environment';
 import { RequestInProgressService } from '../request-in-progress/request-in-progress.service';
 import { SelectedRouteService } from '../selected-route/selected-route';
+import { StartupService } from '../startup/startup.service';
 
 @Injectable()
 export class DomainService {
-  url = `${environment.taskanaRestUrl}/v1/domains`;
-
   private domainRestValue: Array<string> = new Array<string>();
   private domainValue: Array<string> = new Array<string>();
   private domainSelectedValue: string;
@@ -21,7 +19,8 @@ export class DomainService {
     private httpClient: HttpClient,
     private router: Router,
     private requestInProgressService: RequestInProgressService,
-    private selectedRouteService: SelectedRouteService
+    private selectedRouteService: SelectedRouteService,
+    private startupService: StartupService
   ) {
     this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       if (value.indexOf('workbaskets') === 0) {
@@ -35,6 +34,11 @@ export class DomainService {
         this.addMasterDomain();
       }
     });
+  }
+
+  // url loads rest url value from startUpService which is a http call to ensure url it is always loaded from environment-information.json
+  get url(): string {
+    return this.startupService.getTaskanaRestUrl() + '/v1/domains';
   }
 
   // GET
