@@ -2,11 +2,6 @@
     <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
     <div id="workbasket-details" *ngIf="workbasket && !requestInProgress">
         <ul class="nav nav-tabs" role="tablist">
-            <li *ngIf="showDetail" class="visible-xs visible-sm hidden">
-                <a (click)="backClicked()">
-                    <span class="material-icons md-20 blue" title="back">arrow_back</span>
-                </a>
-            </li>
             <li role="presentation" (click)="selectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
                 <a aria-controls="work baskets" role="tab" aria-expanded="true">
                     Information</a>

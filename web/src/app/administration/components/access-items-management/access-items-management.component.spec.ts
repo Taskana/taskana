@@ -22,6 +22,7 @@ import { Direction, Sorting } from '../../../shared/models/sorting';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
+import { engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -36,40 +37,6 @@ const notificationServiceSpy = jest.fn().mockImplementation(
     showDialog: showDialogFn
   })
 );
-
-export const engineConfigInitState = {
-  customisation: {
-    EN: {
-      workbaskets: {
-        'access-items': {
-          accessId: {
-            lookupField: true
-          },
-          custom3: {
-            field: '',
-            visible: false
-          },
-          custom9: {
-            field: 'Some custom field',
-            visible: true
-          },
-          custom10: {
-            field: '',
-            visible: false
-          },
-          custom11: {
-            field: '',
-            visible: false
-          },
-          custom12: {
-            field: '',
-            visible: false
-          }
-        }
-      }
-    }
-  }
-};
 
 describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
@@ -126,7 +93,7 @@ describe('AccessItemsManagementComponent', () => {
     actions$ = TestBed.inject(Actions);
     store.reset({
       ...store.snapshot(),
-      engineConfiguration: engineConfigInitState
+      engineConfiguration: engineConfigurationMock
     });
     app.accessIdSelected = '1';
     fixture.detectChanges();
@@ -192,7 +159,7 @@ describe('AccessItemsManagementComponent', () => {
     });
   }));
 
-  it('should display a dialog in when access is revoked', async(() => {
+  it('should display a dialog when access is revoked', async(() => {
     app.accessIdSelected = '';
     const notificationService = TestBed.inject(NotificationService);
     const showDialogSpy = jest.spyOn(notificationService, 'showDialog').mockImplementation();

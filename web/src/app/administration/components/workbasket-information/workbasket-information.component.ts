@@ -1,14 +1,11 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
-
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
-
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
@@ -60,8 +57,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   constructor(
     private workbasketService: WorkbasketService,
-    private route: ActivatedRoute,
-    private router: Router,
     private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formsValidatorService: FormsValidatorService,
@@ -76,6 +71,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
       ['CLEARANCE', 'Clearance'],
       ['TOPIC', 'Topic']
     ]);
+
     this.customFields$ = this.workbasketsCustomisation$.pipe(
       map((customisation) => customisation.information),
       getCustomFields(customFieldCount)
@@ -93,7 +89,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     };
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes?: SimpleChanges) {
     this.workbasketClone = { ...this.workbasket };
     if (this.action === ACTION.CREATE) {
       this.badgeMessage = 'Creating new workbasket';
@@ -140,28 +136,28 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     this.store.dispatch(new RemoveDistributionTarget(this.workbasket._links.removeDistributionTargets.href));
   }
 
-  private onSave() {
+  onSave() {
     this.beforeRequest();
     if (!this.workbasket.workbasketId) {
       this.postNewWorkbasket();
       return;
     }
-    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe((state) => {
+    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe(() => {
       this.requestInProgressService.setRequestInProgress(false);
       this.workbasketClone = { ...this.workbasket };
     });
   }
 
-  private beforeRequest() {
+  beforeRequest() {
     this.requestInProgressService.setRequestInProgress(true);
   }
 
-  private afterRequest() {
+  afterRequest() {
     this.requestInProgressService.setRequestInProgress(false);
     this.workbasketService.triggerWorkBasketSaved();
   }
 
-  private postNewWorkbasket() {
+  postNewWorkbasket() {
     this.addDateToWorkbasket();
     this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(() => {
       this.afterRequest();
@@ -176,13 +172,13 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     });
   }
 
-  private addDateToWorkbasket() {
+  addDateToWorkbasket() {
     const date = TaskanaDate.getDate();
     this.workbasket.created = date;
     this.workbasket.modified = date;
   }
 
-  private onRemoveConfirmed() {
+  onRemoveConfirmed() {
     this.beforeRequest();
     this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href)).subscribe(() => {
       this.afterRequest();
