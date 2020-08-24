@@ -20,6 +20,9 @@ import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Direction, Sorting } from '../../../shared/models/sorting';
 import { engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
+import { StartupService } from '../../../shared/services/startup/startup.service';
+import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { WindowRefService } from '../../../shared/services/window/window.service';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -76,7 +79,10 @@ describe('AccessItemsManagementComponent', () => {
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
         RequestInProgressService,
-        ClassificationCategoriesService
+        ClassificationCategoriesService,
+        StartupService,
+        TaskanaEngineService,
+        WindowRefService
       ]
     }).compileComponents();
 
