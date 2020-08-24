@@ -2,22 +2,24 @@ import { Task } from 'app/workplace/models/task';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'environments/environment';
 import { TaskResource } from 'app/workplace/models/task-resource';
 import { Direction } from 'app/shared/models/sorting';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { QueryParameters } from 'app/shared/models/query-parameters';
+import { StartupService } from '../../shared/services/startup/startup.service';
 
 @Injectable()
 export class TaskService {
-  url = `${environment.taskanaRestUrl}/v1/tasks`;
-
   private taskChangedSource = new Subject<Task>();
   taskChangedStream = this.taskChangedSource.asObservable();
   private taskSelectedSource = new Subject<Task>();
   taskSelectedStream = this.taskSelectedSource.asObservable();
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private startupService: StartupService) {}
+
+  get url(): string {
+    return this.startupService.getTaskanaRestUrl() + '/v1/tasks';
+  }
 
   publishUpdatedTask(task?: Task) {
     this.taskChangedSource.next(task);
