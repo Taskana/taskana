@@ -7,13 +7,17 @@ import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-work
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Sorting } from 'app/shared/models/sorting';
 import { QueryParameters } from 'app/shared/models/query-parameters';
+import { StartupService } from '../startup/startup.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccessIdsService {
-  private url = `${environment.taskanaRestUrl}/v1/access-ids`;
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private startupService: StartupService) {}
+
+  get url(): string {
+    return this.startupService.getTaskanaRestUrl() + '/v1/access-ids';
+  }
 
   searchForAccessId(accessId: string): Observable<AccessIdDefinition[]> {
     if (!accessId || accessId.length < 3) {

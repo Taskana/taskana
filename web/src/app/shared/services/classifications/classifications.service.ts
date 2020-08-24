@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'environments/environment';
-import { Observable, Subject } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { mergeMap, tap } from 'rxjs/operators';
 
 import { Classification } from 'app/shared/models/classification';
 
@@ -11,14 +10,22 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Direction } from 'app/shared/models/sorting';
 import { QueryParameters } from 'app/shared/models/query-parameters';
+import { StartupService } from '../startup/startup.service';
 
 @Injectable()
 export class ClassificationsService {
-  private url = `${environment.taskanaRestUrl}/v1/classifications/`;
   private classificationResourcePromise: Promise<ClassificationPagingList>;
   private lastDomain: string;
 
-  constructor(private httpClient: HttpClient, private domainService: DomainService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private domainService: DomainService,
+    private startupService: StartupService
+  ) {}
+
+  get url(): string {
+    return this.startupService.getTaskanaRestUrl() + '/v1/classifications/';
+  }
 
   private static classificationParameters(domain: string, type?: string): QueryParameters {
     const parameters = new QueryParameters();

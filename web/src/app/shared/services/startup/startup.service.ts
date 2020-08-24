@@ -43,6 +43,14 @@ export class StartupService {
       .catch(() => of(true));
   }
 
+  getTaskanaRestUrl() {
+    return environment.taskanaRestUrl;
+  }
+
+  getTaskanaLogoutUrl() {
+    return environment.taskanaLogoutUrl;
+  }
+
   private loadEnvironment() {
     return this.getEnvironmentFilePromise()
       .then(() => this.taskanaEngineService.getUserInformation())
