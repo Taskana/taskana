@@ -36,6 +36,7 @@ export class DomainService {
     });
   }
 
+  // url loads rest url value from startUpService which is a http call to ensure url it is always loaded from environment-information.json
   get url(): string {
     return this.startupService.getTaskanaRestUrl() + '/v1/domains';
   }
