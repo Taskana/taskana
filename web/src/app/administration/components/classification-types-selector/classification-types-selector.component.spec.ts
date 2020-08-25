@@ -8,14 +8,7 @@ import { ClassificationsService } from '../../../shared/services/classifications
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { MatRippleModule } from '@angular/material/core';
-
-export const classificationInitState = {
-  selectedClassificationType: 'Document',
-  classificationTypes: {
-    TASK: [],
-    DOCUMENT: []
-  }
-};
+import { classificationStateMock } from '../../../shared/store/mock-data/mock-store';
 
 const classificationServiceSpy = jest.fn();
 const classificationCategoriesServiceSpy = jest.fn();
@@ -44,7 +37,7 @@ describe('ClassificationTypesSelectorComponent', () => {
     store = TestBed.inject(Store);
     store.reset({
       ...store.snapshot(),
-      classification: classificationInitState
+      classification: classificationStateMock
     });
     fixture.detectChanges();
   }));
@@ -55,7 +48,7 @@ describe('ClassificationTypesSelectorComponent', () => {
 
   it('should display selected classification type', () => {
     const button = fixture.debugElement.nativeElement.getElementsByClassName('selected-type');
-    expect(button[0].textContent.trim()).toBe('Document');
+    expect(button[0].textContent.trim()).toBe('DOCUMENT');
   });
 
   it('should display list of classification types', () => {
