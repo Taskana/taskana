@@ -9,7 +9,8 @@ module.exports = {
   testMatch: ['**/+(*.)+(spec).+(ts)'],
   setupFilesAfterEnv: ['<rootDir>/src/test.ts'],
   collectCoverage: true,
-  coverageReporters: ['html', 'text'],
+  coverageReporters: ['text'],
+  // coverageReporters: ['html', 'text'],
   coverageDirectory: 'coverage/taskana-web',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
     prefix: '<rootDir>/'
