@@ -2,6 +2,14 @@ import { Workbasket } from '../../models/workbasket';
 import { ICONTYPES } from '../../models/icon-types';
 import { ACTION } from '../../models/action';
 
+export const classificationStateMock = {
+  selectedClassificationType: 'DOCUMENT',
+  classificationTypes: {
+    TASK: [],
+    DOCUMENT: []
+  }
+};
+
 export const engineConfigurationMock = {
   customisation: {
     EN: {
