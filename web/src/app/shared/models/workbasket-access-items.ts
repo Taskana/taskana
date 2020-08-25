@@ -23,7 +23,7 @@ export interface WorkbasketAccessItems {
   permCustom10: boolean;
   permCustom11: boolean;
   permCustom12: boolean;
-  _links: Links;
+  _links?: Links;
 }
 
 export const customFieldCount: number = 12;
