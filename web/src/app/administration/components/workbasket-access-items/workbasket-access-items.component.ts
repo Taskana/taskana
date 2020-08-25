@@ -78,7 +78,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   accessItemsRepresentation$: Observable<WorkbasketAccessItemsRepresentation>;
 
   constructor(
-    private workbasketService: WorkbasketService,
     private savingWorkbaskets: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formBuilder: FormBuilder,

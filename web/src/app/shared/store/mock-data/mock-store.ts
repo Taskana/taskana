@@ -1,6 +1,7 @@
 import { Workbasket } from '../../models/workbasket';
 import { ICONTYPES } from '../../models/icon-types';
 import { ACTION } from '../../models/action';
+import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 
 export const classificationStateMock = {
   selectedClassificationType: 'DOCUMENT',
@@ -52,6 +53,32 @@ export const engineConfigurationMock = {
             visible: false
           }
         }
+      },
+      classifications: {
+        information: {
+          custom1: {
+            field: 'Classification custom 1',
+            visible: true
+          },
+          custom3: {
+            field: '',
+            visible: false
+          }
+        },
+        categories: {
+          EXTERNAL: 'assets/icons/categories/external.svg',
+          MANUAL: 'assets/icons/categories/manual.svg',
+          AUTOMATIC: 'assets/icons/categories/automatic.svg',
+          PROCESS: 'assets/icons/categories/process.svg',
+          missing: 'assets/icons/categories/missing-icon.svg'
+        }
+      },
+      tasks: {
+        information: {
+          owner: {
+            lookupField: true
+          }
+        }
       }
     }
   },
@@ -95,6 +122,44 @@ export const selectedWorkbasketMock: Workbasket = {
     removeDistributionTargets: {
       href:
         'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
+    }
+  }
+};
+
+export const workbasketAccessItemsMock: WorkbasketAccessItemsRepresentation = {
+  accessItems: [
+    {
+      accessItemId: 'WBI:000000000000000000000000000000000901',
+      workbasketId: 'WBI:000000000000000000000000000000000901',
+      workbasketKey: 'Sort002',
+      accessId: 'user-b-1',
+      accessName: 'Bern, Bernd',
+      permRead: true,
+      permOpen: true,
+      permAppend: true,
+      permTransfer: true,
+      permDistribute: true,
+      permCustom1: true,
+      permCustom2: true,
+      permCustom3: true,
+      permCustom4: true,
+      permCustom5: true,
+      permCustom6: true,
+      permCustom7: true,
+      permCustom8: true,
+      permCustom9: true,
+      permCustom10: true,
+      permCustom11: true,
+      permCustom12: true
+    }
+  ],
+  _links: {
+    self: {
+      href:
+        'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000901/workbasketAccessItems'
+    },
+    workbasket: {
+      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000901'
     }
   }
 };
@@ -219,5 +284,6 @@ export const workbasketReadStateMock = {
       number: 3
     }
   },
-  action: ACTION.READ
+  action: ACTION.READ,
+  workbasketAccessItems: workbasketAccessItemsMock
 };
