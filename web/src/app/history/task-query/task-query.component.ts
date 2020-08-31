@@ -207,10 +207,10 @@ export class TaskQueryComponent implements OnInit {
   }
 
   private initTaskQueryForm() {
-    const me = this;
     Object.keys(new TaskHistoryEventData()).forEach((key) => {
-      me.taskQueryForm.addControl(key, new FormControl());
+      this.taskQueryForm.addControl(key, new FormControl());
     });
+    this.performRequest();
   }
 
   private calculateQueryPages() {
