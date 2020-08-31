@@ -32,10 +32,10 @@ import pro.taskana.task.rest.models.TaskRepresentationModel;
  * to change data source configuration at project-defaults.yml.
  */
 @RunWith(Arquillian.class)
-public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabled extends AbstractAccTest {
+public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabledTest extends AbstractAccTest {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabled.class);
+      LoggerFactory.getLogger(TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabledTest.class);
 
   @Deployment(testable = false)
   public static Archive<?> createTestArchive() {
@@ -51,7 +51,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabled extends Abst
 
     MavenCoordinate simpleHistoryCoordinate =
         MavenCoordinates.createCoordinate(
-            "pro.taskana.simplehistory",
+            "pro.taskana.history",
             "taskana-simplehistory-rest-spring",
             DEPENDENCY_VERSION,
             PackagingType.JAR,
@@ -62,7 +62,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabled extends Abst
 
     MavenCoordinate historyLoggerCoordinate =
         MavenCoordinates.createCoordinate(
-            "pro.taskana.simplehistory",
+            "pro.taskana.history",
             "taskana-loghistory-provider",
             DEPENDENCY_VERSION,
             PackagingType.JAR,
@@ -99,7 +99,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabled extends Abst
         performGetHistoryEventsRestCall();
     assertThat(getHistoryEventsResponse.getBody()).isNotNull();
     assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(getHistoryEventsResponse.getBody().getContent()).isEmpty();
+    assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(45);
 
     ResponseEntity<TaskRepresentationModel> responseCreateTask = performCreateTaskRestCall();
     assertThat(responseCreateTask.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -109,7 +109,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabled extends Abst
 
     assertThat(getHistoryEventsResponse.getBody()).isNotNull();
     assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(1);
+    assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(46);
 
     String log = parseServerLog();
 
