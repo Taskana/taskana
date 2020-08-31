@@ -3,7 +3,6 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.util.IterableUtil.toArray;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
@@ -63,6 +62,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
     Instant due = moveBackToWorkingDay(Instant.now().plus(40, ChronoUnit.DAYS));
+    due = due.truncatedTo(ChronoUnit.MICROS);
     newTask.setDue(due);
     Task createdTask = taskService.createTask(newTask);
     assertThat(createdTask.getId()).isNotNull();
@@ -91,6 +91,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
     Instant planned = moveForwardToWorkingDay(Instant.now());
+    planned = planned.truncatedTo(ChronoUnit.MICROS);
     newTask.setPlanned(planned);
     Task createdTask = taskService.createTask(newTask);
     assertThat(createdTask.getId()).isNotNull();
@@ -151,6 +152,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     Instant planned = moveForwardToWorkingDay(Instant.now().plus(2, ChronoUnit.HOURS));
+    planned = planned.truncatedTo(ChronoUnit.MICROS);
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -338,7 +340,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap())
         .hasSize(3)
-        .containsKeys(toArray(taskIds))
+        .containsKeys(tkId1, tkId2, tkId3, tkId4)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfType(NotAuthorizedException.class);
   }

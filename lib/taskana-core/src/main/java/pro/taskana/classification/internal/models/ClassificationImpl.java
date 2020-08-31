@@ -1,6 +1,7 @@
 package pro.taskana.classification.internal.models;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import pro.taskana.classification.api.ClassificationCustomField;
@@ -58,7 +59,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   }
 
   public void setCreated(Instant created) {
-    this.created = created;
+    this.created = created!=null?created.truncatedTo(ChronoUnit.MICROS):null;
   }
 
   @Override
@@ -67,7 +68,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   }
 
   public void setModified(Instant modified) {
-    this.modified = modified;
+    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MICROS) : null;
   }
 
   @Override

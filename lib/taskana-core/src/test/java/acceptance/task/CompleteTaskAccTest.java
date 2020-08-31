@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -556,7 +557,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MICROS);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);

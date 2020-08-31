@@ -1,6 +1,7 @@
 package pro.taskana.task.internal.models;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -135,7 +136,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setCreated(Instant created) {
-    this.created = created;
+    this.created = created != null ? created.truncatedTo(ChronoUnit.MICROS) : null;
   }
 
   @Override
@@ -144,7 +145,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setClaimed(Instant claimed) {
-    this.claimed = claimed;
+    this.claimed = claimed != null ? claimed.truncatedTo(ChronoUnit.MICROS) : null;
   }
 
   @Override
@@ -153,7 +154,8 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setCompleted(Instant completed) {
-    this.completed = completed;
+    this.completed = completed != null ? completed.truncatedTo(ChronoUnit.MICROS) : null;
+    ;
   }
 
   @Override
@@ -162,7 +164,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setModified(Instant modified) {
-    this.modified = modified;
+    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MICROS) : null;
   }
 
   @Override
@@ -171,7 +173,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setPlanned(Instant planned) {
-    this.planned = planned;
+    this.planned = planned != null ? planned.truncatedTo(ChronoUnit.MICROS) : null;
   }
 
   @Override
@@ -180,7 +182,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setDue(Instant due) {
-    this.due = due;
+    this.due = due != null ? due.truncatedTo(ChronoUnit.MICROS) : null;
   }
 
   @Override

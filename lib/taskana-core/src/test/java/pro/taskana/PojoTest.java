@@ -24,6 +24,11 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
+import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+
 /** check classes with a custom equals and hashcode implementation for correctness. */
 class PojoTest {
 
@@ -72,6 +77,12 @@ class PojoTest {
   @TestFactory
   Stream<DynamicTest> validateGetAndSet() {
     return pojoClasses.stream()
+        .filter(
+            clazz ->
+                clazz.isInstance(ClassificationImpl.class)
+                    || clazz.isInstance(TaskSummaryImpl.class)
+                    || clazz.isInstance(WorkbasketImpl.class)
+                    || clazz.isInstance(ScheduledJob.class))
         .map(
             cl ->
                 DynamicTest.dynamicTest(
