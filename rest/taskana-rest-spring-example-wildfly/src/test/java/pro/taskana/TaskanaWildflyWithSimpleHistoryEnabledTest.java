@@ -20,16 +20,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
+import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /**
  * This test class is configured to run with postgres DB if you want to run it with h2 it is needed.
  * to change data source configuration at project-defaults.yml.
  */
 @RunWith(Arquillian.class)
-public class TaskanaWildflyWithHistoryLoggerEnabled extends AbstractAccTest {
+public class TaskanaWildflyWithSimpleHistoryEnabledTest extends AbstractAccTest {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(TaskanaWildflyWithHistoryLoggerEnabled.class);
+      LoggerFactory.getLogger(TaskanaWildflyWithSimpleHistoryEnabledTest.class);
 
   @Deployment(testable = false)
   public static Archive<?> createTestArchive() {
@@ -43,22 +49,22 @@ public class TaskanaWildflyWithHistoryLoggerEnabled extends AbstractAccTest {
     LOGGER.info(
         "Running with db.type '{}' and using property file '{}'", dbType, applicationPropertyFile);
 
-    MavenCoordinate historyLoggerCoordinate =
+    MavenCoordinate simpleHistoryCoordinate =
         MavenCoordinates.createCoordinate(
-            "pro.taskana.simplehistory",
-            "taskana-loghistory-provider",
+            "pro.taskana.history",
+            "taskana-simplehistory-rest-spring",
             DEPENDENCY_VERSION,
             PackagingType.JAR,
             null);
 
-    MavenDependency historyLoggerDependency =
-        new MavenDependencyImpl(historyLoggerCoordinate, ScopeType.TEST, false);
+    MavenDependency simpleHistoryDependency =
+        new MavenDependencyImpl(simpleHistoryCoordinate, ScopeType.TEST, false);
 
     File[] files =
         Maven.resolver()
             .loadPomFromFile("pom.xml")
             .importRuntimeDependencies()
-            .addDependency(historyLoggerDependency)
+            .addDependency(simpleHistoryDependency)
             .resolve()
             .withTransitivity()
             .asFile();
@@ -75,10 +81,23 @@ public class TaskanaWildflyWithHistoryLoggerEnabled extends AbstractAccTest {
 
   @Test
   @RunAsClient
-  public void should_WriteHistoryEventIntoDatabase_And_LogEventToFile() throws Exception {
+  public void should_WriteHistoryEventIntoDatabase() {
 
-    String log = parseServerLog();
+    ResponseEntity<TaskHistoryEventListResource> getHistoryEventsResponse =
+        performGetHistoryEventsRestCall();
+    assertThat(getHistoryEventsResponse.getBody()).isNotNull();
+    assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(45);
 
-    assertThat(log).contains("AUDIT");
+    ResponseEntity<TaskRepresentationModel> responseCreateTask = performCreateTaskRestCall();
+    assertThat(responseCreateTask.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(responseCreateTask.getBody()).isNotNull();
+
+    getHistoryEventsResponse = performGetHistoryEventsRestCall();
+
+    assertThat(getHistoryEventsResponse.getBody()).isNotNull();
+    assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(46);
   }
+
 }
