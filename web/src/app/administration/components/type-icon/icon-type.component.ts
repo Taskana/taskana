@@ -6,7 +6,7 @@ import { ICONTYPES } from 'app/shared/models/icon-types';
   templateUrl: './icon-type.component.html',
   styleUrls: ['./icon-type.component.scss']
 })
-export class IconTypeComponent implements OnInit {
+export class IconTypeComponent {
   @Input()
   type: ICONTYPES = ICONTYPES.ALL;
 
@@ -27,8 +27,6 @@ export class IconTypeComponent implements OnInit {
       ['TOPIC', 'Topic']
     ]);
   }
-
-  ngOnInit() {}
 
   getIconPath(type: string) {
     switch (type) {
