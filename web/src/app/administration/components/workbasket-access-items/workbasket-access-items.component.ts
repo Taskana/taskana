@@ -110,7 +110,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes?: SimpleChanges) {
     if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
       this.init();
     }
@@ -124,7 +124,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     }
   }
 
-  private init() {
+  init() {
     if (!this.workbasket._links.accessItems) {
       return;
     }
@@ -242,7 +242,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem.name);
   }
 
-  private onSave() {
+  onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     this.store
       .dispatch(
@@ -256,19 +256,19 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       });
   }
 
-  private setBadge() {
+  setBadge() {
     if (this.action === ACTION.COPY) {
       this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
     }
   }
 
-  private cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems> {
+  cloneAccessItems(inputaccessItem): Array<WorkbasketAccessItems> {
     return this.AccessItemsForm.value.accessItemsGroups.map((accessItems: WorkbasketAccessItems) => ({
       ...accessItems
     }));
   }
 
-  private setWorkbasketIdForCopy(workbasketId: string) {
+  setWorkbasketIdForCopy(workbasketId: string) {
     this.accessItemsGroups.value.forEach((element) => {
       delete element.accessItemId;
       element.workbasketId = workbasketId;
