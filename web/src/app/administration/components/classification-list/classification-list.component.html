@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="col-xs-6 btn-group">
 
-				<button class="btn btn-default" type="button" (click)="addClassification()" data-toggle="tooltip" title="Add">
+				<button class="btn btn-default add-classification-button" type="button" (click)="addClassification()" data-toggle="tooltip" title="Add">
 					<span class="material-icons md-20 green-blue">add_circle_outline</span>
 				</button>
 
@@ -25,20 +25,20 @@
 	<div class="col-xs-2 category-filter">
 		<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdown-classification-filter" data-toggle="dropdown"
 		 aria-haspopup="true" aria-expanded="true">
-			<svg-icon class="blue" *ngIf="selectedCategory else category_unselected" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
+			<svg-icon class="blue selected-category" *ngIf="selectedCategory else category_unselected" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
 			 data-toggle="tooltip"></svg-icon>
 			<ng-template #category_unselected>
-				<svg-icon data-toggle="tooltip" title="All" class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
+				<svg-icon data-toggle="tooltip" title="All" class="blue no-selected-category" src="./assets/icons/asterisk.svg"></svg-icon>
 			</ng-template>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
 			<li>
-				<a type="button" (click)="selectCategory('');" data-toggle="tooltip">
+				<a class="category-all" type="button" (click)="selectCategory('');" data-toggle="tooltip">
 					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
 					All
 				</a>
-				<a *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip">
-					<svg-icon class="blue" [src]="(getCategoryIcon(category) | async)?.name" data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+				<a class="category-list" *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip">
+					<svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
 					{{category}}
 				</a>
 			</li>
@@ -55,7 +55,7 @@
 	<taskana-administration-tree class="col-xs-12" *ngIf="(classifications && classifications.length) else empty_classifications"
                                  [filterText]="inputValue" [filterIcon]="selectedCategory" (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>
 	<ng-template #empty_classifications>
-		<div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
+		<div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block no-classifications">
 			<h3 class="grey">There are no classifications</h3>
 			<svg-icon class="img-responsive empty-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
 		</div>
