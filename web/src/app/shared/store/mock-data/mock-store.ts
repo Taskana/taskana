@@ -14,14 +14,6 @@ export const classificationStateMock = {
 export const engineConfigurationMock = {
   customisation: {
     EN: {
-      classifications: {
-        categories: {
-          EXTERNAL: 'assets/icons/categories/external.svg',
-          MANUAL: 'assets/icons/categories/manual.svg',
-          AUTOMATIC: 'assets/icons/categories/automatic.svg',
-          missing: 'assets/icons/categories/missing-icon.svg'
-        }
-      },
       workbaskets: {
         information: {
           owner: {
