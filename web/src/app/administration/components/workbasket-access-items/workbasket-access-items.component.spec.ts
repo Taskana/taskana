@@ -169,9 +169,10 @@ describe('WorkbasketAccessItemsComponent', () => {
   it('should check all permissions when check all box is checked', () => {
     const checkAllSpy = jest.spyOn(component, 'checkAll');
     const checkAllButton = debugElement.nativeElement.querySelector('#checkbox-0-00');
+    expect(checkAllButton).toBeTruthy();
+
     checkAllButton.click();
     expect(checkAllSpy).toHaveBeenCalled();
-    expect(checkAllButton).toBeTruthy();
   });
 
   it('should dispatch UpdateWorkbasketAccessItems action when save button is triggered', () => {
