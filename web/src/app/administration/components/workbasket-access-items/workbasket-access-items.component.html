@@ -6,7 +6,7 @@
 			<button type="button" (click)="onSubmit()" [disabled]="action === 'COPY'" data-toggle="tooltip" title="Save" class="btn btn-default btn-primary">
 				<span class="material-icons md-20">save</span>
 			</button>
-			<button type="button" (click)="clear()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default">
+			<button type="button" (click)="clear()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default undo-button">
 				<span class="material-icons md-20 blue">undo</span>
 			</button>
 		</div>
@@ -115,7 +115,7 @@
 		</form>
 
 		<!-- ADD ACCESS ITEM -->
-		<button type="button" (click)="addAccessItem()" data-toggle="tooltip" title="Add new access" class="btn btn-default">
+		<button type="button" (click)="addAccessItem()" data-toggle="tooltip" title="Add new access" class="btn btn-default add-access-item">
 			<span class="material-icons md-20 green-blue">add</span>
 			<span>Add new access</span>
 		</button>
