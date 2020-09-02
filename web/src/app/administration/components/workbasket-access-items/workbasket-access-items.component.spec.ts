@@ -131,7 +131,7 @@ describe('WorkbasketAccessItemsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize when accessItems exist', async((done) => {
+  it('should initialize when accessItems exist', async(() => {
     component.action = ACTION.COPY;
     let actionDispatched = false;
     component.onSave = jest.fn().mockImplementation();
@@ -151,16 +151,18 @@ describe('WorkbasketAccessItemsComponent', () => {
   it('should add accessItems when add access item button is clicked', () => {
     const addAccessItemButton = debugElement.nativeElement.querySelector('button.add-access-item');
     const clearSpy = jest.spyOn(component, 'addAccessItem');
-    addAccessItemButton.click();
     expect(addAccessItemButton.title).toMatch('Add new access');
+
+    addAccessItemButton.click();
     expect(clearSpy).toHaveBeenCalled();
   });
 
   it('should undo changes when undo button is clicked', () => {
     const undoButton = debugElement.nativeElement.querySelector('button.undo-button');
     const clearSpy = jest.spyOn(component, 'clear');
-    undoButton.click();
     expect(undoButton.title).toMatch('Undo Changes');
+
+    undoButton.click();
     expect(clearSpy).toHaveBeenCalled();
   });
 
