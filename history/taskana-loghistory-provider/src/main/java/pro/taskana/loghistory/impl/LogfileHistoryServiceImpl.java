@@ -80,7 +80,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
   }
 
   private Properties readPropertiesFromFile(String propertiesFile) {
-    java.util.Properties props = new Properties();
+    Properties props = new Properties();
     boolean loadFromClasspath = loadFromClasspath(propertiesFile);
     try {
       if (loadFromClasspath) {
@@ -93,7 +93,9 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
           LOGGER.debug("properties were loaded from file {} from classpath.", propertiesFile);
         }
       } else {
-        props.load(new FileInputStream(propertiesFile));
+        try (FileInputStream stream = new FileInputStream(propertiesFile)) {
+          props.load(stream);
+        }
         LOGGER.debug("properties were loaded from file {}.", propertiesFile);
       }
     } catch (IOException e) {

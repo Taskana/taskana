@@ -293,7 +293,6 @@ public class TaskanaEngineConfiguration {
     return roleMap;
   }
 
-  @SuppressWarnings("unused")
   public void setRoleMap(Map<TaskanaRole, Set<String>> roleMap) {
     this.roleMap = roleMap;
   }
@@ -589,7 +588,9 @@ public class TaskanaEngineConfiguration {
           LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
         }
       } else {
-        props.load(new FileInputStream(propertiesFile));
+        try (FileInputStream stream = new FileInputStream(propertiesFile)) {
+          props.load(stream);
+        }
         LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
       }
     } catch (IOException e) {

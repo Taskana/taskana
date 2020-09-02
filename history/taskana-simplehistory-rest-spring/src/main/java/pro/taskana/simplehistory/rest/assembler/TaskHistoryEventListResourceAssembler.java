@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
@@ -67,7 +68,8 @@ public class TaskHistoryEventListResourceAssembler {
 
   private UriComponentsBuilder getBaseUri() {
     HttpServletRequest request =
-        ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        ((ServletRequestAttributes) Objects.requireNonNull(
+            RequestContextHolder.getRequestAttributes())).getRequest();
     UriComponentsBuilder baseUri =
         ServletUriComponentsBuilder.fromServletMapping(request).path(request.getRequestURI());
 
