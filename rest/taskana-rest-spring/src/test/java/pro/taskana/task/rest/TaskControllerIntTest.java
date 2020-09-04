@@ -244,7 +244,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValu4c() {
+  void should_ThrowException_When_ProvidingInvalidFormatForCustomAttributes() {
     TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
 
     List<CustomAttribute> customAttributesWithNullKey = new ArrayList<>();
