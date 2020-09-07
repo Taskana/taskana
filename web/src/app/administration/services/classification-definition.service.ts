@@ -4,6 +4,8 @@ import { TaskanaDate } from 'app/shared/util/taskana.date';
 import { BlobGenerator } from 'app/shared/util/blob-generator';
 import { Classification } from '../../shared/models/classification';
 import { StartupService } from '../../shared/services/startup/startup.service';
+import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ClassificationDefinitionService {
@@ -14,9 +16,12 @@ export class ClassificationDefinitionService {
   }
 
   // GET
-  async exportClassifications(domain: string) {
+  exportClassifications(domain: string): Observable<Classification[]> {
     const domainRequest = domain ? '' : `?domain=${domain}`;
-    const classificationDefinitions = await this.httpClient.get<Classification[]>(this.url + domainRequest).toPromise();
-    BlobGenerator.saveFile(classificationDefinitions, `Classifications_${TaskanaDate.getDate()}.json`);
+    const classificationDefObservable = this.httpClient.get<Classification[]>(this.url + domainRequest).pipe(take(1));
+    classificationDefObservable.subscribe((classificationDefinitions) =>
+      BlobGenerator.saveFile(classificationDefinitions, `Classifications_${TaskanaDate.getDate()}.json`)
+    );
+    return classificationDefObservable;
   }
 }

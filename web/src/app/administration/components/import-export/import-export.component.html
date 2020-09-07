@@ -1,5 +1,5 @@
 
-<button type="button" [ngClass]="{disabled: uploadservice?.isInUse}" (click)="selectedFile.click()" data-toggle="tooltip" title="Import" class="btn btn-default">
+<button type="button" [ngClass]="{disabled: uploadService?.isInUse}" (click)="selectedFile.click()" data-toggle="tooltip" title="Import" class="btn btn-default">
   <span class="material-icons md-20 green-blue">cloud_upload</span>
 </button>
 <form class="hidden" id="upload_form" enctype="multipart/form-data" method="post">
@@ -18,6 +18,6 @@
     </a>
   </li>
 </ul>
-<button [ngClass]="{disabled: uploadservice?.isInUse}" type="button" data-toggle="dropdown" title="Export" class="btn btn-default">
+<button [ngClass]="{disabled: uploadService?.isInUse}" type="button" data-toggle="dropdown" title="Export" class="btn btn-default">
   <span class="material-icons md-20 red">cloud_download</span>
 </button>
