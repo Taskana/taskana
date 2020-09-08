@@ -4,11 +4,14 @@ import { ACTION } from '../../models/action';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 
 export const classificationStateMock = {
+  classifications: [],
+  selectedClassification: { classificationId: 'ID01', key: 'KEY01', name: 'Recommendation' },
   selectedClassificationType: 'DOCUMENT',
   classificationTypes: {
     TASK: [],
     DOCUMENT: ['EXTERNAL', 'MANUAL', 'AUTOMATIC']
-  }
+  },
+  badgeMessage: 'Creating new classification'
 };
 
 export const engineConfigurationMock = {

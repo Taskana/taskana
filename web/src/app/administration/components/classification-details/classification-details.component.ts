@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { combineLatest, Observable, Subject, Subscription, timer } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { highlight } from 'app/shared/animations/validation.animation';
 
@@ -8,7 +8,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Pair } from 'app/shared/models/pair';
-import { NgForm, NgModel } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { map, take, takeUntil } from 'rxjs/operators';
@@ -94,13 +94,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     };
   }
 
-  removeClassification() {
-    this.notificationsService.showDialog(
-      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`,
-      this.removeClassificationConfirmation.bind(this)
-    );
-  }
-
   isFieldValid(field: string): boolean {
     return this.formsValidatorService.isFieldValid(this.classificationForm, field);
   }
@@ -171,12 +164,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private async onSave() {
+  async onSave() {
     this.requestInProgressService.setRequestInProgress(true);
     if (typeof this.classification.classificationId === 'undefined') {
       this.store
@@ -222,11 +210,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private afterRequest() {
-    this.requestInProgressService.setRequestInProgress(false);
+  onRemoveClassification() {
+    this.notificationsService.showDialog(
+      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`,
+      this.removeClassificationConfirmation.bind(this)
+    );
   }
 
-  private removeClassificationConfirmation() {
+  removeClassificationConfirmation() {
     if (!this.classification || !this.classification.classificationId) {
       this.notificationsService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
       return;
@@ -244,5 +235,14 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
         this.afterRequest();
       });
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
+  }
+
+  private afterRequest() {
+    this.requestInProgressService.setRequestInProgress(false);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
