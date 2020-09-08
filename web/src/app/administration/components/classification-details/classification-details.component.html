@@ -6,7 +6,7 @@
 
       <!-- TITLE + ACTION BUTTONS -->
       <div class="panel-heading">
-        <div class="pull-right btn-group">
+        <div class="pull-right btn-group classification__menu-bar">
           <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary"
                   data-toggle="tooltip" title="Save">
             <span class="material-icons md-20">save</span>
@@ -19,18 +19,18 @@
                   class="btn btn-default" id="copyButton">
             <span class="material-icons md-20 green-blue">content_copy</span>
           </button>
-          <button type="button" (click)="removeClassification()" data-toggle="tooltip"
+          <button type="button" (click)="onRemoveClassification()" data-toggle="tooltip"
                   title="Delete" class="btn btn-default">
             <span class="material-icons md-20 red">delete</span>
           </button>
         </div>
-        <h4 class="panel-header">{{classification.name}}&nbsp; [{{classification.type}}]
+        <h4 class="panel-header classification__headline">{{classification.name}}&nbsp; [{{classification.type}}]
           <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
         </h4>
       </div>
 
       <!-- DETAILED FIELDS -->
-      <div class="panel-body" style="padding: 0">
+      <div class="panel-body classification__detailed-fields" style="padding: 0">
         <ng-form #ClassificationForm="ngForm">
           <div class="row" style="padding: 15px">
             <div class="col-md-6">
@@ -64,7 +64,7 @@
               </div>
 
               <!-- DOMAIN -->
-              <div class="form-group">
+              <div class="form-group detailed-fields__domain">
                 <label for="classification-domain" class="control-label">Domain</label>
                 <input type="text" disabled #domain class="form-control" id="classification-domain"
                        placeholder="Domain" [(ngModel)]="classification.domain"
@@ -110,7 +110,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
                       <li>
-                        <a *ngFor="let category of getAvailableCategories(classification.type) | async"
+                        <a class="detailed-fields__categories" *ngFor="let category of getAvailableCategories(classification.type) | async"
                            (click)="selectCategory(category)">
                           <span class="text-top">
                             <svg-icon class="blue fa-fw"
