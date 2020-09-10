@@ -28,10 +28,10 @@
     </div>
 
     <!-- WORKBASKET LIST -->
-    <div infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
+    <div class="workbasket-list" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
          [scrollWindow]="false" class="infinite-scroll">
         <ul class="list-group">
-            <li class="list-group-item"
+            <li class="list-group-item workbasket-list__distribution-targets"
                 *ngFor="let distributionTarget of distributionTargets | selectWorkbaskets: distributionTargetsSelected: side"
                 [class.selected]="distributionTarget.selected" type="text"
                 (click)="distributionTarget.selected = !distributionTarget.selected">
