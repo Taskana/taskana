@@ -213,6 +213,7 @@ class WorkbasketReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             "WORKBASKET_KEY",
             TaskTimestamp.DUE,
             selectedItems,
@@ -237,6 +238,7 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
+            any(),
             any(),
             any(),
             any(),

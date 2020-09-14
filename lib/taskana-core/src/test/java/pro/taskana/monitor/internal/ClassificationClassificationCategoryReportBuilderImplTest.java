@@ -197,6 +197,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             "CLASSIFICATION_CATEGORY",
             TaskTimestamp.DUE,
             selectedItems,
@@ -221,6 +222,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
+            any(),
             any(),
             any(),
             any(),

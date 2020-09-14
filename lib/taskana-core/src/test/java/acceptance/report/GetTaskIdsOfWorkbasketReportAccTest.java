@@ -20,6 +20,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.security.JaasExtension;
 import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
@@ -127,6 +128,40 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000031",
             "TKI:000000000000000000000000000000000050");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnTaskIdsOfWorkbasketReport_When_CombinedClassificationFilterIsUsed()
+      throws Exception {
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    final List<SelectedItem> selectedItems =
+        Collections.singletonList(
+            new SelectedItem("USER-1-1", null, Integer.MIN_VALUE, Integer.MAX_VALUE));
+    final List<CombinedClassificationFilter> combinedClassificationFilters =
+        Arrays.asList(
+            new CombinedClassificationFilter(
+                "CLI:000000000000000000000000000000000003",
+                "CLI:000000000000000000000000000000000008"),
+            new CombinedClassificationFilter(
+                "CLI:000000000000000000000000000000000001",
+                "CLI:000000000000000000000000000000000006"));
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .combinedClassificationFilterIn(combinedClassificationFilters)
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
+
+    assertThat(ids)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000001",  // from second filter
+            "TKI:000000000000000000000000000000000013",  // from second filter
+            "TKI:000000000000000000000000000000000025",  // from first filter
+            "TKI:000000000000000000000000000000000036",  // from first filter
+            "TKI:000000000000000000000000000000000044"); // from first filter
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
