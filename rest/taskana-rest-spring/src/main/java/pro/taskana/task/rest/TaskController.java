@@ -467,7 +467,7 @@ public class TaskController extends AbstractPagingController {
 
       taskQuery.wildcardSearchFieldsIn(createWildcardSearchFields(requestedWildcardSearchFields));
 
-      taskQuery.wildcardSearchValueLike(params.getFirst(WILDCARD_SEARCH_VALUE));
+      taskQuery.wildcardSearchValueLike(LIKE + params.getFirst(WILDCARD_SEARCH_VALUE) + LIKE);
       params.remove(WILDCARD_SEARCH_FIELDS);
       params.remove(WILDCARD_SEARCH_VALUE);
     }

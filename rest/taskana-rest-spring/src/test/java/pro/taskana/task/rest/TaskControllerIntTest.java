@@ -233,7 +233,7 @@ class TaskControllerIntTest {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_TASKS)
-                + "?wildcard-search-value=%99%"
+                + "?wildcard-search-value=99"
                 + "&wildcard-search-fields=NAME,custom_3,CuStOM_4",
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersAdmin()),
