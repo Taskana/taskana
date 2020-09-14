@@ -14,6 +14,7 @@ import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationReport;
@@ -138,6 +139,9 @@ abstract class TimeIntervalReportBuilderImpl<
       if (!(this instanceof ClassificationReport.Builder) && joinWithAttachments) {
         throw new InvalidArgumentException("SubKeys are supported for ClassificationReport only.");
       }
+      List<CombinedClassificationFilter> combinedClassificationFilter =
+          getCombinedClassificationFilter();
+      joinWithAttachments |= combinedClassificationFilter != null;
       if (this.inWorkingDays) {
         selectedItems = convertWorkingDaysToDays(selectedItems, this.columnHeaders);
       }
@@ -149,6 +153,7 @@ abstract class TimeIntervalReportBuilderImpl<
           this.classificationIds,
           this.excludedClassificationIds,
           this.customAttributeFilter,
+          combinedClassificationFilter,
           determineGroupedBy(),
           timestamp,
           selectedItems,
@@ -188,6 +193,13 @@ abstract class TimeIntervalReportBuilderImpl<
   protected abstract B _this();
 
   protected abstract String determineGroupedBy();
+
+  protected List<CombinedClassificationFilter> getCombinedClassificationFilter() {
+    // we are currently aware that this is a code smell. Unfortunately the resolution of this would
+    // cause havoc in our queries, since we do not have a concept for a user validation yet. As soon
+    // as that is done we can resolve this code smell.
+    return null;
+  }
 
   private List<SelectedItem> convertWorkingDaysToDays(
       List<SelectedItem> selectedItems, List<H> columnHeaders) throws InvalidArgumentException {

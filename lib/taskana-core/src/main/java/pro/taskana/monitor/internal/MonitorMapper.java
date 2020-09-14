@@ -304,10 +304,18 @@ public interface MonitorMapper {
           + "<if test='customAttributeFilter != null'>"
           + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
           + "</if>"
+          + "<if test=\"combinedClassificationFilter != null\">"
+          + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
+          + "T.CLASSIFICATION_ID = #{item.taskClassificationId} "
+          + "<if test=\"item.attachmentClassificationId != null\">"
+          + "AND A.CLASSIFICATION_ID = #{item.attachmentClassificationId} "
+          + "</if>"
+          + "</foreach>"
+          + "</if>"
           + "AND T.${timestamp} IS NOT NULL AND ( "
           + "<foreach collection='selectedItems' item='selectedItem' separator=' OR '>"
           + "#{selectedItem.key} = T.${groupedBy} AND "
-          + "<if test=\"joinWithAttachments\">"
+          + "<if test=\"joinWithAttachments and combinedClassificationFilter == null\">"
           + "<if test='selectedItem.subKey != null'>"
           + "A.CLASSIFICATION_KEY = #{selectedItem.subKey} AND "
           + "</if>"
@@ -336,6 +344,8 @@ public interface MonitorMapper {
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter,
+      @Param("combinedClassificationFilter")
+          List<CombinedClassificationFilter> combinedClassificationFilter,
       @Param("groupedBy") String groupedBy,
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("selectedItems") List<SelectedItem> selectedItems,

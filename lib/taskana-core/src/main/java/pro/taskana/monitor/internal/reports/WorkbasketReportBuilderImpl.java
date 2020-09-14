@@ -101,4 +101,9 @@ public class WorkbasketReportBuilderImpl
   protected String determineGroupedBy() {
     return "WORKBASKET_KEY";
   }
+
+  @Override
+  protected List<CombinedClassificationFilter> getCombinedClassificationFilter() {
+    return combinedClassificationFilter;
+  }
 }

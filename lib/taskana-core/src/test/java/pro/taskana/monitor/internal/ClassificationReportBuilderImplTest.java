@@ -367,6 +367,7 @@ class ClassificationReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             "CLASSIFICATION_KEY",
             TaskTimestamp.DUE,
             selectedItems,
@@ -392,6 +393,7 @@ class ClassificationReportBuilderImplTest {
 
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
+            any(),
             any(),
             any(),
             any(),
