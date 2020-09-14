@@ -130,6 +130,28 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_ReturnTaskIdsOfDetailedClassificationReport_When_SomeSelectedItemsContainSubKey()
+      throws Exception {
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+    final List<SelectedItem> selectedItems =
+        Arrays.asList(L_30000, new SelectedItem("L10000", "L11000", 0, 0));
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
+
+    assertThat(ids).containsExactlyInAnyOrder(
+        "TKI:000000000000000000000000000000000006",
+        "TKI:000000000000000000000000000000000033"
+    );
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
