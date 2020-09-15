@@ -59,7 +59,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+  void should_AugmentDisplayNames_When_ReportIsBuild() throws Exception {
     TaskStatusReport report = MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport();
 
     assertThat(report.getRows()).hasSize(3);

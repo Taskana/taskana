@@ -30,7 +30,7 @@ import pro.taskana.task.api.models.Task;
 class SelectAndClaimTaskAccTest extends AbstractAccTest {
 
   @Test
-  void should_claimDifferentTasks_For_ConcurrentSelectAndClaimCalls() throws Exception {
+  void should_ClaimDifferentTasks_For_ConcurrentSelectAndClaimCalls() throws Exception {
 
     List<Task> selectedAndClaimedTasks = Collections.synchronizedList(new ArrayList<>());
 

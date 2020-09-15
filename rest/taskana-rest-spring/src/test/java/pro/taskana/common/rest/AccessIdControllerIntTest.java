@@ -78,7 +78,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_returnEmptyResults_ifInvalidCharacterIsUsedInCondition() {
+  void should_ReturnEmptyResults_ifInvalidCharacterIsUsedInCondition() {
     ResponseEntity<AccessIdListResource> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc-teamleads,cn=groups",
@@ -104,7 +104,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_returnAccessIdWithUmlauten_ifBased64EncodedUserIsLookedUp() {
+  void should_ReturnAccessIdWithUmlauten_ifBased64EncodedUserIsLookedUp() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=läf",
@@ -135,7 +135,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_returnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
+  void should_ReturnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
@@ -156,7 +156,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_returnBadRequest_ifAccessIdOfUserContainsInvalidCharacter() {
+  void should_ReturnBadRequest_ifAccessIdOfUserContainsInvalidCharacter() {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(
@@ -173,7 +173,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_returnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfGroupIsGiven() {
+  void should_ReturnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfGroupIsGiven() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS)
@@ -191,7 +191,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_throwNotAuthorizedException_ifCallerOfGroupRetrievalIsNotAdminOrBusinessAdmin() {
+  void should_ThrowNotAuthorizedException_ifCallerOfGroupRetrievalIsNotAdminOrBusinessAdmin() {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(
@@ -207,7 +207,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void should_throwNotAuthorizedException_ifCallerOfValidationIsNotAdminOrBusinessAdmin() {
+  void should_ThrowNotAuthorizedException_ifCallerOfValidationIsNotAdminOrBusinessAdmin() {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(

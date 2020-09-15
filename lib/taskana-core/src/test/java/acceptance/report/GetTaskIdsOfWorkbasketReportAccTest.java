@@ -49,7 +49,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @TestFactory
-  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+  Stream<DynamicTest> should_NotThrowError_When_BuildReportForTaskState() {
     Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
 
     ThrowingConsumer<TaskTimestamp> test =
@@ -67,7 +67,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
+  void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
 

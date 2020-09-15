@@ -28,7 +28,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+  void should_AugmentDisplayNames_When_ReportIsBuild() throws Exception {
     TimestampReport report = MONITOR_SERVICE.createTimestampReportBuilder().buildReport();
     assertThat(report.getRows()).hasSize(2);
     assertThat(report.getRow("CREATED").getDisplayName()).isEqualTo("CREATED");

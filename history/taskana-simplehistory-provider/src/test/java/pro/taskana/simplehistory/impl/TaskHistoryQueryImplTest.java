@@ -38,7 +38,7 @@ class TaskHistoryQueryImplTest {
   }
 
   @Test
-  void should_returnList_When_CallingListMethodOnTaskHistoryQuery() throws Exception {
+  void should_ReturnList_When_CallingListMethodOnTaskHistoryQuery() throws Exception {
     List<TaskHistoryEvent> returnList = new ArrayList<>();
     returnList.add(createHistoryEvent("abcd", "T22", "car", "BV", "this was important", null));
     TimeInterval interval = new TimeInterval(Instant.now().minusNanos(1000), Instant.now());
