@@ -33,7 +33,7 @@ import pro.taskana.common.internal.util.CheckedBiConsumer;
 class QueryHelperTest {
 
   @Test
-  void should_removeSortByAndOrderDirection_When_ApplyingSortingParams() throws Exception {
+  void should_RemoveSortByAndOrderDirection_When_ApplyingSortingParams() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.put(QueryHelper.SORT_BY, Collections.singletonList("sort-by"));
     map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList("order"));
@@ -43,7 +43,7 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_ignoreMapContent_When_ApplyingSortingParams() throws Exception {
+  void should_IgnoreMapContent_When_ApplyingSortingParams() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     String key = "unknown";
     List<String> value = Collections.singletonList("sort-by");
@@ -107,7 +107,7 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_callConsumerMultipleTimes_When_MapContainsMultipleSortBy() throws Exception {
+  void should_CallConsumerMultipleTimes_When_MapContainsMultipleSortBy() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.put(QueryHelper.SORT_BY, Arrays.asList("sort-by-value1", "sort-by-value2"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
@@ -120,7 +120,7 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_matchSortDirectionForEachSortBy_When_MapContainsMultipleSortByAndOrderBy()
+  void should_MatchSortDirectionForEachSortBy_When_MapContainsMultipleSortByAndOrderBy()
       throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.put(QueryHelper.SORT_BY, Arrays.asList("sort-by-value1", "sort-by-value2"));
@@ -134,7 +134,7 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_throwError_When_MapContainsOrderByButNoSortBy() {
+  void should_ThrowError_When_MapContainsOrderByButNoSortBy() {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList("desc"));
     assertThatThrownBy(() -> applyAndRemoveSortingParams(map, mock(MockBiConsumer.class)))
@@ -142,7 +142,7 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_throwError_When_SortByAndOrderByCountDoesNotMatch() {
+  void should_ThrowError_When_SortByAndOrderByCountDoesNotMatch() {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.put(QueryHelper.SORT_BY, Arrays.asList("1", "2"));
     map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList("desc"));
@@ -151,7 +151,7 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_throwError_When_ConsumerRaisesException() throws Exception {
+  void should_ThrowError_When_ConsumerRaisesException() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.put(QueryHelper.SORT_BY, Collections.singletonList("1"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
@@ -161,13 +161,13 @@ class QueryHelperTest {
   }
 
   @Test
-  void should_throwError_When_ConsumerIsNull() {
+  void should_ThrowError_When_ConsumerIsNull() {
     assertThatThrownBy(() -> applyAndRemoveSortingParams(new LinkedMultiValueMap<>(), null))
         .isInstanceOf(InvalidArgumentException.class);
   }
 
   @Test
-  void should_throwError_When_MapIsNull() {
+  void should_ThrowError_When_MapIsNull() {
     assertThatThrownBy(() -> applyAndRemoveSortingParams(null, mock(MockBiConsumer.class)))
         .isInstanceOf(InvalidArgumentException.class);
   }

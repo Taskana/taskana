@@ -55,7 +55,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
   @WithAccessId(user = "monitor")
   @TestFactory
-  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+  Stream<DynamicTest> should_NotThrowError_When_BuildReportForTaskState() {
     Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
 
     ThrowingConsumer<TaskTimestamp> test =
@@ -74,7 +74,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_selectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
+  void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
         Collections

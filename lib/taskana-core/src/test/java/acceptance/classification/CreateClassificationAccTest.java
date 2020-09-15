@@ -224,7 +224,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_beAbleToCreateNewClassification_When_ClassificationCopy() throws Exception {
+  void should_BeAbleToCreateNewClassification_When_ClassificationCopy() throws Exception {
     ClassificationImpl oldClassification =
         (ClassificationImpl) classificationService.getClassification("T2100", "DOMAIN_B");
     Classification newClassification = oldClassification.copy("T9949");

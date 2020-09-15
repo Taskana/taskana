@@ -44,7 +44,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+  void should_AugmentDisplayNames_When_ReportIsBuild() throws Exception {
     ClassificationCategoryReport report =
         MONITOR_SERVICE.createClassificationCategoryReportBuilder().buildReport();
 
@@ -141,7 +141,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @TestFactory
-  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+  Stream<DynamicTest> should_NotThrowError_When_BuildReportForTaskState() {
     Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
     ThrowingConsumer<TaskTimestamp> test =
         timestamp -> {
@@ -157,7 +157,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_computeNumbersAccordingToPlannedDate_When_BuildReportForPlanned() throws Exception {
+  void should_ComputeNumbersAccordingToPlannedDate_When_BuildReportForPlanned() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =

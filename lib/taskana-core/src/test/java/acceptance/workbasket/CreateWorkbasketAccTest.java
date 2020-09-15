@@ -76,7 +76,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_beAbleToCreateNewWorkbasket_When_WorkbasketCopy() throws Exception {
+  void should_BeAbleToCreateNewWorkbasket_When_WorkbasketCopy() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket oldWorkbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
 

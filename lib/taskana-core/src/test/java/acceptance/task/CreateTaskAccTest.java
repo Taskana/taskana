@@ -43,7 +43,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_beAbleToCreateNewTask_When_TaskCopy() throws Exception {
+  void should_BeAbleToCreateNewTask_When_TaskCopy() throws Exception {
     Task oldTask = taskService.getTask("TKI:000000000000000000000000000000000000");
 
     Task newTask = oldTask.copy();
@@ -91,7 +91,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_createTask_When_ObjectReferenceSystemAndSystemInstanceIsNull() throws Exception {
+  void should_CreateTask_When_ObjectReferenceSystemAndSystemInstanceIsNull() throws Exception {
 
     String currentUser = CurrentUserContext.getUserid();
 

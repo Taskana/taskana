@@ -39,7 +39,7 @@ class TaskanaEngineConfigurationTest {
   }
 
   @Test
-  void should_returnTheTwoCustomHolidays_When_twoCustomHolidaysAreConfiguredInThePropertiesFile()
+  void should_ReturnTheTwoCustomHolidays_When_TwoCustomHolidaysAreConfiguredInThePropertiesFile()
       throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
@@ -55,7 +55,7 @@ class TaskanaEngineConfigurationTest {
   }
 
   @Test
-  void should_returnEmptyCustomHolidaysList_When_allCustomHolidaysAreInWrongFormatInPropertiesFile()
+  void should_ReturnEmptyCustomHolidaysList_When_AllCustomHolidaysAreInWrongFormatInPropertiesFile()
       throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =

@@ -120,7 +120,7 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void should_deleteAllAccessItemForUser_ifValidAccessIdOfUserIsSupplied() {
+  void should_DeleteAllAccessItemForUser_ifValidAccessIdOfUserIsSupplied() {
 
     String parameters = "?access-id=teamlead-2";
     ResponseEntity<Void> response =
@@ -134,7 +134,7 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void should_returnBadRequest_ifAccessIdIsSubStringOfUser() {
+  void should_ReturnBadRequest_ifAccessIdIsSubStringOfUser() {
     String parameters = "?access-id=user-1";
     ThrowingCallable httpCall =
         () ->
@@ -150,7 +150,7 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void should_returnBadRequest_ifAccessIdIsGroup() {
+  void should_ReturnBadRequest_ifAccessIdIsGroup() {
     String parameters = "?access-id=cn=monitor-users,cn=groups,ou=test,o=taskana";
     ThrowingCallable httpCall =
         () ->
@@ -166,7 +166,7 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void should_returnBadRequest_ifAccessIdIsOrganizationalGroup() {
+  void should_ReturnBadRequest_ifAccessIdIsOrganizationalGroup() {
     String parameters = "?access-id=cn=organisationseinheit ksc,cn=organisation,ou=test,o=taskana";
     ThrowingCallable httpCall =
         () ->

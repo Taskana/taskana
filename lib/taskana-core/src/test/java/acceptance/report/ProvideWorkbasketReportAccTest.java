@@ -44,7 +44,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_augmentDisplayNames_When_ReportIsBuild() throws Exception {
+  void should_AugmentDisplayNames_When_ReportIsBuild() throws Exception {
     WorkbasketReport report = MONITOR_SERVICE.createWorkbasketReportBuilder().buildReport();
     assertThat(report.getRows()).hasSize(3);
     assertThat(report.getRow("USER-1-1").getDisplayName()).isEqualTo("PPK User 1 KSC 1");
@@ -113,7 +113,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @TestFactory
-  Stream<DynamicTest> should_NotThrowError_When_buildReportForTaskState() {
+  Stream<DynamicTest> should_NotThrowError_When_BuildReportForTaskState() {
     Iterator<TaskTimestamp> iterator = Arrays.stream(TaskTimestamp.values()).iterator();
     ThrowingConsumer<TaskTimestamp> test =
         timestamp -> {
@@ -151,7 +151,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_computeNumbersAccordingToPlannedDate_When_BuildReportForPlanned() throws Exception {
+  void should_ComputeNumbersAccordingToPlannedDate_When_BuildReportForPlanned() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =

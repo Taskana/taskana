@@ -78,7 +78,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_calculateDueDateAtCreate() throws Exception {
+  void should_CalculateDueDateAtCreate() throws Exception {
 
     // P16D
     Classification classification = classificationService.getClassification("L110105", "DOMAIN_A");
@@ -587,7 +587,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_notThrowServiceLevelViolation_IfWeekendOrHolidaysBetweenDates() throws Exception {
+  void should_NotThrowServiceLevelViolation_IfWeekendOrHolidaysBetweenDates() throws Exception {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000002"); // P1D
 
     // SLA is broken but only with holidays in between

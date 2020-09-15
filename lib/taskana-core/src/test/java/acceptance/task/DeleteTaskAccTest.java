@@ -46,7 +46,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_deleteAttachments_When_MultipleTasksAreDeleted() throws Exception {
+  void should_DeleteAttachments_When_MultipleTasksAreDeleted() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
@@ -88,7 +88,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_deleteAttachments_When_SingleTaskIsDeleted() throws Exception {
+  void should_DeleteAttachments_When_SingleTaskIsDeleted() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
 
