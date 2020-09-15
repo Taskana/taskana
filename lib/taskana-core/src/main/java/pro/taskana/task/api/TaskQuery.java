@@ -4,6 +4,7 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 
 /** TaskQuery for generating dynamic sql. */
@@ -203,13 +204,26 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
 
   /**
    * Add the owner for pattern matching to your query. It will be compared in SQL with the LIKE
-   * operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * operator. You may use a wildcard like % to specify the pattern.
+   *
+   * <p>If you specify multiple arguments they are combined with the OR keyword.</p>
    *
    * @param owners the owners of the searched tasks
    * @return the query
    */
   TaskQuery ownerLike(String... owners);
+
+  /**
+   * Add the {@link ObjectReference} to exact match to your query. Each individual value has to
+   * match. Fields with the value 'null' will be ignored.
+   * The id of each ObjectReference will be ignored
+   *
+   * <p>If you specify multiple arguments they are combined with the OR keyword.</p>
+   *
+   * @param objectReferences the combined values which are searched together.
+   * @return the query
+   */
+  TaskQuery primaryObjectReferenceIn(ObjectReference... objectReferences);
 
   /**
    * Add the companies of the primary object reference for exact matching to your query.
