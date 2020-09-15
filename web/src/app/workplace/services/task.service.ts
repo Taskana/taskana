@@ -14,6 +14,8 @@ export class TaskService {
   taskChangedStream = this.taskChangedSource.asObservable();
   private taskSelectedSource = new Subject<Task>();
   taskSelectedStream = this.taskSelectedSource.asObservable();
+  private taskDeletedSource = new Subject<Task>();
+  taskDeletedStream = this.taskDeletedSource.asObservable();
 
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
@@ -23,6 +25,10 @@ export class TaskService {
 
   publishUpdatedTask(task?: Task) {
     this.taskChangedSource.next(task);
+  }
+
+  publishTaskDeletion() {
+    this.taskDeletedSource.next();
   }
 
   selectTask(task?: Task) {
