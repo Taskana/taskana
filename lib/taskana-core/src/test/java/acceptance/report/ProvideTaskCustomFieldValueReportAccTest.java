@@ -25,6 +25,7 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -61,6 +62,22 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
         .isEqualTo("Geschaeftsstelle B");
     assertThat(report.getRow("Geschaeftsstelle C").getDisplayName())
         .isEqualTo("Geschaeftsstelle C");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
+    Builder builder =
+        MONITOR_SERVICE
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .classificationIdIn(Collections.singletonList("DOES NOT EXIST"));
+    ThrowingCallable test =
+        () -> {
+          TaskCustomFieldValueReport report = builder.buildReport();
+          assertThat(report).isNotNull();
+          assertThat(report.rowSize()).isZero();
+        };
+    assertThatCode(test).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "monitor")

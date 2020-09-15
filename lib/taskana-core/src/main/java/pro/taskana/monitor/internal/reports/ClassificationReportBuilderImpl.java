@@ -70,7 +70,10 @@ public class ClassificationReportBuilderImpl
       Map<String, String> displayMap =
           classificationService
               .createClassificationQuery()
-              .keyIn(report.getRows().keySet().toArray(new String[0]))
+              .keyIn(
+                  report.getRows().isEmpty()
+                      ? null
+                      : report.getRows().keySet().toArray(new String[0]))
               .domainIn(domains != null ? domains.toArray(new String[0]) : null)
               .list()
               .stream()
@@ -119,12 +122,12 @@ public class ClassificationReportBuilderImpl
               .map(report::getRow)
               .flatMap(row -> row.getFoldableRows().values().stream())
               .map(Row::getKey);
+      String[] keys =
+          Stream.concat(attachmentKeys, report.getRows().keySet().stream()).toArray(String[]::new);
       Map<String, String> displayMap =
           classificationService
               .createClassificationQuery()
-              .keyIn(
-                  Stream.concat(attachmentKeys, report.getRows().keySet().stream())
-                      .toArray(String[]::new))
+              .keyIn(keys.length == 0 ? null : keys)
               .domainIn(domains != null ? domains.toArray(new String[0]) : null)
               .list()
               .stream()

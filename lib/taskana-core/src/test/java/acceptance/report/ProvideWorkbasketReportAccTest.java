@@ -54,6 +54,22 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
+    WorkbasketReport.Builder builder =
+        MONITOR_SERVICE
+            .createWorkbasketReportBuilder()
+            .domainIn(Collections.singletonList("DOES_NOT_EXIST"));
+    ThrowingCallable test =
+        () -> {
+          WorkbasketReport report = builder.buildReport();
+          assertThat(report).isNotNull();
+          assertThat(report.rowSize()).isZero();
+        };
+    assertThatCode(test).doesNotThrowAnyException();
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void testGetTotalNumbersOfTasksOfWorkbasketReportBasedOnDueDate() throws Exception {
     WorkbasketReport report = MONITOR_SERVICE.createWorkbasketReportBuilder().buildReport();
 

@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.Collections;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -66,6 +67,22 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("USER-1-1").getDisplayName()).isEqualTo("PPK User 1 KSC 1");
     assertThat(report.getRow("USER-1-2").getDisplayName()).isEqualTo("PPK User 1 KSC 2");
     assertThat(report.getRow("USER-1-3").getDisplayName()).isEqualTo("PPK User 1 KSC 3");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
+    TaskStatusReport.Builder builder =
+        MONITOR_SERVICE
+            .createTaskStatusReportBuilder()
+            .domainIn(Collections.singletonList("DOES NOT EXIST"));
+    ThrowingCallable test =
+        () -> {
+          TaskStatusReport report = builder.buildReport();
+          assertThat(report).isNotNull();
+          assertThat(report.rowSize()).isZero();
+        };
+    assertThatCode(test).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "monitor")

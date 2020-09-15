@@ -25,6 +25,7 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationReport;
+import pro.taskana.monitor.api.reports.ClassificationReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -52,6 +53,22 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("L30000").getDisplayName()).isEqualTo("Widerruf");
     assertThat(report.getRow("L40000").getDisplayName()).isEqualTo("Dynamikaenderung");
     assertThat(report.getRow("L50000").getDisplayName()).isEqualTo("Dynamik-Ablehnung");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
+    Builder builder =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .classificationIdIn(Collections.singletonList("DOES NOT EXIST"));
+    ThrowingCallable test =
+        () -> {
+          ClassificationReport report = builder.buildReport();
+          assertThat(report).isNotNull();
+          assertThat(report.rowSize()).isZero();
+        };
+    assertThatCode(test).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "monitor")

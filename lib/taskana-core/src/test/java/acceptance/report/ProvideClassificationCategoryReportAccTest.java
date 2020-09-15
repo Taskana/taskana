@@ -25,6 +25,7 @@ import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport.Builder;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -52,6 +53,22 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("AUTOMATIC").getDisplayName()).isEqualTo("AUTOMATIC");
     assertThat(report.getRow("EXTERN").getDisplayName()).isEqualTo("EXTERN");
     assertThat(report.getRow("MANUAL").getDisplayName()).isEqualTo("MANUAL");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
+    Builder builder =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .classificationIdIn(Collections.singletonList("DOES NOT EXIST"));
+    ThrowingCallable test =
+        () -> {
+          ClassificationCategoryReport report = builder.buildReport();
+          assertThat(report).isNotNull();
+          assertThat(report.rowSize()).isZero();
+        };
+    assertThatCode(test).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "monitor")

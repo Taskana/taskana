@@ -459,7 +459,7 @@ public interface MonitorMapper {
           + "AND T.CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
           + "</if>"
           + "<if test='domains != null'>"
-          + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+          + "AND T.DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
           + "</if>"
           + "<if test='customAttributeFilter != null'>"
           + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(T.${key} = '${customAttributeFilter.get(key)}')</foreach>) "

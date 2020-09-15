@@ -1,6 +1,7 @@
 package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,6 +35,44 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRows()).hasSize(2);
     assertThat(report.getRow("CREATED").getDisplayName()).isEqualTo("CREATED");
     assertThat(report.getRow("COMPLETED").getDisplayName()).isEqualTo("COMPLETED");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
+    TimestampReport.Builder builder =
+        MONITOR_SERVICE
+            .createTimestampReportBuilder()
+            .domainIn(Collections.singletonList("DOES_NOT_EXIST"));
+    ThrowingCallable test =
+        () -> {
+          TimestampReport report = builder.buildReport();
+          assertThat(report).isNotNull();
+          assertThat(report.rowSize()).isZero();
+        };
+    assertThatCode(test).doesNotThrowAnyException();
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_FilterTasksAccordingToDomain_When_DomainFilterIsApplied() throws Exception {
+    List<TimeIntervalColumnHeader> headers =
+        IntStream.rangeClosed(-14, 0)
+            .mapToObj(TimeIntervalColumnHeader.Date::new)
+            .collect(Collectors.toList());
+    TimestampReport report =
+        MONITOR_SERVICE
+            .createTimestampReportBuilder()
+            .withColumnHeaders(headers)
+            .domainIn(Collections.singletonList("DOMAIN_A"))
+            .buildReport();
+    assertThat(report).isNotNull();
+
+    assertThat(report.rowSize()).isEqualTo(2);
+    assertThat(report.getRow("CREATED").getCells())
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26});
+    assertThat(report.getRow("COMPLETED").getCells())
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0});
   }
 
   @WithAccessId(user = "monitor")
