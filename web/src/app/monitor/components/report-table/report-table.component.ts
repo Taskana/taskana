@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ReportData } from 'app/monitor/models/report-data';
 
 @Component({
@@ -6,18 +6,16 @@ import { ReportData } from 'app/monitor/models/report-data';
   templateUrl: './report-table.component.html',
   styleUrls: ['./report-table.component.scss']
 })
-export class ReportTableComponent implements OnInit {
+export class ReportTableComponent {
   currentExpHeaders = 0;
 
   @Input()
   reportData: ReportData;
 
-  ngOnInit(): void {}
-
   toggleFold(indexNumber: number, sumRow: boolean = false) {
     let rows = sumRow ? this.reportData.sumRow : this.reportData.rows;
     let index = indexNumber;
-    const toggleRow = rows[(index += 1)];
+    const toggleRow = rows[index];
     if (toggleRow.depth < this.reportData.meta.rowDesc.length - 1) {
       const firstChildRow = rows[(index += 1)];
       firstChildRow.display = !firstChildRow.display;
