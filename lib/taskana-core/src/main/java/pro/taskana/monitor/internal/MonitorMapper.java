@@ -381,28 +381,39 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT DISTINCT ${customField} "
-          + "FROM TASK "
+          + "FROM TASK T"
+          + "<if test=\"combinedClassificationFilter != null\">"
+          + "LEFT JOIN ATTACHMENT A ON T.ID = A.TASK_ID "
+          + "</if>"
           + "<where>"
           + "<if test='workbasketIds != null'>"
-          + "WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
+          + "T.WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
           + "</if>"
           + "<if test='states != null'>"
-          + "AND STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
+          + "AND T.STATE IN (<foreach collection='states' item='state' separator=','>#{state}</foreach>) "
           + "</if>"
           + "<if test='classificationCategories != null'>"
-          + "AND CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
+          + "AND T.CLASSIFICATION_CATEGORY IN (<foreach collection='classificationCategories' item='category' separator=','>#{category}</foreach>) "
           + "</if>"
           + "<if test='domains != null'>"
-          + "AND DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
+          + "AND T.DOMAIN IN (<foreach collection='domains' item='domain' separator=','>#{domain}</foreach>) "
           + "</if>"
           + "<if test='classificationIds != null'>"
-          + "AND CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
+          + "AND T.CLASSIFICATION_ID IN (<foreach collection='classificationIds' item='classificationId' separator=','>#{classificationId}</foreach>) "
           + "</if>"
           + "<if test='excludedClassificationIds != null'>"
-          + "AND CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
+          + "AND T.CLASSIFICATION_ID NOT IN (<foreach collection='excludedClassificationIds' item='excludedClassificationId' separator=','>#{excludedClassificationId}</foreach>) "
           + "</if>"
           + "<if test='customAttributeFilter != null'>"
-          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+          + "AND (<foreach collection='customAttributeFilter.keys' item='key' separator=' AND '>(T.${key} = '${customAttributeFilter.get(key)}')</foreach>) "
+          + "</if>"
+          + "<if test=\"combinedClassificationFilter != null\">"
+          + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
+          + "T.CLASSIFICATION_ID = #{item.taskClassificationId} "
+          + "<if test=\"item.attachmentClassificationId != null\">"
+          + "AND A.CLASSIFICATION_ID = #{item.attachmentClassificationId} "
+          + "</if>"
+          + "</foreach>"
           + "</if>"
           + "</where>"
           + "</script>")
@@ -414,6 +425,8 @@ public interface MonitorMapper {
       @Param("classificationIds") List<String> classificationIds,
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter,
+      @Param("combinedClassificationFilter")
+           List<CombinedClassificationFilter> combinedClassificationFilter,
       @Param("customField") TaskCustomField taskCustomField);
 
   @Select(

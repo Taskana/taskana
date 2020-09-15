@@ -393,6 +393,29 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnCustomFieldValues_When_CombinedClassificationFilterIsApplied()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<CombinedClassificationFilter> combinedClassificationFilters =
+        Collections.singletonList(
+            new CombinedClassificationFilter(
+                "CLI:000000000000000000000000000000000001",
+                "CLI:000000000000000000000000000000000006"));
+
+    List<String> customValues =
+        MONITOR_SERVICE
+            .createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .combinedClassificationFilterIn(combinedClassificationFilters)
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_1);
+
+    assertThat(customValues)
+        .containsExactlyInAnyOrder(
+            "Geschaeftsstelle A", "Geschaeftsstelle B", "Geschaeftsstelle C");
+  }
+
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {
     List<TimeIntervalColumnHeader> columnHeaders = new ArrayList<>();
     columnHeaders.add(new TimeIntervalColumnHeader(Integer.MIN_VALUE, -11));

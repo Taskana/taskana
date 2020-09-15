@@ -446,6 +446,7 @@ class ClassificationReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
@@ -467,7 +468,8 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
-        .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
+        .getCustomAttributeValuesForReport(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verify(taskanaEngineMock).getClassificationService();
     verifyNoMoreInteractions(mocks);
