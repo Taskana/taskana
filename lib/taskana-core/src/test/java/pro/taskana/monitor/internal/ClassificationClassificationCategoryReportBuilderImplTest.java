@@ -276,6 +276,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
@@ -296,7 +297,8 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
-        .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
+        .getCustomAttributeValuesForReport(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,

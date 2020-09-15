@@ -195,6 +195,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
@@ -215,7 +216,8 @@ class TaskCustomFieldValueReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
-        .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
+        .getCustomAttributeValuesForReport(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,

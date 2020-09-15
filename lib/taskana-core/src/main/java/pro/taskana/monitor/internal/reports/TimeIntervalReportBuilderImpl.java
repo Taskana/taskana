@@ -182,6 +182,7 @@ abstract class TimeIntervalReportBuilderImpl<
           this.classificationIds,
           this.excludedClassificationIds,
           this.customAttributeFilter,
+          getCombinedClassificationFilter(),
           taskCustomField);
     } finally {
       this.taskanaEngine.returnConnection();

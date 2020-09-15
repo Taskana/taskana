@@ -295,6 +295,7 @@ class WorkbasketReportBuilderImplTest {
             classificationIds,
             excludedClassificationIds,
             customAttributeFilter,
+            null,
             TaskCustomField.CUSTOM_1))
         .thenReturn(expectedResult);
 
@@ -315,7 +316,8 @@ class WorkbasketReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
-        .getCustomAttributeValuesForReport(any(), any(), any(), any(), any(), any(), any(), any());
+        .getCustomAttributeValuesForReport(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
