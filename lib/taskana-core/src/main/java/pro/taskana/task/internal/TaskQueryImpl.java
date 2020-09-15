@@ -26,6 +26,7 @@ import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.WildcardSearchField;
+import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -80,6 +81,7 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] ownerLike;
   private Boolean isRead;
   private Boolean isTransferred;
+  private ObjectReference[] objectReferences;
   private String[] porCompanyIn;
   private String[] porCompanyLike;
   private String[] porSystemIn;
@@ -308,6 +310,12 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery primaryObjectReferenceIn(ObjectReference... objectReferences) {
+    this.objectReferences = objectReferences;
+    return this;
+  }
+
+  @Override
   public TaskQuery primaryObjectReferenceCompanyIn(String... companies) {
     this.porCompanyIn = companies;
     return this;
@@ -442,11 +450,6 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery transferredEquals(Boolean isTransferred) {
     this.isTransferred = isTransferred;
-    return this;
-  }
-
-  public TaskQuery selectAndClaimEquals(boolean selectAndClaim) {
-    this.selectAndClaim = selectAndClaim;
     return this;
   }
 
@@ -895,6 +898,11 @@ public class TaskQueryImpl implements TaskQuery {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
     return addOrderCriteria("RECEIVED", sortDirection);
+  }
+
+  public TaskQuery selectAndClaimEquals(boolean selectAndClaim) {
+    this.selectAndClaim = selectAndClaim;
+    return this;
   }
 
   @Override
@@ -1675,6 +1683,10 @@ public class TaskQueryImpl implements TaskQuery {
         + taskanaEngine
         + ", taskService="
         + taskService
+        + ", orderBy="
+        + orderBy
+        + ", orderColumns="
+        + orderColumns
         + ", columnName="
         + columnName
         + ", nameIn="
@@ -1729,6 +1741,8 @@ public class TaskQueryImpl implements TaskQuery {
         + isRead
         + ", isTransferred="
         + isTransferred
+        + ", objectReferences="
+        + Arrays.toString(objectReferences)
         + ", porCompanyIn="
         + Arrays.toString(porCompanyIn)
         + ", porCompanyLike="
@@ -1861,10 +1875,6 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(plannedIn)
         + ", dueIn="
         + Arrays.toString(dueIn)
-        + ", orderBy="
-        + orderBy
-        + ", orderColumns="
-        + orderColumns
         + ", wildcardSearchFieldIn="
         + Arrays.toString(wildcardSearchFieldIn)
         + ", wildcardSearchValueLike="
