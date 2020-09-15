@@ -110,7 +110,6 @@ export class FormsValidatorService {
   }
 
   validateInputOverflow(inputFieldModel: NgModel, maxLength: Number, event?: any): void {
-    console.log(event);
     if (this.overflowErrorSubscriptionMap.has(inputFieldModel.name)) {
       this.overflowErrorSubscriptionMap.get(inputFieldModel.name).unsubscribe();
     }

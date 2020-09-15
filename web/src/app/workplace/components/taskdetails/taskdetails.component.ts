@@ -110,7 +110,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   deleteTaskConfirmation(): void {
     this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(
       () => {
-        this.taskService.publishUpdatedTask();
+        this.taskService.publishTaskDeletion();
         this.task = null;
         this.router.navigate(['taskana/workplace/tasks']);
       },

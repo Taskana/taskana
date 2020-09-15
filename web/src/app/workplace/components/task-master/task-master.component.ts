@@ -67,6 +67,11 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       this.getTasks();
     });
 
+    this.taskService.taskDeletedStream.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.selectedId = '';
+      this.getTasks();
+    });
+
     this.orientationService
       .getOrientation()
       .pipe(takeUntil(this.destroy$))
@@ -148,7 +153,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe((taskResource) => {
           this.requestInProgress = false;
-          if (taskResource.tasks && taskResource.tasks.length > 1) {
+          if (taskResource.tasks && taskResource.tasks.length > 0) {
             this.tasks = taskResource.tasks;
           } else {
             this.tasks = [];
