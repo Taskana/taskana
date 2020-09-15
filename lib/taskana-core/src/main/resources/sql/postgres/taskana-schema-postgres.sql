@@ -225,10 +225,10 @@ CREATE TABLE TASK_HISTORY_EVENT
     ATTACHMENT_CLASSIFICATION_KEY VARCHAR(32)  NULL,
     OLD_VALUE                     VARCHAR(255) NULL,
     NEW_VALUE                     VARCHAR(255) NULL,
-    CUSTOM_1                      VARCHAR(128) NULL,
-    CUSTOM_2                      VARCHAR(128) NULL,
-    CUSTOM_3                      VARCHAR(128) NULL,
-    CUSTOM_4                      VARCHAR(128) NULL,
+    CUSTOM_1                      VARCHAR(255) NULL,
+    CUSTOM_2                      VARCHAR(255) NULL,
+    CUSTOM_3                      VARCHAR(255) NULL,
+    CUSTOM_4                      VARCHAR(255) NULL,
     DETAILS                       TEXT         NULL,
     PRIMARY KEY (ID)
 );
