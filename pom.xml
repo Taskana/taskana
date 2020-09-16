@@ -65,7 +65,7 @@
         <version.archunit>0.14.1</version.archunit>
         <version.equalsverifier>3.4.2</version.equalsverifier>
         <version.openpojo>0.8.13</version.openpojo>
-        <version.jacoco>0.8.5</version.jacoco>
+        <version.jacoco>0.8.6</version.jacoco>
         <version.slf4j-test>1.2.0</version.slf4j-test>
 
         <!-- database driver versions -->
