@@ -50,6 +50,7 @@ import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.taskpreprocessing.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
@@ -71,8 +72,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private static final String DEFAULT = "default";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
-  private HistoryEventManager historyEventManager;
   private final TaskRoutingManager taskRoutingManager;
+  private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -80,6 +81,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
   protected Connection connection = null;
+  private HistoryEventManager historyEventManager;
 
   protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
@@ -87,6 +89,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     this.sessionManager = createSqlSessionManager();
     historyEventManager = HistoryEventManager.getInstance(this);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
+    createTaskPreprocessorManager = CreateTaskPreprocessorManager.getInstance();
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =
         new WorkingDaysToDaysConverter(
@@ -417,6 +420,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public TaskRoutingManager getTaskRoutingManager() {
       return taskRoutingManager;
+    }
+
+    @Override
+    public CreateTaskPreprocessorManager getCreateTaskPreprocessorManager() {
+      return createTaskPreprocessorManager;
     }
 
     @Override

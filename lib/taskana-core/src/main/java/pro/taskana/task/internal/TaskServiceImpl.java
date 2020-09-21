@@ -42,6 +42,7 @@ import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.taskpreprocessing.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
@@ -108,6 +109,7 @@ public class TaskServiceImpl implements TaskService {
   private final AttachmentHandler attachmentHandler;
   private final AttachmentMapper attachmentMapper;
   private final HistoryEventManager historyEventManager;
+  private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -120,6 +122,7 @@ public class TaskServiceImpl implements TaskService {
     this.attachmentMapper = attachmentMapper;
     this.classificationService = taskanaEngine.getEngine().getClassificationService();
     this.historyEventManager = taskanaEngine.getHistoryEventManager();
+    this.createTaskPreprocessorManager = taskanaEngine.getCreateTaskPreprocessorManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService = new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, this);
     this.serviceLevelHandler = new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper);
@@ -208,6 +211,10 @@ public class TaskServiceImpl implements TaskService {
 
       workbasketService.checkAuthorization(
           task.getWorkbasketSummary().getId(), WorkbasketPermission.APPEND);
+
+      if (CreateTaskPreprocessorManager.isCreateTaskPreprocessorEnabled()) {
+        task = (TaskImpl) createTaskPreprocessorManager.processTaskBeforeCreation(task);
+      }
 
       // we do use the key and not the ID to make sure that we use the classification from the right
       // domain.
