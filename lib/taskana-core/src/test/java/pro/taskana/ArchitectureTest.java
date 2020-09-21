@@ -45,7 +45,10 @@ class ArchitectureTest {
           "pro.taskana.task.internal",
           "pro.taskana.workbasket.api",
           "pro.taskana.workbasket.internal",
-          "pro.taskana.spi.routing.api");
+          "pro.taskana.spi.routing.api",
+          "pro.taskana.spi.taskpreprocessing.api",
+          "pro.taskana.spi.taskpreprocessing.internal"
+          );
   private static JavaClasses importedClasses;
 
   @BeforeAll

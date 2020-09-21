@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.taskpreprocessing.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.internal.TaskRoutingManager;
 
 /**
@@ -75,6 +76,13 @@ public interface InternalTaskanaEngine {
    * @return the TaskRoutingProducer instance.
    */
   TaskRoutingManager getTaskRoutingManager();
+
+  /**
+   * Retrieve CreateTaskPreprocessorManager.
+   *
+   * @return the CreateTaskPreprocessorManager instance.
+   */
+  CreateTaskPreprocessorManager getCreateTaskPreprocessorManager();
 
   /**
    * This method is supposed to skip further permission checks if we are already in a secured
