@@ -1,6 +1,6 @@
 package acceptance.taskpreprocessing;
 
-import pro.taskana.spi.taskpreprocessing.api.CreateTaskPreprocessor;
+import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.Task;
 

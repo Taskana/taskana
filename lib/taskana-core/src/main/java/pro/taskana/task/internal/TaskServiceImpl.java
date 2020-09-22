@@ -42,7 +42,7 @@ import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
-import pro.taskana.spi.taskpreprocessing.internal.CreateTaskPreprocessorManager;
+import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
@@ -176,7 +176,13 @@ public class TaskServiceImpl implements TaskService {
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException {
     LOGGER.debug("entry to createTask(task = {})", taskToCreate);
+
+    if (CreateTaskPreprocessorManager.isCreateTaskPreprocessorEnabled()) {
+      taskToCreate = createTaskPreprocessorManager.processTaskBeforeCreation(taskToCreate);
+    }
+
     TaskImpl task = (TaskImpl) taskToCreate;
+
     try {
       taskanaEngine.openConnection();
 
@@ -211,11 +217,7 @@ public class TaskServiceImpl implements TaskService {
 
       workbasketService.checkAuthorization(
           task.getWorkbasketSummary().getId(), WorkbasketPermission.APPEND);
-
-      if (CreateTaskPreprocessorManager.isCreateTaskPreprocessorEnabled()) {
-        task = (TaskImpl) createTaskPreprocessorManager.processTaskBeforeCreation(task);
-      }
-
+      
       // we do use the key and not the ID to make sure that we use the classification from the right
       // domain.
       // otherwise we would have to check the classification and its domain for validity.

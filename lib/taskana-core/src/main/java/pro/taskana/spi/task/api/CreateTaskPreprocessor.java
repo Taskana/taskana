@@ -1,4 +1,4 @@
-package pro.taskana.spi.taskpreprocessing.api;
+package pro.taskana.spi.task.api;
 
 import pro.taskana.task.api.models.Task;
 
