@@ -50,7 +50,7 @@ import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.spi.history.internal.HistoryEventManager;
-import pro.taskana.spi.taskpreprocessing.internal.CreateTaskPreprocessorManager;
+import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;

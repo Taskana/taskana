@@ -1,11 +1,11 @@
-package pro.taskana.spi.taskpreprocessing.internal;
+package pro.taskana.spi.task.internal;
 
 import java.util.Objects;
 import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.spi.taskpreprocessing.api.CreateTaskPreprocessor;
+import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.task.api.models.Task;
 
 public class CreateTaskPreprocessorManager {
