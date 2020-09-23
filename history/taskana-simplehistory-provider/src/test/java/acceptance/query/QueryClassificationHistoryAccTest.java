@@ -9,12 +9,12 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryColumnName;
-import pro.taskana.spi.history.api.events.classification.ClassificationHistoryCustomField;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEventType;
 
@@ -57,7 +57,7 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
             .createClassificationHistoryQuery()
             .eventTypeIn(ClassificationHistoryEventType.UPDATED.getName())
             .domainLike("%A")
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_1, "otherCustom1")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_1, "otherCustom1")
             .orderByCreated(SortDirection.DESCENDING);
 
     List<ClassificationHistoryEvent> results = query.list();
@@ -190,56 +190,56 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_1, "custom1")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_1, "custom1")
             .list();
     assertThat(returnValues).hasSize(6);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_2, "custom2")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_2, "custom2")
             .list();
     assertThat(returnValues).hasSize(6);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_3, "otherCustom3")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_3, "otherCustom3")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_4, "custom4", "otherCustom4")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_4, "custom4", "otherCustom4")
             .list();
     assertThat(returnValues).hasSize(11);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_5, "custom5")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_5, "custom5")
             .list();
     assertThat(returnValues).hasSize(6);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_6, "custom6")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_6, "custom6")
             .list();
     assertThat(returnValues).hasSize(6);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_7, "otherCustom7")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_7, "otherCustom7")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeIn(ClassificationHistoryCustomField.CUSTOM_8, "custom8", "otherCustom8")
+            .customAttributeIn(ClassificationCustomField.CUSTOM_8, "custom8", "otherCustom8")
             .list();
     assertThat(returnValues).hasSize(11);
   }
@@ -292,56 +292,56 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_1, "other%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_1, "other%")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_2, "cu%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_2, "cu%")
             .list();
     assertThat(returnValues).hasSize(6);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_3, "other%", "cu%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_3, "other%", "cu%")
             .list();
     assertThat(returnValues).hasSize(11);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_4, "other%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_4, "other%")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_5, "cu%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_5, "cu%")
             .list();
     assertThat(returnValues).hasSize(6);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_6, "other%", "cu%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_6, "other%", "cu%")
             .list();
     assertThat(returnValues).hasSize(11);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_7, "other%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_7, "other%")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createClassificationHistoryQuery()
-            .customAttributeLike(ClassificationHistoryCustomField.CUSTOM_8, "other%", "cu%")
+            .customAttributeLike(ClassificationCustomField.CUSTOM_8, "other%", "cu%")
             .list();
     assertThat(returnValues).hasSize(11);
   }

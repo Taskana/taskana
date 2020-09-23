@@ -7,12 +7,12 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryColumnName;
-import pro.taskana.spi.history.api.events.classification.ClassificationHistoryCustomField;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 
 public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuery {
@@ -181,7 +181,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   @Override
   public ClassificationHistoryQuery customAttributeIn(
-      ClassificationHistoryCustomField customField, String... searchArguments) {
+      ClassificationCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
         custom1In = toUpperCopy(searchArguments);
@@ -287,7 +287,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   @Override
   public ClassificationHistoryQuery customAttributeLike(
-      ClassificationHistoryCustomField customField, String... searchArguments) {
+      ClassificationCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
         custom1Like = toUpperCopy(searchArguments);

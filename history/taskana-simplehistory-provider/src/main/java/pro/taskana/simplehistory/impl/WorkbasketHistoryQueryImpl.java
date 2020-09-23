@@ -12,8 +12,8 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryColumnName;
-import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryCustomField;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 
 public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
@@ -283,7 +283,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public WorkbasketHistoryQuery customAttributeIn(
-      WorkbasketHistoryCustomField customField, String... searchArguments) {
+      WorkbasketCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
         custom1In = toUpperCopy(searchArguments);
@@ -305,7 +305,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public WorkbasketHistoryQuery customAttributeLike(
-      WorkbasketHistoryCustomField customField, String... searchArguments) {
+      WorkbasketCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
         custom1Like = toUpperCopy(searchArguments);
