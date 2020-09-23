@@ -40,7 +40,7 @@
             'expand_more' : 'expand_less'}}</span>
         </button>
         <taskana-task-details-general-fields [task]="task" [saveToggleTriggered]="toggleFormValidation"
-                                             (formValid)="onSubmit()"></taskana-task-details-general-fields>
+                                             (formValid)="onSave()"></taskana-task-details-general-fields>
       </accordion-group>
       <!--Status Details-->
       <accordion-group panelClass="customClass" (isOpenChange)="accordion2State = $event">

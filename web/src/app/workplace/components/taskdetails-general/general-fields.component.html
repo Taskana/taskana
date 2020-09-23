@@ -82,6 +82,9 @@
           <taskana-shared-dropdown [list]="classifications" (performClassification)="changedClassification($event)"
                                    [itemSelected]="task?.classificationSummary"
                                    id="classification"></taskana-shared-dropdown>
+          <taskana-shared-field-error-display [displayError]="isClassificationEmpty"
+                                              errorMessage="* Classification is required">
+          </taskana-shared-field-error-display>
         </div>
         <div class="form-group col-xs-4">
           <label for="task-due" class="control-label">Due date</label>
