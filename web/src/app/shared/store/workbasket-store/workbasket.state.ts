@@ -121,7 +121,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
           );
 
-          this.selectWorkbasket(ctx, workbasketUpdated.workbasketId);
+          ctx.dispatch(new SelectWorkbasket(workbasketUpdated.workbasketId));
           this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
         },
         (error) => {
