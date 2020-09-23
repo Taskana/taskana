@@ -7,7 +7,6 @@ import {
   ViewChild,
   SimpleChanges,
   OnChanges,
-  HostListener,
   OnDestroy
 } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
@@ -44,6 +43,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
   toggleValidationMap = new Map<string, boolean>();
   requestInProgress = false;
   classifications: Classification[];
+  isClassificationEmpty: boolean;
 
   readonly lengthError = 'You have reached the maximum length';
   inputOverflowMap = new Map<string, boolean>();
@@ -77,11 +77,6 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
     }
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   isFieldValid(field: string): boolean {
     return this.formsValidatorService.isFieldValid(this.taskForm, field);
   }
@@ -92,24 +87,33 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
     }
   }
 
+  changedClassification(itemSelected: Classification) {
+    this.task.classificationSummary = itemSelected;
+    this.isClassificationEmpty = false;
+  }
+
   private validate() {
+    this.isClassificationEmpty = typeof this.task.classificationSummary === 'undefined';
     this.formsValidatorService.formSubmitAttempt = true;
     this.formsValidatorService.validateFormInformation(this.taskForm, this.toggleValidationMap).then((value) => {
-      if (value) {
+      if (value && !this.isClassificationEmpty) {
         this.formValid.emit(true);
       }
     });
   }
 
-  changedClassification(itemSelected: Classification) {
-    this.task.classificationSummary = itemSelected;
+  private getClassificationByDomain() {
+    this.requestInProgress = true;
+    this.classificationService
+      .getClassificationsByDomain(this.domainService.getSelectedDomainValue())
+      .then((classificationPagingList) => {
+        this.classifications = classificationPagingList.classifications;
+      });
+    this.requestInProgress = false;
   }
 
-  private async getClassificationByDomain() {
-    this.requestInProgress = true;
-    this.classifications = (
-      await this.classificationService.getClassificationsByDomain(this.domainService.getSelectedDomainValue())
-    ).classifications;
-    this.requestInProgress = false;
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

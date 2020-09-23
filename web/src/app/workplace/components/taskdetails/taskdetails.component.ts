@@ -88,10 +88,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit() {
-    this.onSave();
-  }
-
   openTask() {
     this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], { relativeTo: this.route.parent });
   }
