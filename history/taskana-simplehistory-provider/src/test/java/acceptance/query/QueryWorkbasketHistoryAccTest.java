@@ -13,9 +13,9 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryColumnName;
-import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryCustomField;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 
 /** Test for Workbasket History queries. */
 class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
@@ -56,7 +56,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
             .createWorkbasketHistoryQuery()
             .eventTypeIn(WorkbasketHistoryEventType.CREATED.getName())
             .domainLike("%A")
-            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_1, "otherCustom1")
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_1, "otherCustom1")
             .orderByCreated(SortDirection.DESCENDING);
 
     List<WorkbasketHistoryEvent> results = query.list();
@@ -153,28 +153,28 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_1, "custom1")
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_1, "custom1")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_2, "custom2")
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_2, "custom2")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_3, "custom3")
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_3, "custom3")
             .list();
     assertThat(returnValues).hasSize(5);
 
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .customAttributeIn(WorkbasketHistoryCustomField.CUSTOM_4, "custom4")
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_4, "custom4")
             .list();
     assertThat(returnValues).hasSize(5);
 
@@ -222,7 +222,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .customAttributeLike(WorkbasketHistoryCustomField.CUSTOM_1, "other%")
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_1, "other%")
             .list();
     assertThat(returnValues).hasSize(5);
 

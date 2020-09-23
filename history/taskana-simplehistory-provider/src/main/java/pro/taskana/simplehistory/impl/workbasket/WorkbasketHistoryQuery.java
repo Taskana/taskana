@@ -3,8 +3,8 @@ package pro.taskana.simplehistory.impl.workbasket;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryCustomField;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 
 /** HistoryQuery for generating dynamic sql. */
 public interface WorkbasketHistoryQuery
@@ -123,7 +123,7 @@ public interface WorkbasketHistoryQuery
    * @return the query
    */
   WorkbasketHistoryQuery customAttributeIn(
-      WorkbasketHistoryCustomField customField, String... searchArguments);
+      WorkbasketCustomField customField, String... searchArguments);
 
   /**
    * Add the values of custom attributes for pattern matching to your query. They will be compared
@@ -135,7 +135,7 @@ public interface WorkbasketHistoryQuery
    * @return the query
    */
   WorkbasketHistoryQuery customAttributeLike(
-      WorkbasketHistoryCustomField customField, String... searchArguments);
+      WorkbasketCustomField customField, String... searchArguments);
 
   /**
    * Add your workbasketId to your query. It will be compared in SQL with an LIKE. If you use a

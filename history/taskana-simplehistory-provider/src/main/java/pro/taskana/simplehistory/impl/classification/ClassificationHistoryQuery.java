@@ -1,9 +1,9 @@
 package pro.taskana.simplehistory.impl.classification;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.spi.history.api.events.classification.ClassificationHistoryCustomField;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 
 /** HistoryQuery for generating dynamic sql. */
@@ -139,7 +139,7 @@ public interface ClassificationHistoryQuery
    * @return the query
    */
   ClassificationHistoryQuery customAttributeIn(
-      ClassificationHistoryCustomField customField, String... searchArguments);
+      ClassificationCustomField customField, String... searchArguments);
 
   /**
    * Add your eventType to your query. It will be compared in SQL with an LIKE. If you use a
@@ -259,7 +259,7 @@ public interface ClassificationHistoryQuery
    * @return the query
    */
   ClassificationHistoryQuery customAttributeLike(
-      ClassificationHistoryCustomField customField, String... searchArguments);
+      ClassificationCustomField customField, String... searchArguments);
 
   /**
    * Sort the query result by eventType.

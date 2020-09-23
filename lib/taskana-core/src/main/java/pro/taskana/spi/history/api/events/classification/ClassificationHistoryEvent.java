@@ -63,7 +63,7 @@ public class ClassificationHistoryEvent {
     this.details = details;
   }
 
-  public void setCustomAttribute(ClassificationHistoryCustomField customField, String value) {
+  public void setCustomAttribute(ClassificationCustomField customField, String value) {
     switch (customField) {
       case CUSTOM_1:
         custom1 = value;
@@ -94,7 +94,7 @@ public class ClassificationHistoryEvent {
     }
   }
 
-  public String getCustomAttribute(ClassificationHistoryCustomField customField) {
+  public String getCustomAttribute(ClassificationCustomField customField) {
     switch (customField) {
       case CUSTOM_1:
         return custom1;

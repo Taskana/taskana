@@ -51,7 +51,7 @@ public class WorkbasketHistoryEvent {
     orgLevel4 = workbasket.getOrgLevel4();
   }
 
-  public void setCustomAttribute(WorkbasketHistoryCustomField customField, String value) {
+  public void setCustomAttribute(WorkbasketCustomField customField, String value) {
     switch (customField) {
       case CUSTOM_1:
         custom1 = value;
@@ -70,7 +70,7 @@ public class WorkbasketHistoryEvent {
     }
   }
 
-  public String getCustomAttribute(WorkbasketHistoryCustomField customField) {
+  public String getCustomAttribute(WorkbasketCustomField customField) {
     switch (customField) {
       case CUSTOM_1:
         return custom1;
