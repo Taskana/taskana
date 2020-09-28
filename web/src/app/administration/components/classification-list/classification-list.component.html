@@ -22,33 +22,29 @@
 	</li>
 
 	<!-- FILTER -->
-	<div class="col-xs-2 category-filter">
-		<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdown-classification-filter" data-toggle="dropdown"
-		 aria-haspopup="true" aria-expanded="true">
-			<svg-icon class="blue selected-category" *ngIf="selectedCategory else category_unselected" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
-			 data-toggle="tooltip"></svg-icon>
-			<ng-template #category_unselected>
-				<svg-icon data-toggle="tooltip" title="All" class="blue no-selected-category" src="./assets/icons/asterisk.svg"></svg-icon>
-			</ng-template>
-		</button>
-		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
-			<li>
-				<a class="category-all" type="button" (click)="selectCategory('');" data-toggle="tooltip">
-					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
-					All
-				</a>
-				<a class="category-list" *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip">
-					<svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
-					{{category}}
-				</a>
-			</li>
-		</ul>
-	</div>
-	<div class="col-xs-8">
+	<div class="category-filter">
+
+    <mat-form-field>
+      <mat-select [(value)]="selectedCategory">
+        <mat-select-trigger> <svg-icon class="blue" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
+          </mat-select-trigger>
+        <mat-option value="">
+          <svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
+          All
+        </mat-option>
+        <mat-option *ngFor="let category of categories$ | async" value="{{category}}">
+          <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+          {{category}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+	<div>
 		<input class="filter-input" [ngModel]="inputValue" (ngModelChange)="inputValue = $event" placeholder="Filter classifications">
 	</div>
 
-	<div class="col-xs-12 horizontal-bottom-divider"></div>
+	<div class="horizontal-bottom-divider"></div>
 
 	<!-- CLASSIFICATION TREE -->
 	<taskana-shared-spinner class="col-xs-12" [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>

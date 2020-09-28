@@ -34,6 +34,8 @@ import { WorkbasketDefinitionService } from './services/workbasket-definition.se
 import { ImportExportService } from './services/import-export.service';
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
 import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 const MODULES = [
   CommonModule,
@@ -66,7 +68,7 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatRadioModule],
+  imports: [MODULES, MatRadioModule, MatFormFieldModule, MatSelectModule],
   providers: [
     ClassificationDefinitionService,
     WorkbasketDefinitionService,
