@@ -1,5 +1,6 @@
-.classification-list-full-height {
+.classification-list {
   height: calc(100vh - 55px);
+  min-width: 30vw;
 }
 
 .list-group-item {
