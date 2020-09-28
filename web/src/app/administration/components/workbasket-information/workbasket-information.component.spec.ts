@@ -25,7 +25,12 @@ import { ACTION } from '../../../shared/models/action';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MarkWorkbasketForDeletion, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import {
+  MarkWorkbasketForDeletion,
+  SaveNewWorkbasket,
+  SelectWorkbasket,
+  UpdateWorkbasket
+} from '../../../shared/store/workbasket-store/workbasket.actions';
 import {
   selectedWorkbasketMock,
   engineConfigurationMock,
@@ -53,13 +58,15 @@ class IconTypeStub {
   @Input() text: string;
 }
 
+const workbasketMock = { workbasketId: 'ID', key: 'KEY' };
 const triggerWorkbasketSavedFn = jest.fn().mockReturnValue(true);
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
     triggerWorkBasketSaved: triggerWorkbasketSavedFn,
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
-    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
+    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+    getWorkBasket: jest.fn().mockReturnValue(of(workbasketMock))
   })
 );
 
@@ -192,7 +199,7 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 
-  it('should save workbasket when workbasketId there', async(() => {
+  it('should save workbasket when workbasketId exists', async(() => {
     component.workbasket = { ...selectedWorkbasketMock };
     component.workbasket.workbasketId = '1';
     component.action = ACTION.COPY;
@@ -203,12 +210,25 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasketClone).toMatchObject(component.workbasket);
   }));
 
-  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', async(() => {
-    let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
-    component.onRemoveConfirmed();
-    expect(actionDispatched).toBe(true);
-  }));
+  it('should select the newly created workbasket when the new workbasket is saved', async () => {
+    let saveActionDispatched = false;
+    let selectActionDispatched = false;
+    actions$.pipe(ofActionDispatched(SaveNewWorkbasket)).subscribe(() => (saveActionDispatched = true));
+    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (selectActionDispatched = true));
+    const workbasketServiceSpy = TestBed.inject(WorkbasketService);
+    const getWorkbasketSpy = jest.spyOn(workbasketServiceSpy, 'getWorkBasket');
+
+    component.postNewWorkbasket();
+
+    expect(saveActionDispatched).toBe(true);
+    expect(selectActionDispatched).toBe(true);
+    expect(getWorkbasketSpy).toHaveBeenCalled();
+
+    const selectedWorkbasket = store.selectSnapshot((state) => state.workbasket.selectedWorkbasket);
+    const action = store.selectSnapshot((state) => state.workbasket.action);
+    expect(selectedWorkbasket).toBe(workbasketMock);
+    expect(action).toBe(ACTION.READ);
+  });
 
   it('should create new workbasket when workbasketId is undefined', () => {
     component.workbasket.workbasketId = undefined;
@@ -216,4 +236,11 @@ describe('WorkbasketInformationComponent', () => {
     component.onSave();
     expect(postNewWorkbasketSpy).toHaveBeenCalled();
   });
+
+  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', async(() => {
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
+    component.onRemoveConfirmed();
+    expect(actionDispatched).toBe(true);
+  }));
 });
