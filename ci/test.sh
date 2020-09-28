@@ -77,7 +77,8 @@ function main() {
 
     ### TEST ###
     (cd $REL/../web && npm run test -- --coverageReporters text-summary)
-    (cd $REL/../web && npm run e2e -- --config-file ../ci/cypress.json)
+    ### TEMP REMOVE CYPRESS TESTS ###
+    ### (cd $REL/../web && npm run e2e -- --config-file ../ci/cypress.json) ###
 
     ### CLEANUP ###
     jobs -p | xargs -rn10 kill

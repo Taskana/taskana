@@ -3,7 +3,7 @@
     <div class="row ">
         <router-outlet></router-outlet>
         <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
-        <taskana-shared-progress-bar [ngClass]="{hidden: currentProgressValue === 0}" currentValue={{currentProgressValue}}></taskana-shared-progress-bar>
+        <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}></taskana-shared-progress-bar>
     </div>
   <taskana-shared-type-ahead></taskana-shared-type-ahead>
 </div>
