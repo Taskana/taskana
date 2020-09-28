@@ -3,7 +3,7 @@
 	<!-- ACTION TOOLBAR -->
 	<li class="list-group-item tab-align" id="wb-action-toolbar">
 		<div class="row">
-			<div class="col-xs-6 btn-group">
+			<div class="btn-group">
 
 				<button class="btn btn-default add-classification-button" type="button" (click)="addClassification()" data-toggle="tooltip" title="Add">
 					<span class="material-icons md-20 green-blue">add_circle_outline</span>
@@ -12,8 +12,9 @@
 				<taskana-administration-import-export
 						class ="btn-group" [currentSelection]="taskanaType.CLASSIFICATIONS">
 				</taskana-administration-import-export>
+
 			</div>
-			<div class="col-xs-6">
+			<div class="">
 				<taskana-administration-classification-types-selector
 						class="pull-right">
 				</taskana-administration-classification-types-selector>
@@ -22,33 +23,28 @@
 	</li>
 
 	<!-- FILTER -->
-	<div class="col-xs-2 category-filter">
-		<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdown-classification-filter" data-toggle="dropdown"
-		 aria-haspopup="true" aria-expanded="true">
-			<svg-icon class="blue selected-category" *ngIf="selectedCategory else category_unselected" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
-			 data-toggle="tooltip"></svg-icon>
-			<ng-template #category_unselected>
-				<svg-icon data-toggle="tooltip" title="All" class="blue no-selected-category" src="./assets/icons/asterisk.svg"></svg-icon>
-			</ng-template>
-		</button>
-		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
-			<li>
-				<a class="category-all" type="button" (click)="selectCategory('');" data-toggle="tooltip">
-					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
-					All
-				</a>
-				<a class="category-list" *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip">
-					<svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
-					{{category}}
-				</a>
-			</li>
-		</ul>
-	</div>
-	<div class="col-xs-8">
+	<div class="category-filter">
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <svg-icon class="blue categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="selectCategory('')">
+        <svg-icon class="blue" src="./assets/icons/asterisk.svg" [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
+        <span>All</span>
+      </button>
+      <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
+        <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+        <span> {{category}}</span>
+      </button>
+    </mat-menu>
+
+  </div>
+	<div>
 		<input class="filter-input" [ngModel]="inputValue" (ngModelChange)="inputValue = $event" placeholder="Filter classifications">
 	</div>
 
-	<div class="col-xs-12 horizontal-bottom-divider"></div>
+	<div class="horizontal-bottom-divider"></div>
 
 	<!-- CLASSIFICATION TREE -->
 	<taskana-shared-spinner class="col-xs-12" [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>

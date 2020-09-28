@@ -29,6 +29,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   requestInProgress = true;
   inputValue: string;
   selectedCategory = '';
+  //  selectedValue = 'all';
 
   @Select(ClassificationSelectors.classificationTypes) classificationTypes$: Observable<string[]>;
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
@@ -91,11 +92,14 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   getCategoryIcon(category: string): Observable<Pair> {
     return this.categoryIcons$.pipe(
-      map((iconMap) =>
-        iconMap[category]
+      map((iconMap) => {
+        if (category === '') {
+          return new Pair(iconMap['all'], 'All');
+        }
+        return iconMap[category]
           ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration')
-      )
+          : new Pair(iconMap.missing, 'Category does not match with the configuration');
+      })
     );
   }
 
