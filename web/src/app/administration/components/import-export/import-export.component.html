@@ -1,29 +1,23 @@
 
-<button mat-flat-button [ngClass]="{disabled: uploadservice?.isInUse}" (click)="selectedFile.click()" title="Import">
+<button mat-flat-button [ngClass]="{disabled: uploadService?.isInUse}" (click)="selectedFile.click()" title="Import">
   Import
   <mat-icon>cloud_upload</mat-icon>
 </button>
 
-<form class="hidden" id="upload_form" enctype="multipart/form-data" method="post">
+<form class="hidden" enctype="multipart/form-data" method="post">
   <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
 </form>
 
-<ul class="dropdown-menu">
-  <li>
-    <a href="javascript:void(0)" class="dropdown-item" (click)="export()">
-      <label>All Domains</label>
-    </a>
-  </li>
-  <div role="separator" class="divider"></div>
-  <li *ngFor="let domain of domains">
-    <a href="javascript:void(0)" class="dropdown-item" (click)="export(domain)">
-      <label>{{domain === '' ? 'Master' : domain}}</label>
-    </a>
-  </li>
-</ul>
-
-<button mat-flat-button [ngClass]="{disabled: uploadservice?.isInUse}" data-toggle="dropdown" title="Export">
+<button mat-flat-button [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
   Export
   <mat-icon>cloud_download</mat-icon>
 </button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item href="javascript:void(0)" (click)="export()">
+    All Domains
+  </button>
+  <button mat-menu-item *ngFor="let domain of domains" href="javascript:void(0)" (click)="export(domain)">
+    {{domain === '' ? 'Master' : domain}}
+  </button>
+</mat-menu>
 
