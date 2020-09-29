@@ -32,6 +32,10 @@
             <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+        </dependency>
+        <dependency>
             <groupId>pro.taskana</groupId>
             <artifactId>taskana-rest-spring-example-common</artifactId>
             <version>${project.version}</version>
