@@ -41,6 +41,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
+import { MatInputModule } from '@angular/material/input';
 
 const MODULES = [
   CommonModule,
@@ -82,7 +83,8 @@ const DECLARATIONS = [
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
-    MatTabsModule
+    MatTabsModule,
+    MatInputModule
   ],
   providers: [
     ClassificationDefinitionService,

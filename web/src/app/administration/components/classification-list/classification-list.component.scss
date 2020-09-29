@@ -1,9 +1,11 @@
 .classification-list {
   height: calc(100vh - 55px);
   min-width: 30vw;
+  margin-left: 16px;
+  padding-right: 16px;
 }
 
-.classification-list_action-toolbar {
+.classification-list__action-toolbar {
   display: flex;
   border: none;
   margin-bottom: 0;
@@ -11,14 +13,24 @@
   padding: 8px 4px 8px 4px;
 }
 
-.classification-list_import-export {
+.classification-list__import-export {
+  display: flex;
+}
+.classification-list__filter {
   display: flex;
 }
 
-input.filter-input {
-  border: solid 1px grey;
-  margin: 10px 2px;
-  height: 32px;
+.filter__category-filter {
+  padding-top: 7px;
+}
+.filter__input {
   width: 100%;
-  padding-left: 10px;
+}
+.filter__input-field {
+  width: 100% !important;
+}
+
+.categories {
+  margin: 0;
+  top: -2px;
 }
