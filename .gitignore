@@ -1,6 +1,7 @@
 # See https://github.com/github/gitignore for more about ignoring files.
 
 ### GENERATED ###
+devcachenpm-cache/
 target/
 .apt_generated/
 .checkstyle
