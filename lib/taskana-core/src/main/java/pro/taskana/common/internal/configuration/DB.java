@@ -51,7 +51,7 @@ public enum DB {
       return null;
     }
     if (isOracleDb(dbProductName)) {
-      return columnValue.equals('Y');
+      return columnValue.equals(1);
     }
     return Boolean.TRUE.equals(columnValue);
   }
