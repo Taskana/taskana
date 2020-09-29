@@ -29,7 +29,6 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   requestInProgress = true;
   inputValue: string;
   selectedCategory = '';
-  //  selectedValue = 'all';
 
   @Select(ClassificationSelectors.classificationTypes) classificationTypes$: Observable<string[]>;
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
@@ -97,6 +96,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
           : new Pair(iconMap.missing, 'Category does not match with the configuration');
       })
     );
+  }
+
+  selectCategory(category: string) {
+    this.selectedCategory = category;
   }
 
   ngOnDestroy() {
