@@ -1,5 +1,6 @@
 package pro.taskana.simplehistory.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -15,12 +16,14 @@ import org.apache.ibatis.session.SqlSessionManager;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
@@ -108,6 +111,16 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     configuration.addMapper(WorkbasketHistoryQueryMapper.class);
     configuration.addMapper(ClassificationHistoryEventMapper.class);
     configuration.addMapper(ClassificationHistoryQueryMapper.class);
+
+    try (Connection connection = taskanaEngineConfiguration.getDatasource().getConnection()) {
+      if (DB.isOracleDb(DB.getDatabaseProductName(connection))) {
+        // Use NULL instead of OTHER when jdbcType is not specified for null values,
+        // otherwise oracle driver will chunck on null values
+        configuration.setJdbcTypeForNull(JdbcType.NULL);
+      }
+    } catch (SQLException sqle) {
+      throw new RuntimeException("Issue detecting DB product name", sqle);
+    }
 
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);

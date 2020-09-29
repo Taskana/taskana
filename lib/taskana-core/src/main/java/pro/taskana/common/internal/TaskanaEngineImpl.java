@@ -279,6 +279,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(ClassificationQueryMapper.class);
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);
+    if (DB.isOracleDb(databaseProductName)) {
+      // Use NULL instead of OTHER when jdbcType is not specified for null values,
+      // otherwise oracle driver will chunck on null values
+      configuration.setJdbcTypeForNull(JdbcType.NULL);
+    }
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }
