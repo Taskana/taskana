@@ -3,7 +3,7 @@
 	<!-- ACTION TOOLBAR -->
 	<li class="list-group-item tab-align" id="wb-action-toolbar">
 		<div class="row">
-			<div class="col-xs-6 btn-group">
+			<div class="btn-group">
 
 				<button class="btn btn-default add-classification-button" type="button" (click)="addClassification()" data-toggle="tooltip" title="Add">
 					<span class="material-icons md-20 green-blue">add_circle_outline</span>
@@ -12,8 +12,9 @@
 				<taskana-administration-import-export
 						class ="btn-group" [currentSelection]="taskanaType.CLASSIFICATIONS">
 				</taskana-administration-import-export>
+
 			</div>
-			<div class="col-xs-6">
+			<div class="">
 				<taskana-administration-classification-types-selector
 						class="pull-right">
 				</taskana-administration-classification-types-selector>
@@ -24,20 +25,19 @@
 	<!-- FILTER -->
 	<div class="category-filter">
 
-    <mat-form-field>
-      <mat-select [(value)]="selectedCategory">
-        <mat-select-trigger> <svg-icon class="blue" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
-          </mat-select-trigger>
-        <mat-option value="">
-          <svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
-          All
-        </mat-option>
-        <mat-option *ngFor="let category of categories$ | async" value="{{category}}">
-          <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
-          {{category}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <svg-icon class="blue categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="selectCategory('')">
+        <svg-icon class="blue" src="./assets/icons/asterisk.svg" [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
+        <span>All</span>
+      </button>
+      <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
+        <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+        <span> {{category}}</span>
+      </button>
+    </mat-menu>
 
   </div>
 	<div>

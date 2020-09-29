@@ -36,6 +36,9 @@ import { ClassificationOverviewComponent } from './components/classification-ove
 import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 const MODULES = [
   CommonModule,
@@ -68,7 +71,15 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatRadioModule, MatFormFieldModule, MatSelectModule],
+  imports: [
+    MODULES,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   providers: [
     ClassificationDefinitionService,
     WorkbasketDefinitionService,
