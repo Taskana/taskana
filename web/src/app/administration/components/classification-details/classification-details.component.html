@@ -2,9 +2,21 @@
   <taskana-shared-spinner [isRunning]="requestInProgress" class="floating"
                           (spinnerIsRunning)="spinnerRunning($event)"></taskana-shared-spinner>
   <div id="classification-details" *ngIf="classification && !spinnerIsRunning">
-    <div id="classification" class="panel panel-default classification">
+    <div id="classification" class="classification">
 
       <!-- TITLE + ACTION BUTTONS -->
+      <section class="classification-details__action-toolbar">
+        <h4 class="panel-header classification-details__headline">{{classification.name}}&nbsp; [{{classification.type}}]
+          <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
+        </h4>
+        <div class="classification-details__action-buttons">
+          <button mat-flat-button >
+            <mat-icon class="blue">save</mat-icon>
+          </button>
+        </div>
+
+      </section>
+
       <div class="panel-heading">
         <div class="pull-right btn-group classification__menu-bar">
           <button type="button" (click)="onSubmit()" class="btn btn-default btn-primary"
@@ -24,9 +36,7 @@
             <span class="material-icons md-20 red">delete</span>
           </button>
         </div>
-        <h4 class="panel-header classification__headline">{{classification.name}}&nbsp; [{{classification.type}}]
-          <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
-        </h4>
+
       </div>
 
       <!-- DETAILED FIELDS -->
