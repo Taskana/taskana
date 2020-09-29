@@ -121,7 +121,9 @@ public interface AttachmentMapper {
 
   @Select(
       "<script> SELECT DISTINCT t.ID, t.PLANNED FROM TASK t "
-          + "LEFT JOIN ATTACHMENT AS a on a.TASK_ID = t.ID"
+          + "LEFT JOIN ATTACHMENT "
+          + "<if test=\"_databaseId != 'oracle'\">AS </if> "
+          + "a on a.TASK_ID = t.ID"
           + " WHERE a.CLASSIFICATION_ID = #{classificationId} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
