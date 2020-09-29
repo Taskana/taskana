@@ -39,6 +39,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 
 const MODULES = [
   CommonModule,
@@ -66,7 +68,8 @@ const DECLARATIONS = [
   ClassificationTypesSelectorComponent,
   ClassificationDetailsComponent,
   ImportExportComponent,
-  AccessItemsManagementComponent
+  AccessItemsManagementComponent,
+  AdministrationOverviewComponent
 ];
 
 @NgModule({
@@ -78,7 +81,8 @@ const DECLARATIONS = [
     MatSelectModule,
     MatMenuModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTabsModule
   ],
   providers: [
     ClassificationDefinitionService,

@@ -12,7 +12,7 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
-  selector: 'app-workbasket-overview',
+  selector: 'taskana-administration-workbasket-overview',
   templateUrl: './workbasket-overview.component.html',
   styleUrls: ['./workbasket-overview.component.scss']
 })

@@ -5,6 +5,7 @@ import { DomainGuard } from 'app/shared/guards/domain.guard';
 import { AccessItemsManagementComponent } from './components/access-items-management/access-items-management.component';
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
 import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
+import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 
 const routes: Routes = [
   {
@@ -61,13 +62,18 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'overview',
+    component: AdministrationOverviewComponent,
+    canActivate: [DomainGuard]
+  },
+  {
     path: '',
-    redirectTo: 'workbaskets',
+    redirectTo: 'overview',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: 'workbaskets'
+    redirectTo: 'overview'
   }
 ];
 

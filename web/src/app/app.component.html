@@ -1,5 +1,6 @@
 <taskana-shared-nav-bar></taskana-shared-nav-bar>
-<div (window:resize)="onResize()" class="container-fluid container-main">
+
+<div (window:resize)="onResize()" class="container-main">
     <div class="d-flex">
         <router-outlet></router-outlet>
         <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
