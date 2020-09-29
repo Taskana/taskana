@@ -2,7 +2,7 @@
            (moveNode)="onMoveNode($event)" (treeDrop)="onDrop($event)">
     <ng-template #treeNodeTemplate let-node let-index="index">
         <span class="text-top">
-            <svg-icon *ngIf="node.data.category" class="blue fa-fw" [src]="(getCategoryIcon(node.data.category) | async)?.name" data-toggle="tooltip"
+            <svg-icon *ngIf="node.data.category" class="fa-fw" [src]="(getCategoryIcon(node.data.category) | async)?.name" data-toggle="tooltip"
                 [title]="(getCategoryIcon(node.data.category) | async)?.text"></svg-icon>
         </span>
         <span>

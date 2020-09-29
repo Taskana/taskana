@@ -26,15 +26,15 @@
 	<div class="category-filter">
 
     <button mat-icon-button [matMenuTriggerFor]="menu">
-      <svg-icon class="blue categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
+      <svg-icon class="categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="selectCategory('')">
-        <svg-icon class="blue" src="./assets/icons/asterisk.svg" [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
+        <svg-icon src="./assets/icons/asterisk.svg" [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
         <span>All</span>
       </button>
       <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-        <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+        <svg-icon class="categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
         <span> {{category}}</span>
       </button>
     </mat-menu>

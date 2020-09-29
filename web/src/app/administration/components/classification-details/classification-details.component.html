@@ -96,12 +96,12 @@
                 <div class="form-group required">
                   <mat-label class="control-label">Category</mat-label>
                   <button mat-icon-button [matMenuTriggerFor]="menu">
-                    <svg-icon class="blue categories" [src]="(getCategoryIcon(this.classification.category) | async)?.name" [title]="(getCategoryIcon(this.classification.category) | async)?.text"></svg-icon>
+                    <svg-icon class="categories" [src]="(getCategoryIcon(this.classification.category) | async)?.name" [title]="(getCategoryIcon(this.classification.category) | async)?.text"></svg-icon>
                     {{this.classification.category}}
                   </button>
                   <mat-menu #menu="matMenu">
                     <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-                      <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+                      <svg-icon class="categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
                       <span> {{category}}</span>
                     </button>
                   </mat-menu>
