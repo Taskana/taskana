@@ -20,11 +20,6 @@ export class ClassificationSelectors {
   }
 
   @Selector([ClassificationState])
-  static selectClassificationTypesObject(state: ClassificationStateModel): CategoriesResponse {
-    return state.classificationTypes;
-  }
-
-  @Selector([ClassificationState])
   static classifications(state: ClassificationStateModel): Classification[] {
     return state.classifications;
   }

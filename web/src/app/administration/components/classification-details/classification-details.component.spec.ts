@@ -334,7 +334,7 @@ describe('ClassificationDetailsComponent', () => {
 
   it('should select category when button is clicked', () => {
     component.classification.category = 'A';
-    component.getAvailableCategories = jest.fn().mockImplementation((type) => of(['B', 'C']));
+    // component.getAvailableCategories = jest.fn().mockImplementation((type) => of(['B', 'C']));
     fixture.detectChanges();
     const button = debugElement.nativeElement.querySelector('.detailed-fields__categories');
     expect(button).toBeTruthy();

@@ -43,7 +43,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationType) selectedClassificationType$: Observable<string>;
-  @Select(ClassificationSelectors.selectClassificationTypesObject) classificationTypes$: Observable<CategoriesResponse>;
   @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<Classification>;
   @Select(ClassificationSelectors.getBadgeMessage) badgeMessage$: Observable<string>;
 
@@ -155,13 +154,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   getClassificationCustom(customNumber: number): string {
     return `custom${customNumber}`;
-  }
-
-  getAvailableCategories(type: string): Observable<string[]> {
-    return this.classificationTypes$.pipe(
-      take(1),
-      map((classTypes) => classTypes[type])
-    );
   }
 
   async onSave() {

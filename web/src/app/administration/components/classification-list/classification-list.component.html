@@ -25,7 +25,7 @@
 	<!-- FILTER -->
 	<div class="category-filter">
 
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
       <svg-icon class="blue categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
     </button>
     <mat-menu #menu="matMenu">

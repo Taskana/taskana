@@ -93,36 +93,18 @@
                       errorMessage="* Priority is required">
                   </taskana-shared-field-error-display>
                 </div>
-                <div class="form-group required btn-group col-xs-6">
-                  <label for="classification-category" class="control-label">Category</label>
-                  <div class="dropdown clearfix">
-                    <button class="btn btn-default" type="button" data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="true" id="classification-category">
-                      <span class="text-top">
-                        <svg-icon class="blue fa-fw"
-                                  src="{{(getCategoryIcon(classification.category) | async)?.name}}"
-                                  data-toggle="tooltip"
-                                  [title]="(getCategoryIcon(classification.category) | async)?.text"></svg-icon>
-                      </span>
-                      {{classification.category}}
-                      <span class="caret"></span>
+                <div class="form-group required">
+                  <mat-label class="control-label">Category</mat-label>
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <svg-icon class="blue categories" [src]="(getCategoryIcon(this.classification.category) | async)?.name" [title]="(getCategoryIcon(this.classification.category) | async)?.text"></svg-icon>
+                    {{this.classification.category}}
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
+                      <svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+                      <span> {{category}}</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                      <li>
-                        <a class="detailed-fields__categories" *ngFor="let category of getAvailableCategories(classification.type) | async"
-                           (click)="selectCategory(category)">
-                          <span class="text-top">
-                            <svg-icon class="blue fa-fw"
-                                      src="{{(getCategoryIcon(category) | async)?.name}}"
-                                      data-toggle="tooltip"
-                                      [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
-                            {{category}}
-                          </span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  </mat-menu>
                 </div>
               </div>
             </div>
