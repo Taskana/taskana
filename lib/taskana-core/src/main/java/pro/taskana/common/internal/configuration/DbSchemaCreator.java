@@ -34,6 +34,10 @@ public class DbSchemaCreator {
   private static final String DB_SCHEMA_DETECTION_POSTGRES =
       SQL + "/postgres/schema-detection-postgres.sql";
 
+  private static final String DB_SCHEMA_ORACLE = SQL + "/oracle/taskana-schema-oracle.sql";
+  private static final String DB_SCHEMA_DETECTION_ORACLE =
+      SQL + "/oracle/schema-detection-oracle.sql";
+
   private final String schemaName;
   private final StringWriter outWriter = new StringWriter();
   private final PrintWriter logWriter = new PrintWriter(outWriter);
@@ -118,13 +122,18 @@ public class DbSchemaCreator {
   private static String selectDbScriptFileName(String dbProductName) {
     return DB.isPostgreSql(dbProductName)
         ? DB_SCHEMA_POSTGRES
-        : DB.isH2(dbProductName) ? DB_SCHEMA_H2 : DB_SCHEMA_DB2;
+        : DB.isH2(dbProductName) ? DB_SCHEMA_H2
+        : DB.isOracleDb(dbProductName) ? DB_SCHEMA_ORACLE
+        : DB_SCHEMA_DB2;
   }
 
   private static String selectDbSchemaDetectionScript(String dbProductName) {
 
     if (DB.isPostgreSql(dbProductName)) {
       return DB_SCHEMA_DETECTION_POSTGRES;
+    }
+    if (DB.isOracleDb(dbProductName)) {
+      return DB_SCHEMA_DETECTION_ORACLE;
     }
     return DB.isH2(dbProductName) ? DB_SCHEMA_DETECTION_H2 : DB_SCHEMA_DETECTION_DB2;
   }

@@ -44,7 +44,10 @@ public class SecurityVerifier {
       String querySecurity =
           String.format(SELECT_SECURITY_FLAG, SECURITY_FLAG_COLUMN_NAME, schemaName);
 
-      if ((boolean) sqlRunner.selectOne(querySecurity).get(SECURITY_FLAG_COLUMN_NAME)
+      if (DB.getDatabaseBooleanValue(
+              sqlRunner.selectOne(querySecurity).get(SECURITY_FLAG_COLUMN_NAME),
+              connection
+      )
           && !securityEnabled) {
 
         LOGGER.error("Tried to start TASKANA in unsecured mode while secured mode is enforced!");
@@ -69,6 +72,11 @@ public class SecurityVerifier {
     try (Connection connection = dataSource.getConnection()) {
 
       String setSecurityFlagSql = String.format(INSERT_SECURITY_FLAG, schemaName, securityEnabled);
+      if (DB.isOracleDb(connection.getMetaData().getDatabaseProductName())) {
+        setSecurityFlagSql = setSecurityFlagSql
+                .replaceAll("(?i)true", "1")
+                .replaceAll("(?i)false", "0");
+      }
 
       try (PreparedStatement preparedStatement = connection.prepareStatement(setSecurityFlagSql)) {
 
