@@ -1,17 +1,7 @@
-<div class="dropdown clearfix btn-group">
-  <button type="button" class="btn btn-default selected-type"> {{classificationTypeSelected$ | async}}</button>
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-    aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <div class="dropdown-menu dropdown-menu-right popup" aria-labelledby="sortingDropdown">
-    <mat-radio-group name="classificationTypeSelector" color="accent" class="radio-group">
-      <mat-radio-button class="classification-types" *ngFor="let classificationType of classificationTypes$ | async"
-                        name="classificationTypeSelector" id="select-{{classificationType}}" [checked]="classificationType === (classificationTypeSelected$ | async)"
-                        (change)="select(classificationType)" [value]="classificationType">
-        {{classificationType}}
-      </mat-radio-button>
-    </mat-radio-group>
-  </div>
-</div>
+<mat-form-field>
+  <mat-select [value]="classificationTypeSelected$ | async">
+    <mat-option class="classification-types" *ngFor="let classificationType of classificationTypes$ | async" [value]="classificationType" (click)="select(classificationType)">
+      {{ classificationType }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
