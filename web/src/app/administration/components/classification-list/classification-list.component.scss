@@ -3,18 +3,16 @@
   min-width: 30vw;
 }
 
-.list-group-item {
-  padding: 5px 0px 2px 1px;
+.classification-list_action-toolbar {
+  display: flex;
   border: none;
+  margin-bottom: 0;
+  border-bottom: 1px dotted #ddd;
+  padding: 8px 4px 8px 4px;
 }
 
-.tab-align {
-  margin-bottom: 0px;
-  border-bottom: 1px dotted #ddd;
-  padding: 8px 12px 8px 4px;
-  & > div {
-    margin: 6px 0px;
-  }
+.classification-list_import-export {
+  display: flex;
 }
 
 input.filter-input {
@@ -23,17 +21,4 @@ input.filter-input {
   height: 32px;
   width: 100%;
   padding-left: 10px;
-}
-
-.category-filter {
-  margin: 7px 2px;
-}
-
-.dropdown-menu-classification {
-  margin-left: 15px;
-  min-width: 0px;
-}
-
-div.category-filter svg-icon {
-  position: initial;
 }

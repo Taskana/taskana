@@ -1,10 +1,13 @@
 
-<button type="button" [ngClass]="{disabled: uploadservice?.isInUse}" (click)="selectedFile.click()" data-toggle="tooltip" title="Import" class="btn btn-default">
-  <span class="material-icons md-20 green-blue">cloud_upload</span>
+<button mat-flat-button [ngClass]="{disabled: uploadservice?.isInUse}" (click)="selectedFile.click()" title="Import">
+  Import
+  <mat-icon>cloud_upload</mat-icon>
 </button>
+
 <form class="hidden" id="upload_form" enctype="multipart/form-data" method="post">
   <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
 </form>
+
 <ul class="dropdown-menu">
   <li>
     <a href="javascript:void(0)" class="dropdown-item" (click)="export()">
@@ -18,6 +21,9 @@
     </a>
   </li>
 </ul>
-<button [ngClass]="{disabled: uploadservice?.isInUse}" type="button" data-toggle="dropdown" title="Export" class="btn btn-default">
-  <span class="material-icons md-20 red">cloud_download</span>
+
+<button mat-flat-button [ngClass]="{disabled: uploadservice?.isInUse}" data-toggle="dropdown" title="Export">
+  Export
+  <mat-icon>cloud_download</mat-icon>
 </button>
+

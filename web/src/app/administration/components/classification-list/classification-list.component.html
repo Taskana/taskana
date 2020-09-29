@@ -1,26 +1,25 @@
 <div class="classification-list">
 
 	<!-- ACTION TOOLBAR -->
-	<li class="list-group-item tab-align" id="wb-action-toolbar">
-		<div class="row">
-			<div class="btn-group">
+  <section class="classification-list_action-toolbar">
 
-				<button class="btn btn-default add-classification-button" type="button" (click)="addClassification()" data-toggle="tooltip" title="Add">
-					<span class="material-icons md-20 green-blue">add_circle_outline</span>
-				</button>
+    <button mat-flat-button (click)="addClassification()">
+      Add
+      <mat-icon>add</mat-icon>
+    </button>
 
-				<taskana-administration-import-export
-						class ="btn-group" [currentSelection]="taskanaType.CLASSIFICATIONS">
-				</taskana-administration-import-export>
+    <taskana-administration-import-export
+      class="classification-list_import-export" [currentSelection]="taskanaType.CLASSIFICATIONS">
+    </taskana-administration-import-export>
 
-			</div>
-			<div class="">
-				<taskana-administration-classification-types-selector
-						class="pull-right">
-				</taskana-administration-classification-types-selector>
-			</div>
-		</div>
-	</li>
+    <button mat-flat-button>
+      <taskana-administration-classification-types-selector
+        class="pull-right">
+      </taskana-administration-classification-types-selector>
+    </button>
+
+  </section>
+
 
 	<!-- FILTER -->
 	<div class="category-filter">
