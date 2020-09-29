@@ -32,6 +32,10 @@ final class SqlReplacer {
     return dbProductName != null && dbProductName.contains("DB2");
   }
 
+  static boolean isOracle(String dbProductName) {
+    return dbProductName != null && dbProductName.contains("Oracle");
+  }
+
   /**
    * This method resolves the custom sql function defined through this regex: {@value
    * RELATIVE_DATE_REGEX}. Its parameter is a digit representing the relative offset of a given
@@ -76,9 +80,16 @@ final class SqlReplacer {
   private static String parseAndReplace(
       BufferedReader bufferedReader, ZonedDateTime now, String dbProductname) {
     boolean isDb2 = isDb2(dbProductname);
+    boolean isOracle = isOracle(dbProductname);
     String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-    if (isDb2) {
+    if (isDb2 || isOracle) {
       sql = replaceBooleanWithInteger(sql);
+    }
+
+    if (isOracle) {
+      // Oracle needs to be informed about the timestamp format used in data scripts
+      sql = "ALTER SESSION SET NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF3';\n"
+              + sql;
     }
     return replaceDatePlaceholder(now, sql);
   }

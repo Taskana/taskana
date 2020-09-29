@@ -75,6 +75,8 @@ public class SampleDataGenerator {
     return new StringReader(
         DB.isPostgreSql(dbProductName)
             ? "SET search_path TO " + schemaName + ";"
-            : "SET SCHEMA " + schemaName + ";");
+            : DB.isOracleDb(dbProductName)
+                ? "ALTER SESSION SET CURRENT_SCHEMA = " + schemaName + ";"
+                : "SET SCHEMA " + schemaName + ";");
   }
 }
