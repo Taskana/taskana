@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'taskana-administration-overview',
@@ -8,7 +9,10 @@ import { Component, Input, OnInit } from '@angular/core';
 export class AdministrationOverviewComponent implements OnInit {
   @Input() selectedTab = '';
 
-  constructor() {}
+  constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    const urlPaths = this.router.url.split('/');
+    this.selectedTab = urlPaths[urlPaths.length - 1];
+  }
 }
