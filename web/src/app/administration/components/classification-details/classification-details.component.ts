@@ -28,7 +28,8 @@ import {
   RestoreSelectedClassification,
   SaveModifiedClassification,
   SelectClassification,
-  CopyClassification
+  CopyClassification,
+  DeselectClassification
 } from '../../../shared/store/classification-store/classification.actions';
 
 @Component({
@@ -124,6 +125,10 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.store.dispatch(new CopyClassification());
     }
+  }
+
+  onCloseClassification() {
+    this.store.dispatch(new DeselectClassification());
   }
 
   selectCategory(category: string) {

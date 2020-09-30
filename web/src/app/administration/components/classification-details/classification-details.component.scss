@@ -4,9 +4,44 @@
   width: 70vw;
 }
 .classification-details__action-toolbar {
-  padding: 8px 15px 4px 15px;
+  padding: 8px 15px 15px 15px;
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
+
+.action-toolbar__button {
+  background-color: $light-grey;
+}
+
+.action-toolbar__dropdown {
+  border-color: $grey;
+  border-bottom-style: solid;
+  border-width: 1px;
+}
+
+.action-toolbar__save-button {
+  background-color: $aquamarine;
+  color: white;
+}
+
+.button__green-blue {
+  color: $aquamarine;
+}
+
+.button__red {
+  color: $invalid;
+}
+
+.classification-details__subheading {
+  padding-left: 15px;
+  margin-bottom: 0;
+}
+
+.classification-details__horizontal-line {
+  margin: 5px;
+}
+
 .custom-field-row {
   display: flex;
   flex-wrap: wrap;
