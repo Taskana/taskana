@@ -1,10 +1,12 @@
-<nav mat-tab-nav-bar>
-  <a mat-tab-link routerLink="/taskana/administration/workbaskets" [active]="selectedTab == 'workbaskets'"
-     (click)="selectedTab = 'workbaskets'">Workbaskets</a>
-  <a mat-tab-link routerLink="/taskana/administration/classifications" [active]="selectedTab == 'classifications'"
-     (click)="selectedTab = 'classifications'">Classifications</a>
-  <a mat-tab-link routerLink="/taskana/administration/access-items-management"
-     [active]="selectedTab == 'access-items-management'" (click)="selectedTab = 'access-items-management'">Access Items
-    Management</a>
-</nav>
-<router-outlet></router-outlet>
+<div class="administration-overview">
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link routerLink="/taskana/administration/workbaskets" [active]="selectedTab == 'workbaskets'"
+       (click)="selectedTab = 'workbaskets'">Workbaskets</a>
+    <a mat-tab-link routerLink="/taskana/administration/classifications" [active]="selectedTab == 'classifications'"
+       (click)="selectedTab = 'classifications'">Classifications</a>
+    <a mat-tab-link routerLink="/taskana/administration/access-items-management"
+       [active]="selectedTab == 'access-items-management'" (click)="selectedTab = 'access-items-management'">Access Items
+      Management</a>
+  </nav>
+  <router-outlet></router-outlet>
+</div>

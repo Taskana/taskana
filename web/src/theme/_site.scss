@@ -483,6 +483,9 @@ li.list-group-item:hover {
   background-color: white;
 }
 
+.node-content-wrapper {
+  margin: 0 18px !important;
+}
 /* our header has a z-index of 1031 and the default z-index of the
  mat-dialog is just 1000 which leads to undesirable overlap*/
 .cdk-overlay-container {

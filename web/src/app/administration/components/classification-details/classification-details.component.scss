@@ -1,10 +1,12 @@
 @import 'src/theme/_colors.scss';
 
 .classification-details {
-  width: 70vw;
+  position: relative;
+  margin: auto;
+  flex: 1;
 }
 .classification-details__action-toolbar {
-  padding: 8px 15px 15px 15px;
+  padding: 8px 24px 15px 24px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;

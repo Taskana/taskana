@@ -1,5 +1,10 @@
 .classification-overview {
-  width: 100vw;
   display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow: auto;
+  align-items: stretch;
 }
-
+taskana-administration-classification-details {
+  width: 100%
+}
