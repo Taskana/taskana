@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'taskana-administration-overview',
@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./administration-overview.component.scss']
 })
 export class AdministrationOverviewComponent implements OnInit {
+  @Input() selectedTab = '';
+
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit() {}
 }

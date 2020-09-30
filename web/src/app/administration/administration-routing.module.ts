@@ -9,71 +9,73 @@ import { AdministrationOverviewComponent } from './components/administration-ove
 
 const routes: Routes = [
   {
-    path: 'workbaskets',
-    component: WorkbasketOverviewComponent,
-    canActivate: [DomainGuard],
-    children: [
-      {
-        path: '',
-        component: WorkbasketOverviewComponent,
-        outlet: 'master'
-      },
-      {
-        path: ':id',
-        component: WorkbasketOverviewComponent,
-        outlet: 'detail'
-      },
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ]
-  },
-  {
-    path: 'classifications',
-    component: ClassificationOverviewComponent,
-    canActivate: [DomainGuard],
-    children: [
-      {
-        path: '',
-        component: ClassificationOverviewComponent,
-        outlet: 'master'
-      },
-      {
-        path: ':id',
-        component: ClassificationOverviewComponent,
-        outlet: 'detail'
-      },
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ]
-  },
-  {
-    path: 'access-items-management',
-    component: AccessItemsManagementComponent,
-    canActivate: [DomainGuard],
-    children: [
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ]
-  },
-  {
-    path: 'overview',
+    path: '',
     component: AdministrationOverviewComponent,
-    canActivate: [DomainGuard]
+    canActivate: [DomainGuard],
+    children: [
+      {
+        path: 'workbaskets',
+        component: WorkbasketOverviewComponent,
+        canActivate: [DomainGuard],
+        children: [
+          {
+            path: '',
+            component: WorkbasketOverviewComponent,
+            outlet: 'master'
+          },
+          {
+            path: ':id',
+            component: WorkbasketOverviewComponent,
+            outlet: 'detail'
+          },
+          {
+            path: '**',
+            redirectTo: ''
+          }
+        ]
+      },
+      {
+        path: 'classifications',
+        component: ClassificationOverviewComponent,
+        canActivate: [DomainGuard],
+        children: [
+          {
+            path: '',
+            component: ClassificationOverviewComponent,
+            outlet: 'master'
+          },
+          {
+            path: ':id',
+            component: ClassificationOverviewComponent,
+            outlet: 'detail'
+          },
+          {
+            path: '**',
+            redirectTo: ''
+          }
+        ]
+      },
+      {
+        path: 'access-items-management',
+        component: AccessItemsManagementComponent,
+        canActivate: [DomainGuard],
+        children: [
+          {
+            path: '**',
+            redirectTo: ''
+          }
+        ]
+      }
+    ]
   },
   {
     path: '',
-    redirectTo: 'overview',
+    redirectTo: '',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: 'overview'
+    redirectTo: ''
   }
 ];
 

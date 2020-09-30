@@ -3,7 +3,8 @@
 	<!-- ACTION TOOLBAR -->
   <section class="classification-list__action-toolbar">
     <button mat-flat-button class="mr-1" color="primary" (click)="addClassification()">
-      <mat-icon>add</mat-icon>
+      Add
+      <mat-icon class="md-20">add</mat-icon>
     </button>
 
     <taskana-administration-import-export
@@ -17,7 +18,7 @@
 	<!-- FILTER -->
   <div class="classification-list__filter">
     <div class="filter__category-filter">
-      <button mat-icon-button [matMenuTriggerFor]="menu">
+      <button mat-icon-button class="mr-2" [matMenuTriggerFor]="menu">
         <mat-icon>filter_list</mat-icon>
 
 <!--        <svg-icon class="categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>-->
