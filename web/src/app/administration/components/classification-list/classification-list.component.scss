@@ -9,7 +9,7 @@
   display: flex;
   border: none;
   margin-bottom: 0;
-  padding: 8px 4px 8px 4px;
+  padding: 8px 4px 0 4px;
 }
 
 .classification-list__import-export {
@@ -24,6 +24,7 @@
 }
 .filter__input {
   width: 100%;
+  margin-right: 12px;
 }
 .filter__input-field {
   width: 100% !important;

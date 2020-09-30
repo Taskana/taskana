@@ -8,7 +8,7 @@
   <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
 </form>
 
-<button mat-flat-button [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
+<button mat-flat-button class="mr-1" [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
   Export
   <mat-icon>cloud_download</mat-icon>
 </button>

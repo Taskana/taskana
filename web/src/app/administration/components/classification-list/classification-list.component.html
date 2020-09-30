@@ -2,7 +2,7 @@
 
 	<!-- ACTION TOOLBAR -->
   <section class="classification-list__action-toolbar">
-    <button mat-flat-button color="primary" (click)="addClassification()">
+    <button mat-flat-button class="mr-1" color="primary" (click)="addClassification()">
       <mat-icon>add</mat-icon>
     </button>
 
@@ -10,11 +10,7 @@
       class="classification-list__import-export" [currentSelection]="taskanaType.CLASSIFICATIONS">
     </taskana-administration-import-export>
 
-    <button mat-flat-button>
-      <taskana-administration-classification-types-selector
-        class="pull-right">
-      </taskana-administration-classification-types-selector>
-    </button>
+
   </section>
 
 
@@ -22,7 +18,9 @@
   <div class="classification-list__filter">
     <div class="filter__category-filter">
       <button mat-icon-button [matMenuTriggerFor]="menu">
-        <svg-icon class="categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>
+        <mat-icon>filter_list</mat-icon>
+
+<!--        <svg-icon class="categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>-->
       </button>
 
       <mat-menu #menu="matMenu">
@@ -43,9 +41,12 @@
         <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event">
       </mat-form-field>
     </div>
+
+    <taskana-administration-classification-types-selector
+      class="pull-right">
+    </taskana-administration-classification-types-selector>
   </div>
 
-	<div class="horizontal-bottom-divider"></div>
 
 	<!-- CLASSIFICATION TREE -->
 	<taskana-shared-spinner [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>
