@@ -1,5 +1,5 @@
 
-<button mat-flat-button [ngClass]="{disabled: uploadService?.isInUse}" (click)="selectedFile.click()" title="Import">
+<button mat-button  matTooltip="Import classification" [ngClass]="{disabled: uploadService?.isInUse}" (click)="selectedFile.click()" title="Import">
   Import
   <mat-icon>cloud_upload</mat-icon>
 </button>
@@ -8,7 +8,7 @@
   <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
 </form>
 
-<button mat-flat-button class="mr-1" [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
+<button mat-button class="mr-1" matTooltip="Export classification" [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
   Export
   <mat-icon>cloud_download</mat-icon>
 </button>

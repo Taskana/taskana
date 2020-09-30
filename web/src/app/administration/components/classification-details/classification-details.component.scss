@@ -1,23 +1,18 @@
 @import 'src/theme/_colors.scss';
 
-.classification-details {
-  position: relative;
-  margin: auto;
-  flex: 1;
-}
 .classification-details__action-toolbar {
-  padding: 8px 24px 15px 24px;
+  padding: 16px 24px 16px 24px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .action-toolbar__button {
-  background-color: $light-grey;
+  margin-right: 6px;
 }
 
 .action-toolbar__dropdown {
-  border-color: $grey;
+  border-color: $transparent-grey;
   border-bottom-style: solid;
   border-width: 1px;
 }

@@ -1,6 +1,6 @@
 .classification-list {
   height: calc(100vh - 55px);
-  min-width: 30vw;
+  width: 450px;
   margin-left: 16px;
   padding-right: 16px;
 }
@@ -31,6 +31,7 @@
 }
 
 .categories {
+  fill: #555;
   margin: 0;
   top: -2px;
 }

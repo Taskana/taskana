@@ -11,30 +11,30 @@
         </h4>
 
         <div>
-        <button mat-stroked-button class="action-toolbar__button action-toolbar__save-button" (click)="onSubmit()">
+        <button mat-button class="action-toolbar__button action-toolbar__save-button" matTooltip="Save changes in current classification" (click)="onSubmit()">
           Save
           <mat-icon>save</mat-icon>
         </button>
 
-        <button mat-stroked-button class="action-toolbar__button" (click)="onRestore()">
+        <button mat-stroked-button class="action-toolbar__button" matTooltip="Revert changes to previous saved state" (click)="onRestore()">
           Undo Changes
           <mat-icon class="button__green-blue">restore</mat-icon>
         </button>
 
-        <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" class="action-toolbar__button">
+        <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button">
           <mat-icon>more_vert</mat-icon>
         </button>
 
         <mat-menu #buttonMenu="matMenu">
-          <button mat-menu-item class="action-toolbar__button action-toolbar__dropdown" (click)="onCopy()">
+          <button mat-menu-item class="action-toolbar__button action-toolbar__dropdown" matTooltip="Copy current values to create new classification" (click)="onCopy()">
             <mat-icon class="button__green-blue">content_copy</mat-icon>
             <span>Copy</span>
           </button>
-          <button mat-menu-item class="action-toolbar__button action-toolbar__dropdown" (click)="onRemoveClassification()">
+          <button mat-menu-item class="action-toolbar__button action-toolbar__dropdown" matTooltip="Delete this classification" (click)="onRemoveClassification()">
             <mat-icon class="button__red">delete</mat-icon>
             <span>Delete</span>
           </button>
-          <button mat-menu-item style="border-bottom-style: none;" class="action-toolbar__button action-toolbar__dropdown" (click)="onCloseClassification()">
+          <button mat-menu-item style="border-bottom-style: none;" class="action-toolbar__button action-toolbar__dropdown" matTooltip="Close this classification and discard all changes" (click)="onCloseClassification()">
             <mat-icon>close</mat-icon>
             <span>Close</span>
           </button>

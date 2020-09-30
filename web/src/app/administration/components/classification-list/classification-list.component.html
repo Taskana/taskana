@@ -2,7 +2,7 @@
 
 	<!-- ACTION TOOLBAR -->
   <section class="classification-list__action-toolbar">
-    <button mat-flat-button class="mr-1" color="primary" (click)="addClassification()">
+    <button mat-flat-button class="mr-1" color="primary" matTooltip="Create new classification" (click)="addClassification()">
       Add
       <mat-icon class="md-20">add</mat-icon>
     </button>
@@ -18,10 +18,8 @@
 	<!-- FILTER -->
   <div class="classification-list__filter">
     <div class="filter__category-filter">
-      <button mat-icon-button class="mr-2" [matMenuTriggerFor]="menu">
+      <button mat-icon-button class="mr-2" [matMenuTriggerFor]="menu" matTooltip="Filter Category">
         <mat-icon>filter_list</mat-icon>
-
-<!--        <svg-icon class="categories" [src]="(getCategoryIcon(selectedCategory) | async)?.name" [title]="(getCategoryIcon(selectedCategory) | async)?.text"></svg-icon>-->
       </button>
 
       <mat-menu #menu="matMenu">
@@ -37,7 +35,7 @@
     </div>
 
     <div class="filter__input">
-      <mat-form-field floatLabel="never" class="filter__input-field">
+      <mat-form-field floatLabel="auto" class="filter__input-field">
         <mat-label>Filter classification</mat-label>
         <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event">
       </mat-form-field>
