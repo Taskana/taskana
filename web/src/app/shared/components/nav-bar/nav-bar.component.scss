@@ -38,7 +38,7 @@ svg-icon.logo {
   float: left;
   width: 150px;
   height: 50px;
-  padding: 5px;
+  margin-top: -4px;
   position: initial;
 }
 
@@ -92,11 +92,28 @@ h2.navbar-brand {
   cursor: pointer;
 }
 
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.mat-list-base .mat-list-item {
+  color: $grey;
+}
+
+.active{
+  color: white !important;
+}
+
+
 .sidenav {
-  position: fixed;
+  position: absolute;
   z-index: 999;
   box-shadow: none;
-  height: 100%;
+  width: 350px;
   background-color: $dark-green;
   box-shadow: 3px 0px 10px -1px $dark-green;
 }
@@ -114,14 +131,12 @@ h2.navbar-brand {
   font-family: inherit;
   font-weight: 500;
   line-height: 1.1;
-}
-
-.menu,
-.submenu > span {
   padding-left: 12px;
   color: $grey;
   outline: none;
 }
+
+
 .menu.selected,
 .submenu.selected {
   background-color: transparent;
@@ -132,6 +147,17 @@ h2.navbar-brand {
   }
 }
 
+.menu.hover,
+.submenu.hover {
+  background-color: transparent;
+  & > span {
+    padding-left: 10px;
+    border-left: $pallete-green 5px solid;
+    color: white;
+  }
+}
+
+
 .menu > .submenu {
   margin-left: 30px;
 }
@@ -139,7 +165,52 @@ h2.navbar-brand {
 a {
   color: $grey;
   &:hover {
-    color: white;
+    color: white !important;
   }
   text-decoration: none;
+}
+
+.flex-container {
+  display: flex !important;
+  justify-content: space-between;
+}
+
+.flex-buttom {
+  flex-grow: 1;
+}
+
+.flex-logo {
+  flex-grow: 11;
+  position: fixed;
+  left: 40%;
+  transform: translate(-50%,0%);
+
+}
+
+.user-info {
+  margin-top: 30px;
+  margin-bottom: 50px;
+  margin-left: -16px;
+}
+
+.centered {
+  position: fixed;
+  left: 50%;
+}
+
+
+.exit-icon.mat-icon-button {
+  outline: none;
+}
+
+.menu-icon.mat-icon-button {
+  outline: none;
+}
+
+.exit {
+  text-align: end;
+}
+
+.list-pos {
+  margin-left: 30px;
 }

@@ -1,4 +1,5 @@
 <taskana-shared-nav-bar></taskana-shared-nav-bar>
+<<<<<<< HEAD
 
 <div (window:resize)="onResize()" class="">
     <div class="taskana-main">
@@ -6,5 +7,14 @@
         <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
         <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}></taskana-shared-progress-bar>
     </div>
+=======
+<div (window:resize)="onResize()" class="container-fluid container-main">
+  <div class="row ">
+    <router-outlet></router-outlet>
+    <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
+    <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
+    </taskana-shared-progress-bar>
+  </div>
+>>>>>>> eab46a63... TSK-1395: update nav bar
   <taskana-shared-type-ahead></taskana-shared-type-ahead>
 </div>
