@@ -52,6 +52,8 @@ import { HttpClientInterceptor } from './services/http-client-interceptor/http-c
 import { AccessIdsService } from './services/access-ids/access-ids.service';
 import { ToastComponent } from './components/toast/toast.component';
 import { DialogPopUpComponent } from './components/popup/dialog-pop-up.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 const MODULES = [
   CommonModule,
@@ -97,7 +99,7 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatRadioModule],
+  imports: [MODULES, MatRadioModule, MatFormFieldModule, MatInputModule],
   exports: DECLARATIONS,
   providers: [
     {

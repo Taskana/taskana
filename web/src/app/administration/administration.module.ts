@@ -43,6 +43,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 const MODULES = [
   CommonModule,
@@ -86,7 +87,8 @@ const DECLARATIONS = [
     MatButtonModule,
     MatTabsModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDividerModule
   ],
   providers: [
     ClassificationDefinitionService,
