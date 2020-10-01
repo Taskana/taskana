@@ -13,12 +13,12 @@
         <div>
         <button mat-button class="action-toolbar__button action-toolbar__save-button" matTooltip="Save changes in current classification" (click)="onSubmit()">
           Save
-          <mat-icon>save</mat-icon>
+          <mat-icon class="md-20">save</mat-icon>
         </button>
 
         <button mat-stroked-button class="action-toolbar__button" matTooltip="Revert changes to previous saved state" (click)="onRestore()">
           Undo Changes
-          <mat-icon class="button__green-blue">restore</mat-icon>
+          <mat-icon class="button__green-blue md-20">restore</mat-icon>
         </button>
 
         <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button">
