@@ -4,8 +4,11 @@
   @include degraded-bar(right, 100%, 3px);
 }
 
-.navbar-inverse {
-  top: 0;
+.navbar {
+  height: 52px;
+  margin-bottom: 0px;
+  width: 100%;
+  border-radius: 0%;
   border: none;
   background-color: $dark-green;
   box-shadow: 0px 1px 5px -1px black;
@@ -67,16 +70,6 @@ h2.navbar-brand {
   }
 }
 
-.nav-content {
-  margin-top: 5px;
-}
-
-.nav-version {
-  color: $grey;
-  position: absolute;
-  bottom: 5px;
-  font-size: 12px;
-}
 
 /*
  * All side bar links styling.
@@ -92,7 +85,7 @@ h2.navbar-brand {
   cursor: pointer;
 }
 
-.example-container {
+.mat-sidenav-container {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -100,28 +93,11 @@ h2.navbar-brand {
   right: 0;
 }
 
+
 .mat-list-base .mat-list-item {
   color: $grey;
 }
 
-.active{
-  color: white !important;
-}
-
-
-.sidenav {
-  position: absolute;
-  z-index: 999;
-  box-shadow: none;
-  width: 350px;
-  background-color: $dark-green;
-  box-shadow: 3px 0px 10px -1px $dark-green;
-}
-
-.navbar {
-  height: 52px;
-  margin-bottom: 0px;
-}
 
 .menu,
 .submenu > span {
@@ -135,7 +111,6 @@ h2.navbar-brand {
   color: $grey;
   outline: none;
 }
-
 
 .menu.selected,
 .submenu.selected {
@@ -157,7 +132,6 @@ h2.navbar-brand {
   }
 }
 
-
 .menu > .submenu {
   margin-left: 30px;
 }
@@ -170,47 +144,66 @@ a {
   text-decoration: none;
 }
 
-.flex-container {
+.flex-navbar {
   display: flex !important;
   justify-content: space-between;
 }
 
-.flex-buttom {
+.flex-navbar_button {
   flex-grow: 1;
 }
 
-.flex-logo {
+.flex-navbar_logo {
   flex-grow: 11;
   position: fixed;
   left: 40%;
   transform: translate(-50%,0%);
-
 }
 
-.user-info {
+.mat-sidenav {
+  position: absolute;
+  z-index: 999;
+  box-shadow: none;
+  width: 350px;
+  background-color: $dark-green;
+  box-shadow: 3px 0px 10px -1px $dark-green;
+  overflow: hidden !important;
+}
+
+.sidenav_version {
+  color: $grey;
+  position: absolute;
+  bottom: 5px;
+  font-size: 12px;
+}
+
+.sidenav_user-info {
   margin-top: 30px;
   margin-bottom: 50px;
   margin-left: -16px;
 }
 
-.centered {
-  position: fixed;
-  left: 50%;
+.mat-icon-button {
+  outline: none !important;
 }
 
-
-.exit-icon.mat-icon-button {
-  outline: none;
-}
-
-.menu-icon.mat-icon-button {
-  outline: none;
-}
-
-.exit {
+.sidenav_logout-button {
   text-align: end;
 }
 
-.list-pos {
+.sidenav_list-pos {
   margin-left: 30px;
 }
+
+.sidenav_link-active{
+  color: white !important;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow: hidden !important;
+}
+
+.mat-icon {
+  color: white;
+}
+
