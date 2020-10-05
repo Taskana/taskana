@@ -9,13 +9,13 @@ import { WorkbasketDefinitionService } from '../../services/workbasket-definitio
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { UploadService } from '../../../shared/services/upload/upload.service';
 import { ImportExportService } from '../../services/import-export.service';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ClassificationDefinitionService } from '../../services/classification-definition.service';
-import { take, timeout } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { TaskanaType } from '../../../shared/models/taskana-type';
 import { BlobGenerator } from '../../../shared/util/blob-generator';
+
 jest.mock('../../../shared/util/blob-generator');
 
 describe('ImportExportComponent', () => {
@@ -74,6 +74,10 @@ describe('ImportExportComponent', () => {
     fixture.detectChanges();
   }));
 
+  it('should create component', () => {
+    expect(app).toBeTruthy();
+  });
+
   it('should successfully upload a valid file', () => {
     app.selectedFileInput = {
       nativeElement: {
@@ -92,12 +96,41 @@ describe('ImportExportComponent', () => {
     expect(app.uploadService.isInUse).toBeTruthy();
   });
 
-  it('should successfully export the classifications', async (done) => {
+  it('should trigger an error when uploading an invalid file format', () => {
+    app.selectedFileInput = {
+      nativeElement: {
+        files: [
+          {
+            lastModified: 1599117374674,
+            name: 'Workbaskets_2020-09-03T09_16_14.1414Z.pdf',
+            size: 59368,
+            type: 'application/pdf',
+            webkitRelativePath: ''
+          }
+        ]
+      }
+    };
+    app.uploadFile();
+    expect(notificationServiceSpy).toHaveBeenCalled();
+  });
+
+  it('should successfully export the workbaskets', async (done) => {
     app
       .export()
       .pipe(take(1))
       .subscribe(() => {
-        expect(BlobGenerator.saveFile).toHaveBeenCalled();
+        expect(BlobGenerator.saveFile).toHaveBeenCalledWith([], expect.stringMatching(/Workbaskets_.*\.json/));
+        done();
+      });
+  });
+
+  it('should successfully export the classifications', async (done) => {
+    app.currentSelection = TaskanaType.CLASSIFICATIONS;
+    app
+      .export()
+      .pipe(take(1))
+      .subscribe(() => {
+        expect(BlobGenerator.saveFile).toHaveBeenCalledWith([], expect.stringMatching(/Classifications_.*\.json/));
         done();
       });
   });

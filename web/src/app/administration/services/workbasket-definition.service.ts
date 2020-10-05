@@ -18,7 +18,7 @@ export class WorkbasketDefinitionService {
     const domainRequest = domain === '' ? domain : `?domain=${domain}`;
     const workbasketDefObservable = this.httpClient.get<WorkbasketDefinition[]>(this.url + domainRequest).pipe(take(1));
     workbasketDefObservable.subscribe((workbasketDefinitions) =>
-      BlobGenerator.saveFile(workbasketDefinitions, `Classifications_${TaskanaDate.getDate()}.json`)
+      BlobGenerator.saveFile(workbasketDefinitions, `Workbaskets_${TaskanaDate.getDate()}.json`)
     );
     return workbasketDefObservable;
   }

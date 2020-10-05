@@ -53,7 +53,6 @@ export class ImportExportComponent implements OnInit {
 
   uploadFile() {
     const file = this.selectedFileInput.nativeElement.files[0];
-    console.log(this.selectedFileInput);
     const formData = new FormData();
     const xhr = new XMLHttpRequest();
     if (this.checkFormatFile(file)) {
@@ -122,7 +121,6 @@ export class ImportExportComponent implements OnInit {
   }
 
   private errorHandler(key: NOTIFICATION_TYPES, passedError?: HttpErrorResponse) {
-    console.log(key, passedError);
     this.errorsService.triggerError(key, passedError);
     delete this.selectedFileInput.files;
     this.resetProgress();
