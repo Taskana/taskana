@@ -2,9 +2,7 @@
 
 .classification-details {
   width: 100%;
-  height: 80vh;
-  // height: 45%; // here is something wrong
- // overflow-x: hidden;
+  height: calc(100vh - 100px); // @chi, this is not working with '%' ...
   overflow-y: auto;
 }
 
@@ -65,9 +63,15 @@
   justify-content: space-between;
 }
 
-.domain__checkbox {
+.domain-and-category__domain-checkbox {
   font-size: 20px;
   color: #555;
+}
+
+.domain-and-category__category-icon {
+  fill: #555;
+  margin-right: 5px;
+  top: -2px;
 }
 
 .classification-details__service-and-priority {
@@ -78,10 +82,6 @@
 .classification-details__mat-form-field {
   width: 70%;
   margin-right: 10px;
-}
-
-.categories__icon {
-  fill: #555;
 }
 
 input:invalid.dirty {
