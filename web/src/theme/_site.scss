@@ -491,3 +491,7 @@ li.list-group-item:hover {
 .cdk-overlay-container {
   z-index: 1337;
 }
+.mat-menu-content {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

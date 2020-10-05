@@ -2,22 +2,32 @@
 
 .classification-details {
   width: 100%;
-  height: calc(100vh - 100px); // @chi, this is not working with '%' ...
+  height: calc(100vh - 100px);
   overflow-y: auto;
+}
+
+.classification-details__wrapper {
+  position: relative;
 }
 
 
 /* ACTION TOOLBAR */
 
 .classification-details__action-toolbar {
+  width: calc(100% - 450px);
+  position: fixed;
   padding: 16px 24px 16px 24px;
+  background-color: #fff;
   display: flex;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   justify-content: space-between;
   flex-wrap: wrap;
+  z-index: 10;
 }
 
 .action-toolbar__button {
   margin-right: 6px;
+  background-color: #fff;
 }
 
 .action-toolbar__dropdown {
@@ -43,11 +53,13 @@
 /* DETAILED FIELDS */
 
 .classification__detailed-fields {
+  padding: 15px;
   display: flex;
   flex-direction: column;
 }
 
 .classification-details__subheading {
+  font-weight: bold;
   padding-left: 15px;
   margin-bottom: 0;
 }
@@ -87,3 +99,4 @@
 input:invalid.dirty {
   border-color: $invalid;
 }
+
