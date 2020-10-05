@@ -28,16 +28,17 @@
 .filter__category-filter {
   padding-top: 7px;
 }
+
+.category-filter__categories {
+  fill: #555;
+  margin: 0;
+  top: -2px;
+}
+
 .filter__input {
   width: 100%;
   margin-right: 12px;
 }
 .filter__input-field {
   width: 100% !important;
-}
-
-.categories {
-  fill: #555;
-  margin: 0;
-  top: -2px;
 }

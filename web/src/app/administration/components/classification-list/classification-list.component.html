@@ -18,17 +18,17 @@
 	<!-- FILTER -->
   <div class="classification-list__filter">
     <div class="filter__category-filter">
-      <button mat-icon-button class="mr-2" [matMenuTriggerFor]="menu" matTooltip="Filter Category">
+      <button mat-icon-button class="mr-2 category-filter__filter-button" [matMenuTriggerFor]="menu" matTooltip="Filter Category">
         <mat-icon>filter_list</mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="selectCategory('')" >
-          <svg-icon class="categories pr-2" src="./assets/icons/asterisk.svg" [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
+        <button mat-menu-item (click)="selectCategory('')" class="category-filter__all-button">
+          <svg-icon class="category-filter__categories pr-2" src="./assets/icons/asterisk.svg" [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
           <span>All</span>
         </button>
         <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-          <svg-icon class="categories pr-2" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+          <svg-icon class="category-filter__categories pr-2" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
           <span> {{category}} </span>
         </button>
       </mat-menu>
