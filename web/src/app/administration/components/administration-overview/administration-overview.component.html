@@ -8,5 +8,14 @@
        [active]="selectedTab == 'access-items-management'" (click)="selectedTab = 'access-items-management'">Access Items
       Management</a>
   </nav>
+  <div class="administration-overview__domain">
+    <mat-form-field appearance="legacy">
+      <mat-select [value]="selectedDomain">
+        <mat-option *ngFor="let domain of domains" [value]="domain" (click)="switchDomain(domain)">
+          {{domain? domain: 'MASTER DOMAIN'}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <router-outlet></router-outlet>
 </div>
