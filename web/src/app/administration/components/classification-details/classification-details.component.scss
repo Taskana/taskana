@@ -1,8 +1,9 @@
 @import 'src/theme/_colors.scss';
 
 .classification-details {
-  width: 70vw;
+  width: 100%;
   height: 80vh;
+  // height: 45%; // here is something wrong
  // overflow-x: hidden;
   overflow-y: auto;
 }
@@ -66,7 +67,7 @@
 
 .domain__checkbox {
   font-size: 20px;
-  color: $aquamarine;
+  color: #555;
 }
 
 .classification-details__service-and-priority {
@@ -77,6 +78,10 @@
 .classification-details__mat-form-field {
   width: 70%;
   margin-right: 10px;
+}
+
+.categories__icon {
+  fill: #555;
 }
 
 input:invalid.dirty {

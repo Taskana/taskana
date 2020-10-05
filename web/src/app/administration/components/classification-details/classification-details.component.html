@@ -122,7 +122,7 @@
 
               <mat-form-field class="classification-details__mat-form-field" appearance="outline">
                 <mat-label>Domain</mat-label>
-                <label for="classification-domain" class="control-label"></label>
+                <label for="classification-domain"></label>
                 <input matInput type="text" disabled id="classification-domain"
                        placeholder="Domain" [(ngModel)]="classification.domain"
                        name="classification.domain">
@@ -131,25 +131,18 @@
                 </a>
               </mat-form-field>
 
-              <!--
-              <div class="required">
-                <mat-label>Category</mat-label>
-                <button mat-icon-button [matMenuTriggerFor]="menu">
-                  <svg-icon class="categories" [src]="(getCategoryIcon(this.classification.category) | async)?.name" [title]="(getCategoryIcon(this.classification.category) | async)?.text"></svg-icon>
-                  {{this.classification.category}}
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-                  </button>
-                </mat-menu>
-              </div> -->
-
               <mat-form-field appearance="outline">
                 <mat-label>Category</mat-label>
                 <mat-select required [(value)]="this.classification.category">
-                  <mat-option *ngFor="let category of categories$ | async" value="category" (click)="selectCategory(category)">
-                    <svg-icon style="fill: #555" [src]="(getCategoryIcon(category) | async)?.name" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
-                    <span> {{category}}</span>
+                  <mat-select-trigger>
+                    <svg-icon
+                      class="categories__icon" [src]="(getCategoryIcon(this.classification.category) | async)?.name">
+                    </svg-icon>
+                    {{this.classification.category}}
+                  </mat-select-trigger>
+                  <mat-option *ngFor="let category of categories$ | async" value="{{category}}">
+                    <svg-icon class="categories__icon" [src]="(getCategoryIcon(category) | async)?.name"></svg-icon>
+                    {{category}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>

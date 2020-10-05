@@ -131,10 +131,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new DeselectClassification());
   }
 
-  selectCategory(category: string) {
-    this.classification.category = category;
-  }
-
   getCategoryIcon(category: string): Observable<Pair> {
     return this.categoryIcons$.pipe(
       map((iconMap) =>
