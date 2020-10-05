@@ -401,7 +401,7 @@ describe('ClassificationDetailsComponent', () => {
   });
 
   it('should change isValidInDomain when button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.domain-and-category__domain-checkbox').parentNode;
+    const button = debugElement.nativeElement.querySelector('.domain-and-category__domain-checkbox-icon').parentNode;
     expect(button).toBeTruthy();
     component.classification.isValidInDomain = false;
     button.click();

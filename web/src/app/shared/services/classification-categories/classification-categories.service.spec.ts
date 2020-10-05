@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Customisation, CustomisationContent } from 'app/shared/models/customisation';
-import { ClassificationCategoriesService, missingIcon } from './classification-categories.service';
+import { asteriskIcon, ClassificationCategoriesService, missingIcon } from './classification-categories.service';
 
 describe('ClassificationCategoriesService', () => {
   let categoryService: ClassificationCategoriesService;
@@ -19,7 +19,7 @@ describe('ClassificationCategoriesService', () => {
 
   it('should insert missing icon into customisation', async(() => {
     const expectedCustomisationContent: CustomisationContent = {
-      classifications: { categories: { missing: missingIcon } }
+      classifications: { categories: { all: asteriskIcon, missing: missingIcon } }
     };
 
     const expectedCustomisation: Customisation = { EN: expectedCustomisationContent, DE: expectedCustomisationContent };
