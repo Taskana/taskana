@@ -13,6 +13,10 @@ export class AdministrationOverviewComponent implements OnInit {
 
   ngOnInit() {
     const urlPaths = this.router.url.split('/');
-    this.selectedTab = urlPaths[urlPaths.length - 1];
+    if (this.router.url.includes('detail')) {
+      this.selectedTab = urlPaths[urlPaths.length - 2];
+    } else {
+      this.selectedTab = urlPaths[urlPaths.length - 1];
+    }
   }
 }

@@ -1,3 +1,5 @@
+@import 'src/theme/_colors.scss';
+
 .classification-list {
   height: calc(100vh - 55px);
   width: 450px;
@@ -10,6 +12,10 @@
   border: none;
   margin-bottom: 0;
   padding: 8px 4px 0 4px;
+}
+.action-toolbar__add-button {
+  background-color: $aquamarine;
+  color: white;
 }
 
 .classification-list__import-export {

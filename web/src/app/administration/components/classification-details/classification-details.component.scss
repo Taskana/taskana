@@ -12,11 +12,13 @@
 
 
 /* ACTION TOOLBAR */
-
+.classification-details__headline {
+  padding-top: 0.5rem;
+}
 .classification-details__action-toolbar {
   width: calc(100% - 450px);
   position: fixed;
-  padding: 16px 24px 16px 24px;
+  padding: 12px 32px 12px 24px;
   background-color: #fff;
   display: flex;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -26,6 +28,7 @@
 }
 
 .action-toolbar__button {
+  margin-top: 0.25rem;
   margin-right: 6px;
   background-color: #fff;
 }

@@ -5,7 +5,7 @@
 
     <!-- TITLE + ACTION BUTTONS -->
     <section class="classification-details__action-toolbar">
-      <h4 class="panel-header classification-details__headline">{{classification.name}}&nbsp; [{{classification.type}}]
+      <h4 class="classification-details__headline">{{classification.name}}&nbsp; [{{classification.type}}]
         <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
       </h4>
 
@@ -25,15 +25,15 @@
       </button>
 
       <mat-menu #buttonMenu="matMenu">
-        <button mat-menu-item class="action-toolbar__button action-toolbar__dropdown" matTooltip="Copy current values to create new classification" (click)="onCopy()">
+        <button mat-menu-item class="action-toolbar__dropdown" matTooltip="Copy current values to create new classification" (click)="onCopy()">
           <mat-icon class="button__green-blue">content_copy</mat-icon>
           <span>Copy</span>
         </button>
-        <button mat-menu-item class="action-toolbar__button action-toolbar__dropdown" matTooltip="Delete this classification" (click)="onRemoveClassification()">
+        <button mat-menu-item class="action-toolbar__dropdown" matTooltip="Delete this classification" (click)="onRemoveClassification()">
           <mat-icon class="button__red">delete</mat-icon>
           <span>Delete</span>
         </button>
-        <button mat-menu-item style="border-bottom-style: none;" class="action-toolbar__button action-toolbar__dropdown" matTooltip="Close this classification and discard all changes" (click)="onCloseClassification()">
+        <button mat-menu-item class="action-toolbar__dropdown" style="border-bottom-style: none;"  matTooltip="Close this classification and discard all changes" (click)="onCloseClassification()">
           <mat-icon>close</mat-icon>
           <span>Close</span>
         </button>
