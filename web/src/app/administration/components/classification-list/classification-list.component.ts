@@ -29,6 +29,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   requestInProgress = true;
   inputValue: string;
   selectedCategory = '';
+  showFilter = false;
 
   @Select(ClassificationSelectors.classificationTypes) classificationTypes$: Observable<string[]>;
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
@@ -100,6 +101,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   selectCategory(category: string) {
     this.selectedCategory = category;
+  }
+
+  displayFilter() {
+    this.showFilter = !this.showFilter;
   }
 
   ngOnDestroy() {
