@@ -1,10 +1,10 @@
 <div class="administration-overview">
   <nav mat-tab-nav-bar class="administration-overview__navbar" backgroundColor="#f5f5f5" >
-    <a mat-tab-link routerLink="/taskana/administration/workbaskets" [active]="selectedTab == 'workbaskets'"
+    <a mat-tab-link class="administration-overview__navbar-links" routerLink="/taskana/administration/workbaskets" [active]="selectedTab == 'workbaskets'"
        (click)="selectedTab = 'workbaskets'">Workbaskets</a>
-    <a mat-tab-link routerLink="/taskana/administration/classifications" [active]="selectedTab == 'classifications'"
+    <a mat-tab-link class="administration-overview__navbar-links" routerLink="/taskana/administration/classifications" [active]="selectedTab == 'classifications'"
        (click)="selectedTab = 'classifications'">Classifications</a>
-    <a mat-tab-link routerLink="/taskana/administration/access-items-management"
+    <a mat-tab-link class="administration-overview__navbar-links" routerLink="/taskana/administration/access-items-management"
        [active]="selectedTab == 'access-items-management'" (click)="selectedTab = 'access-items-management'">Access Items
       Management</a>
   </nav>

@@ -1,4 +1,5 @@
 @import 'src/theme/_colors.scss';
+
 .administration-overview__navbar {
   position: relative;
 }
@@ -13,6 +14,10 @@
   top: 46px;
   right: 24px;
   z-index: 11;
+}
+
+.mat-tab-link {
+  color: #1a202c !important;
 }
 
 .mat-tab-label-active {
