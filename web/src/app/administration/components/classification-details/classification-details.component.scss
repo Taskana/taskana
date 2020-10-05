@@ -74,15 +74,24 @@
 }
 
 .classification-details__domain-and-category {
+  position: relative;
   display: flex;
   justify-content: space-between;
+  padding-bottom: 16px;
 }
 
 .domain-and-category__domain-checkbox {
-  font-size: 20px;
+  position: absolute;
+  top: 64px;
+  left: 12px;
+  font-size: 14px;
   color: #555;
 }
-
+.domain-and-category__domain-checkbox-icon {
+  cursor: pointer;
+  margin-top: 2px;
+  font-size: 20px;
+}
 .domain-and-category__category-icon {
   fill: #555;
   margin-right: 5px;
