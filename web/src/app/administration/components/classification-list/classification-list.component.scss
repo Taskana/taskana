@@ -27,10 +27,13 @@
   display: flex;
 }
 
-.filter__category-filter {
+.classification-list__category-filter {
   padding-top: 7px;
 }
-
+.category-filter__icons {
+  height: 33px;
+  width: 16px;
+}
 .category-filter__categories {
   fill: #555;
   margin: 0;
@@ -43,4 +46,8 @@
 }
 .filter__input-field {
   width: 100% !important;
+}
+.classification-list__no-items {
+  text-align: center;
+  padding-top: 150px;
 }

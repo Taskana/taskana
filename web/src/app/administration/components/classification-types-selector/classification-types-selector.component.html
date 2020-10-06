@@ -1,6 +1,6 @@
 <mat-form-field class="types-selector">
   <mat-label>Type</mat-label>
-  <mat-select [value]="classificationTypeSelected$ | async" class="types-selector__selected-type">
+  <mat-select [value]="classificationTypeSelected$ | async" class="types-selector__selected-type" matTooltip="Change type">
     <mat-option class="types-selector__options" *ngFor="let classificationType of classificationTypes$ | async" [value]="classificationType" (click)="select(classificationType)">
       {{ classificationType }}
     </mat-option>

@@ -10,7 +10,7 @@
   </nav>
   <div class="administration-overview__domain">
     <mat-form-field appearance="legacy">
-      <mat-select [value]="selectedDomain">
+      <mat-select [value]="selectedDomain" matTooltip="Select domain">
         <mat-option *ngFor="let domain of domains" [value]="domain" (click)="switchDomain(domain)">
           {{domain? domain: 'MASTER DOMAIN'}}
         </mat-option>

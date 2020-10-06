@@ -15,16 +15,20 @@
 
       <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()">
         <mat-icon *ngIf="!showFilter">search</mat-icon>
-        <mat-icon *ngIf="showFilter">clear</mat-icon>
+        <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
       </button>
     </div>
 
     <!-- FILTER -->
     <div class="classification-list__filter" *ngIf="showFilter">
-      <div class="filter__category-filter">
+      <div class="classification-list__category-filter">
         <button mat-icon-button class="mr-2 category-filter__filter-button" [matMenuTriggerFor]="menu"
                 matTooltip="Filter Category">
-          <mat-icon>filter_list</mat-icon>
+          <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
+          <svg-icon class="category-filter__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
+                    [title]="(getCategoryIcon(selectedCategory) | async)?.text"
+                    *ngIf="selectedCategory != ''">
+          </svg-icon>
         </button>
 
         <mat-menu #menu="matMenu">
@@ -44,7 +48,7 @@
       <div class="filter__input">
         <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
           <mat-label>Filter classification</mat-label>
-          <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event">
+          <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event" matTooltip="Type to filter classifications">
         </mat-form-field>
       </div>
 
@@ -62,9 +66,8 @@
                                [filterText]="inputValue" [filterIcon]="selectedCategory"
                                (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>
   <ng-template #empty_classifications>
-    <div *ngIf="!requestInProgress" class="container-no-items center-block no-classifications">
+    <div *ngIf="!requestInProgress" class="classification-list__no-items">
       <h3 class="grey">There are no classifications</h3>
-      <svg-icon class="img-responsive empty-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
     </div>
   </ng-template>
 </div>
