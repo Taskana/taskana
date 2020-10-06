@@ -1,16 +1,14 @@
-<div class="row">
-  <div class="icon">
-    <div class="icon-wrap col-xs-offset-5">
-      <svg-icon class="blue big" src="./assets/icons/user.svg"></svg-icon>
-    </div>
+<div class="user-info_icon">
+  <div class="user-info_icon-wrap">
+    <svg-icon class="blue big" src="./assets/icons/user.svg"></svg-icon>
   </div>
-  <div class="user-info white">
-    <span>Logged as: {{userInformation?.userId}}</span>
-    <button type="button" class="btn btn-default white pull-right transparent" (click)="toggleRoles();" aria-expanded="true" aria-controls="roles">
-      <span>Roles</span>
-    </button>
-  </div>
-  <div class="white pull-right roles col-xs-12" [@toggleDown]="showRoles">
-    <span><i>{{roles}}</i></span>
-  </div>
+</div>
+<div class="user-info">
+  <span>Logged as: {{userInformation?.userId}}</span>
+  <button mat-button (click)="toggleRoles();" aria-expanded="true" aria-controls="roles">
+    <span>Roles</span>
+  </button>
+</div>
+<div class="user-info_roles" [@toggleDown]="showRoles">
+  <span><i>{{roles}}</i></span>
 </div>

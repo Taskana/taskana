@@ -4,7 +4,11 @@
   @include degraded-bar(right, 100%, 3px);
 }
 
-.navbar-inverse {
+.navbar {
+  height: 52px;
+  margin-bottom: 0px;
+  width: 100%;
+  border-radius: 0%;
   border: none;
   background-color: $dark-green;
   box-shadow: 0px 1px 5px -1px black;
@@ -37,7 +41,7 @@ svg-icon.logo {
   float: left;
   width: 150px;
   height: 50px;
-  padding: 5px;
+  margin-top: -4px;
   position: initial;
 }
 
@@ -66,16 +70,6 @@ h2.navbar-brand {
   }
 }
 
-.nav-content {
-  margin-top: 5px;
-}
-
-.nav-version {
-  color: $grey;
-  position: absolute;
-  bottom: 5px;
-  font-size: 12px;
-}
 
 /*
  * All side bar links styling.
@@ -91,19 +85,19 @@ h2.navbar-brand {
   cursor: pointer;
 }
 
-.sidenav {
-  position: fixed;
-  z-index: 999;
-  box-shadow: none;
-  height: 100%;
-  background-color: $dark-green;
-  box-shadow: 3px 0px 10px -1px $dark-green;
+.mat-sidenav-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.navbar {
-  height: 52px;
-  margin-bottom: 0px;
+
+.mat-list-base .mat-list-item {
+  color: $grey;
 }
+
 
 .menu,
 .submenu > span {
@@ -113,16 +107,23 @@ h2.navbar-brand {
   font-family: inherit;
   font-weight: 500;
   line-height: 1.1;
-}
-
-.menu,
-.submenu > span {
   padding-left: 12px;
   color: $grey;
   outline: none;
 }
+
 .menu.selected,
 .submenu.selected {
+  background-color: transparent;
+  & > span {
+    padding-left: 10px;
+    border-left: $pallete-green 5px solid;
+    color: white;
+  }
+}
+
+.menu.hover,
+.submenu.hover {
   background-color: transparent;
   & > span {
     padding-left: 10px;
@@ -138,7 +139,71 @@ h2.navbar-brand {
 a {
   color: $grey;
   &:hover {
-    color: white;
+    color: white !important;
   }
   text-decoration: none;
 }
+
+.flex-navbar {
+  display: flex !important;
+  justify-content: space-between;
+}
+
+.flex-navbar_button {
+  flex-grow: 1;
+}
+
+.flex-navbar_logo {
+  flex-grow: 11;
+  position: fixed;
+  left: 40%;
+  transform: translate(-50%,0%);
+}
+
+.mat-sidenav {
+  position: absolute;
+  z-index: 999;
+  box-shadow: none;
+  width: 350px;
+  background-color: $dark-green;
+  box-shadow: 3px 0px 10px -1px $dark-green;
+  overflow: hidden !important;
+}
+
+.sidenav_version {
+  color: $grey;
+  position: absolute;
+  bottom: 5px;
+  font-size: 12px;
+}
+
+.sidenav_user-info {
+  margin-top: 30px;
+  margin-bottom: 50px;
+  margin-left: -16px;
+}
+
+.mat-icon-button {
+  outline: none !important;
+}
+
+.sidenav_logout-button {
+  text-align: end;
+}
+
+.sidenav_list-pos {
+  margin-left: 30px;
+}
+
+.sidenav_link-active{
+  color: white !important;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow: hidden !important;
+}
+
+.mat-icon {
+  color: white;
+}
+

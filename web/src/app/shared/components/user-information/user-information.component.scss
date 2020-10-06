@@ -7,6 +7,7 @@
 
 .user-info {
   margin-top: 85px;
+  color: white;
   > span {
     margin: 0 15px 0 15px;
     font-size: 20px;
@@ -16,15 +17,16 @@
   }
 }
 
-.icon {
+.user-info_icon {
   width: 100%;
-  position: relative;
-  & > .icon-wrap {
+  position: absolute;
+
+  & > .user-info_icon-wrap {
     border-radius: 50%;
     border: solid 2px #22a39f;
     width: 72px;
     height: 72px;
-    overflow: hidden;
+    left: 35%;
     background-color: #175263;
     position: absolute;
     -webkit-box-shadow: 0px 3px 3px #416b6a;
@@ -41,7 +43,7 @@
   }
 }
 
-.icon:before {
+.user-info_icon:before {
   content: '';
   position: absolute;
   @include degraded-bar(right, 100%, 4px);
@@ -51,6 +53,11 @@
   -webkit-box-shadow: 0px 3px 3px #416b6a;
   -moz-box-shadow: 0px 3px 3px #416b6a;
   box-shadow: 0px 3px 3px #416b6a;
+}
+
+.user-info_roles {
+  margin-left: 16px; 
+  color: white;
 }
 
 button.transparent {
@@ -68,3 +75,11 @@ button.transparent {
     color: white;
   }
 }
+
+.mat-button {
+  border: none;
+  outline: none;
+  left: 30%;
+}
+
+
