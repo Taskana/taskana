@@ -1,20 +1,23 @@
 <div class="list-group-search">
+
+  <!-- WORKBASKET FILTER -->
   <div *ngIf="filterTypeIsWorkbasket(); else tasktype">
     <div class="row">
-      <div class="dropdown col-xs-2">
-        <button class="btn btn-default btn-sm" data-toggle="dropdown" type="button" id="dropdownMenufilter" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="true">
-          <taskana-administration-icon-type [type]="filter.filterParams?.type"></taskana-administration-icon-type>
+
+      <!-- FILTER -->
+      <button mat-icon-button class="mr-2" [matMenuTriggerFor]="menu" matTooltip="Filter workbaskets">
+        <mat-icon *ngIf="filter.filterParams?.type == ''">filter_list</mat-icon>
+        <taskana-administration-icon-type *ngIf="filter.filterParams?.type != ''" [type]="filter.filterParams?.type"> </taskana-administration-icon-type>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let type of allTypes | mapValues" (click)="selectType(type.key); search()">
+          <taskana-administration-icon-type [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
         </button>
-        <ul class="dropdown-menu dropdown-menu-users" role="menu">
-          <li>
-            <a *ngFor="let type of allTypes | mapValues" type="button" (click)="selectType(type.key); search()"
-              data-toggle="tooltip" [title]="type.value">
-              <taskana-administration-icon-type [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
-            </a>
-          </li>
-        </ul>
-      </div>
+      </mat-menu>
+
+
+      <!-- TEXT INPUT -->
       <div class="col-xs-4">
         <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control input-sm"
           placeholder="Filter name">
@@ -27,6 +30,8 @@
         <span class="material-icons md-20 blue">clear</span>
       </button>
     </div>
+
+
     <div class="row">
       <div class="col-xs-8 col-xs-offset-2">
         <input type="text" [(ngModel)]="filter.filterParams.description" (keyup.enter)="search()" class="form-control input-sm"
@@ -44,6 +49,9 @@
       </button>
     </div>
   </div>
+
+
+  <!-- TASK FILTER -->
   <ng-template #tasktype>
     <div class="row">
       <div class="col-xs-2">

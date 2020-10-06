@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 
 @Component({

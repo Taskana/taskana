@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 import { Filter } from 'app/shared/models/filter';
 import { TaskanaType } from 'app/shared/models/taskana-type';
@@ -9,12 +9,12 @@ import { TaskanaType } from 'app/shared/models/taskana-type';
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-  @Input() allTypes: Map<string, string> = new Map([
-    ['ALL', 'All'],
-    ['PERSONAL', 'Personal'],
-    ['GROUP', 'Group'],
-    ['CLEARANCE', 'Clearance'],
-    ['TOPIC', 'Topic']
+  @Input() allTypes: Map<ICONTYPES, string> = new Map([
+    [ICONTYPES.ALL, 'All'],
+    [ICONTYPES.PERSONAL, 'Personal'],
+    [ICONTYPES.GROUP, 'Group'],
+    [ICONTYPES.CLEARANCE, 'Clearance'],
+    [ICONTYPES.TOPIC, 'Topic']
   ]);
 
   @Input() allStates: Map<string, string> = new Map([
