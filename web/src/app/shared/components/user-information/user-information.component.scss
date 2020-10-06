@@ -17,7 +17,7 @@
   }
 }
 
-.icon {
+.user-info_icon {
   width: 100%;
   position: absolute;
 
@@ -44,7 +44,7 @@
   }
 }
 
-.icon:before {
+.user-info_icon:before {
   content: '';
   position: absolute;
   @include degraded-bar(right, 100%, 4px);
@@ -54,6 +54,11 @@
   -webkit-box-shadow: 0px 3px 3px #416b6a;
   -moz-box-shadow: 0px 3px 3px #416b6a;
   box-shadow: 0px 3px 3px #416b6a;
+}
+
+.user-info_roles {
+  margin-left: 16px; 
+  color: white;
 }
 
 button.transparent {
