@@ -13,8 +13,14 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TreeModule } from 'angular-tree-component';
 import { SharedModule } from 'app/shared/shared.module';
-import {MatButtonModule, MatSidenavModule, MatCheckboxModule, MatGridListModule, MatListModule, MatIconModule } from '@angular/material';
-
+import {
+  MatButtonModule,
+  MatSidenavModule,
+  MatCheckboxModule,
+  MatGridListModule,
+  MatListModule,
+  MatIconModule
+} from '@angular/material';
 
 /**
  * Services
