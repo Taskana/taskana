@@ -1,12 +1,11 @@
-<div class="list-group-search">
+<div>
 
   <!-- WORKBASKET FILTER -->
-  <div *ngIf="filterTypeIsWorkbasket(); else tasktype">
-    <div class="row">
+  <div class="filter" *ngIf="filterTypeIsWorkbasket(); else tasktype">
 
       <!-- FILTER -->
-      <button mat-icon-button class="mr-2" [matMenuTriggerFor]="menu" matTooltip="Filter workbaskets">
-        <mat-icon *ngIf="filter.filterParams?.type == ''">filter_list</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Filter workbaskets">
+        <mat-icon *ngIf="filter.filterParams?.type == ''" style="color: #555">filter_list</mat-icon>
         <taskana-administration-icon-type *ngIf="filter.filterParams?.type != ''" [type]="filter.filterParams?.type"> </taskana-administration-icon-type>
       </button>
 
@@ -16,38 +15,44 @@
         </button>
       </mat-menu>
 
-
       <!-- TEXT INPUT -->
-      <div class="col-xs-4">
-        <input type="text" [(ngModel)]="filter.filterParams.name" (keyup.enter)="search()" class="form-control input-sm"
-          placeholder="Filter name">
+      <div class="filter__text-input">
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by name</mat-label>
+          <input matInput [(ngModel)]="filter.filterParams.name" matTooltip="Type to filter by name" (keyup.enter)="search()">
+        </mat-form-field>
+
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by key</mat-label>
+          <input matInput [(ngModel)]="filter.filterParams.key" matTooltip="Type to filter by key" (keyup.enter)="search()">
+        </mat-form-field>
+
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by description</mat-label>
+          <input matInput [(ngModel)]="filter.filterParams.description" matTooltip="Type to filter by description" (keyup.enter)="search()">
+        </mat-form-field>
+
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by owner</mat-label>
+          <input matInput [(ngModel)]="filter.filterParams.owner" matTooltip="Type to filter by owner" (keyup.enter)="search()">
+        </mat-form-field>
       </div>
-      <div class="col-xs-4">
-        <input type="text" [(ngModel)]="filter.filterParams.key" (keyup.enter)="search()" class="form-control input-sm" placeholder="Filter key">
-      </div>
-      <button (click)="clear(); search()" type="button" class="btn btn-default btn-sm pull-right margin-right"
-        data-toggle="tooltip" title="Clear">
-        <span class="material-icons md-20 blue">clear</span>
-      </button>
-    </div>
 
 
-    <div class="row">
-      <div class="col-xs-8 col-xs-offset-2">
-        <input type="text" [(ngModel)]="filter.filterParams.description" (keyup.enter)="search()" class="form-control input-sm"
-          placeholder="Filter description">
+      <!-- SEARCH AND CLEAR BUTTON -->
+      <div class="filter__search-and-clear-button">
+        <!-- CLEAR BUTTON -->
+        <button mat-icon-button (click)="clear(); search()" matTooltip="Clear filter">
+          <mat-icon style="color: #555">undo</mat-icon>
+        </button>
+
+        <!-- SEARCH BUTTON -->
+        <button mat-icon-button (click)="search()" type="button" matTooltip="Search by given filter">
+          <mat-icon style="color: #555">search</mat-icon>
+        </button>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-8 col-xs-offset-2">
-        <input type="text" [(ngModel)]="filter.filterParams.owner" (keyup.enter)="search()" class="form-control input-sm"
-          placeholder="Filter owner">
-      </div>
-      <button (click)="search()" type="button" class="btn btn-default btn-sm pull-right margin-right" data-toggle="tooltip"
-        title="Search">
-        <span class="material-icons md-20 blue ">search</span>
-      </button>
-    </div>
+
+
   </div>
 
 

@@ -1,25 +1,30 @@
 <div class="workbasket-list-toolbar">
 
-  <!-- ACTION BUTTONS -->
-  <button mat-flat-button class="workbasket-list-toolbar__add-button mr-1" matTooltip="Create new workbasket"
-          (click)="addWorkbasket()">
-    Add
-    <mat-icon class="md-20">add</mat-icon>
-  </button>
+  <div class="workbasket-list-toolbar__action-toolbar">
 
-  <!-- IMPORT EXPORT -->
-  <taskana-administration-import-export [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
+    <!-- ACTION BUTTONS -->
+    <button mat-flat-button class="workbasket-list-toolbar__add-button mr-1" matTooltip="Create new workbasket"
+            (click)="addWorkbasket()">
+      Add
+      <mat-icon class="md-20">add</mat-icon>
+    </button>
 
-  <!-- SORTING -->
-  <taskana-shared-sort
-    style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy">
-  </taskana-shared-sort>
+    <!-- IMPORT EXPORT -->
+    <taskana-administration-import-export [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
 
-  <!-- FILTER -->
-  <button mat-stroked-button class="workbasket-list-toolbar__filter-button" matTooltip="Display filter options" (click)="showFilter=!showFilter">
-    <mat-icon *ngIf="!showFilter">search</mat-icon>
-    <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
-  </button>
+    <!-- SORTING -->
+    <taskana-shared-sort
+      style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy">
+    </taskana-shared-sort>
+
+    <!-- FILTER -->
+    <button mat-stroked-button class="workbasket-list-toolbar__filter-button" matTooltip="Display filter options" (click)="showFilter=!showFilter">
+      <mat-icon *ngIf="!showFilter">search</mat-icon>
+      <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
+    </button>
+
+  </div>
 
   <taskana-shared-filter *ngIf="showFilter" (performFilter)="filtering($event)"></taskana-shared-filter>
+
 </div>
