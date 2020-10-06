@@ -10,7 +10,7 @@
       </button>
 
       <taskana-administration-import-export
-        class="classification-list__import-export" [currentSelection]="taskanaType.CLASSIFICATIONS">
+        class="classification-list__import-export" [currentSelection]="taskanaType.CLASSIFICATIONS" [parentComponent]="'classifications'">
       </taskana-administration-import-export>
 
       <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()" style="color: #555">
