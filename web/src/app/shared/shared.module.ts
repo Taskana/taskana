@@ -54,6 +54,9 @@ import { ToastComponent } from './components/toast/toast.component';
 import { DialogPopUpComponent } from './components/popup/dialog-pop-up.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const MODULES = [
   CommonModule,
@@ -99,7 +102,15 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatRadioModule, MatFormFieldModule, MatInputModule],
+  imports: [
+    MODULES,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule
+  ],
   exports: DECLARATIONS,
   providers: [
     {

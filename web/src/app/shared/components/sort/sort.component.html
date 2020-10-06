@@ -1,36 +1,60 @@
-<div class="dropdown">
-  <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="true">
-        <span class="material-icons md-20 blue  {{sort.sortDirection === 'asc'? '' : 'flip' }}"
-              data-toggle="tooltip"
-              title="{{sort.sortDirection === 'asc'? 'A-Z' : 'Z-A' }}">sort</span>
+<div class="sort">
+  <button mat-stroked-button [matMenuTriggerFor]="sortMenu" matTooltip="Sort workbaskets">
+    <mat-icon>sort</mat-icon>
+
+    <mat-menu #sortMenu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="sortDirection">Sort direction</button>
+      <button mat-menu-item [matMenuTriggerFor]="sortValue">Sort value</button>
+    </mat-menu>
+
+    <!-- SORT DIRECTION -->
+    <mat-menu #sortDirection="matMenu">
+      <!-- ASCENDING ORDER BUTTON -->
+      <button mat-menu-item (click)="changeOrder('asc')">
+        <span *ngIf="sort.sortDirection === 'asc'; else coloredAsc">
+          <mat-icon class="sort__selected-value"> arrow_upward </mat-icon>
+          <span class="sort__selected-value"> Ascending </span>
+        </span>
+        <ng-template #coloredAsc>
+          <mat-icon> arrow_upward </mat-icon>
+          <span> Ascending </span>
+        </ng-template>
+      </button>
+
+      <!-- DESCENDING ORDER BUTTON -->
+      <button mat-menu-item (click)="changeOrder('desc')">
+        <span *ngIf="sort.sortDirection === 'desc'; else coloredDesc">
+          <mat-icon class="sort__selected-value"> arrow_downward </mat-icon>
+          <span class="sort__selected-value"> Descending </span>
+        </span>
+        <ng-template #coloredDesc>
+          <mat-icon> arrow_downward </mat-icon>
+          <span> Descending </span>
+        </ng-template>
+      </button>
+    </mat-menu>
+
+    <!-- SORT VALUE -->
+    <mat-menu #sortValue="matMenu">
+      <button mat-menu-item *ngFor="let sortingField of sortingFields | mapValues"
+              (click)="changeSortBy(sortingField.key)">
+        <span *ngIf="sortingField.value.toLowerCase() === sort.sortBy; else coloredValue" class="sort__selected-value">
+          {{sortingField.value}}
+        </span>
+        <ng-template #coloredValue>
+          <span>{{sortingField.value}}</span>
+        </ng-template>
+      </button>
+    </mat-menu>
   </button>
-  <div class="dropdown-menu dropdown-menu-{{menuPosition}} sortby-dropdown popup"
-       aria-labelledby="sortingDropdown">
-    <div>
-      <div class="col-xs-6">
-        <h5>Sort By</h5>
-      </div>
-      <div class="btn-group">
-        <button id="sort-by-direction-asc" type="button" (click)="changeOrder('asc')"
-                data-toggle="tooltip"
-                title="A-Z"
-                class="btn btn-default {{sort.sortDirection === 'asc'? 'selected' : '' }}">
-          <span class="material-icons md-20 blue ">sort</span>
-        </button>
-        <button id="sort-by-direction-desc" type="button" (click)="changeOrder('desc')"
-                data-toggle="tooltip"
-                title="Z-A"
-                class="btn btn-default {{sort.sortDirection === 'desc'? 'selected' : '' }}">
-          <span class="material-icons md-20 blue flip">sort</span>
-        </button>
-      </div>
-    </div>
-    <div role="separator" class="divider"></div>
-    <mat-radio-group name="sort" color="accent" class="radio-group">
-      <mat-radio-button *ngFor="let sortingField of sortingFields | mapValues"
-                        name="sort" id="sort-by-{{sortingField.key}}" [checked]="sortingField.key === defaultSortBy"
-                        (change)="changeSortBy(sortingField.key)" [value]="sortingField.value"> {{ sortingField.value }}</mat-radio-button>
-    </mat-radio-group>
-  </div>
 </div>
+
+
+
+
+<!-- with radio buttons
+<mat-radio-group name="sort" class="radio-group">
+  <mat-radio-button *ngFor="let sortingField of sortingFields | mapValues"
+                    name="sort" [checked]="sortingField.key === defaultSortBy"
+                    (change)="changeSortBy(sortingField.key)" [value]="sortingField.value"> {{ sortingField.value }}</mat-radio-button>
+</mat-radio-group> -->
