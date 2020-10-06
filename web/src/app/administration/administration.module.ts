@@ -44,6 +44,7 @@ import { AdministrationOverviewComponent } from './components/administration-ove
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
 
 const MODULES = [
   CommonModule,
@@ -88,7 +89,8 @@ const DECLARATIONS = [
     MatTabsModule,
     MatInputModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    MatListModule
   ],
   providers: [
     ClassificationDefinitionService,

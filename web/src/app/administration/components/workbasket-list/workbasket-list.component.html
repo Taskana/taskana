@@ -1,12 +1,25 @@
 <div class="workbasket-list footer-space-pagination-list">
   <!-- TOOLBAR -->
-  <div #wbToolbar>
+  <section #wbToolbar>
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
     </taskana-administration-workbasket-list-toolbar>
-  </div>
+  </section>
 
   <!-- WORKBASKET LIST -->
+  <div class="workbasket-list__workbaskets" *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
+    <mat-selection-list #workbasket [multiple]="false">
+      <mat-list-option *ngFor="let workbasket of (workbasketsSummary$ | async)"
+                       (click)="selectWorkbasket(workbasket.workbasketId)"
+                       [value]="workbasket.workbasketId">
+        <taskana-administration-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+        <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
+          <i data-toggle="tooltip" title="{{workbasket.key}}">{{workbasket.key}} </i>
+        </dt>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
   <div *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <ul #wbList id="wb-list-container" class="list-group">
       <li class="list-group-item no-space">
