@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>pro.taskana</groupId>
-            <artifactId>taskana-data</artifactId>
+            <artifactId>taskana-common-data</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

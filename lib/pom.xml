@@ -15,7 +15,6 @@
 	</parent>
 
 	<modules>
-		<module>taskana-data</module>
 		<module>taskana-core</module>
 		<module>taskana-cdi</module>
 		<module>taskana-spring</module>

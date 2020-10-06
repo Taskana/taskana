@@ -1,0 +1,22 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-common-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>This pom is parent to all taskana common modules and serves the common build.</description>
+
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-parent</artifactId>
+    <version>4.1.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <modules>
+    <module>taskana-common</module>
+    <module>taskana-common-data</module>
+    <module>taskana-common-test</module>
+  </modules>
+</project>
