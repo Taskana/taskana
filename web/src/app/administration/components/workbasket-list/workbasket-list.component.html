@@ -1,9 +1,12 @@
 <div class="workbasket-list footer-space-pagination-list">
+  <!-- TOOLBAR -->
   <div #wbToolbar>
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
     </taskana-administration-workbasket-list-toolbar>
   </div>
+
+  <!-- WORKBASKET LIST -->
   <div *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <ul #wbList id="wb-list-container" class="list-group">
       <li class="list-group-item no-space">
@@ -30,6 +33,8 @@
       </li>
     </ul>
   </div>
+
+  <!-- SPINNER and EMPTY WORKBASKET LIST -->
   <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
   <ng-template #empty_workbaskets>
     <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
@@ -38,6 +43,8 @@
     </div>
   </ng-template>
 </div>
+
+<!-- PAGINATION -->
 <taskana-shared-pagination
         [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
         [type]="type"
