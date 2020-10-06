@@ -199,10 +199,9 @@ describe('ClassificationListComponent', () => {
   });
 
   it('should display icon and text when no classifications exist', () => {
-    const noClassifications = debugElement.nativeElement.querySelector('.no-classifications');
-    expect(noClassifications.childNodes.length).toBe(2);
+    const noClassifications = debugElement.nativeElement.querySelector('.classification-list__no-items');
+    expect(noClassifications.childNodes.length).toBe(1);
     expect(noClassifications.childNodes[0].textContent).toBe('There are no classifications');
-    expect(noClassifications.childNodes[1].tagName).toBe('SVG-ICON');
   });
 
   /* TS: getCategoryIcon() */
