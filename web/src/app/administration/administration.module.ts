@@ -34,6 +34,16 @@ import { WorkbasketDefinitionService } from './services/workbasket-definition.se
 import { ImportExportService } from './services/import-export.service';
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
 import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 const MODULES = [
   CommonModule,
@@ -61,12 +71,25 @@ const DECLARATIONS = [
   ClassificationTypesSelectorComponent,
   ClassificationDetailsComponent,
   ImportExportComponent,
-  AccessItemsManagementComponent
+  AccessItemsManagementComponent,
+  AdministrationOverviewComponent
 ];
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatRadioModule],
+  imports: [
+    MODULES,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTabsModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatDividerModule
+  ],
   providers: [
     ClassificationDefinitionService,
     WorkbasketDefinitionService,

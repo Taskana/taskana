@@ -1,63 +1,73 @@
-<div class="classification-list-full-height">
+<div class="classification-list">
 
-	<!-- ACTION TOOLBAR -->
-	<li class="list-group-item tab-align" id="wb-action-toolbar">
-		<div class="row">
-			<div class="col-xs-6 btn-group">
+  <!-- ACTION TOOLBAR -->
+  <section class="classification-list__action-toolbar">
+    <div class="classification-list__action-buttons">
+      <button mat-flat-button class="action-toolbar__add-button mr-1" matTooltip="Create new classification"
+              (click)="addClassification()">
+        Add
+        <mat-icon class="md-20">add</mat-icon>
+      </button>
 
-				<button class="btn btn-default add-classification-button" type="button" (click)="addClassification()" data-toggle="tooltip" title="Add">
-					<span class="material-icons md-20 green-blue">add_circle_outline</span>
-				</button>
+      <taskana-administration-import-export
+        class="classification-list__import-export" [currentSelection]="taskanaType.CLASSIFICATIONS">
+      </taskana-administration-import-export>
 
-				<taskana-administration-import-export
-						class ="btn-group" [currentSelection]="taskanaType.CLASSIFICATIONS">
-				</taskana-administration-import-export>
-			</div>
-			<div class="col-xs-6">
-				<taskana-administration-classification-types-selector
-						class="pull-right">
-				</taskana-administration-classification-types-selector>
-			</div>
-		</div>
-	</li>
+      <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()">
+        <mat-icon *ngIf="!showFilter">search</mat-icon>
+        <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
+      </button>
+    </div>
 
-	<!-- FILTER -->
-	<div class="col-xs-2 category-filter">
-		<button class="btn btn-default" data-toggle="dropdown" type="button" id="dropdown-classification-filter" data-toggle="dropdown"
-		 aria-haspopup="true" aria-expanded="true">
-			<svg-icon class="blue selected-category" *ngIf="selectedCategory else category_unselected" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
-			 data-toggle="tooltip"></svg-icon>
-			<ng-template #category_unselected>
-				<svg-icon data-toggle="tooltip" title="All" class="blue no-selected-category" src="./assets/icons/asterisk.svg"></svg-icon>
-			</ng-template>
-		</button>
-		<ul class="dropdown-menu dropdown-menu-classification" role="menu">
-			<li>
-				<a class="category-all" type="button" (click)="selectCategory('');" data-toggle="tooltip">
-					<svg-icon class="blue" src="./assets/icons/asterisk.svg"></svg-icon>
-					All
-				</a>
-				<a class="category-list" *ngFor="let category of categories$ | async" type="button" (click)="selectCategory(category);" data-toggle="tooltip">
-					<svg-icon class="blue categories" [src]="(getCategoryIcon(category) | async)?.name" data-toggle="tooltip" [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
-					{{category}}
-				</a>
-			</li>
-		</ul>
-	</div>
-	<div class="col-xs-8">
-		<input class="filter-input" [ngModel]="inputValue" (ngModelChange)="inputValue = $event" placeholder="Filter classifications">
-	</div>
+    <!-- FILTER -->
+    <div class="classification-list__filter" *ngIf="showFilter">
+      <div class="classification-list__category-filter">
+        <button mat-icon-button class="mr-2 category-filter__filter-button" [matMenuTriggerFor]="menu"
+                matTooltip="Filter Category">
+          <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
+          <svg-icon class="category-filter__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
+                    [title]="(getCategoryIcon(selectedCategory) | async)?.text"
+                    *ngIf="selectedCategory != ''">
+          </svg-icon>
+        </button>
 
-	<div class="col-xs-12 horizontal-bottom-divider"></div>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="selectCategory('')" class="category-filter__all-button">
+            <svg-icon class="category-filter__categories pr-2" src="./assets/icons/asterisk.svg"
+                      [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
+            <span>All</span>
+          </button>
+          <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
+            <svg-icon class="category-filter__categories pr-2" [src]="(getCategoryIcon(category) | async)?.name"
+                      [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+            <span> {{category}} </span>
+          </button>
+        </mat-menu>
+      </div>
 
-	<!-- CLASSIFICATION TREE -->
-	<taskana-shared-spinner class="col-xs-12" [isRunning]="requestInProgress" positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>
-	<taskana-administration-tree class="col-xs-12" *ngIf="(classifications && classifications.length) else empty_classifications"
-                                 [filterText]="inputValue" [filterIcon]="selectedCategory" (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>
-	<ng-template #empty_classifications>
-		<div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block no-classifications">
-			<h3 class="grey">There are no classifications</h3>
-			<svg-icon class="img-responsive empty-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
-		</div>
-	</ng-template>
+      <div class="filter__input">
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter classification</mat-label>
+          <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event" matTooltip="Type to filter classifications">
+        </mat-form-field>
+      </div>
+
+      <taskana-administration-classification-types-selector
+        class="pull-right">
+      </taskana-administration-classification-types-selector>
+    </div>
+  </section>
+
+
+  <!-- CLASSIFICATION TREE -->
+  <taskana-shared-spinner [isRunning]="requestInProgress"
+                          positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>
+  <taskana-administration-tree *ngIf="(classifications && classifications.length) else empty_classifications"
+                               [filterText]="inputValue" [filterIcon]="selectedCategory"
+                               (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>
+  <ng-template #empty_classifications>
+    <div *ngIf="!requestInProgress" class="classification-list__no-items">
+      <h3 class="grey">There are no classifications</h3>
+    </div>
+  </ng-template>
 </div>

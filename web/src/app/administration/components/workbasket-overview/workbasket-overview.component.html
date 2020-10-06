@@ -1,8 +1,8 @@
-<div class="no-gutter">
-    <div class="col-xs-12 col-md-4 vertical-right-divider">
+<div class="workbasket-overview">
+    <div class="vertical-right-divider">
         <taskana-administration-workbasket-list></taskana-administration-workbasket-list>
     </div>
-    <div class="col-xs-12 col-md-8" *ngIf="showDetail; else showEmptyPage">
+    <div *ngIf="showDetail; else showEmptyPage">
         <taskana-administration-workbasket-details></taskana-administration-workbasket-details>
     </div>
 

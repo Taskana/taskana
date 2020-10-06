@@ -29,6 +29,7 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   requestInProgress = true;
   inputValue: string;
   selectedCategory = '';
+  showFilter = false;
 
   @Select(ClassificationSelectors.classificationTypes) classificationTypes$: Observable<string[]>;
   @Select(ClassificationSelectors.selectedClassificationType) classificationTypeSelected$: Observable<string>;
@@ -85,18 +86,25 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications/new-classification'));
   }
 
+  getCategoryIcon(category: string): Observable<Pair> {
+    return this.categoryIcons$.pipe(
+      map((iconMap) => {
+        if (category === '') {
+          return new Pair(iconMap['all'], 'All');
+        }
+        return iconMap[category]
+          ? new Pair(iconMap[category], category)
+          : new Pair(iconMap.missing, 'Category does not match with the configuration');
+      })
+    );
+  }
+
   selectCategory(category: string) {
     this.selectedCategory = category;
   }
 
-  getCategoryIcon(category: string): Observable<Pair> {
-    return this.categoryIcons$.pipe(
-      map((iconMap) =>
-        iconMap[category]
-          ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration')
-      )
-    );
+  displayFilter() {
+    this.showFilter = !this.showFilter;
   }
 
   ngOnDestroy() {

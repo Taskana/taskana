@@ -1,22 +1,114 @@
 @import 'src/theme/_colors.scss';
 
-.custom-field-row {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  height: 40vh;
+.classification-details {
   width: 100%;
-  margin: 0;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
-.custom-field-wrapper {
-  height: 70px;
-  padding: 0 15px;
+.classification-details__wrapper {
+  position: relative;
 }
-.dropdown-menu > li {
+
+
+/* ACTION TOOLBAR */
+.classification-details__headline {
+  padding-top: 0.5rem;
+}
+.classification-details__action-toolbar {
+  width: calc(100% - 450px);
+  position: fixed;
+  padding: 12px 32px 12px 24px;
+  background-color: #fff;
+  display: flex;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  justify-content: space-between;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+
+.action-toolbar__button {
+  margin-top: 0.25rem;
+  margin-right: 6px;
+  background-color: #fff;
+}
+
+.action-toolbar__dropdown {
+  border-color: $transparent-grey;
+  border-bottom-style: solid;
+  border-width: 1px;
+}
+
+.action-toolbar__save-button {
+  background-color: $aquamarine;
+  color: white;
+}
+
+.button__green-blue {
+  color: $aquamarine;
+}
+
+.button__red {
+  color: $invalid;
+}
+
+
+/* DETAILED FIELDS */
+
+.classification__detailed-fields {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.classification-details__subheading {
+  font-weight: bold;
+  padding-left: 15px;
+  margin-bottom: 0;
+}
+
+.classification-details__horizontal-line {
+  margin: 5px 5px 25px 5px;
+  border-top-color: #555;
+  border-top-width: 1.35px;
+}
+
+.classification-details__domain-and-category {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 16px;
+}
+
+.domain-and-category__domain-checkbox {
+  position: absolute;
+  top: 64px;
+  left: 12px;
+  font-size: 14px;
+  color: #555;
+}
+.domain-and-category__domain-checkbox-icon {
   cursor: pointer;
+  margin-top: 2px;
+  font-size: 20px;
+}
+.domain-and-category__category-icon {
+  fill: #555;
+  margin-right: 5px;
+  top: -2px;
+}
+
+.classification-details__service-and-priority {
+  display: flex;
+  justify-content: space-between;
+}
+
+.classification-details__mat-form-field {
+  width: 70%;
+  margin-right: 10px;
 }
 
 input:invalid.dirty {
   border-color: $invalid;
 }
+

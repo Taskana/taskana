@@ -1,10 +1,8 @@
-<div class="no-gutter">
-  <div class="col-xs-12 col-md-4 vertical-right-divider">
-    <taskana-administration-classification-list></taskana-administration-classification-list>
-  </div>
-  <div class="col-xs-12 col-md-8" *ngIf="showDetail; else showEmptyPage">
-    <taskana-administration-classification-details></taskana-administration-classification-details>
-  </div>
+<div class="classification-overview">
+
+  <taskana-administration-classification-list></taskana-administration-classification-list>
+  <div class="vertical-right-divider"></div>
+  <taskana-administration-classification-details *ngIf="showDetail; else showEmptyPage"></taskana-administration-classification-details>
 
   <ng-template #showEmptyPage>
     <div class="hidden-xs hidden-sm col-md-8 container-no-items">

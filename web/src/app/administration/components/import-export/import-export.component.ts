@@ -29,7 +29,7 @@ export class ImportExportComponent implements OnInit {
     private workbasketDefinitionService: WorkbasketDefinitionService,
     private classificationDefinitionService: ClassificationDefinitionService,
     private notificationsService: NotificationService,
-    public uploadservice: UploadService,
+    public uploadService: UploadService,
     private errorsService: NotificationService,
     private importExportService: ImportExportService
   ) {}
@@ -67,14 +67,14 @@ export class ImportExportComponent implements OnInit {
         ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
       }
       ajax.send(formdata);
-      this.uploadservice.isInUse = true;
-      this.uploadservice.setCurrentProgressValue(1);
+      this.uploadService.isInUse = true;
+      this.uploadService.setCurrentProgressValue(1);
     }
   }
 
   progressHandler(event) {
     const percent = (event.loaded / event.total) * 100;
-    this.uploadservice.setCurrentProgressValue(Math.round(percent));
+    this.uploadService.setCurrentProgressValue(Math.round(percent));
   }
 
   private checkFormatFile(file): boolean {
@@ -90,8 +90,8 @@ export class ImportExportComponent implements OnInit {
   }
 
   private resetProgress() {
-    this.uploadservice.setCurrentProgressValue(0);
-    this.uploadservice.isInUse = false;
+    this.uploadService.setCurrentProgressValue(0);
+    this.uploadService.isInUse = false;
     this.selectedFileInput.nativeElement.value = '';
   }
 
