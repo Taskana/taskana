@@ -1,14 +1,6 @@
-.sortby-dropdown {
-  min-width: 200px;
+@import 'src/theme/_colors.scss';
+
+.sort__selected-value {
+  color: $aquamarine;
 }
 
-.bold-blue {
-  color: #337ab7;
-  font-weight: bold;
-}
-
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  margin: 0rem 2.5rem;
-}

@@ -1,20 +1,28 @@
-<li id="wb-action-toolbar" class="list-group-item tab-align">
-  <div class="row">
-    <div class="col-xs-7 btn-group">
-      <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
-        <span class="material-icons md-20 green-blue">add_circle_outline</span>
+<div class="workbasket-list-toolbar">
+
+    <!-- ACTION BUTTONS -->
+    <section class="workbasket-list-toolbar__action-toolbar">
+      <button mat-flat-button class="action-toolbar__add-button mr-1" matTooltip="Create new workbasket"
+              (click)="addWorkbasket()">
+        Add
+        <mat-icon class="md-20">add</mat-icon>
       </button>
-      <taskana-administration-import-export class="btn-group" [currentSelection]="selectionToImport"></taskana-administration-import-export>
-    </div>
-    <div class="margin-right pull-right btn-group">
+
+      <taskana-administration-import-export [currentSelection]="selectionToImport"></taskana-administration-import-export>
+    </section>
+
+
+    <!-- FILTER AND SORTING -->
+    <section class="workbasket-list-toolbar__filter-and-sorting">
       <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group" [defaultSortBy]="workbasketDefaultSortBy"></taskana-shared-sort>
       <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState"
         data-toggle="tooltip" title="Filter">
         <span class="material-icons md-20 blue">{{!toolbarState? 'search' : 'expand_less'}}</span>
       </button>
-    </div>
-  </div>
+    </section>
+
+  <!-- FILTER -->
   <div [@toggleDown]="toolbarState" class="row no-overflow">
     <taskana-shared-filter (performFilter)="filtering($event)"></taskana-shared-filter>
   </div>
-</li>
+</div>

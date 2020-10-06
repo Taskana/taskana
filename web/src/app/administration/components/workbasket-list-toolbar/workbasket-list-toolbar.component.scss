@@ -1,3 +1,32 @@
+@import 'src/theme/_colors.scss';
+
+.workbasket-list-toolbar {
+  // display: flex;
+    padding: 0 16px;
+    // min-height: 68px;
+    // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.workbasket-list-toolbar__action-toolbar {
+  display: flex;
+  border: none;
+  margin-bottom: 0;
+  padding: 16px 4px 8px 4px;
+}
+
+.workbasket-list-toolbar__filter-and-sorting {
+  display: flex;
+  border: none;
+  margin-bottom: 0;
+  padding: 16px 4px 8px 4px;
+}
+
+.action-toolbar__add-button {
+  background-color: $aquamarine;
+  color: white;
+  height: 36px;
+}
+
 .list-group-item {
   padding: 5px 0px 2px 1px;
   border: none;
