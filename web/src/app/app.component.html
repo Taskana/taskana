@@ -1,10 +1,11 @@
 <taskana-shared-nav-bar></taskana-shared-nav-bar>
 
 <div (window:resize)="onResize()" class="">
-    <div class="taskana-main">
-        <router-outlet></router-outlet>
-        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
-        <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}></taskana-shared-progress-bar>
-    </div>
+  <div class="taskana-main">
+    <router-outlet></router-outlet>
+    <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
+    <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
+    </taskana-shared-progress-bar>
+  </div>
   <taskana-shared-type-ahead></taskana-shared-type-ahead>
 </div>

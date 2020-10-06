@@ -2,103 +2,7 @@
 
 .navbar.main:before {
   @include degraded-bar(right, 100%, 3px);
-}
-
-.navbar-inverse {
-  top: 0;
-  border: none;
-  background-color: $dark-green;
-  box-shadow: 0px 1px 5px -1px black;
-}
-
-.navbar-toggle {
-  margin: 3px 0px;
-  font-size: 20px;
-  &.logout {
-    font-size: 20px;
-  }
-}
-button.navbar-toggle:hover > span {
-  color: $aquamarine;
-}
-ul.nav > p {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding-right: 0px;
-}
-
-.navbar-inverse .navbar-toggle,
-.navbar-toggle:hover,
-.navbar-inverse .navbar-toggle:focus {
-  border: none;
-  background-color: transparent;
-}
-
-svg-icon.logo {
-  float: left;
-  width: 150px;
-  height: 50px;
-  padding: 5px;
-  position: initial;
-}
-
-h2.navbar-brand {
-  vertical-align: middle;
-  text-decoration: none;
-  color: white;
-  padding: 15px 0px 0px 0px;
-  font-size: 20px;
-}
-
-.domain-form {
-  margin: 13px;
-  color: white;
-  font-size: 18px;
-  > div {
-    cursor: pointer;
-    > button {
-      color: white;
-      background-color: $dark-green;
-      border: none;
-      font-size: 16px;
-      border-bottom: 1px solid $dark-green;
-      margin-left: 5px;
-    }
-  }
-}
-
-.nav-content {
-  margin-top: 5px;
-}
-
-.nav-version {
-  color: $grey;
-  position: absolute;
-  bottom: 5px;
-  font-size: 12px;
-}
-
-/*
- * All side bar links styling.
-*/
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
-.menu > span:hover,
-.submenu > span:hover {
-  color: white;
-  cursor: pointer;
-}
-
-.sidenav {
-  position: fixed;
-  z-index: 999;
-  box-shadow: none;
-  height: 100%;
-  background-color: $dark-green;
-  box-shadow: 3px 0px 10px -1px $dark-green;
+  box-sizing: border-box;
 }
 
 .navbar {
@@ -106,40 +10,98 @@ h2.navbar-brand {
   margin-bottom: 0px;
 }
 
-.menu,
-.submenu > span {
-  margin-top: 15px;
-  font-size: 20px;
+.navbar__inverse {
+  border: none;
+  background-color: $dark-green;
+  box-shadow: 0px 1px 5px -1px black;
   width: 100%;
-  font-family: inherit;
-  font-weight: 500;
-  line-height: 1.1;
 }
 
-.menu,
-.submenu > span {
-  padding-left: 12px;
-  color: $grey;
-  outline: none;
-}
-.menu.selected,
-.submenu.selected {
-  background-color: transparent;
-  & > span {
-    padding-left: 10px;
-    border-left: $pallete-green 5px solid;
-    color: white;
-  }
+.navbar__buttom {
+  flex-grow: 1;
+  display: flex !important;
 }
 
-.menu > .submenu {
+.navbar__logo {
+  display: flex !important;
+  flex-grow: 11;
+  position: fixed;
+  left: 40%;
+  transform: translate(-50%,0%);
+}
+
+svg-icon.navbar__logo-icon {
+  float: left;
+  width: 150px;
+  height: 50px;
+  margin-top: 8px;
+  position: initial;
+}
+
+/*
+ * All side bar links styling.
+*/
+
+.sidenav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-top: 0px;
+}
+
+.sidenav__drawer {
+  position: absolute;
+  z-index: 999;
+  box-shadow: none;
+  width: 350px;
+  background-color: $dark-green;
+  box-shadow: 3px 0px 10px -1px $dark-green;
+}
+
+.sidenav__drawer-list-item {
   margin-left: 30px;
 }
 
-a {
+.sidenav__drawer-logout {
+  text-align: end;
+}
+
+.sidenav__drawer-version {
   color: $grey;
-  &:hover {
-    color: white;
-  }
-  text-decoration: none;
+  position: absolute;
+  bottom: 5px;
+  font-size: 12px;
+  margin-left: 16px;
+}
+
+.sidenav__drawer-user-info {
+  margin-top: 30px;
+  margin-bottom: 50px;
+  margin-left: -16px;
+}
+
+.mat-icon-button {
+  outline: none;
+}
+
+.mat-icon {
+  color: white;
+}
+
+.mat-list-base .mat-list-item {
+  color: $grey;
+}
+
+.active{
+  color: white !important;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow: visible !important;
+}
+
+::ng-deep .mat-drawer {
+  overflow-y: visible !important;
 }
