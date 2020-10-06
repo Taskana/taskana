@@ -19,6 +19,9 @@ export class IconTypeComponent {
   @Input()
   text: string;
 
+  @Input()
+  size = 'small';
+
   public static get allTypes(): Map<string, string> {
     return new Map([
       ['PERSONAL', 'Personal'],

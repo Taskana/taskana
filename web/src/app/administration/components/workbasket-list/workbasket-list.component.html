@@ -13,19 +13,20 @@
       <mat-list-option class="workbasket-list__workbaskets-item"
                        *ngFor="let workbasket of (workbasketsSummary$ | async)"
                        (click)="selectWorkbasket(workbasket.workbasketId)"
+                       [selected]="workbasket.workbasketId == selectedId"
                        [value]="workbasket.workbasketId">
         <div class="workbaskets-item__wrapper">
 
           <div class="workbaskets-item__icon">
-            <taskana-administration-icon-type [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+            <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
           </div>
 
           <div class="workbaskets-item__info">
-            <dt title="{{workbasket.name}}">{{workbasket.name}},
-              <i title="{{workbasket.key}}">{{workbasket.key}} </i>
-            </dt>
-            <dd title="{{workbasket.description}}">{{workbasket.description}} &nbsp;</dd>
-            <dd title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
+            <p>
+              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
+            </p>
+            <p>{{workbasket.description}} &nbsp;</p>
+            <p>{{workbasket.owner}} &nbsp;</p>
           </div>
 
           <div class="workbaskets-item__marked"  *ngIf="workbasket.markedForDeletion">

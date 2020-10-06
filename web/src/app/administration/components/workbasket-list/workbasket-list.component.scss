@@ -1,9 +1,17 @@
+@import 'src/theme/_colors.scss';
+
+
 .workbasket-list {
   width: 450px;
 }
 
 .mat-list-item {
   height: 90px !important;
+}
+
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
 }
 
 .workbasket-list__workbaskets-item {
@@ -17,6 +25,10 @@
 }
 .workbaskets-item__info {
   display: block;
+  padding: 8px 0;
+}
+p {
+  margin: 0;
 }
 .row.list-group {
   margin-left: 2px;

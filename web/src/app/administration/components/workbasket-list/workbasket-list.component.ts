@@ -20,6 +20,7 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { Workbasket } from '../../../shared/models/workbasket';
+import { MatSelectionList } from '@angular/material/list';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -50,6 +51,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   selectedWorkbasket$: Observable<Workbasket>;
 
   destroy$ = new Subject<void>();
+
+  @ViewChild('workbasket') workbasketList: MatSelectionList;
 
   constructor(
     private store: Store,
