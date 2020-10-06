@@ -15,6 +15,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>pro.taskana</groupId>
+			<artifactId>taskana-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>${version.mybatis}</version>
@@ -31,7 +36,13 @@
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-data</artifactId>
+			<artifactId>taskana-common-data</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>pro.taskana</groupId>
+			<artifactId>taskana-common-test</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>

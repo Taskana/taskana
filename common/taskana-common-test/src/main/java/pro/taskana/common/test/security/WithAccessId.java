@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.security;
+package pro.taskana.common.test.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;

@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.security;
+package pro.taskana.common.test.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import pro.taskana.common.internal.security.CurrentUserContext;
 
 @ExtendWith(JaasExtension.class)
 class JaasExtensionTest {

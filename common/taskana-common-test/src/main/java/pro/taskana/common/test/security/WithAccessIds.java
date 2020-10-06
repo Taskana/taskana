@@ -1,4 +1,4 @@
-package acceptance.security;
+package pro.taskana.common.test.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

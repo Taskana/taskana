@@ -1,6 +1,5 @@
 package pro.taskana.common.internal.security;
 
-import static pro.taskana.TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds;
 import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.lang.reflect.Method;
@@ -148,9 +147,10 @@ public final class CurrentUserContext {
 
   private static String convertAccessId(String accessId) {
     String toReturn = accessId;
-    if (shouldUseLowerCaseForAccessIds()) {
-      toReturn = accessId.toLowerCase();
-    }
+    // TODO: DAS IST DOOF
+    //    if (shouldUseLowerCaseForAccessIds()) {
+    //      toReturn = accessId.toLowerCase();
+    //    }
     LOGGER.trace("Found AccessId '{}'. Returning AccessId '{}' ", accessId, toReturn);
     return toReturn;
   }
