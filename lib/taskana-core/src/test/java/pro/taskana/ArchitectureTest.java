@@ -35,6 +35,7 @@ class ArchitectureTest {
           "pro.taskana.sampledata",
           "pro.taskana.common.internal",
           "pro.taskana.common.api",
+          "pro.taskana.common.test",
           "pro.taskana.classification.api",
           "pro.taskana.classification.internal",
           "pro.taskana.spi.history.api",
