@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { environment } from 'environments/environment';
 import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { WindowRefService } from 'app/shared/services/window/window.service';
 import { UserGuard } from 'app/shared/guards/user.guard';
 import { expandRight } from 'app/shared/animations/expand.animation';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
+import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 @Component({
   selector: 'taskana-shared-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -49,8 +50,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private selectedRouteService: SelectedRouteService,
     private domainService: DomainService,
     private taskanaEngineService: TaskanaEngineService,
-    private window: WindowRefService
+    private window: WindowRefService,
+    private orientationService: OrientationService,
   ) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.orientationService.onResize();
+  }
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {

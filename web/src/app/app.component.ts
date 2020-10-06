@@ -33,17 +33,11 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private requestInProgressService: RequestInProgressService,
-    private orientationService: OrientationService,
     private selectedRouteService: SelectedRouteService,
     private formsValidatorService: FormsValidatorService,
     private errorService: NotificationService,
     public uploadService: UploadService
   ) {}
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.orientationService.onResize();
-  }
 
   ngOnInit() {
     this.routerSubscription = this.router.events.subscribe((event) => {

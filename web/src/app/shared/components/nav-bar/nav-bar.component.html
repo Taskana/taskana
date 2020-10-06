@@ -41,5 +41,14 @@
         <svg-icon class="navbar__logo-icon" src="./assets/icons/logo-copy.svg"></svg-icon>
       </div>
     </nav>
+    <div (window:resize)="onResize()" class="">
+      <div class="taskana-main">
+        <router-outlet></router-outlet>
+        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
+        <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
+        </taskana-shared-progress-bar>
+      </div>
+      <taskana-shared-type-ahead></taskana-shared-type-ahead>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
