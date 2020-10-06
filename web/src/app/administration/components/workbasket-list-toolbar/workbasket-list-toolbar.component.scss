@@ -1,10 +1,11 @@
 @import 'src/theme/_colors.scss';
 
 .workbasket-list-toolbar {
-  // display: flex;
-    padding: 0 16px;
-    // min-height: 68px;
-    // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  display: flex;
+  padding: 0 16px;
+  flex-wrap: wrap;
+  height: 68px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .workbasket-list-toolbar__action-toolbar {
@@ -27,16 +28,9 @@
   height: 36px;
 }
 
-.list-group-item {
-  padding: 5px 0px 2px 1px;
-  border: none;
-}
-
-.tab-align {
-  padding: 8px 12px 8px 4px;
-  margin-bottom: 0px;
-
-  & > div {
-    margin: 6px 0px;
-  }
+#workbasket-list-toolbar__filter {
+  padding: 0 5px;
+  color: #555;
+  height: 36px;
+  // margin-right: 4px;
 }

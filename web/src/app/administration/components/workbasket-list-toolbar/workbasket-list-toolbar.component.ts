@@ -40,8 +40,8 @@ export class WorkbasketListToolbarComponent implements OnInit {
   ]);
 
   filterParams = { name: '', key: '', type: '', description: '', owner: '' };
-  toolbarState = false;
   filterType = TaskanaType.WORKBASKETS;
+  showFilter = false;
 
   @Select(WorkbasketSelectors.workbasketActiveAction)
   workbasketActiveAction$: Observable<ACTION>;

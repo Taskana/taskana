@@ -13,7 +13,7 @@
         class="classification-list__import-export" [currentSelection]="taskanaType.CLASSIFICATIONS">
       </taskana-administration-import-export>
 
-      <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()">
+      <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()" style="color: #555">
         <mat-icon *ngIf="!showFilter">search</mat-icon>
         <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
       </button>
