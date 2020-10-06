@@ -4,51 +4,43 @@
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
     </taskana-administration-workbasket-list-toolbar>
+    <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
   </section>
 
   <!-- WORKBASKET LIST -->
   <div class="workbasket-list__workbaskets" *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <mat-selection-list #workbasket [multiple]="false">
-      <mat-list-option *ngFor="let workbasket of (workbasketsSummary$ | async)"
+      <mat-list-option class="workbasket-list__workbaskets-item"
+                       *ngFor="let workbasket of (workbasketsSummary$ | async)"
                        (click)="selectWorkbasket(workbasket.workbasketId)"
                        [value]="workbasket.workbasketId">
-        <taskana-administration-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
-        <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
-          <i data-toggle="tooltip" title="{{workbasket.key}}">{{workbasket.key}} </i>
-        </dt>
+        <div class="workbaskets-item__wrapper">
+
+          <div class="workbaskets-item__icon">
+            <taskana-administration-icon-type [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+          </div>
+
+          <div class="workbaskets-item__info">
+            <dt title="{{workbasket.name}}">{{workbasket.name}},
+              <i title="{{workbasket.key}}">{{workbasket.key}} </i>
+            </dt>
+            <dd title="{{workbasket.description}}">{{workbasket.description}} &nbsp;</dd>
+            <dd title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
+          </div>
+
+          <div class="workbaskets-item__marked"  *ngIf="workbasket.markedForDeletion">
+            <span title="Marked for deletion" data-toggle="tooltip" class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+          </div>
+        </div>
+
         <mat-divider></mat-divider>
+
       </mat-list-option>
     </mat-selection-list>
   </div>
-  <div *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
-    <ul #wbList id="wb-list-container" class="list-group">
-      <li class="list-group-item no-space">
-        <div class="row"></div>
-      </li>
-      <li class="list-group-item" *ngFor="let workbasket of (workbasketsSummary$ | async)"
-          [class.active]="workbasket.workbasketId == selectedId"
-          type="text" (click)="selectWorkbasket(workbasket.workbasketId)">
-        <div class="row">
-          <dl class="col-xs-1">
-            <taskana-administration-icon-type class="vertical-align" [type]="workbasket.type" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
-          </dl>
-          <dl class="col-xs-10">
-            <dt data-toggle="tooltip" title="{{workbasket.name}}">{{workbasket.name}},
-              <i data-toggle="tooltip" title="{{workbasket.key}}">{{workbasket.key}} </i>
-            </dt>
-            <dd data-toggle="tooltip" title="{{workbasket.description}}">{{workbasket.description}} &nbsp;</dd>
-            <dd data-toggle="tooltip" title="{{workbasket.owner}}">{{workbasket.owner}} &nbsp;</dd>
-          </dl>
-          <dl *ngIf="workbasket.markedForDeletion">
-            <span title="Marked for deletion" data-toggle="tooltip" class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
-          </dl>
-        </div>
-      </li>
-    </ul>
-  </div>
+
 
   <!-- SPINNER and EMPTY WORKBASKET LIST -->
-  <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
   <ng-template #empty_workbaskets>
     <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
       <h3 class="grey">There are no workbaskets</h3>

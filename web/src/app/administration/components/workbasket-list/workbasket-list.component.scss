@@ -1,5 +1,22 @@
 .workbasket-list {
-  min-width: 30vw;
+  width: 450px;
+}
+
+.mat-list-item {
+  height: 90px !important;
+}
+
+.workbasket-list__workbaskets-item {
+  padding: 25px 0;
+}
+.workbaskets-item__wrapper {
+  display: flex;
+}
+.workbaskets-item__icon {
+  padding: 32px 32px 32px 16px;
+}
+.workbaskets-item__info {
+  display: block;
 }
 .row.list-group {
   margin-left: 2px;

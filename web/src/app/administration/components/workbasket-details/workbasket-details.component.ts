@@ -13,7 +13,8 @@ import { ICONTYPES } from '../../../shared/models/icon-types';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
-  templateUrl: './workbasket-details.component.html'
+  templateUrl: './workbasket-details.component.html',
+  styleUrls: ['./workbasket-details.component.scss']
 })
 export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   workbasket: Workbasket;

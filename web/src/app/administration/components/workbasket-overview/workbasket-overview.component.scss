@@ -1,5 +1,11 @@
 .workbasket-overview {
-  width: 100%;
   display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow: hidden;
+  align-items: stretch;
 }
 
+taskana-administration-workbasket-details {
+  width: 100%
+}
