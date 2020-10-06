@@ -2,208 +2,102 @@
 
 .navbar.main:before {
   @include degraded-bar(right, 100%, 3px);
+  box-sizing: border-box;
 }
 
 .navbar {
   height: 52px;
   margin-bottom: 0px;
-  width: 100%;
-  border-radius: 0%;
+}
+
+.navbar__inverse {
   border: none;
   background-color: $dark-green;
   box-shadow: 0px 1px 5px -1px black;
-}
-
-.navbar-toggle {
-  margin: 3px 0px;
-  font-size: 20px;
-  &.logout {
-    font-size: 20px;
-  }
-}
-button.navbar-toggle:hover > span {
-  color: $aquamarine;
-}
-ul.nav > p {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding-right: 0px;
-}
-
-.navbar-inverse .navbar-toggle,
-.navbar-toggle:hover,
-.navbar-inverse .navbar-toggle:focus {
-  border: none;
-  background-color: transparent;
-}
-
-svg-icon.logo {
-  float: left;
-  width: 150px;
-  height: 50px;
-  margin-top: -4px;
-  position: initial;
-}
-
-h2.navbar-brand {
-  vertical-align: middle;
-  text-decoration: none;
-  color: white;
-  padding: 15px 0px 0px 0px;
-  font-size: 20px;
-}
-
-.domain-form {
-  margin: 13px;
-  color: white;
-  font-size: 18px;
-  > div {
-    cursor: pointer;
-    > button {
-      color: white;
-      background-color: $dark-green;
-      border: none;
-      font-size: 16px;
-      border-bottom: 1px solid $dark-green;
-      margin-left: 5px;
-    }
-  }
-}
-
-
-/*
- * All side bar links styling.
-*/
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
-.menu > span:hover,
-.submenu > span:hover {
-  color: white;
-  cursor: pointer;
-}
-
-.mat-sidenav-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-
-.mat-list-base .mat-list-item {
-  color: $grey;
-}
-
-
-.menu,
-.submenu > span {
-  margin-top: 15px;
-  font-size: 20px;
   width: 100%;
-  font-family: inherit;
-  font-weight: 500;
-  line-height: 1.1;
-  padding-left: 12px;
-  color: $grey;
-  outline: none;
 }
 
-.menu.selected,
-.submenu.selected {
-  background-color: transparent;
-  & > span {
-    padding-left: 10px;
-    border-left: $pallete-green 5px solid;
-    color: white;
-  }
-}
-
-.menu.hover,
-.submenu.hover {
-  background-color: transparent;
-  & > span {
-    padding-left: 10px;
-    border-left: $pallete-green 5px solid;
-    color: white;
-  }
-}
-
-.menu > .submenu {
-  margin-left: 30px;
-}
-
-a {
-  color: $grey;
-  &:hover {
-    color: white !important;
-  }
-  text-decoration: none;
-}
-
-.flex-navbar {
-  display: flex !important;
-  justify-content: space-between;
-}
-
-.flex-navbar_button {
+.navbar__buttom {
   flex-grow: 1;
+  display: flex !important;
 }
 
-.flex-navbar_logo {
+.navbar__logo {
+  display: flex !important;
   flex-grow: 11;
   position: fixed;
   left: 40%;
   transform: translate(-50%,0%);
 }
 
-.mat-sidenav {
+svg-icon.navbar__logo-icon {
+  float: left;
+  width: 150px;
+  height: 50px;
+  margin-top: 8px;
+  position: initial;
+}
+
+/*
+ * All side bar links styling.
+*/
+
+.sidenav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-top: 0px;
+}
+
+.sidenav__drawer {
   position: absolute;
   z-index: 999;
   box-shadow: none;
   width: 350px;
   background-color: $dark-green;
   box-shadow: 3px 0px 10px -1px $dark-green;
-  overflow: hidden !important;
 }
 
-.sidenav_version {
+.sidenav__drawer-logout {
+  text-align: end;
+}
+
+.sidenav__drawer-version {
   color: $grey;
   position: absolute;
   bottom: 5px;
   font-size: 12px;
+  margin-left: 16px;
 }
 
-.sidenav_user-info {
+.sidenav__drawer-user-info {
   margin-top: 30px;
   margin-bottom: 50px;
   margin-left: -16px;
 }
 
 .mat-icon-button {
-  outline: none !important;
-}
-
-.sidenav_logout-button {
-  text-align: end;
-}
-
-.sidenav_list-pos {
-  margin-left: 30px;
-}
-
-.sidenav_link-active{
-  color: white !important;
-}
-
-::ng-deep .mat-drawer-inner-container {
-  overflow: hidden !important;
+  outline: none;
 }
 
 .mat-icon {
   color: white;
 }
 
+.mat-list-base .mat-list-item {
+  color: $grey;
+}
+
+.active{
+  color: white !important;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow: visible !important;
+}
+
+::ng-deep .mat-drawer {
+  overflow-y: visible !important;
+}

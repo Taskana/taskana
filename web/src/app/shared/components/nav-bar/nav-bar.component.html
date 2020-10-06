@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <mat-sidenav-container class="example-container">
   <mat-sidenav #sidenav mode="over" class="sidenav">
     <div class="exit">
@@ -7,10 +8,22 @@
       </button>
     </div>
     <a mat-list-item class="user-info">
+=======
+<mat-sidenav-container class="sidenav">
+  <mat-sidenav #sidenav mode="over" class="sidenav__drawer" [autoFocus]="false">
+    <div class="sidenav__drawer-logout">
+      <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
+        aria-controls="logout">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
+    <a class="sidenav__drawer-user-info">
+>>>>>>> 2bf6c0b2... TSK-1393: changed css classes
       <taskana-shared-user-information></taskana-shared-user-information>
     </a>
     <mat-nav-list>
       <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
+<<<<<<< HEAD
         *ngIf="administrationAccess" (click)="sidenav.toggle()">Administration</a>
       <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
         class="list-pos" *ngIf="administrationAccess" (click)="sidenav.toggle()">Workbaskets</a>
@@ -27,10 +40,29 @@
     </mat-nav-list>
     <div class="nav-version">
       <p id="taskana-version"> Taskana version: {{version}} </p>
+=======
+        *ngIf="administrationAccess" (click)=" sidenav.toggle()">Administration</a>
+      <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
+        style="margin-left: 30px;" *ngIf="administrationAccess" (click)=" sidenav.toggle()">Workbaskets</a>
+      <a mat-list-item [routerLink]="'taskana/administration/classifications'" [routerLinkActive]="['active']"
+        style="margin-left: 30px;" *ngIf="administrationAccess" (click)=" sidenav.toggle()">Classifications</a>
+      <a mat-list-item [routerLink]="'taskana/administration/access-items-management'" [routerLinkActive]="['active']"
+        style="margin-left: 30px;" (click)=" sidenav.toggle()">Access Items</a>
+      <a mat-list-item [routerLink]="'taskana/monitor'" [routerLinkActive]="['active']" *ngIf="monitorAccess"
+        (click)=" sidenav.toggle()">Monitor</a>
+      <a mat-list-item [routerLink]="'taskana/workplace'" [routerLinkActive]="['active']" *ngIf="workplaceAccess"
+        (click)=" sidenav.toggle()">Workplace</a>
+      <a mat-list-item [routerLink]="'taskana/history'" [routerLinkActive]="['active']" *ngIf="historyAccess"
+        (click)=" sidenav.toggle()">History</a>
+    </mat-nav-list>
+    <div class="sidenav__drawer-version">
+      <p> Taskana version: {{version}} </p>
+>>>>>>> 2bf6c0b2... TSK-1393: changed css classes
     </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
+<<<<<<< HEAD
     <nav class="navbar no-border-radius navbar-inverse no-gutter col-xs-12">
       <div class="flex-container">
         <div class="flex-button">
@@ -42,6 +74,16 @@
           <svg-icon class="logo white hidden-xs" src="./assets/icons/logo-copy.svg"></svg-icon>
         </div>
         <div *ngIf="showDomainSelector()" class="pull-right domain-form"></div>
+=======
+    <nav class="navbar navbar__inverse">
+      <div class="navbar__button">
+        <button mat-icon-button (click)=" sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <div class="navbar__logo">
+        <svg-icon class="navbar__logo-icon" src="./assets/icons/logo-copy.svg"></svg-icon>
+>>>>>>> 2bf6c0b2... TSK-1393: changed css classes
       </div>
     </nav>
   </mat-sidenav-content>
