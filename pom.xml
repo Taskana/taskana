@@ -12,6 +12,7 @@
     <url>http://taskana.pro</url>
 
     <modules>
+        <module>common</module>
         <module>lib</module>
         <module>rest</module>
         <!-- History is an optional module. -->

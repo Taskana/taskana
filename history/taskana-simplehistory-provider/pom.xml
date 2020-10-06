@@ -34,7 +34,7 @@
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-data</artifactId>
+			<artifactId>taskana-common-data</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
