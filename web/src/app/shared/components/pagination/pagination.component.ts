@@ -1,32 +1,40 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, OnInit } from '@angular/core';
 import { Page } from 'app/shared/models/page';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'taskana-shared-pagination',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })
-export class PaginationComponent implements OnChanges {
+export class PaginationComponent implements OnInit, OnChanges {
   @Input()
   page: Page;
 
   @Input()
   type: String;
 
-  @Output()
-  workbasketsResourceChange = new EventEmitter<Page>();
+  @Input()
+  numberOfItems: number;
 
   @Output()
   changePage = new EventEmitter<number>();
 
-  @Input()
-  numberOfItems: number;
+  @ViewChild(MatPaginator, { static: true })
+  paginator: MatPaginator;
 
   hasItems = true;
-  previousPageSelected = 1;
   pageSelected = 1;
-  maxPagesAvailable = 8;
 
+  ngOnInit() {
+    this.paginator._intl.itemsPerPageLabel = 'Per page';
+    this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      page += 1;
+      const start = length / pageSize >= page ? (page + 1) * pageSize : length;
+      const end = length;
+      return `${start} of ${end} workbaskets`;
+    };
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.page && changes.page.currentValue) {
       this.pageSelected = changes.page.currentValue.number;
@@ -34,27 +42,13 @@ export class PaginationComponent implements OnChanges {
     this.hasItems = this.numberOfItems > 0;
   }
 
-  changeToPage(p) {
-    let page = p;
-    if (page < 1) {
-      this.pageSelected = 1;
-      page = this.pageSelected;
+  changeToPage(event) {
+    let currentPageIndex = event.pageIndex;
+    if (currentPageIndex > event.previousPageIndex) {
+      this.pageSelected += 1;
+    } else {
+      this.pageSelected -= 1;
     }
-    if (page > this.page.totalPages) {
-      page = this.page.totalPages;
-    }
-    if (this.previousPageSelected !== page) {
-      this.changePage.emit(page);
-      this.previousPageSelected = page;
-      this.pageSelected = page;
-    }
-  }
-
-  getPagesTextToShow(): string {
-    if (!this.page) {
-      return '';
-    }
-    const text = `${this.numberOfItems}`;
-    return `${text} of ${this.page.totalElements} ${this.type}`;
+    this.changePage.emit(currentPageIndex + 1);
   }
 }

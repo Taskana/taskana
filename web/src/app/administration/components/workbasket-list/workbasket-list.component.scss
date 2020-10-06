@@ -3,19 +3,23 @@
 
 .workbasket-list {
   width: 450px;
+  max-height: calc(100% - 100px);
+  overflow-y: hidden;
 }
-
-.mat-list-item {
-  height: 90px !important;
-}
-
-.mat-list-single-selected-option {
-  background-color: $green !important;
-  color: white;
+.workbasket-list__workbaskets {
+  height: calc(100% - 122px);
+  overflow-y: scroll;
 }
 
 .workbasket-list__workbaskets-item {
   padding: 25px 0;
+}
+.mat-list-item {
+  height: 90px !important;
+}
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
 }
 .workbaskets-item__wrapper {
   display: flex;
@@ -29,42 +33,4 @@
 }
 p {
   margin: 0;
-}
-.row.list-group {
-  margin-left: 2px;
-}
-
-.list-group > li {
-  border-left: none;
-  border-right: none;
-}
-
-a > label {
-  height: 2em;
-  width: 100%;
-}
-dd,
-dt {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-dt > i {
-  font-weight: normal;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-li > div.row > dl {
-  margin-bottom: 0px;
-}
-li > div.row > dl:first-child {
-  margin-left: 15px;
-}
-
-.no-space {
-  border-top: none;
-  padding: 0px;
 }

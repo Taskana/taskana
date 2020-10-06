@@ -1,21 +1,3 @@
-<ul id="wb-pagination" class="pagination vertical-center">
-  <li>
-    <a *ngIf="hasItems" (click)="changeToPage(1)" aria-label="First">
-      First</a>
-  </li>
-  <li *ngFor="let pageNumber of page?.totalPages | spreadNumber: page?.number: maxPagesAvailable">
-    <a *ngIf="pageNumber + 1 !== page?.number" (click)="changeToPage(pageNumber+1)">{{pageNumber + 1}}</a>
-    <a *ngIf="pageNumber + 1 === page?.number" class="pagination">
-      <input [(ngModel)]="pageSelected" (keyup.enter)="changeToPage(pageSelected)" type="number" (blur)="changeToPage(pageSelected)" >
-    </a>
-  </li>
-  <li>
-    <a *ngIf="hasItems" (click)="changeToPage(page?.totalPages)" aria-label="Last">Last</a>
-  </li>
-</ul>
-<span class="footer pull-right" [hidden]="numberOfItems === 0">
-  <i [innerHTML]="getPagesTextToShow()"></i>
-</span>
-<span class="footer pull-right" [hidden]="numberOfItems !== 0 && page?.totalElements !== 0">
-  <i>Loading...</i>
-</span>
+<mat-paginator [length]="page?.totalElements" pageIndex="0" hidePageSize="true" pageSize="10" (page)="changeToPage($event)" showFirstLastButtons="true"></mat-paginator>
+
+
