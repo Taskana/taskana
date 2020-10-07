@@ -39,6 +39,8 @@ import { NoAccessComponent } from 'app/shared/components/no-access/no-access.com
 import { FormsValidatorService } from './shared/services/forms-validator/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
 import { NotificationService } from './shared/services/notifications/notification.service';
+import { SidenavService } from './shared/services/sidenav/sidenav.service';
+import { SidenavListComponent } from 'app/shared/components/sidenav-list/sidenav-list.component';
 /**
  * Components
  */
@@ -80,7 +82,7 @@ const MODULES = [
   NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
 ];
 
-const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent];
+const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent, SidenavListComponent];
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
   return (): Promise<any> => startupService.load();
@@ -111,7 +113,8 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     FormsValidatorService,
     UploadService,
     NotificationService,
-    ClassificationCategoriesService
+    ClassificationCategoriesService,
+    SidenavService
   ],
   bootstrap: [AppComponent]
 })

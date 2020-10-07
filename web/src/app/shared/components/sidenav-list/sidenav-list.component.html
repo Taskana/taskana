@@ -1,0 +1,16 @@
+<mat-nav-list>
+    <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
+        *ngIf="administrationAccess" (click)="toggleSidenav()">Administration</a>
+    <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
+        class="list-item" *ngIf="administrationAccess" (click)="toggleSidenav()">Workbaskets</a>
+    <a mat-list-item [routerLink]="'taskana/administration/classifications'" [routerLinkActive]="['active']"
+        class="list-item" *ngIf="administrationAccess" (click)="toggleSidenav()">Classifications</a>
+    <a mat-list-item [routerLink]="'taskana/administration/access-items-management'" [routerLinkActive]="['active']"
+        class="list-item" (click)="toggleSidenav()">Access Items</a>
+    <a mat-list-item [routerLink]="'taskana/monitor'" [routerLinkActive]="['active']" *ngIf="monitorAccess"
+        (click)="toggleSidenav()">Monitor</a>
+    <a mat-list-item [routerLink]="'taskana/workplace'" [routerLinkActive]="['active']" *ngIf="workplaceAccess"
+        (click)="toggleSidenav()">Workplace</a>
+    <a mat-list-item [routerLink]="'taskana/history'" [routerLinkActive]="['active']" *ngIf="historyAccess"
+        (click)="toggleSidenav()">History</a>
+</mat-nav-list>

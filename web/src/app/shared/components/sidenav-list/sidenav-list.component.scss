@@ -1,0 +1,15 @@
+@import '../../../../theme/variables';
+
+.list-item {
+margin-left: 30px;
+}
+
+
+.mat-list-base .mat-list-item {
+color: $grey;
+}
+
+.active{
+color: white !important;
+}
+  

@@ -1,1 +1,31 @@
-<taskana-shared-nav-bar></taskana-shared-nav-bar>
+<mat-sidenav-container class="sidenav">
+  <mat-sidenav #sidenav mode="over" class="sidenav__drawer" [autoFocus]="false">
+    <div class="sidenav__drawer-logout">
+      <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
+        aria-controls="logout">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
+    <a class="sidenav__drawer-user-info">
+      <taskana-shared-user-information></taskana-shared-user-information>
+    </a>
+    <taskana-sidenav-list></taskana-sidenav-list>
+
+    <div class="sidenav__drawer-version">
+      <p> Taskana version: {{version}} </p>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <taskana-shared-nav-bar></taskana-shared-nav-bar>
+    <div (window:resize)="onResize()" class="">
+      <div class="taskana-main">
+        <router-outlet></router-outlet>
+        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
+        <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
+        </taskana-shared-progress-bar>
+      </div>
+      <taskana-shared-type-ahead></taskana-shared-type-ahead>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

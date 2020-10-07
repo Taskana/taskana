@@ -1,54 +1,12 @@
-<mat-sidenav-container class="sidenav">
-  <mat-sidenav #sidenav mode="over" class="sidenav__drawer" [autoFocus]="false">
-    <div class="sidenav__drawer-logout">
-      <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
-        aria-controls="logout">
-        <mat-icon>exit_to_app</mat-icon>
-      </button>
-    </div>
-    <a class="sidenav__drawer-user-info">
-      <taskana-shared-user-information></taskana-shared-user-information>
-    </a>
-    <mat-nav-list>
-      <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
-        *ngIf="administrationAccess" (click)=" sidenav.toggle()">Administration</a>
-      <a mat-list-item [routerLink]="'taskana/administration/workbaskets'" [routerLinkActive]="['active']"
-        class="sidenav__drawer-list-item" *ngIf="administrationAccess" (click)=" sidenav.toggle()">Workbaskets</a>
-      <a mat-list-item [routerLink]="'taskana/administration/classifications'" [routerLinkActive]="['active']"
-        class="sidenav__drawer-list-item" *ngIf="administrationAccess" (click)=" sidenav.toggle()">Classifications</a>
-      <a mat-list-item [routerLink]="'taskana/administration/access-items-management'" [routerLinkActive]="['active']"
-        class="sidenav__drawer-list-item" (click)=" sidenav.toggle()">Access Items</a>
-      <a mat-list-item [routerLink]="'taskana/monitor'" [routerLinkActive]="['active']" *ngIf="monitorAccess"
-        (click)=" sidenav.toggle()">Monitor</a>
-      <a mat-list-item [routerLink]="'taskana/workplace'" [routerLinkActive]="['active']" *ngIf="workplaceAccess"
-        (click)=" sidenav.toggle()">Workplace</a>
-      <a mat-list-item [routerLink]="'taskana/history'" [routerLinkActive]="['active']" *ngIf="historyAccess"
-        (click)=" sidenav.toggle()">History</a>
-    </mat-nav-list>
-    <div class="sidenav__drawer-version">
-      <p> Taskana version: {{version}} </p>
-    </div>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <nav class="navbar navbar__inverse">
-      <div class="navbar__button">
-        <button mat-icon-button (click)=" sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-      </div>
-      <div class="navbar__logo">
-        <svg-icon class="navbar__logo-icon" src="./assets/icons/logo-copy.svg"></svg-icon>
-      </div>
-    </nav>
-    <div (window:resize)="onResize()" class="">
-      <div class="taskana-main">
-        <router-outlet></router-outlet>
-        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
-        <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
-        </taskana-shared-progress-bar>
-      </div>
-      <taskana-shared-type-ahead></taskana-shared-type-ahead>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<nav class="navbar navbar__inverse">
+  <div class="navbar__button">
+    <button mat-icon-button (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  <div class="navbar__logo">
+    <svg-icon class="navbar__logo-icon" src="./assets/icons/logo-copy.svg"></svg-icon>
+    <h2 class="navbar__title" *ngIf="showTitle">{{title}}</h2>
+  </div>
+</nav>

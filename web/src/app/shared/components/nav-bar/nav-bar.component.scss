@@ -20,66 +20,34 @@
 .navbar__buttom {
   flex-grow: 1;
   display: flex !important;
+  order: 1;
+  margin-top: -10px;
 }
 
 .navbar__logo {
   display: flex !important;
-  flex-grow: 11;
-  position: fixed;
+  flex-grow: 6;
+  position: relative;
   left: 40%;
-  transform: translate(-50%,0%);
+  margin-top: -3px;
+  order: 2;
+}
+
+h2.navbar__title {
+  display: flex !important;
+  flex-grow: 5;
+  color: white;
+  margin-top: 10px;
+  order: 3;
+  margin-left: 2%;
+  font-size: large;
 }
 
 svg-icon.navbar__logo-icon {
   float: left;
   width: 150px;
   height: 50px;
-  margin-top: 8px;
   position: initial;
-}
-
-/*
- * All side bar links styling.
-*/
-
-.sidenav {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin-top: 0px;
-}
-
-.sidenav__drawer {
-  position: absolute;
-  z-index: 999;
-  box-shadow: none;
-  width: 350px;
-  background-color: $dark-green;
-  box-shadow: 3px 0px 10px -1px $dark-green;
-}
-
-.sidenav__drawer-list-item {
-  margin-left: 30px;
-}
-
-.sidenav__drawer-logout {
-  text-align: end;
-}
-
-.sidenav__drawer-version {
-  color: $grey;
-  position: absolute;
-  bottom: 5px;
-  font-size: 12px;
-  margin-left: 16px;
-}
-
-.sidenav__drawer-user-info {
-  margin-top: 30px;
-  margin-bottom: 50px;
-  margin-left: -16px;
 }
 
 .mat-icon-button {
@@ -88,20 +56,4 @@ svg-icon.navbar__logo-icon {
 
 .mat-icon {
   color: white;
-}
-
-.mat-list-base .mat-list-item {
-  color: $grey;
-}
-
-.active{
-  color: white !important;
-}
-
-::ng-deep .mat-drawer-inner-container {
-  overflow: visible !important;
-}
-
-::ng-deep .mat-drawer {
-  overflow-y: visible !important;
 }
