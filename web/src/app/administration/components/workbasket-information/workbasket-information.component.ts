@@ -2,7 +2,6 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChil
 import { Observable, Subject } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
-import { ICONTYPES } from 'app/shared/models/icon-types';
 import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
@@ -96,10 +95,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     } else if (this.action === ACTION.COPY) {
       this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
     }
-  }
-
-  selectType(type: ICONTYPES) {
-    this.workbasket.type = type;
   }
 
   onSubmit() {

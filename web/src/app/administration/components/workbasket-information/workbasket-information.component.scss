@@ -1,3 +1,30 @@
+.workbasket-information {
+  display: flex;
+  flex-direction: column;
+}
+
+.workbasket-information__subheading {
+  font-weight: bold;
+  padding-left: 15px;
+  margin-bottom: 0;
+}
+
+.workbasket-information__horizontal-line {
+  margin: 5px 5px 25px 5px;
+  border-top-color: #555;
+  border-top-width: 1.35px;
+}
+
+.workbasket-information__domain-and-type {
+  display: flex;
+  justify-content: space-between;
+}
+
+.workbasket-information__mat-form-field {
+  width: 70%;
+  margin-right: 10px;
+}
+
 .dropdown-menu {
   min-width: auto;
 }
