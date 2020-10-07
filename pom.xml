@@ -59,7 +59,7 @@
         <version.thorntail>2.7.0.Final</version.thorntail>
         <version.javaee-api>8.0.1</version.javaee-api>
         <version.arquillian>1.5.0.Final</version.arquillian>
-        <version.arquillian.managed.wildfly>2.2.0.Final</version.arquillian.managed.wildfly>
+        <version.arquillian.managed.wildfly>3.0.0.Final</version.arquillian.managed.wildfly>
 
         <!-- test dependencies -->
         <version.archunit>0.14.1</version.archunit>
