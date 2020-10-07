@@ -60,10 +60,8 @@ class SimpleHistoryServiceImplTest {
     when(sqlSessionManagerMock.getMapper(WorkbasketHistoryEventMapper.class))
         .thenReturn(workbasketHistoryEventMapperMock);
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionManagerMock);
-    doReturn(taskanaHistoryEngineMock).when(cutSpy).getTaskanaEngine(taskanaEngineConfiguration);
+    doReturn(taskanaHistoryEngineMock).when(cutSpy).getTaskanaEngine(taskanaEngine);
     doReturn(taskanaEngine).when(taskanaEngineConfiguration).buildTaskanaEngine();
-    doReturn(taskanaEngineConfiguration).when(taskanaEngine).getConfiguration();
-
     cutSpy.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 
     verify(sqlSessionManagerMock, times(3)).getMapper(any());

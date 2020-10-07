@@ -36,8 +36,8 @@ import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.internal.security.GroupPrincipal;
-import pro.taskana.common.internal.security.UserPrincipal;
+import pro.taskana.common.api.security.GroupPrincipal;
+import pro.taskana.common.api.security.UserPrincipal;
 
 /** Runner for integration tests that enables JAAS subject. */
 public class JaasExtension implements InvocationInterceptor, TestTemplateInvocationContextProvider {

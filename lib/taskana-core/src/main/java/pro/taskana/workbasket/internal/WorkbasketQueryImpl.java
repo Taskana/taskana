@@ -16,7 +16,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
@@ -666,7 +665,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       // might already be set by accessIdsHavePermission
       if (this.accessId == null) {
         String[] accessIds = new String[0];
-        List<String> ucAccessIds = CurrentUserContext.getAccessIds();
+        List<String> ucAccessIds = taskanaEngine.getEngine().getCurrentUserContext().getAccessIds();
         if (!ucAccessIds.isEmpty()) {
           accessIds = ucAccessIds.toArray(accessIds);
         }

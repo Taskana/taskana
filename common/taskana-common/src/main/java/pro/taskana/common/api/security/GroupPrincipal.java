@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.security;
+package pro.taskana.common.api.security;
 
 import java.security.Principal;
 import java.security.acl.Group;

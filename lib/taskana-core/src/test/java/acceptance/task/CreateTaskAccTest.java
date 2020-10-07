@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineProxy;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
@@ -70,7 +69,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(createdTask.getOwner()).isEqualTo("user-1-1");
     assertThat(createdTask.getWorkbasketKey()).isEqualTo("USER-1-1");
     assertThat(createdTask.getName()).isEqualTo("T-Vertragstermin VERA");
@@ -93,7 +93,7 @@ class CreateTaskAccTest extends AbstractAccTest {
   @Test
   void should_CreateTask_When_ObjectReferenceSystemAndSystemInstanceIsNull() throws Exception {
 
-    String currentUser = CurrentUserContext.getUserid();
+    String currentUser = taskanaEngine.getCurrentUserContext().getUserid();
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -104,7 +104,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
   }
 
   @WithAccessId(user = "admin")
@@ -113,7 +114,7 @@ class CreateTaskAccTest extends AbstractAccTest {
   void should_CreateTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws Exception {
 
-    String currentUser = CurrentUserContext.getUserid();
+    String currentUser = taskanaEngine.getCurrentUserContext().getUserid();
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -124,7 +125,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
   }
 
   @WithAccessId(user = "user-1-1")
@@ -140,7 +142,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(createdTask.getName()).isEqualTo("T-Vertragstermin VERA");
     assertThat(createdTask.getPrimaryObjRef().getValue()).isEqualTo("1234567");
     assertThat(createdTask.getExternalId()).isNotNull();
@@ -255,7 +258,8 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     Task createdTask = taskService.createTask(newTask);
     assertThat(createdTask.getId()).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
 
     // verify that the database content is as expected
     TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
@@ -289,7 +293,8 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     Task readTask = taskService.getTask(createdTask.getId());
     assertThat(readTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(readTask.getAttachments()).isNotNull();
     assertThat(readTask.getAttachments()).hasSize(1);
     assertThat(readTask.getAttachments().get(0).getCreated()).isNotNull();
@@ -350,11 +355,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask.getId()).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
 
     Task readTask = taskService.getTask(createdTask.getId());
     assertThat(readTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(readTask.getAttachments()).isNotNull();
     assertThat(readTask.getAttachments()).hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
@@ -401,11 +408,13 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask.getId()).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
 
     Task readTask = taskService.getTask(createdTask.getId());
     assertThat(readTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(readTask.getAttachments()).isNotNull();
     assertThat(readTask.getAttachments()).hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
@@ -489,7 +498,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(createdTask.getName()).isEqualTo("Test Name");
   }
 
@@ -505,7 +515,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(createdTask.getPriority()).isEqualTo(2);
   }
 
@@ -576,7 +587,8 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(createdTask.getDomain()).isNotNull();
     assertThat(createdTask.getDomain()).isEqualTo(workbasket.getDomain());
   }

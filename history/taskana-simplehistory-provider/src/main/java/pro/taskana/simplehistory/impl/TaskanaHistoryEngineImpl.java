@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryMapper;
@@ -37,28 +37,30 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   protected static final ThreadLocal<Deque<SqlSessionManager>> SESSION_STACK = new ThreadLocal<>();
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaHistoryEngineImpl.class);
   private static final String DEFAULT = "default";
-  protected SqlSessionManager sessionManager;
-  protected TransactionFactory transactionFactory;
-  protected TaskanaHistory taskanaHistoryService;
-  TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private final SqlSessionManager sessionManager;
+  private final TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private final TaskanaEngine taskanaEngine;
+  private TransactionFactory transactionFactory;
+  private TaskanaHistory taskanaHistoryService;
 
-  protected TaskanaHistoryEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+  protected TaskanaHistoryEngineImpl(TaskanaEngine taskanaEngine) {
+    this.taskanaEngineConfiguration = taskanaEngine.getConfiguration();
+    this.taskanaEngine = taskanaEngine;
 
-    createTransactionFactory(this.taskanaEngineConfiguration.getUseManagedTransactions());
-    this.sessionManager = createSqlSessionManager();
+    createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
+    sessionManager = createSqlSessionManager();
   }
 
   public static TaskanaHistoryEngineImpl createTaskanaEngine(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) {
-    return new TaskanaHistoryEngineImpl(taskanaEngineConfiguration);
+      TaskanaEngine taskanaEngine) {
+    return new TaskanaHistoryEngineImpl(taskanaEngine);
   }
 
   @Override
   public TaskanaHistory getTaskanaHistoryService() {
     if (taskanaHistoryService == null) {
       SimpleHistoryServiceImpl historyService = new SimpleHistoryServiceImpl();
-      historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
+      historyService.initialize(taskanaEngine);
       this.taskanaHistoryService = historyService;
     }
     return this.taskanaHistoryService;
@@ -74,7 +76,8 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
             .map(role -> getConfiguration().getRoleMap().get(role))
             .collect(HashSet::new, Set::addAll, Set::addAll);
 
-    return CurrentUserContext.getAccessIds().stream().anyMatch(rolesMembers::contains);
+    return taskanaEngine.getCurrentUserContext().getAccessIds().stream()
+        .anyMatch(rolesMembers::contains);
   }
 
   public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
@@ -82,12 +85,12 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
-            CurrentUserContext.getAccessIds(),
+            taskanaEngine.getCurrentUserContext().getAccessIds(),
             Arrays.toString(roles));
       }
       throw new NotAuthorizedException(
           "current user is not member of role(s) " + Arrays.toString(roles),
-          CurrentUserContext.getUserid());
+          taskanaEngine.getCurrentUserContext().getUserid());
     }
   }
 

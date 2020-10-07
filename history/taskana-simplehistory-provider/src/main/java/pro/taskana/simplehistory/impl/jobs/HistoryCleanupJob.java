@@ -55,7 +55,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   private final boolean allCompletedSameParentBusiness;
 
   TaskanaHistoryEngineImpl taskanaHistoryEngine =
-      TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl.getConfiguration());
+      TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl);
 
   private Instant firstRun = Instant.parse("2018-01-01T00:00:00Z");
   private Duration runEvery = Duration.parse("P1D");

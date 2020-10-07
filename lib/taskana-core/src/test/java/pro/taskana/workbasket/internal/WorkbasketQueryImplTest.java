@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
@@ -35,9 +36,12 @@ class WorkbasketQueryImplTest {
 
   @Mock private SqlSession sqlSession;
 
+  @Mock private CurrentUserContext currentUserContext;
+
   @BeforeEach
   void setup() {
     when(internalTaskanaEngine.getEngine()).thenReturn(taskanaEngine);
+    when(taskanaEngine.getCurrentUserContext()).thenReturn(currentUserContext);
   }
 
   @Test

@@ -15,7 +15,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.task.TaskTransferredEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
@@ -357,7 +356,7 @@ public class TaskTransferrer {
             currentTaskId,
             new NotAuthorizedException(
                 "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
         taskIdIterator.remove();
       }
     }
@@ -372,7 +371,7 @@ public class TaskTransferrer {
             task,
             oldWorkbasketSummary,
             newWorkbasketSummary,
-            CurrentUserContext.getUserid()));
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
   }
 
   private void updateTasksToBeTransferred(
