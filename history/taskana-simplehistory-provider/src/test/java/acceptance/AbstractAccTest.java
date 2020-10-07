@@ -114,9 +114,9 @@ public abstract class AbstractAccTest {
             dataSource,
             false,
             schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
-    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 

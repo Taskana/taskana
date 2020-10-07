@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -441,13 +440,15 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask.getId()).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     createdTask
         .getAttachments()
         .forEach(at -> assertThat(createdTask.getModified()).isEqualTo(at.getModified()));
     Task readTask = taskService.getTask(createdTask.getId());
     assertThat(readTask).isNotNull();
-    assertThat(createdTask.getCreator()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(createdTask.getCreator())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(readTask.getAttachments()).isNotNull();
     assertThat(readTask.getAttachments()).hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();

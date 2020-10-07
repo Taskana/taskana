@@ -23,39 +23,42 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.internal.security.CurrentUserContext;
+import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.internal.security.CurrentUserContextImpl;
 
 @ExtendWith(JaasExtension.class)
 class JaasExtensionTest {
 
   private static final String INSIDE_DYNAMIC_TEST_USER = "insidedynamictest";
+  private static final CurrentUserContext CURRENT_USER_CONTEXT = new CurrentUserContextImpl(true);
   private static final DynamicTest NOT_NULL_DYNAMIC_TEST =
-      dynamicTest("dynamic test", () -> assertThat(CurrentUserContext.getUserid()).isNotNull());
+      dynamicTest("dynamic test", () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isNotNull());
   private static final DynamicTest NULL_DYNAMIC_TEST =
-      dynamicTest("dynamic test", () -> assertThat(CurrentUserContext.getUserid()).isEqualTo(null));
+      dynamicTest(
+          "dynamic test", () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null));
   private static final DynamicTest DYNAMIC_TEST_USER_DYNAMIC_TEST =
       dynamicTest(
           "dynamic test",
-          () -> assertThat(CurrentUserContext.getUserid()).isEqualTo(INSIDE_DYNAMIC_TEST_USER));
+          () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(INSIDE_DYNAMIC_TEST_USER));
 
   // region JaasExtension#interceptBeforeAllMethod
 
   @BeforeAll
   static void should_NotSetJaasSubject_When_AnnotationIsMissing_On_BeforeAll() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   @WithAccessId(user = "beforeall")
   @BeforeAll
   static void should_SetJaasSubject_When_AnnotationExists_On_BeforeAll() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("beforeall");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("beforeall");
   }
 
   @WithAccessId(user = "beforeall")
   @WithAccessId(user = "beforeall2")
   @BeforeAll
   static void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_BeforeAll() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   // endregion
@@ -64,20 +67,20 @@ class JaasExtensionTest {
 
   @BeforeEach
   void should_NotSetJaasSubject_When_AnnotationIsMissing_On_BeforeEach() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   @WithAccessId(user = "beforeeach")
   @BeforeEach
   void should_SetJaasSubject_When_AnnotationExists_On_BeforeEach() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("beforeeach");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("beforeeach");
   }
 
   @WithAccessId(user = "beforeeach")
   @WithAccessId(user = "beforeeach2")
   @BeforeEach
   void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_BeforeEach() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   // endregion
@@ -86,20 +89,20 @@ class JaasExtensionTest {
 
   @AfterEach
   void should_NotSetJaasSubject_When_AnnotationIsMissing_On_AfterEach() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   @WithAccessId(user = "aftereach")
   @AfterEach
   void should_SetJaasSubject_When_AnnotationExists_On_AfterEach() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("aftereach");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("aftereach");
   }
 
   @WithAccessId(user = "aftereach")
   @WithAccessId(user = "afterach2")
   @AfterEach
   void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_AfterEach() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   // endregion
@@ -108,20 +111,20 @@ class JaasExtensionTest {
 
   @AfterAll
   static void should_NotSetJaasSubject_When_AnnotationIsMissing_On_AfterAll() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   @WithAccessId(user = "afterall")
   @AfterAll
   static void should_SetJaasSubject_When_AnnotationExists_On_AfterAll() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("afterall");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("afterall");
   }
 
   @WithAccessId(user = "afterall")
   @WithAccessId(user = "afterall2")
   @AfterAll
   static void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_AfterAll() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   // endregion
@@ -130,14 +133,14 @@ class JaasExtensionTest {
 
   @Test
   void should_NotSetJaasSubject_When_AnnotationIsMissing_On_Test() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   @WithAccessId(user = "user")
   @Test
   void should_SetJaasSubject_When_AnnotationExists_On_Test() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("user");
-    assertThat(CurrentUserContext.getGroupIds()).isEmpty();
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("user");
+    assertThat(CURRENT_USER_CONTEXT.getGroupIds()).isEmpty();
   }
 
   @WithAccessId(
@@ -145,15 +148,15 @@ class JaasExtensionTest {
       groups = {"group1", "group2"})
   @Test
   void should_SetJaasSubjectWithGroups_When_AnnotationExistsWithGroups_On_Test() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("user");
-    assertThat(CurrentUserContext.getGroupIds()).containsExactlyInAnyOrder("group1", "group2");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("user");
+    assertThat(CURRENT_USER_CONTEXT.getGroupIds()).containsExactlyInAnyOrder("group1", "group2");
   }
 
   @WithAccessId(user = "user")
   @Test
   @Disabled("this can be tested with a org.junit.platform.launcher.TestExecutionListener")
   void should_NotInjectParameter_When_ParameterIsPresent_On_Test(WithAccessId accessId) {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("user");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("user");
   }
 
   @WithAccessId(user = "user")
@@ -161,7 +164,7 @@ class JaasExtensionTest {
   @Test
   @Disabled("this can be tested with a org.junit.platform.launcher.TestExecutionListener")
   void should_ThrowException_When_MultipleAnnotationsExist_On_Test() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
   }
 
   // endregion
@@ -170,14 +173,14 @@ class JaasExtensionTest {
 
   @TestFactory
   List<DynamicTest> should_NotSetJaasSubject_When_AnnotationIsMissing_On_TestFactory() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
     return Collections.emptyList();
   }
 
   @WithAccessId(user = "testfactory")
   @TestFactory
   List<DynamicTest> should_SetJaasSubject_When_AnnotationExists_On_TestFactory() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("testfactory");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("testfactory");
     return Collections.emptyList();
   }
 
@@ -186,7 +189,7 @@ class JaasExtensionTest {
   @TestFactory
   List<DynamicTest>
       should_SetJaasSubjectFromFirstAnnotation_When_MultipleAnnotationsExists_On_TestFactory() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("testfactory1");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("testfactory1");
     return Collections.emptyList();
   }
 
@@ -197,13 +200,13 @@ class JaasExtensionTest {
   @TestTemplate
   @Disabled("this can be tested with a org.junit.platform.launcher.TestExecutionListener")
   void should_NotFindContextProvider_When_AnnotationIsMissing_On_TestTemplate() {
-    assertThat(CurrentUserContext.getUserid()).isNotNull();
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNotNull();
   }
 
   @WithAccessId(user = "testtemplate")
   @TestTemplate
   void should_SetJaasSubject_When_AnnotationExists_On_TestTemplate() {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo("testtemplate");
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("testtemplate");
   }
 
   @WithAccessId(user = "testtemplate1")
@@ -212,7 +215,7 @@ class JaasExtensionTest {
   @TestTemplate
   void should_SetMultipleJaasSubjects_When_MultipleAnnotationsExist_On_TestTemplate(
       WithAccessId accessId) {
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(accessId.user());
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(accessId.user());
   }
 
   @WithAccessId(user = "testtemplate1", groups = "abc")
@@ -705,12 +708,12 @@ class JaasExtensionTest {
   @Nested
   class ConstructorWithoutAccessId {
     ConstructorWithoutAccessId() {
-      assertThat(CurrentUserContext.getUserid()).isEqualTo(null);
+      assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(null);
     }
 
     @Test
     void should_NotSetJaasSubject_When_AnnotationIsMissing_On_Constructor() {
-      assertThat(CurrentUserContext.getUserid()).isNull();
+      assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
     }
   }
 
@@ -718,12 +721,12 @@ class JaasExtensionTest {
   class ConstructorWithAccessId {
     @WithAccessId(user = "constructor")
     ConstructorWithAccessId() {
-      assertThat(CurrentUserContext.getUserid()).isEqualTo("constructor");
+      assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("constructor");
     }
 
     @Test
     void should_SetJaasSubject_When_AnnotationExists_On_Constructor() {
-      assertThat(CurrentUserContext.getUserid()).isNull();
+      assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
     }
   }
 

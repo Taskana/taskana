@@ -29,7 +29,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
@@ -217,7 +216,7 @@ public class TaskServiceImpl implements TaskService {
 
       workbasketService.checkAuthorization(
           task.getWorkbasketSummary().getId(), WorkbasketPermission.APPEND);
-      
+
       // we do use the key and not the ID to make sure that we use the classification from the right
       // domain.
       // otherwise we would have to check the classification and its domain for validity.
@@ -243,7 +242,7 @@ public class TaskServiceImpl implements TaskService {
               new TaskCreatedEvent(
                   IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                   task,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
       } catch (PersistenceException e) {
@@ -299,13 +298,13 @@ public class TaskServiceImpl implements TaskService {
         String workbasketId = resultTask.getWorkbasketSummary().getId();
         List<WorkbasketSummary> workbaskets = query.idIn(workbasketId).list();
         if (workbaskets.isEmpty()) {
-          String currentUser = CurrentUserContext.getUserid();
+          String currentUser = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
           throw new NotAuthorizedException(
               "The current user "
                   + currentUser
                   + " has no read permission for workbasket "
                   + workbasketId,
-              CurrentUserContext.getUserid());
+              taskanaEngine.getEngine().getCurrentUserContext().getUserid());
         } else {
           resultTask.setWorkbasketSummary(workbaskets.get(0));
         }
@@ -424,7 +423,7 @@ public class TaskServiceImpl implements TaskService {
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
           NotAuthorizedException, AttachmentPersistenceException, InvalidStateException,
           ClassificationNotFoundException {
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
     TaskImpl newTaskImpl = (TaskImpl) task;
     TaskImpl oldTaskImpl;
@@ -452,7 +451,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskUpdatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 changeDetails));
       }
 
@@ -816,7 +815,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskCancelledEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 cancelledTask,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -844,7 +843,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskTerminatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 terminatedTask,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
       }
 
     } finally {
@@ -910,7 +909,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       Set<String> adminAccessIds =
           taskanaEngine.getEngine().getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      if (adminAccessIds.contains(CurrentUserContext.getUserid())) {
+      if (adminAccessIds.contains(taskanaEngine.getEngine().getCurrentUserContext().getUserid())) {
         serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
             tasks, serviceLevelChanged, priorityChanged);
       } else {
@@ -949,10 +948,10 @@ public class TaskServiceImpl implements TaskService {
     } else {
       List<String> taskIds =
           existingTasks.stream().map(MinimalTaskSummary::getTaskId).collect(Collectors.toList());
-      List<String> accessIds = CurrentUserContext.getAccessIds();
+      List<String> accessIds = taskanaEngine.getEngine().getCurrentUserContext().getAccessIds();
       List<String> taskIdsNotAuthorizedFor =
           taskMapper.filterTaskIdsNotAuthorizedFor(taskIds, accessIds);
-      String userId = CurrentUserContext.getUserid();
+      String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
       for (String taskId : taskIdsNotAuthorizedFor) {
         bulkLog.addError(
             taskId,
@@ -1056,9 +1055,9 @@ public class TaskServiceImpl implements TaskService {
       if (!forced) {
         filteredSummaries =
             filteredSummaries.filter(
-                addErrorToBulkLog(TaskServiceImpl::checkPreconditionsForCompleteTask, bulkLog));
+                addErrorToBulkLog(this::checkPreconditionsForCompleteTask, bulkLog));
       } else {
-        String userId = CurrentUserContext.getUserid();
+        String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
         filteredSummaries =
             filteredSummaries.filter(
                 addErrorToBulkLog(
@@ -1148,7 +1147,10 @@ public class TaskServiceImpl implements TaskService {
     task.setCompleted(now);
     task.setState(targetState);
     taskMapper.update(task);
-    LOGGER.debug("Task '{}' cancelled by user '{}'.", taskId, CurrentUserContext.getUserid());
+    LOGGER.debug(
+        "Task '{}' cancelled by user '{}'.",
+        taskId,
+        taskanaEngine.getEngine().getCurrentUserContext().getUserid());
     return task;
   }
 
@@ -1180,7 +1182,7 @@ public class TaskServiceImpl implements TaskService {
   private Task claim(String taskId, boolean forceClaim)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     LOGGER.debug(
         "entry to claim(id = {}, userId = {}, forceClaim = {})", taskId, userId, forceClaim);
     TaskImpl task;
@@ -1198,7 +1200,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskClaimedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1222,7 +1224,7 @@ public class TaskServiceImpl implements TaskService {
     task.setOwner(userId);
   }
 
-  private static void checkPreconditionsForClaimTask(TaskSummary task, boolean forced)
+  private void checkPreconditionsForClaimTask(TaskSummary task, boolean forced)
       throws InvalidStateException, InvalidOwnerException {
     TaskState state = task.getState();
     if (!state.in(TaskState.READY, TaskState.CLAIMED)) {
@@ -1231,7 +1233,7 @@ public class TaskServiceImpl implements TaskService {
     }
     if (!forced
         && state == TaskState.CLAIMED
-        && !task.getOwner().equals(CurrentUserContext.getUserid())) {
+        && !task.getOwner().equals(taskanaEngine.getEngine().getCurrentUserContext().getUserid())) {
       throw new InvalidOwnerException(
           String.format(TASK_WITH_ID_IS_ALREADY_CLAIMED_BY, task.getId(), task.getOwner()));
     }
@@ -1250,23 +1252,29 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private static void checkPreconditionsForCompleteTask(TaskSummary task)
+  private void checkPreconditionsForCompleteTask(TaskSummary task)
       throws InvalidStateException, InvalidOwnerException {
     if (taskIsNotClaimed(task)) {
       throw new InvalidStateException(
           String.format(TASK_WITH_ID_HAS_TO_BE_CLAIMED_BEFORE, task.getId()));
-    } else if (!CurrentUserContext.getAccessIds().contains(task.getOwner())) {
+    } else if (!taskanaEngine
+        .getEngine()
+        .getCurrentUserContext()
+        .getAccessIds()
+        .contains(task.getOwner())) {
       throw new InvalidOwnerException(
           String.format(
               "Owner of task %s is %s, but current user is %s ",
-              task.getId(), task.getOwner(), CurrentUserContext.getUserid()));
+              task.getId(),
+              task.getOwner(),
+              taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
     }
   }
 
   private Task cancelClaim(String taskId, boolean forceUnclaim)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     LOGGER.debug(
         "entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {})",
         taskId,
@@ -1298,7 +1306,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskClaimCancelledEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1310,7 +1318,7 @@ public class TaskServiceImpl implements TaskService {
   private Task completeTask(String taskId, boolean isForced)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     LOGGER.debug(
         "entry to completeTask(id = {}, userId = {}, isForced = {})", taskId, userId, isForced);
     TaskImpl task;
@@ -1339,7 +1347,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskCompletedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                 task,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1491,7 +1499,7 @@ public class TaskServiceImpl implements TaskService {
     task1.setRead(false);
     task1.setTransferred(false);
 
-    String creator = CurrentUserContext.getUserid();
+    String creator = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     if (taskanaEngine.getEngine().getConfiguration().isSecurityEnabled() && creator == null) {
       throw new SystemException(
           "TaskanaSecurity is enabled, but the current UserId is NULL while creating a Task.");
@@ -1553,7 +1561,12 @@ public class TaskServiceImpl implements TaskService {
     List<String> updateClaimedTaskIds = new ArrayList<>();
     List<TaskSummary> taskSummaryList =
         taskSummaries
-            .peek(summary -> completeActionsOnTask(summary, CurrentUserContext.getUserid(), now))
+            .peek(
+                summary ->
+                    completeActionsOnTask(
+                        summary,
+                        taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                        now))
             .peek(summary -> taskIds.add(summary.getId()))
             .peek(
                 summary -> {
@@ -1914,6 +1927,6 @@ public class TaskServiceImpl implements TaskService {
                 new TaskCompletedEvent(
                     IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
                     task,
-                    CurrentUserContext.getUserid())));
+                    taskanaEngine.getEngine().getCurrentUserContext().getUserid())));
   }
 }

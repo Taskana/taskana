@@ -29,7 +29,6 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
@@ -151,7 +150,7 @@ public class ClassificationServiceImpl implements ClassificationService {
               new ClassificationDeletedEvent(
                   IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
                   classification,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
 
@@ -237,7 +236,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             new ClassificationCreatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
                 classificationImpl,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
 
@@ -290,7 +289,7 @@ public class ClassificationServiceImpl implements ClassificationService {
             new ClassificationUpdatedEvent(
                 IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
                 classificationImpl,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
       LOGGER.debug(

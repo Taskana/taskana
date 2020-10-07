@@ -12,7 +12,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -59,7 +58,7 @@ class TaskCommentServiceImpl {
 
     LOGGER.debug("entry to updateTaskComment (taskComment = {})", taskCommentToUpdate);
 
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
     TaskCommentImpl taskCommentImplToUpdate = (TaskCommentImpl) taskCommentToUpdate;
 
@@ -132,7 +131,7 @@ class TaskCommentServiceImpl {
 
     LOGGER.debug("entry to deleteTaskComment (taskComment = {}", taskCommentId);
 
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
     try {
 
@@ -241,7 +240,7 @@ class TaskCommentServiceImpl {
     taskCommentImplToCreate.setModified(now);
     taskCommentImplToCreate.setCreated(now);
 
-    String creator = CurrentUserContext.getUserid();
+    String creator = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     if (taskanaEngine.getEngine().getConfiguration().isSecurityEnabled() && creator == null) {
       throw new SystemException(
           "TaskanaSecurity is enabled, but the current UserId is"

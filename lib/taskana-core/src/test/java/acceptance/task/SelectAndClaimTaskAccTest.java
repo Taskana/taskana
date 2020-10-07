@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.internal.security.UserPrincipal;
+import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;

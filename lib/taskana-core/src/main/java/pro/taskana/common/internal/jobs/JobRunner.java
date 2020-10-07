@@ -15,9 +15,8 @@ import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.JobServiceImpl;
-import pro.taskana.common.internal.TaskanaEngineImpl;
-import pro.taskana.common.internal.security.UserPrincipal;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 
@@ -25,12 +24,12 @@ import pro.taskana.task.internal.TaskServiceImpl;
 public class JobRunner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
-  private TaskanaEngineImpl taskanaEngine;
-  private JobServiceImpl jobService;
+  private final TaskanaEngine taskanaEngine;
+  private final JobServiceImpl jobService;
   private TaskanaTransactionProvider<Object> txProvider;
 
   public JobRunner(TaskanaEngine taskanaEngine) {
-    this.taskanaEngine = (TaskanaEngineImpl) taskanaEngine;
+    this.taskanaEngine = taskanaEngine;
     jobService = (JobServiceImpl) taskanaEngine.getJobService();
   }
 
@@ -54,7 +53,7 @@ public class JobRunner {
 
   private List<ScheduledJob> findAndLockJobsToRun() {
     List<ScheduledJob> availableJobs = jobService.findJobsToRun();
-    List<ScheduledJob> lockedJobs = new ArrayList<ScheduledJob>();
+    List<ScheduledJob> lockedJobs = new ArrayList<>();
     for (ScheduledJob job : availableJobs) {
       lockedJobs.add(lockJobTransactionally(job));
     }
@@ -81,8 +80,7 @@ public class JobRunner {
     }
     job.setLockedBy(hostAddress + " - " + Thread.currentThread().getName());
     String owner = hostAddress + " - " + Thread.currentThread().getName();
-    ScheduledJob lockedJob = jobService.lockJob(job, owner);
-    return lockedJob;
+    return jobService.lockJob(job, owner);
   }
 
   private void runJobTransactionally(ScheduledJob scheduledJob) {
@@ -114,20 +112,16 @@ public class JobRunner {
     } else {
       // we must establish admin context
       try {
-        Subject.doAs(
-            getAdminSubject(),
-            new PrivilegedExceptionAction<Object>() {
-              @Override
-              public Object run() throws Exception {
-                try {
-                  runScheduledJobImpl(scheduledJob);
-                } catch (Exception e) {
-                  throw new SystemException(
-                      String.format("could not run Job %s.", scheduledJob), e);
-                }
-                return null;
+        PrivilegedExceptionAction<Void> action =
+            () -> {
+              try {
+                runScheduledJobImpl(scheduledJob);
+              } catch (Exception e) {
+                throw new SystemException(String.format("could not run Job %s.", scheduledJob), e);
               }
-            });
+              return null;
+            };
+        Subject.doAs(getAdminSubject(), action);
       } catch (PrivilegedActionException e) {
         LOGGER.warn("Attempt to run job {} failed.", scheduledJob, e);
       }

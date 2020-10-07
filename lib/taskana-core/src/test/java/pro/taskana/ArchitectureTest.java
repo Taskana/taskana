@@ -63,8 +63,6 @@ class ArchitectureTest {
     ArchRule myRule =
         classes()
             .that()
-            .haveSimpleNameNotEndingWith("TaskanaHistoryEvent")
-            .and()
             .resideInAPackage("..api..")
             .should()
             .onlyDependOnClassesThat()

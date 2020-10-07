@@ -16,38 +16,37 @@ import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Provides the context information about the current (calling) user. The context is gathered from
- * the JAAS subject.
- *
- * @author Holger Hagen
- */
-public final class CurrentUserContext {
+import pro.taskana.common.api.security.CurrentUserContext;
+
+public class CurrentUserContextImpl implements CurrentUserContext {
 
   private static final String GET_UNIQUE_SECURITY_NAME_METHOD = "getUniqueSecurityName";
   private static final String GET_CALLER_SUBJECT_METHOD = "getCallerSubject";
   private static final String WSSUBJECT_CLASSNAME = "com.ibm.websphere.security.auth.WSSubject";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CurrentUserContext.class);
+  private final boolean shouldUseLowerCaseForAccessIds;
+  private boolean runningOnWebSphere;
 
-  private static Boolean runningOnWebSphere = null;
-
-  private CurrentUserContext() {}
-
-  /**
-   * Returns the userid of the current user.
-   *
-   * @return String the userid. null if there is no JAAS subject.
-   */
-  public static String getUserid() {
-    if (runningOnWebSphere()) {
-      return getUserIdFromWsSubject();
-    } else {
-      return getUserIdFromJaasSubject();
+  public CurrentUserContextImpl(boolean shouldUseLowerCaseForAccessIds) {
+    this.shouldUseLowerCaseForAccessIds = shouldUseLowerCaseForAccessIds;
+    try {
+      Class.forName(WSSUBJECT_CLASSNAME);
+      LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
+      runningOnWebSphere = true;
+    } catch (ClassNotFoundException e) {
+      LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
+      runningOnWebSphere = false;
     }
   }
 
-  public static List<String> getGroupIds() {
+  @Override
+  public String getUserid() {
+    return runningOnWebSphere ? getUserIdFromWsSubject() : getUserIdFromJaasSubject();
+  }
+
+  @Override
+  public List<String> getGroupIds() {
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {
@@ -56,14 +55,15 @@ public final class CurrentUserContext {
       return groups.stream()
           .map(Principal::getName)
           .filter(Objects::nonNull)
-          .map(CurrentUserContext::convertAccessId)
+          .map(this::convertAccessId)
           .collect(Collectors.toList());
     }
     LOGGER.trace("No groupIds found in subject!");
     return Collections.emptyList();
   }
 
-  public static List<String> getAccessIds() {
+  @Override
+  public List<String> getAccessIds() {
     List<String> accessIds = new ArrayList<>(getGroupIds());
     accessIds.add(getUserid());
     return accessIds;
@@ -75,7 +75,7 @@ public final class CurrentUserContext {
    *
    * @return the userid of the caller. If the userid could not be obtained, null is returned.
    */
-  private static String getUserIdFromWsSubject() {
+  private String getUserIdFromWsSubject() {
     try {
       Class<?> wsSubjectClass = Class.forName(WSSUBJECT_CLASSNAME);
       Method getCallerSubjectMethod =
@@ -98,7 +98,7 @@ public final class CurrentUserContext {
                     LOGGER.debug(
                         "Returning the unique security name of first public credential: {}", o))
             .map(Object::toString)
-            .map(CurrentUserContext::convertAccessId)
+            .map(this::convertAccessId)
             .findFirst()
             .orElse(null);
       }
@@ -108,26 +108,7 @@ public final class CurrentUserContext {
     return null;
   }
 
-  /**
-   * Checks, whether Taskana is running on IBM WebSphere.
-   *
-   * @return true, if it is running on IBM WebSphere
-   */
-  private static boolean runningOnWebSphere() {
-    if (runningOnWebSphere == null) {
-      try {
-        Class.forName(WSSUBJECT_CLASSNAME);
-        LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
-        runningOnWebSphere = true;
-      } catch (ClassNotFoundException e) {
-        LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
-        runningOnWebSphere = false;
-      }
-    }
-    return runningOnWebSphere;
-  }
-
-  private static String getUserIdFromJaasSubject() {
+  private String getUserIdFromJaasSubject() {
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {
@@ -137,7 +118,7 @@ public final class CurrentUserContext {
           .filter(principal -> !(principal instanceof Group))
           .map(Principal::getName)
           .filter(Objects::nonNull)
-          .map(CurrentUserContext::convertAccessId)
+          .map(this::convertAccessId)
           .findFirst()
           .orElse(null);
     }
@@ -145,12 +126,11 @@ public final class CurrentUserContext {
     return null;
   }
 
-  private static String convertAccessId(String accessId) {
+  private String convertAccessId(String accessId) {
     String toReturn = accessId;
-    // TODO: DAS IST DOOF
-    //    if (shouldUseLowerCaseForAccessIds()) {
-    //      toReturn = accessId.toLowerCase();
-    //    }
+    if (shouldUseLowerCaseForAccessIds) {
+      toReturn = accessId.toLowerCase();
+    }
     LOGGER.trace("Found AccessId '{}'. Returning AccessId '{}' ", accessId, toReturn);
     return toReturn;
   }

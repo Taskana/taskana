@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -113,6 +114,14 @@ public interface TaskanaEngine {
    * @throws NotAuthorizedException If the current user is not member of any specified role
    */
   void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
+
+  /**
+   * Returns the CurrentUserContext class.
+   *
+   * @return the CurrentUserContext
+   */
+  CurrentUserContext getCurrentUserContext();
+
 
   /**
    * Connection management mode. Controls the connection handling of taskana
