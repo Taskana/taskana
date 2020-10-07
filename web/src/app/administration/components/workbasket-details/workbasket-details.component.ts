@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { Workbasket } from 'app/shared/models/workbasket';
@@ -16,13 +16,14 @@ import { ICONTYPES } from '../../../shared/models/icon-types';
   templateUrl: './workbasket-details.component.html',
   styleUrls: ['./workbasket-details.component.scss']
 })
-export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
+export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges {
   workbasket: Workbasket;
   workbasketCopy: Workbasket;
   selectedId: string;
   requestInProgress = false;
   action: ACTION;
   tabSelected = 'information';
+  badgeMessage = '';
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
@@ -48,11 +49,13 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
       if (this.action === ACTION.CREATE) {
         this.tabSelected = 'information';
         this.selectedId = undefined;
+        this.badgeMessage = 'Creating new workbasket';
         this.initWorkbasket();
       } else if (this.action === ACTION.COPY) {
         // delete this.workbasket.key;
         this.workbasketCopy = this.workbasket;
         this.getWorkbasketInformation();
+        this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
       } else if (typeof selectedWorkbasketAndAction.selectedWorkbasket !== 'undefined') {
         this.workbasket = { ...selectedWorkbasketAndAction.selectedWorkbasket };
         this.getWorkbasketInformation(this.workbasket);
@@ -68,6 +71,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  ngOnChanges(changes?: SimpleChanges) {}
 
   addDateToWorkbasket(workbasket: Workbasket) {
     const date = TaskanaDate.getDate();
