@@ -35,6 +35,7 @@
         <!-- KEY -->
         <div class="form-group required">
           <label for="wb-key" class="control-label">Key</label>
+          <!-- TODO: Key field must be disabled when ACTION != CREATE -->
           <input type="text" required maxlength="64" #key="ngModel" class="form-control" id="wb-key"
                  placeholder="Key"
                  [(ngModel)]="workbasket.key" name="workbasket.key" (input)="validateInputOverflow(key, 64, $event)">
