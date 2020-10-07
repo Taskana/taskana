@@ -131,8 +131,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   refreshWorkbasketList() {
     this.cards = this.orientationService.calculateNumberItemsList(
       window.innerHeight,
-      72,
-      170 + this.toolbarElement.nativeElement.offsetHeight,
+      92,
+      250 + this.toolbarElement.nativeElement.offsetHeight,
       false
     );
     this.performRequest();

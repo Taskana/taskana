@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Page } from 'app/shared/models/page';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -30,9 +30,9 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.paginator._intl.itemsPerPageLabel = 'Per page';
     this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
       page += 1;
-      const start = length / pageSize >= page ? (page + 1) * pageSize : length;
-      const end = length;
-      return `${start} of ${end} workbaskets`;
+      const start = pageSize * (page - 1) + 1;
+      const end = pageSize * page < length ? pageSize * page : length;
+      return `${start} - ${end} of ${length} workbaskets`;
     };
   }
   ngOnChanges(changes: SimpleChanges): void {

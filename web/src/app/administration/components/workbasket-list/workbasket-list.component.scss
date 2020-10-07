@@ -8,7 +8,7 @@
 }
 .workbasket-list__workbaskets {
   height: calc(100% - 122px);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .workbasket-list__workbaskets-item {
