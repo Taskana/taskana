@@ -7,14 +7,15 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Filter } from '../../../shared/models/filter';
 import { Sorting } from '../../../shared/models/sorting';
 import { ACTION } from '../../../shared/models/action';
 import { TaskanaType } from '../../../shared/models/taskana-type';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -26,6 +27,7 @@ const domainServiceMock = jest.fn().mockImplementation(
 @Component({ selector: 'taskana-administration-import-export', template: '' })
 class ImportExportStub {
   @Input() currentSelection: TaskanaType;
+  @Input() parentComponent;
 }
 
 @Component({ selector: 'taskana-shared-sort', template: '' })
@@ -52,9 +54,10 @@ describe('WorkbasketListToolbarComponent', () => {
       imports: [
         HttpClientTestingModule,
         NgxsModule.forRoot([WorkbasketState]),
+        BrowserAnimationsModule,
+        MatIconModule,
         MatSnackBarModule,
-        MatDialogModule,
-        BrowserAnimationsModule
+        MatDialogModule
       ],
       declarations: [WorkbasketListToolbarComponent, ImportExportStub, SortStub, FilterStub],
       providers: [{ provide: DomainService, useClass: domainServiceMock }, WorkbasketService]
@@ -72,6 +75,8 @@ describe('WorkbasketListToolbarComponent', () => {
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
+
+  /* Typescript */
 
   it('should dispatch CreateWorkbasket when addWorkbasket is called', async((done) => {
     component.action = ACTION.COPY;
@@ -109,5 +114,37 @@ describe('WorkbasketListToolbarComponent', () => {
     });
     component.filtering(filterBy);
     expect(filterBy).toMatchObject(mockFilter);
+  });
+
+  /* HTML */
+
+  it('should call AddWorkbasket() when add-workbasket button is clicked', async () => {
+    const button = debugElement.nativeElement.querySelector('.workbasket-list-toolbar__add-button');
+    expect(button).toBeTruthy();
+    expect(button.textContent).toContain('add');
+    expect(button.textContent).toContain('Add');
+    component.addWorkbasket = jest.fn().mockImplementation();
+    button.click();
+    expect(component.addWorkbasket).toHaveBeenCalled();
+  });
+
+  it('should display import-export component', () => {
+    expect(debugElement.nativeElement.querySelector('taskana-administration-import-export')).toBeTruthy();
+  });
+
+  it('should display sort component', () => {
+    expect(debugElement.nativeElement.querySelector('taskana-shared-sort')).toBeTruthy();
+  });
+
+  it('should show filter component only when filter button is clicked', () => {
+    const button = debugElement.nativeElement.querySelector('.workbasket-list-toolbar__filter-button');
+    expect(button).toBeTruthy();
+    expect(button.textContent).toBe('search');
+    expect(debugElement.nativeElement.querySelector('filter')).toBeFalsy();
+    button.click();
+    fixture.detectChanges();
+    expect(component.showFilter).toBe(true);
+    expect(button.textContent).toBe('clear');
+    expect(debugElement.nativeElement.querySelector('taskana-shared-filter')).toBeTruthy();
   });
 });

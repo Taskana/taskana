@@ -22,6 +22,7 @@ import { By } from '@angular/platform-browser';
 @Component({ selector: 'taskana-administration-import-export', template: '' })
 class ImportExportStub {
   @Input() currentSelection: TaskanaType;
+  @Input() parentComponent: string;
 }
 
 @Component({ selector: 'taskana-administration-classification-types-selector', template: '' })
