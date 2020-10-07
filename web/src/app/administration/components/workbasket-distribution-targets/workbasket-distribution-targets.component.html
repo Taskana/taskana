@@ -1,5 +1,6 @@
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 	<!-- ACTION TOOLBAR-->
+  <!--
     <div class="panel-heading">
         <div class="pull-right btn-group">
             <button type="button" (click)="onSave()" [disabled]="action === 'COPY'" data-toggle="tooltip" title="Save"
@@ -15,7 +16,7 @@
             <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
         </h4>
     </div>
-
+-->
 	<!-- DISTRIBUTION TABLE-->
     <div #panelBody class="panel-body">
 
