@@ -281,4 +281,3 @@ dn: cn=Organisationseinheit B,cn=organisation,OU=Test,O=TASKANA
 cn: Organisationseinheit B
 objectclass: groupofuniquenames
 objectclass: top
-
