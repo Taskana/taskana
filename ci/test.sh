@@ -84,4 +84,5 @@ function main() {
     ;;
   esac
 }
+
 main "$@"

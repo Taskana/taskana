@@ -11,8 +11,10 @@ set -e # fail fast
 #H
 #H module:
 #H   - WEB
+#H   - COMMON
 #H   - LIB
 #H   - REST
+#H   - HISTORY
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -30,9 +32,14 @@ function main() {
     (cd $REL/../web && npm run lint)
     (cd $REL/../web && npm run build)
     ;;
-  LIB)
+  COMMON)
     set -x
     mvn -q install -B -f $REL/.. -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -N
+    mvn -q test-compile -B -f $REL/../common
+    ;;
+  LIB)
+    set -x
+    mvn -q install -B -f $REL/.. -pl :taskana-core -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
     mvn -q test-compile -B -f $REL/../lib
     ;;
   REST)
