@@ -2,7 +2,7 @@ package pro.taskana.task.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.rest.RestHelper.TEMPLATE;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.time.Instant;
 import java.util.Comparator;
@@ -18,9 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.RestHelper;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
 /** Test TaskCommentController. */

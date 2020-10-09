@@ -2,7 +2,7 @@ package pro.taskana.classification.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.rest.RestHelper.TEMPLATE;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -37,10 +37,10 @@ import pro.taskana.classification.rest.assembler.ClassificationRepresentationMod
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.RestHelper;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 /** Test classification definitions. */
 @TaskanaSpringBootTest

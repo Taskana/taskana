@@ -1,4 +1,4 @@
-package pro.taskana.common.rest;
+package pro.taskana.common.test.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

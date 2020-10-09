@@ -2,7 +2,7 @@ package pro.taskana.workbasket.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.rest.RestHelper.TEMPLATE;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.RestHelper;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
@@ -51,8 +51,8 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testGetWorkbasket() {
-    final String url = restHelper.toUrl(Mapping.URL_WORKBASKET_ID,
-        "WBI:100000000000000000000000000000000006");
+    final String url =
+        restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
     ResponseEntity<WorkbasketRepresentationModel> response =
         TEMPLATE.exchange(
             url,

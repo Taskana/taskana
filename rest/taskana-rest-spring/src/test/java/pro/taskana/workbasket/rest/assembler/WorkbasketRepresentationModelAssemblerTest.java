@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;

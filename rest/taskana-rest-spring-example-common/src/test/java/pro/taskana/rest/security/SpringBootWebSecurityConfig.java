@@ -71,11 +71,6 @@ public class SpringBootWebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public DefaultSpringSecurityContextSource defaultSpringSecurityContextSource() {
-    return new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
-  }
-
-  @Bean
   public LdapAuthoritiesPopulator authoritiesPopulator() {
     Function<Map<String, List<String>>, GrantedAuthority> authorityMapper =
         record -> {
@@ -91,6 +86,11 @@ public class SpringBootWebSecurityConfig extends WebSecurityConfigurerAdapter {
     populator.setRolePrefix("");
     populator.setAuthorityMapper(authorityMapper);
     return populator;
+  }
+
+  @Bean
+  public DefaultSpringSecurityContextSource defaultSpringSecurityContextSource() {
+    return new DefaultSpringSecurityContextSource(ldapServerUrl + "/" + ldapBaseDn);
   }
 
   @Bean

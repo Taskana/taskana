@@ -28,7 +28,6 @@
 
         <version.mybatis>3.5.6</version.mybatis>
         <version.json>20200518</version.json>
-        <version.jackson-databind>2.11.2</version.jackson-databind>
 
         <!-- build dependencies -->
         <version.checkstyle>8.36.2</version.checkstyle>
