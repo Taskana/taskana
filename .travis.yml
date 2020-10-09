@@ -107,7 +107,7 @@ jobs:
         mvn deploy -T 4C -P `[[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` \
         --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip \
         -pl !:taskana-common-parent,!:taskana-common,!:taskana-common-data,!:taskana-common-test,\
-        !:taskana-cdi-example, !:taskana-spring-example,\
+        !:taskana-cdi-example,!:taskana-spring-example,\
         !:taskana-rest-spring-example-common,!:taskana-rest-spring-example-boot,!:taskana-rest-spring-example-wildfly
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
       # travis_terminate is necessary since after_success is a job phase which can change the build result.
