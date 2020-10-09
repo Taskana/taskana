@@ -3,7 +3,7 @@ package pro.taskana.task.rest;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.rest.RestHelper.TEMPLATE;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -30,9 +30,9 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.RestHelper;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;

@@ -13,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 /** Test general Exception Handling. */
 @TaskanaSpringBootTest
@@ -24,7 +26,8 @@ class GeneralExceptionHandlingTest {
           new ParameterizedTypeReference<
               TaskanaPagedModel<ClassificationSummaryRepresentationModel>>() {};
   private static RestTemplate template;
-  @Autowired RestHelper restHelper;
+  @Autowired
+  RestHelper restHelper;
 
   @BeforeAll
   static void init() {

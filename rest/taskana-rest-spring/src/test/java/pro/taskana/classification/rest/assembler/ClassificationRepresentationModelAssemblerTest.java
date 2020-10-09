@@ -12,7 +12,7 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 /** Test for {@link ClassificationRepresentationModelAssembler}. */
 @TaskanaSpringBootTest

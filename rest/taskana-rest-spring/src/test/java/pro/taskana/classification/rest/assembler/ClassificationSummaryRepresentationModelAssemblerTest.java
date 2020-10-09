@@ -17,7 +17,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 /** Test for {@link ClassificationSummaryRepresentationModelAssembler}. */
 @TaskanaSpringBootTest

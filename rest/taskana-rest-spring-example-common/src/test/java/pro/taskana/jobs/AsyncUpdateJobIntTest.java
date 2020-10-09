@@ -1,7 +1,7 @@
 package pro.taskana.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pro.taskana.RestHelper.TEMPLATE;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import pro.taskana.RestHelper;
-import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskRepresentationModel;

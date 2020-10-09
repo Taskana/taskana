@@ -169,6 +169,8 @@ class ArchitectureTest {
                 .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
                 .and()
                 .resideInAPackage("..common..")
+                .and()
+                .resideOutsideOfPackage("..common.test..")
                 .should()
                 .dependOnClassesThat()
                 .resideInAPackage(p)

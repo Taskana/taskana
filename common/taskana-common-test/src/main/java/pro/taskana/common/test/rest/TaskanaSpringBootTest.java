@@ -1,4 +1,4 @@
-package pro.taskana.common.rest;
+package pro.taskana.common.test.rest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-
-import pro.taskana.TestConfiguration;
 
 /** Use this annotation to test with a spring context and a standardized configuration. */
 @Target(ElementType.TYPE)

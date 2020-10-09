@@ -18,9 +18,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.RestHelper;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 
 /** Test WorkbasketAccessItemController. */
