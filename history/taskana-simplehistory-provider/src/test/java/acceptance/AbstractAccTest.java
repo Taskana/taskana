@@ -33,7 +33,6 @@ import pro.taskana.task.api.models.ObjectReference;
 public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
-  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
   private static final int POOL_TIME_TO_WAIT = 50;
   private static final DataSource DATA_SOURCE;
@@ -76,7 +75,7 @@ public abstract class AbstractAccTest {
       String userid,
       String details) {
     TaskHistoryEvent historyEvent = new TaskHistoryEvent();
-    historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    historyEvent.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT));
     historyEvent.setUserId(userid);
     historyEvent.setDetails(details);
     historyEvent.setWorkbasketKey(workbasketKey);
@@ -98,7 +97,7 @@ public abstract class AbstractAccTest {
   public static WorkbasketHistoryEvent createWorkbasketHistoryEvent(
       String workbasketKey, String type, String userid, String details) {
     WorkbasketHistoryEvent historyEvent = new WorkbasketHistoryEvent();
-    historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    historyEvent.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT));
     historyEvent.setUserId(userid);
     historyEvent.setDetails(details);
     historyEvent.setKey(workbasketKey);

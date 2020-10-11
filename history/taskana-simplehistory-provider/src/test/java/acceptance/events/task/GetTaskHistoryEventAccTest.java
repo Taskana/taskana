@@ -24,7 +24,7 @@ class GetTaskHistoryEventAccTest extends AbstractAccTest {
             + "\"oldValue\":\"owner1\"}]}";
 
     TaskHistoryEvent taskHistoryEvent =
-        getHistoryService().getTaskHistoryEvent("HEI:000000000000000000000000000000000000");
+        getHistoryService().getTaskHistoryEvent("THI:000000000000000000000000000000000000");
     assertThat(taskHistoryEvent.getBusinessProcessId()).isEqualTo("BPI:01");
     assertThat(taskHistoryEvent.getUserId()).isEqualTo("admin");
     assertThat(taskHistoryEvent.getEventType()).isEqualTo(TaskHistoryEventType.UPDATED.getName());

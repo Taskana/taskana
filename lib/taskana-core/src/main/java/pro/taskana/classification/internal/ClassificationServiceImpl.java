@@ -42,13 +42,11 @@ import pro.taskana.task.internal.TaskMapper;
 /** This is the implementation of ClassificationService. */
 public class ClassificationServiceImpl implements ClassificationService {
 
-  private static final String ID_PREFIX_CLASSIFICATION = "CLI";
-  private static final String ID_PREFIX_CLASSIFICATION_HISTORY_EVENT = "CHI";
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
   private final HistoryEventManager historyEventManager;
-  private ClassificationMapper classificationMapper;
-  private TaskMapper taskMapper;
-  private InternalTaskanaEngine taskanaEngine;
+  private final ClassificationMapper classificationMapper;
+  private final TaskMapper taskMapper;
+  private final InternalTaskanaEngine taskanaEngine;
 
   public ClassificationServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -148,7 +146,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
           historyEventManager.createEvent(
               new ClassificationDeletedEvent(
-                  IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
+                  IdGenerator.generateWithPrefix(
+                      IdGenerator.ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
                   classification,
                   taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
@@ -234,7 +233,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         historyEventManager.createEvent(
             new ClassificationCreatedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
                 classificationImpl,
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
@@ -287,7 +286,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
         historyEventManager.createEvent(
             new ClassificationUpdatedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION_HISTORY_EVENT),
                 classificationImpl,
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
@@ -383,7 +382,8 @@ public class ClassificationServiceImpl implements ClassificationService {
     if (!Objects.equals(classification.getDomain(), "")) {
       boolean doesExist = true;
       ClassificationImpl masterClassification = classification.copy(classification.getKey());
-      masterClassification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+      masterClassification.setId(
+          IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION));
       masterClassification.setParentKey(classification.getParentKey());
       masterClassification.setDomain("");
       masterClassification.setIsValidInDomain(false);
@@ -427,7 +427,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       throws InvalidArgumentException {
     Instant now = Instant.now();
     if (classification.getId() == null || "".equals(classification.getId())) {
-      classification.setId(IdGenerator.generateWithPrefix(ID_PREFIX_CLASSIFICATION));
+      classification.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION));
     }
 
     if (classification.getCreated() == null) {

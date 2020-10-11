@@ -22,19 +22,14 @@ class TaskCommentServiceImpl {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentServiceImpl.class);
 
-  private static final String NOT_AUTHORIZED =
-      " Not authorized, TaskComment creator and current user must match. TaskComment creator is ";
-  private static final String BUT_CURRENT_USER_IS = " but current user is ";
-  private static final String ID_PREFIX_TASK_COMMENT = "TCI";
-  private InternalTaskanaEngine taskanaEngine;
-  private TaskServiceImpl taskService;
-  private TaskCommentMapper taskCommentMapper;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final TaskServiceImpl taskService;
+  private final TaskCommentMapper taskCommentMapper;
 
   TaskCommentServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskCommentMapper taskCommentMapper,
       TaskServiceImpl taskService) {
-    super();
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskCommentMapper = taskCommentMapper;
@@ -85,7 +80,10 @@ class TaskCommentServiceImpl {
 
       } else {
         throw new NotAuthorizedException(
-            NOT_AUTHORIZED + taskCommentImplToUpdate.getCreator() + BUT_CURRENT_USER_IS + userId,
+            String.format(
+                "Not authorized, TaskComment creator and current user must match. "
+                    + "TaskComment creator is %s but current user is %s",
+                taskCommentImplToUpdate.getCreator(), userId),
             userId);
       }
     } finally {
@@ -149,7 +147,10 @@ class TaskCommentServiceImpl {
 
       } else {
         throw new NotAuthorizedException(
-            NOT_AUTHORIZED + taskCommentToDelete.getCreator() + BUT_CURRENT_USER_IS + userId,
+            String.format(
+                "Not authorized, TaskComment creator and current user must match. "
+                    + "TaskComment creator is %s but current user is %s",
+                taskCommentToDelete.getCreator(), userId),
             userId);
       }
 
@@ -236,7 +237,8 @@ class TaskCommentServiceImpl {
 
     Instant now = Instant.now();
 
-    taskCommentImplToCreate.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK_COMMENT));
+    taskCommentImplToCreate.setId(
+        IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_COMMENT));
     taskCommentImplToCreate.setModified(now);
     taskCommentImplToCreate.setCreated(now);
 

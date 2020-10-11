@@ -16,14 +16,13 @@ import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
 /** Acceptance test for all "create classification" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CreateClassificationAccTest extends AbstractAccTest {
-
-  private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
   private static final ClassificationService CLASSIFICATION_SERVICE =
       taskanaEngine.getClassificationService();
@@ -47,7 +46,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getModified()).isNotNull();
     assertThat(classification.getId()).isNotNull();
     assertThat(classification.getIsValidInDomain()).isFalse();
-    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
+    assertThat(classification.getId()).startsWith(IdGenerator.ID_PREFIX_CLASSIFICATION);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -68,7 +67,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getModified()).isNotNull();
     assertThat(classification.getId()).isNotNull();
     assertThat(classification.getIsValidInDomain()).isTrue();
-    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
+    assertThat(classification.getId()).startsWith(IdGenerator.ID_PREFIX_CLASSIFICATION);
     assertThat(createdClassification.getDomain()).isEqualTo("DOMAIN_A");
     assertThat(createdClassification.getKey()).isEqualTo("Key1");
 
@@ -83,7 +82,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getModified()).isNotNull();
     assertThat(classification.getId()).isNotNull();
     assertThat(classification.getIsValidInDomain()).isTrue();
-    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
+    assertThat(classification.getId()).startsWith(IdGenerator.ID_PREFIX_CLASSIFICATION);
 
     // Check master-copy
     classification = CLASSIFICATION_SERVICE.getClassification(classification.getKey(), "");
@@ -92,7 +91,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getModified()).isNotNull();
     assertThat(classification.getId()).isNotNull();
     assertThat(classification.getIsValidInDomain()).isFalse();
-    assertThat(classification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
+    assertThat(classification.getId()).startsWith(IdGenerator.ID_PREFIX_CLASSIFICATION);
   }
 
   @WithAccessId(user = "businessadmin")

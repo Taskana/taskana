@@ -140,7 +140,7 @@ public class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumen
             RestDocumentationRequestBuilders.get(
                     "http://127.0.0.1:"
                         + port
-                        + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000")
+                        + "/api/v1/task-history-event/THI:000000000000000000000000000000000000")
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())

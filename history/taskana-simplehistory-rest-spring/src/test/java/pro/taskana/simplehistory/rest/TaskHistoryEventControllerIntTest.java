@@ -89,7 +89,7 @@ class TaskHistoryEventControllerIntTest {
   void should_ReturnSpecificTaskHistoryEventWithDetails_When_SingleEventIsQueried() {
     ResponseEntity<TaskHistoryEventRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl("/api/v1/task-history-event/HEI:000000000000000000000000000000000000"),
+            restHelper.toUrl("/api/v1/task-history-event/THI:000000000000000000000000000000000000"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskHistoryEventRepresentationModel.class));

@@ -41,7 +41,6 @@ class TaskTransferrer {
   private static final String TASK_WITH_ID = "Task with id ";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
-  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskTransferrer.class);
   private final InternalTaskanaEngine taskanaEngine;
   private final WorkbasketService workbasketService;
@@ -362,7 +361,7 @@ class TaskTransferrer {
       Task task, WorkbasketSummary oldWorkbasketSummary, WorkbasketSummary newWorkbasketSummary) {
     historyEventManager.createEvent(
         new TaskTransferredEvent(
-            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+            IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
             task,
             oldWorkbasketSummary,
             newWorkbasketSummary,
