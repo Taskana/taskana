@@ -28,7 +28,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "4.0.2-SNAPSHOT";
+  protected static final String DEPENDENCY_VERSION = "4.1.1-SNAPSHOT";
   private static final String AUTHORIZATION_TEAMLEAD_1 = "Basic dGVhbWxlYWQtMTp0ZWFtbGVhZC0x";
 
   /**
