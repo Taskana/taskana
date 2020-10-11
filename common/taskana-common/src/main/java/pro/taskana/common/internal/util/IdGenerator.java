@@ -5,8 +5,9 @@ import java.util.UUID;
 /** This class contains util methods for generating ids. */
 public final class IdGenerator {
 
-  private static final String SEPERATOR = ":";
+  private static final String SEPARATOR = ":";
 
+  // disable initialization
   private IdGenerator() {}
 
   /**
@@ -16,10 +17,6 @@ public final class IdGenerator {
    * @return a String with a length of 40 characters
    */
   public static String generateWithPrefix(String prefix) {
-    return new StringBuilder()
-        .append(prefix)
-        .append(SEPERATOR)
-        .append(UUID.randomUUID().toString())
-        .toString();
+    return prefix + SEPARATOR + UUID.randomUUID();
   }
 }

@@ -24,10 +24,6 @@ final class SqlReplacer {
     return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductName);
   }
 
-  static boolean isPostgreSql(String databaseProductName) {
-    return "PostgreSQL".equals(databaseProductName);
-  }
-
   static boolean isDb2(String dbProductName) {
     return dbProductName != null && dbProductName.contains("DB2");
   }
