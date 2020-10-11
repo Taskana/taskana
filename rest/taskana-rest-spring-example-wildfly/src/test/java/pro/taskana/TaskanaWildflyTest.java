@@ -1,10 +1,9 @@
 package pro.taskana;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -76,27 +75,27 @@ public class TaskanaWildflyTest extends AbstractAccTest {
                 HttpMethod.GET,
                 httpEntity,
                 ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
-    assertEquals("teamlead-1", currentUser.getUserId());
-    assertEquals(4, currentUser.getGroupIds().size());
-    assertEquals(3, currentUser.getRoles().size());
+    assertThat(currentUser).isNotNull();
+    assertThat(currentUser.getUserId()).isEqualTo("teamlead-1");
+    assertThat(currentUser.getGroupIds()).hasSize(4);
+    assertThat(currentUser.getRoles()).hasSize(3);
   }
 
   @Test
   @RunAsClient
   public void should_ReturnUserFromLdap_WhenWildcardSearchIsConducted() {
     HttpEntity<String> httpEntity = new HttpEntity<>(getHeadersTeamlead_1());
-    ResponseEntity<AccessIdListResource> response =
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
         getRestTemplate()
             .exchange(
                 "http://127.0.0.1:8080/taskana/api/v1/access-ids?search-for=rig",
                 HttpMethod.GET,
                 httpEntity,
-                ParameterizedTypeReference.forType(AccessIdListResource.class));
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    AccessIdListResource accessIdList = response.getBody();
-    assertEquals(2, accessIdList.size());
+                new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {});
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).hasSize(2);
   }
 
   @Test
@@ -110,11 +109,8 @@ public class TaskanaWildflyTest extends AbstractAccTest {
                 HttpMethod.GET,
                 httpEntity,
                 ParameterizedTypeReference.forType(TaskRepresentationModel.class));
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
   }
 
-  static class AccessIdListResource extends ArrayList<AccessIdRepresentationModel> {
-    private static final long serialVersionUID = 1L;
-  }
 }
