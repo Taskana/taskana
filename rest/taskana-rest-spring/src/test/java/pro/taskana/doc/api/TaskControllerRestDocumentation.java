@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate REST Documentation for the TaskController. */
 class TaskControllerRestDocumentation extends BaseRestDocumentation {
