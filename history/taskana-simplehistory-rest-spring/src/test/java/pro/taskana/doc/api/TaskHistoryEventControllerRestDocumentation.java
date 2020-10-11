@@ -1,10 +1,5 @@
 package pro.taskana.doc.api;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
@@ -12,54 +7,24 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.subsecti
 import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
+import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate documentation for the history event controller. */
-@SpringBootTest(
-    classes = TaskHistoryRestConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class TaskHistoryEventControllerRestDocumentation {
+public class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumentation {
 
-  @LocalServerPort int port;
-
-  private MockMvc mockMvc;
 
   private final HashMap<String, String> taskHistoryEventFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTaskHistoryEventFieldDescriptors;
-
   private FieldDescriptor[] taskHistoryEventFieldDescriptors;
 
   @BeforeEach
-  public void setUp(
-      WebApplicationContext webApplicationContext,
-      RestDocumentationContextProvider restDocumentationContextProvider) {
-    document("{methodName}", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()));
-
-    this.mockMvc =
-        MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .apply(
-                documentationConfiguration(restDocumentationContextProvider)
-                    .operationPreprocessors()
-                    .withResponseDefaults(prettyPrint())
-                    .withRequestDefaults(prettyPrint()))
-            .build();
-
+  public void setUp() {
     taskHistoryEventFieldDescriptionsMap.put("taskHistoryId", "Unique ID");
     taskHistoryEventFieldDescriptionsMap.put("businessProcessId", "The id of the business process");
     taskHistoryEventFieldDescriptionsMap.put(
@@ -160,7 +125,7 @@ public class TaskHistoryEventControllerRestDocumentation {
             RestDocumentationRequestBuilders.get(
                     "http://127.0.0.1:" + port + "/api/v1/task-history-event?page=1&page-size=3")
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(
@@ -177,7 +142,7 @@ public class TaskHistoryEventControllerRestDocumentation {
                         + port
                         + "/api/v1/task-history-event/HEI:000000000000000000000000000000000000")
                 .accept("application/hal+json")
-                .header("Authorization", "Basic dGVhbWxlYWRfMTp0ZWFtbGVhZF8x"))
+                .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
             MockMvcRestDocumentation.document(

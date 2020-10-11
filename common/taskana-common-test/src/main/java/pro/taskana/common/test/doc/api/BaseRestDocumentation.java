@@ -1,4 +1,4 @@
-package pro.taskana.doc.api;
+package pro.taskana.common.test.doc.api;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import pro.taskana.common.test.doc.api.BaseRestDocumentation.ResultHandlerConfiguration;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
-import pro.taskana.doc.api.BaseRestDocumentation.ResultHandlerConfiguration;
 
 /** Base class for Rest Documentation tests. */
 @TaskanaSpringBootTest
