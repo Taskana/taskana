@@ -33,7 +33,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
 /** This class is responsible for the transfer of tasks. */
-public class TaskTransferrer {
+class TaskTransferrer {
 
   private static final String WAS_NOT_FOUND2 = " was not found.";
   private static final String TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED =
@@ -43,15 +43,14 @@ public class TaskTransferrer {
   private static final String THE_WORKBASKET = "The workbasket ";
   private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskTransferrer.class);
-  private InternalTaskanaEngine taskanaEngine;
-  private WorkbasketService workbasketService;
-  private TaskServiceImpl taskService;
-  private TaskMapper taskMapper;
-  private HistoryEventManager historyEventManager;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final WorkbasketService workbasketService;
+  private final TaskServiceImpl taskService;
+  private final TaskMapper taskMapper;
+  private final HistoryEventManager historyEventManager;
 
   TaskTransferrer(
       InternalTaskanaEngine taskanaEngine, TaskMapper taskMapper, TaskServiceImpl taskService) {
-    super();
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskMapper = taskMapper;
@@ -270,11 +269,7 @@ public class TaskTransferrer {
     }
 
     List<MinimalTaskSummary> taskSummaries;
-    if (taskIds.isEmpty()) {
-      taskSummaries = new ArrayList<>();
-    } else {
-      taskSummaries = taskMapper.findExistingTasks(taskIds, null);
-    }
+    taskSummaries = taskMapper.findExistingTasks(taskIds, null);
     checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
     updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket);
     if (LOGGER.isDebugEnabled()) {
@@ -411,7 +406,7 @@ public class TaskTransferrer {
 
   private void createTasksTransferredEvents(
       List<MinimalTaskSummary> taskSummaries, TaskSummaryImpl updateObject) {
-    taskSummaries.stream()
+    taskSummaries
         .forEach(
             task -> {
               TaskImpl newTask = (TaskImpl) taskService.newTask(task.getWorkbasketId());

@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.apache.ibatis.jdbc.ScriptRunner;
-import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +28,14 @@ public class SampleDataGenerator {
 
   private static final String CACHED_TEST = "TEST";
   private static final String CACHED_SAMPLE = "SAMPLE";
-  private static final String CACHED_EVENTSAMPLE = "EVENTSAMPLE";
   private static final String CACHED_MONITOR = "MONITOR";
-  private static final String CACHED_CLEARDB = "CLEARDB";
-  private static final String CACHED_DROPDB = "DROPDB";
-  private static HashMap<String, List<String>> cachedScripts = new HashMap<>();
+  private static final String CACHED_CLEAR_DB = "CLEARDB";
+  private static final String CACHED_DROP_DB = "DROP_DB";
+  private static final HashMap<String, List<String>> CACHED_SCRIPTS = new HashMap<>();
   private final DataSource dataSource;
   private final ZonedDateTime now;
-  /**
-   * This value cannot be automatically obtained by connection.getSchema(), because setting not yet
-   * existing schema will result into an SQL Exception.
-   */
+  // This value cannot be automatically obtained by connection.getSchema(), because setting not yet
+  // existing schema will result into an SQL Exception.
   private final String schema;
 
   public SampleDataGenerator(DataSource dataSource, String schema) {
@@ -54,21 +50,9 @@ public class SampleDataGenerator {
 
   public void generateSampleData() {
     LOGGER.debug("entry to generateSampleData()");
-    runScripts(
-        (runner) -> {
-          clearDb();
-          Stream<String> scripts;
-          String cacheKey;
-          // dbtable constants?
-          if (tableExists("TASK_HISTORY_EVENT")) {
-            scripts = SampleDataProvider.getScriptsWithEvents();
-            cacheKey = CACHED_EVENTSAMPLE;
-          } else {
-            scripts = SampleDataProvider.getSampleDataCreationScripts();
-            cacheKey = CACHED_SAMPLE;
-          }
-          executeAndCacheScripts(scripts, cacheKey);
-        });
+    clearDb();
+    Stream<String> scripts = SampleDataProvider.getSampleDataCreationScripts();
+    executeAndCacheScripts(scripts, CACHED_SAMPLE);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("exit from generateSampleData()");
     }
@@ -93,28 +77,15 @@ public class SampleDataGenerator {
   public void clearDb() {
     LOGGER.debug("entry to clearDb()");
     Stream<String> scripts = SampleDataProvider.getScriptsToClearDatabase();
-    executeAndCacheScripts(scripts, CACHED_CLEARDB);
+    executeAndCacheScripts(scripts, CACHED_CLEAR_DB);
     LOGGER.debug("exit from clearDb()");
   }
 
   public void dropDb() {
     LOGGER.debug("entry to dropDb()");
     Stream<String> scripts = SampleDataProvider.getScriptsToDropDatabase();
-    executeAndCacheScripts(scripts, CACHED_DROPDB);
+    executeAndCacheScripts(scripts, CACHED_DROP_DB);
     LOGGER.debug("exit from dropDb()");
-  }
-
-  boolean tableExists(String table) {
-    try (Connection connection = dataSource.getConnection()) {
-      connection.setSchema(schema);
-      SqlRunner runner = new SqlRunner(connection);
-      String tableSafe = SqlReplacer.getSanitizedTableName(table);
-      String query = "SELECT 1 FROM " + tableSafe + " LIMIT 1;";
-      runner.run(query);
-      return true;
-    } catch (RuntimeSqlException | SQLException e) {
-      return false;
-    }
   }
 
   private List<String> parseScripts(Stream<String> scripts) {
@@ -156,7 +127,7 @@ public class SampleDataGenerator {
     LOGGER.debug("entry to executeAndCacheScripts(scripts = {}, cacheKey = {})", scripts, cacheKey);
     runScripts(
         runner ->
-            cachedScripts.computeIfAbsent(cacheKey, key -> parseScripts(scripts)).stream()
+            CACHED_SCRIPTS.computeIfAbsent(cacheKey, key -> parseScripts(scripts)).stream()
                 .map(s -> s.getBytes(StandardCharsets.UTF_8))
                 .map(ByteArrayInputStream::new)
                 .map(s -> new InputStreamReader(s, StandardCharsets.UTF_8))
@@ -174,6 +145,7 @@ public class SampleDataGenerator {
     connection.setSchema(schema);
     runner.setLogWriter(logWriter);
     runner.setErrorLogWriter(errorLogWriter);
+    runner.setStopOnError(true);
     return runner;
   }
 }

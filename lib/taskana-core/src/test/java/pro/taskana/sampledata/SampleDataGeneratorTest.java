@@ -1,6 +1,5 @@
 package pro.taskana.sampledata;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -22,18 +21,6 @@ class SampleDataGeneratorTest {
     assertThatCode(() -> new SampleDataGenerator(pooledDataSource, "TASKANA").generateSampleData())
         .doesNotThrowAnyException();
 
-    pooledDataSource.forceCloseAll();
-  }
-
-  @Test
-  void tableExists() {
-    PooledDataSource pooledDataSource = new PooledDataSource("org.h2.Driver", JDBC_URL, "sa", "sa");
-    assertThatCode(() -> new DbSchemaCreator(pooledDataSource, "TASKANA").run())
-        .doesNotThrowAnyException();
-
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(pooledDataSource, "TASKANA");
-    assertThat(sampleDataGenerator.tableExists("TASK")).isTrue();
-    assertThat(sampleDataGenerator.tableExists("TASKRANDOM")).isFalse();
     pooledDataSource.forceCloseAll();
   }
 }

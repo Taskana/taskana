@@ -43,11 +43,8 @@ public final class SampleDataProvider {
         SAMPLE_TASK_COMMENT,
         SAMPLE_ATTACHMENT,
         SAMPLE_WORKBASKET_ACCESS_LIST,
-        SAMPLE_OBJECT_REFERENCE);
-  }
-
-  static Stream<String> getScriptsWithEvents() {
-    return Stream.concat(getSampleDataCreationScripts(), Stream.of(SAMPLE_TASK_HISTORY_EVENT));
+        SAMPLE_OBJECT_REFERENCE,
+        SAMPLE_TASK_HISTORY_EVENT);
   }
 
   static Stream<String> getScriptsToClearDatabase() {
