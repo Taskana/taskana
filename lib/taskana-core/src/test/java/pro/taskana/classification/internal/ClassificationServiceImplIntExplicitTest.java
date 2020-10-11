@@ -26,6 +26,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
+import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /**
@@ -35,21 +36,19 @@ import pro.taskana.sampledata.SampleDataGenerator;
  */
 class ClassificationServiceImplIntExplicitTest {
 
-  private static final String ID_PREFIX_CLASSIFICATION = "CLI";
 
   static int counter = 0;
 
   private DataSource dataSource;
   private ClassificationService classificationService;
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
   private TaskanaEngineImpl taskanaEngine;
 
   @BeforeEach
   void setup() throws Exception {
     dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
+    TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
+        dataSource, false, false, schemaName);
     taskanaEngine = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     classificationService = taskanaEngine.getClassificationService();
@@ -85,7 +84,7 @@ class ClassificationServiceImplIntExplicitTest {
       assertThat(actualClassification.getId()).isNotNull();
       assertThat(actualClassification.getKey()).isEqualTo(key);
       assertThat(actualClassification.getDomain()).isEqualTo("DOMAIN_B");
-      assertThat(actualClassification.getId()).startsWith(ID_PREFIX_CLASSIFICATION);
+      assertThat(actualClassification.getId()).startsWith(IdGenerator.ID_PREFIX_CLASSIFICATION);
       Classification masterResult = classificationService.getClassification(key, "");
       assertThat(masterResult).isNotNull();
 
@@ -97,9 +96,7 @@ class ClassificationServiceImplIntExplicitTest {
       expectedClassificationCreated.setServiceLevel("ASAP");
 
       ThrowingCallable call =
-          () -> {
-            classificationService.createClassification(expectedClassificationCreated);
-          };
+          () -> classificationService.createClassification(expectedClassificationCreated);
       assertThatThrownBy(call)
           .describedAs(
               "Should have thrown IllegalArgumentException, because ServiceLevel is invalid.")
@@ -182,7 +179,7 @@ class ClassificationServiceImplIntExplicitTest {
               classification.getKey(), classification.getDomain());
       assertThat(classification.getDescription()).isEqualTo("description");
 
-      classification = classificationService.updateClassification(classification);
+      classificationService.updateClassification(classification);
       list = classificationService.createClassificationQuery().list();
       assertThat(list).hasSize(2);
 

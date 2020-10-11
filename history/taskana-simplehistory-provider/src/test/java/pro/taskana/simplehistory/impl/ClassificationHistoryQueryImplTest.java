@@ -23,8 +23,6 @@ import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEv
 @ExtendWith(MockitoExtension.class)
 class ClassificationHistoryQueryImplTest {
 
-  private static final String ID_PREFIX_HISTORY_EVENT = "CHI";
-
   private ClassificationHistoryQueryImpl historyQueryImpl;
 
   @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
@@ -61,7 +59,7 @@ class ClassificationHistoryQueryImplTest {
   private ClassificationHistoryEvent createHistoryEvent(
       String type, String userId, String details) {
     ClassificationHistoryEvent he = new ClassificationHistoryEvent();
-    he.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    he.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION_HISTORY_EVENT));
     he.setUserId(userId);
     he.setDetails(details);
     he.setEventType(type);

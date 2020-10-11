@@ -24,8 +24,6 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 @ExtendWith(MockitoExtension.class)
 class TaskHistoryQueryImplTest {
 
-  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
-
   private TaskHistoryQueryImpl historyQueryImpl;
 
   @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
@@ -69,7 +67,7 @@ class TaskHistoryQueryImplTest {
       String details,
       Instant created) {
     TaskHistoryEvent he = new TaskHistoryEvent();
-    he.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    he.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT));
     he.setUserId(userId);
     he.setDetails(details);
     he.setTaskId(taskId);
