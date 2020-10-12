@@ -58,6 +58,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 
 const MODULES = [
   CommonModule,
@@ -111,7 +112,8 @@ const DECLARATIONS = [
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSelectModule
   ],
   exports: DECLARATIONS,
   providers: [

@@ -12,10 +12,11 @@
       <taskana-administration-import-export
         class="classification-list__import-export" [currentSelection]="taskanaType.CLASSIFICATIONS" [parentComponent]="'classifications'">
       </taskana-administration-import-export>
+      <span class="workbasket-details__spacer" style="flex: 1 1 auto"> </span>
 
       <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()" style="color: #555">
         <mat-icon *ngIf="!showFilter">search</mat-icon>
-        <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
+        <mat-icon *ngIf="showFilter">keyboard_arrow_up</mat-icon>
       </button>
     </div>
 

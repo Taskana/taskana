@@ -25,6 +25,7 @@ export class PaginationComponent implements OnInit, OnChanges {
 
   hasItems = true;
   pageSelected = 1;
+  pageNumbers: number[];
 
   ngOnInit() {
     this.paginator._intl.itemsPerPageLabel = 'Per page';
@@ -40,6 +41,9 @@ export class PaginationComponent implements OnInit, OnChanges {
       this.pageSelected = changes.page.currentValue.number;
     }
     this.hasItems = this.numberOfItems > 0;
+    if (changes.page) {
+      this.updateGoto();
+    }
   }
 
   changeToPage(event) {
@@ -50,5 +54,20 @@ export class PaginationComponent implements OnInit, OnChanges {
       this.pageSelected -= 1;
     }
     this.changePage.emit(currentPageIndex + 1);
+    console.log(currentPageIndex + 1);
+  }
+
+  updateGoto() {
+    this.pageNumbers = [];
+    for (let i = 1; i <= this.page?.totalPages; i++) {
+      this.pageNumbers.push(i);
+    }
+  }
+
+  goToPage(page: number) {
+    console.log(page);
+    this.pageSelected = page;
+    this.paginator.pageIndex = page - 1;
+    this.changePage.emit(page);
   }
 }

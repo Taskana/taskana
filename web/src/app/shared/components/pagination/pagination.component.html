@@ -1,3 +1,11 @@
-<mat-paginator [length]="page?.totalElements" pageIndex="0" hidePageSize="true" [pageSize]="page?.size" (page)="changeToPage($event)" showFirstLastButtons="true"></mat-paginator>
-
-
+<div class="pagination">
+  <mat-paginator [length]="page?.totalElements" pageIndex="0" hidePageSize="true" [pageSize]="page?.size" (page)="changeToPage($event)" showFirstLastButtons="true"></mat-paginator>
+  <div class="pagination__go-to">
+    <div class="pagination__go-to-label">Go To: </div>
+    <mat-form-field>
+      <mat-select [(ngModel)]="pageSelected" (selectionChange)="goToPage(pageSelected)">
+        <mat-option *ngFor="let pageNumber of pageNumbers" [value]="pageNumber">{{ pageNumber }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
