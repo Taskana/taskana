@@ -1,11 +1,13 @@
 .pagination {
   display: flex;
-  float: right;
-  width: 100%;
+  max-width: 100%;
   background-color: #fafafa;
 }
 mat-paginator {
   background-color: #fafafa;
+  width: 70%;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
 }
 //Original
 .pagination__go-to {

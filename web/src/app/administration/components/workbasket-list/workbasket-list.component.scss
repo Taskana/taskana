@@ -2,12 +2,12 @@
 
 
 .workbasket-list {
+  height: calc(100vh - 156px);
+  overflow-y: auto;
+  overflow-x: hidden;
   min-width: 475px;
-  max-height: calc(100% - 100px);
-  overflow-y: hidden;
 }
 .workbasket-list__workbaskets {
-  height: calc(100% - 122px);
   overflow-y: auto;
 }
 
@@ -33,4 +33,8 @@
 }
 p {
   margin: 0;
+}
+.workbasket-list__no-items {
+  text-align: center;
+  padding-top: 150px;
 }

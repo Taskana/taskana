@@ -1,4 +1,4 @@
-<div class="workbasket-list footer-space-pagination-list">
+<div class="workbasket-list">
   <!-- TOOLBAR -->
   <section #wbToolbar>
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
@@ -43,9 +43,8 @@
 
   <!-- SPINNER and EMPTY WORKBASKET LIST -->
   <ng-template #empty_workbaskets>
-    <div *ngIf="!requestInProgress" class="col-xs-12 container-no-items center-block">
+    <div *ngIf="!requestInProgress" class="workbasket-list__no-items">
       <h3 class="grey">There are no workbaskets</h3>
-      <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
     </div>
   </ng-template>
 </div>

@@ -28,13 +28,14 @@ export class PaginationComponent implements OnInit, OnChanges {
   pageNumbers: number[];
 
   ngOnInit() {
-    this.paginator._intl.itemsPerPageLabel = 'Per page';
-    this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
-      page += 1;
-      const start = pageSize * (page - 1) + 1;
-      const end = pageSize * page < length ? pageSize * page : length;
-      return `${start} - ${end} of ${length} workbaskets`;
-    };
+    // Custom label: EG. "1-7 of 21 workbaskets"
+    // this.paginator._intl.itemsPerPageLabel = 'Per page';
+    // this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+    //   page += 1;
+    //   const start = pageSize * (page - 1) + 1;
+    //   const end = pageSize * page < length ? pageSize * page : length;
+    //   return `${start} - ${end} of ${length} workbaskets`;
+    // };
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.page && changes.page.currentValue) {
@@ -54,7 +55,6 @@ export class PaginationComponent implements OnInit, OnChanges {
       this.pageSelected -= 1;
     }
     this.changePage.emit(currentPageIndex + 1);
-    console.log(currentPageIndex + 1);
   }
 
   updateGoto() {
@@ -65,7 +65,6 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   goToPage(page: number) {
-    console.log(page);
     this.pageSelected = page;
     this.paginator.pageIndex = page - 1;
     this.changePage.emit(page);

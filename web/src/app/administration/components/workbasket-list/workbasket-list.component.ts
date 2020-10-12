@@ -21,6 +21,7 @@ import {
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { Workbasket } from '../../../shared/models/workbasket';
 import { MatSelectionList } from '@angular/material/list';
+import { DomainService } from '../../../shared/services/domain/domain.service';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -59,6 +60,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private workbasketService: WorkbasketService,
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
+    private domainService: DomainService,
     private ngxsActions$: Actions
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary), takeUntil(this.destroy$)).subscribe(() => {
@@ -103,6 +105,13 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .subscribe((value: Boolean) => {
         this.refreshWorkbasketList();
       });
+
+    this.domainService
+      .getSelectedDomain()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((domain) => {
+        this.performRequest();
+      });
   }
 
   selectWorkbasket(id: string) {
@@ -132,7 +141,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.cards = this.orientationService.calculateNumberItemsList(
       window.innerHeight,
       92,
-      250 + this.toolbarElement.nativeElement.offsetHeight,
+      200 + this.toolbarElement.nativeElement.offsetHeight,
       false
     );
     this.performRequest();
