@@ -1,5 +1,5 @@
 <div class="pagination">
-  <mat-paginator [length]="page?.totalElements" [pageIndex]="page?.number - 1 " hidePageSize="true" [pageSize]="page?.size" (page)="changeToPage($event)" showFirstLastButtons="true"></mat-paginator>
+  <mat-paginator [length]="page?.totalElements" [pageIndex]="pageSelected - 1 " hidePageSize="true" [pageSize]="page?.size" (page)="changeToPage($event)" showFirstLastButtons="true"></mat-paginator>
   <div class="pagination__go-to">
     <div class="pagination__go-to-label">Page: </div>
     <mat-form-field>
