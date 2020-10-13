@@ -10,6 +10,8 @@ import { SelectedRouteService } from './shared/services/selected-route/selected-
 import { UploadService } from './shared/services/upload/upload.service';
 import { ErrorModel } from './shared/models/error-model';
 import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
+import { WindowRefService } from 'app/shared/services/window/window.service';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'taskana-root',
@@ -19,7 +21,6 @@ import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-e
 export class AppComponent implements OnInit, OnDestroy {
   workbasketsRoute = true;
   selectedRoute = '';
-  title = '';
 
   requestInProgress = false;
   currentProgressValue = 0;
@@ -39,7 +40,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private formsValidatorService: FormsValidatorService,
     public uploadService: UploadService,
     private sidenavService: SidenavService,
-    private taskanaEngineService: TaskanaEngineService
+    private taskanaEngineService: TaskanaEngineService,
+    private window: WindowRefService
   ) {}
 
   @HostListener('window:resize', ['$event'])
@@ -77,6 +79,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.taskanaEngineService.getVersion().subscribe((restVersion) => {
       this.version = restVersion.version;
     });
+  }
+
+  logout() {
+    this.taskanaEngineService.logout().subscribe(() => {});
+    this.window.nativeWindow.location.href = environment.taskanaLogoutUrl;
   }
 
   ngAfterViewInit(): void {
