@@ -11,11 +11,14 @@ import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/
 import { TaskanaDate } from '../../../shared/util/taskana.date';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import {
+  OnButtonPressed,
   SelectAccessItems,
   SelectComponent,
   SelectDistributionTargets,
   SelectInformation
 } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
+import { ButtonAction } from '../../models/button-action';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
@@ -145,6 +148,14 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
 
   selectComponent(index) {
     this.store.dispatch(new SelectComponent(index));
+  }
+
+  onSubmit() {
+    this.store.dispatch(new OnButtonPressed(ButtonAction.SAVE));
+  }
+
+  onRestore() {
+    this.store.dispatch(new OnButtonPressed(ButtonAction.UNDO));
   }
 
   ngOnDestroy(): void {

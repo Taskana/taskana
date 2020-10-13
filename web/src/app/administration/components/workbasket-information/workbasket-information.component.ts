@@ -9,7 +9,7 @@ import { SavingInformation, SavingWorkbasketService } from 'app/administration/s
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -23,6 +23,8 @@ import {
   UpdateWorkbasket
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketComponent } from '../../models/workbasket-component';
+import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { ButtonAction } from '../../models/button-action';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -52,6 +54,12 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   @Select(EngineConfigurationSelectors.workbasketsCustomisation)
   workbasketsCustomisation$: Observable<WorkbasketsCustomisation>;
+
+  @Select(WorkbasketSelectors.buttonAction)
+  buttonAction$: Observable<ButtonAction>;
+
+  @Select(WorkbasketSelectors.selectedComponent)
+  selectedComponent$: Observable<WorkbasketComponent>;
 
   customFields$: Observable<CustomField[]>;
   destroy$ = new Subject<void>();
@@ -89,6 +97,26 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     this.validateInputOverflow = (inputFieldModel, maxLength) => {
       this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
+    this.buttonAction$
+      .pipe(takeUntil(this.destroy$))
+      .pipe(filter((buttonAction) => typeof buttonAction !== 'undefined'))
+      .subscribe((button) => {
+        this.selectedComponent$
+          .pipe(take(1))
+          .pipe(filter((component) => component === WorkbasketComponent.INFORMATION))
+          .subscribe((component) => {
+            switch (button) {
+              case ButtonAction.SAVE:
+                this.onSubmit();
+                break;
+              case ButtonAction.UNDO:
+                this.onUndo();
+                break;
+              default:
+                break;
+            }
+          });
+      });
   }
 
   ngOnChanges(changes?: SimpleChanges) {

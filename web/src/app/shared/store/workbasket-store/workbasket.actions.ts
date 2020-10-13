@@ -4,6 +4,7 @@ import { Direction } from '../../models/sorting';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
+import { ButtonAction } from '../../../administration/models/button-action';
 
 // Workbasket List
 export class GetWorkbasketsSummary {
@@ -44,9 +45,15 @@ export class SetActiveAction {
   constructor(public action: ACTION) {}
 }
 
+//Workbasket Details
 export class SelectComponent {
   static readonly type = '[Workbasket] Select component';
   constructor(public component: WorkbasketComponent) {}
+}
+
+export class OnButtonPressed {
+  static readonly type = '[Workbasket] Button pressed';
+  constructor(public button: ButtonAction) {}
 }
 
 // Workbasket Information
