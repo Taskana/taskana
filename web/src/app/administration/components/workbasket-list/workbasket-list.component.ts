@@ -112,6 +112,15 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .subscribe((domain) => {
         this.performRequest();
       });
+
+    this.workbasketService
+      .getWorkbasketActionToolbarExpansion()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        setTimeout(() => {
+          this.refreshWorkbasketList();
+        }, 1);
+      });
   }
 
   selectWorkbasket(id: string) {

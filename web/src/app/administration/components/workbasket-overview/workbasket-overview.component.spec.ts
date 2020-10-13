@@ -13,7 +13,6 @@ import { SelectedRouteService } from '../../../shared/services/selected-route/se
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { CreateWorkbasket, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
-import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';

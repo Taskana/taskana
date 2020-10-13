@@ -19,6 +19,7 @@ import { WorkbasketRepresentation } from '../../models/workbasket-representation
 export class WorkbasketService {
   public workBasketSelected = new Subject<string>();
   public workBasketSaved = new Subject<number>();
+  public workbasketActionToolbarExpanded = new Subject<boolean>();
   private workbasketSummaryRef: Observable<WorkbasketSummaryRepresentation> = new Observable();
 
   constructor(private httpClient: HttpClient, private domainService: DomainService) {}
@@ -144,6 +145,14 @@ export class WorkbasketService {
 
   getSelectedWorkBasket(): Observable<string> {
     return this.workBasketSelected.asObservable();
+  }
+
+  expandWorkbasketActionToolbar(value: boolean) {
+    this.workbasketActionToolbarExpanded.next(value);
+  }
+
+  getWorkbasketActionToolbarExpansion(): Observable<boolean> {
+    return this.workbasketActionToolbarExpanded.asObservable();
   }
 
   triggerWorkBasketSaved() {

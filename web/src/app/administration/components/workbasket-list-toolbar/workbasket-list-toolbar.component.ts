@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ACTION } from '../../../shared/models/action';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 
 @Component({
   selector: 'taskana-administration-workbasket-list-toolbar',
@@ -49,7 +50,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
   destroy$ = new Subject<void>();
   action: ACTION;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, private workbasketService: WorkbasketService) {}
 
   ngOnInit() {
     this.workbasketActiveAction$.pipe(takeUntil(this.destroy$)).subscribe((action) => {
@@ -69,6 +70,11 @@ export class WorkbasketListToolbarComponent implements OnInit {
     if (this.action !== ACTION.CREATE) {
       this.store.dispatch(new CreateWorkbasket());
     }
+  }
+
+  onClickFilter() {
+    this.showFilter = !this.showFilter;
+    this.workbasketService.expandWorkbasketActionToolbar(this.showFilter);
   }
 
   ngOnDestroy() {

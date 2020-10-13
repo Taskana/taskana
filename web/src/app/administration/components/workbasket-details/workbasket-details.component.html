@@ -1,8 +1,8 @@
 <div class="workbasket-details">
   <mat-toolbar class="workbasket-details__toolbar">
-    <span class="workbasket-details__title">{{workbasket.name}}&nbsp;
+    <h4 class="workbasket-details__title">{{workbasket.name}}&nbsp;
       <span class="workbasket-details__title-badge" *ngIf="!workbasket.workbasketId"> {{ badgeMessage }}</span>
-    </span>
+    </h4>
     <span class="workbasket-details__spacer"></span>
     <button mat-button class="workbasket-details__button workbasket-details__save-button" matTooltip="Save changes in current workbasket" (click)="onSubmit()">
       Save

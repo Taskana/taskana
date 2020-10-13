@@ -12,15 +12,17 @@
     <!-- IMPORT EXPORT -->
     <taskana-administration-import-export [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
 
+    <span class="workbasket-details__spacer" style="flex: 1 1 auto"> </span>
+
     <!-- SORTING -->
     <taskana-shared-sort
       style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy">
     </taskana-shared-sort>
 
     <!-- FILTER -->
-    <button mat-stroked-button class="workbasket-list-toolbar__filter-button" matTooltip="Display filter options" (click)="showFilter=!showFilter">
-      <mat-icon *ngIf="!showFilter">search</mat-icon>
-      <mat-icon *ngIf="showFilter" color="warn">clear</mat-icon>
+    <button mat-stroked-button class="workbasket-list-toolbar__filter-button" matTooltip="Display filter options" (click)="onClickFilter()">
+      <mat-icon *ngIf="!showFilter">filter_list</mat-icon>
+      <mat-icon *ngIf="showFilter">keyboard_arrow_up</mat-icon>
     </button>
 
   </div>

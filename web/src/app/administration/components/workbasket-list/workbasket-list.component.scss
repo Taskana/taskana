@@ -3,9 +3,8 @@
 
 .workbasket-list {
   height: calc(100vh - 156px);
-  overflow-y: auto;
   overflow-x: hidden;
-  min-width: 475px;
+  min-width: 500px;
 }
 .workbasket-list__workbaskets {
   overflow-y: auto;

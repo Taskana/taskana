@@ -15,7 +15,7 @@
       <span class="workbasket-details__spacer" style="flex: 1 1 auto"> </span>
 
       <button mat-stroked-button matTooltip="Display filter options" (click)="displayFilter()" style="color: #555">
-        <mat-icon *ngIf="!showFilter">search</mat-icon>
+        <mat-icon *ngIf="!showFilter">filter_list</mat-icon>
         <mat-icon *ngIf="showFilter">keyboard_arrow_up</mat-icon>
       </button>
     </div>
@@ -61,8 +61,8 @@
 
 
   <!-- CLASSIFICATION TREE -->
-  <taskana-shared-spinner [isRunning]="requestInProgress"
-                          positionClass="centered-spinner-whole-screen"></taskana-shared-spinner>
+  <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
+
   <taskana-administration-tree *ngIf="(classifications && classifications.length) else empty_classifications"
                                [filterText]="inputValue" [filterIcon]="selectedCategory"
                                (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>

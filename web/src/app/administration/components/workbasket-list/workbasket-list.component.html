@@ -1,6 +1,6 @@
 <div class="workbasket-list">
   <!-- TOOLBAR -->
-  <section #wbToolbar>
+  <section #wbToolbar class="workbasket-list__toolbar">
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
     </taskana-administration-workbasket-list-toolbar>

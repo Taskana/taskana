@@ -1,4 +1,10 @@
+.workbasket-information-wrapper {
+
+  height: calc(100vh - 100px);
+  overflow-y: auto !important;
+}
 .workbasket-information {
+  padding: 15px;
   display: flex;
   flex-direction: column;
 }

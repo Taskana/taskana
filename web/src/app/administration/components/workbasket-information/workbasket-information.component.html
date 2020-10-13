@@ -1,4 +1,4 @@
-<taskana-shared-spinner [isRunning]="requestInProgress" class="floating workbasket-information"></taskana-shared-spinner>
+<mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
 <div *ngIf="workbasket" id="wb-information" class="panel panel-default">
 <!--
   <div class="panel-heading">
@@ -31,13 +31,13 @@
   </div>
   -->
 
-  <div class="panel-body">
+  <div class="workbasket-information-wrapper">
     <ng-form #WorkbasketForm="ngForm">
 
       <!-- GENERAL FIELDS -->
       <div class="workbasket-information">
 
-        <h6 class="workbasket-information__subheading" style="margin-top: 65px;"> General </h6>
+        <h6 class="workbasket-information__subheading"> General </h6>
         <mat-divider class="workbasket-information__horizontal-line"> </mat-divider>
 
         <!-- KEY -->
