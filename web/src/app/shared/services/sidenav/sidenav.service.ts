@@ -6,12 +6,14 @@ import { MatSidenav } from '@angular/material';
 })
 export class SidenavService {
   private sidenav: MatSidenav;
+  state: boolean = false;
 
   public setSidenav(sidenav: MatSidenav) {
     this.sidenav = sidenav;
   }
 
-  public toggle(): void {
+  public toggle_sidenav(): void {
     this.sidenav.toggle();
+    this.state = this.sidenav.opened;
   }
 }

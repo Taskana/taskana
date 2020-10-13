@@ -41,6 +41,9 @@ h2.navbar__title {
   order: 3;
   margin-left: 2%;
   font-size: large;
+  @media only screen and (max-width: 700px) {
+    display: none !important;
+  }
 }
 
 svg-icon.navbar__logo-icon {
