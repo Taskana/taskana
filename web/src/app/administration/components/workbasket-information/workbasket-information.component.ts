@@ -19,8 +19,10 @@ import {
   MarkWorkbasketForDeletion,
   RemoveDistributionTarget,
   SaveNewWorkbasket,
+  SelectComponent,
   UpdateWorkbasket
 } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { WorkbasketComponent } from '../../models/workbasket-component';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -64,6 +66,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new SelectComponent(WorkbasketComponent.INFORMATION));
     this.allTypes = new Map([
       ['PERSONAL', 'Personal'],
       ['GROUP', 'Group'],

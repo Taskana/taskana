@@ -14,6 +14,7 @@ import {
   MarkWorkbasketForDeletion,
   RemoveDistributionTarget,
   SaveNewWorkbasket,
+  SelectComponent,
   SelectWorkbasket,
   SetActiveAction,
   UpdateWorkbasket,
@@ -27,6 +28,7 @@ import { NotificationService } from '../../services/notifications/notification.s
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
 import { WorkbasketSummary } from '../../models/workbasket-summary';
+import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -110,6 +112,22 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(SetActiveAction)
   setActiveAction(ctx: StateContext<WorkbasketStateModel>, action: SetActiveAction): Observable<any> {
     ctx.patchState({ action: action.action });
+    return of(null);
+  }
+
+  @Action(SelectComponent)
+  selectComponent(ctx: StateContext<WorkbasketStateModel>, action: SelectComponent): Observable<any> {
+    switch (action.component) {
+      case WorkbasketComponent.INFORMATION:
+        ctx.patchState({ selectedComponent: WorkbasketComponent.INFORMATION });
+        break;
+      case WorkbasketComponent.ACCESS_ITEMS:
+        ctx.patchState({ selectedComponent: WorkbasketComponent.ACCESS_ITEMS });
+        break;
+      case WorkbasketComponent.DISTRIBUTION_TARGETS:
+        ctx.patchState({ selectedComponent: WorkbasketComponent.DISTRIBUTION_TARGETS });
+        break;
+    }
     return of(null);
   }
 
@@ -311,4 +329,5 @@ export interface WorkbasketStateModel {
   action: ACTION;
   workbasketAccessItems: WorkbasketAccessItemsRepresentation;
   workbasketDistributionTargets: WorkbasketDistributionTargets;
+  selectedComponent: WorkbasketComponent;
 }

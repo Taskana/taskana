@@ -6,6 +6,7 @@ import { ACTION } from '../../models/action';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
 import { Workbasket } from '../../models/workbasket';
+import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 
 export class WorkbasketSelectors {
   // Workbasket
@@ -35,6 +36,11 @@ export class WorkbasketSelectors {
       selectedWorkbasket: state.selectedWorkbasket,
       action: state.action
     };
+  }
+
+  @Selector([WorkbasketState])
+  static selectedComponent(state: WorkbasketStateModel): WorkbasketComponent {
+    return state.selectedComponent;
   }
 
   // Workbasket Access Items

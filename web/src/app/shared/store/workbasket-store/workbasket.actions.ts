@@ -3,6 +3,7 @@ import { TaskanaQueryParameters } from '../../util/query-parameters';
 import { Direction } from '../../models/sorting';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
+import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 
 // Workbasket List
 export class GetWorkbasketsSummary {
@@ -41,6 +42,11 @@ export class CreateWorkbasket {
 export class SetActiveAction {
   static readonly type = '[Workbasket] Specify current action';
   constructor(public action: ACTION) {}
+}
+
+export class SelectComponent {
+  static readonly type = '[Workbasket] Select component';
+  constructor(public component: WorkbasketComponent) {}
 }
 
 // Workbasket Information

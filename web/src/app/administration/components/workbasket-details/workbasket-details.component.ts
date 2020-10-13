@@ -5,11 +5,17 @@ import { Workbasket } from 'app/shared/models/workbasket';
 import { ACTION } from 'app/shared/models/action';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { TaskanaDate } from '../../../shared/util/taskana.date';
 import { ICONTYPES } from '../../../shared/models/icon-types';
+import {
+  SelectAccessItems,
+  SelectComponent,
+  SelectDistributionTargets,
+  SelectInformation
+} from '../../../shared/store/workbasket-store/workbasket.actions';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
@@ -40,7 +46,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
     private route: ActivatedRoute,
     private router: Router,
     private domainService: DomainService,
-    private importExportService: ImportExportService
+    private importExportService: ImportExportService,
+    private store: Store
   ) {}
 
   ngOnInit() {
@@ -134,6 +141,10 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
           this.backClicked();
         }
       });
+  }
+
+  selectComponent(index) {
+    this.store.dispatch(new SelectComponent(index));
   }
 
   ngOnDestroy(): void {
