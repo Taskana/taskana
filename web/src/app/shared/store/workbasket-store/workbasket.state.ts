@@ -42,6 +42,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(GetWorkbasketsSummary)
   getWorkbasketsSummary(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketsSummary): Observable<any> {
+    ctx.patchState({
+      paginatedWorkbasketsSummary: undefined
+    });
     return this.workbasketService
       .getWorkBasketsSummary(
         action.forceRequest,

@@ -117,6 +117,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .getWorkbasketActionToolbarExpansion()
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
+        this.requestInProgress = true;
         setTimeout(() => {
           this.refreshWorkbasketList();
         }, 1);
@@ -157,22 +158,26 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   performRequest(): void {
-    this.store.dispatch(
-      new GetWorkbasketsSummary(
-        true,
-        this.sort.sortBy,
-        this.sort.sortDirection,
-        '',
-        this.filterBy.filterParams.name,
-        this.filterBy.filterParams.description,
-        '',
-        this.filterBy.filterParams.owner,
-        this.filterBy.filterParams.type,
-        '',
-        this.filterBy.filterParams.key,
-        ''
+    this.store
+      .dispatch(
+        new GetWorkbasketsSummary(
+          true,
+          this.sort.sortBy,
+          this.sort.sortDirection,
+          '',
+          this.filterBy.filterParams.name,
+          this.filterBy.filterParams.description,
+          '',
+          this.filterBy.filterParams.owner,
+          this.filterBy.filterParams.type,
+          '',
+          this.filterBy.filterParams.key,
+          ''
+        )
       )
-    );
+      .subscribe(() => {
+        this.requestInProgress = false;
+      });
     TaskanaQueryParameters.pageSize = this.cards;
   }
 
