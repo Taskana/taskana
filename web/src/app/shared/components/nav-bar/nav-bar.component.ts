@@ -38,7 +38,6 @@ export class NavBarComponent implements OnInit {
   toggleSidenav() {
     this.toggle = !this.toggle;
     this.sidenavService.toggle_sidenav();
-    //this.toggle = this.sidenavService.state
   }
 
   setTitle(value: string = 'workbaskets') {
