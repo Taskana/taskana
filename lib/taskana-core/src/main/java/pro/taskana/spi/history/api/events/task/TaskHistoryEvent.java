@@ -45,8 +45,8 @@ public class TaskHistoryEvent {
     parentBusinessProcessId = task.getParentBusinessProcessId();
     domain = task.getDomain();
     workbasketKey = task.getWorkbasketSummary().getKey();
-    taskClassificationCategory = task.getClassificationSummary().getCategory();
     if (task.getClassificationSummary() != null) {
+      taskClassificationCategory = task.getClassificationSummary().getCategory();
       taskClassificationKey = task.getClassificationSummary().getKey();
     }
     if (!task.getAttachmentSummaries().isEmpty()) {
