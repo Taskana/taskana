@@ -11,13 +11,10 @@ import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/
 import { TaskanaDate } from '../../../shared/util/taskana.date';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import {
+  DeselectWorkbasket,
   OnButtonPressed,
-  SelectAccessItems,
-  SelectComponent,
-  SelectDistributionTargets,
-  SelectInformation
+  SelectComponent
 } from '../../../shared/store/workbasket-store/workbasket.actions';
-import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { ButtonAction } from '../../models/button-action';
 
 @Component({
@@ -156,6 +153,23 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
 
   onRestore() {
     this.store.dispatch(new OnButtonPressed(ButtonAction.UNDO));
+  }
+
+  onCopy() {
+    this.store.dispatch(new OnButtonPressed(ButtonAction.COPY));
+  }
+
+  onRemoveAsDistributionTarget() {
+    this.store.dispatch(new OnButtonPressed(ButtonAction.REMOVE_AS_DISTRIBUTION_TARGETS));
+  }
+
+  onRemoveWorkbasket() {
+    this.store.dispatch(new OnButtonPressed(ButtonAction.DELETE));
+  }
+
+  onClose() {
+    this.store.dispatch(new OnButtonPressed(ButtonAction.CLOSE));
+    this.store.dispatch(new DeselectWorkbasket());
   }
 
   ngOnDestroy(): void {

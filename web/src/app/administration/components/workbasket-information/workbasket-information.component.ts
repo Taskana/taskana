@@ -112,6 +112,15 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
               case ButtonAction.UNDO:
                 this.onUndo();
                 break;
+              case ButtonAction.COPY:
+                this.copyWorkbasket();
+                break;
+              case ButtonAction.REMOVE_AS_DISTRIBUTION_TARGETS:
+                this.removeDistributionTargets();
+                break;
+              case ButtonAction.DELETE:
+                this.removeWorkbasket();
+                break;
               default:
                 break;
             }
