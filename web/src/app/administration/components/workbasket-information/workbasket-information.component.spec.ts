@@ -64,7 +64,8 @@ const workbasketServiceMock = jest.fn().mockImplementation(
     triggerWorkBasketSaved: triggerWorkbasketSavedFn,
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
-    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
+    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
   })
 );
 

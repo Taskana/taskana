@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({ selector: 'taskana-administration-import-export', template: '' })
 class ImportExportStub {
@@ -89,7 +90,8 @@ describe('ClassificationListComponent', () => {
         MatMenuModule,
         MatFormFieldModule,
         MatInputModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatProgressBarModule
       ],
       declarations: [
         ClassificationListComponent,
@@ -189,10 +191,6 @@ describe('ClassificationListComponent', () => {
   });
 
   /* HTML: CLASSIFICATION TREE */
-  it('should display spinner component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-spinner')).toBeTruthy();
-  });
-
   it('should display tree component when classifications exist', () => {
     component.classifications = [{ classificationId: '1' }, { classificationId: '2' }];
     fixture.detectChanges();

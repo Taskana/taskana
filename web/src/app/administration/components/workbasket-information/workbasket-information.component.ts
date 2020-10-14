@@ -107,7 +107,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
           .subscribe((component) => {
             switch (button) {
               case ButtonAction.SAVE:
-                this.onSubmit();
+                this.onSave();
                 break;
               case ButtonAction.UNDO:
                 this.onUndo();
