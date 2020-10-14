@@ -13,7 +13,6 @@ import { SidenavService } from '../../services/sidenav/sidenav.service';
 export class SidenavListComponent implements OnInit {
   toggle: boolean = false;
 
-  adminUrl = 'taskana/administration';
   monitorUrl = 'taskana/monitor';
   workplaceUrl = 'taskana/workplace';
   historyUrl = 'taskana/history';
@@ -41,6 +40,6 @@ export class SidenavListComponent implements OnInit {
 
   toggleSidenav() {
     this.toggle = !this.toggle;
-    this.sidenavService.toggle_sidenav();
+    this.sidenavService.toggleSidenav();
   }
 }

@@ -45,7 +45,7 @@ describe('UserInformationComponent', () => {
   it('should toggle roles when roles clicked', () => {
     fixture.detectChanges();
     expect(component.showRoles).toBe(false);
-    const button = debugElement.query(By.css('button')).nativeElement;
+    const button = debugElement.query(By.css('.user-info__button')).nativeElement;
     expect(button).toBeTruthy();
     button.click();
     expect(component.showRoles).toBe(true);

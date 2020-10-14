@@ -20,7 +20,7 @@ import { of } from 'rxjs/internal/observable/of';
 
 const SidenavServiceSpy = jest.fn().mockImplementation(
   (): Partial<SidenavService> => ({
-    toggle_sidenav: jest.fn().mockReturnValue(of())
+    toggleSidenav: jest.fn().mockReturnValue(of())
   })
 );
 

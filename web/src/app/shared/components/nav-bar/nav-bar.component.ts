@@ -14,14 +14,12 @@ export class NavBarComponent implements OnInit {
   selectedRoute = '';
   title = '';
 
-  titleAdministration = 'Administration';
   titleWorkbaskets = 'Workbaskets';
   titleClassifications = 'Classifications';
   titleAccessItems = 'Access items';
   titleMonitor = 'Monitor';
   titleWorkplace = 'Workplace';
   titleHistory = 'History';
-  showTitle: boolean = true;
   toggle: boolean = false;
 
   selectedRouteSubscription: Subscription;
@@ -37,7 +35,7 @@ export class NavBarComponent implements OnInit {
 
   toggleSidenav() {
     this.toggle = !this.toggle;
-    this.sidenavService.toggle_sidenav();
+    this.sidenavService.toggleSidenav();
   }
 
   setTitle(value: string = 'workbaskets') {

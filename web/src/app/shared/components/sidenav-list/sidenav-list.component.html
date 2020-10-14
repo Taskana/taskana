@@ -1,18 +1,16 @@
 <mat-nav-list>
-    <a mat-list-item class="list-item list-item__admin" [routerLink]="'taskana/administration/workbaskets'"
-        [routerLinkActive]="['active']" *ngIf="administrationAccess" (click)="toggleSidenav()">Administration</a>
-    <a mat-list-item class="list-item list-item__admin-workbaskets" [routerLink]="'taskana/administration/workbaskets'"
+    <a mat-list-item class="list-item list-item__admin" [routerLink]=[workbasketsUrl] [routerLinkActive]="['active']"
+        *ngIf="administrationAccess" (click)="toggleSidenav()">Administration</a>
+    <a mat-list-item class="list-item list-item__admin-workbaskets" [routerLink]=[workbasketsUrl]
         [routerLinkActive]="['active']" *ngIf="administrationAccess" (click)="toggleSidenav()">Workbaskets</a>
-    <a mat-list-item class="list-item list-item__admin-classifications"
-        [routerLink]="'taskana/administration/classifications'" [routerLinkActive]="['active']"
-        *ngIf="administrationAccess" (click)="toggleSidenav()">Classifications</a>
-    <a mat-list-item class="list-item list-item__admin-acces-items"
-        [routerLink]="'taskana/administration/access-items-management'" [routerLinkActive]="['active']"
-        (click)="toggleSidenav()" *ngIf="administrationAccess">Access Items</a>
-    <a mat-list-item class="list-item list-item__monitor" [routerLink]="'taskana/monitor'"
-        [routerLinkActive]="['active']" *ngIf="monitorAccess" (click)="toggleSidenav()">Monitor</a>
-    <a mat-list-item class="list-item list-item__workplace" [routerLink]="'taskana/workplace'"
-        [routerLinkActive]="['active']" *ngIf="workplaceAccess" (click)="toggleSidenav()">Workplace</a>
-    <a mat-list-item class="list-item list-item__history" [routerLink]="'taskana/history'"
-        [routerLinkActive]="['active']" *ngIf="historyAccess" (click)="toggleSidenav()">History</a>
+    <a mat-list-item class="list-item list-item__admin-classifications" [routerLink]=[classificationUrl]
+        [routerLinkActive]="['active']" *ngIf="administrationAccess" (click)="toggleSidenav()">Classifications</a>
+    <a mat-list-item class="list-item list-item__admin-acces-items" [routerLink]=[accessUrl]
+        [routerLinkActive]="['active']" (click)="toggleSidenav()" *ngIf="administrationAccess">Access Items</a>
+    <a mat-list-item class="list-item list-item__monitor" [routerLink]=[monitorUrl] [routerLinkActive]="['active']"
+        *ngIf="monitorAccess" (click)="toggleSidenav()">Monitor</a>
+    <a mat-list-item class="list-item list-item__workplace" [routerLink]=[workplaceUrl] [routerLinkActive]="['active']"
+        *ngIf="workplaceAccess" (click)="toggleSidenav()">Workplace</a>
+    <a mat-list-item class="list-item list-item__history" [routerLink]=[historyUrl] [routerLinkActive]="['active']"
+        *ngIf="historyAccess" (click)="toggleSidenav()">History</a>
 </mat-nav-list>

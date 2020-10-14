@@ -12,7 +12,7 @@ export class SidenavService {
     this.sidenav = sidenav;
   }
 
-  public toggle_sidenav(): void {
+  public toggleSidenav(): void {
     this.sidenav.toggle();
     this.state = this.sidenav.opened;
   }

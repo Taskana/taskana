@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { NavBarComponent } from './nav-bar.component';
-import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
+import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { MatIconModule } from '@angular/material';
 import { SidenavService } from '../../../shared/services/sidenav/sidenav.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -11,7 +11,7 @@ import { of } from 'rxjs/internal/observable/of';
 
 const SidenavServiceSpy = jest.fn().mockImplementation(
   (): Partial<SidenavService> => ({
-    toggle_sidenav: jest.fn().mockReturnValue(of())
+    toggleSidenav: jest.fn().mockReturnValue(of())
   })
 );
 
@@ -21,7 +21,7 @@ const SelectedRouteServiceSpy = jest.fn().mockImplementation(
   })
 );
 
-describe('SidenavListComponent', () => {
+describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
   let debugElement: DebugElement;
@@ -59,7 +59,7 @@ describe('SidenavListComponent', () => {
   it('should toggle sidenav when button clicked', () => {
     fixture.detectChanges();
     expect(component.toggle).toBe(false);
-    const button = debugElement.query(By.css('button')).nativeElement;
+    const button = debugElement.query(By.css('.navbar_button-toggle')).nativeElement;
     expect(button).toBeTruthy();
     button.click();
     expect(component.toggle).toBe(true);

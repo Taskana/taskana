@@ -82,7 +82,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.taskanaEngineService.logout().subscribe(() => {});
+    this.taskanaEngineService.logout();
     this.window.nativeWindow.location.href = environment.taskanaLogoutUrl;
   }
 
