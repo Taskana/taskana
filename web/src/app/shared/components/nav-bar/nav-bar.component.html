@@ -1,78 +1,11 @@
-<nav class="navbar">
-  <div class="navbar  no-border-radius navbar-inverse no-gutter col-xs-12">
-    <div class="pull-left col-sm-3 col-md-4">
-      <button type="button" *ngIf="!showNavbar" class="btn btn-default navbar-toggle show pull-left" (click)="toggleNavBar();"
-        aria-expanded="true" aria-controls="navbar" data-toggle="tooltip" title="Menu">
-        <span class="material-icons md-24 white">menu</span>
-      </button>
-      <span>&nbsp;</span>
-    </div>
-    <div class="col-xs-6 col-sm-5 col-md-4">
-      <ul class="nav logo">
-        <svg-icon class="logo white hidden-xs" src="./assets/icons/logo-copy.svg"></svg-icon>
-        <h2 class="navbar-brand no-margin"> {{title}}</h2>
-      </ul>
-    </div>
-    <div *ngIf="showDomainSelector()" class="pull-right domain-form">
-      <div class="dropdown clearfix btn-group">
-        <label class="control-label hidden-xs">Working on </label>
-        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          {{selectedDomain? selectedDomain: 'MASTER DOMAIN'}}
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-          <li>
-            <a *ngFor="let domain of domains" (click)="switchDomain(domain)">
-              <label>{{domain? domain: 'MASTER DOMAIN'}}</label>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+<nav class="navbar navbar__inverse">
+  <div class="navbar__button">
+    <button mat-icon-button class="navbar_button-toggle" (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
   </div>
-  <div [@toggleRight]="showNavbar" *ngIf="showNavbar" class="navbar-inverse sidenav full-height col-xs-9 col-sm-3"
-    data-html="false" aria-expanded="true">
-    <div class="row">
-      <ul class="nav">
-        <svg-icon class="logo white visible-xs" src="./assets/icons/logo.svg"></svg-icon>
-        <h2 class="navbar-brand no-margin logo visible-xs"> {{title}}</h2>
-        <button type="button" class="btn btn-default logout navbar-toggle show pull-right" data-toggle="tooltip" title="Logout"
-          (click)="logout()" aria-expanded="true" aria-controls="logout">
-          <span class="material-icons md-20 white ">exit_to_app</span>
-        </button>
-      </ul>
-    </div>
-    <div class="nav-content">
-      <taskana-shared-user-information></taskana-shared-user-information>
-      <div *ngIf="administrationAccess" class="row menu">
-        <span (click)="toggleNavBar()" routerLink="taskana/administration/workbaskets" aria-controls="administration"
-          routerLinkActive="active">Administration</span>
-        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('workbaskets') !== -1 }">
-          <span (click)="toggleNavBar()" class="col-xs-6" routerLink="taskana/administration/workbaskets" aria-controls="Workbaskets"
-            routerLinkActive="active">Workbaskets</span>
-        </div>
-        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('classifications') !== -1}">
-          <span (click)="toggleNavBar()" class="col-xs-6" routerLink="taskana/administration/classifications" aria-controls="Classifications"
-            routerLinkActive="active">Classifications</span>
-        </div>
-        <div class="row submenu" [ngClass]="{'selected': selectedRoute.indexOf('access-items-management') !== -1}">
-          <span (click)="toggleNavBar()" class="col-xs-6" routerLink="taskana/administration/access-items-management"
-            aria-controls="Access items" routerLinkActive="active">Access items</span>
-        </div>
-      </div>
-      <div *ngIf="monitorAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('monitor') !== -1}">
-        <span (click)="toggleNavBar()" routerLink="{{monitorUrl}}" aria-controls="Monitor" routerLinkActive="active">Monitor</span>
-      </div>
-      <div *ngIf="workplaceAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('workplace') !== -1 || selectedRoute === ''}">
-        <span (click)="toggleNavBar()" routerLink="{{workplaceUrl}}" aria-controls="Workplace" routerLinkActive="active">Workplace</span>
-      </div>
-      <div *ngIf="historyAccess" class="row menu" [ngClass]="{'selected': selectedRoute.indexOf('history') !== -1}">
-        <span (click)="toggleNavBar()" routerLink="{{historyUrl}}" aria-controls="history" routerLinkActive="active">History</span>
-      </div>
-    </div>
-    <div class="nav-version">
-      <p id="taskana-version"> Taskana version: {{version}} </p>
-    </div>
+  <div class="navbar__logo">
+    <svg-icon class="navbar__logo-icon" src="./assets/icons/logo-copy.svg"></svg-icon>
+    <h2 class="navbar__title">{{title}}</h2>
   </div>
-  <div *ngIf="showNavbar" class="backdrop" (click)="toggleNavBar()"></div>
 </nav>

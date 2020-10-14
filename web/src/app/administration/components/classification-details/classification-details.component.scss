@@ -10,7 +10,6 @@
   position: relative;
 }
 
-
 /* ACTION TOOLBAR */
 .classification-details__headline {
   padding-top: 0.5rem;
@@ -51,7 +50,6 @@
 .button__red {
   color: $invalid;
 }
-
 
 /* DETAILED FIELDS */
 
@@ -111,4 +109,3 @@
 input:invalid.dirty {
   border-color: $invalid;
 }
-

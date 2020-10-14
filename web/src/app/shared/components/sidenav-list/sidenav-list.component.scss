@@ -1,0 +1,35 @@
+@import '../../../../theme/variables';
+
+.list-item {
+  color: $grey;
+}
+
+.list-item {
+  color: $grey;
+}
+
+.list-item {
+  color: $grey;
+}
+
+.list-item__admin-workbaskets {
+  color: $grey;
+  margin-left: 30px;
+}
+.list-item__admin-classifications {
+  color: $grey;
+  margin-left: 30px;
+}
+
+.list-item__admin-acces-items {
+  color: $grey;
+  margin-left: 30px;
+}
+
+.active {
+  color: white !important;
+}
+
+::ng-deep .mat-drawer-container {
+  background-color: white;
+}
