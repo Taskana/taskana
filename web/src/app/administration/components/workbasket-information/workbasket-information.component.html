@@ -1,5 +1,5 @@
 <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
-<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
+<div *ngIf="workbasket" id="wb-information">
 <!--
   <div class="panel-heading">
     <div class="pull-right btn-group">
@@ -31,6 +31,7 @@
   </div>
   -->
 
+
   <div class="workbasket-information-wrapper">
     <ng-form #WorkbasketForm="ngForm">
 
@@ -44,7 +45,8 @@
         <mat-form-field appearance="outline">
           <mat-label>Key</mat-label>
           <label for="workbasket-key"></label>
-          <input matInput required type="text" #key="ngModel" maxlength="64" [disabled]="action == 0 || action == 3"
+          <input matInput required type="text" #key="ngModel" maxlength="64"
+                 [disabled]="action == 0 || action == 3"
                  id="workbasket-key" placeholder="Key" [(ngModel)]="workbasket.key"
                  name="workbasket.key" (input)="validateInputOverflow(key, 64, $event)">
         </mat-form-field>
@@ -196,7 +198,7 @@
         <div *ngFor="let customField of customFields$ | async; let index = index">
           <div *ngIf="customField.visible">
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="workbasket-information__custom-fields">
               <mat-label>{{customField.field}}</mat-label>
               <label for='wb-custom-{{index+1}}'></label>
               <input matInput type="text"

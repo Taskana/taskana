@@ -145,6 +145,19 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
 
   selectComponent(index) {
     this.store.dispatch(new SelectComponent(index));
+    switch (index) {
+      case 0:
+        this.selectTab('information');
+        break;
+      case 1:
+        this.selectTab('access-items');
+        break;
+      case 2:
+        this.selectTab('distribution-targets');
+        break;
+      default:
+        break;
+    }
   }
 
   onSubmit() {

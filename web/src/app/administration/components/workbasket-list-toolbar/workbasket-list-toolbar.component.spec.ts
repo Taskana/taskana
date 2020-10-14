@@ -139,12 +139,12 @@ describe('WorkbasketListToolbarComponent', () => {
   it('should show filter component only when filter button is clicked', () => {
     const button = debugElement.nativeElement.querySelector('.workbasket-list-toolbar__filter-button');
     expect(button).toBeTruthy();
-    expect(button.textContent).toBe('search');
+    expect(button.textContent).toBe('filter_list');
     expect(debugElement.nativeElement.querySelector('filter')).toBeFalsy();
     button.click();
     fixture.detectChanges();
     expect(component.showFilter).toBe(true);
-    expect(button.textContent).toBe('clear');
+    expect(button.textContent).toBe('keyboard_arrow_up');
     expect(debugElement.nativeElement.querySelector('taskana-shared-filter')).toBeTruthy();
   });
 });
