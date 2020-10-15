@@ -110,7 +110,8 @@ class TaskTransferrer {
           taskId,
           destinationWorkbasket.getId());
       if (HistoryEventManager.isHistoryEnabled()) {
-        createTaskTransferredEvent(task, oldWorkbasketSummary, destinationWorkbasket.asSummary());
+        createTaskTransferredEvent(
+            task, oldWorkbasketSummary.getId(), destinationWorkbasket.asSummary().getId());
       }
       return task;
     } finally {
@@ -167,7 +168,8 @@ class TaskTransferrer {
           taskId,
           destinationWorkbasketId);
       if (HistoryEventManager.isHistoryEnabled()) {
-        createTaskTransferredEvent(task, oldWorkbasketSummary, destinationWorkbasket.asSummary());
+        createTaskTransferredEvent(
+            task, oldWorkbasketSummary.getId(), destinationWorkbasketId);
       }
       return task;
     } finally {
@@ -358,13 +360,13 @@ class TaskTransferrer {
   }
 
   private void createTaskTransferredEvent(
-      Task task, WorkbasketSummary oldWorkbasketSummary, WorkbasketSummary newWorkbasketSummary) {
+      Task task, String oldWorkbasketId, String newWorkbasketId) {
     historyEventManager.createEvent(
         new TaskTransferredEvent(
             IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
             task,
-            oldWorkbasketSummary,
-            newWorkbasketSummary,
+            oldWorkbasketId,
+            newWorkbasketId,
             taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
   }
 
@@ -408,17 +410,20 @@ class TaskTransferrer {
     taskSummaries
         .forEach(
             task -> {
-              TaskImpl newTask = (TaskImpl) taskService.newTask(task.getWorkbasketId());
-              newTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
-              newTask.setRead(updateObject.isRead());
-              newTask.setTransferred(updateObject.isTransferred());
-              newTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
-              newTask.setDomain(updateObject.getDomain());
-              newTask.setModified(updateObject.getModified());
-              newTask.setState(updateObject.getState());
-              newTask.setOwner(updateObject.getOwner());
+
+              TaskImpl transferredTask = (TaskImpl) taskService.newTask(task.getWorkbasketId());
+              transferredTask.setId(task.getTaskId());
+              transferredTask.setRead(updateObject.isRead());
+              transferredTask.setTransferred(updateObject.isTransferred());
+              transferredTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
+              transferredTask.setDomain(updateObject.getDomain());
+              transferredTask.setModified(updateObject.getModified());
+              transferredTask.setState(updateObject.getState());
+              transferredTask.setOwner(updateObject.getOwner());
               createTaskTransferredEvent(
-                  newTask, newTask.getWorkbasketSummary(), updateObject.getWorkbasketSummary());
+                  transferredTask,
+                  task.getWorkbasketId(),
+                  updateObject.getWorkbasketSummary().getId());
             });
   }
 }
