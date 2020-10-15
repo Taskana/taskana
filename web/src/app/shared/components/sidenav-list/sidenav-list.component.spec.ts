@@ -1,15 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { SidenavListComponent } from './sidenav-list.component';
-import { SidenavService } from '../../../shared/services/sidenav/sidenav.service';
-import {
-  MatButtonModule,
-  MatSidenavModule,
-  MatCheckboxModule,
-  MatGridListModule,
-  MatListModule,
-  MatIconModule
-} from '@angular/material';
+import { SidenavService } from '../../services/sidenav/sidenav.service';
+
 import { BrowserModule, By } from '@angular/platform-browser';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
@@ -17,6 +10,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-engine.mock.service';
 import { of } from 'rxjs/internal/observable/of';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 const SidenavServiceSpy = jest.fn().mockImplementation(
   (): Partial<SidenavService> => ({
@@ -75,7 +74,7 @@ describe('SidenavListComponent', () => {
     component.workplaceAccess = true;
     component.historyAccess = true;
     fixture.detectChanges();
-    const menuList = debugElement.queryAll(By.css('.list-item'));
+    const menuList = debugElement.queryAll(By.css('.navlist__item'));
     expect(menuList.length).toBe(7);
     fixture.detectChanges();
   });
@@ -86,14 +85,14 @@ describe('SidenavListComponent', () => {
     component.workplaceAccess = false;
     component.historyAccess = false;
     fixture.detectChanges();
-    const menuList = debugElement.queryAll(By.css('.list-item'));
+    const menuList = debugElement.queryAll(By.css('.navlist__item'));
     expect(menuList.length).toBe(1);
   });
 
   it('should toggle sidenav when link clicked', () => {
     component.toggle = true;
     fixture.detectChanges();
-    const button = debugElement.query(By.css('.list-item__admin-workbaskets')).nativeElement;
+    const button = debugElement.query(By.css('.navlist__admin-workbaskets')).nativeElement;
     expect(button).toBeTruthy();
     button.click();
     expect(component.toggle).toBe(false);

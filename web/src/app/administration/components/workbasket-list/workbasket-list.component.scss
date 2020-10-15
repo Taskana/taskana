@@ -1,41 +1,39 @@
+@import 'src/theme/_colors.scss';
+
+
 .workbasket-list {
-  min-width: 30vw;
+  height: calc(100vh - 156px);
+  overflow-x: hidden;
+  overflow-y: hidden;
+  min-width: 500px;
 }
-.row.list-group {
-  margin-left: 2px;
-}
-
-.list-group > li {
-  border-left: none;
-  border-right: none;
+.workbasket-list__workbaskets {
+  overflow-y: hidden;
 }
 
-a > label {
-  height: 2em;
-  width: 100%;
+.workbasket-list__workbaskets-item {
 }
-dd,
-dt {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+.mat-list-item {
+  height: 90px !important;
 }
-
-dt > i {
-  font-weight: normal;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
 }
-
-li > div.row > dl {
-  margin-bottom: 0px;
+.workbaskets-item__wrapper {
+  display: flex;
 }
-li > div.row > dl:first-child {
-  margin-left: 15px;
+.workbaskets-item__icon {
+  padding: 32px 32px 32px 16px;
 }
-
-.no-space {
-  border-top: none;
-  padding: 0px;
+.workbaskets-item__info {
+  display: block;
+  padding: 8px 0;
+}
+p {
+  margin: 0;
+}
+.workbasket-list__no-items {
+  text-align: center;
+  padding-top: 150px;
 }

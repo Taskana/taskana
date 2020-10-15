@@ -20,6 +20,8 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { Workbasket } from '../../../shared/models/workbasket';
+import { MatSelectionList } from '@angular/material/list';
+import { DomainService } from '../../../shared/services/domain/domain.service';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -51,11 +53,14 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
 
+  @ViewChild('workbasket') workbasketList: MatSelectionList;
+
   constructor(
     private store: Store,
     private workbasketService: WorkbasketService,
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
+    private domainService: DomainService,
     private ngxsActions$: Actions
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary), takeUntil(this.destroy$)).subscribe(() => {
@@ -100,6 +105,23 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .subscribe((value: Boolean) => {
         this.refreshWorkbasketList();
       });
+
+    this.domainService
+      .getSelectedDomain()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((domain) => {
+        this.performRequest();
+      });
+
+    this.workbasketService
+      .getWorkbasketActionToolbarExpansion()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.requestInProgress = true;
+        setTimeout(() => {
+          this.refreshWorkbasketList();
+        }, 1);
+      });
   }
 
   selectWorkbasket(id: string) {
@@ -128,30 +150,34 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   refreshWorkbasketList() {
     this.cards = this.orientationService.calculateNumberItemsList(
       window.innerHeight,
-      72,
-      170 + this.toolbarElement.nativeElement.offsetHeight,
+      92,
+      200 + this.toolbarElement.nativeElement.offsetHeight,
       false
     );
     this.performRequest();
   }
 
   performRequest(): void {
-    this.store.dispatch(
-      new GetWorkbasketsSummary(
-        true,
-        this.sort.sortBy,
-        this.sort.sortDirection,
-        '',
-        this.filterBy.filterParams.name,
-        this.filterBy.filterParams.description,
-        '',
-        this.filterBy.filterParams.owner,
-        this.filterBy.filterParams.type,
-        '',
-        this.filterBy.filterParams.key,
-        ''
+    this.store
+      .dispatch(
+        new GetWorkbasketsSummary(
+          true,
+          this.sort.sortBy,
+          this.sort.sortDirection,
+          '',
+          this.filterBy.filterParams.name,
+          this.filterBy.filterParams.description,
+          '',
+          this.filterBy.filterParams.owner,
+          this.filterBy.filterParams.type,
+          '',
+          this.filterBy.filterParams.key,
+          ''
+        )
       )
-    );
+      .subscribe(() => {
+        this.requestInProgress = false;
+      });
     TaskanaQueryParameters.pageSize = this.cards;
   }
 

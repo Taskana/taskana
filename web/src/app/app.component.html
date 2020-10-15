@@ -6,9 +6,7 @@
         <mat-icon>exit_to_app</mat-icon>
       </button>
     </div>
-    <a class="sidenav__drawer-user-info">
-      <taskana-shared-user-information></taskana-shared-user-information>
-    </a>
+    <taskana-shared-user-information class="sidenav__drawer-user-info"></taskana-shared-user-information>
     <taskana-sidenav-list></taskana-sidenav-list>
     <div class="sidenav__drawer-version">
       <p> Taskana version: {{version}} </p>
@@ -16,14 +14,13 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <taskana-shared-nav-bar></taskana-shared-nav-bar>
-    <div (window:resize)="onResize()" class="">
+    <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
+    <div (window:resize)="onResize()">
       <div class="taskana-main">
         <router-outlet></router-outlet>
-        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
         <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
         </taskana-shared-progress-bar>
       </div>
-      <taskana-shared-type-ahead></taskana-shared-type-ahead>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

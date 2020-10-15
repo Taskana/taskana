@@ -19,13 +19,12 @@ export class SidenavListComponent implements OnInit {
   accessUrl = 'taskana/administration/access-items-management';
   classificationUrl = 'taskana/administration/classifications';
   workbasketsUrl = 'taskana/administration/workbaskets';
+  administrationsUrl = 'taskana/administration';
 
   administrationAccess = false;
   monitorAccess = false;
   workplaceAccess = false;
   historyAccess = false;
-
-  admin_url_list: any[];
 
   constructor(private taskanaEngineService: TaskanaEngineService, private sidenavService: SidenavService) {}
 

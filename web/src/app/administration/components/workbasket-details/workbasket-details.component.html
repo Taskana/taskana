@@ -1,34 +1,53 @@
-<div class="container container-scrollable" style="min-width: 70vw;">
-    <taskana-shared-spinner [isRunning]="requestInProgress"></taskana-shared-spinner>
-    <div id="workbasket-details" *ngIf="workbasket && !requestInProgress">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" (click)="selectTab('information')" [ngClass]="{'active':tabSelected === 'information'}">
-                <a aria-controls="work baskets" role="tab" aria-expanded="true">
-                    Information</a>
-            </li>
-            <li role="presentation" (click)="selectTab('accessItems')" [ngClass]="{
-                'disabled': action ==='CREATE',
-                'active':tabSelected === 'accessItems'}">
-                <a aria-controls="Acccess" role="tab" aria-expanded="true">
-                    Access</a>
-            </li>
-            <li role="presentation" (click)="selectTab('distributionTargets')" [ngClass]="{
-                'disabled': action ==='CREATE',
-                'active':tabSelected === 'distributionTargets'}">
-                <a aria-controls="distribution targets" role="tab" data-toggle="tab" aria-expanded="true">
-                    Distribution targets</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" [ngClass]="{'active':tabSelected === 'information'}" id="work-baskets">
-                <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-information>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="access-items" [ngClass]="{'active':tabSelected === 'accessItems'}">
-                <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-access-items>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="distribution-targets" [ngClass]="{'active':tabSelected === 'distributionTargets'}">
-                <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-distribution-targets>
-            </div>
-        </div>
-    </div>
+<div class="workbasket-details">
+  <mat-toolbar class="workbasket-details__toolbar">
+    <h4 class="workbasket-details__title">{{workbasket.name}}&nbsp;
+      <span class="workbasket-details__title-badge" *ngIf="!workbasket.workbasketId"> {{ badgeMessage }}</span>
+    </h4>
+    <span class="workbasket-details__spacer"></span>
+    <button mat-button class="workbasket-details__button workbasket-details__save-button" matTooltip="Save changes in current workbasket" (click)="onSubmit()">
+      Save
+      <mat-icon class="md-20">save</mat-icon>
+    </button>
+
+    <button mat-stroked-button class="workbasket-details__button" matTooltip="Revert changes to previous saved state" (click)="onRestore()">
+      Undo Changes
+      <mat-icon class="button__green-blue md-20">restore</mat-icon>
+    </button>
+
+    <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button" id="action-toolbar__more-buttons">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #buttonMenu="matMenu">
+      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Copy current values to create new workbasket" (click)="onCopy()">
+        <mat-icon class="button__green-blue">content_copy</mat-icon>
+        <span>Copy</span>
+      </button>
+      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Remove this workbasket as distribution target" (click)="onRemoveAsDistributionTarget()">
+        <mat-icon class="button__red">remove_circle_outline</mat-icon>
+        <span>Remove as distribution target</span>
+      </button>
+      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Delete this workbasket" (click)="onRemoveWorkbasket()">
+        <mat-icon class="button__red">delete</mat-icon>
+        <span>Delete</span>
+      </button>
+      <button mat-menu-item class="workbasket-details__dropdown" style="border-bottom-style: none;"  matTooltip="Close this workbasket and discard all changes" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+        <span>Close</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)">
+    <mat-tab label="Information">
+      <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-information>
+    </mat-tab>
+    <mat-tab label="Access">
+      <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-access-items>
+    </mat-tab>
+    <mat-tab label="Distribution Targets">
+      <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-distribution-targets>
+    </mat-tab>
+  </mat-tab-group>
+  <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
 </div>
+

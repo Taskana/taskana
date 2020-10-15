@@ -34,6 +34,11 @@ import {
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -59,7 +64,8 @@ const workbasketServiceMock = jest.fn().mockImplementation(
     triggerWorkBasketSaved: triggerWorkbasketSavedFn,
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
-    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
+    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
   })
 );
 
@@ -103,7 +109,12 @@ describe('WorkbasketInformationComponent', () => {
         TypeaheadModule.forRoot(),
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([]),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatProgressBarModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule
       ],
       declarations: [
         WorkbasketInformationComponent,
@@ -149,7 +160,7 @@ describe('WorkbasketInformationComponent', () => {
   });
 
   it('should display custom fields correctly', () => {
-    const customFields = debugElement.nativeElement.getElementsByClassName('custom-fields');
+    const customFields = debugElement.nativeElement.getElementsByClassName('workbasket-information__custom-fields');
     expect(customFields.length).toBe(3); //mock data has custom1->4 but engineConfig disables custom3 -> [1,2,4]
   });
 
@@ -169,12 +180,6 @@ describe('WorkbasketInformationComponent', () => {
     component.action = ACTION.COPY;
     component.ngOnChanges();
     expect(component.badgeMessage).toContain(`Copying workbasket: ${component.workbasket.key}`);
-  });
-
-  it('should set type variable in selectType', () => {
-    const type = ICONTYPES.GROUP;
-    component.selectType(type);
-    expect(component.workbasket.type).toMatch(type);
   });
 
   it('should submit when validatorService is true', () => {

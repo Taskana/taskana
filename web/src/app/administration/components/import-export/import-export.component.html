@@ -1,23 +1,23 @@
-
-<button mat-stroked-button class="mr-1" matTooltip="Import classification" [ngClass]="{disabled: uploadService?.isInUse}" (click)="selectedFile.click()" title="Import">
-  Import
-  <mat-icon>cloud_upload</mat-icon>
-</button>
-
-<form class="hidden" enctype="multipart/form-data" method="post">
-  <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
-</form>
-
-<button mat-stroked-button class="mr-1" matTooltip="Export classification" [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
-  Export
-  <mat-icon>cloud_download</mat-icon>
-</button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item href="javascript:void(0)" (click)="export()">
-    All Domains
+<div class="import-export">
+  <button mat-stroked-button class="mr-1" matTooltip="Import {{parentComponent}}" [ngClass]="{disabled: uploadService?.isInUse}" (click)="selectedFile.click()" title="Import">
+    Import
+    <mat-icon>cloud_upload</mat-icon>
   </button>
-  <button mat-menu-item *ngFor="let domain of domains" href="javascript:void(0)" (click)="export(domain)">
-    {{domain === '' ? 'Master' : domain}}
-  </button>
-</mat-menu>
 
+  <form class="hidden" enctype="multipart/form-data" method="post">
+    <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
+  </form>
+
+  <button mat-stroked-button class="mr-1" matTooltip="Export {{parentComponent}}" [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">
+    Export
+    <mat-icon>cloud_download</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item href="javascript:void(0)" (click)="export()">
+      All Domains
+    </button>
+    <button mat-menu-item *ngFor="let domain of domains" href="javascript:void(0)" (click)="export(domain)">
+      {{domain === '' ? 'Master' : domain}}
+    </button>
+  </mat-menu>
+</div>

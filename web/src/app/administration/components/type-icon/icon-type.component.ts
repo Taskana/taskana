@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ICONTYPES } from 'app/shared/models/icon-types';
 
 @Component({
@@ -18,6 +18,9 @@ export class IconTypeComponent {
 
   @Input()
   text: string;
+
+  @Input()
+  size = 'small';
 
   public static get allTypes(): Map<string, string> {
     return new Map([

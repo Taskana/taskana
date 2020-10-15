@@ -2,7 +2,7 @@
 
 .classification-list {
   height: calc(100vh - 55px);
-  width: 450px;
+  width: 500px;
 }
 .classification-list__action-toolbar {
   padding: 0 16px;
@@ -38,6 +38,10 @@
   fill: #555;
   margin: 0;
   top: -2px;
+}
+
+.category-filter__filter-button {
+  color: #555;
 }
 
 .filter__input {

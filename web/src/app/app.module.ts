@@ -13,14 +13,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TreeModule } from 'angular-tree-component';
 import { SharedModule } from 'app/shared/shared.module';
-import {
-  MatButtonModule,
-  MatSidenavModule,
-  MatCheckboxModule,
-  MatGridListModule,
-  MatListModule,
-  MatIconModule
-} from '@angular/material';
 
 /**
  * Services
@@ -59,6 +51,14 @@ import { UserGuard } from './shared/guards/user.guard';
 import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
 import { STATES } from './shared/store';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -90,7 +90,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
+  imports: [MODULES, MatSidenavModule, MatIconModule, MatToolbarModule, MatProgressBarModule],
   providers: [
     WindowRefService,
     DomainService,

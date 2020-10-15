@@ -1,0 +1,36 @@
+@import 'src/theme/_colors.scss';
+
+.workbasket-details {
+  width: 100%;
+  height: calc(100vh - 100px);
+}
+.workbasket-details__toolbar {
+  background-color: white;
+  padding: 16px 36px 12px 24px;
+}
+.workbasket-details__title {
+  font-size: 1.5rem;
+  padding: 4px;
+}
+.workbasket-details__title-badge {
+  background-color: $brown;
+  border-radius: 4px;
+}
+.workbasket-details__spacer {
+  flex: 1 1 auto;
+}
+.workbasket-details__button {
+  margin-right: 6px;
+}
+.workbasket-details__save-button {
+  background-color: $aquamarine;
+  color: white;
+}
+
+.button__green-blue {
+  color: $aquamarine;
+}
+
+.button__red {
+  color: $invalid;
+}

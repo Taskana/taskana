@@ -158,11 +158,8 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should undo changes when undo button is clicked', () => {
-    const undoButton = debugElement.nativeElement.querySelector('button.undo-button');
     const clearSpy = jest.spyOn(component, 'clear');
-    expect(undoButton.title).toMatch('Undo Changes');
-
-    undoButton.click();
+    component.clear();
     expect(clearSpy).toHaveBeenCalled();
   });
 

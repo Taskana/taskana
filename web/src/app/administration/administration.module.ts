@@ -5,7 +5,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { SharedModule } from 'app/shared/shared.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { TreeModule } from 'angular-tree-component';
 
 import { ClassificationTypesSelectorComponent } from 'app/administration/components/classification-types-selector/classification-types-selector.component';
 import { ClassificationCategoriesService } from 'app/shared/services/classification-categories/classification-categories.service';
@@ -44,6 +43,9 @@ import { AdministrationOverviewComponent } from './components/administration-ove
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const MODULES = [
   CommonModule,
@@ -88,7 +90,10 @@ const DECLARATIONS = [
     MatTabsModule,
     MatInputModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    MatListModule,
+    MatProgressBarModule,
+    MatToolbarModule
   ],
   providers: [
     ClassificationDefinitionService,

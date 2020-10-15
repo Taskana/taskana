@@ -1,3 +1,37 @@
+@import 'src/theme/_colors.scss';
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.filter__text-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter__action-buttons {
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter__search-button {
+  background: $aquamarine;
+  color: white;
+  margin-left: 4px;
+}
+
+.filter__name-and-key-input{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
 .dropdown-menu-users {
   & > li {
     margin-bottom: 5px;

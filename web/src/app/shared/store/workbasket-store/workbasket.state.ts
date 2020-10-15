@@ -12,8 +12,10 @@ import {
   GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
   MarkWorkbasketForDeletion,
+  OnButtonPressed,
   RemoveDistributionTarget,
   SaveNewWorkbasket,
+  SelectComponent,
   SelectWorkbasket,
   SetActiveAction,
   UpdateWorkbasket,
@@ -27,6 +29,8 @@ import { NotificationService } from '../../services/notifications/notification.s
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
 import { WorkbasketSummary } from '../../models/workbasket-summary';
+import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
+import { ButtonAction } from '../../../administration/models/button-action';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -42,6 +46,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(GetWorkbasketsSummary)
   getWorkbasketsSummary(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketsSummary): Observable<any> {
+    ctx.patchState({
+      paginatedWorkbasketsSummary: undefined
+    });
     return this.workbasketService
       .getWorkBasketsSummary(
         action.forceRequest,
@@ -110,8 +117,31 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return of(null);
   }
 
+  @Action(SelectComponent)
+  selectComponent(ctx: StateContext<WorkbasketStateModel>, action: SelectComponent): Observable<any> {
+    switch (action.component) {
+      case WorkbasketComponent.INFORMATION:
+        ctx.patchState({ selectedComponent: WorkbasketComponent.INFORMATION });
+        break;
+      case WorkbasketComponent.ACCESS_ITEMS:
+        ctx.patchState({ selectedComponent: WorkbasketComponent.ACCESS_ITEMS });
+        break;
+      case WorkbasketComponent.DISTRIBUTION_TARGETS:
+        ctx.patchState({ selectedComponent: WorkbasketComponent.DISTRIBUTION_TARGETS });
+        break;
+    }
+    return of(null);
+  }
+
+  @Action(OnButtonPressed)
+  doWorkbasketDetailsAction(ctx: StateContext<WorkbasketStateModel>, action: OnButtonPressed): Observable<any> {
+    ctx.patchState({ button: action.button });
+    return of(null);
+  }
+
   @Action(SaveNewWorkbasket)
   saveNewWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SaveNewWorkbasket): Observable<any> {
+    ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.createWorkbasket(action.workbasket).pipe(
       take(1),
       tap(
@@ -134,6 +164,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(CopyWorkbasket)
   copyWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CopyWorkbasket): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
+    ctx.dispatch(new OnButtonPressed(undefined));
     ctx.patchState({
       action: ACTION.COPY
     });
@@ -142,6 +173,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(UpdateWorkbasket)
   updateWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: UpdateWorkbasket): Observable<any> {
+    ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.updateWorkbasket(action.url, action.workbasket).pipe(
       take(1),
       tap(
@@ -156,7 +188,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             paginatedWorkbasketSummary.workbaskets,
             action.workbasket
           );
-
           ctx.patchState({
             selectedWorkbasket: updatedWorkbasket,
             paginatedWorkbasketsSummary: paginatedWorkbasketSummary
@@ -171,6 +202,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(RemoveDistributionTarget)
   removeDistributionTarget(ctx: StateContext<WorkbasketStateModel>, action: RemoveDistributionTarget): Observable<any> {
+    ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.removeDistributionTarget(action.url).pipe(
       take(1),
       tap(
@@ -193,6 +225,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(MarkWorkbasketForDeletion)
   deleteWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: MarkWorkbasketForDeletion): Observable<any> {
+    ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.markWorkbasketForDeletion(action.url).pipe(
       take(1),
       tap((response) => {
@@ -308,4 +341,6 @@ export interface WorkbasketStateModel {
   action: ACTION;
   workbasketAccessItems: WorkbasketAccessItemsRepresentation;
   workbasketDistributionTargets: WorkbasketDistributionTargets;
+  selectedComponent: WorkbasketComponent;
+  button: ButtonAction | undefined;
 }

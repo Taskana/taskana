@@ -17,6 +17,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 })
 export class ImportExportComponent implements OnInit {
   @Input() currentSelection: TaskanaType;
+  @Input() parentComponent: string;
 
   @ViewChild('selectedFile', { static: true })
   selectedFileInput;

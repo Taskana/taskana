@@ -30,6 +30,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -128,6 +129,7 @@ describe('ClassificationDetailsComponent', () => {
         MatInputModule,
         MatOptionModule,
         MatSelectModule,
+        MatProgressBarModule,
         MatMenuModule,
         BrowserAnimationsModule
       ],
@@ -250,9 +252,6 @@ describe('ClassificationDetailsComponent', () => {
   });
 
   /* HTML */
-  it('should show spinner component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-spinner')).toBeTruthy();
-  });
 
   it('should not show details when spinner is running', () => {
     component.spinnerIsRunning = true;

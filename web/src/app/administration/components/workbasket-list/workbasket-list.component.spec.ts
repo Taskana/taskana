@@ -16,15 +16,23 @@ import { Sorting } from '../../../shared/models/sorting';
 import { Filter } from '../../../shared/models/filter';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import { Page } from '../../../shared/models/page';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatListModule, MatSelectionList } from '@angular/material/list';
+import { DomainService } from '../../../shared/services/domain/domain.service';
 
 const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
 const getWorkbasketFn = jest.fn().mockReturnValue(of({ workbasketId: '1' }));
+const getWorkbasketActionToolbarExpansionFn = jest.fn().mockReturnValue(of(false));
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
     workbasketSavedTriggered: workbasketSavedTriggeredFn,
     getWorkBasketsSummary: workbasketSummaryFn,
-    getWorkBasket: getWorkbasketFn
+    getWorkBasket: getWorkbasketFn,
+    getWorkbasketActionToolbarExpansion: getWorkbasketActionToolbarExpansionFn
   })
 );
 
@@ -40,6 +48,13 @@ const getImportingFinishedFn = jest.fn().mockReturnValue(of(true));
 const importExportServiceMock = jest.fn().mockImplementation(
   (): Partial<ImportExportService> => ({
     getImportingFinished: getImportingFinishedFn
+  })
+);
+
+const domainServiceSpy = jest.fn().mockImplementation(
+  (): Partial<DomainService> => ({
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of())
   })
 );
 
@@ -82,7 +97,15 @@ describe('WorkbasketListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([WorkbasketState]), MatSnackBarModule, MatDialogModule],
+      imports: [
+        NgxsModule.forRoot([WorkbasketState]),
+        MatSnackBarModule,
+        MatDialogModule,
+        FormsModule,
+        MatProgressBarModule,
+        MatSelectModule,
+        MatListModule
+      ],
       declarations: [
         WorkbasketListComponent,
         WorkbasketListToolbarStub,
@@ -94,7 +117,8 @@ describe('WorkbasketListComponent', () => {
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceMock },
         { provide: OrientationService, useClass: orientationServiceMock },
-        { provide: ImportExportService, useClass: importExportServiceMock }
+        { provide: ImportExportService, useClass: importExportServiceMock },
+        { provide: DomainService, useClass: domainServiceSpy }
       ]
     }).compileComponents();
 

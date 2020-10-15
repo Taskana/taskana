@@ -1,17 +1,15 @@
 <div class="workbasket-overview">
-    <div class="vertical-right-divider">
-        <taskana-administration-workbasket-list></taskana-administration-workbasket-list>
-    </div>
-    <div *ngIf="showDetail; else showEmptyPage">
-        <taskana-administration-workbasket-details></taskana-administration-workbasket-details>
-    </div>
+  <taskana-administration-workbasket-list></taskana-administration-workbasket-list>
+  <div class="vertical-right-divider"></div>
+  <taskana-administration-workbasket-details
+    *ngIf="showDetail; else showEmptyPage"></taskana-administration-workbasket-details>
 
-    <ng-template #showEmptyPage>
-        <div class="hidden-xs hidden-sm col-md-8 container-no-items">
-            <div class="center-block no-detail">
-                <h3 class="grey">Select a workbasket</h3>
-                <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
-            </div>
-        </div>
-    </ng-template>
+  <ng-template #showEmptyPage>
+    <div class="hidden-xs hidden-sm col-md-8 container-no-items">
+      <div class="center-block no-detail">
+        <h3 class="grey">Select a workbasket</h3>
+        <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+      </div>
+    </div>
+  </ng-template>
 </div>

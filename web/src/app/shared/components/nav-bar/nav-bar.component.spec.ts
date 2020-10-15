@@ -1,13 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { NavBarComponent } from './nav-bar.component';
-import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
-import { MatIconModule } from '@angular/material';
-import { SidenavService } from '../../../shared/services/sidenav/sidenav.service';
+import { SelectedRouteService } from '../../services/selected-route/selected-route';
+import { SidenavService } from '../../services/sidenav/sidenav.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/internal/observable/of';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const SidenavServiceSpy = jest.fn().mockImplementation(
   (): Partial<SidenavService> => ({
@@ -30,7 +31,7 @@ describe('NavBarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [NavBarComponent],
-      imports: [MatIconModule, HttpClientTestingModule, AngularSvgIconModule],
+      imports: [MatIconModule, HttpClientTestingModule, AngularSvgIconModule, MatToolbarModule],
       providers: [
         { provide: SidenavService, useClass: SidenavServiceSpy },
         { provide: SelectedRouteService, useClass: SelectedRouteServiceSpy }

@@ -1,14 +1,7 @@
-.sortby-dropdown {
-  min-width: 200px;
-}
+@import 'src/theme/_colors.scss';
 
-.bold-blue {
-  color: #337ab7;
+.sort__selected-value {
+  color: $aquamarine;
   font-weight: bold;
 }
 
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  margin: 0rem 2.5rem;
-}
