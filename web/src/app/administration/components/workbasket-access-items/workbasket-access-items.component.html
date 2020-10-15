@@ -1,4 +1,4 @@
-<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
+<div *ngIf="workbasket" id="wb-information">
 
 	<!-- ACTION TOOLBAR -->
   <!--
@@ -16,8 +16,9 @@
 		</h4>
 	</div>
 -->
+
 	<!-- ACCESS ITEMS -->
-	<div class="panel-body">
+	<div class="workbasket-access-items">
 		<form [formGroup]="AccessItemsForm">
 			<table formArrayName="accessItemsGroups" id="table-access-items" class="table table-striped table-center">
 

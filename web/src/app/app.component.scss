@@ -15,7 +15,6 @@
   box-shadow: none;
   width: 350px;
   background-color: $dark-green;
-  box-shadow: 3px 0px 10px -1px $dark-green;
 }
 
 .sidenav__drawer-list-item {
@@ -24,14 +23,15 @@
 
 .sidenav__drawer-logout {
   text-align: end;
+  color: white;
 }
 
 .sidenav__drawer-version {
-  color: $grey;
+  color: white;
   position: absolute;
   bottom: 5px;
+  left: 16px;
   font-size: 12px;
-  margin-left: 16px;
 }
 
 .sidenav__drawer-user-info {
@@ -40,14 +40,9 @@
   margin-left: -16px;
 }
 
-.mat-icon-button {
-  outline: none;
+mat-sidenav-content {
+  height: unset;
 }
-
-.mat-icon {
-  color: white;
-}
-
 ::ng-deep .mat-drawer-inner-container {
   overflow: visible !important;
 }

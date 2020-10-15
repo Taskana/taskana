@@ -5,7 +5,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { SharedModule } from 'app/shared/shared.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { TreeModule } from 'angular-tree-component';
 
 import { ClassificationTypesSelectorComponent } from 'app/administration/components/classification-types-selector/classification-types-selector.component';
 import { ClassificationCategoriesService } from 'app/shared/services/classification-categories/classification-categories.service';

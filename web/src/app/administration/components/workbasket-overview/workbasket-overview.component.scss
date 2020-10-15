@@ -2,10 +2,12 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 100%;
   overflow: hidden;
   align-items: stretch;
 }
 
 taskana-administration-workbasket-details {
   width: calc(100% - 500px);
+  height: calc(100% - 213px);
 }

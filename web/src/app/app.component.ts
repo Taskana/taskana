@@ -1,7 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { MatSidenav } from '@angular/material';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { SidenavService } from './shared/services/sidenav/sidenav.service';
 import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
@@ -12,6 +11,7 @@ import { ErrorModel } from './shared/models/error-model';
 import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { environment } from 'environments/environment';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'taskana-root',
