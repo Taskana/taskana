@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob.Type;
 
 /** Controls all job activities. */
 public class JobServiceImpl implements JobService {
@@ -37,6 +38,18 @@ public class JobServiceImpl implements JobService {
     }
     LOGGER.debug("Exit from createJob");
     return job;
+  }
+
+  public void deleteJobs(Type jobType) {
+    LOGGER.debug("entry to deleteJobs(jobType = {})", jobType);
+    try {
+      taskanaEngineImpl.openConnection();
+      jobMapper.deleteMultiple(jobType);
+      LOGGER.debug("Deleted jobs of type: {}", jobType);
+    } finally {
+      taskanaEngineImpl.returnConnection();
+      LOGGER.debug("exit from deleteJobs()");
+    }
   }
 
   public ScheduledJob lockJob(ScheduledJob job, String owner) {

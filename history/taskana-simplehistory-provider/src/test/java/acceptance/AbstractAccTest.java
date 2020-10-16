@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.common.internal.JobMapper;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
@@ -167,6 +169,16 @@ public abstract class AbstractAccTest {
         (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
 
     return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
+  }
+
+  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaEngine);
+
+    return sqlSessionManager.getMapper(JobMapper.class);
   }
 
   protected ObjectReference createObjectRef(
