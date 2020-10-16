@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -83,6 +85,35 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
     assertThat(totalWorkbasketCount).isEqualTo(25);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_DeleteOldWorkbasketCleanupJobs_When_InitializingSchedule() throws Exception {
+
+    for (int i = 0; i < 10; i++) {
+      ScheduledJob job = new ScheduledJob();
+      job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(Type.UPDATETASKSJOB);
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      taskanaEngine.getJobService().createJob(job);
+    }
+
+    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun();
+
+    assertThat(jobsToRun).hasSize(30);
+
+    WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
+
+    jobsToRun = getJobMapper().findJobsToRun();
+
+    assertThat(jobsToRun).hasSize(20);
+
+    assertThat(jobsToRun)
+        .extracting(ScheduledJob::getType)
+        .containsOnly(Type.CLASSIFICATIONCHANGEDJOB, Type.UPDATETASKSJOB);
   }
 
   private long getNumberTaskNotCompleted(String workbasketId) {

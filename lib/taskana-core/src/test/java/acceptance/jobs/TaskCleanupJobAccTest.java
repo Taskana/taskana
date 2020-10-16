@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -83,6 +85,35 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     Task completedCreatedTask = taskService.getTask(createdTask.getId());
     assertThat(completedCreatedTask).isNotNull();
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_DeleteOldTaskCleanupJobs_When_InitializingSchedule() throws Exception {
+
+    for (int i = 0; i < 10; i++) {
+      ScheduledJob job = new ScheduledJob();
+      job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(Type.UPDATETASKSJOB);
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      taskanaEngine.getJobService().createJob(job);
+    }
+
+    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun();
+
+    assertThat(jobsToRun).hasSize(30);
+
+    TaskCleanupJob.initializeSchedule(taskanaEngine);
+
+    jobsToRun = getJobMapper().findJobsToRun();
+
+    assertThat(jobsToRun).hasSize(20);
+
+    assertThat(jobsToRun)
+        .extracting(ScheduledJob::getType)
+        .containsOnly(Type.CLASSIFICATIONCHANGEDJOB, Type.UPDATETASKSJOB);
   }
 
   private Task createAndCompleteTask() throws Exception {
