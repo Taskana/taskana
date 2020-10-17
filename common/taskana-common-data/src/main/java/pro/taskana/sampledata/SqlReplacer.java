@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import pro.taskana.common.internal.configuration.DB;
+
 /** This class replaces boolean values with int values if the database is db2. */
 final class SqlReplacer {
 
@@ -18,14 +20,11 @@ final class SqlReplacer {
   static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
+  // to prevent initialization
   private SqlReplacer() {}
 
   static String getScriptAsSql(String dbProductName, ZonedDateTime now, String scriptPath) {
     return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductName);
-  }
-
-  static boolean isDb2(String dbProductName) {
-    return dbProductName != null && dbProductName.contains("DB2");
   }
 
   /**
@@ -61,17 +60,13 @@ final class SqlReplacer {
         .orElse(null);
   }
 
-  static String getSanitizedTableName(String table) {
-    return table.replaceAll("[^a-zA-Z0-9_]", "__");
-  }
-
   private static String replaceBooleanWithInteger(String sql) {
     return sql.replaceAll("(?i)true", "1").replaceAll("(?i)false", "0");
   }
 
   private static String parseAndReplace(
       BufferedReader bufferedReader, ZonedDateTime now, String dbProductname) {
-    boolean isDb2 = isDb2(dbProductname);
+    boolean isDb2 = DB.isDb2(dbProductname);
     String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
     if (isDb2) {
       sql = replaceBooleanWithInteger(sql);
