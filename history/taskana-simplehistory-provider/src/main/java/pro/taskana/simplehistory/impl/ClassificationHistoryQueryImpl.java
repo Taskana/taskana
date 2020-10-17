@@ -32,12 +32,11 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
   private static final String SQL_EXCEPTION_MESSAGE =
       "Method openConnection() could not open a connection to the database.";
 
-  private TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  private final TaskanaHistoryEngineImpl taskanaHistoryEngine;
 
+  private final List<String> orderBy = new ArrayList<>();
+  private final List<String> orderColumns = new ArrayList<>();
   private ClassificationHistoryQueryColumnName columnName;
-  private List<String> orderBy;
-  private List<String> orderColumns;
-
   private String[] idIn;
   private String[] eventTypeIn;
   private TimeInterval[] createdIn;
@@ -61,7 +60,6 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
   private String[] custom6In;
   private String[] custom7In;
   private String[] custom8In;
-
   private String[] eventTypeLike;
   private String[] userIdLike;
   private String[] classificationIdLike;
@@ -85,8 +83,6 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   public ClassificationHistoryQueryImpl(TaskanaHistoryEngineImpl internalTaskanaHistoryEngine) {
     this.taskanaHistoryEngine = internalTaskanaHistoryEngine;
-    this.orderBy = new ArrayList<>();
-    this.orderColumns = new ArrayList<>();
   }
 
   @Override
@@ -469,7 +465,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
         this);
     List<String> result = new ArrayList<>();
     this.columnName = dbColumnName;
-    List<String> cacheOrderBy = this.orderBy;
+    List<String> cacheOrderBy = new ArrayList<>(this.orderBy);
     this.orderBy.clear();
     this.addOrderCriteria(columnName.toString(), sortDirection);
 
@@ -481,7 +477,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
-      this.orderBy = cacheOrderBy;
+      this.orderBy.addAll(cacheOrderBy);
       this.columnName = null;
       this.orderColumns.remove(orderColumns.size() - 1);
       taskanaHistoryEngine.returnConnection();
@@ -530,15 +526,6 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       taskanaHistoryEngine.returnConnection();
       LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
-  }
-
-  private ClassificationHistoryQueryImpl addOrderCriteria(
-      String columnName, SortDirection sortDirection) {
-    String orderByDirection =
-        " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
-    orderBy.add(columnName + orderByDirection);
-    orderColumns.add(columnName);
-    return this;
   }
 
   public String[] getIdIn() {
@@ -711,5 +698,26 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   public String[] getCustom8Like() {
     return custom8Like;
+  }
+
+  public ClassificationHistoryQueryColumnName getColumnName() {
+    return columnName;
+  }
+
+  public List<String> getOrderBy() {
+    return orderBy;
+  }
+
+  public List<String> getOrderColumns() {
+    return orderColumns;
+  }
+
+  private ClassificationHistoryQueryImpl addOrderCriteria(
+      String columnName, SortDirection sortDirection) {
+    String orderByDirection =
+        " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
+    orderBy.add(columnName + orderByDirection);
+    orderColumns.add(columnName);
+    return this;
   }
 }

@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate documentation for the history event controller. */
-public class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumentation {
+class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumentation {
 
 
   private final HashMap<String, String> taskHistoryEventFieldDescriptionsMap = new HashMap<>();
@@ -24,7 +24,7 @@ public class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumen
   private FieldDescriptor[] taskHistoryEventFieldDescriptors;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     taskHistoryEventFieldDescriptionsMap.put("taskHistoryId", "Unique ID");
     taskHistoryEventFieldDescriptionsMap.put("businessProcessId", "The id of the business process");
     taskHistoryEventFieldDescriptionsMap.put(
