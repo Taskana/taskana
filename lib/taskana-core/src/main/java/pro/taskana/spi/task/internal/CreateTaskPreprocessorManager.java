@@ -5,6 +5,7 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.task.api.models.Task;
 
@@ -13,7 +14,7 @@ public class CreateTaskPreprocessorManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(CreateTaskPreprocessorManager.class);
   private static CreateTaskPreprocessorManager singleton;
   private boolean enabled = false;
-  private ServiceLoader<CreateTaskPreprocessor> serviceLoader;
+  private final ServiceLoader<CreateTaskPreprocessor> serviceLoader;
 
   private CreateTaskPreprocessorManager() {
     serviceLoader = ServiceLoader.load(CreateTaskPreprocessor.class);
@@ -41,8 +42,18 @@ public class CreateTaskPreprocessorManager {
   public Task processTaskBeforeCreation(Task taskToProcess) {
     LOGGER.debug("Sending task to CreateTaskPreprocessor providers: {}", taskToProcess);
     serviceLoader.forEach(
-        createTaskPreprocessorProvider ->
-            createTaskPreprocessorProvider.processTaskBeforeCreation(taskToProcess));
+        createTaskPreprocessorProvider -> {
+          try {
+            createTaskPreprocessorProvider.processTaskBeforeCreation(taskToProcess);
+          } catch (Exception e) {
+            LOGGER.error(
+                String.format(
+                    "Caught exception while processing task before creation in class %s",
+                    createTaskPreprocessorProvider.getClass().getName()),
+                e);
+            throw new SystemException(e.getMessage(), e.getCause());
+          }
+        });
     return taskToProcess;
   }
 }

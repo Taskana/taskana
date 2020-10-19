@@ -1,4 +1,4 @@
-package pro.taskana.task.internal;
+package pro.taskana.spi.routing.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.models.Task;
@@ -23,8 +24,8 @@ public final class TaskRoutingManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingManager.class);
   private static TaskRoutingManager singleton;
   private boolean enabled = false;
-  private List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
-  private ServiceLoader<TaskRoutingProvider> serviceLoader;
+  private final List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
+  private final ServiceLoader<TaskRoutingProvider> serviceLoader;
 
   private TaskRoutingManager(TaskanaEngine taskanaEngine) {
     serviceLoader = ServiceLoader.load(TaskRoutingProvider.class);
@@ -72,7 +73,19 @@ public final class TaskRoutingManager {
       // collect in a set to see whether different workbasket ids are returned
       Set<String> workbasketIds =
           theTaskRoutingProviders.stream()
-              .map(rtr -> rtr.determineWorkbasketId(task))
+              .map(
+                  rtr -> {
+                    try {
+                      return rtr.determineWorkbasketId(task);
+                    } catch (Exception e) {
+                      LOGGER.error(
+                          String.format(
+                              "Caught Exception while trying to determine workbasket in class %s",
+                              rtr.getClass().getName()),
+                          e);
+                      throw new SystemException(e.getMessage(), e.getCause());
+                    }
+                  })
               .filter(Objects::nonNull)
               .collect(Collectors.toSet());
       if (workbasketIds.isEmpty()) {

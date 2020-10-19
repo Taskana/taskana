@@ -122,7 +122,6 @@ public interface TaskanaEngine {
    */
   CurrentUserContext getCurrentUserContext();
 
-
   /**
    * Connection management mode. Controls the connection handling of taskana
    *

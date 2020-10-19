@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
@@ -18,10 +17,9 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 public final class HistoryEventManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventManager.class);
-  private static final String SENDING_EVENT = "Sending event to history service providers: {}";
   private static HistoryEventManager singleton;
+  private final ServiceLoader<TaskanaHistory> serviceLoader;
   private boolean enabled = false;
-  private ServiceLoader<TaskanaHistory> serviceLoader;
 
   private HistoryEventManager(TaskanaEngine taskanaEngine) {
     serviceLoader = ServiceLoader.load(TaskanaHistory.class);
@@ -47,18 +45,55 @@ public final class HistoryEventManager {
   }
 
   public void createEvent(TaskHistoryEvent event) {
-    LOGGER.debug(SENDING_EVENT, event);
-    serviceLoader.forEach(historyProvider -> historyProvider.create(event));
+    LOGGER.debug("Sending event to history service providers: {}", event);
+    serviceLoader.forEach(
+        historyProvider -> {
+          try {
+            historyProvider.create(event);
+          } catch (Exception e) {
+            LOGGER.error(
+                String.format(
+                    "Caught an exception while trying to create TaskHistoryEvent in class %s",
+                    historyProvider.getClass().getName()),
+                e);
+            throw new SystemException(e.getMessage(), e.getCause());
+          }
+        });
   }
 
   public void createEvent(WorkbasketHistoryEvent event) {
-    LOGGER.debug(SENDING_EVENT, event);
-    serviceLoader.forEach(historyProvider -> historyProvider.create(event));
+    LOGGER.debug("Sending event to history service providers: {}", event);
+    serviceLoader.forEach(
+        historyProvider -> {
+          try {
+            historyProvider.create(event);
+          } catch (Exception e) {
+            LOGGER.error(
+                String.format(
+                    "Caught an exception while trying to create WorkbasketHistoryEvent in class %s",
+                    historyProvider.getClass().getName()),
+                e);
+            throw new SystemException(e.getMessage(), e.getCause());
+          }
+        });
   }
 
   public void createEvent(ClassificationHistoryEvent event) {
-    LOGGER.debug(SENDING_EVENT, event);
-    serviceLoader.forEach(historyProvider -> historyProvider.create(event));
+    LOGGER.debug("Sending event to history service providers: {}", event);
+    serviceLoader.forEach(
+        historyProvider -> {
+          try {
+            historyProvider.create(event);
+          } catch (Exception e) {
+            LOGGER.error(
+                String.format(
+                    "Caught an exception while trying to create "
+                        + "ClassificationHistoryEvent in class %s",
+                    historyProvider.getClass().getName()),
+                e);
+            throw new SystemException(e.getMessage(), e.getCause());
+          }
+        });
   }
 
   public void deleteEvents(List<String> taskIds) {
@@ -67,8 +102,13 @@ public final class HistoryEventManager {
         historyProvider -> {
           try {
             historyProvider.deleteHistoryEventsByTaskIds(taskIds);
-          } catch (InvalidArgumentException | NotAuthorizedException e) {
-            LOGGER.warn("Caught an exception while trying to delete HistoryEvents", e);
+          } catch (Exception e) {
+            LOGGER.error(
+                String.format(
+                    "Caught an exception while trying to delete HistoryEvents in class %s",
+                    historyProvider.getClass().getName()),
+                e);
+            throw new SystemException(e.getMessage(), e.getCause());
           }
         });
   }

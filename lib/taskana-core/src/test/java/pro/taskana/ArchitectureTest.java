@@ -47,6 +47,7 @@ class ArchitectureTest {
           "pro.taskana.workbasket.api",
           "pro.taskana.workbasket.internal",
           "pro.taskana.spi.routing.api",
+          "pro.taskana.spi.routing.internal",
           "pro.taskana.spi.task.api",
           "pro.taskana.spi.task.internal"
           );
