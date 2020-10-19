@@ -1,6 +1,7 @@
 package pro.taskana.workbasket.internal.models;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import pro.taskana.common.api.exceptions.SystemException;
@@ -50,20 +51,20 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
 
   @Override
   public Instant getCreated() {
-    return created;
+    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setCreated(Instant created) {
-    this.created = created;
+    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
   public Instant getModified() {
-    return modified;
+    return modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setModified(Instant modified) {
-    this.modified = modified;
+    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override

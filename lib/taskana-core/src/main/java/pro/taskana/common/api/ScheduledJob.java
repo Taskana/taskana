@@ -1,6 +1,7 @@
 package pro.taskana.common.api;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ public class ScheduledJob {
   private int retryCount;
 
   public ScheduledJob() {
-    created = Instant.now();
+    created = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     state = State.READY;
     retryCount = 0;
   }
@@ -50,19 +51,19 @@ public class ScheduledJob {
   }
 
   public Instant getCreated() {
-    return created;
+    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setCreated(Instant created) {
-    this.created = created;
+    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public Instant getDue() {
-    return due;
+    return due  != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setDue(Instant due) {
-    this.due = due;
+    this.due = due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public State getState() {
@@ -82,11 +83,11 @@ public class ScheduledJob {
   }
 
   public Instant getLockExpires() {
-    return lockExpires;
+    return lockExpires != null ? lockExpires.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setLockExpires(Instant lockExpires) {
-    this.lockExpires = lockExpires;
+    this.lockExpires = lockExpires != null ? lockExpires.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public Map<String, String> getArguments() {

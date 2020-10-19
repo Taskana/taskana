@@ -1,6 +1,7 @@
 package pro.taskana.spi.history.api.events.classification;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import pro.taskana.classification.api.ClassificationCustomField;
@@ -134,11 +135,11 @@ public class ClassificationHistoryEvent {
   }
 
   public Instant getCreated() {
-    return created;
+    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setCreated(Instant created) {
-    this.created = created;
+    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public String getUserId() {
