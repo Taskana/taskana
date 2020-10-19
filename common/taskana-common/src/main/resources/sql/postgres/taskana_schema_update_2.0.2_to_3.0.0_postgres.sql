@@ -1,6 +1,6 @@
 -- this script updates the tables TASKANA_SCHEMA_VERSION and HISTORY_EVENTS.
 
-SET search_path %schemaName%;
+SET search_path = %schemaName%;
 
 INSERT INTO TASKANA_SCHEMA_VERSION (VERSION, CREATED) VALUES ('3.0.0', CURRENT_TIMESTAMP);
 
