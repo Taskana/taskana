@@ -1,6 +1,7 @@
 package pro.taskana.task.internal.models;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import pro.taskana.task.api.CallbackState;
@@ -23,27 +24,27 @@ public class MinimalTaskSummary {
   MinimalTaskSummary() {}
 
   public Instant getPlanned() {
-    return planned;
+    return planned != null ? planned.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setPlanned(Instant planned) {
-    this.planned = planned;
+    this.planned = planned != null ? planned.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public Instant getDue() {
-    return due;
+    return due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setDue(Instant due) {
-    this.due = due;
+    this.due = due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public Instant getModified() {
-    return modified;
+    return modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setModified(Instant modified) {
-    this.modified = modified;
+    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public String getTaskId() {
