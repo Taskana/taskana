@@ -20,7 +20,6 @@ td > input[type='checkbox'] {
 }
 
 .required-header {
-  text-align: left;
   width: 200px;
 }
 .required-header:after {
@@ -45,7 +44,7 @@ th {
 
 .workbasket-access-items__table td,
 .table th {
-  padding: 0.75rem;
+  padding: 0.5rem;
   vertical-align: middle;
   border-top: 1px solid #dee2e6;
 }
@@ -78,5 +77,5 @@ input[type='checkbox']:checked {
 }
 
 .workbasket-access-items__add-access {
-  margin: 16px 0 0 16px;
+  margin: 16px 0 16px 16px;
 }
