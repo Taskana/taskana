@@ -57,15 +57,21 @@ th {
 
 .workbasket-access-items__permission-checkbox {
   display: inline-block;
-  height: 16px;
+  height: 1rem;
   line-height: 0;
   margin: auto;
   order: 0;
   position: relative;
   white-space: nowrap;
-  width: 16px;
+  width: 1rem;
   flex-shrink: 0;
   cursor: pointer;
+
+  @supports (-moz-appearance: none) {
+    //bigger checkboxes for firefox because firefox renders differently
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 }
 input[type='checkbox']:checked {
   filter: hue-rotate(320deg) brightness(1);

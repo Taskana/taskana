@@ -60,52 +60,38 @@
 
 						<!-- SELECT ALL -->
 						<td>
-              <div class="checkbox-container" matRipple>
                 <input class="workbasket-access-items__permission-checkbox" type="checkbox"  id="checkbox-{{index}}-00" (change)="checkAll(index, $event)" aria-label="checkAll" aria-labelledby="checkAll">
-              </div>
             </td>
 
             <!-- READ -->
 						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permRead !== accessItem.value.permRead)}">
-              <div class="checkbox-container" matRipple>
                 <input class="workbasket-access-items__permission-checkbox" type="checkbox" id="checkbox-{{index}}-0" formControlName="permRead" aria-label="permRead" aria-labelledby="permRead">
-              </div>
 						</td>
 
 						<!-- OPEN -->
 						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permOpen !== accessItem.value.permOpen)}">
-              <div class="checkbox-container" matRipple>
                 <input class="workbasket-access-items__permission-checkbox" type="checkbox" id="checkbox-{{index}}-1" formControlName="permOpen" aria-label="permOpen" aria-labelledby="permOpen">
-              </div>
 						</td>
 
 						<!-- APPEND -->
 						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permAppend !== accessItem.value.permAppend)}">
-              <div class="checkbox-container" matRipple>
                 <input class="workbasket-access-items__permission-checkbox" type="checkbox" id="checkbox-{{index}}-2" formControlName="permAppend" aria-label="permAppend" aria-labelledby="permAppend">
-              </div>
 						</td>
 
 						<!-- TRANSFER -->
 						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permTransfer !== accessItem.value.permTransfer)}">
-              <div class="checkbox-container" matRipple>
                 <input class="workbasket-access-items__permission-checkbox" type="checkbox" id="checkbox-{{index}}-3" formControlName="permTransfer" aria-label="permTransfer" aria-labelledby="permTransfer">
-              </div>
 						</td>
 
 						<!-- DISTRIBUTE -->
 						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permDistribute !== accessItem.value.permDistribute)}">
-              <div class="checkbox-container" matRipple>
                 <input class="workbasket-access-items__permission-checkbox" type="checkbox" id="checkbox-{{index}}-4" formControlName="permDistribute" aria-label="permDistribute" aria-labelledby="permDistribute">
-              </div>
 						</td>
 
 						<!-- CUSTOM FIELDS -->
 						<ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
 							<td *ngIf="customField.visible" [ngClass]="{ 'has-changes': accessItemsClone[index][getAccessItemCustomProperty(customIndex + 1)] !== accessItem.value[getAccessItemCustomProperty(customIndex+1)] }">
-                <div class="checkbox-container" matRipple>
                   <input class="workbasket-access-items__permission-checkbox" type="checkbox" id="checkbox-{{index}}-{{customIndex + 5}}" formControlName="permCustom{{customIndex+1}}" aria-label="customField" aria-labelledby="customField">
-                </div>
 							</td>
 						</ng-container>
 					</tr>
