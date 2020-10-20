@@ -275,7 +275,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   onSave() {
-    console.log(this.accessItemsRepresentation);
     this.requestInProgressService.setRequestInProgress(true);
     this.store
       .dispatch(

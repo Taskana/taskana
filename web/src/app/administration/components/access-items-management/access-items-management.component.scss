@@ -14,11 +14,10 @@
   color: $invalid;
 }
 
-td {
-  &.has-changes {
+.has-changes {
     border-bottom: 1px solid $brown;
   }
-}
+
 .table > thead > tr > th {
   max-width: 150px;
   border-bottom: none;

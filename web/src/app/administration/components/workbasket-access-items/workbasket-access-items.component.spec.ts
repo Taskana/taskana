@@ -33,6 +33,7 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ACTION } from '../../../shared/models/action';
 import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -88,7 +89,8 @@ describe('WorkbasketAccessItemsComponent', () => {
         NgxsModule.forRoot([WorkbasketState, EngineConfigurationState]),
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([]),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatProgressBarModule
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
@@ -120,7 +122,6 @@ describe('WorkbasketAccessItemsComponent', () => {
         workbasketAccessItems: workbasketAccessItemsMock
       }
     });
-    fixture.detectChanges();
   }));
 
   afterEach(async(() => {
@@ -149,7 +150,8 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should add accessItems when add access item button is clicked', () => {
-    const addAccessItemButton = debugElement.nativeElement.querySelector('button.add-access-item');
+    fixture.detectChanges();
+    const addAccessItemButton = debugElement.nativeElement.querySelector('button.workbasket-access-items__add-access');
     const clearSpy = jest.spyOn(component, 'addAccessItem');
     expect(addAccessItemButton.title).toMatch('Add new access');
 
@@ -158,12 +160,14 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should undo changes when undo button is clicked', () => {
+    fixture.detectChanges();
     const clearSpy = jest.spyOn(component, 'clear');
     component.clear();
     expect(clearSpy).toHaveBeenCalled();
   });
 
   it('should check all permissions when check all box is checked', () => {
+    fixture.detectChanges();
     const checkAllSpy = jest.spyOn(component, 'checkAll');
     const checkAllButton = debugElement.nativeElement.querySelector('#checkbox-0-00');
     expect(checkAllButton).toBeTruthy();
