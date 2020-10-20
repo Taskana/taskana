@@ -84,6 +84,10 @@ public class ClassificationDefinitionController {
                 Collectors.collectingAndThen(
                     Collectors.toList(), classificationRepresentationModelAssembler::toPageModel));
 
+    pageModel
+        .getContent()
+        .forEach(ClassificationRepresentationModel::removeLinks);
+
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
         ResponseEntity.ok(pageModel);
     if (LOGGER.isDebugEnabled()) {

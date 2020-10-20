@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -89,6 +90,23 @@ class ClassificationDefinitionControllerIntTest {
             "CLI:200000000000000000000000000000000018",
             "CLI:200000000000000000000000000000000003",
             "CLI:200000000000000000000000000000000004");
+  }
+
+  @Test
+  @Order(2) // since the import tests adds Classifications this has to be tested first.
+  void should_ContainNoLinks_When_ExportingClassifications() {
+    ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
+        TEMPLATE.exchange(
+            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=DOMAIN_B",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            CLASSIFICATION_PAGE_MODEL_TYPE);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getContent())
+        .extracting(ClassificationRepresentationModel::getLinks)
+        .flatExtracting(Links::toList)
+        .hasSize(0);
   }
 
   @Test
