@@ -3,17 +3,22 @@
 .workbasket-access-items {
   max-width: calc(100vw - 500px);
 }
+
+.workbasket-access-items__typeahead {
+  text-align: left;
+  min-width: 180px;
+  width: calc(100% + 20px);
+}
 td > input[type='checkbox'] {
   margin-top: 0;
+  display: block;
 }
+
 .panel-body {
   overflow-x: auto;
   padding-top: 0;
 }
-.text-width {
-  width: 100%;
-  min-width: 180px;
-}
+
 .required-header {
   width: 200px;
 }
@@ -23,22 +28,54 @@ td > input[type='checkbox'] {
 }
 
 th {
+  padding: 0.25rem;
   position: sticky;
   top: 0;
   z-index: 3;
   background: white;
 }
-
-td {
-  vertical-align: bottom !important;
-  &.has-changes {
-    border-bottom: 1px solid #f0ad4e;
-  }
+.workbasket-access-items__table {
+  margin-top: 20px;
 }
-.table > thead > tr > th {
+.workbasket-access-items__table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.workbasket-access-items__table td,
+.table th {
+  padding: 0.5rem;
+  vertical-align: middle;
+  border-top: 1px solid #dee2e6;
+}
+
+.workbasket-access-items__table > thead > tr > th {
   max-width: 150px;
   border-bottom: none;
 }
-taskana-shared-type-ahead {
-  top: 0;
+
+.workbasket-access-items__permission-checkbox {
+  display: inline-block;
+  height: 1rem;
+  line-height: 0;
+  margin: auto;
+  order: 0;
+  position: relative;
+  white-space: nowrap;
+  width: 1rem;
+  flex-shrink: 0;
+  cursor: pointer;
+
+  @supports (-moz-appearance: none) {
+    //bigger checkboxes for firefox because firefox renders differently
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+input[type='checkbox']:checked {
+  filter: hue-rotate(320deg) brightness(1);
+}
+
+.workbasket-access-items__add-access {
+  margin: 16px 0 16px 16px;
 }

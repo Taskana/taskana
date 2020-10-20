@@ -25,15 +25,18 @@ import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import {
   GetWorkbasketAccessItems,
+  OnButtonPressed,
   UpdateWorkbasketAccessItems
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { WorkbasketComponent } from '../../models/workbasket-component';
+import { ButtonAction } from '../../models/button-action';
 
 @Component({
   selector: 'taskana-administration-workbasket-access-items',
@@ -77,11 +80,17 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   @Select(WorkbasketSelectors.workbasketAccessItems)
   accessItemsRepresentation$: Observable<WorkbasketAccessItemsRepresentation>;
 
+  @Select(WorkbasketSelectors.buttonAction)
+  buttonAction$: Observable<ButtonAction>;
+
+  @Select(WorkbasketSelectors.selectedComponent)
+  selectedComponent$: Observable<WorkbasketComponent>;
+
   constructor(
     private savingWorkbaskets: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formBuilder: FormBuilder,
-    private formsValidatorService: FormsValidatorService,
+    public formsValidatorService: FormsValidatorService,
     private notificationsService: NotificationService,
     private store: Store
   ) {}
@@ -91,6 +100,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnInit() {
+    this.init();
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
     this.accessItemsRepresentation$.subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
@@ -100,6 +110,27 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
         this.accessItemsResetClone = this.cloneAccessItems(accessItemsRepresentation.accessItems);
       }
     });
+
+    this.buttonAction$
+      .pipe(takeUntil(this.destroy$))
+      .pipe(filter((buttonAction) => typeof buttonAction !== 'undefined'))
+      .subscribe((button) => {
+        this.selectedComponent$
+          .pipe(take(1))
+          .pipe(filter((component) => component === WorkbasketComponent.ACCESS_ITEMS))
+          .subscribe((component) => {
+            switch (button) {
+              case ButtonAction.SAVE:
+                this.onSubmit();
+                break;
+              case ButtonAction.UNDO:
+                this.clear();
+                break;
+              default:
+                break;
+            }
+          });
+      });
   }
 
   ngAfterViewInit() {
@@ -195,6 +226,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   clear() {
+    this.store.dispatch(new OnButtonPressed(undefined));
     this.formsValidatorService.formSubmitAttempt = false;
     this.AccessItemsForm.reset();
     this.setAccessItemsGroups(this.accessItemsResetClone);
