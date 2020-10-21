@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
 
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
@@ -59,6 +60,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
 
 const MODULES = [
   CommonModule,
@@ -73,7 +76,8 @@ const MODULES = [
   MatDialogModule,
   MatButtonModule,
   RouterModule,
-  TreeModule.forRoot()
+  TreeModule.forRoot(),
+  MatAutocompleteModule,
 ];
 
 const DECLARATIONS = [
@@ -113,7 +117,10 @@ const DECLARATIONS = [
     MatMenuModule,
     MatTooltipModule,
     MatPaginatorModule,
-    MatSelectModule
+    MatSelectModule,
+    ReactiveFormsModule
+
+  
   ],
   exports: DECLARATIONS,
   providers: [

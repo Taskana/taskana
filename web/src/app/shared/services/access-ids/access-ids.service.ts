@@ -19,6 +19,10 @@ export class AccessIdsService {
     return this.startupService.getTaskanaRestUrl() + '/v1/access-ids';
   }
 
+  /*getAllIds(): Observable<AccessIdDefinition[]> {
+    return this.httpClient.get<AccessIdDefinition[]>(`${this.url}`);
+  }*/
+
   searchForAccessId(accessId: string): Observable<AccessIdDefinition[]> {
     if (!accessId || accessId.length < 3) {
       return of([]);

@@ -1,4 +1,25 @@
-<div *ngIf="dataSource" class="custom-form-control" [ngStyle]="{'width': width ? width : auto }">
+<div *ngIf="dataSource">
+  <label>
+    {{dataSource.selected?.name}}
+  </label>
+  <form>
+    <mat-form-field class="acessItems" appearance="outline">
+      <mat-label>{{placeHolderMessage}}</mat-label>
+      <input #inputTypeAhead [required]="isRequired" class="accessItems__input align" id="owner" matInput type="text"
+        [matAutocomplete]="auto" placeholder="{{placeHolderMessage}}" [(ngModel)]="value" name="acess"
+        (ngModelChange)="changeValue()" [@validation]="validationValue" />
+      <mat-autocomplete autoActiveFirstOption (optionSelected)="typeaheadOnSelect($event)" #auto="matAutocomplete">
+        <mat-option class="accessItems__selection" *ngFor="let item of items" [value]="item.accessId">
+          <small>{{item.accessId}}</small><br>
+          <small>{{item.name}}</small>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+</div>
+
+
+<!--<div *ngIf="dataSource" class="custom-form-control" [ngStyle]="{'width': width ? width : auto }">
   <ng-template class="wrapper-text" #customItemTemplate let-model="item" let-index="indexTemplate" let-query="query">
     <div (mousedown)="typeaheadOnSelect({'item':model})">
       <div>
@@ -12,8 +33,7 @@
     </div>
   </ng-template>
   <div [ngClass]="{'hidden': !dataSource.selected || typing,
-                   'disable': disable}" class="wrapper-text"
-    (click)="setTyping(true)">
+                   'disable': disable}" class="wrapper-text" (click)="setTyping(true)">
     <span>
       <label>
         {{dataSource.selected?.name}}
@@ -30,19 +50,22 @@
       </label>
     </span>
     <div class="input-group">
-      <input #inputTypeAhead class="form-control input-text" [ngClass]="{'invalid': !dataSource.length && isRequired}"  (blur)="typeaheadOnSelect({'item':dataSource.selected})"
-        name="accessItem-{{index}}" [required]="isRequired ? 'required' : null" #accessItemName="ngModel" [(ngModel)]="value"
+      <input #inputTypeAhead class="form-control input-text" [ngClass]="{'invalid': !dataSource.length && isRequired}"
+        (blur)="typeaheadOnSelect({'item':dataSource.selected})" name="accessItem-{{index}}"
+        [required]="isRequired ? 'required' : null" #accessItemName="ngModel" [(ngModel)]="value"
         [typeahead]="dataSource" typeaheadOptionField="name" [typeaheadItemTemplate]="customItemTemplate"
         (typeaheadOnSelect)="typeaheadOnSelect($event)" [typeaheadScrollable]="true"
         [typeaheadOptionsInScrollableView]="typeaheadOptionsInScrollableView" [typeaheadMinLength]="typeaheadMinLength"
-        [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)" placeholder="{{displayError? placeHolderMessage: ''}}"
-        [@validation]="validationValue" data-cy="typeahead_input">
-      <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue search-button" >
+        [typeaheadWaitMs]="typeaheadWaitMs" (typeaheadLoading)="changeTypeaheadLoading($event)"
+        placeholder="{{displayError? placeHolderMessage: ''}}" [@validation]="validationValue"
+        data-cy="typeahead_input">
+      <button *ngIf="!typeaheadLoading" type="button" title="search" class="btn rounded blue search-button">
         <span class="material-icons md-20 blue">search</span>
       </button>
       <div *ngIf="typeaheadLoading" class="loading">
-        <taskana-shared-spinner [isRunning]="typeaheadLoading" positionClass="type-ahead-spinner"></taskana-shared-spinner>
+        <taskana-shared-spinner [isRunning]="typeaheadLoading" positionClass="type-ahead-spinner">
+        </taskana-shared-spinner>
       </div>
     </div>
   </div>
-</div>
+</div>-->

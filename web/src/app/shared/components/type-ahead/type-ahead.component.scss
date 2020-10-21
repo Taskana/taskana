@@ -82,7 +82,7 @@
 
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: $invalid;
+  //color: $invalid;
   opacity: 1; /* Firefox */
 }
 :-ms-input-placeholder {
@@ -101,4 +101,18 @@
 
 .invalid {
   color: $invalid;
+}
+
+.acessItems {
+  
+  width: 100% !important;
+}
+
+.accessItems__selection {
+  min-height: 11vh !important;
+  white-space: pre;
+}
+
+.align {
+  left: 50%;
 }
