@@ -15,8 +15,6 @@ import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from 
 import { highlight } from 'app/shared/animations/validation.animation';
 import { mergeMap } from 'rxjs/operators';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
-import { FormBuilder } from '@angular/forms';
-
 
 @Component({
   selector: 'taskana-shared-type-ahead',
@@ -35,13 +33,8 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   dataSource: any;
   typing = false;
 
-  ids: AccessIdDefinition[];
-
-  accessId = new FormControl();
-
   _value = '';
   items = [];
-
 
   @Input()
   placeHolderMessage;
@@ -76,7 +69,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   typeaheadWaitMs = 500;
   typeaheadOptionsInScrollableView = 6;
 
-
   // The internal data model
   private innerValue: any;
 
@@ -94,7 +86,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   set value(v: any) {
     if (v !== this.innerValue) {
       this.innerValue = v;
-      this.onChangeCallback(v);
     }
   }
 
@@ -107,9 +98,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   }
 
   changeValue() {
-    console.log(this.value);
-    console.log(this.displayError);
-    console.log(this.validationValue);
     this.initializeDataSource();
   }
 
@@ -123,13 +111,10 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     this.onTouchedCallback = fn;
   }
 
-  constructor(private accessIdsService: AccessIdsService, private formBuilder: FormBuilder) {
-
-  }
+  constructor(private accessIdsService: AccessIdsService) {}
 
   ngAfterViewInit() {
     this.inputField.emit(this.inputTypeAhead);
-    console.log(this.isRequired);
   }
 
   initializeDataSource() {
@@ -147,16 +132,13 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
 
   typeaheadOnSelect(event): void {
     if (event) {
-        if (this.items.length > 0) {
-          this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
-          console.log("selected data:" ,this.dataSource.selected);
-          
-        }
+      if (this.items.length > 0) {
+        this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
+      }
       this.selectedItem.emit(this.dataSource.selected);
     }
     this.setTyping(false);
   }
-
 
   setTyping(value) {
     if (this.disable) {
@@ -169,12 +151,4 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     }
     this.typing = value;
   }
-
-  /*changeTypeaheadLoading(e: boolean): void {
-    this.typeaheadLoading = e;
-  }
-
-  join(text: string, str: string) {
-    return text.toLocaleLowerCase().split(str).join(`<strong>${str}</strong>`);
-  }*/
 }

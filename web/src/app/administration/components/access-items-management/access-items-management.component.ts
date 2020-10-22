@@ -27,7 +27,7 @@ import { AccessItemsManagementSelector } from '../../../shared/store/access-item
 export class AccessItemsManagementComponent implements OnInit {
   accessIdSelected: string;
   accessIdPrevious: string;
-  isRequired:boolean = false;
+  isRequired: boolean = false;
 
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();
@@ -63,10 +63,8 @@ export class AccessItemsManagementComponent implements OnInit {
   }
 
   onSelectAccessId(selected: AccessIdDefinition) {
-    console.log(selected);
     if (selected) {
       this.accessId = selected;
-      console.log("HIhihi ")
       if (this.accessIdPrevious !== selected.accessId) {
         this.accessIdPrevious = selected.accessId;
         this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
@@ -76,7 +74,6 @@ export class AccessItemsManagementComponent implements OnInit {
     } else {
       this.accessItemsForm = null;
     }
-    console.log("HI")
   }
 
   searchForAccessItemsWorkbaskets() {

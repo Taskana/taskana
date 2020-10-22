@@ -8,7 +8,6 @@ import { TreeModule } from 'angular-tree-component';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
-
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
@@ -62,7 +61,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
-
 const MODULES = [
   CommonModule,
   FormsModule,
@@ -77,7 +75,7 @@ const MODULES = [
   MatButtonModule,
   RouterModule,
   TreeModule.forRoot(),
-  MatAutocompleteModule,
+  MatAutocompleteModule
 ];
 
 const DECLARATIONS = [
@@ -119,8 +117,6 @@ const DECLARATIONS = [
     MatPaginatorModule,
     MatSelectModule,
     ReactiveFormsModule
-
-  
   ],
   exports: DECLARATIONS,
   providers: [

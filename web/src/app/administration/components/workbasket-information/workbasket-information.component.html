@@ -112,13 +112,10 @@
 
         <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" isRequired="true" maxlength="128"
           #owner="ngModel" name="workbasket.owner" [(ngModel)]="workbasket.owner" placeHolderMessage="Owner"
-          [validationValue]="this.toggleValidationMap.get('workbasket.owner')"
+          [validationValue]="this.toggleValidationMap.get('workbasket.owner') "
           [displayError]="!isFieldValid('workbasket.owner')" width="100%" (input)="validateInputOverflow(owner, 128)">
           <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
         </taskana-shared-type-ahead>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
-          [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
-        </taskana-shared-field-error-display>
 
         <ng-template #ownerInput>
           <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
