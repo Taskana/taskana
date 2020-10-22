@@ -6,7 +6,7 @@ import {
   Output,
   EventEmitter,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
 } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -111,7 +111,7 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     this.onTouchedCallback = fn;
   }
 
-  constructor(private accessIdsService: AccessIdsService) {}
+  constructor(private accessIdsService: AccessIdsService, private el: ElementRef) {}
 
   ngAfterViewInit() {
     this.inputField.emit(this.inputTypeAhead);
@@ -137,18 +137,8 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
       }
       this.selectedItem.emit(this.dataSource.selected);
     }
-    this.setTyping(false);
-  }
-
-  setTyping(value) {
-    if (this.disable) {
-      return;
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
-    if (value) {
-      setTimeout(() => {
-        this.inputTypeAhead.nativeElement.focus();
-      }, 1);
-    }
-    this.typing = value;
   }
 }
