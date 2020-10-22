@@ -33,14 +33,10 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ACTION } from '../../../shared/models/action';
 import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
-<<<<<<< HEAD
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-=======
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
->>>>>>> 6b24823d... TSK-1401: added test
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -97,14 +93,10 @@ describe('WorkbasketAccessItemsComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([]),
         BrowserAnimationsModule,
-<<<<<<< HEAD
-        MatProgressBarModule
-=======
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
         MatAutocompleteModule
->>>>>>> 6b24823d... TSK-1401: added test
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
