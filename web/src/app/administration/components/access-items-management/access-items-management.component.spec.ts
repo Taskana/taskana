@@ -27,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -75,7 +76,8 @@ describe('AccessItemsManagementComponent', () => {
         MatFormFieldModule,
         MatSelectModule,
         MatAutocompleteModule,
-        MatInputModule
+        MatInputModule,
+        MatProgressBarModule
       ],
       declarations: [
         AccessItemsManagementComponent,
