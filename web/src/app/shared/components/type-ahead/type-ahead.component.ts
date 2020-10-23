@@ -6,7 +6,7 @@ import {
   Output,
   EventEmitter,
   ElementRef,
-  AfterViewInit,
+  AfterViewInit
 } from '@angular/core';
 import { Observable } from 'rxjs';
 
