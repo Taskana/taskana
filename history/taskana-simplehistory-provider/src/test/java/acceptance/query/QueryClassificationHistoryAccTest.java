@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -135,7 +134,7 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
     assertThat(returnValues).hasSize(6);
 
     TimeInterval timeInterval =
-        new TimeInterval(Instant.now().minus(1000L, ChronoUnit.DAYS), Instant.now());
+        new TimeInterval(Instant.parse("2018-01-28T14:55:00Z"), Instant.now());
     returnValues =
         historyService.createClassificationHistoryQuery().createdWithin(timeInterval).list();
     assertThat(returnValues).hasSize(11);
