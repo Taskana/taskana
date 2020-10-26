@@ -1,7 +1,7 @@
 <div *ngIf="dataSource" class="typeahead">
   <form>
     <mat-form-field class="typeahead__form" appearance="outline">
-      <mat-label>{{dataSource.selected?.name ? dataSource.selected?.name : placeHolderMessage}}</mat-label>
+      <mat-label>{{dataSource.selected?.name ? 'Owner: ' + dataSource.selected?.name : placeHolderMessage}}</mat-label>
       <input #inputTypeAhead [required]="isRequired" class="typeahead__form-input align" matInput type="text"
         [matAutocomplete]="auto" placeholder="{{placeHolderMessage}}" [(ngModel)]="value" name="accessId"
         (ngModelChange)="initializeDataSource()" />

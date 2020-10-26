@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   uploadingFileSubscription: Subscription;
   error: ErrorModel;
   version: string;
+  toggle: boolean = false;
 
   constructor(
     private router: Router,
@@ -84,6 +85,11 @@ export class AppComponent implements OnInit, OnDestroy {
   logout() {
     this.taskanaEngineService.logout();
     this.window.nativeWindow.location.href = environment.taskanaLogoutUrl;
+  }
+
+  toggleSidenav() {
+    this.toggle = !this.toggle;
+    this.sidenavService.toggleSidenav();
   }
 
   ngAfterViewInit(): void {
