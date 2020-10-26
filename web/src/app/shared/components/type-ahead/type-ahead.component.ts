@@ -95,10 +95,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     }
   }
 
-  changeValue() {
-    this.initializeDataSource();
-  }
-
   // From ControlValueAccessor interface
   registerOnChange(fn: any) {
     this.onChangeCallback = fn;

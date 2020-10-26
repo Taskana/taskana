@@ -63,7 +63,7 @@ describe('TypeAheadComponent', () => {
     component.initializeDataSource();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-      let input = fixture.debugElement.query(By.css('.typeahead__form-input'));
+      let input = debugElement.query(By.css('.typeahead__form-input'));
       let el = input.nativeElement;
       expect(el.value).toBe('val_1');
       el.value = 'val_2';
