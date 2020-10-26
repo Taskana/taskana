@@ -33,7 +33,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   dataSource: any;
   typing = false;
 
-  _value = '';
   items = [];
 
   @Input()
@@ -62,7 +61,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
 
   @ViewChild('inputTypeAhead')
   private inputTypeAhead;
-  private input;
 
   typeaheadLoading = false;
   typeaheadMinLength = 3;
@@ -111,7 +109,7 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     this.onTouchedCallback = fn;
   }
 
-  constructor(private accessIdsService: AccessIdsService, private el: ElementRef) {}
+  constructor(private accessIdsService: AccessIdsService) {}
 
   ngAfterViewInit() {
     this.inputField.emit(this.inputTypeAhead);

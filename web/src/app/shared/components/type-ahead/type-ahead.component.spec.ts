@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { compileComponentFromMetadata, componentFactoryName } from '@angular/compiler';
+import { AccessIdDefinition } from 'app/shared/models/access-id';
 
 const AccessIdsServiceSpy = jest.fn().mockImplementation(
   (): Partial<AccessIdsService> => ({
@@ -53,13 +54,13 @@ describe('TypeAheadComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
   it('should change value via the input field', async(() => {
     component.value = 'val_1';
-    component.changeValue();
+    component.initializeDataSource();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       let input = fixture.debugElement.query(By.css('.typeahead__form-input'));
