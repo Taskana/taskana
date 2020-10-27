@@ -40,7 +40,6 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .ownerLike("%user%")
             .orderByOwner(desc)
             .listValues(TaskQueryColumnName.A_CLASSIFICATION_NAME, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(8);
   }
 
@@ -54,7 +53,6 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .ownerLike("%user%")
             .orderByClassificationName(asc)
             .listValues(TaskQueryColumnName.CLASSIFICATION_NAME, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(5);
   }
 
@@ -67,7 +65,6 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(1);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-    assertThat(attachmentSummaries).isNotNull();
     assertThat(attachmentSummaries).hasSize(2);
 
     tasks =

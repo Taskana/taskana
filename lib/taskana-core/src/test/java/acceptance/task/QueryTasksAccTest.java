@@ -94,11 +94,9 @@ class QueryTasksAccTest extends AbstractAccTest {
             .ownerLike("%user%")
             .orderByOwner(DESCENDING)
             .listValues(OWNER, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(3);
 
     columnValueList = taskService.createTaskQuery().listValues(STATE, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(5);
   }
 
@@ -110,7 +108,6 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .attachmentReferenceValueIn("val4")
             .listValues(A_CHANNEL, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(2);
 
     columnValueList =
@@ -118,7 +115,6 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .attachmentReferenceValueLike("%")
             .listValues(A_REF_VALUE, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(6);
 
     columnValueList =
@@ -126,7 +122,6 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .orderByAttachmentClassificationId(DESCENDING)
             .listValues(A_CLASSIFICATION_ID, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(12);
 
     columnValueList =
@@ -134,7 +129,6 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .orderByClassificationKey(DESCENDING)
             .listValues(CLASSIFICATION_KEY, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(7);
   }
 

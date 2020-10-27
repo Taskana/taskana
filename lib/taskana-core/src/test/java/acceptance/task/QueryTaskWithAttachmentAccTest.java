@@ -27,10 +27,6 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
   private static final Comparator<Object> REFERENCE_COMPARATOR = (o1, o2) -> o1 == o2 ? 0 : -1;
 
-  QueryTaskWithAttachmentAccTest() {
-    super();
-  }
-
   @WithAccessId(user = "user-1-1")
   @Test
   void testGetAttachmentSummariesFromTask() {
@@ -39,7 +35,6 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(1);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-    assertThat(attachmentSummaries).isNotNull();
     assertThat(attachmentSummaries).hasSize(2);
   }
 
@@ -51,7 +46,6 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
     assertThat(tasks).hasSize(30);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
-    assertThat(attachmentSummaries).isNotNull();
     assertThat(attachmentSummaries).isEmpty();
   }
 

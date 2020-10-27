@@ -43,10 +43,10 @@ class GetClassificationAccTest extends AbstractAccTest {
     Classification classification = classificationService.getClassification("T6310", "DOMAIN_A");
     assertThat(classification).isNotNull();
     assertThat(classification.getId()).isEqualTo("CLI:100000000000000000000000000000000011");
-    assertThat(classification.getParentId()).isEqualTo("");
+    assertThat(classification.getParentId()).isEmpty();
     assertThat(classification.getCategory()).isEqualTo("AUTOMATIC");
     assertThat(classification.getType()).isEqualTo("TASK");
-    assertThat(classification.getIsValidInDomain()).isEqualTo(true);
+    assertThat(classification.getIsValidInDomain()).isTrue();
     assertThat(classification.getName()).isEqualTo("T-GUK Honorarrechnung erstellen");
     assertThat(classification.getPriority()).isEqualTo(2);
     assertThat(classification.getServiceLevel()).isEqualTo("P2D");
@@ -67,11 +67,11 @@ class GetClassificationAccTest extends AbstractAccTest {
         classificationService.getClassification("CLI:100000000000000000000000000000000011");
     assertThat(classification).isNotNull();
     assertThat(classification.getKey()).isEqualTo("T6310");
-    assertThat(classification.getParentId()).isEqualTo("");
+    assertThat(classification.getParentId()).isEmpty();
     assertThat(classification.getCategory()).isEqualTo("AUTOMATIC");
     assertThat(classification.getType()).isEqualTo("TASK");
     assertThat(classification.getDomain()).isEqualTo("DOMAIN_A");
-    assertThat(classification.getIsValidInDomain()).isEqualTo(true);
+    assertThat(classification.getIsValidInDomain()).isTrue();
     assertThat(classification.getName()).isEqualTo("T-GUK Honorarrechnung erstellen");
     assertThat(classification.getPriority()).isEqualTo(2);
     assertThat(classification.getServiceLevel()).isEqualTo("P2D");
@@ -101,7 +101,7 @@ class GetClassificationAccTest extends AbstractAccTest {
             .asSummary();
     assertThat(classification).isNotNull();
     assertThat(classification.getKey()).isEqualTo("T6310");
-    assertThat(classification.getParentId()).isEqualTo("");
+    assertThat(classification.getParentId()).isEmpty();
     assertThat(classification.getCategory()).isEqualTo("AUTOMATIC");
     assertThat(classification.getType()).isEqualTo("TASK");
     assertThat(classification.getDomain()).isEqualTo("DOMAIN_A");
@@ -136,7 +136,7 @@ class GetClassificationAccTest extends AbstractAccTest {
   void testGetOneClassificationForDomainAndGetClassificationFromMasterDomain() throws Exception {
     Classification classification = classificationService.getClassification("L10000", "DOMAIN_B");
     assertThat(classification).isNotNull();
-    assertThat(classification.getDomain()).isEqualTo("");
+    assertThat(classification.getDomain()).isEmpty();
     assertThat(classification.getPriority()).isEqualTo(999L);
   }
 
@@ -144,7 +144,7 @@ class GetClassificationAccTest extends AbstractAccTest {
   void testGetOneClassificationForMasterDomain() throws Exception {
     Classification classification = classificationService.getClassification("L10000", "");
     assertThat(classification).isNotNull();
-    assertThat(classification.getDomain()).isEqualTo("");
+    assertThat(classification.getDomain()).isEmpty();
     assertThat(classification.getPriority()).isEqualTo(999L);
   }
 }

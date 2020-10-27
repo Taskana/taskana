@@ -137,6 +137,7 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     return summary;
   }
 
+  @Override
   protected boolean canEqual(Object other) {
     return (other instanceof ClassificationImpl);
   }

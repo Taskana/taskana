@@ -121,7 +121,6 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
                 Collections.singletonList("CLI:000000000000000000000000000000000001"))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).hasSize(4);
     assertThat(ids)
         .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
@@ -157,10 +156,10 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
     assertThat(ids)
         .containsExactlyInAnyOrder(
-            "TKI:000000000000000000000000000000000001",  // from second filter
-            "TKI:000000000000000000000000000000000013",  // from second filter
-            "TKI:000000000000000000000000000000000025",  // from first filter
-            "TKI:000000000000000000000000000000000036",  // from first filter
+            "TKI:000000000000000000000000000000000001", // from second filter
+            "TKI:000000000000000000000000000000000013", // from second filter
+            "TKI:000000000000000000000000000000000025", // from first filter
+            "TKI:000000000000000000000000000000000036", // from first filter
             "TKI:000000000000000000000000000000000044"); // from first filter
   }
 

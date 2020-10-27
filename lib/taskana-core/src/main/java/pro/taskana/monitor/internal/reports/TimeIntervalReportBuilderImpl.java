@@ -197,8 +197,8 @@ abstract class TimeIntervalReportBuilderImpl<
 
   protected List<CombinedClassificationFilter> getCombinedClassificationFilter() {
     // we are currently aware that this is a code smell. Unfortunately the resolution of this would
-    // cause havoc in our queries, since we do not have a concept for a user validation yet. As soon
-    // as that is done we can resolve this code smell.
+    // cause havoc in our queries, since we do not have a concept for a user input validation yet.
+    // As soon as that is done we can resolve this code smell.
     return null;
   }
 

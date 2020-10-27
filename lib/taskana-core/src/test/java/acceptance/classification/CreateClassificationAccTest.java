@@ -108,7 +108,6 @@ class CreateClassificationAccTest extends AbstractAccTest {
     long amountOfClassificationsAfter = CLASSIFICATION_SERVICE.createClassificationQuery().count();
 
     assertThat(amountOfClassificationsAfter).isEqualTo(amountOfClassificationsBefore + 1);
-    assertThat(actual).isNotNull();
     assertThat(actual).isSameAs(expected);
     assertThat(actual.getIsValidInDomain()).isTrue();
   }

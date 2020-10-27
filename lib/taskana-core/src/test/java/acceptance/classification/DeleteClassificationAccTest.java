@@ -35,7 +35,7 @@ class DeleteClassificationAccTest extends AbstractAccTest {
 
     Classification classification = classificationService.getClassification("L140101", "DOMAIN_A");
     assertThat(classification).isNotNull();
-    assertThat(classification.getDomain()).isEqualTo("");
+    assertThat(classification.getDomain()).isEmpty();
   }
 
   @WithAccessId(user = "taskadmin")

@@ -58,7 +58,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     try {
       List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
       int totalNumberOfTasksCompleted = 0;
-      while (tasksCompletedBefore.size() > 0) {
+      while (!tasksCompletedBefore.isEmpty()) {
         int upperLimit = batchSize;
         if (upperLimit > tasksCompletedBefore.size()) {
           upperLimit = tasksCompletedBefore.size();

@@ -4,7 +4,7 @@ package pro.taskana.common.api.exceptions;
 public class NotFoundException extends TaskanaException {
 
   private static final long serialVersionUID = 1L;
-  String id;
+  private final String id;
 
   public NotFoundException(String id, String message) {
     super(message);
