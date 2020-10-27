@@ -18,7 +18,7 @@ export class AdministrationOverviewComponent implements OnInit {
   url$: Observable<any>;
 
   constructor(private router: Router, private domainService: DomainService) {
-    router.events.subscribe((e) => {
+    router.events.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       const urlPaths = this.router.url.split('/');
       if (this.router.url.includes('detail')) {
         this.selectedTab = urlPaths[urlPaths.length - 2];
