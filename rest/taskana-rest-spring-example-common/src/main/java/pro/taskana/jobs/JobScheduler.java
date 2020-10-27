@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.jobs.JobRunner;
-import pro.taskana.common.internal.security.UserPrincipal;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
@@ -28,8 +28,15 @@ import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 public class JobScheduler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
-  @Autowired TaskanaTransactionProvider<Object> springTransactionProvider;
-  @Autowired private TaskanaEngine taskanaEngine;
+  private final TaskanaTransactionProvider<Object> springTransactionProvider;
+  private final TaskanaEngine taskanaEngine;
+
+  @Autowired
+  public JobScheduler(
+      TaskanaTransactionProvider<Object> springTransactionProvider, TaskanaEngine taskanaEngine) {
+    this.springTransactionProvider = springTransactionProvider;
+    this.taskanaEngine = taskanaEngine;
+  }
 
   @PostConstruct
   public void scheduleCleanupJob()
@@ -64,24 +71,19 @@ public class JobScheduler {
    * Creates an admin subject and runs the job using the subject.
    */
   private void runAsyncJobsAsAdmin() throws PrivilegedActionException {
-    Subject.doAs(
-        getAdminSubject(),
-        new PrivilegedExceptionAction<Object>() {
-
-          @Override
-          public Object run() throws Exception {
-
-            try {
-              JobRunner runner = new JobRunner(taskanaEngine);
-              runner.registerTransactionProvider(springTransactionProvider);
-              LOGGER.info("Running Jobs");
-              runner.runJobs();
-              return "Successful";
-            } catch (Throwable e) {
-              throw new Exception(e);
-            }
+    PrivilegedExceptionAction<Object> jobs =
+        () -> {
+          try {
+            JobRunner runner = new JobRunner(taskanaEngine);
+            runner.registerTransactionProvider(springTransactionProvider);
+            LOGGER.info("Running Jobs");
+            runner.runJobs();
+            return "Successful";
+          } catch (Throwable e) {
+            throw new Exception(e);
           }
-        });
+        };
+    Subject.doAs(getAdminSubject(), jobs);
   }
 
   private Subject getAdminSubject() {

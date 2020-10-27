@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
@@ -13,6 +14,7 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Transforms any {@link TaskHistoryEvent} into its {@link TaskHistoryEventRepresentationModel}. */
+@Component
 public class TaskHistoryEventRepresentationModelAssembler
     implements RepresentationModelAssembler<TaskHistoryEvent, TaskHistoryEventRepresentationModel> {
 

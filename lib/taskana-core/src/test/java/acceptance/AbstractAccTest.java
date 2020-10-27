@@ -1,5 +1,6 @@
 package acceptance;
 
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.sql.DataSource;
+import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.TaskanaEngineConfiguration;
@@ -19,6 +21,8 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.internal.JobMapper;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
@@ -57,6 +61,16 @@ public abstract class AbstractAccTest {
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
+  }
+
+  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaEngine);
+
+    return sqlSessionManager.getMapper(JobMapper.class);
   }
 
   protected ObjectReference createObjectReference(

@@ -1,6 +1,8 @@
 package pro.taskana.rest;
 
+import java.sql.SQLException;
 import javax.sql.DataSource;
+import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,4 +33,12 @@ public class ExampleRestConfiguration {
   public SampleDataGenerator generateSampleData(DataSource dataSource) {
     return new SampleDataGenerator(dataSource, schemaName);
   }
+
+  // only required to let the adapter example connect to the same database
+  @Bean(initMethod = "start", destroyMethod = "stop")
+  public Server inMemoryH2DatabaseaServer() throws SQLException {
+    return Server.createTcpServer(
+        "-tcp", "-tcpAllowOthers", "-tcpPort", "9095");
+  }
+
 }

@@ -28,6 +28,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
@@ -55,7 +56,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   private final boolean allCompletedSameParentBusiness;
 
   TaskanaHistoryEngineImpl taskanaHistoryEngine =
-      TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl.getConfiguration());
+      TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl);
 
   private Instant firstRun = Instant.parse("2018-01-01T00:00:00Z");
   private Duration runEvery = Duration.parse("P1D");
@@ -148,6 +149,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
    * @param taskanaEngine the TASKANA engine.
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
+    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
+    jobService.deleteJobs(Type.HISTORYCLEANUPJOB);
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.scheduleNextCleanupJob();
   }

@@ -10,12 +10,11 @@
 	<parent>
 		<groupId>pro.taskana</groupId>
 		<artifactId>taskana-parent</artifactId>
-		<version>4.1.1-SNAPSHOT</version>
+		<version>4.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modules>
-		<module>taskana-data</module>
 		<module>taskana-core</module>
 		<module>taskana-cdi</module>
 		<module>taskana-spring</module>

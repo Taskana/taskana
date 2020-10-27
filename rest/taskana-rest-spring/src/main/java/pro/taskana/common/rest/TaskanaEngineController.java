@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
 import pro.taskana.common.rest.models.VersionRepresentationModel;
 
@@ -90,8 +89,8 @@ public class TaskanaEngineController {
   public ResponseEntity<TaskanaUserInfoRepresentationModel> getCurrentUserInfo() {
     LOGGER.debug("Entry to getCurrentUserInfo()");
     TaskanaUserInfoRepresentationModel resource = new TaskanaUserInfoRepresentationModel();
-    resource.setUserId(CurrentUserContext.getUserid());
-    resource.setGroupIds(CurrentUserContext.getGroupIds());
+    resource.setUserId(taskanaEngine.getCurrentUserContext().getUserid());
+    resource.setGroupIds(taskanaEngine.getCurrentUserContext().getGroupIds());
     for (TaskanaRole role : taskanaEngineConfiguration.getRoleMap().keySet()) {
       if (taskanaEngine.isUserInRole(role)) {
         resource.getRoles().add(role);

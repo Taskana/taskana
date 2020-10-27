@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -34,7 +33,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   public void initialize(TaskanaEngine taskanaEngine) {
 
-    this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngine.getConfiguration());
+    this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngine);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -169,7 +168,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   /*
    * ATTENTION: This method exists for testing purposes.
    */
-  TaskanaHistoryEngineImpl getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-    return TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
+  TaskanaHistoryEngineImpl getTaskanaEngine(TaskanaEngine taskanaEngine) {
+    return TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
   }
 }

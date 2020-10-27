@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>pro.taskana</groupId>
 		<artifactId>taskana-lib-parent</artifactId>
-		<version>4.1.1-SNAPSHOT</version>
+		<version>4.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -35,12 +35,7 @@
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

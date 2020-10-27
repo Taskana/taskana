@@ -17,9 +17,8 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.security.JaasExtension;
-import pro.taskana.common.internal.security.WithAccessId;
+import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
@@ -160,7 +159,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Task claimedTask = TASK_SERVICE.claim(createdTask.getId());
 
     assertThat(claimedTask.getOwner()).isNotNull();
-    assertThat(CurrentUserContext.getUserid()).isEqualTo(claimedTask.getOwner());
+    assertThat(taskanaEngine.getCurrentUserContext().getUserid()).isEqualTo(claimedTask.getOwner());
     assertThat(claimedTask.getClaimed()).isNotNull();
     assertThat(before).isBeforeOrEqualTo(claimedTask.getClaimed());
     assertThat(claimedTask.getCreated()).isBeforeOrEqualTo(claimedTask.getClaimed());
@@ -184,7 +183,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
     Instant beforeForceClaim = Instant.now();
     Task taskAfterClaim = TASK_SERVICE.forceClaim(createdTask.getId());
 
-    assertThat(taskAfterClaim.getOwner()).isEqualTo(CurrentUserContext.getUserid());
+    assertThat(taskAfterClaim.getOwner())
+        .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(beforeForceClaim)
         .isBeforeOrEqualTo(taskAfterClaim.getModified())
         .isBeforeOrEqualTo(taskAfterClaim.getClaimed());

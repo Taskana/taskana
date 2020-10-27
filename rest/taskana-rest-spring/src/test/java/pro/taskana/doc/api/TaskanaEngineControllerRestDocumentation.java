@@ -11,6 +11,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate REST Docu for the TaskanaEngineController. */
 class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {

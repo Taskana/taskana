@@ -9,10 +9,12 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
@@ -71,6 +73,8 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
    * @param taskanaEngine the taskana engine
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
+    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
+    jobService.deleteJobs(Type.WORKBASKETCLEANUPJOB);
     WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null, null);
     job.scheduleNextCleanupJob();
   }

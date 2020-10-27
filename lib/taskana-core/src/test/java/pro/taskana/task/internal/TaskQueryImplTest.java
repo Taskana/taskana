@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.task.api.TaskState;
@@ -31,15 +32,18 @@ class TaskQueryImplTest {
 
   @Mock TaskServiceImpl taskServiceMock;
 
-  private TaskQueryImpl taskQueryImpl;
   @Mock private InternalTaskanaEngine internalTaskanaEngine;
   @Mock private TaskanaEngine taskanaEngine;
   @Mock private SqlSession sqlSession;
+  @Mock private CurrentUserContext currentUserContext;
+
+  private TaskQueryImpl taskQueryImpl;
 
   @BeforeEach
   void setup() {
     when(internalTaskanaEngine.getEngine()).thenReturn(taskanaEngine);
     when(taskanaEngine.getTaskService()).thenReturn(taskServiceMock);
+    when(taskanaEngine.getCurrentUserContext()).thenReturn(currentUserContext);
 
     Configuration configuration = new org.apache.ibatis.session.Configuration();
     configuration.setDatabaseId(DB.H2.dbProductId);

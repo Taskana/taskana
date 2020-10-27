@@ -11,7 +11,7 @@
     <parent>
         <groupId>pro.taskana</groupId>
         <artifactId>taskana-rest-parent</artifactId>
-        <version>4.1.1-SNAPSHOT</version>
+        <version>4.2.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -76,7 +76,21 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Brought in via WildFly Swarm bom -->
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>${version.arquillian.managed.wildfly}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- test dependencies -->
+        <dependency>
+            <groupId>pro.taskana</groupId>
+            <artifactId>taskana-common-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>pro.taskana.history</groupId>
             <artifactId>taskana-simplehistory-rest-spring</artifactId>
@@ -107,13 +121,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <!-- Brought in via WildFly Swarm bom -->
-        <dependency>
-            <groupId>org.wildfly.arquillian</groupId>
-            <artifactId>wildfly-arquillian-container-managed</artifactId>
-            <version>${version.arquillian.managed.wildfly}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- Brought in via Arquillian BOM, see dependencyManagement section 
             above -->

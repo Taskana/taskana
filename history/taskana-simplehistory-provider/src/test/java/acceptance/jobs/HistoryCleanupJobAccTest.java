@@ -3,14 +3,17 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import acceptance.security.JaasExtension;
-import acceptance.security.WithAccessId;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob.Type;
+import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
@@ -359,5 +362,34 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     job.run();
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_DeleteOldHistoryCleanupJobs_When_InitializingSchedule() throws Exception {
+
+    for (int i = 0; i < 10; i++) {
+      ScheduledJob job = new ScheduledJob();
+      job.setType(ScheduledJob.Type.HISTORYCLEANUPJOB);
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(Type.UPDATETASKSJOB);
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      taskanaEngine.getJobService().createJob(job);
+    }
+
+    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun();
+
+    assertThat(jobsToRun).hasSize(30);
+
+    HistoryCleanupJob.initializeSchedule(taskanaEngine);
+
+    jobsToRun = getJobMapper().findJobsToRun();
+
+    assertThat(jobsToRun).hasSize(20);
+
+    assertThat(jobsToRun)
+        .extracting(ScheduledJob::getType)
+        .containsOnly(Type.CLASSIFICATIONCHANGEDJOB, Type.UPDATETASKSJOB);
   }
 }

@@ -18,7 +18,6 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.configuration.DB;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskCustomField;
@@ -1604,7 +1603,7 @@ public class TaskQueryImpl implements TaskQuery {
       this.accessIdIn = null;
     } else if (this.accessIdIn == null) {
       String[] accessIds = new String[0];
-      List<String> ucAccessIds = CurrentUserContext.getAccessIds();
+      List<String> ucAccessIds = taskanaEngine.getEngine().getCurrentUserContext().getAccessIds();
       if (!ucAccessIds.isEmpty()) {
         accessIds = new String[ucAccessIds.size()];
         accessIds = ucAccessIds.toArray(accessIds);

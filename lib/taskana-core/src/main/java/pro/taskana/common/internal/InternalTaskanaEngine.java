@@ -5,8 +5,8 @@ import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
-import pro.taskana.task.internal.TaskRoutingManager;
 
 /**
  * FOR INTERNAL USE ONLY.

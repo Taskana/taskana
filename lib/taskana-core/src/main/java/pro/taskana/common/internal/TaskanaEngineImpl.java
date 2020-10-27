@@ -41,15 +41,17 @@ import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
+import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.api.security.GroupPrincipal;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
-import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.security.GroupPrincipal;
+import pro.taskana.common.internal.security.CurrentUserContextImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
@@ -57,7 +59,6 @@ import pro.taskana.task.internal.ObjectReferenceMapper;
 import pro.taskana.task.internal.TaskCommentMapper;
 import pro.taskana.task.internal.TaskMapper;
 import pro.taskana.task.internal.TaskQueryMapper;
-import pro.taskana.task.internal.TaskRoutingManager;
 import pro.taskana.task.internal.TaskServiceImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.internal.DistributionTargetMapper;
@@ -76,12 +77,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
+  private final HistoryEventManager historyEventManager;
+  private final CurrentUserContext currentUserContext;
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
   protected Connection connection = null;
-  private HistoryEventManager historyEventManager;
 
   protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
@@ -96,6 +98,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
             taskanaEngineConfiguration.isCorpusChristiEnabled(),
             taskanaEngineConfiguration.getCustomHolidays());
+    currentUserContext =
+        new CurrentUserContextImpl(TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds());
   }
 
   public static TaskanaEngine createTaskanaEngine(
@@ -205,7 +209,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       return true;
     }
 
-    List<String> accessIds = CurrentUserContext.getAccessIds();
+    List<String> accessIds = currentUserContext.getAccessIds();
     Set<String> rolesMembers = new HashSet<>();
     for (TaskanaRole role : roles) {
       rolesMembers.addAll(getConfiguration().getRoleMap().get(role));
@@ -226,13 +230,18 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         String rolesAsString = Arrays.toString(roles);
         LOGGER.debug(
             "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
-            CurrentUserContext.getAccessIds(),
+            currentUserContext.getAccessIds(),
             rolesAsString);
       }
       throw new NotAuthorizedException(
           "current user is not member of role(s) " + Arrays.toString(roles),
-          CurrentUserContext.getUserid());
+          currentUserContext.getUserid());
     }
+  }
+
+  @Override
+  public CurrentUserContext getCurrentUserContext() {
+    return currentUserContext;
   }
 
   /**

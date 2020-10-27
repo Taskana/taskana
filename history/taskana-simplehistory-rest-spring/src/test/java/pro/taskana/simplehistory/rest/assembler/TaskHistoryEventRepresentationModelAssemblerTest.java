@@ -4,36 +4,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import pro.taskana.simplehistory.rest.TaskHistoryRestConfiguration;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Test for {@link TaskHistoryEventRepresentationModelAssembler}. */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(
-    classes = {TaskHistoryRestConfiguration.class},
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TaskanaSpringBootTest
 class TaskHistoryEventRepresentationModelAssemblerTest {
 
-  private final TaskHistoryEventRepresentationModelAssembler
-      taskHistoryEventRepresentationModelAssembler;
+  private final TaskHistoryEventRepresentationModelAssembler assembler;
 
   @Autowired
   TaskHistoryEventRepresentationModelAssemblerTest(
-      TaskHistoryEventRepresentationModelAssembler taskHistoryEventRepresentationModelAssembler) {
-    this.taskHistoryEventRepresentationModelAssembler =
-        taskHistoryEventRepresentationModelAssembler;
+      TaskHistoryEventRepresentationModelAssembler assembler) {
+    this.assembler = assembler;
   }
 
   @Test
   void taskHistoryEventModelToResource() {
-
     TaskHistoryEvent historyEvent = new TaskHistoryEvent();
 
     historyEvent.setEventType("TASK_CREATED");
@@ -57,7 +48,7 @@ class TaskHistoryEventRepresentationModelAssemblerTest {
     historyEvent.setCustomAttribute(TaskHistoryCustomField.CUSTOM_4, "custom4");
 
     TaskHistoryEventRepresentationModel taskHistoryEventRepresentationModel =
-        taskHistoryEventRepresentationModelAssembler.toModel(historyEvent);
+        assembler.toModel(historyEvent);
 
     testEquality(historyEvent, taskHistoryEventRepresentationModel);
   }

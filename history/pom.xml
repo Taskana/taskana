@@ -11,14 +11,13 @@
 	<parent>
 		<groupId>pro.taskana</groupId>
 		<artifactId>taskana-parent</artifactId>
-		<version>4.1.1-SNAPSHOT</version>
+		<version>4.2.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modules>
 		<module>taskana-simplehistory-provider</module>
 		<module>taskana-simplehistory-rest-spring</module>
-		<module>taskana-simplehistory-rest-spring-example</module>
     <module>taskana-loghistory-provider</module>
   </modules>
 

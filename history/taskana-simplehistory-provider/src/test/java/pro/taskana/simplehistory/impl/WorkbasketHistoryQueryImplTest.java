@@ -25,8 +25,6 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 @ExtendWith(MockitoExtension.class)
 class WorkbasketHistoryQueryImplTest {
 
-  private static final String ID_PREFIX_HISTORY_EVENT = "WHI";
-
   @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
 
   private WorkbasketHistoryQueryImpl historyQueryImpl;
@@ -70,7 +68,7 @@ class WorkbasketHistoryQueryImplTest {
   private WorkbasketHistoryEvent createHistoryEvent(
       String workbasketKey, String type, String userId, String details, Instant created) {
     WorkbasketHistoryEvent he = new WorkbasketHistoryEvent();
-    he.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    he.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT));
     he.setUserId(userId);
     he.setDetails(details);
     he.setKey(workbasketKey);

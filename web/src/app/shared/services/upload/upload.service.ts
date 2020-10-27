@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class UploadService {
     this.currentProgressValue.next(value);
   }
 
-  getCurrentProgressValue() {
+  getCurrentProgressObservable(): Observable<number> {
     return this.currentProgressValue.asObservable();
   }
 }

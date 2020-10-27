@@ -23,10 +23,9 @@ import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
-import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.security.JaasExtension;
-import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -234,7 +233,7 @@ class TaskServiceImplIntAutocommitTest {
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
   @Test
   void shouldNotTransferByFailingSecurity() throws Exception {
-    final String user = CurrentUserContext.getUserid();
+    final String user = taskanaEngine.getCurrentUserContext().getUserid();
 
     // Set up Security for this Test
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();

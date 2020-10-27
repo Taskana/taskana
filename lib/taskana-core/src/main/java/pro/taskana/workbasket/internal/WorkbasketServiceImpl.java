@@ -21,7 +21,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketAccessItemCreatedEvent;
@@ -57,9 +56,7 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 public class WorkbasketServiceImpl implements WorkbasketService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);
-  private static final String ID_PREFIX_WORKBASKET = "WBI";
-  private static final String ID_PREFIX_WORKBASKET_AUTHORIZATION = "WAI";
-  private static final String ID_PREFIX_WORKBASKET_HISTORY_EVENT = "WHI";
+
   private final InternalTaskanaEngine taskanaEngine;
   private final WorkbasketMapper workbasketMapper;
   private final DistributionTargetMapper distributionTargetMapper;
@@ -148,7 +145,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       }
 
       if (workbasket.getId() == null || workbasket.getId().isEmpty()) {
-        workbasket.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET));
+        workbasket.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET));
       }
       validateWorkbasket(workbasket);
 
@@ -161,9 +158,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
         historyEventManager.createEvent(
             new WorkbasketCreatedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                 newWorkbasket,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
       LOGGER.debug("Method createWorkbasket() created Workbasket '{}'", workbasket);
@@ -214,9 +211,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
         historyEventManager.createEvent(
             new WorkbasketUpdatedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                 workbasketToUpdate,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
       LOGGER.debug(
@@ -254,7 +251,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
     try {
       taskanaEngine.openConnection();
-      accessItem.setId(IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+      accessItem.setId(
+          IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_AUTHORIZATION));
       if (workbasketAccessItem.getId() == null
           || workbasketAccessItem.getAccessId() == null
           || workbasketAccessItem.getWorkbasketId() == null) {
@@ -283,9 +281,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
           historyEventManager.createEvent(
               new WorkbasketAccessItemCreatedEvent(
-                  IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                  IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                   wb,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
         LOGGER.debug(
@@ -343,9 +341,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
         historyEventManager.createEvent(
             new WorkbasketAccessItemUpdatedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                 workbasket,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
 
@@ -382,9 +380,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         Workbasket workbasket = workbasketMapper.findById(accessItem.getWorkbasketId());
         historyEventManager.createEvent(
             new WorkbasketAccessItemDeletedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                 workbasket,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
 
@@ -413,7 +411,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         return;
       }
 
-      List<String> accessIds = CurrentUserContext.getAccessIds();
+      List<String> accessIds = taskanaEngine.getEngine().getCurrentUserContext().getAccessIds();
       WorkbasketAccessItem wbAcc =
           workbasketAccessMapper.findByWorkbasketAndAccessId(workbasketId, accessIds);
       if (wbAcc == null) {
@@ -423,7 +421,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 + "' on workbasket '"
                 + workbasketId
                 + "' is needed.",
-            CurrentUserContext.getUserid());
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid());
       }
 
       List<WorkbasketPermission> grantedPermissions =
@@ -438,7 +436,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                   + "' on workbasket '"
                   + workbasketId
                   + "' is needed.",
-              CurrentUserContext.getUserid());
+              taskanaEngine.getEngine().getCurrentUserContext().getUserid());
         }
       }
     } finally {
@@ -464,7 +462,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       if (skipAuthorizationCheck(requestedPermissions)) {
         return;
       }
-      List<String> accessIds = CurrentUserContext.getAccessIds();
+      List<String> accessIds = taskanaEngine.getEngine().getCurrentUserContext().getAccessIds();
       WorkbasketAccessItem wbAcc =
           workbasketAccessMapper.findByWorkbasketKeyDomainAndAccessId(
               workbasketKey, domain, accessIds);
@@ -477,7 +475,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 + "' and domain '"
                 + domain
                 + "' is needed.",
-            CurrentUserContext.getUserid());
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid());
       }
       List<WorkbasketPermission> grantedPermissions =
           this.getPermissionsFromWorkbasketAccessItem(wbAcc);
@@ -493,7 +491,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                   + "' and domain '"
                   + domain
                   + "' is needed.",
-              CurrentUserContext.getUserid());
+              taskanaEngine.getEngine().getCurrentUserContext().getUserid());
         }
       }
     } finally {
@@ -530,8 +528,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
       throws NotAuthorizedException, WorkbasketAccessItemAlreadyExistException,
           InvalidArgumentException {
-    LOGGER.debug(
-        "entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems);
+    LOGGER.debug("entry to setWorkbasketAccessItems(workbasketAccessItems = {})", wbAccessItems);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
     Set<String> ids = new HashSet<>();
@@ -560,9 +557,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
         historyEventManager.createEvent(
             new WorkbasketAccessItemsUpdatedEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                 workbasket,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
     } finally {
@@ -594,7 +591,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public List<WorkbasketPermission> getPermissionsForWorkbasket(String workbasketId) {
     WorkbasketAccessItem wbAcc =
         workbasketAccessMapper.findByWorkbasketAndAccessId(
-            workbasketId, CurrentUserContext.getAccessIds());
+            workbasketId, taskanaEngine.getEngine().getCurrentUserContext().getAccessIds());
     return this.getPermissionsFromWorkbasketAccessItem(wbAcc);
   }
 
@@ -705,9 +702,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
           historyEventManager.createEvent(
               new WorkbasketDistributionTargetsUpdatedEvent(
-                  IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                  IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                   sourceWorkbasket,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
       }
@@ -755,9 +752,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
           historyEventManager.createEvent(
               new WorkbasketDistributionTargetAddedEvent(
-                  IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                  IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                   sourceWorkbasket,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
         LOGGER.debug(
@@ -804,9 +801,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
             historyEventManager.createEvent(
                 new WorkbasketDistributionTargetRemovedEvent(
-                    IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                    IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                     workbasket,
-                    CurrentUserContext.getUserid(),
+                    taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                     details));
           }
         }
@@ -885,9 +882,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
           historyEventManager.createEvent(
               new WorkbasketDeletedEvent(
-                  IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                  IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                   workbasketToDelete,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
       } else {
@@ -1038,9 +1035,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
           historyEventManager.createEvent(
               new WorkbasketAccessItemDeletedEvent(
-                  IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                  IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                   workbasket,
-                  CurrentUserContext.getUserid(),
+                  taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                   details));
         }
       }
@@ -1095,7 +1092,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         }
         if (wbAccessItemImpl.getId() == null || wbAccessItemImpl.getId().isEmpty()) {
           wbAccessItemImpl.setId(
-              IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_AUTHORIZATION));
+              IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_AUTHORIZATION));
         }
         if (ids.contains(wbAccessItemImpl.getAccessId())) {
           throw new WorkbasketAccessItemAlreadyExistException(wbAccessItemImpl);
@@ -1210,9 +1207,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
         historyEventManager.createEvent(
             new WorkbasketMarkedForDeletionEvent(
-                IdGenerator.generateWithPrefix(ID_PREFIX_WORKBASKET_HISTORY_EVENT),
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_WORKBASKET_HISTORY_EVENT),
                 workbasket,
-                CurrentUserContext.getUserid(),
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 null));
       }
     } finally {

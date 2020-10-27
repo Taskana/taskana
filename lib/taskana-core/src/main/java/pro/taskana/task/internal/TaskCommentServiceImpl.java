@@ -12,7 +12,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -23,19 +22,14 @@ class TaskCommentServiceImpl {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentServiceImpl.class);
 
-  private static final String NOT_AUTHORIZED =
-      " Not authorized, TaskComment creator and current user must match. TaskComment creator is ";
-  private static final String BUT_CURRENT_USER_IS = " but current user is ";
-  private static final String ID_PREFIX_TASK_COMMENT = "TCI";
-  private InternalTaskanaEngine taskanaEngine;
-  private TaskServiceImpl taskService;
-  private TaskCommentMapper taskCommentMapper;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final TaskServiceImpl taskService;
+  private final TaskCommentMapper taskCommentMapper;
 
   TaskCommentServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskCommentMapper taskCommentMapper,
       TaskServiceImpl taskService) {
-    super();
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskCommentMapper = taskCommentMapper;
@@ -59,7 +53,7 @@ class TaskCommentServiceImpl {
 
     LOGGER.debug("entry to updateTaskComment (taskComment = {})", taskCommentToUpdate);
 
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
     TaskCommentImpl taskCommentImplToUpdate = (TaskCommentImpl) taskCommentToUpdate;
 
@@ -86,7 +80,10 @@ class TaskCommentServiceImpl {
 
       } else {
         throw new NotAuthorizedException(
-            NOT_AUTHORIZED + taskCommentImplToUpdate.getCreator() + BUT_CURRENT_USER_IS + userId,
+            String.format(
+                "Not authorized, TaskComment creator and current user must match. "
+                    + "TaskComment creator is %s but current user is %s",
+                taskCommentImplToUpdate.getCreator(), userId),
             userId);
       }
     } finally {
@@ -132,7 +129,7 @@ class TaskCommentServiceImpl {
 
     LOGGER.debug("entry to deleteTaskComment (taskComment = {}", taskCommentId);
 
-    String userId = CurrentUserContext.getUserid();
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
     try {
 
@@ -150,7 +147,10 @@ class TaskCommentServiceImpl {
 
       } else {
         throw new NotAuthorizedException(
-            NOT_AUTHORIZED + taskCommentToDelete.getCreator() + BUT_CURRENT_USER_IS + userId,
+            String.format(
+                "Not authorized, TaskComment creator and current user must match. "
+                    + "TaskComment creator is %s but current user is %s",
+                taskCommentToDelete.getCreator(), userId),
             userId);
       }
 
@@ -237,11 +237,12 @@ class TaskCommentServiceImpl {
 
     Instant now = Instant.now();
 
-    taskCommentImplToCreate.setId(IdGenerator.generateWithPrefix(ID_PREFIX_TASK_COMMENT));
+    taskCommentImplToCreate.setId(
+        IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_COMMENT));
     taskCommentImplToCreate.setModified(now);
     taskCommentImplToCreate.setCreated(now);
 
-    String creator = CurrentUserContext.getUserid();
+    String creator = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     if (taskanaEngine.getEngine().getConfiguration().isSecurityEnabled() && creator == null) {
       throw new SystemException(
           "TaskanaSecurity is enabled, but the current UserId is"

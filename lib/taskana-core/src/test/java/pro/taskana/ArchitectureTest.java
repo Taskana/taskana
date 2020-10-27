@@ -35,6 +35,7 @@ class ArchitectureTest {
           "pro.taskana.sampledata",
           "pro.taskana.common.internal",
           "pro.taskana.common.api",
+          "pro.taskana.common.test",
           "pro.taskana.classification.api",
           "pro.taskana.classification.internal",
           "pro.taskana.spi.history.api",
@@ -46,6 +47,7 @@ class ArchitectureTest {
           "pro.taskana.workbasket.api",
           "pro.taskana.workbasket.internal",
           "pro.taskana.spi.routing.api",
+          "pro.taskana.spi.routing.internal",
           "pro.taskana.spi.task.api",
           "pro.taskana.spi.task.internal"
           );
@@ -62,8 +64,6 @@ class ArchitectureTest {
     ArchRule myRule =
         classes()
             .that()
-            .haveSimpleNameNotEndingWith("TaskanaHistoryEvent")
-            .and()
             .resideInAPackage("..api..")
             .should()
             .onlyDependOnClassesThat()
@@ -170,6 +170,8 @@ class ArchitectureTest {
                 .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
                 .and()
                 .resideInAPackage("..common..")
+                .and()
+                .resideOutsideOfPackage("..common.test..")
                 .should()
                 .dependOnClassesThat()
                 .resideInAPackage(p)

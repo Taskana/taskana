@@ -15,7 +15,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.common.internal.security.CurrentUserContext;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.task.TaskTransferredEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
@@ -34,7 +33,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
 /** This class is responsible for the transfer of tasks. */
-public class TaskTransferrer {
+class TaskTransferrer {
 
   private static final String WAS_NOT_FOUND2 = " was not found.";
   private static final String TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED =
@@ -42,17 +41,15 @@ public class TaskTransferrer {
   private static final String TASK_WITH_ID = "Task with id ";
   private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
   private static final String THE_WORKBASKET = "The workbasket ";
-  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskTransferrer.class);
-  private InternalTaskanaEngine taskanaEngine;
-  private WorkbasketService workbasketService;
-  private TaskServiceImpl taskService;
-  private TaskMapper taskMapper;
-  private HistoryEventManager historyEventManager;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final WorkbasketService workbasketService;
+  private final TaskServiceImpl taskService;
+  private final TaskMapper taskMapper;
+  private final HistoryEventManager historyEventManager;
 
   TaskTransferrer(
       InternalTaskanaEngine taskanaEngine, TaskMapper taskMapper, TaskServiceImpl taskService) {
-    super();
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskMapper = taskMapper;
@@ -113,7 +110,8 @@ public class TaskTransferrer {
           taskId,
           destinationWorkbasket.getId());
       if (HistoryEventManager.isHistoryEnabled()) {
-        createTaskTransferredEvent(task, oldWorkbasketSummary, destinationWorkbasket.asSummary());
+        createTaskTransferredEvent(
+            task, oldWorkbasketSummary.getId(), destinationWorkbasket.asSummary().getId());
       }
       return task;
     } finally {
@@ -170,7 +168,8 @@ public class TaskTransferrer {
           taskId,
           destinationWorkbasketId);
       if (HistoryEventManager.isHistoryEnabled()) {
-        createTaskTransferredEvent(task, oldWorkbasketSummary, destinationWorkbasket.asSummary());
+        createTaskTransferredEvent(
+            task, oldWorkbasketSummary.getId(), destinationWorkbasketId);
       }
       return task;
     } finally {
@@ -271,11 +270,7 @@ public class TaskTransferrer {
     }
 
     List<MinimalTaskSummary> taskSummaries;
-    if (taskIds.isEmpty()) {
-      taskSummaries = new ArrayList<>();
-    } else {
-      taskSummaries = taskMapper.findExistingTasks(taskIds, null);
-    }
+    taskSummaries = taskMapper.findExistingTasks(taskIds, null);
     checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
     updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket);
     if (LOGGER.isDebugEnabled()) {
@@ -357,7 +352,7 @@ public class TaskTransferrer {
             currentTaskId,
             new NotAuthorizedException(
                 "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId,
-                CurrentUserContext.getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
         taskIdIterator.remove();
       }
     }
@@ -365,14 +360,14 @@ public class TaskTransferrer {
   }
 
   private void createTaskTransferredEvent(
-      Task task, WorkbasketSummary oldWorkbasketSummary, WorkbasketSummary newWorkbasketSummary) {
+      Task task, String oldWorkbasketId, String newWorkbasketId) {
     historyEventManager.createEvent(
         new TaskTransferredEvent(
-            IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT),
+            IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
             task,
-            oldWorkbasketSummary,
-            newWorkbasketSummary,
-            CurrentUserContext.getUserid()));
+            oldWorkbasketId,
+            newWorkbasketId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
   }
 
   private void updateTasksToBeTransferred(
@@ -412,20 +407,23 @@ public class TaskTransferrer {
 
   private void createTasksTransferredEvents(
       List<MinimalTaskSummary> taskSummaries, TaskSummaryImpl updateObject) {
-    taskSummaries.stream()
+    taskSummaries
         .forEach(
             task -> {
-              TaskImpl newTask = (TaskImpl) taskService.newTask(task.getWorkbasketId());
-              newTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
-              newTask.setRead(updateObject.isRead());
-              newTask.setTransferred(updateObject.isTransferred());
-              newTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
-              newTask.setDomain(updateObject.getDomain());
-              newTask.setModified(updateObject.getModified());
-              newTask.setState(updateObject.getState());
-              newTask.setOwner(updateObject.getOwner());
+
+              TaskImpl transferredTask = (TaskImpl) taskService.newTask(task.getWorkbasketId());
+              transferredTask.setId(task.getTaskId());
+              transferredTask.setRead(updateObject.isRead());
+              transferredTask.setTransferred(updateObject.isTransferred());
+              transferredTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
+              transferredTask.setDomain(updateObject.getDomain());
+              transferredTask.setModified(updateObject.getModified());
+              transferredTask.setState(updateObject.getState());
+              transferredTask.setOwner(updateObject.getOwner());
               createTaskTransferredEvent(
-                  newTask, newTask.getWorkbasketSummary(), updateObject.getWorkbasketSummary());
+                  transferredTask,
+                  task.getWorkbasketId(),
+                  updateObject.getWorkbasketSummary().getId());
             });
   }
 }

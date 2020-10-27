@@ -27,10 +27,9 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.common.internal.security.CurrentUserContext;
-import pro.taskana.common.internal.security.JaasExtension;
-import pro.taskana.common.internal.security.WithAccessId;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -193,7 +192,7 @@ class TaskServiceImplIntExplicitTest {
       wb = workbasketService.createWorkbasket(wb);
       workbasketService.createWorkbasketAccessItem(
           this.createWorkbasketWithSecurity(
-              wb, CurrentUserContext.getUserid(), true, true, true, false));
+              wb, taskanaEngine.getCurrentUserContext().getUserid(), true, true, true, false));
       Classification classification =
           classificationService.newClassification(
               UUID.randomUUID().toString(), wb.getDomain(), "t1"); // not persisted,
@@ -263,7 +262,7 @@ class TaskServiceImplIntExplicitTest {
   @Test
   void shouldTransferTaskToOtherWorkbasket() throws Exception {
     final int sleepTime = 100;
-    final String user = CurrentUserContext.getUserid();
+    final String user = taskanaEngine.getCurrentUserContext().getUserid();
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngineImpl.setConnection(connection);
 

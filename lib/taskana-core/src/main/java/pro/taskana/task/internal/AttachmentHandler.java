@@ -26,7 +26,6 @@ import pro.taskana.task.internal.models.TaskImpl;
 
 public class AttachmentHandler {
   private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentHandler.class);
-  private static final String ID_PREFIX_ATTACHMENT = "TAI";
   private final AttachmentMapper attachmentMapper;
   private final ClassificationService classificationService;
 
@@ -213,7 +212,7 @@ public class AttachmentHandler {
   void initAttachment(AttachmentImpl attachment, Task newTask) {
     LOGGER.debug("entry to initAttachment()");
     if (attachment.getId() == null) {
-      attachment.setId(IdGenerator.generateWithPrefix(ID_PREFIX_ATTACHMENT));
+      attachment.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_ATTACHMENT));
     }
     if (attachment.getCreated() == null) {
       attachment.setCreated(newTask.getModified());

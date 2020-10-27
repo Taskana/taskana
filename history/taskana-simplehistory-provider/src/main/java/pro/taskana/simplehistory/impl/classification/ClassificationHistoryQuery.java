@@ -30,7 +30,7 @@ public interface ClassificationHistoryQuery
    * Add your created TimeInterval to your query.
    *
    * @param createdWithin the {@link TimeInterval} within which the searched-for classifications
-   *     were created.
+   *     were created. Both borders in each {@link TimeInterval} are inclusive.
    * @return the query
    */
   ClassificationHistoryQuery createdWithin(TimeInterval... createdWithin);

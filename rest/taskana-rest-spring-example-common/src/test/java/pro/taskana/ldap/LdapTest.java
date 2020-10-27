@@ -6,9 +6,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pro.taskana.TaskanaSpringBootTest;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 /** Test Ldap attachment. */
 @TaskanaSpringBootTest

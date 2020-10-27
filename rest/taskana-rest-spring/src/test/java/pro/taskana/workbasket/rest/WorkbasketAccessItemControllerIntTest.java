@@ -2,12 +2,18 @@ package pro.taskana.workbasket.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -15,12 +21,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.common.rest.Mapping;
-import pro.taskana.common.rest.RestHelper;
-import pro.taskana.common.rest.TaskanaSpringBootTest;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 
 /** Test WorkbasketAccessItemController. */
@@ -33,18 +38,18 @@ class WorkbasketAccessItemControllerIntTest {
       WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE =
           new ParameterizedTypeReference<
               TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>() {};
-  private static RestTemplate template;
-  @Autowired RestHelper restHelper;
 
-  @BeforeAll
-  static void init() {
-    template = RestHelper.TEMPLATE;
+  private final RestHelper restHelper;
+
+  @Autowired
+  WorkbasketAccessItemControllerIntTest(RestHelper restHelper) {
+    this.restHelper = restHelper;
   }
 
   @Test
   void testGetAllWorkbasketAccessItems() {
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -57,7 +62,7 @@ class WorkbasketAccessItemControllerIntTest {
   void testGetWorkbasketAccessItemsKeepingFilters() {
     String parameters = "?sort-by=workbasket-key&order=asc&page-size=9&access-ids=user-1-1&page=1";
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -77,7 +82,7 @@ class WorkbasketAccessItemControllerIntTest {
   void testThrowsExceptionIfInvalidFilterIsUsed() {
     ThrowingCallable httpCall =
         () ->
-            template.exchange(
+            TEMPLATE.exchange(
                 restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS)
                     + "?sort-by=workbasket-key&order=asc&page=1&page-size=9&invalid=user-1-1",
                 HttpMethod.GET,
@@ -94,7 +99,7 @@ class WorkbasketAccessItemControllerIntTest {
   void testGetSecondPageSortedByWorkbasketKey() {
     String parameters = "?sort-by=workbasket-key&order=asc&page=2&page-size=9&access-ids=user-1-1";
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -124,7 +129,7 @@ class WorkbasketAccessItemControllerIntTest {
 
     String parameters = "?access-id=teamlead-2";
     ResponseEntity<Void> response =
-        template.exchange(
+        TEMPLATE.exchange(
             restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
@@ -133,51 +138,29 @@ class WorkbasketAccessItemControllerIntTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
-  @Test
-  void should_ReturnBadRequest_ifAccessIdIsSubStringOfUser() {
-    String parameters = "?access-id=user-1";
-    ThrowingCallable httpCall =
-        () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-                HttpMethod.DELETE,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(Void.class));
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
-  }
+  @TestFactory
+  Stream<DynamicTest> should_ReturnBadRequest_When_AccessIdIsInvalid() {
+    List<String> accessIds =
+        Arrays.asList(
+            "cn=organisationseinheit ksc,cn=organisation,ou=test,o=taskana",
+            "cn=monitor-users,cn=groups,ou=test,o=taskana",
+            "user-1");
 
-  @Test
-  void should_ReturnBadRequest_ifAccessIdIsGroup() {
-    String parameters = "?access-id=cn=monitor-users,cn=groups,ou=test,o=taskana";
-    ThrowingCallable httpCall =
-        () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-                HttpMethod.DELETE,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(Void.class));
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
-  }
-
-  @Test
-  void should_ReturnBadRequest_ifAccessIdIsOrganizationalGroup() {
-    String parameters = "?access-id=cn=organisationseinheit ksc,cn=organisation,ou=test,o=taskana";
-    ThrowingCallable httpCall =
-        () ->
-            template.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-                HttpMethod.DELETE,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(Void.class));
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+    ThrowingConsumer<String> test =
+        accessId -> {
+          String parameters = "?access-id=" + accessId;
+          ThrowingCallable httpCall =
+              () ->
+                  TEMPLATE.exchange(
+                      restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
+                      HttpMethod.DELETE,
+                      restHelper.defaultRequest(),
+                      ParameterizedTypeReference.forType(Void.class));
+          assertThatThrownBy(httpCall)
+              .isInstanceOf(HttpClientErrorException.class)
+              .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+              .isEqualTo(HttpStatus.BAD_REQUEST);
+        };
+    return DynamicTest.stream(accessIds.iterator(), s -> String.format("for user '%s'", s), test);
   }
 }

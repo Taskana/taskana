@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
+import pro.taskana.common.internal.JobMapper;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
@@ -33,7 +35,6 @@ import pro.taskana.task.api.models.ObjectReference;
 public abstract class AbstractAccTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
-  private static final String ID_PREFIX_HISTORY_EVENT = "HEI";
   private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
   private static final int POOL_TIME_TO_WAIT = 50;
   private static final DataSource DATA_SOURCE;
@@ -76,7 +77,7 @@ public abstract class AbstractAccTest {
       String userid,
       String details) {
     TaskHistoryEvent historyEvent = new TaskHistoryEvent();
-    historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    historyEvent.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT));
     historyEvent.setUserId(userid);
     historyEvent.setDetails(details);
     historyEvent.setWorkbasketKey(workbasketKey);
@@ -98,7 +99,7 @@ public abstract class AbstractAccTest {
   public static WorkbasketHistoryEvent createWorkbasketHistoryEvent(
       String workbasketKey, String type, String userid, String details) {
     WorkbasketHistoryEvent historyEvent = new WorkbasketHistoryEvent();
-    historyEvent.setId(IdGenerator.generateWithPrefix(ID_PREFIX_HISTORY_EVENT));
+    historyEvent.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT));
     historyEvent.setUserId(userid);
     historyEvent.setDetails(details);
     historyEvent.setKey(workbasketKey);
@@ -114,9 +115,9 @@ public abstract class AbstractAccTest {
             dataSource,
             false,
             schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
-    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineConfiguration);
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
 
@@ -168,6 +169,16 @@ public abstract class AbstractAccTest {
         (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
 
     return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
+  }
+
+  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaEngine);
+
+    return sqlSessionManager.getMapper(JobMapper.class);
   }
 
   protected ObjectReference createObjectRef(
