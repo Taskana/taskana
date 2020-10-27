@@ -1,4 +1,4 @@
-<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
+<div *ngIf="workbasket" id="wb-information" class="workbasket-distribution-targets">
 	<!-- ACTION TOOLBAR-->
   <!--
     <div class="panel-heading">
@@ -18,11 +18,11 @@
     </div>
 -->
 	<!-- DISTRIBUTION TABLE-->
-    <div #panelBody class="panel-body">
+    <div #panelBody class="workbasket-distribution-targets__list">
 
 		<!-- DISTRIBUTION LEFT LIST -->
         <div class="dual-list list-left col-xs-12 col-md-5-6 container">
-            <taskana-administration-workbasket-dual-list #dualListLeft id="dual-list-Left" header="Available distribution targets"
+            <taskana-administration-workbasket-distribution-targets-list #dualListLeft id="dual-list-Left" header="Available distribution targets"
                                           [distributionTargets]="distributionTargetsLeft"
                                           [distributionTargetsSelected]="distributionTargetsSelected"
                                           (performDualListFilter)="performFilter($event)"
@@ -30,7 +30,7 @@
                                           [side]="side.LEFT"
                                           [requestInProgress]="requestInProgressLeft"
 										  [loadingItems]="loadingItems"
-                                          [(allSelected)]="selectAllLeft"></taskana-administration-workbasket-dual-list>
+                                          [(allSelected)]="selectAllLeft"></taskana-administration-workbasket-distribution-targets-list>
         </div>
 
 		<!-- DISTRIBUTION ACTION BUTTONS -->
@@ -61,17 +61,6 @@
                     title="Move to available distribution targets">
                 <span class="material-icons md-20 blue">expand_less</span>
             </button>
-        </div>
-
-		<!-- DISTRIBUTION RIGHT LIST -->
-        <div class="dual-list list-right col-xs-12 col-md-5-6 container">
-            <taskana-administration-workbasket-dual-list #dualListRight id="dual-list-right" header="Selected distribution targets"
-                                          [distributionTargets]="distributionTargetsRight"
-                                          [distributionTargetsSelected]="distributionTargetsSelected"
-                                          (performDualListFilter)="performFilter($event)"
-                                          [requestInProgress]="requestInProgressRight"
-                                          [side]="side.RIGHT"
-                                          [(allSelected)]="selectAllRight"></taskana-administration-workbasket-dual-list>
         </div>
     </div>
 </div>

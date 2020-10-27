@@ -19,7 +19,7 @@ import { WorkbasketListToolbarComponent } from './components/workbasket-list-too
 import { WorkbasketDetailsComponent } from './components/workbasket-details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './components/workbasket-information/workbasket-information.component';
 import { WorkbasketDistributionTargetsComponent } from './components/workbasket-distribution-targets/workbasket-distribution-targets.component';
-import { WorkbasketDualListComponent } from './components/workbasket-dual-list/workbasket-dual-list.component';
+import { WorkbasketDistributionTargetsListComponent } from './components/workbasket-distribution-targets-list/workbasket-distribution-targets-list.component';
 import { WorkbasketAccessItemsComponent } from './components/workbasket-access-items/workbasket-access-items.component';
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
@@ -69,7 +69,7 @@ const DECLARATIONS = [
   WorkbasketDetailsComponent,
   WorkbasketInformationComponent,
   WorkbasketDistributionTargetsComponent,
-  WorkbasketDualListComponent,
+  WorkbasketDistributionTargetsListComponent,
   ClassificationOverviewComponent,
   ClassificationListComponent,
   ClassificationTypesSelectorComponent,
