@@ -72,7 +72,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.selectedRoute = value;
     });
 
-    this.uploadingFileSubscription = this.uploadService.getCurrentProgressValue().subscribe((value) => {
+    this.uploadingFileSubscription = this.uploadService.getCurrentProgressObservable().subscribe((value) => {
       this.currentProgressValue = value;
     });
 
