@@ -144,7 +144,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasketSummary.getCustomAttribute(CUSTOM_2)).isEqualTo("custom2");
     assertThat(workbasketSummary.getCustomAttribute(CUSTOM_3)).isEqualTo("custom3");
     assertThat(workbasketSummary.getCustomAttribute(CUSTOM_4)).isEqualTo("custom4");
-    assertThat(workbasketSummary.isMarkedForDeletion()).isEqualTo(false);
+    assertThat(workbasketSummary.isMarkedForDeletion()).isFalse();
   }
 
   @Test

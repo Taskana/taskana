@@ -308,8 +308,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
-    assertThat(createdTask.isRead()).isEqualTo(false);
-    assertThat(createdTask.isTransferred()).isEqualTo(false);
+    assertThat(createdTask.isRead()).isFalse();
+    assertThat(createdTask.isTransferred()).isFalse();
 
     Task retrievedTask = taskService.getTask(createdTask.getId());
 

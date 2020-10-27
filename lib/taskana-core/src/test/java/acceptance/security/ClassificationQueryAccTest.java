@@ -26,7 +26,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertThat(classificationSummaryList).isNotNull();
     assertThat(classificationSummaryList).hasSize(18);
   }
 
@@ -37,7 +36,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertThat(classificationSummaryList).isNotNull();
     assertThat(classificationSummaryList).hasSize(18);
   }
 
@@ -48,7 +46,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertThat(classificationSummaryList).isNotNull();
     assertThat(classificationSummaryList).hasSize(18);
   }
 }

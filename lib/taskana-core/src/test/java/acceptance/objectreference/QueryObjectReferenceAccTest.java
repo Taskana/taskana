@@ -14,10 +14,6 @@ import pro.taskana.task.api.models.ObjectReference;
 /** Acceptance test for all "get classification" scenarios. */
 class QueryObjectReferenceAccTest extends AbstractAccTest {
 
-  QueryObjectReferenceAccTest() {
-    super();
-  }
-
   @Test
   void testQueryObjectReferenceValuesForColumnName() {
     TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
@@ -39,7 +35,6 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
     List<ObjectReference> objectReferenceList =
         taskQuery.createObjectReferenceQuery().companyIn("Company1", "Company2").list();
 
-    assertThat(objectReferenceList).isNotNull();
     assertThat(objectReferenceList).hasSize(2);
   }
 
@@ -54,7 +49,6 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
             .systemIn("System2")
             .list();
 
-    assertThat(objectReferenceList).isNotNull();
     assertThat(objectReferenceList).hasSize(1);
   }
 
@@ -69,7 +63,6 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
             .systemInstanceIn("Instance1")
             .list();
 
-    assertThat(objectReferenceList).isNotNull();
     assertThat(objectReferenceList).hasSize(1);
   }
 
@@ -80,7 +73,6 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
     List<ObjectReference> objectReferenceList =
         taskQuery.createObjectReferenceQuery().typeIn("Type2", "Type3").list();
 
-    assertThat(objectReferenceList).isNotNull();
     assertThat(objectReferenceList).hasSize(2);
   }
 
@@ -91,7 +83,6 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
     List<ObjectReference> objectReferenceList =
         taskQuery.createObjectReferenceQuery().valueIn("Value1", "Value3").list();
 
-    assertThat(objectReferenceList).isNotNull();
     assertThat(objectReferenceList).hasSize(2);
   }
 }

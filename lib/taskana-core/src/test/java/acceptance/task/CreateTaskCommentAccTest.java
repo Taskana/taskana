@@ -17,10 +17,6 @@ import pro.taskana.task.api.models.TaskComment;
 @ExtendWith(JaasExtension.class)
 class CreateTaskCommentAccTest extends AbstractAccTest {
 
-  CreateTaskCommentAccTest() {
-    super();
-  }
-
   @WithAccessId(user = "user-1-2")
   @Test
   void should_CreateTaskComment_For_TaskComment() throws Exception {
