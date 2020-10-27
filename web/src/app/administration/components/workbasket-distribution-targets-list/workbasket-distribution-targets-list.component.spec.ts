@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { WorkbasketDualListComponent } from './workbasket-dual-list.component';
+import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { Filter } from '../../../shared/models/filter';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ICONTYPES } from '../../../shared/models/icon-types';
@@ -25,19 +25,25 @@ class IconTypeStub {
   @Input() text: string;
 }
 
-describe('WorkbasketDualListComponent', () => {
-  let fixture: ComponentFixture<WorkbasketDualListComponent>;
+describe('WorkbasketDistributionTargetsListComponent', () => {
+  let fixture: ComponentFixture<WorkbasketDistributionTargetsListComponent>;
   let debugElement: DebugElement;
-  let component: WorkbasketDualListComponent;
+  let component: WorkbasketDistributionTargetsListComponent;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [InfiniteScrollModule, BrowserAnimationsModule],
-      declarations: [WorkbasketDualListComponent, FilterStub, SpinnerStub, IconTypeStub, SelectWorkBasketPipe],
+      declarations: [
+        WorkbasketDistributionTargetsListComponent,
+        FilterStub,
+        SpinnerStub,
+        IconTypeStub,
+        SelectWorkBasketPipe
+      ],
       providers: []
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WorkbasketDualListComponent);
+    fixture = TestBed.createComponent(WorkbasketDistributionTargetsListComponent);
     debugElement = fixture.debugElement;
     component = fixture.componentInstance;
     component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;

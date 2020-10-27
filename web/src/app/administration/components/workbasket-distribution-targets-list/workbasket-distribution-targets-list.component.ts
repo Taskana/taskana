@@ -5,12 +5,12 @@ import { expandDown } from 'app/shared/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 
 @Component({
-  selector: 'taskana-administration-workbasket-dual-list',
-  templateUrl: './workbasket-dual-list.component.html',
-  styleUrls: ['./workbasket-dual-list.component.scss'],
+  selector: 'taskana-administration-workbasket-distribution-targets-list',
+  templateUrl: './workbasket-distribution-targets-list.component.html',
+  styleUrls: ['./workbasket-distribution-targets-list.component.scss'],
   animations: [expandDown]
 })
-export class WorkbasketDualListComponent implements OnInit {
+export class WorkbasketDistributionTargetsListComponent implements OnInit {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
   @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
