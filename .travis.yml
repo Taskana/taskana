@@ -106,8 +106,11 @@ jobs:
       script: |
         mvn deploy -T 4C -P `[[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` \
         --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip \
-        -pl !:taskana-cdi-example,!:taskana-spring-example,\
-        !:taskana-rest-spring-example-common,!:taskana-rest-spring-example-boot,!:taskana-rest-spring-example-wildfly
+        -pl :taskana-parent,\
+        :taskana-common-parent,:taskana-common,:taskana-common-data,:taskana-common-test,\
+        :taskana-lib-parent,:taskana-core,:taskana-cdi,:taskana-spring,\
+        :taskana-rest-parent,:taskana-web,:taskana-rest-spring,\
+        :taskana-history-parent,:taskana-simplehistory-provider,:taskana-simplehistory-rest-spring,:taskana-loghistory-provider
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
       # travis_terminate is necessary since after_success is a job phase which can change the build result.
       # it is not documented, so this is a little hack. see: https://docs.travis-ci.com/user/job-lifecycle/#breaking-the-build
