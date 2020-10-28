@@ -1,10 +1,17 @@
 <mat-sidenav-container class="sidenav">
   <mat-sidenav #sidenav mode="over" class="sidenav__drawer" [autoFocus]="false">
-    <div class="sidenav__drawer-logout">
-      <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
-        aria-controls="logout">
-        <mat-icon>exit_to_app</mat-icon>
-      </button>
+    <div class="sidenav__drawer__container">
+      <div class="sidenav__drawer__container-menu">
+        <button mat-icon-button class="navbar_button-toggle" (click)="toggleSidenav()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <div class="sidenav__drawer__container-logout">
+        <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
+          aria-controls="logout">
+          <mat-icon>exit_to_app</mat-icon>
+        </button>
+      </div>
     </div>
     <taskana-shared-user-information class="sidenav__drawer-user-info"></taskana-shared-user-information>
     <taskana-sidenav-list></taskana-sidenav-list>

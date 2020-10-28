@@ -23,6 +23,11 @@ import { StartupService } from '../../../shared/services/startup/startup.service
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -67,7 +72,12 @@ describe('AccessItemsManagementComponent', () => {
         MatSnackBarModule,
         MatDialogModule,
         TypeaheadModule.forRoot(),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatAutocompleteModule,
+        MatInputModule,
+        MatProgressBarModule
       ],
       declarations: [
         AccessItemsManagementComponent,

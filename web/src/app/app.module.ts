@@ -59,6 +59,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -78,6 +79,7 @@ const MODULES = [
   MatListModule,
   MatButtonModule,
   MatIconModule,
+  MatSelectModule,
   NgxsModule.forRoot(STATES, { developmentMode: !environment.production }),
   NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
 ];

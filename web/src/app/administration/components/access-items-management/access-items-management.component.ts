@@ -27,6 +27,7 @@ import { AccessItemsManagementSelector } from '../../../shared/store/access-item
 export class AccessItemsManagementComponent implements OnInit {
   accessIdSelected: string;
   accessIdPrevious: string;
+  isRequired: boolean = false;
 
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();

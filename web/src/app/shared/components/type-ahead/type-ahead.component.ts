@@ -9,10 +9,9 @@ import {
   AfterViewInit
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { mergeMap } from 'rxjs/operators';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
@@ -34,6 +33,8 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   dataSource: any;
   typing = false;
 
+  items = [];
+
   @Input()
   placeHolderMessage;
 
@@ -50,7 +51,7 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   disable;
 
   @Input()
-  isRequired = true;
+  isRequired;
 
   @Output()
   selectedItem = new EventEmitter<AccessIdDefinition>();
@@ -83,7 +84,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   set value(v: any) {
     if (v !== this.innerValue) {
       this.innerValue = v;
-      this.onChangeCallback(v);
     }
   }
 
@@ -116,9 +116,7 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
       observer.next(this.value);
     }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
     this.accessIdsService.searchForAccessId(this.value).subscribe((items) => {
-      if (items.length > 0) {
-        this.dataSource.selected = items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
-      }
+      this.items = items;
     });
   }
 
@@ -126,32 +124,15 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     return this.accessIdsService.searchForAccessId(accessId);
   }
 
-  typeaheadOnSelect(event: TypeaheadMatch): void {
-    if (event && event.item) {
-      this.value = event.item.accessId;
-      this.dataSource.selected = event.item;
+  typeaheadOnSelect(event): void {
+    if (event) {
+      if (this.items.length > 0) {
+        this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
+      }
       this.selectedItem.emit(this.dataSource.selected);
     }
-    this.setTyping(false);
-  }
-
-  setTyping(value) {
-    if (this.disable) {
-      return;
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
-    if (value) {
-      setTimeout(() => {
-        this.inputTypeAhead.nativeElement.focus();
-      }, 1);
-    }
-    this.typing = value;
-  }
-
-  changeTypeaheadLoading(e: boolean): void {
-    this.typeaheadLoading = e;
-  }
-
-  join(text: string, str: string) {
-    return text.toLocaleLowerCase().split(str).join(`<strong>${str}</strong>`);
   }
 }

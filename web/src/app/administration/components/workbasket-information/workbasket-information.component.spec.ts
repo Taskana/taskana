@@ -39,6 +39,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -114,7 +115,8 @@ describe('WorkbasketInformationComponent', () => {
         MatDividerModule,
         MatFormFieldModule,
         MatInputModule,
-        MatSelectModule
+        MatSelectModule,
+        MatAutocompleteModule
       ],
       declarations: [
         WorkbasketInformationComponent,
