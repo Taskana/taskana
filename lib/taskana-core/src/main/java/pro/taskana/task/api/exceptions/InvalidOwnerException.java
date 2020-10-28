@@ -8,7 +8,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
  * @author bbr
  */
 public class InvalidOwnerException extends TaskanaException {
-  private static final long serialVersionUID = 1L;
 
   public InvalidOwnerException(String msg) {
     super(msg);

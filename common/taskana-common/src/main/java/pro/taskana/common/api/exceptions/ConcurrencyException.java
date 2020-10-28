@@ -8,8 +8,6 @@ package pro.taskana.common.api.exceptions;
  */
 public class ConcurrencyException extends TaskanaException {
 
-  private static final long serialVersionUID = 1L;
-
   public ConcurrencyException(String msg) {
     super(msg);
   }

@@ -10,8 +10,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
  */
 public class InvalidWorkbasketException extends TaskanaException {
 
-  private static final long serialVersionUID = 1L;
-
   public InvalidWorkbasketException(String msg) {
     super(msg);
   }

@@ -225,6 +225,5 @@ class AccessIdControllerIntTest {
   }
 
   static class AccessIdListResource extends ArrayList<AccessIdRepresentationModel> {
-    private static final long serialVersionUID = 1L;
   }
 }

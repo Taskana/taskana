@@ -7,8 +7,6 @@ package pro.taskana.common.api.exceptions;
  */
 public class InvalidArgumentException extends TaskanaException {
 
-  private static final long serialVersionUID = 1L;
-
   public InvalidArgumentException(String msg) {
     super(msg);
   }

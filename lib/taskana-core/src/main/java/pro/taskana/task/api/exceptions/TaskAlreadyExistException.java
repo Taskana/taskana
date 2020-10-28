@@ -8,8 +8,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
  */
 public class TaskAlreadyExistException extends TaskanaException {
 
-  private static final long serialVersionUID = 1L;
-
   public TaskAlreadyExistException(String id) {
     super(id);
   }

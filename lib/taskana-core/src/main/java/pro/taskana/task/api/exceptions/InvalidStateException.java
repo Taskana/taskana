@@ -8,7 +8,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
  * @author bbr
  */
 public class InvalidStateException extends TaskanaException {
-  private static final long serialVersionUID = 1L;
 
   public InvalidStateException(String msg) {
     super(msg);

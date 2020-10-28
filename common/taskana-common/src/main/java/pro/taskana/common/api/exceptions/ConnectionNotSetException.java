@@ -6,8 +6,6 @@ package pro.taskana.common.api.exceptions;
  */
 public class ConnectionNotSetException extends TaskanaRuntimeException {
 
-  private static final long serialVersionUID = 1L;
-
   public ConnectionNotSetException() {
     super("Connection not set");
   }
