@@ -24,11 +24,7 @@ import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
-/**
- * Test ClassificationController.
- *
- * @author bbr
- */
+/** Test ClassificationController. */
 @TaskanaSpringBootTest
 class ClassificationControllerIntTest {
 

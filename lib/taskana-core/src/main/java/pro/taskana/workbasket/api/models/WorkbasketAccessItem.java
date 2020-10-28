@@ -5,8 +5,6 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 /**
  * Interface for WorkbasketAccessItem. This interface is used to control access of users to
  * workbaskets.
- *
- * @author bbr
  */
 public interface WorkbasketAccessItem {
 

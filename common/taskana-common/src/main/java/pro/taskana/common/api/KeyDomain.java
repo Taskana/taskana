@@ -2,11 +2,7 @@ package pro.taskana.common.api;
 
 import java.util.Objects;
 
-/**
- * This class encapsulates key - domain pairs for identification of workbaskets.
- *
- * @author bbr
- */
+/** This class encapsulates key - domain pairs for identification of workbaskets. */
 public class KeyDomain {
 
   private String key;

@@ -29,11 +29,7 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/**
- * Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT.
- *
- * @author BBR
- */
+/** Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT. */
 class ClassificationServiceImplIntExplicitTest {
 
   static int counter = 0;

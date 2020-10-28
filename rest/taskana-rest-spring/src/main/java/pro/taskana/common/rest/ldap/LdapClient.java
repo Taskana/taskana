@@ -27,11 +27,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
-/**
- * Class for Ldap access.
- *
- * @author bbr
- */
+/** Class for Ldap access. */
 @Component
 public class LdapClient {
 

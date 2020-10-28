@@ -4,11 +4,7 @@ import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * This class holds error data.
- *
- * @author bbr
- */
+/** This class holds error data. */
 public class TaskanaErrorData {
 
   private final Date timestamp;

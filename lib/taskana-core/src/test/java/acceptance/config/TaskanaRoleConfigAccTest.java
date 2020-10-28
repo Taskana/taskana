@@ -18,11 +18,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 
-/**
- * Test taskana's role configuration.
- *
- * @author bbr
- */
+/** Test taskana's role configuration. */
 class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
   TaskanaRoleConfigAccTest() throws Exception {

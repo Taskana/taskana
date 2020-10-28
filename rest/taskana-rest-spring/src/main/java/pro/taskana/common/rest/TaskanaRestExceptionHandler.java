@@ -26,11 +26,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistExc
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 
-/**
- * This class handles taskana exceptions.
- *
- * @author bbr
- */
+/** This class handles taskana exceptions. */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler {

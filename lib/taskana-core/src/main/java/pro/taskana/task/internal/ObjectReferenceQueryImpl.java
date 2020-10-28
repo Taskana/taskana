@@ -14,11 +14,7 @@ import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.ObjectReferenceQueryColumnName;
 import pro.taskana.task.api.models.ObjectReference;
 
-/**
- * Implementation of ObjectReferenceQuery interface.
- *
- * @author EH
- */
+/** Implementation of ObjectReferenceQuery interface. */
 public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   private static final String LINK_TO_MAPPER =

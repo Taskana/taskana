@@ -18,11 +18,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 
-/**
- * Implementation of ClassificationQuery interface.
- *
- * @author EH
- */
+/** Implementation of ClassificationQuery interface. */
 public class ClassificationQueryImpl implements ClassificationQuery {
 
   private static final String LINK_TO_SUMMARYMAPPER =

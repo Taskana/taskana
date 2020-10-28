@@ -11,11 +11,7 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Integration Test for TaskanaEngineConfiguration.
- *
- * @author EH
- */
+/** Integration Test for TaskanaEngineConfiguration. */
 public final class TaskanaEngineTestConfiguration {
 
   private static final Logger LOGGER =

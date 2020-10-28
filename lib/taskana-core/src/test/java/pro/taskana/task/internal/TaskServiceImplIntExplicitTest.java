@@ -47,11 +47,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/**
- * Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT.
- *
- * @author EH
- */
+/** Integration Test for TaskServiceImpl transactions with connection management mode EXPLICIT. */
 @ExtendWith(JaasExtension.class)
 class TaskServiceImplIntExplicitTest {
 
