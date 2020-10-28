@@ -42,11 +42,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/**
- * Unit Test for workbasketServiceImpl.
- *
- * @author EH
- */
+/** Unit Test for workbasketServiceImpl. */
 @ExtendWith(MockitoExtension.class)
 class WorkbasketServiceImplTest {
 

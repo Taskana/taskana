@@ -17,11 +17,7 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
-/**
- * Test for WorkbasketAccessItemQueryImpl.
- *
- * @author jsa
- */
+/** Test for WorkbasketAccessItemQueryImpl. */
 @ExtendWith(MockitoExtension.class)
 class WorkbasketAccessItemQueryImplTest {
 

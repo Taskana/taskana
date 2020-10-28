@@ -24,11 +24,7 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/**
- * Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT.
- *
- * @author EH
- */
+/** Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT. */
 class ClassificationServiceImplIntAutoCommitTest {
 
   private static SampleDataGenerator sampleDataGenerator;

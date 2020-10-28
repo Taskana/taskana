@@ -12,11 +12,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
-/**
- * Acceptance test for classification queries and authorization.
- *
- * @author bbr
- */
+/** Acceptance test for classification queries and authorization. */
 @ExtendWith(JaasExtension.class)
 class ClassificationQueryAccTest extends AbstractAccTest {
 

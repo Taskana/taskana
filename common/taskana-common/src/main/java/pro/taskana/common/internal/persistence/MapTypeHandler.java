@@ -12,11 +12,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * This Typehandler will transfer a Map into an xml blob and back.
- *
- * @author EH
- */
+/** This Typehandler will transfer a Map into an xml blob and back. */
 public class MapTypeHandler extends BaseTypeHandler<Map<String, Object>> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MapTypeHandler.class);

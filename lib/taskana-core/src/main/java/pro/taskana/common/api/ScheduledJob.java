@@ -9,11 +9,7 @@ import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
-/**
- * This class holds all data that go into the Job table.
- *
- * @author bbr
- */
+/** This class holds all data that go into the Job table. */
 public class ScheduledJob {
 
   Map<String, String> arguments;
@@ -165,11 +161,7 @@ public class ScheduledJob {
         + "]";
   }
 
-  /**
-   * This enum tracks the state of a job.
-   *
-   * @author bbr
-   */
+  /** This enum tracks the state of a job. */
   public enum State {
     READY,
     FAILED

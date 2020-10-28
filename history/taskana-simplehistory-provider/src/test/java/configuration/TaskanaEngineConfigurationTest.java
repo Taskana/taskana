@@ -9,11 +9,7 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 
-/**
- * Unit Test for TaskanaEngineConfigurationTest.
- *
- * @author MMR
- */
+/** Unit Test for TaskanaEngineConfigurationTest. */
 class TaskanaEngineConfigurationTest extends AbstractAccTest {
 
   @Test

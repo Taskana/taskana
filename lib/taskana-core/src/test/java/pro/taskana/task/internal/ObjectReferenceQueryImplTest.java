@@ -16,11 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.models.ObjectReference;
 
-/**
- * Test for ObjectReferenceQueryImpl.
- *
- * @author EH
- */
+/** Test for ObjectReferenceQueryImpl. */
 @ExtendWith(MockitoExtension.class)
 class ObjectReferenceQueryImplTest {
 

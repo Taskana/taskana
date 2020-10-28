@@ -5,8 +5,6 @@ import pro.taskana.common.api.QueryColumnName;
 /**
  * Enum containing the column names for {@link
  * pro.taskana.task.internal.TaskQueryMapper#queryObjectReferenceColumnValues}.
- *
- * @author jsa
  */
 public enum ObjectReferenceQueryColumnName implements QueryColumnName {
   ID("id"),

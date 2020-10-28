@@ -2,11 +2,7 @@ package pro.taskana.simplehistory.impl.task;
 
 import pro.taskana.common.api.QueryColumnName;
 
-/**
- * Enum containing the column names for {@link TaskHistoryQueryMapper#queryHistoryColumnValues}.
- *
- * @author bv
- */
+/** Enum containing the column names for {@link TaskHistoryQueryMapper#queryHistoryColumnValues}. */
 public enum TaskHistoryQueryColumnName implements QueryColumnName {
   ID("id"),
   BUSINESS_PROCESS_ID("business_process_id"),

@@ -18,11 +18,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
-/**
- * Controller for access id validation.
- *
- * @author bbr
- */
+/** Controller for access id validation. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class AccessIdController {

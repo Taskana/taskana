@@ -5,11 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.common.api.TaskanaEngine;
 
-/**
- * Utility class to enable unit tests to access mappers directly.
- *
- * @author bbr
- */
+/** Utility class to enable unit tests to access mappers directly. */
 public class TaskanaEngineProxy {
 
   private final InternalTaskanaEngine engine;

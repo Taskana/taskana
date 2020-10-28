@@ -20,11 +20,7 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/**
- * Test for WorkbasketQueryImpl.
- *
- * @author jsa
- */
+/** Test for WorkbasketQueryImpl. */
 @ExtendWith(MockitoExtension.class)
 class WorkbasketQueryImplTest {
 

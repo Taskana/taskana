@@ -17,11 +17,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 
-/**
- * Test for ClassificationQueryImpl.
- *
- * @author EH
- */
+/** Test for ClassificationQueryImpl. */
 @ExtendWith(MockitoExtension.class)
 class ClassificationQueryImplTest {
 

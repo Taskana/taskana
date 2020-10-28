@@ -5,8 +5,6 @@ import pro.taskana.common.api.QueryColumnName;
 /**
  * Enum containing the column names for {@link
  * pro.taskana.classification.internal.ClassificationQueryMapper#queryClassificationColumnValues}.
- *
- * @author jsa
  */
 public enum ClassificationQueryColumnName implements QueryColumnName {
   ID("id"),

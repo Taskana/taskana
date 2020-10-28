@@ -29,13 +29,8 @@ import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/**
- * Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT.
- *
- * @author BBR
- */
+/** Integration Test for ClassificationServiceImpl with connection management mode EXPLICIT. */
 class ClassificationServiceImplIntExplicitTest {
-
 
   static int counter = 0;
 
@@ -47,8 +42,8 @@ class ClassificationServiceImplIntExplicitTest {
   void setup() throws Exception {
     dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    TaskanaEngineConfiguration taskanaEngineConfiguration = new TaskanaEngineConfiguration(
-        dataSource, false, false, schemaName);
+    TaskanaEngineConfiguration taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
     taskanaEngine = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     classificationService = taskanaEngine.getClassificationService();

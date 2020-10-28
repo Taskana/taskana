@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * Main query interface.
  *
- * @author EH
  * @param <T> specifies the return type of the follwing methods
  * @param <U> specifies the type of the enum used
  */
@@ -87,11 +86,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
     }
   }
 
-  /**
-   * Determines the sort direction.
-   *
-   * @author bbr
-   */
+  /** Determines the sort direction. */
   enum SortDirection {
     ASCENDING("ASC"),
     DESCENDING("DESC");

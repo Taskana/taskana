@@ -21,11 +21,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 
-/**
- * Unit Test for ClassificationServiceImpl.
- *
- * @author EH
- */
+/** Unit Test for ClassificationServiceImpl. */
 @ExtendWith(MockitoExtension.class)
 class ClassificationServiceImplTest {
 

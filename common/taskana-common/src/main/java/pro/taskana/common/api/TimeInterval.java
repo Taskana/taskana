@@ -6,8 +6,6 @@ import java.util.Objects;
 /**
  * Capture a time interval. A fixed interval has defined begin and end Instant. An open ended
  * interval has either begin == null or end ==null.
- *
- * @author bbr
  */
 public class TimeInterval {
 

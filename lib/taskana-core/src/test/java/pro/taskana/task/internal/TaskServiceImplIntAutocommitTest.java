@@ -41,11 +41,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/**
- * Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT.
- *
- * @author EH
- */
+/** Integration Test for TaskServiceImpl transactions with connection management mode AUTOCOMMIT. */
 @ExtendWith(JaasExtension.class)
 class TaskServiceImplIntAutocommitTest {
 
