@@ -3,8 +3,6 @@ package pro.taskana.common.api.exceptions;
 /** common base class for Taskana's checked exceptions. */
 public class TaskanaException extends Exception {
 
-  private static final long serialVersionUID = 123234345123412L;
-
   public TaskanaException() {
     super();
   }

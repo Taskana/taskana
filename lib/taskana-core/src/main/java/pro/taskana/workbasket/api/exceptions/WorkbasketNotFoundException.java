@@ -5,7 +5,6 @@ import pro.taskana.common.api.exceptions.NotFoundException;
 /** This exception will be thrown if a specific workbasket is not in the database. */
 public class WorkbasketNotFoundException extends NotFoundException {
 
-  private static final long serialVersionUID = 1L;
   private String key;
   private String domain;
 

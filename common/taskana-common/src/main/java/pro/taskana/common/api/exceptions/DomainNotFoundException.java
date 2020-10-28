@@ -5,8 +5,6 @@ package pro.taskana.common.api.exceptions;
  */
 public class DomainNotFoundException extends NotFoundException {
 
-  private static final long serialVersionUID = 1L;
-
   public DomainNotFoundException(String domain, String msg) {
     super(domain, msg);
   }

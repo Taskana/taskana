@@ -5,7 +5,6 @@ import pro.taskana.common.api.exceptions.NotFoundException;
 /** Thrown if a specific task is not in the database. */
 public class ClassificationNotFoundException extends NotFoundException {
 
-  private static final long serialVersionUID = 1L;
   private String key;
   private String domain;
 

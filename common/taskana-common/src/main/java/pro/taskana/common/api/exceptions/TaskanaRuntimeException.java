@@ -3,8 +3,6 @@ package pro.taskana.common.api.exceptions;
 /** Common base class for Taskana's runtime exceptions. */
 public class TaskanaRuntimeException extends RuntimeException {
 
-  private static final long serialVersionUID = 1511142769801824L;
-
   public TaskanaRuntimeException() {
     super();
   }
