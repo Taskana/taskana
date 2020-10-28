@@ -112,5 +112,4 @@ public class TaskanaWildflyTest extends AbstractAccTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
   }
-
 }

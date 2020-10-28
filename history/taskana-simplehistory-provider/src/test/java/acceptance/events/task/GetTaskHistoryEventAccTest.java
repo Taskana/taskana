@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 
-
 class GetTaskHistoryEventAccTest extends AbstractAccTest {
 
   @Test

@@ -1,7 +1,6 @@
 package pro.taskana.spi.history.api.events.classification;
 
 public enum ClassificationHistoryEventType {
-
   CREATED("CREATED"),
   UPDATED("UPDATED"),
   DELETED("DELETED");

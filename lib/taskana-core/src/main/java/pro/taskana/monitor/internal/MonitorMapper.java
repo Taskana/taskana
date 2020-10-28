@@ -426,7 +426,7 @@ public interface MonitorMapper {
       @Param("excludedClassificationIds") List<String> excludedClassificationIds,
       @Param("customAttributeFilter") Map<TaskCustomField, String> customAttributeFilter,
       @Param("combinedClassificationFilter")
-           List<CombinedClassificationFilter> combinedClassificationFilter,
+          List<CombinedClassificationFilter> combinedClassificationFilter,
       @Param("customField") TaskCustomField taskCustomField);
 
   @Select(

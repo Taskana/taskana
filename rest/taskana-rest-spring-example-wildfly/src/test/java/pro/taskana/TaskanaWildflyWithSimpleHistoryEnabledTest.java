@@ -99,5 +99,4 @@ public class TaskanaWildflyWithSimpleHistoryEnabledTest extends AbstractAccTest 
     assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(getHistoryEventsResponse.getBody().getContent()).hasSize(46);
   }
-
 }

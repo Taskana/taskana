@@ -28,7 +28,6 @@ class TaskanaEngineControllerIntTest {
     this.restHelper = restHelper;
   }
 
-
   @Test
   void testDomains() {
     ResponseEntity<List<String>> response =

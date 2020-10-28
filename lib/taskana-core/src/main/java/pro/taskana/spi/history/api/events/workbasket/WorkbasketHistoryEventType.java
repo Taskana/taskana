@@ -14,7 +14,6 @@ public enum WorkbasketHistoryEventType {
   DISTRIBUTION_TARGET_REMOVED("DISTRIBUTION_TARGET_REMOVED"),
   DISTRIBUTION_TARGETS_UPDATED("DISTRIBUTION_TARGETS_UPDATED");
 
-
   private String name;
 
   WorkbasketHistoryEventType(String name) {

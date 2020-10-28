@@ -23,9 +23,9 @@ public final class TaskRoutingManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingManager.class);
   private static TaskRoutingManager singleton;
-  private boolean enabled = false;
   private final List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
   private final ServiceLoader<TaskRoutingProvider> serviceLoader;
+  private boolean enabled = false;
 
   private TaskRoutingManager(TaskanaEngine taskanaEngine) {
     serviceLoader = ServiceLoader.load(TaskRoutingProvider.class);

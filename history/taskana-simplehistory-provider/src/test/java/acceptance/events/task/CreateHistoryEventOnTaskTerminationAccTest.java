@@ -26,8 +26,7 @@ class CreateHistoryEventOnTaskTerminationAccTest extends AbstractAccTest {
 
     final String taskId = "TKI:000000000000000000000000000000000001";
 
-    List<TaskHistoryEvent> events =
-        historyService.createTaskHistoryQuery().taskIdIn(taskId).list();
+    List<TaskHistoryEvent> events = historyService.createTaskHistoryQuery().taskIdIn(taskId).list();
 
     assertThat(events).isEmpty();
 
@@ -48,8 +47,7 @@ class CreateHistoryEventOnTaskTerminationAccTest extends AbstractAccTest {
 
     final String taskId = "TKI:000000000000000000000000000000000003";
 
-    List<TaskHistoryEvent> events =
-        historyService.createTaskHistoryQuery().taskIdIn(taskId).list();
+    List<TaskHistoryEvent> events = historyService.createTaskHistoryQuery().taskIdIn(taskId).list();
 
     assertThat(events).isEmpty();
 

@@ -353,8 +353,11 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("_links.self.href",
-            is("http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000001")))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "_links.self.href",
+                is(
+                    "http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000001")))
         .andDo(
             MockMvcRestDocumentation.document(
                 "GetSpecificWorkbasketDocTest", responseFields(workbasketFieldDescriptors)));
@@ -387,8 +390,11 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("_links.self.href",
-            is("http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000001")))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "_links.self.href",
+                is(
+                    "http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000001")))
         .andDo(
             MockMvcRestDocumentation.document(
                 "WorkbasketSubset", responseFields(workbasketSubsetFieldDescriptors)));
@@ -417,8 +423,11 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                         "WBI:100000000000000000000000000000000002"))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("_links.self.href",
-            is("http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "_links.self.href",
+                is(
+                    "http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000002/distribution-targets")))
         .andDo(
             MockMvcRestDocumentation.document(
                 "GetAllWorkbasketDistributionTargets",
@@ -478,8 +487,11 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                 .contentType("application/json")
                 .content(modifiedWorkbasket))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("_links.self.href",
-            is("http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000002")))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "_links.self.href",
+                is(
+                    "http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000002")))
         .andDo(
             MockMvcRestDocumentation.document(
                 "UpdateWorkbasketDocTest",
@@ -510,8 +522,11 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("_links.self.href",
-            is("http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "_links.self.href",
+                is(
+                    "http://localhost:8080/api/v1/workbaskets/WBI:100000000000000000000000000000000001/workbasketAccessItems")))
         .andDo(
             MockMvcRestDocumentation.document(
                 "AccessItemsDocTest", responseFields(accessItemFieldDescriptors)));

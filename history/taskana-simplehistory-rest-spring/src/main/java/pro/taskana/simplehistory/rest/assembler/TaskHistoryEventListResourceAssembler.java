@@ -68,8 +68,9 @@ public class TaskHistoryEventListResourceAssembler {
 
   private UriComponentsBuilder getBaseUri() {
     HttpServletRequest request =
-        ((ServletRequestAttributes) Objects.requireNonNull(
-            RequestContextHolder.getRequestAttributes())).getRequest();
+        ((ServletRequestAttributes)
+                Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+            .getRequest();
     UriComponentsBuilder baseUri =
         ServletUriComponentsBuilder.fromServletMapping(request).path(request.getRequestURI());
 

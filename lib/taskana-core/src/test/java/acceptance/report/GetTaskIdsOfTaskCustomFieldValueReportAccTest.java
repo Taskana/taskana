@@ -77,8 +77,8 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Collections
-            .singletonList(new SelectedItem("Geschaeftsstelle A", null, Integer.MIN_VALUE, -5));
+        Collections.singletonList(
+            new SelectedItem("Geschaeftsstelle A", null, Integer.MIN_VALUE, -5));
 
     List<String> ids =
         MONITOR_SERVICE

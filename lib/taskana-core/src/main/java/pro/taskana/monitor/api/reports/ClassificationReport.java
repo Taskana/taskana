@@ -60,9 +60,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
 
     public DetailedClassificationReport(
         List<TimeIntervalColumnHeader> workbasketLevelReportColumnHeaders) {
-      super(
-          workbasketLevelReportColumnHeaders,
-          new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
+      super(workbasketLevelReportColumnHeaders, new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
     }
 
     @Override

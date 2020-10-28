@@ -34,8 +34,7 @@ class JaasExtensionTest {
   private static final DynamicTest NOT_NULL_DYNAMIC_TEST =
       dynamicTest("dynamic test", () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isNotNull());
   private static final DynamicTest NULL_DYNAMIC_TEST =
-      dynamicTest(
-          "dynamic test", () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull());
+      dynamicTest("dynamic test", () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull());
   private static final DynamicTest DYNAMIC_TEST_USER_DYNAMIC_TEST =
       dynamicTest(
           "dynamic test",

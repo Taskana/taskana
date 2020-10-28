@@ -206,7 +206,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * Add the owner for pattern matching to your query. It will be compared in SQL with the LIKE
    * operator. You may use a wildcard like % to specify the pattern.
    *
-   * <p>If you specify multiple arguments they are combined with the OR keyword.</p>
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param owners the owners of the searched tasks
    * @return the query
@@ -215,10 +215,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
 
   /**
    * Add the {@link ObjectReference} to exact match to your query. Each individual value has to
-   * match. Fields with the value 'null' will be ignored.
-   * The id of each ObjectReference will be ignored
+   * match. Fields with the value 'null' will be ignored. The id of each ObjectReference will be
+   * ignored
    *
-   * <p>If you specify multiple arguments they are combined with the OR keyword.</p>
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param objectReferences the combined values which are searched together.
    * @return the query
