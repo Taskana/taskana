@@ -144,10 +144,9 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             .inWorkingDays()
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).containsExactlyInAnyOrder(
-        "TKI:000000000000000000000000000000000006",
-        "TKI:000000000000000000000000000000000033"
-    );
+    assertThat(ids)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000006", "TKI:000000000000000000000000000000000033");
   }
 
   @WithAccessId(user = "monitor")

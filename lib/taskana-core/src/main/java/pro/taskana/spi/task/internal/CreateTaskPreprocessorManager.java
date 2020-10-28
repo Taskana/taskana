@@ -13,8 +13,8 @@ public class CreateTaskPreprocessorManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CreateTaskPreprocessorManager.class);
   private static CreateTaskPreprocessorManager singleton;
-  private boolean enabled = false;
   private final ServiceLoader<CreateTaskPreprocessor> serviceLoader;
+  private boolean enabled = false;
 
   private CreateTaskPreprocessorManager() {
     serviceLoader = ServiceLoader.load(CreateTaskPreprocessor.class);

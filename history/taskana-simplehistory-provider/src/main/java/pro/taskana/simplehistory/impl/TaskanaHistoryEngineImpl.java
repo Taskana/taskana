@@ -51,8 +51,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     sessionManager = createSqlSessionManager();
   }
 
-  public static TaskanaHistoryEngineImpl createTaskanaEngine(
-      TaskanaEngine taskanaEngine) {
+  public static TaskanaHistoryEngineImpl createTaskanaEngine(TaskanaEngine taskanaEngine) {
     return new TaskanaHistoryEngineImpl(taskanaEngine);
   }
 

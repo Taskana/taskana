@@ -109,16 +109,12 @@ public class ReportRepresentationModelAssembler {
     List<ReportRepresentationModel.RowResource> rows =
         report.getRows().values().stream()
             .sorted(Comparator.comparing(e -> e.getKey().toLowerCase()))
-            .map(
-                i ->
-                    transformRow(
-                        i, new String[report.getRowDesc().length], 0))
+            .map(i -> transformRow(i, new String[report.getRowDesc().length], 0))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
     List<ReportRepresentationModel.RowResource> sumRow =
-        transformRow(
-            report.getSumRow(), new String[report.getRowDesc().length], 0);
+        transformRow(report.getSumRow(), new String[report.getRowDesc().length], 0);
 
     return new ReportRepresentationModel(meta, rows, sumRow);
   }
@@ -135,8 +131,7 @@ public class ReportRepresentationModelAssembler {
     // is not
     // a reason to append code somewhere where it doesn't belong.
     if (row.getClass() == SingleRow.class) {
-      return Collections.singletonList(
-          transformSingleRow((SingleRow<I>) row, desc, depth));
+      return Collections.singletonList(transformSingleRow((SingleRow<I>) row, desc, depth));
     }
     return transformFoldableRow((FoldableRow<I>) row, desc, depth);
   }
@@ -152,8 +147,7 @@ public class ReportRepresentationModelAssembler {
 
   private <I extends QueryItem> List<ReportRepresentationModel.RowResource> transformFoldableRow(
       FoldableRow<I> row, String[] previousRowDesc, int depth) {
-    ReportRepresentationModel.RowResource baseRow =
-        transformSingleRow(row, previousRowDesc, depth);
+    ReportRepresentationModel.RowResource baseRow = transformSingleRow(row, previousRowDesc, depth);
     List<ReportRepresentationModel.RowResource> rowList = new LinkedList<>();
     rowList.add(baseRow);
     row.getFoldableRowKeySet().stream()

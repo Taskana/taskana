@@ -12,5 +12,4 @@ public class WorkbasketDistributionTargetsUpdatedEvent extends WorkbasketHistory
     eventType = WorkbasketHistoryEventType.DISTRIBUTION_TARGETS_UPDATED.getName();
     created = Instant.now();
   }
-
 }

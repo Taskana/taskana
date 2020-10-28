@@ -592,39 +592,41 @@ class QueryClassificationAccTest extends AbstractAccTest {
 
   @TestFactory
   Stream<DynamicTest> should_SortQueryAsc_When_OrderingByCustomAttribute() {
-    Iterator<ClassificationCustomField> iterator = Arrays.stream(ClassificationCustomField.values())
-                                                       .iterator();
-    ThrowingConsumer<ClassificationCustomField> test = customField -> {
-      List<ClassificationSummary> results =
-          classificationService
-              .createClassificationQuery()
-              .orderByCustomAttribute(customField, ASCENDING)
-              .list();
+    Iterator<ClassificationCustomField> iterator =
+        Arrays.stream(ClassificationCustomField.values()).iterator();
+    ThrowingConsumer<ClassificationCustomField> test =
+        customField -> {
+          List<ClassificationSummary> results =
+              classificationService
+                  .createClassificationQuery()
+                  .orderByCustomAttribute(customField, ASCENDING)
+                  .list();
 
-      assertThat(results)
-          .hasSizeGreaterThan(2)
-          .extracting(c -> c.getCustomAttribute(customField))
-          .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
-    };
+          assertThat(results)
+              .hasSizeGreaterThan(2)
+              .extracting(c -> c.getCustomAttribute(customField))
+              .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+        };
     return DynamicTest.stream(iterator, c -> "for " + c, test);
   }
 
   @TestFactory
   Stream<DynamicTest> should_SortQueryDesc_When_OrderingByCustomAttribute() {
-    Iterator<ClassificationCustomField> iterator = Arrays.stream(ClassificationCustomField.values())
-                                                       .iterator();
-    ThrowingConsumer<ClassificationCustomField> test = customField -> {
-      List<ClassificationSummary> results =
-          classificationService
-              .createClassificationQuery()
-              .orderByCustomAttribute(customField, DESCENDING)
-              .list();
+    Iterator<ClassificationCustomField> iterator =
+        Arrays.stream(ClassificationCustomField.values()).iterator();
+    ThrowingConsumer<ClassificationCustomField> test =
+        customField -> {
+          List<ClassificationSummary> results =
+              classificationService
+                  .createClassificationQuery()
+                  .orderByCustomAttribute(customField, DESCENDING)
+                  .list();
 
-      assertThat(results)
-          .hasSizeGreaterThan(2)
-          .extracting(c -> c.getCustomAttribute(customField))
-          .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
-    };
+          assertThat(results)
+              .hasSizeGreaterThan(2)
+              .extracting(c -> c.getCustomAttribute(customField))
+              .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+        };
     return DynamicTest.stream(iterator, c -> "for " + c, test);
   }
 }

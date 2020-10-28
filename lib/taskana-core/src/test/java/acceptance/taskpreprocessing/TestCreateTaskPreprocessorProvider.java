@@ -8,7 +8,6 @@ public class TestCreateTaskPreprocessorProvider implements CreateTaskPreprocesso
 
   @Override
   public void processTaskBeforeCreation(Task taskToProcess) {
-    taskToProcess
-        .setCustomAttribute(TaskCustomField.CUSTOM_1, "preprocessedCustomField");
+    taskToProcess.setCustomAttribute(TaskCustomField.CUSTOM_1, "preprocessedCustomField");
   }
 }

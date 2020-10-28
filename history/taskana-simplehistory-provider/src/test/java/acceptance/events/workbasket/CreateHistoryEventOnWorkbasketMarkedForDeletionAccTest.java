@@ -45,8 +45,7 @@ class CreateHistoryEventOnWorkbasketMarkedForDeletionAccTest extends AbstractAcc
     String eventWorkbasketId = events.get(0).getWorkbasketId();
     String details = workbasketHistoryEventMapper.findById(events.get(0).getId()).getDetails();
 
-    assertThat(eventType)
-        .isEqualTo(WorkbasketHistoryEventType.MARKED_FOR_DELETION.getName());
+    assertThat(eventType).isEqualTo(WorkbasketHistoryEventType.MARKED_FOR_DELETION.getName());
 
     assertThat(eventWorkbasketId).isEqualTo(workbasketId);
   }

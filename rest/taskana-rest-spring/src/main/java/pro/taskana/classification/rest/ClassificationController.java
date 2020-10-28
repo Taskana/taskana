@@ -49,7 +49,6 @@ public class ClassificationController extends AbstractPagingController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
-
   private static final String LIKE = "%";
   private static final String NAME = "name";
   private static final String NAME_LIKE = "name-like";

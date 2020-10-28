@@ -128,5 +128,4 @@ public class AbstractAccTest {
     }
     return stringBuilder.toString();
   }
-
 }

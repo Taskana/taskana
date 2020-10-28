@@ -37,8 +37,6 @@ public class ExampleRestConfiguration {
   // only required to let the adapter example connect to the same database
   @Bean(initMethod = "start", destroyMethod = "stop")
   public Server inMemoryH2DatabaseaServer() throws SQLException {
-    return Server.createTcpServer(
-        "-tcp", "-tcpAllowOthers", "-tcpPort", "9095");
+    return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9095");
   }
-
 }
