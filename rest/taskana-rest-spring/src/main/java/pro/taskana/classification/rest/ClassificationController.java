@@ -38,8 +38,8 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.AbstractPagingController;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 
 /** Controller for all {@link Classification} related endpoints. */
@@ -71,7 +71,7 @@ public class ClassificationController extends AbstractPagingController {
     this.summaryModelAssembler = summaryModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONS)
+  @GetMapping(path = RestEndpoints.URL_CLASSIFICATIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>>
       getClassifications(@RequestParam MultiValueMap<String, String> params)
@@ -96,7 +96,7 @@ public class ClassificationController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_VALUE)
+  @GetMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> getClassification(
       @PathVariable String classificationId) throws ClassificationNotFoundException {
@@ -114,7 +114,7 @@ public class ClassificationController extends AbstractPagingController {
     return response;
   }
 
-  @PostMapping(path = Mapping.URL_CLASSIFICATIONS)
+  @PostMapping(path = RestEndpoints.URL_CLASSIFICATIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> createClassification(
       @RequestBody ClassificationRepresentationModel resource)
@@ -135,7 +135,7 @@ public class ClassificationController extends AbstractPagingController {
     return response;
   }
 
-  @PutMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
+  @PutMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> updateClassification(
       @PathVariable(value = "classificationId") String classificationId,
@@ -169,7 +169,7 @@ public class ClassificationController extends AbstractPagingController {
     return result;
   }
 
-  @DeleteMapping(path = Mapping.URL_CLASSIFICATIONS_ID)
+  @DeleteMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> deleteClassification(
       @PathVariable String classificationId)

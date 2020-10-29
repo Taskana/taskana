@@ -13,7 +13,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
@@ -270,6 +270,6 @@ class TaskRepresentationModelAssemberTest {
   private void testLinks(TaskRepresentationModel repModel) {
     assertThat(repModel.getLinks()).hasSize(1);
     assertThat(repModel.getRequiredLink("self").getHref())
-        .isEqualTo(Mapping.URL_TASKS_ID.replaceAll("\\{.*}", repModel.getTaskId()));
+        .isEqualTo(RestEndpoints.URL_TASKS_ID.replaceAll("\\{.*}", repModel.getTaskId()));
   }
 }

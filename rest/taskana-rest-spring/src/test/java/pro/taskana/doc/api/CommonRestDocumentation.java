@@ -11,7 +11,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate common REST Documentation. */
@@ -66,7 +66,8 @@ class CommonRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
-                        Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
+                        RestEndpoints.URL_CLASSIFICATIONS_ID,
+                        "CLI:100000000000000000000000000000000009"))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(

@@ -19,7 +19,7 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.models.Task;
@@ -58,7 +58,7 @@ class AsyncUpdateJobIntTest {
 
     ResponseEntity<ClassificationRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -73,7 +73,7 @@ class AsyncUpdateJobIntTest {
     classification.setPriority(1000);
 
     TEMPLATE.exchange(
-        restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
+        restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
         HttpMethod.PUT,
         new HttpEntity<>(classification, restHelper.getHeadersTeamlead_1()),
         ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -86,7 +86,7 @@ class AsyncUpdateJobIntTest {
     // verify the classification modified timestamp is after 'before'
     ResponseEntity<ClassificationRepresentationModel> repeatedResponse =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -151,7 +151,7 @@ class AsyncUpdateJobIntTest {
 
     ResponseEntity<TaskRepresentationModel> taskResponse =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, taskId),
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskId),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskRepresentationModel.class));

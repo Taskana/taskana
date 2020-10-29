@@ -26,8 +26,8 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.AbstractPagingController;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
@@ -93,7 +93,7 @@ public class WorkbasketController extends AbstractPagingController {
         workbasketAccessItemRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET)
+  @GetMapping(path = RestEndpoints.URL_WORKBASKET)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> getWorkbaskets(
       @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
@@ -120,7 +120,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_VALUE)
+  @GetMapping(path = RestEndpoints.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> getWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
@@ -136,7 +136,7 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @DeleteMapping(path = Mapping.URL_WORKBASKET_ID)
+  @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
   public ResponseEntity<WorkbasketRepresentationModel> deleteWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
@@ -160,7 +160,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @PostMapping(path = Mapping.URL_WORKBASKET)
+  @PostMapping(path = RestEndpoints.URL_WORKBASKET)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> createWorkbasket(
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
@@ -184,7 +184,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @PutMapping(path = Mapping.URL_WORKBASKET_ID)
+  @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> updateWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId,
@@ -214,7 +214,9 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS, produces = MediaTypes.HAL_JSON_VALUE)
+  @GetMapping(
+      path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
+      produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
       getWorkbasketAccessItems(@PathVariable(value = "workbasketId") String workbasketId)
@@ -234,7 +236,7 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @PutMapping(path = Mapping.URL_WORKBASKET_ID_ACCESSITEMS)
+  @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
       setWorkbasketAccessItems(
@@ -267,7 +269,9 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION, produces = MediaTypes.HAL_JSON_VALUE)
+  @GetMapping(
+      path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+      produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>
       getDistributionTargets(@PathVariable(value = "workbasketId") String workbasketId)
@@ -288,7 +292,7 @@ public class WorkbasketController extends AbstractPagingController {
     return result;
   }
 
-  @PutMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
+  @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>
       setDistributionTargetsForWorkbasketId(
@@ -317,7 +321,7 @@ public class WorkbasketController extends AbstractPagingController {
     return response;
   }
 
-  @DeleteMapping(path = Mapping.URL_WORKBASKET_ID_DISTRIBUTION)
+  @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>>
       removeDistributionTargetForWorkbasketId(

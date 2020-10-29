@@ -34,8 +34,8 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.rest.AbstractPagingController;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
@@ -108,7 +108,7 @@ public class TaskController extends AbstractPagingController {
     this.taskSummaryRepresentationModelAssembler = taskSummaryRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_TASKS)
+  @GetMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> getTasks(
       @RequestParam MultiValueMap<String, String> params) throws InvalidArgumentException {
@@ -134,7 +134,7 @@ public class TaskController extends AbstractPagingController {
     return response;
   }
 
-  @DeleteMapping(path = Mapping.URL_TASKS)
+  @DeleteMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> deleteTasks(
       @RequestParam MultiValueMap<String, String> params)
@@ -168,7 +168,7 @@ public class TaskController extends AbstractPagingController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_TASKS_ID)
+  @GetMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> getTask(@PathVariable String taskId)
       throws TaskNotFoundException, NotAuthorizedException {
@@ -183,7 +183,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASKS_ID_CLAIM)
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> claimTask(
       @PathVariable String taskId, @RequestBody String userName)
@@ -202,7 +202,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASKS_ID_SELECT_AND_CLAIM)
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
       @RequestParam MultiValueMap<String, String> params)
@@ -225,7 +225,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @DeleteMapping(path = Mapping.URL_TASKS_ID_CLAIM)
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
@@ -244,7 +244,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASKS_ID_COMPLETE)
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> completeTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
@@ -261,7 +261,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @DeleteMapping(path = Mapping.URL_TASKS_ID)
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
@@ -272,7 +272,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASKS)
+  @PostMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> createTask(
       @RequestBody TaskRepresentationModel taskRepresentationModel)
@@ -295,7 +295,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASKS_ID_TRANSFER_WORKBASKETID)
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> transferTask(
       @PathVariable String taskId, @PathVariable String workbasketId)
@@ -312,7 +312,7 @@ public class TaskController extends AbstractPagingController {
     return result;
   }
 
-  @PutMapping(path = Mapping.URL_TASKS_ID)
+  @PutMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> updateTask(
       @PathVariable(value = "taskId") String taskId,

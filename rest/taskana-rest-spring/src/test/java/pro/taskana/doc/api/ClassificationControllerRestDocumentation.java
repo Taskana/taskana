@@ -20,7 +20,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate REST Dokumentation for ClassificationController. */
@@ -251,7 +251,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
+                    restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS) + "?domain=DOMAIN_B")
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -267,7 +267,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
-                        Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
+                        RestEndpoints.URL_CLASSIFICATIONS_ID,
+                        "CLI:100000000000000000000000000000000009"))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -282,7 +283,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
-                        Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
+                        RestEndpoints.URL_CLASSIFICATIONS_ID,
+                        "CLI:100000000000000000000000000000000009"))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -295,7 +297,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     MvcResult result =
         this.mockMvc
             .perform(
-                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_CLASSIFICATIONS))
+                RestDocumentationRequestBuilders.post(
+                        restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS))
                     .contentType("application/hal+json")
                     .content("{\"key\":\"Key0815casdgdgh\", \"domain\":\"DOMAIN_B\"}")
                     .header("Authorization", TEAMLEAD_1_CREDENTIALS))
@@ -313,7 +316,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.delete(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, newId))
+                    restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, newId))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteClassificationDocTest"));
@@ -324,7 +327,7 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
     URL url =
         new URL(
             restHelper.toUrl(
-                Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"));
+                RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", TEAMLEAD_1_CREDENTIALS);
@@ -344,7 +347,8 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.put(
                     restHelper.toUrl(
-                        Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"))
+                        RestEndpoints.URL_CLASSIFICATIONS_ID,
+                        "CLI:100000000000000000000000000000000009"))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS)
                 .contentType("application/json")
                 .content(modifiedTask))

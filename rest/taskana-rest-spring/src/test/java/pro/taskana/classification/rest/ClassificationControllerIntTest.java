@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -41,7 +41,7 @@ class ClassificationControllerIntTest {
     ResponseEntity<ClassificationRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(
-                Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000002"),
+                RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000002"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -54,7 +54,7 @@ class ClassificationControllerIntTest {
   void testGetAllClassifications() {
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -66,7 +66,8 @@ class ClassificationControllerIntTest {
   void testGetAllClassificationsFilterByCustomAttribute() {
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS) + "?domain=DOMAIN_A&custom-1-like=RVNR",
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
+                + "?domain=DOMAIN_A&custom-1-like=RVNR",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -80,7 +81,7 @@ class ClassificationControllerIntTest {
   void testGetAllClassificationsKeepingFilters() {
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS)
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&sort-by=key&order=asc",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -97,7 +98,7 @@ class ClassificationControllerIntTest {
   void testGetSecondPageSortedByKey() {
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS)
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&sort-by=key&order=asc&page-size=5&page=2",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -126,7 +127,7 @@ class ClassificationControllerIntTest {
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -141,7 +142,7 @@ class ClassificationControllerIntTest {
 
     responseEntity =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -160,7 +161,7 @@ class ClassificationControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             template.exchange(
-                restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+                restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
                 HttpMethod.POST,
                 new HttpEntity<>(newClassification, restHelper.getHeadersUser_1_1()),
                 ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -182,7 +183,7 @@ class ClassificationControllerIntTest {
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -202,7 +203,7 @@ class ClassificationControllerIntTest {
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -221,7 +222,7 @@ class ClassificationControllerIntTest {
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -231,7 +232,7 @@ class ClassificationControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<ClassificationSummaryRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -264,7 +265,7 @@ class ClassificationControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
-              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+              restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
               HttpMethod.POST,
               new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin()),
               ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -286,7 +287,7 @@ class ClassificationControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
-              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS),
+              restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
               HttpMethod.POST,
               new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin()),
               ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
@@ -304,7 +305,7 @@ class ClassificationControllerIntTest {
     ResponseEntity<ClassificationSummaryRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(
-                Mapping.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"),
+                RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"),
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
@@ -320,7 +321,7 @@ class ClassificationControllerIntTest {
     ResponseEntity<ClassificationSummaryRepresentationModel> response =
         template.exchange(
             restHelper.toUrl(
-                Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
+                RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
             HttpMethod.DELETE,
             request,
             ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
@@ -330,7 +331,7 @@ class ClassificationControllerIntTest {
         () -> {
           template.exchange(
               restHelper.toUrl(
-                  Mapping.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
+                  RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
               HttpMethod.GET,
               request,
               ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));

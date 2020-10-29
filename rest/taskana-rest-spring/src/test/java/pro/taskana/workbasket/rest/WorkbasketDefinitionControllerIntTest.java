@@ -34,7 +34,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.common.test.rest.RestHelper;
@@ -260,7 +260,7 @@ class WorkbasketDefinitionControllerIntTest {
   private ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       executeExportRequestForDomain(String domain) {
     return TEMPLATE.exchange(
-        restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
+        restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
         new ParameterizedTypeReference<
@@ -290,7 +290,7 @@ class WorkbasketDefinitionControllerIntTest {
     body.add("file", new FileSystemResource(tmpFile));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS);
+    String serverUrl = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS);
 
     ResponseEntity<Void> responseImport =
         TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);
