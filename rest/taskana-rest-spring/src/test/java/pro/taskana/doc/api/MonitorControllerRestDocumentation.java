@@ -54,7 +54,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS))
+                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT))
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andDo(
@@ -67,7 +67,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_WORKBASKET)
+                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_REPORT)
                         + "?daysInPast=4&states=READY,CLAIMED,COMPLETED")
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
@@ -82,7 +82,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION))
+                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION_REPORT))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -96,7 +96,7 @@ class MonitorControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TIMESTAMP))
+                    restHelper.toUrl(RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
