@@ -70,7 +70,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testCreateWorkbasket_WithDistibutionTargets() throws Exception {
+  void testCreateWorkbasket_WithDistributionTargets() throws Exception {
     final int distTargetAmount = 2;
     WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(any());
@@ -108,7 +108,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testCreateWorkbasket_DistibutionTargetNotExisting() throws Exception {
+  void testCreateWorkbasket_DistributionTargetNotExisting() throws Exception {
     WorkbasketImpl expectedWb = createTestWorkbasket("ID-1", "Key-1");
     when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
     String otherWorkbasketId = "4711";
