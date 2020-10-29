@@ -16,6 +16,7 @@ set -e # fail fast
 #H   - POSTGRES_10
 #H module:
 #H   - HISTORY
+#H   - WILDFLY
 #H sonar project key:
 #H   the key of the sonarqube project where the coverage will be sent to.
 #H   If empty nothing will be sent
@@ -52,12 +53,16 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
-    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-example-wildfly -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-example-common -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
 
     ### TEST ###
     mvn -q verify -B -f $REL/.. -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
+    ;;
+  WILDFLY)
+    set -x
+    eval "$REL/prepare_db.sh 'POSTGRES_10'"
     # Same as above (H2) we can not use the fancy '-f' maven option
-    (cd $REL/.. && mvn -q verify -B -pl :taskana-rest-spring-example-wildfly -Ddb.type=postgres -Dmaven.javadoc.skip -Dcheckstyle.skip)
+    (cd $REL/../rest/taskana-rest-spring-example-wildfly && mvn -q verify -B -Ddb.type=postgres)
     ;;
   HISTORY)
     set -x
