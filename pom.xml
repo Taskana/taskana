@@ -21,8 +21,8 @@
 
     <properties>
         <java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.testRelease>${java.version}</maven.compiler.testRelease>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -264,6 +264,7 @@
                 <configuration>
                     <showWarnings>true</showWarnings>
                     <failOnWarning>true</failOnWarning>
+                    <showDeprecation>true</showDeprecation>
                     <compilerArgs>
                         <arg>-Xlint:-serial</arg>
                         <arg>-proc:none</arg>
