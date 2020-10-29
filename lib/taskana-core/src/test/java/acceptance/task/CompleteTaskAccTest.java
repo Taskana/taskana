@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -281,7 +282,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id2 = "TKI:000000000000000000000000000000000101";
     List<String> taskIdList = Arrays.asList(id1, id2);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
@@ -308,7 +309,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String validId = "TKI:000000000000000000000000000000000103";
     List<String> taskIdList = Arrays.asList(invalid, validId);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
@@ -404,7 +405,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id2 = "TKI:000000000000000000000000000000000027";
     List<String> taskIdList = Arrays.asList(id1, id2);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
 
@@ -432,7 +433,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String validId = "TKI:000000000000000000000000000000000028";
     List<String> taskIdList = Arrays.asList(invalid, validId);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
 
@@ -506,7 +507,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
     Task beforeClaim = TASK_SERVICE.getTask(id);
     assertThat(beforeClaim.getOwner()).isNotEqualTo("user-1-2");
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
     Task afterClaim = TASK_SERVICE.getTask(id);
@@ -530,7 +531,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
@@ -556,7 +557,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);

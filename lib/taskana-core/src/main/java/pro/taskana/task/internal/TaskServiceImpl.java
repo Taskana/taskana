@@ -1,6 +1,7 @@
 package pro.taskana.task.internal;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1028,7 +1029,7 @@ public class TaskServiceImpl implements TaskService {
       }
       BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
 
-      Instant now = Instant.now();
+      Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
       Stream<TaskSummaryImpl> filteredSummaries =
           filterNotExistingTaskIds(taskIds, bulkLog)
               .filter(task -> task.getState() != TaskState.COMPLETED)
