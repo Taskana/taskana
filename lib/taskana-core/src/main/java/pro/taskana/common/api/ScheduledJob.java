@@ -55,7 +55,7 @@ public class ScheduledJob {
   }
 
   public Instant getDue() {
-    return due  != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
+    return due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setDue(Instant due) {

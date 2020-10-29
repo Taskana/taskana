@@ -6,7 +6,7 @@ import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -118,16 +118,17 @@ class WorkbasketRepresentationModelAssemblerTest {
   private void testLinks(WorkbasketRepresentationModel workbasket) {
     assertThat(workbasket.getLinks()).hasSize(5);
     assertThat(workbasket.getRequiredLink("self").getHref())
-        .isEqualTo(Mapping.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()));
+        .isEqualTo(
+            RestEndpoints.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()));
     assertThat(workbasket.getRequiredLink("distributionTargets").getHref())
         .isEqualTo(
-            Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
+            RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));
     assertThat(workbasket.getRequiredLink("allWorkbaskets").getHref())
-        .isEqualTo(Mapping.URL_WORKBASKET);
+        .isEqualTo(RestEndpoints.URL_WORKBASKET);
     assertThat(workbasket.getRequiredLink("removeDistributionTargets").getHref())
         .isEqualTo(
-            Mapping.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
+            RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));
   }
 

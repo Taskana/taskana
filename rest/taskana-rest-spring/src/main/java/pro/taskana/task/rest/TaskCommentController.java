@@ -24,8 +24,8 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -55,7 +55,7 @@ public class TaskCommentController {
     this.taskCommentRepresentationModelAssembler = taskCommentRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_TASK_COMMENT)
+  @GetMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
       @PathVariable String taskCommentId)
@@ -80,7 +80,7 @@ public class TaskCommentController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_TASK_COMMENTS)
+  @GetMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> getTaskComments(
       @PathVariable String taskId,
@@ -109,7 +109,7 @@ public class TaskCommentController {
     return response;
   }
 
-  @DeleteMapping(path = Mapping.URL_TASK_COMMENT)
+  @DeleteMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
       @PathVariable String taskCommentId)
@@ -130,7 +130,7 @@ public class TaskCommentController {
     return result;
   }
 
-  @PutMapping(path = Mapping.URL_TASK_COMMENT)
+  @PutMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
       @PathVariable String taskCommentId,
@@ -168,7 +168,7 @@ public class TaskCommentController {
     return result;
   }
 
-  @PostMapping(path = Mapping.URL_TASK_COMMENTS)
+  @PostMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> createTaskComment(
       @PathVariable String taskId,

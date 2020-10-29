@@ -29,7 +29,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -82,7 +82,7 @@ class TaskControllerIntTest {
   void testGetAllTasks() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS),
+            restHelper.toUrl(RestEndpoints.URL_TASKS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -95,7 +95,7 @@ class TaskControllerIntTest {
   void testGetAllTasksByWorkbasketId() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -115,7 +115,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001"
                 + "&planned="
                 + firstInstant
@@ -143,7 +143,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001"
                 + "&planned-from="
                 + plannedFromInstant
@@ -165,7 +165,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001"
                 + "&planned-from="
                 + plannedFromInstant
@@ -183,7 +183,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS)
+                restHelper.toUrl(RestEndpoints.URL_TASKS)
                     + "?workbasket-id=WBI:100000000000000000000000000000000001"
                     + "&planned=2020-01-22T09:44:47.453Z,,"
                     + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
@@ -208,7 +208,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001"
                 + "&due="
                 + firstInstant
@@ -232,7 +232,7 @@ class TaskControllerIntTest {
   void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?wildcard-search-value=99"
                 + "&wildcard-search-fields=NAME,custom_3,CuStOM_4",
             HttpMethod.GET,
@@ -255,7 +255,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           TEMPLATE.exchange(
-              restHelper.toUrl(Mapping.URL_TASKS),
+              restHelper.toUrl(RestEndpoints.URL_TASKS),
               HttpMethod.POST,
               new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
               TASK_MODEL_TYPE);
@@ -275,7 +275,7 @@ class TaskControllerIntTest {
     httpCall =
         () -> {
           TEMPLATE.exchange(
-              restHelper.toUrl(Mapping.URL_TASKS),
+              restHelper.toUrl(RestEndpoints.URL_TASKS),
               HttpMethod.POST,
               new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
               TASK_MODEL_TYPE);
@@ -295,7 +295,7 @@ class TaskControllerIntTest {
     httpCall =
         () -> {
           TEMPLATE.exchange(
-              restHelper.toUrl(Mapping.URL_TASKS),
+              restHelper.toUrl(RestEndpoints.URL_TASKS),
               HttpMethod.POST,
               new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
               TASK_MODEL_TYPE);
@@ -312,7 +312,7 @@ class TaskControllerIntTest {
   void should_DeleteAllTasks_For_ProvidedParams() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?task-id=TKI:000000000000000000000000000000000036,"
                 + "TKI:000000000000000000000000000000000037,"
                 + "TKI:000000000000000000000000000000000038"
@@ -332,7 +332,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS) + "?wildcard-search-value=%rt%",
+                restHelper.toUrl(RestEndpoints.URL_TASKS) + "?wildcard-search-value=%rt%",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -345,7 +345,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall2 =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS)
+                restHelper.toUrl(RestEndpoints.URL_TASKS)
                     + "?wildcard-search-fields=NAME,CUSTOM_3,CUSTOM_4",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
@@ -365,7 +365,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001"
                 + "&due-from="
                 + dueFromInstant
@@ -387,7 +387,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001"
                 + "&due-until="
                 + dueToInstant
@@ -405,7 +405,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS)
+                restHelper.toUrl(RestEndpoints.URL_TASKS)
                     + "?workbasket-id=WBI:100000000000000000000000000000000001"
                     + "&due=2020-01-22T09:44:47.453Z,,"
                     + "2020-01-19T07:44:47.453Z,2020-01-19T19:44:47.453Z,"
@@ -425,7 +425,7 @@ class TaskControllerIntTest {
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersUser_1_2());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER-1-2&domain=DOMAIN_A",
+            restHelper.toUrl(RestEndpoints.URL_TASKS) + "?workbasket-key=USER-1-2&domain=DOMAIN_A",
             HttpMethod.GET,
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -438,7 +438,7 @@ class TaskControllerIntTest {
   void testGetAllTasksByExternalId() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?external-id=ETI:000000000000000000000000000000000003,"
                 + "ETI:000000000000000000000000000000000004",
             HttpMethod.GET,
@@ -456,7 +456,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS) + "?workbasket-key=USER-1-2",
+                restHelper.toUrl(RestEndpoints.URL_TASKS) + "?workbasket-key=USER-1-2",
                 HttpMethod.GET,
                 request,
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -469,7 +469,7 @@ class TaskControllerIntTest {
   void testGetAllTasksWithAdminRole() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS),
+            restHelper.toUrl(RestEndpoints.URL_TASKS),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -482,7 +482,7 @@ class TaskControllerIntTest {
   void testGetAllTasksKeepingFilters() {
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?por.type=VNR&por.value=22334455&sort-by=por.value&order=desc",
             HttpMethod.GET,
             restHelper.defaultRequest(),
@@ -498,7 +498,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS) + "?invalid=VNR",
+                restHelper.toUrl(RestEndpoints.URL_TASKS) + "?invalid=VNR",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -515,7 +515,7 @@ class TaskControllerIntTest {
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?state=READY,CLAIMED&sort-by=por.value&order=desc&page-size=5&page=14",
             HttpMethod.GET,
             request,
@@ -548,7 +548,7 @@ class TaskControllerIntTest {
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS) + "?sort-by=due&order=desc",
+            restHelper.toUrl(RestEndpoints.URL_TASKS) + "?sort-by=due&order=desc",
             HttpMethod.GET,
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -557,7 +557,8 @@ class TaskControllerIntTest {
 
     response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS) + "?sort-by=due&order=desc&page-size=5&page=5",
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
+                + "?sort-by=due&order=desc&page-size=5&page=5",
             HttpMethod.GET,
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -585,7 +586,7 @@ class TaskControllerIntTest {
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
     ResponseEntity<TaskanaPagedModel<TaskSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS)
+            restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?por.company=00&por.system=PASystem&por.instance=00&"
                 + "por.type=VNR&por.value=22334455&sort-by=por.type&"
                 + "order=asc&page-size=5&page=2",
@@ -613,7 +614,8 @@ class TaskControllerIntTest {
   void should_NotGetEmptyAttachmentList_When_GettingTaskWithAttachment() {
     ResponseEntity<TaskRepresentationModel> response =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:000000000000000000000000000000000002"),
+            restHelper.toUrl(
+                RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000002"),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             TASK_MODEL_TYPE);
@@ -629,7 +631,8 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskRepresentationModel> responseGet =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"),
+            restHelper.toUrl(
+                RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
@@ -638,7 +641,8 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskRepresentationModel> responseUpdate =
         template.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"),
+            restHelper.toUrl(
+                RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"),
             HttpMethod.PUT,
             new HttpEntity<>(originalTask, restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
@@ -655,7 +659,7 @@ class TaskControllerIntTest {
     TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
     ResponseEntity<TaskRepresentationModel> responseCreate =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS),
+            restHelper.toUrl(RestEndpoints.URL_TASKS),
             HttpMethod.POST,
             new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
             TASK_MODEL_TYPE);
@@ -669,7 +673,7 @@ class TaskControllerIntTest {
 
     ResponseEntity<TaskRepresentationModel> responseDeleted =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, taskIdOfCreatedTask),
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask),
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(Void.class));
@@ -691,7 +695,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS),
+                restHelper.toUrl(RestEndpoints.URL_TASKS),
                 HttpMethod.POST,
                 new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersUser_1_1()),
                 TASK_MODEL_TYPE);
@@ -707,7 +711,7 @@ class TaskControllerIntTest {
             + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
             + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
-    URL url = new URL(restHelper.toUrl(Mapping.URL_TASKS));
+    URL url = new URL(restHelper.toUrl(RestEndpoints.URL_TASKS));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("POST");
     con.setDoOutput(true);
@@ -727,7 +731,7 @@ class TaskControllerIntTest {
             + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
             + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
 
-    url = new URL(restHelper.toUrl(Mapping.URL_TASKS));
+    url = new URL(restHelper.toUrl(RestEndpoints.URL_TASKS));
     con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("POST");
     con.setDoOutput(true);
@@ -751,7 +755,7 @@ class TaskControllerIntTest {
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> getTaskResponse =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, claimed_task_id),
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID, claimed_task_id),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersUser_1_2()),
             TASK_MODEL_TYPE);
@@ -765,7 +769,7 @@ class TaskControllerIntTest {
     // cancel claim
     ResponseEntity<TaskRepresentationModel> cancelClaimResponse =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, claimed_task_id),
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID_CLAIM, claimed_task_id),
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersUser_1_2()),
             TASK_MODEL_TYPE);
@@ -788,7 +792,7 @@ class TaskControllerIntTest {
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> responseGet =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_TASKS_ID, claimed_task_id),
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID, claimed_task_id),
             HttpMethod.GET,
             new HttpEntity<>(restHelper.getHeadersUser_1_2()),
             TASK_MODEL_TYPE);
@@ -802,7 +806,7 @@ class TaskControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             template.exchange(
-                restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, claimed_task_id),
+                restHelper.toUrl(RestEndpoints.URL_TASKS_ID_CLAIM, claimed_task_id),
                 HttpMethod.DELETE,
                 new HttpEntity<>(restHelper.getHeadersUser_1_2()),
                 TASK_MODEL_TYPE);
@@ -885,7 +889,8 @@ class TaskControllerIntTest {
 
   @Test
   void should_ThrowNotAuthorized_When_UserHasNoAuthorizationOnTask() {
-    String url = restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:000000000000000000000000000000000000");
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000000");
 
     ThrowingCallable httpCall =
         () ->

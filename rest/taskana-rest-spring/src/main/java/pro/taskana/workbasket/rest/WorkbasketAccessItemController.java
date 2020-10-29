@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.AbstractPagingController;
-import pro.taskana.common.rest.Mapping;
 import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
@@ -65,7 +65,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
-  @GetMapping(path = Mapping.URL_WORKBASKET_ACCESS_ITEMS)
+  @GetMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
       getWorkbasketAccessItems(@RequestParam MultiValueMap<String, String> params)
           throws NotAuthorizedException, InvalidArgumentException {
@@ -101,7 +101,7 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
-  @DeleteMapping(path = Mapping.URL_WORKBASKET_ACCESS_ITEMS)
+  @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<Void> removeWorkbasketAccessItems(
       @RequestParam("access-id") String accessId)
       throws NotAuthorizedException, InvalidArgumentException {

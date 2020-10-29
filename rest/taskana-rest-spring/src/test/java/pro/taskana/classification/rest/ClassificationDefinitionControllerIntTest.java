@@ -36,7 +36,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.common.test.rest.RestHelper;
@@ -75,7 +75,7 @@ class ClassificationDefinitionControllerIntTest {
   void testExportClassifications() {
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=DOMAIN_B",
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_PAGE_MODEL_TYPE);
@@ -95,7 +95,7 @@ class ClassificationDefinitionControllerIntTest {
   void testExportClassificationsFromWrongDomain() {
     ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS) + "?domain=ADdfe",
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             CLASSIFICATION_PAGE_MODEL_TYPE);
@@ -440,7 +440,7 @@ class ClassificationDefinitionControllerIntTest {
     body.add("file", new FileSystemResource(tmpFile));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    String serverUrl = restHelper.toUrl(Mapping.URL_CLASSIFICATIONDEFINITIONS);
+    String serverUrl = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS);
 
     return TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);
   }

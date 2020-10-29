@@ -12,7 +12,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate REST Docu for the WorkbasketAccessItemController. */
@@ -114,7 +114,7 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS)
+                    restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
                         + "?sort-by=workbasket-key&order=asc&access-ids=user-2-2")
                 .accept("application/hal+json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
@@ -130,7 +130,8 @@ class WorkbasketAccessItemControllerRestDocumentation extends BaseRestDocumentat
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.delete(
-                    restHelper.toUrl(Mapping.URL_WORKBASKET_ACCESS_ITEMS) + "?access-id=user-2-2")
+                    restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
+                        + "?access-id=user-2-2")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("RemoveWorkbasketAccessItemsDocTest"));

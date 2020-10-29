@@ -39,7 +39,7 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 
 /** Controller for Importing / Exporting classifications. */
@@ -66,7 +66,7 @@ public class ClassificationDefinitionController {
     this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATIONDEFINITIONS)
+  @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> exportClassifications(
       @RequestParam(required = false) String domain) {
@@ -93,7 +93,7 @@ public class ClassificationDefinitionController {
     return response;
   }
 
-  @PostMapping(path = Mapping.URL_CLASSIFICATIONDEFINITIONS)
+  @PostMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importClassifications(@RequestParam("file") MultipartFile file)
       throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException,

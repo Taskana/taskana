@@ -15,7 +15,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate Rest Documentation for Workbasket Definitions. */
@@ -40,7 +40,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS))
+                    restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -65,7 +65,7 @@ class WorkbasketDefinitionControllerRestDocumentation extends BaseRestDocumentat
 
     this.mockMvc
         .perform(
-            multipart(restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS))
+            multipart(restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS))
                 .file("file", definitionString.getBytes(UTF_8))
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isNoContent())

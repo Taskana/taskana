@@ -30,7 +30,7 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -77,7 +77,7 @@ public class WorkbasketDefinitionController {
     this.mapper = mapper;
   }
 
-  @GetMapping(path = Mapping.URL_WORKBASKET_DEFINITIONS)
+  @GetMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       exportWorkbaskets(@RequestParam(required = false) String domain) {
@@ -126,7 +126,7 @@ public class WorkbasketDefinitionController {
    *     workbasket and access_id already exists.
    * @throws ConcurrencyException if workbasket was updated by an other user
    */
-  @PostMapping(path = Mapping.URL_WORKBASKET_DEFINITIONS)
+  @PostMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
       throws IOException, NotAuthorizedException, DomainNotFoundException,

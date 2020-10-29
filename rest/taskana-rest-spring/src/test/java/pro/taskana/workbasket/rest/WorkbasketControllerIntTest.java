@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -52,7 +52,8 @@ class WorkbasketControllerIntTest {
   @Test
   void testGetWorkbasket() {
     final String url =
-        restHelper.toUrl(Mapping.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
     ResponseEntity<WorkbasketRepresentationModel> response =
         TEMPLATE.exchange(
             url,
@@ -70,7 +71,7 @@ class WorkbasketControllerIntTest {
   void testGetAllWorkbaskets() {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET),
+            restHelper.toUrl(RestEndpoints.URL_WORKBASKET),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
@@ -82,7 +83,7 @@ class WorkbasketControllerIntTest {
   void testGetAllWorkbasketsBusinessAdminHasOpenPermission() {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + "?required-permission=OPEN",
+            restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=OPEN",
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
@@ -96,7 +97,7 @@ class WorkbasketControllerIntTest {
     String parameters = "?type=PERSONAL&sort-by=key&order=desc";
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters,
+            restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
@@ -116,7 +117,7 @@ class WorkbasketControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET) + "?invalid=PERSONAL",
+                restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?invalid=PERSONAL",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
                 WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
@@ -134,7 +135,7 @@ class WorkbasketControllerIntTest {
 
     ResponseEntity<WorkbasketRepresentationModel> initialWorkbasketResourceRequestResponse =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
@@ -153,7 +154,7 @@ class WorkbasketControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           TEMPLATE.exchange(
-              restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+              restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.PUT,
               new HttpEntity<>(workbasketRepresentationModel, restHelper.getHeadersTeamlead_1()),
               ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
@@ -171,7 +172,7 @@ class WorkbasketControllerIntTest {
     ThrowingCallable httpCall =
         () -> {
           TEMPLATE.exchange(
-              restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketId),
+              restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
               HttpMethod.GET,
               new HttpEntity<String>(restHelper.getHeadersBusinessAdmin()),
               ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
@@ -188,7 +189,7 @@ class WorkbasketControllerIntTest {
     String parameters = "?sort-by=key&order=desc&page-size=5&page=2";
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET) + parameters,
+            restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
@@ -216,7 +217,7 @@ class WorkbasketControllerIntTest {
 
     ResponseEntity<?> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketID),
+            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketID),
             HttpMethod.DELETE,
             new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
             Void.class);
@@ -230,7 +231,7 @@ class WorkbasketControllerIntTest {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
+                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
                 HttpMethod.DELETE,
                 new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
                 Void.class);
@@ -245,7 +246,8 @@ class WorkbasketControllerIntTest {
     ResponseEntity<?> response =
         TEMPLATE.exchange(
             restHelper.toUrl(
-                Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000007"),
+                RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+                "WBI:100000000000000000000000000000000007"),
             HttpMethod.DELETE,
             restHelper.defaultRequest(),
             Void.class);
@@ -254,7 +256,8 @@ class WorkbasketControllerIntTest {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response2 =
         TEMPLATE.exchange(
             restHelper.toUrl(
-                Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000002"),
+                RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+                "WBI:100000000000000000000000000000000002"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
@@ -270,7 +273,8 @@ class WorkbasketControllerIntTest {
     ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(
-                Mapping.URL_WORKBASKET_ID_ACCESSITEMS, "WBI:100000000000000000000000000000000005"),
+                RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
+                "WBI:100000000000000000000000000000000005"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_ACCESS_ITEM_PAGE_MODEL_TYPE);
@@ -285,7 +289,8 @@ class WorkbasketControllerIntTest {
     ResponseEntity<TaskanaPagedModel<WorkbasketSummaryRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl(
-                Mapping.URL_WORKBASKET_ID_DISTRIBUTION, "WBI:100000000000000000000000000000000001"),
+                RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+                "WBI:100000000000000000000000000000000001"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);

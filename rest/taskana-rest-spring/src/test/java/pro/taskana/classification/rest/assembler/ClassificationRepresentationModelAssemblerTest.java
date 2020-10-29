@@ -11,7 +11,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 /** Test for {@link ClassificationRepresentationModelAssembler}. */
@@ -132,7 +132,9 @@ class ClassificationRepresentationModelAssemblerTest {
 
   private void testLinks(ClassificationRepresentationModel repModel) {
     assertThat(repModel.getLinks()).hasSize(1);
-    assertThat(Mapping.URL_CLASSIFICATIONS_ID.replaceAll("\\{.*}", repModel.getClassificationId()))
+    assertThat(
+            RestEndpoints.URL_CLASSIFICATIONS_ID.replaceAll(
+                "\\{.*}", repModel.getClassificationId()))
         .isEqualTo(repModel.getRequiredLink("self").getHref());
   }
 

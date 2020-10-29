@@ -103,7 +103,7 @@ public class WorkbasketHistoryEvent {
   }
 
   public Instant getCreated() {
-    return created  != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
+    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setCreated(Instant created) {
