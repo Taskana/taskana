@@ -1,10 +1,10 @@
 os: linux
-dist: xenial
+dist: bionic
 
 language: java
 
 jdk:
-  - openjdk8
+  - openjdk11
 
 addons:
   sonarcloud:
@@ -16,8 +16,6 @@ git:
 
 services:
   - docker
-  - xvfb # required because our frontend tests currently use firefox as a browser (and thus do not run headless)
-  # see https://docs.travis-ci.com/user/gui-and-headless-browsers/#using-xvfb-to-run-tests-that-require-a-gui for more information
 cache:
   directories:
     - $HOME/.m2
@@ -39,23 +37,14 @@ env:
   jobs:
     - DB=H2
     - DB=DB2_11_1
-    - DB=POSTGRES_10
 
 install: skip
-
 # include SONAR_PROJECT_KEY as a second parameter if this is not a pull request
 script: ci/test.sh "$DB" "$([ "false" = "$TRAVIS_PULL_REQUEST" ] && echo "$SONAR_PROJECT_KEY")"
 before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
 jobs:
   include:
-    - stage: Test
-      before_script: nvm install $NODE_VERSION
-      install: skip
-      env: DB=WEB
-      script: ci/test.sh "$DB"
-      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
-
     # We are using the environment variable 'MODULE' to force travis into using a different cache for each build.
     # See https://docs.travis-ci.com/user/caching/#caches-and-build-matrices for detailed information on
     # which characteristics determine the cache selection.
@@ -87,6 +76,19 @@ jobs:
       install: skip
       env: MODULE=HISTORY
       script: ci/compile.sh "$MODULE"
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
+
+    - stage: Test
+      install: skip
+      env: DB=POSTGRES_10
+      script: ci/test.sh "$DB" && export JAVA_HOME=/usr/local/lib/jvm/openjdk8 && ci/test.sh WILDFLY
+      before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
+
+    - stage: Test
+      before_script: nvm install $NODE_VERSION
+      install: skip
+      env: DB=WEB
+      script: ci/test.sh "$DB"
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Release / Deploy
