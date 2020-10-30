@@ -11,10 +11,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -139,11 +139,11 @@ class WorkbasketDefinitionControllerIntTest {
     w.setDistributionTargets(new HashSet<>());
     String letMeBeYourDistributionTarget = w.getWorkbasket().getWorkbasketId();
     WorkbasketDefinitionRepresentationModel w2 = iterator.next();
-    w2.setDistributionTargets(Collections.singleton(letMeBeYourDistributionTarget));
+    w2.setDistributionTargets(Set.of(letMeBeYourDistributionTarget));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w, w2);
 
     this.changeWorkbasketIdOrKey(w, "fancyNewId", null);
-    w2.setDistributionTargets(Collections.singleton("fancyNewId"));
+    w2.setDistributionTargets(Set.of("fancyNewId"));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w, w2);
 
     this.changeWorkbasketIdOrKey(w, null, "nowImANewWB");
@@ -176,7 +176,7 @@ class WorkbasketDefinitionControllerIntTest {
 
     assertThat(wbList).isNotNull();
     WorkbasketDefinitionRepresentationModel w = wbList.getContent().iterator().next();
-    w.setDistributionTargets(Collections.singleton("invalidWorkbasketId"));
+    w.setDistributionTargets(Set.of("invalidWorkbasketId"));
     ThrowingCallable httpCall =
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
     assertThatThrownBy(httpCall)
@@ -224,7 +224,7 @@ class WorkbasketDefinitionControllerIntTest {
     // breaks the logic but not the script- should we really allow this case?
     WorkbasketDefinitionRepresentationModel theDestroyer = iterator.next();
     theDestroyer.setDistributionTargets(
-        Collections.singleton(differentLogicalId.getWorkbasket().getWorkbasketId()));
+        Set.of(differentLogicalId.getWorkbasket().getWorkbasketId()));
 
     expectStatusWhenExecutingImportRequestOfWorkbaskets(
         HttpStatus.NO_CONTENT, w, differentLogicalId, theDestroyer);
