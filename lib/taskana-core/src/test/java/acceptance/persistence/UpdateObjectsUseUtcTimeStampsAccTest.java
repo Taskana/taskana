@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -178,7 +178,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
   void testTimestampsOnCreateScheduledJob() throws Exception {
     resetDb(true);
     ScheduledJob job = new ScheduledJob();
-    job.setArguments(Collections.singletonMap("keyBla", "valueBla"));
+    job.setArguments(Map.of("keyBla", "valueBla"));
     job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
     job.setDue(Instant.now().minus(Duration.ofHours(5)));
     job.setLockExpires(Instant.now().minus(Duration.ofHours(5)));
