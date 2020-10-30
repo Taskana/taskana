@@ -24,7 +24,7 @@ import { WorkbasketAccessItemsComponent } from './components/workbasket-access-i
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
-import { AccessItemsManagementDialogComponent } from './components/access-items-management-dialog/access-items-management-dialog.component'
+import { AccessItemsManagementDialogComponent } from './components/access-items-management-dialog/access-items-management-dialog.component';
 /**
  * Services
  */
@@ -49,7 +49,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
-import { MatTableModule } from '@angular/material/table'  
+import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 
 const MODULES = [
@@ -110,10 +110,8 @@ const DECLARATIONS = [
     WorkbasketDefinitionService,
     SavingWorkbasketService,
     ClassificationCategoriesService,
-    ImportExportService,
+    ImportExportService
   ],
-  entryComponents: [
-    AccessItemsManagementDialogComponent
-  ]
+  entryComponents: [AccessItemsManagementDialogComponent]
 })
 export class AdministrationModule {}

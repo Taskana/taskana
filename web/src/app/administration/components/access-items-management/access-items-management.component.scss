@@ -47,11 +47,7 @@
   min-width: 135px;
 }
 
-.modal-title {
-  font-weight: bold;
-  display: inline;
-}
-.table__access-item-groups {
+.table-access-item__content {
   height: 80px;
 }
 
@@ -64,50 +60,37 @@
 .header .tr{
   border: none !important;
 }
- th.header {
-  overflow: hidden;
-  text-overflow: ellipsis;
- } 
- 
- th.header:hover {
-  overflow: visible;
- }
 
- [data-title]:hover::before {
-	content: attr(data-title);
-	position: absolute;
-
-	white-space: nowrap;
+.table-access-items__sorting {
+  text-align: left;
 }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+.table-access-items__key {
+  text-align: left;
+  padding: 0.2rem  !important;
 }
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text */
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-
-  /* Fade in tooltip */
-  opacity: 0;
-  transition: opacity 0.3s;
+.table-access-items__filter {
+  width: 150px;
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
+.table-access-items__search-button {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.table-access-items__groups-button {
+  margin-bottom: 80px; 
+  margin-left: 20px;
+}
+
+.table-access-items__revoke-button {
+  float: right; 
+  margin-right: 30px;
+}
+
+.panel-body__typeahead {
+  width: 50%; 
+  margin-left: 25%;
+  margin-right: 25%;
 }

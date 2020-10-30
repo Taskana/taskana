@@ -8,9 +8,8 @@ describe('AccessItemsManagementDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccessItemsManagementDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [AccessItemsManagementDialogComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

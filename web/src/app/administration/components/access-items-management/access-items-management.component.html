@@ -5,7 +5,7 @@
   </div>
 
   <div class="panel-body">
-    <div style="width: 50%; margin-left:25%;margin-right: 25%;">
+    <div class="panel-body__typeahead">
       <taskana-shared-type-ahead name="accessIdSelected" [(ngModel)]="accessIdSelected"
         placeHolderMessage="Search for access id..." (selectedItem)="onSelectAccessId($event)" displayError=true
         isRequired="false">
@@ -22,41 +22,42 @@
         <table id="table-access-items" class="table table-striped table-center">
           <thead>
             <tr>
-              <th style="text-align: left;padding:0.2rem  !important;">
+              <th class="table-access-items__sorting">
                 <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
                   menuPosition="left">
                 </taskana-shared-sort>
               </th>
-              <th matTooltip="Workbasket Key" style="text-align: left;padding:0.2rem  !important;">Key</th>
-              <th colspan="2" style="text-align: left;">Access Id</th>
+              <th class="table-access-items__key">Workbasket Key</th>
+              <th>Access Id</th>
+              <th></th>
               <th>Read</th>
               <th>Open</th>
               <th>Append</th>
-              <th matTooltip="Transfer">Trans</th>
-              <th matTooltip="Distribute">Distr</th>
-              <ng-container *ngFor=" let customField of fields_short">
-                <th *ngIf="customField[1]" matTooltip="{{customField[0]}}">
-                  {{customField[2]}}
+              <th>Transfer</th>
+              <th>Distribute</th>
+              <ng-container *ngFor="let customField of customFields$ | async">
+                <th *ngIf="customField.visible">
+                  {{customField.field}}
                 </th>
               </ng-container>
             </tr>
             <tr>
-              <th colspan="2" style="position: sticky;" class="text-align">
-                <mat-form-field appearance="outline">
+              <th colspan="2">
+                <mat-form-field class="table-access-items__filter" appearance="outline">
                   <mat-label>Workbasket filter</mat-label>
                   <input matInput formControlName="workbasketKeyFilter"
                     (keyup.enter)="searchForAccessItemsWorkbaskets()" type="text">
                 </mat-form-field>
               </th>
-              <th colspan="2" style="position: sticky;" class="text-align">
-                <mat-form-field appearance="outline">
+              <th>
+                <mat-form-field class="table-access-items__filter" appearance="outline">
                   <mat-label>Access id filter</mat-label>
                   <input matInput formControlName="accessIdFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
                     type="text">
                 </mat-form-field>
               </th>
               <th>
-                <div style="margin-left: 20px;margin-bottom: 10px;">
+                <div class="table-access-items__search-button">
                   <button mat-icon-button (click)="searchForAccessItemsWorkbaskets()" title="Search">
                     <mat-icon>search</mat-icon>
                   </button>
@@ -65,15 +66,15 @@
             </tr>
           </thead>
           <tbody formArrayName="accessItemsGroups">
-            <tr class="table__access-item-groups"
+            <tr class="table-access-item__content"
               *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
               [formGroupName]="index.toString()">
               <td colspan="2">
                 <label class="wrap">{{accessItem.value.workbasketKey}}</label>
               </td>
               <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2"
-                class="text-align text-width taskana-type-ahead" style="padding-top: 0;">
-                <label class="wrap">{{accessItem.value.accessName}}</label>
+                class="text-align text-width taskana-type-ahead">
+                <label matTooltip="{{accessItem.value.accessId}}" class="wrap">{{accessItem.value.accessName}}</label>
               </td>
               <ng-template #accessIdInput>
                 <td colspan="2" class="text-align text-width">
@@ -100,8 +101,8 @@
               <td>
                 <mat-checkbox id="checkbox-{{index}}-4" formControlName="permDistribute"></mat-checkbox>
               </td>
-              <ng-container *ngFor="let customField of fields_short; let customIndex = index">
-                <td *ngIf="customField[1]">
+              <ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
+                <td *ngIf="customField.visible">
                   <mat-checkbox id="checkbox-{{index}}-{{customIndex + 5}}"
                     formControlName="permCustom{{customIndex + 1}}"></mat-checkbox>
                 </td>
@@ -109,10 +110,10 @@
             </tr>
           </tbody>
         </table>
-        <button mat-flat-button color="primary" style="margin-bottom: 80px; margin-left: 20px;" (click)="openDialog()">
+        <button mat-flat-button class="table-access-items__groups-button" color="primary" (click)="openDialog()">
           Belonging groups
         </button>
-        <button mat-mini-fab color="warn" style="float: right; margin-right: 30px;" *ngIf="accessItemsForm"
+        <button mat-mini-fab class="table-access-items__revoke-button" color="warn" *ngIf="accessItemsForm"
           (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
           <mat-icon>clear</mat-icon>
         </button>
@@ -120,115 +121,3 @@
     </div>
   </div>
 </div>
-
-<!--<div *ngIf="accessItemsForm">
-  <ng-form [formGroup]="accessItemsForm">
-    <table id="table-access-items" class="table table-striped table-center">
-      <thead>
-        <tr>
-          <th style="text-align: left;padding:0.2rem  !important;">
-            <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
-              menuPosition="left">
-            </taskana-shared-sort>
-          </th>
-          <th matTooltip="Workbasket Key" style="text-align: left;padding:0.2rem  !important;">Key</th>
-          <th colspan="2" style="text-align: left;">Access Id</th>
-          <th>Read</th>
-          <th>Open</th>
-          <th>Append</th>
-          <th matTooltip="Transfer">Trans</th>
-          <th matTooltip="Distribute">Distr</th>
-          <ng-container *ngFor=" let customField of fields_short">
-            <th *ngIf="customField[1]" matTooltip="{{customField[0]}}">
-              {{customField[2]}}
-            </th>
-          </ng-container>
-        </tr>
-        <tr>
-          <th colspan="2" style="position: sticky;" class="text-align">
-            <mat-form-field appearance="outline">
-              <mat-label>Workbasket filter</mat-label>
-              <input matInput formControlName="workbasketKeyFilter"
-                (keyup.enter)="searchForAccessItemsWorkbaskets()" type="text">
-            </mat-form-field>
-          </th>
-          <th colspan="2" style="position: sticky;" class="text-align">
-            <mat-form-field appearance="outline">
-              <mat-label>Access id filter</mat-label>
-              <input matInput formControlName="accessIdFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
-                type="text">
-            </mat-form-field>
-          </th>
-          <th>
-            <div style="margin-left: 20px;margin-bottom: 10px;">
-              <button mat-icon-button (click)="searchForAccessItemsWorkbaskets()" title="Search">
-                <mat-icon>search</mat-icon>
-              </button>
-            </div>
-          </th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody formArrayName="accessItemsGroups">
-        <tr class="table__access-item-groups"
-          *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
-          [formGroupName]="index.toString()">
-          <td colspan="2">
-            <label class="wrap">{{accessItem.value.workbasketKey}}</label>
-          </td>
-          <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2"
-            class="text-align text-width taskana-type-ahead" style="padding-top: 0;">
-            <label class="wrap">{{accessItem.value.accessName}}</label>
-          </td>
-          <ng-template #accessIdInput>
-            <td colspan="2" class="text-align text-width">
-              <div>
-                <label>
-                  <input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
-                   '* Access id is required': ''}}">
-                </label>
-              </div>
-            </td>
-          </ng-template>
-          <td>
-            <mat-checkbox id="checkbox-{{index}}-0" formControlName="permRead"></mat-checkbox>
-          </td>
-          <td>
-            <mat-checkbox id="checkbox-{{index}}-1" formControlName="permOpen"></mat-checkbox>
-          </td>
-          <td>
-            <mat-checkbox id="checkbox-{{index}}-2" formControlName="permAppend"></mat-checkbox>
-          </td>
-          <td>
-            <mat-checkbox id="checkbox-{{index}}-3" formControlName="permTransfer"></mat-checkbox>
-          </td>
-          <td>
-            <mat-checkbox id="checkbox-{{index}}-4" formControlName="permDistribute"></mat-checkbox>
-          </td>
-          <ng-container *ngFor="let customField of fields_short; let customIndex = index">
-            <td *ngIf="customField[1]">
-              <mat-checkbox id="checkbox-{{index}}-{{customIndex + 5}}"
-                formControlName="permCustom{{customIndex + 1}}"></mat-checkbox>
-            </td>
-          </ng-container>
-        </tr>
-      </tbody>
-    </table>
-    <button mat-flat-button color="primary" style="margin-bottom: 80px; margin-left: 20px;" (click)="openDialog()">
-      Belonging groups
-    </button>
-    <button mat-mini-fab color="warn" style="float: right; margin-right: 30px;" *ngIf="accessItemsForm"
-      (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
-      <mat-icon>clear</mat-icon>
-    </button>
-  </ng-form>
-</div>
-</div>
-</div>-->

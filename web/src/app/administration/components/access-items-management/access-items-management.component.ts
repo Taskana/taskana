@@ -22,7 +22,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
 
-
 @Component({
   selector: 'taskana-administration-access-items-management',
   templateUrl: './access-items-management.component.html',
@@ -32,13 +31,7 @@ export class AccessItemsManagementComponent implements OnInit {
   accessIdSelected: string;
   accessIdPrevious: string;
   isRequired: boolean = false;
-  accessIdName; 
-  dataSource;
-  fields;
-  re = /custom/gi;
-  str: string;
-  new_str: string;
-  fields_short: any[];
+  accessIdName;
 
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();
@@ -64,11 +57,10 @@ export class AccessItemsManagementComponent implements OnInit {
     private requestInProgressService: RequestInProgressService,
     private notificationService: NotificationService,
     private store: Store,
-    public dialog: MatDialog,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
-
     this.groups$.pipe(takeUntil(this.destroy$)).subscribe((groups) => {
       this.groups = groups;
     });
@@ -88,19 +80,7 @@ export class AccessItemsManagementComponent implements OnInit {
       this.accessItemsForm = null;
     }
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
-    this.fields_short = [];
-    this.customFields$.subscribe((fields)=> {
-      this.fields = fields;
-      console.log(this.fields);
-      this.fields.forEach(element => {
-        this.str = element.field;
-        this.new_str = this.str.replace(this.re, "C");
-        this.fields_short.push([element.field, element.visible, this.new_str]);
-      });
-      console.log(this.fields_short);
-    })
   }
-
 
   searchForAccessItemsWorkbaskets() {
     this.removeFocus();
@@ -120,8 +100,6 @@ export class AccessItemsManagementComponent implements OnInit {
             : []
         );
       });
-
-      
   }
 
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
@@ -143,7 +121,6 @@ export class AccessItemsManagementComponent implements OnInit {
     if (!this.accessItemsForm.value.accessIdFilter) {
       this.accessItemsForm.addControl('accessIdFilter', new FormControl());
     }
-
   }
 
   revokeAccess() {
@@ -174,7 +151,7 @@ export class AccessItemsManagementComponent implements OnInit {
   openDialog() {
     this.removeFocus();
     this.dialog.open(AccessItemsManagementDialogComponent, {
-      width:'500px',
+      width: '500px',
       data: this.groups
     });
   }
