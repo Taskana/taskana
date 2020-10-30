@@ -21,8 +21,8 @@
 
     <properties>
         <java.version>11</java.version>
-        <maven.compiler.release>8</maven.compiler.release>
-        <maven.compiler.testRelease>${java.version}</maven.compiler.testRelease>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -110,6 +110,16 @@
     </licenses>
 
     <profiles>
+        <profile>
+            <id>jdk8-compatibility</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.release>8</maven.compiler.release>
+                <maven.compiler.testRelease>${java.version}</maven.compiler.testRelease>
+            </properties>
+        </profile>
         <profile>
             <id>snapshot</id>
             <build>
