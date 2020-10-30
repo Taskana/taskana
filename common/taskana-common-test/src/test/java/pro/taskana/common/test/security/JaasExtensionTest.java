@@ -14,7 +14,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
@@ -25,11 +24,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
+import pro.taskana.common.test.security.JaasExtensionTestExtensions.ShouldThrowJunitException;
+import pro.taskana.common.test.security.JaasExtensionTestExtensions.ShouldThrowParameterResolutionException;
 
 @ExtendWith(JaasExtension.class)
 class JaasExtensionTest {
 
-  private static final String INSIDE_DYNAMIC_TEST_USER = "insidedynamictest";
+  private static final String INSIDE_DYNAMIC_TEST_USER = "inside_dynamic_test";
   private static final CurrentUserContext CURRENT_USER_CONTEXT = new CurrentUserContextImpl(true);
   private static final DynamicTest NOT_NULL_DYNAMIC_TEST =
       dynamicTest("dynamic test", () -> assertThat(CURRENT_USER_CONTEXT.getUserid()).isNotNull());
@@ -153,17 +154,20 @@ class JaasExtensionTest {
 
   @WithAccessId(user = "user")
   @Test
-  @Disabled("this can be tested with a org.junit.platform.launcher.TestExecutionListener")
-  void should_NotInjectParameter_When_ParameterIsPresent_On_Test(WithAccessId accessId) {
-    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("user");
+  @ExtendWith(ShouldThrowParameterResolutionException.class)
+  void should_NotInjectParameter_When_TestTemplateIsNotUsed(
+      @SuppressWarnings("unused") WithAccessId accessId) {
+    // THIS IS NOT RELEVANT
+    assertThat(true).isTrue();
   }
 
   @WithAccessId(user = "user")
   @WithAccessId(user = "user2")
   @Test
-  @Disabled("this can be tested with a org.junit.platform.launcher.TestExecutionListener")
-  void should_ThrowException_When_MultipleAnnotationsExist_On_Test() {
-    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
+  @ExtendWith(ShouldThrowJunitException.class)
+  void should_ThrowJunitException_When_MultipleAnnotationsExist_On_Test() {
+    // THIS IS NOT RELEVANT
+    assertThat(true).isTrue();
   }
 
   // endregion
@@ -195,12 +199,6 @@ class JaasExtensionTest {
   // endregion
 
   // region JaasExtension#interceptTestTemplateMethod
-
-  @TestTemplate
-  @Disabled("this can be tested with a org.junit.platform.launcher.TestExecutionListener")
-  void should_NotFindContextProvider_When_AnnotationIsMissing_On_TestTemplate() {
-    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNotNull();
-  }
 
   @WithAccessId(user = "testtemplate")
   @TestTemplate
