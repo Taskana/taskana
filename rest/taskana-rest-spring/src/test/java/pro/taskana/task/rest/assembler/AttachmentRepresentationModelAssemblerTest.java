@@ -3,7 +3,7 @@ package pro.taskana.task.rest.assembler;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.util.Collections;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,7 +45,7 @@ class AttachmentRepresentationModelAssemblerTest {
     summary.setDomain("DOMAIN_A");
     summary.setType("MANUAL");
     AttachmentRepresentationModel repModel = new AttachmentRepresentationModel();
-    repModel.setCustomAttributes(Collections.singletonMap("abc", "def"));
+    repModel.setCustomAttributes(Map.of("abc", "def"));
     repModel.setClassificationSummary(summary);
     repModel.setAttachmentId("id");
     repModel.setTaskId("taskId");
@@ -67,7 +67,7 @@ class AttachmentRepresentationModelAssemblerTest {
     ClassificationSummary summary =
         classService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
     reference.setId("abc");
-    attachment.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
+    attachment.setCustomAttributeMap(Map.of("abc", "def"));
     attachment.setClassificationSummary(summary);
     attachment.setId("id");
     attachment.setTaskId("taskId");
@@ -90,7 +90,7 @@ class AttachmentRepresentationModelAssemblerTest {
     ClassificationSummary summary =
         classService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
     reference.setId("abc");
-    attachment.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
+    attachment.setCustomAttributeMap(Map.of("abc", "def"));
     attachment.setClassificationSummary(summary);
     attachment.setId("id");
     attachment.setTaskId("taskId");

@@ -150,8 +150,8 @@ class TaskRepresentationModelAssemberTest {
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
-    task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
-    task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
+    task.setCustomAttributeMap(Map.of("abc", "def"));
+    task.setCallbackInfo(Map.of("ghi", "jkl"));
     task.setAttachments(List.of(attachment));
     task.setCustomAttribute(TaskCustomField.CUSTOM_1, "custom1");
     task.setCustomAttribute(TaskCustomField.CUSTOM_2, "custom2");
@@ -211,8 +211,8 @@ class TaskRepresentationModelAssemberTest {
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
-    task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
-    task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
+    task.setCustomAttributeMap(Map.of("abc", "def"));
+    task.setCallbackInfo(Map.of("ghi", "jkl"));
     task.setAttachments(List.of(attachment));
     task.setCustom1("custom1");
     task.setCustom2("custom2");
