@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +48,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
         () ->
             MONITOR_SERVICE
                 .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
-                .listTaskIdsForSelectedItems(Collections.emptyList(), TaskTimestamp.DUE);
+                .listTaskIdsForSelectedItems(List.of(), TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 

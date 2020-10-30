@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
@@ -177,14 +176,14 @@ class JaasExtensionTest {
   @TestFactory
   List<DynamicTest> should_NotSetJaasSubject_When_AnnotationIsMissing_On_TestFactory() {
     assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
-    return Collections.emptyList();
+    return List.of();
   }
 
   @WithAccessId(user = "testfactory")
   @TestFactory
   List<DynamicTest> should_SetJaasSubject_When_AnnotationExists_On_TestFactory() {
     assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("testfactory");
-    return Collections.emptyList();
+    return List.of();
   }
 
   @WithAccessId(user = "testfactory1")
@@ -193,7 +192,7 @@ class JaasExtensionTest {
   List<DynamicTest>
       should_SetJaasSubjectFromFirstAnnotation_When_MultipleAnnotationsExists_On_TestFactory() {
     assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("testfactory1");
-    return Collections.emptyList();
+    return List.of();
   }
 
   // endregion

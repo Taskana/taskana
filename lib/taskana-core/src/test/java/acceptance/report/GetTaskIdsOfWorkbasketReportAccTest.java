@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -44,7 +43,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
         () ->
             MONITOR_SERVICE
                 .createWorkbasketReportBuilder()
-                .listTaskIdsForSelectedItems(Collections.emptyList(), TaskTimestamp.DUE);
+                .listTaskIdsForSelectedItems(List.of(), TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 

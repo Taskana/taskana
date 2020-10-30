@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ class WorkbasketReportBuilderImplTest {
             customAttributeFilter,
             combinedClassificationFilter))
         .thenReturn(expectedResult);
-    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
     final WorkbasketReport actualResult =
         cut.createWorkbasketReportBuilder()
@@ -151,7 +150,7 @@ class WorkbasketReportBuilderImplTest {
             customAttributeFilter,
             combinedClassificationFilter))
         .thenReturn(expectedResult);
-    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
     final WorkbasketReport actualResult =
         cut.createWorkbasketReportBuilder()
@@ -362,7 +361,7 @@ class WorkbasketReportBuilderImplTest {
             combinedClassificationFilter))
         .thenReturn(expectedResult);
 
-    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
     final WorkbasketReport actualResult =
         cut.createWorkbasketReportBuilder()
