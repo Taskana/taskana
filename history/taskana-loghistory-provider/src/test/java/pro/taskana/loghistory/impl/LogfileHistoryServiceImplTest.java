@@ -57,7 +57,7 @@ class LogfileHistoryServiceImplTest {
 
     logfileHistoryServiceImpl.create(eventToBeLogged);
 
-    String logMessage = logger.getLoggingEvents().asList().get(0).getMessage();
+    String logMessage = logger.getLoggingEvents().get(0).getMessage();
 
     TaskHistoryEvent deserializedEventFromLogMessage =
         objectMapper.readValue(logMessage, TaskHistoryEvent.class);
@@ -80,7 +80,7 @@ class LogfileHistoryServiceImplTest {
 
     logfileHistoryServiceImpl.create(eventToBeLogged);
 
-    String logMessage = logger.getLoggingEvents().asList().get(0).getMessage();
+    String logMessage = logger.getLoggingEvents().get(0).getMessage();
 
     WorkbasketHistoryEvent deserializedEventFromLogMessage =
         objectMapper.readValue(logMessage, WorkbasketHistoryEvent.class);
@@ -103,7 +103,7 @@ class LogfileHistoryServiceImplTest {
 
     logfileHistoryServiceImpl.create(eventToBeLogged);
 
-    String logMessage = logger.getLoggingEvents().asList().get(0).getMessage();
+    String logMessage = logger.getLoggingEvents().get(0).getMessage();
 
     ClassificationHistoryEvent deserializedEventFromLogMessage =
         objectMapper.readValue(logMessage, ClassificationHistoryEvent.class);

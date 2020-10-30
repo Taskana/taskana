@@ -261,7 +261,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @TestFactory
   Stream<DynamicTest> testQueryForCustomX() {
     List<Triplet<TaskCustomField, String[], Integer>> list =
-        Arrays.asList(
+        List.of(
             new Triplet<>(
                 TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
             new Triplet<>(TaskCustomField.CUSTOM_2, new String[] {"custom%", "a%"}, 2),

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -693,7 +694,7 @@ public class TaskServiceImpl implements TaskService {
 
       List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(null, externalIds);
 
-      Iterator<String> taskIdIterator = externalIds.iterator();
+      Iterator<String> taskIdIterator = new ArrayList<>(externalIds).iterator();
       while (taskIdIterator.hasNext()) {
         removeSingleTaskForCallbackStateByExternalId(bulkLog, taskSummaries, taskIdIterator, state);
       }
@@ -1430,20 +1431,22 @@ public class TaskServiceImpl implements TaskService {
           "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
       externalIdIterator.remove();
     } else {
-      MinimalTaskSummary foundSummary =
+      Optional<MinimalTaskSummary> foundSummary =
           taskSummaries.stream()
               .filter(taskSummary -> currentExternalId.equals(taskSummary.getExternalId()))
-              .findFirst()
-              .orElse(null);
-      if (foundSummary == null) {
+              .findFirst();
+      if (foundSummary.isPresent()) {
+        if (!desiredCallbackStateCanBeSetForFoundSummary(
+            foundSummary.get(), desiredCallbackState)) {
+          bulkLog.addError(currentExternalId, new InvalidStateException(currentExternalId));
+          externalIdIterator.remove();
+        }
+      } else {
         bulkLog.addError(
             currentExternalId,
             new TaskNotFoundException(
                 currentExternalId,
                 String.format("Task with id %s was not found.", currentExternalId)));
-        externalIdIterator.remove();
-      } else if (!desiredCallbackStateCanBeSetForFoundSummary(foundSummary, desiredCallbackState)) {
-        bulkLog.addError(currentExternalId, new InvalidStateException(currentExternalId));
         externalIdIterator.remove();
       }
     }

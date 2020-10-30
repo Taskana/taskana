@@ -323,8 +323,9 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
             .orderByDomain(ASCENDING)
             .list();
 
-    List<String> expectedIds =
-        Arrays.asList(
+    assertThat(results)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactlyInAnyOrder(
             "WBI:100000000000000000000000000000000001",
             "WBI:100000000000000000000000000000000002",
             "WBI:100000000000000000000000000000000004",
@@ -335,9 +336,6 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
             "WBI:100000000000000000000000000000000009",
             "WBI:100000000000000000000000000000000010",
             "WBI:100000000000000000000000000000000012");
-    assertThat(results)
-        .extracting(WorkbasketSummary::getId)
-        .containsExactlyInAnyOrderElementsOf(expectedIds);
   }
 
   @WithAccessId(user = "admin")
@@ -350,9 +348,10 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
             .orderByDomain(DESCENDING)
             .list();
 
-    assertThat(results).hasSize(2);
-    assertThat(results.get(0).getId()).isEqualTo("WBI:100000000000000000000000000000000015");
-    assertThat(results.get(1).getId()).isEqualTo("WBI:100000000000000000000000000000000001");
+    assertThat(results)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactly(
+            "WBI:100000000000000000000000000000000015", "WBI:100000000000000000000000000000000001");
   }
 
   @WithAccessId(user = "teamlead-1")
@@ -364,8 +363,9 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
             .customAttributeIn(WorkbasketCustomField.CUSTOM_1, "ABCQVW")
             .list();
 
-    assertThat(results).hasSize(1);
-    assertThat(results.get(0).getId()).isEqualTo("WBI:100000000000000000000000000000000001");
+    assertThat(results)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactly("WBI:100000000000000000000000000000000001");
   }
 
   @WithAccessId(user = "admin")

@@ -307,7 +307,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfClassificationReportWithCategoryFilter() throws Exception {
-    List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    List<String> categories = List.of("AUTOMATIC", "MANUAL");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =

@@ -14,7 +14,6 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
  */
 class ArchitectureTest {
   private static final List<String> TASKANA_SUB_PACKAGES =
-      Arrays.asList(
+      List.of(
           "pro.taskana.sampledata",
           "pro.taskana.common.internal",
           "pro.taskana.common.api",

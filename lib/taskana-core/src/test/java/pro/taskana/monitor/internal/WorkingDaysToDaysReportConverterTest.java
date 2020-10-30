@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ class WorkingDaysToDaysReportConverterTest {
     CustomHoliday dayOfReformation = CustomHoliday.of(31, 10);
     CustomHoliday allSaintsDays = CustomHoliday.of(1, 11);
     converter =
-        new WorkingDaysToDaysConverter(true, false, Arrays.asList(dayOfReformation, allSaintsDays));
+        new WorkingDaysToDaysConverter(true, false, List.of(dayOfReformation, allSaintsDays));
   }
 
   @Test

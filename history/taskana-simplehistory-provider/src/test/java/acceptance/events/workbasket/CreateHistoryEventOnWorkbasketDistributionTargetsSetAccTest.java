@@ -3,7 +3,6 @@ package acceptance.events.workbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +32,7 @@ class CreateHistoryEventOnWorkbasketDistributionTargetsSetAccTest extends Abstra
     final String sourceWorkbasketId = "WBI:100000000000000000000000000000000004";
 
     List<String> targetWorkbaskets =
-        Arrays.asList(
+        List.of(
             "WBI:100000000000000000000000000000000002", "WBI:100000000000000000000000000000000003");
 
     List<WorkbasketHistoryEvent> events =

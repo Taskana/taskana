@@ -92,7 +92,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   void testGetTaskIdsOfCategoryReport() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -122,7 +122,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -146,7 +146,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     final List<TaskState> states = List.of(TaskState.READY);
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -174,10 +174,10 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithCategoryFilter() throws Exception {
-    final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    final List<String> categories = List.of("AUTOMATIC", "MANUAL");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -200,7 +200,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     final List<String> domains = List.of("DOMAIN_A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -225,7 +225,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE

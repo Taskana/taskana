@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -108,11 +106,10 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", GROUP_1_DN)
             .list();
-    assertThat(results).hasSize(2);
-    List<String> keys = new ArrayList<>(Arrays.asList("GPK_KSC_1", "USER-1-1"));
-    for (WorkbasketSummary wb : results) {
-      assertThat(keys.contains(wb.getKey())).isTrue();
-    }
+
+    assertThat(results)
+        .extracting(WorkbasketSummary::getKey)
+        .containsExactlyInAnyOrder("GPK_KSC_1", "USER-1-1");
   }
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)

@@ -9,7 +9,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.assertj.core.data.TemporalUnitWithinOffset;
@@ -203,7 +202,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId3 = "TKI:000000000000000000000000000000000058";
     String tkId4 = "TKI:000000000000000000000000000000000060";
 
-    List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
+    List<String> taskIds = List.of(tkId1, tkId2, tkId3, tkId4);
 
     Instant planned = getInstant("2020-02-11T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
@@ -230,7 +229,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId3 = "TKI:000000000000000000000000000000000059";
     String tkId4 = "TKI:000000000000000000000000000000000058";
     String tkId5 = "TKI:000000000000000000000000000000000060";
-    List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4, tkId5);
+    List<String> taskIds = List.of(tkId1, tkId2, tkId3, tkId4, tkId5);
     Instant planned = getInstant("2020-04-20T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
         taskService.setPlannedPropertyOfTasks(planned, taskIds);
@@ -292,7 +291,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     // now check that bulk update gives the same due dates
 
-    List<String> taskIds = Arrays.asList(tkId0, tkId1, tkId2);
+    List<String> taskIds = List.of(tkId0, tkId1, tkId2);
 
     BulkOperationResults<String, TaskanaException> results =
         taskService.setPlannedPropertyOfTasks(planned, taskIds);
@@ -330,7 +329,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId2 = "TKI:000000000000000000000000000000000009";
     String tkId3 = "TKI:000000000000000000000000000000000008";
     String tkId4 = "TKI:000000000000000000000000000000000010";
-    List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
+    List<String> taskIds = List.of(tkId1, tkId2, tkId3, tkId4);
     Instant planned = getInstant("2020-02-25T07:00:00");
 
     BulkOperationResults<String, TaskanaException> results =
@@ -349,7 +348,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     String tkId3 = "TKI:000000000000000000000000000000000008";
     String tkId4 = "TKI:000000000000000000000000000000000010"; // all three have P13D
 
-    List<String> taskIds = Arrays.asList(tkId1, tkId2, tkId3, tkId4);
+    List<String> taskIds = List.of(tkId1, tkId2, tkId3, tkId4);
     Instant planned = getInstant("2020-05-03T07:00:00");
     BulkOperationResults<String, TaskanaException> results =
         taskService.setPlannedPropertyOfTasks(planned, taskIds);

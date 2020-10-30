@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +29,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
   void testQueryForWorkbasketKeyDomain() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<KeyDomain> workbasketIdentifiers =
-        Arrays.asList(
-            new KeyDomain("GPK_KSC_2", "DOMAIN_A"), new KeyDomain("USER-1-2", "DOMAIN_A"));
+        List.of(new KeyDomain("GPK_KSC_2", "DOMAIN_A"), new KeyDomain("USER-1-2", "DOMAIN_A"));
 
     List<TaskSummary> results =
         taskService
@@ -42,10 +39,7 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     assertThat(results).hasSize(30);
 
     String[] ids =
-        results.stream()
-            .map(t -> t.getWorkbasketSummary().getId())
-            .collect(Collectors.toList())
-            .toArray(new String[0]);
+        results.stream().map(t -> t.getWorkbasketSummary().getId()).toArray(String[]::new);
 
     List<TaskSummary> result2 = taskService.createTaskQuery().workbasketIdIn(ids).list();
     assertThat(result2).hasSize(30);

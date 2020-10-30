@@ -92,7 +92,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   void testGetTaskIdsOfCustomFieldValueReport() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -119,7 +119,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -141,7 +141,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   void testGetTaskIdsOfCustomFieldValueReportWithStateFilter() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -165,10 +165,10 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithCategoryFilter() throws Exception {
-    final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    final List<String> categories = List.of("AUTOMATIC", "MANUAL");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -189,7 +189,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   void testGetTaskIdsOfCustomFieldValueReportWithDomainFilter() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -212,7 +212,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
 
     List<String> ids =
         MONITOR_SERVICE

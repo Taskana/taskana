@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -271,8 +270,7 @@ class WorkbasketDefinitionControllerIntTest {
       HttpStatus expectedStatus, WorkbasketDefinitionRepresentationModel... workbaskets)
       throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS, Arrays.asList(workbaskets));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS, List.of(workbaskets));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(expectedStatus, pagedModel);
   }
 

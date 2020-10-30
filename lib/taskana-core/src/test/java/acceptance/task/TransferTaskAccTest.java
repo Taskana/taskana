@@ -326,19 +326,18 @@ class TransferTaskAccTest extends AbstractAccTest {
     // test with invalid list
 
     ThrowingCallable call =
-        () -> {
-          taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
-        };
+        () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not be null.");
 
     // test with list containing only invalid arguments
     call =
-        () -> {
-          taskService.transferTasks(
-              "WBI:100000000000000000000000000000000006", Arrays.asList("", "", "", null));
-        };
+        () ->
+            taskService.transferTasks(
+                "WBI:100000000000000000000000000000000006",
+                /* we can't use List.of because of the null value we insert */
+                Arrays.asList("", "", "", null));
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not contain only invalid arguments.");

@@ -3,7 +3,6 @@ package pro.taskana.workbasket.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
@@ -81,7 +80,7 @@ class WorkbasketServiceImplIntAutocommitTest {
         createTestWorkbasket(id2, "key2", "DOMAIN_A", "Hyperbasket", WorkbasketType.GROUP);
     workbasket2 = workBasketService.createWorkbasket(workbasket2);
     createWorkbasketWithSecurity(workbasket2, "user-1-1", true, true, false, false);
-    List<String> distTargets = Arrays.asList(workbasket0.getId(), workbasket1.getId());
+    List<String> distTargets = List.of(workbasket0.getId(), workbasket1.getId());
     Thread.sleep(SLEEP_TIME);
     workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 

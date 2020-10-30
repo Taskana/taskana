@@ -3,9 +3,8 @@ package acceptance.report;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -114,12 +113,10 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
             .collect(Collectors.toList());
     TimestampReport timestampReport =
         MONITOR_SERVICE.createTimestampReportBuilder().withColumnHeaders(headers).buildReport();
-    final HashSet<String> org1Set = new HashSet<>(Arrays.asList("N/A", "org1"));
-    final HashSet<String> allOtherOrgLevelSet = new HashSet<>(List.of("N/A"));
+    final Set<String> org1Set = Set.of("N/A", "org1");
+    final Set<String> allOtherOrgLevelSet = Set.of("N/A");
 
-    assertThat(timestampReport.getRows()).hasSize(2);
-    assertThat(timestampReport.getRows().keySet())
-        .isEqualTo(new HashSet<>(Arrays.asList("CREATED", "COMPLETED")));
+    assertThat(timestampReport.getRows()).containsOnlyKeys("CREATED", "COMPLETED");
 
     // * * * * * * * * * * * * * * * * * * TEST THE CREATED ROW * * * * * * * * * * * * * * * * * *
 

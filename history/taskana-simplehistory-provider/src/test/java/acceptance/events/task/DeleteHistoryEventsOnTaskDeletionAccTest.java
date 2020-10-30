@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -74,7 +73,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
                 historyService.createTaskHistoryQuery().taskIdIn(taskId_1, taskId_2));
     assertThat(listEvents).hasSize(3);
 
-    taskService.deleteTasks(Arrays.asList(taskId_1, taskId_2));
+    taskService.deleteTasks(List.of(taskId_1, taskId_2));
 
     // make sure the tasks got deleted
     ThrowingCallable getDeletedTaskCall =
@@ -145,7 +144,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
                 historyService.createTaskHistoryQuery().taskIdIn(taskId_1, taskId_2));
     assertThat(listEvents).hasSize(2);
 
-    taskService.deleteTasks(Arrays.asList(taskId_1, taskId_2));
+    taskService.deleteTasks(List.of(taskId_1, taskId_2));
 
     // make sure the tasks got deleted
     ThrowingCallable getDeletedTaskCall =

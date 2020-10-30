@@ -1,11 +1,9 @@
 package acceptance.report;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,7 +112,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     TaskStatusReport report =
         MONITOR_SERVICE
             .createTaskStatusReportBuilder()
-            .domainIn(asList("DOMAIN_C", "DOMAIN_A"))
+            .domainIn(List.of("DOMAIN_C", "DOMAIN_A"))
             .buildReport();
 
     assertThat(report).isNotNull();
@@ -179,7 +177,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE
             .createTaskStatusReportBuilder()
             .stateIn(
-                Arrays.asList(
+                List.of(
                     TaskState.READY,
                     TaskState.CLAIMED,
                     TaskState.COMPLETED,

@@ -3,7 +3,6 @@ package acceptance.report;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +74,7 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testGetCustomAttributeValuesForExcludedClassifications() throws Exception {
-    List<String> domains = Arrays.asList("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
+    List<String> domains = List.of("DOMAIN_A", "DOMAIN_B", "DOMAIN_C");
 
     List<String> values =
         MONITOR_SERVICE
