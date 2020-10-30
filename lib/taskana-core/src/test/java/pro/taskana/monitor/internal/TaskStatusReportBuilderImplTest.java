@@ -8,8 +8,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +65,7 @@ class TaskStatusReportBuilderImplTest {
     queryItem2.setWorkbasketKey("KEY_1");
     List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
     when(monitorMapperMock.getTasksCountByState(null, null, null)).thenReturn(queryItems);
-    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
     // when
     final TaskStatusReport report = cut.createTaskStatusReportBuilder().buildReport();
@@ -101,22 +101,20 @@ class TaskStatusReportBuilderImplTest {
     queryItem2.setState(TaskState.COMPLETED);
     queryItem2.setWorkbasketKey("KEY_1");
     List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
-    when(monitorMapperMock.getTasksCountByState(eq(null), eq(Collections.emptyList()), eq(null)))
+    when(monitorMapperMock.getTasksCountByState(eq(null), eq(List.of()), eq(null)))
         .thenReturn(queryItems);
-    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Collections.emptyMap());
+    when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
     // when
     final TaskStatusReport report =
-        cut.createTaskStatusReportBuilder().stateIn(Collections.emptyList()).buildReport();
+        cut.createTaskStatusReportBuilder().stateIn(List.of()).buildReport();
 
     // then
     InOrder inOrder = inOrder(mocks);
     inOrder.verify(internalTaskanaEngineMock).getEngine();
     inOrder.verify(taskanaEngineMock).checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     inOrder.verify(internalTaskanaEngineMock).openConnection();
-    inOrder
-        .verify(monitorMapperMock)
-        .getTasksCountByState(eq(null), eq(Collections.emptyList()), eq(null));
+    inOrder.verify(monitorMapperMock).getTasksCountByState(eq(null), eq(List.of()), eq(null));
     inOrder.verify(internalTaskanaEngineMock).runAsAdmin(any());
     inOrder.verify(internalTaskanaEngineMock).returnConnection();
     inOrder.verifyNoMoreInteractions();

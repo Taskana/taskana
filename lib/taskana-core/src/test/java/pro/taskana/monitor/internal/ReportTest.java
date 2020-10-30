@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -185,7 +184,7 @@ class ReportTest {
   @Test
   void should_OnlyContainTotalRows_When_ReportContainsNoHeaders() {
     // given
-    List<TimeIntervalColumnHeader> headerList = Collections.emptyList();
+    List<TimeIntervalColumnHeader> headerList = List.of();
     report =
         new MonitorQueryItemTimeIntervalColumnHeaderReport(headerList, new String[] {"rowDesc"});
 

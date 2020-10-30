@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +95,7 @@ class ClassificationReportBuilderImplTest {
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
     when(queryMock.keyIn(any())).thenReturn(queryMock);
     when(queryMock.domainIn(any())).thenReturn(queryMock);
-    when(queryMock.list()).thenReturn(Collections.emptyList());
+    when(queryMock.list()).thenReturn(List.of());
 
     final ClassificationReport actualResult =
         cut.createClassificationReportBuilder()
@@ -162,7 +161,7 @@ class ClassificationReportBuilderImplTest {
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
     when(queryMock.keyIn(any())).thenReturn(queryMock);
     when(queryMock.domainIn(any())).thenReturn(queryMock);
-    when(queryMock.list()).thenReturn(Collections.emptyList());
+    when(queryMock.list()).thenReturn(List.of());
 
     final ClassificationReport actualResult =
         cut.createClassificationReportBuilder()
@@ -227,7 +226,7 @@ class ClassificationReportBuilderImplTest {
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
     when(queryMock.keyIn(any())).thenReturn(queryMock);
     when(queryMock.domainIn(any())).thenReturn(queryMock);
-    when(queryMock.list()).thenReturn(Collections.emptyList());
+    when(queryMock.list()).thenReturn(List.of());
 
     final DetailedClassificationReport actualResult =
         cut.createClassificationReportBuilder()
@@ -296,7 +295,7 @@ class ClassificationReportBuilderImplTest {
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
     when(queryMock.keyIn(any())).thenReturn(queryMock);
     when(queryMock.domainIn(any())).thenReturn(queryMock);
-    when(queryMock.list()).thenReturn(Collections.emptyList());
+    when(queryMock.list()).thenReturn(List.of());
 
     final DetailedClassificationReport actualResult =
         cut.createClassificationReportBuilder()
