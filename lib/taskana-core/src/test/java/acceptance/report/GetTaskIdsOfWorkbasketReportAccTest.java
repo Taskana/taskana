@@ -69,7 +69,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
+    final List<SelectedItem> selectedItems = List.of(S_1, S_2, S_3);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -85,7 +85,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReport() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
+    final List<SelectedItem> selectedItems = List.of(S_1, S_2, S_3);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -109,7 +109,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
+    final List<SelectedItem> selectedItems = List.of(S_1, S_2, S_3);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -135,7 +135,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
     final List<SelectedItem> selectedItems =
         List.of(new SelectedItem("USER-1-1", null, Integer.MIN_VALUE, Integer.MAX_VALUE));
     final List<CombinedClassificationFilter> combinedClassificationFilters =
-        Arrays.asList(
+        List.of(
             new CombinedClassificationFilter(
                 "CLI:000000000000000000000000000000000003",
                 "CLI:000000000000000000000000000000000008"),

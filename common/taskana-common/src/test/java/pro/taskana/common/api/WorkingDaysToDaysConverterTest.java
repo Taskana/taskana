@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicNode;
@@ -25,7 +25,7 @@ class WorkingDaysToDaysConverterTest {
     CustomHoliday dayOfReformation = CustomHoliday.of(31, 10);
     CustomHoliday allSaintsDays = CustomHoliday.of(1, 11);
     converter =
-        new WorkingDaysToDaysConverter(true, false, Arrays.asList(dayOfReformation, allSaintsDays));
+        new WorkingDaysToDaysConverter(true, false, List.of(dayOfReformation, allSaintsDays));
   }
 
   @TestFactory

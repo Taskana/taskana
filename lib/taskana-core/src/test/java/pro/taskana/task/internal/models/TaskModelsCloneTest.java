@@ -6,7 +6,6 @@ import static pro.taskana.task.internal.CreateTaskModelHelper.createDummyClassif
 import static pro.taskana.task.internal.CreateTaskModelHelper.createUnitTestTask;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +73,7 @@ class TaskModelsCloneTest {
         createUnitTestTask(
             "dummyTaskId", "dummyTaskName", "dummyWorkbasketKey", createDummyClassification());
     List<Attachment> attachments =
-        new ArrayList<>(
-            Arrays.asList(
-                createAttachment("abc", "dummyTaskId"), createAttachment("def", "dummyTaskId")));
+        List.of(createAttachment("abc", "dummyTaskId"), createAttachment("def", "dummyTaskId"));
     dummyTask.setAttachments(attachments);
 
     TaskImpl dummyTaskCloned = dummyTask.copy();
@@ -90,9 +87,7 @@ class TaskModelsCloneTest {
         createUnitTestTask(
             "dummyTaskId", "dummyTaskName", "workbasketKey", createDummyClassification());
     List<Attachment> attachments =
-        new ArrayList<>(
-            Arrays.asList(
-                createAttachment("abc", "dummyTaskId"), createAttachment("def", "dummyTaskId")));
+        List.of(createAttachment("abc", "dummyTaskId"), createAttachment("def", "dummyTaskId"));
     dummyTask.setAttachments(attachments);
 
     TaskImpl dummyTaskCloned = dummyTask.copy();

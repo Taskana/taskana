@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -201,7 +200,7 @@ class ClassificationDefinitionControllerIntTest {
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Arrays.asList(classification1, classification2));
+            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification1, classification2));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -216,7 +215,7 @@ class ClassificationDefinitionControllerIntTest {
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Arrays.asList(classification1, classification1));
+            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification1, classification1));
 
     assertThatThrownBy(() -> importRequest(clList))
         .isInstanceOf(HttpClientErrorException.class)
@@ -263,7 +262,7 @@ class ClassificationDefinitionControllerIntTest {
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
             TaskanaPagedModelKeys.CLASSIFICATIONS,
-            Arrays.asList(existingClassification, newClassification));
+            List.of(existingClassification, newClassification));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -299,7 +298,7 @@ class ClassificationDefinitionControllerIntTest {
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
             TaskanaPagedModelKeys.CLASSIFICATIONS,
-            Arrays.asList(
+            List.of(
                 classification1,
                 classification2,
                 classification3,
@@ -335,7 +334,7 @@ class ClassificationDefinitionControllerIntTest {
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Arrays.asList(parent, wrongParent, child));
+            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(parent, wrongParent, child));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -369,8 +368,7 @@ class ClassificationDefinitionControllerIntTest {
     child2.setParentKey("");
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Arrays.asList(child1, child2));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(child1, child2));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -394,7 +392,7 @@ class ClassificationDefinitionControllerIntTest {
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Arrays.asList(classification, classification));
+            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification, classification));
 
     assertThatThrownBy(() -> importRequest(clList))
         .isInstanceOf(HttpClientErrorException.class)

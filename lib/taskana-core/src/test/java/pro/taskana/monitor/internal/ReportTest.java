@@ -3,7 +3,6 @@ package pro.taskana.monitor.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -127,7 +126,7 @@ class ReportTest {
   @Test
   void should_AppendItemValue_When_UsingBulkOperationToInsertItems() {
     // when
-    report.addItems(Arrays.asList(item, item));
+    report.addItems(List.of(item, item));
 
     // then
     assertThat(report.getRows()).hasSize(1);
@@ -172,7 +171,7 @@ class ReportTest {
           return item;
         };
     // when
-    report.addItems(Arrays.asList(item, item), preprocessor);
+    report.addItems(List.of(item, item), preprocessor);
 
     // then
     assertThat(report.getRows()).hasSize(1);

@@ -260,7 +260,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithCategoryFilter() throws Exception {
-    List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    List<String> categories = List.of("AUTOMATIC", "MANUAL");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =

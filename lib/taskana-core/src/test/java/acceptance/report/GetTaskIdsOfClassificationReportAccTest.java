@@ -38,7 +38,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 
   @Test
   void testRoleCheck() {
-    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
+    List<SelectedItem> selectedItems = List.of(L_10000, L_10000_1, L_30000);
 
     ThrowingCallable call =
         () ->
@@ -70,7 +70,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
+    List<SelectedItem> selectedItems = List.of(L_10000, L_10000_1, L_30000);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -86,7 +86,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReport() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
+    List<SelectedItem> selectedItems = List.of(L_10000, L_10000_1, L_30000);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -111,7 +111,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
     final List<SelectedItem> selectedItems =
-        Arrays.asList(
+        List.of(
             new SelectedItem("L10000", "L11000", 0, 0),
             new SelectedItem("L10000", "L11000", Integer.MIN_VALUE, -11));
 
@@ -134,7 +134,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
     final List<SelectedItem> selectedItems =
-        Arrays.asList(L_30000, new SelectedItem("L10000", "L11000", 0, 0));
+        List.of(L_30000, new SelectedItem("L10000", "L11000", 0, 0));
 
     List<String> ids =
         MONITOR_SERVICE
@@ -152,8 +152,8 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfClassificationReportWithDomainFilter() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    List<SelectedItem> selectedItems = Arrays.asList(L_10000, L_10000_1, L_30000);
-    List<String> domains = Arrays.asList("DOMAIN_B", "DOMAIN_C");
+    List<SelectedItem> selectedItems = List.of(L_10000, L_10000_1, L_30000);
+    List<String> domains = List.of("DOMAIN_B", "DOMAIN_C");
 
     List<String> ids =
         MONITOR_SERVICE

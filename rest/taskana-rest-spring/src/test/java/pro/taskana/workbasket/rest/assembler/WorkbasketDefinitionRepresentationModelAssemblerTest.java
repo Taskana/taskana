@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +42,7 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
     String id = "ID1";
     workbasket.setId(id);
     List<WorkbasketAccessItem> workbasketAccessItems =
-        Arrays.asList(
+        List.of(
             workbasketService.newWorkbasketAccessItem(id, "a"),
             workbasketService.newWorkbasketAccessItem(id, "b"));
 
@@ -51,7 +50,7 @@ class WorkbasketDefinitionRepresentationModelAssemblerTest {
     WorkbasketImpl target2 = (WorkbasketImpl) workbasketService.newWorkbasket("3", "DOMAIN_A");
     target1.setId("target1");
     target2.setId("target2");
-    List<WorkbasketSummary> workbasketSummaries = Arrays.asList(target1, target2);
+    List<WorkbasketSummary> workbasketSummaries = List.of(target1, target2);
 
     Mockito.doReturn(workbasketAccessItems).when(workbasketService).getWorkbasketAccessItems(id);
     Mockito.doReturn(workbasketSummaries).when(workbasketService).getDistributionTargets(id);

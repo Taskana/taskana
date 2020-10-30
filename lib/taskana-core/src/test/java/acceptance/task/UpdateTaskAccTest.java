@@ -15,7 +15,6 @@ import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +261,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTaskCustomAttributes_When_UpdateTasksIsCalled() throws Exception {
     List<String> taskIds =
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000008",
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000010");

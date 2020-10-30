@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static pro.taskana.common.rest.QueryHelper.applyAndRemoveSortingParams;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -89,7 +88,7 @@ class QueryHelperTest {
   @TestFactory
   Stream<DynamicTest>
       should_CallConsumerWithDescSortDirection_When_MapDoesContainsDescSortDirection() {
-    Iterator<String> testCases = Arrays.asList("desc", "DESC", "Desc", "desC", "DeSc").iterator();
+    Iterator<String> testCases = List.of("desc", "DESC", "Desc", "desC", "DeSc").iterator();
     ThrowingConsumer<String> test =
         desc -> {
           MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -108,7 +107,7 @@ class QueryHelperTest {
   @Test
   void should_CallConsumerMultipleTimes_When_MapContainsMultipleSortBy() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Arrays.asList("sort-by-value1", "sort-by-value2"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by-value1", "sort-by-value2"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
 
     applyAndRemoveSortingParams(map, consumer);
@@ -122,8 +121,8 @@ class QueryHelperTest {
   void should_MatchSortDirectionForEachSortBy_When_MapContainsMultipleSortByAndOrderBy()
       throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Arrays.asList("sort-by-value1", "sort-by-value2"));
-    map.put(QueryHelper.ORDER_DIRECTION, Arrays.asList("desc", "asc"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by-value1", "sort-by-value2"));
+    map.put(QueryHelper.ORDER_DIRECTION, List.of("desc", "asc"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
 
     applyAndRemoveSortingParams(map, consumer);
@@ -143,7 +142,7 @@ class QueryHelperTest {
   @Test
   void should_ThrowError_When_SortByAndOrderByCountDoesNotMatch() {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Arrays.asList("1", "2"));
+    map.put(QueryHelper.SORT_BY, List.of("1", "2"));
     map.put(QueryHelper.ORDER_DIRECTION, List.of("desc"));
     assertThatThrownBy(() -> applyAndRemoveSortingParams(map, mock(MockBiConsumer.class)))
         .isInstanceOf(InvalidArgumentException.class);

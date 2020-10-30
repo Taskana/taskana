@@ -279,7 +279,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteAllTasks_When_BulkCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000102";
     String id2 = "TKI:000000000000000000000000000000000101";
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -306,7 +306,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteValidTasksEvenIfErrorsExist_When_BulkCompletingTasks() throws Exception {
     String invalid = "invalid-id";
     String validId = "TKI:000000000000000000000000000000000103";
-    List<String> taskIdList = Arrays.asList(invalid, validId);
+    List<String> taskIdList = List.of(invalid, validId);
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -327,6 +327,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String invalid2 = null;
     String invalid3 = "invalid-id";
     String notAuthorized = "TKI:000000000000000000000000000000000002";
+    // we can't use List.of because of the null value we insert
     List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -357,7 +358,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_AddErrorForTasksInEndState_When_BulkCompletingTasks() throws Exception {
     String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
     String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -402,7 +403,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteAllTasks_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000026";
     String id2 = "TKI:000000000000000000000000000000000027";
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
@@ -430,7 +431,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteValidTasksEvenIfErrorsExist_When_BulkForceCompletingTasks() throws Exception {
     String invalid = "invalid-id";
     String validId = "TKI:000000000000000000000000000000000028";
-    List<String> taskIdList = Arrays.asList(invalid, validId);
+    List<String> taskIdList = List.of(invalid, validId);
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
@@ -452,6 +453,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String invalid2 = null;
     String invalid3 = "invalid-id";
     String notAuthorized = "TKI:000000000000000000000000000000000002";
+    // we can't use List.of because of the null value we insert
     List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
 
     BulkOperationResults<String, TaskanaException> results =
@@ -468,7 +470,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_AddErrorForTasksInEndState_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
     String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
@@ -550,7 +552,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_OnlyClaimTasksWhichAreNotClaimed_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000043"; // task is already claimed
     String id2 = "TKI:000000000000000000000000000000000044"; // task is ready
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     Task task = TASK_SERVICE.getTask(id2);
     assertThat(task.getState()).isSameAs(TaskState.READY);

@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import org.h2.store.fs.FileUtils;
@@ -120,7 +119,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
       throws Exception {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
-        Arrays.asList(
+        List.of(
             "taskana.roles.admin =uSeR " + delimiter + "name=Username,Organisation=novatec",
             "  taskana.roles.businessadmin  = name=user2, ou = bpm " + delimiter + " user3 ",
             " taskana.roles.user = ",
@@ -139,7 +138,7 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
   private String createNewConfigFileWithSameDelimiter(String filename) throws Exception {
     Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
     List<String> lines =
-        Arrays.asList(
+        List.of(
             "taskana.roles.admin =uSeR|Username",
             "  taskana.roles.businessadmin  = user2  | user3 ",
             " taskana.roles.user = nobody",

@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +50,9 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfCatgoryReport() throws Exception {
+  void testGetTotalNumbersOfCategoryReport() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -109,7 +108,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   @Test
   void testGetCategoryReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -170,7 +169,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   @Test
   void testListTaskIdsOfCategoryReportForSelectedItems() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -250,7 +249,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   @Test
   void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");

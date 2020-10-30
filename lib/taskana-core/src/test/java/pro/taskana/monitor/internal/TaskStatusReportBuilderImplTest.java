@@ -7,7 +7,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +62,7 @@ class TaskStatusReportBuilderImplTest {
     queryItem2.setCount(30);
     queryItem2.setState(TaskState.COMPLETED);
     queryItem2.setWorkbasketKey("KEY_1");
-    List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
+    List<TaskQueryItem> queryItems = List.of(queryItem1, queryItem2);
     when(monitorMapperMock.getTasksCountByState(null, null, null)).thenReturn(queryItems);
     when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
@@ -100,7 +99,7 @@ class TaskStatusReportBuilderImplTest {
     queryItem2.setCount(30);
     queryItem2.setState(TaskState.COMPLETED);
     queryItem2.setWorkbasketKey("KEY_1");
-    List<TaskQueryItem> queryItems = Arrays.asList(queryItem1, queryItem2);
+    List<TaskQueryItem> queryItems = List.of(queryItem1, queryItem2);
     when(monitorMapperMock.getTasksCountByState(eq(null), eq(List.of()), eq(null)))
         .thenReturn(queryItems);
     when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());

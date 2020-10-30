@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -201,7 +200,7 @@ class WorkOnTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     String id1 = "TKI:000000000000000000000000000000000102";
     String id2 = "TKI:000000000000000000000000000000003333";
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 

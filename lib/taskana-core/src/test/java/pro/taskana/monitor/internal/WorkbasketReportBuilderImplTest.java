@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,7 @@ class WorkbasketReportBuilderImplTest {
   @Test
   void testGetTotalNumbersOfWorkbasketReportBasedOnDueDate() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -111,14 +110,14 @@ class WorkbasketReportBuilderImplTest {
 
     assertThat(actualResult).isNotNull();
     assertThat(actualResult.getRow("WBI:000000000000000000000000000000000001").getTotalValue())
-        .isEqualTo(1);
-    assertThat(actualResult.getSumRow().getTotalValue()).isEqualTo(1);
+        .isOne();
+    assertThat(actualResult.getSumRow().getTotalValue()).isOne();
   }
 
   @Test
   void testGetWorkbasketReportWithReportLineItemDefinitions() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -186,7 +185,7 @@ class WorkbasketReportBuilderImplTest {
   @Test
   void testGetTaskIdsOfCategoryReportForSelectedItems() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -269,7 +268,7 @@ class WorkbasketReportBuilderImplTest {
   @Test
   void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");
@@ -331,7 +330,7 @@ class WorkbasketReportBuilderImplTest {
   @Test
   void testGetTotalNumbersOfWorkbasketReportBasedOnCreatedDate() throws Exception {
     final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
     final List<String> categories = List.of("EXTERN");
     final List<String> domains = List.of("DOMAIN_A");
     final List<String> classificationIds = List.of("L10000");

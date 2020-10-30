@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -141,7 +140,7 @@ class WorkbasketAccessItemControllerIntTest {
   @TestFactory
   Stream<DynamicTest> should_ReturnBadRequest_When_AccessIdIsInvalid() {
     List<String> accessIds =
-        Arrays.asList(
+        List.of(
             "cn=organisationseinheit ksc,cn=organisation,ou=test,o=taskana",
             "cn=monitor-users,cn=groups,ou=test,o=taskana",
             "user-1");
