@@ -9,7 +9,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -200,12 +199,12 @@ class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithP1D, taskService, converter, 1, 1000);
 
     List<String> tasksWithP8D =
-        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000008"));
+        new ArrayList<>(List.of("TKI:000000000000000000000000000000000008"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithP8D, taskService, converter, 8, 1000);
 
     List<String> tasksWithP14D =
-        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000010"));
+        new ArrayList<>(List.of("TKI:000000000000000000000000000000000010"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithP14D, taskService, converter, 14, 1000);
 
@@ -343,7 +342,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPrio99, taskService, converter, 1, 99);
 
     List<String> tasksWithPrio101 =
-        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000011"));
+        new ArrayList<>(List.of("TKI:000000000000000000000000000000000011"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPrio101, taskService, converter, 1, 101);
 
@@ -398,12 +397,11 @@ class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPrio7, taskService, converter, 1, 7);
 
     List<String> tasksWithPrio9 =
-        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000008"));
+        new ArrayList<>(List.of("TKI:000000000000000000000000000000000008"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPrio9, taskService, converter, 1, 9);
 
-    tasksWithPrio101 =
-        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000011"));
+    tasksWithPrio101 = new ArrayList<>(List.of("TKI:000000000000000000000000000000000011"));
 
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPrio101, taskService, converter, 1, 101);
@@ -471,7 +469,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
         before, tasksWithPD12, taskService, converter, 12, 555);
 
     List<String> tasksWithPD8 =
-        new ArrayList<>(Collections.singletonList("TKI:000000000000000000000000000000000008"));
+        new ArrayList<>(List.of("TKI:000000000000000000000000000000000008"));
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithPD8, taskService, converter, 8, 555);
 

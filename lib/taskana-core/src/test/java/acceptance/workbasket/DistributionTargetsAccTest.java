@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -88,8 +87,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
 
     call =
         () -> {
-          workbasketService.setDistributionTargets(
-              existingWb, Collections.singletonList(nonExistingWb));
+          workbasketService.setDistributionTargets(existingWb, List.of(nonExistingWb));
         };
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
@@ -128,7 +126,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> {
           workbasketService.setDistributionTargets(
-              existingWb, Collections.singletonList("WBI:100000000000000000000000000000000002"));
+              existingWb, List.of("WBI:100000000000000000000000000000000002"));
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 

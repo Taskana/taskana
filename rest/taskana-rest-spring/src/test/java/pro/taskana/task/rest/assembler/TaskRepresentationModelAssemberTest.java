@@ -90,11 +90,9 @@ class TaskRepresentationModelAssemberTest {
     repModel.setPrimaryObjRef(primaryObjRef);
     repModel.setRead(true);
     repModel.setTransferred(true);
-    repModel.setCustomAttributes(
-        Collections.singletonList(TaskRepresentationModel.CustomAttribute.of("abc", "def")));
-    repModel.setCallbackInfo(
-        Collections.singletonList(TaskRepresentationModel.CustomAttribute.of("ghi", "jkl")));
-    repModel.setAttachments(Collections.singletonList(attachment));
+    repModel.setCustomAttributes(List.of(TaskRepresentationModel.CustomAttribute.of("abc", "def")));
+    repModel.setCallbackInfo(List.of(TaskRepresentationModel.CustomAttribute.of("ghi", "jkl")));
+    repModel.setAttachments(List.of(attachment));
     repModel.setCustom1("custom1");
     repModel.setCustom2("custom2");
     repModel.setCustom3("custom3");
@@ -154,7 +152,7 @@ class TaskRepresentationModelAssemberTest {
     task.setTransferred(true);
     task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
     task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
-    task.setAttachments(Collections.singletonList(attachment));
+    task.setAttachments(List.of(attachment));
     task.setCustomAttribute(TaskCustomField.CUSTOM_1, "custom1");
     task.setCustomAttribute(TaskCustomField.CUSTOM_2, "custom2");
     task.setCustomAttribute(TaskCustomField.CUSTOM_3, "custom3");
@@ -215,7 +213,7 @@ class TaskRepresentationModelAssemberTest {
     task.setTransferred(true);
     task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
     task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
-    task.setAttachments(Collections.singletonList(attachment));
+    task.setAttachments(List.of(attachment));
     task.setCustom1("custom1");
     task.setCustom2("custom2");
     task.setCustom3("custom3");

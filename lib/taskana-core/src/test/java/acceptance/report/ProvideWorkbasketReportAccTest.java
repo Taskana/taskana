@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,9 +55,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
     WorkbasketReport.Builder builder =
-        MONITOR_SERVICE
-            .createWorkbasketReportBuilder()
-            .domainIn(Collections.singletonList("DOES_NOT_EXIST"));
+        MONITOR_SERVICE.createWorkbasketReportBuilder().domainIn(List.of("DOES_NOT_EXIST"));
     ThrowingCallable test =
         () -> {
           WorkbasketReport report = builder.buildReport();
@@ -92,8 +89,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
-            .classificationIdIn(
-                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .classificationIdIn(List.of("CLI:000000000000000000000000000000000001"))
             .buildReport();
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(2);
@@ -216,8 +212,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithWorkbasketFilter() throws Exception {
-    List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
+    List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
@@ -238,7 +233,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithStateFilter() throws Exception {
-    List<TaskState> states = Collections.singletonList(TaskState.READY);
+    List<TaskState> states = List.of(TaskState.READY);
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
@@ -292,7 +287,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfWorkbasketReportWithDomainFilter() throws Exception {
-    List<String> domains = Collections.singletonList("DOMAIN_A");
+    List<String> domains = List.of("DOMAIN_A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
@@ -415,7 +410,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
       throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<CombinedClassificationFilter> combinedClassificationFilters =
-        Collections.singletonList(
+        List.of(
             new CombinedClassificationFilter(
                 "CLI:000000000000000000000000000000000001",
                 "CLI:000000000000000000000000000000000006"));

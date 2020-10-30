@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,9 +40,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
   @Test
   void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
     TimestampReport.Builder builder =
-        MONITOR_SERVICE
-            .createTimestampReportBuilder()
-            .domainIn(Collections.singletonList("DOES_NOT_EXIST"));
+        MONITOR_SERVICE.createTimestampReportBuilder().domainIn(List.of("DOES_NOT_EXIST"));
     ThrowingCallable test =
         () -> {
           TimestampReport report = builder.buildReport();
@@ -64,7 +61,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE
             .createTimestampReportBuilder()
             .withColumnHeaders(headers)
-            .domainIn(Collections.singletonList("DOMAIN_A"))
+            .domainIn(List.of("DOMAIN_A"))
             .buildReport();
     assertThat(report).isNotNull();
 
@@ -87,8 +84,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE
             .createTimestampReportBuilder()
             .withColumnHeaders(headers)
-            .classificationIdIn(
-                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .classificationIdIn(List.of("CLI:000000000000000000000000000000000001"))
             .buildReport();
     assertThat(report).isNotNull();
 
@@ -119,7 +115,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
     TimestampReport timestampReport =
         MONITOR_SERVICE.createTimestampReportBuilder().withColumnHeaders(headers).buildReport();
     final HashSet<String> org1Set = new HashSet<>(Arrays.asList("N/A", "org1"));
-    final HashSet<String> allOtherOrgLevelSet = new HashSet<>(Collections.singletonList("N/A"));
+    final HashSet<String> allOtherOrgLevelSet = new HashSet<>(List.of("N/A"));
 
     assertThat(timestampReport.getRows()).hasSize(2);
     assertThat(timestampReport.getRows().keySet())

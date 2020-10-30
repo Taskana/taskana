@@ -8,7 +8,6 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -310,7 +309,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_TransferTasks_When_TransferTasksWithListNotSupportingRemove() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<String> taskIds = Collections.singletonList("TKI:000000000000000000000000000000000006");
+    List<String> taskIds = List.of("TKI:000000000000000000000000000000000006");
 
     ThrowingCallable call =
         () -> {

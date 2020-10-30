@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -60,7 +59,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
               () ->
                   MONITOR_SERVICE
                       .createClassificationReportBuilder()
-                      .listTaskIdsForSelectedItems(Collections.singletonList(L_10000), timestamp);
+                      .listTaskIdsForSelectedItems(List.of(L_10000), timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
 

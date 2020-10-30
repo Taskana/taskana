@@ -11,7 +11,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -131,8 +131,7 @@ class ClassificationDefinitionControllerIntTest {
     classification.setCustom8("custom");
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Collections.singletonList(classification));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -143,8 +142,7 @@ class ClassificationDefinitionControllerIntTest {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setDomain("DOMAIN_A");
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Collections.singletonList(classification));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
 
     try {
       importRequest(clList);
@@ -158,8 +156,7 @@ class ClassificationDefinitionControllerIntTest {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setKey("one");
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Collections.singletonList(classification));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
 
     try {
       importRequest(clList);
@@ -174,8 +171,7 @@ class ClassificationDefinitionControllerIntTest {
         getClassificationWithKeyAndDomain("T6310", "");
     classification.setType("DOCUMENT");
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, Collections.singletonList(classification));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
 
     assertThatThrownBy(() -> importRequest(clList))
         .isInstanceOf(HttpClientErrorException.class)
@@ -237,8 +233,7 @@ class ClassificationDefinitionControllerIntTest {
 
     TaskanaPagedModel<ClassificationRepresentationModel> clList =
         new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS,
-            Collections.singletonList(existingClassification));
+            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(existingClassification));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -246,8 +241,7 @@ class ClassificationDefinitionControllerIntTest {
     existingClassification.setName("second new Name");
     clList =
         new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS,
-            Collections.singletonList(existingClassification));
+            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(existingClassification));
 
     response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
