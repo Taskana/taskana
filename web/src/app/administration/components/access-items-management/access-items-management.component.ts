@@ -18,6 +18,10 @@ import {
   RemoveAccessItemsPermissions
 } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { AccessItemsManagementSelector } from '../../../shared/store/access-items-management-store/access-items-management.selector';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
+
 
 @Component({
   selector: 'taskana-administration-access-items-management',
@@ -28,6 +32,13 @@ export class AccessItemsManagementComponent implements OnInit {
   accessIdSelected: string;
   accessIdPrevious: string;
   isRequired: boolean = false;
+  accessIdName; 
+  dataSource;
+  fields;
+  re = /custom/gi;
+  str: string;
+  new_str: string;
+  fields_short: any[];
 
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();
@@ -52,11 +63,12 @@ export class AccessItemsManagementComponent implements OnInit {
     private formsValidatorService: FormsValidatorService,
     private requestInProgressService: RequestInProgressService,
     private notificationService: NotificationService,
-    private store: Store
+    private store: Store,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit() {
-    this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
+
     this.groups$.pipe(takeUntil(this.destroy$)).subscribe((groups) => {
       this.groups = groups;
     });
@@ -67,6 +79,7 @@ export class AccessItemsManagementComponent implements OnInit {
       this.accessId = selected;
       if (this.accessIdPrevious !== selected.accessId) {
         this.accessIdPrevious = selected.accessId;
+        this.accessIdName = selected.name;
         this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
           this.searchForAccessItemsWorkbaskets();
         });
@@ -74,9 +87,23 @@ export class AccessItemsManagementComponent implements OnInit {
     } else {
       this.accessItemsForm = null;
     }
+    this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
+    this.fields_short = [];
+    this.customFields$.subscribe((fields)=> {
+      this.fields = fields;
+      console.log(this.fields);
+      this.fields.forEach(element => {
+        this.str = element.field;
+        this.new_str = this.str.replace(this.re, "C");
+        this.fields_short.push([element.field, element.visible, this.new_str]);
+      });
+      console.log(this.fields_short);
+    })
   }
 
+
   searchForAccessItemsWorkbaskets() {
+    this.removeFocus();
     this.store
       .dispatch(
         new GetAccessItems(
@@ -93,6 +120,8 @@ export class AccessItemsManagementComponent implements OnInit {
             : []
         );
       });
+
+      
   }
 
   setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
@@ -114,9 +143,11 @@ export class AccessItemsManagementComponent implements OnInit {
     if (!this.accessItemsForm.value.accessIdFilter) {
       this.accessItemsForm.addControl('accessIdFilter', new FormControl());
     }
+
   }
 
   revokeAccess() {
+    this.removeFocus();
     this.notificationService.showDialog(
       `You are going to delete all access related: ${this.accessIdSelected}. Can you confirm this action?`,
       () => {
@@ -138,6 +169,20 @@ export class AccessItemsManagementComponent implements OnInit {
   sorting(sort: Sorting) {
     this.sortModel = sort;
     this.searchForAccessItemsWorkbaskets();
+  }
+
+  openDialog() {
+    this.removeFocus();
+    this.dialog.open(AccessItemsManagementDialogComponent, {
+      width:'500px',
+      data: this.groups
+    });
+  }
+
+  removeFocus() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 
   ngOnDestroy() {

@@ -18,14 +18,25 @@
     border-bottom: 1px solid $brown;
   }
 
+.table {
+
+  width:96%; 
+  margin-left:2%; 
+  margin-right:2%;
+
+}
 .table > thead > tr > th {
   max-width: 150px;
-  border-bottom: none;
+  border-top: none !important;
 }
 
 .table > thead > tr:last-child > th {
-  max-width: 150px;
-  border-bottom: 2px solid $grey;
+  max-width: 150px !important;
+  border-bottom: none !important;
+}
+
+.table > tbody > tr:first-child > td {
+  border-top: 2px solid $grey;
 }
 
 .wrap {
@@ -42,4 +53,61 @@
 }
 .table__access-item-groups {
   height: 80px;
+}
+
+.mat-mini-fab {
+  outline-color: none;
+  border: none;
+  box-shadow: none !important;
+}
+
+.header .tr{
+  border: none !important;
+}
+ th.header {
+  overflow: hidden;
+  text-overflow: ellipsis;
+ } 
+ 
+ th.header:hover {
+  overflow: visible;
+ }
+
+ [data-title]:hover::before {
+	content: attr(data-title);
+	position: absolute;
+
+	white-space: nowrap;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
