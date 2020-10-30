@@ -10,7 +10,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -58,10 +57,10 @@ class LdapClientTest {
 
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
-        .thenReturn(Collections.singletonList(group));
+        .thenReturn(List.of(group));
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
-        .thenReturn(Collections.singletonList(user));
+        .thenReturn(List.of(user));
 
     assertThat(cut.searchUsersAndGroups("test")).hasSize(2).containsExactlyInAnyOrder(user, group);
   }

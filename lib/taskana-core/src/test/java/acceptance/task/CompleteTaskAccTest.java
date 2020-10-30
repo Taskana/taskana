@@ -7,7 +7,6 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -342,7 +341,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_AddErrorForTaskWhichIsNotClaimed_When_BulkCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000025"; // task is not claimed
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -375,7 +374,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_DoNothingForCompletedTask_When_BulkCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000036"; // task is completed
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task before = TASK_SERVICE.getTask(id);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -389,7 +388,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_AddErrorForTaskIfOwnerDoesNotMach_When_BulkCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000035";
-    List<String> taskIdList = Collections.singletonList(id1);
+    List<String> taskIdList = List.of(id1);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -487,7 +486,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_DoNothingForCompletedTask_When_BulkForceCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000036"; // task is completed
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task before = TASK_SERVICE.getTask(id);
     BulkOperationResults<String, TaskanaException> results =
@@ -503,7 +502,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteTaskWhenAlreadyClaimedByDifferentUser_When_BulkForceCompletingTasks()
       throws Exception {
     String id = "TKI:000000000000000000000000000000000002";
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task beforeClaim = TASK_SERVICE.getTask(id);
     assertThat(beforeClaim.getOwner()).isNotEqualTo("user-1-2");
@@ -525,7 +524,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ClaimTaskWhenNotClaimed_When_BulkForceCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000033";
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task task = TASK_SERVICE.getTask(id);
     assertThat(task.getState()).isSameAs(TaskState.READY);

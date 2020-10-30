@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -89,7 +88,7 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
         .isInstanceOf(NotAuthorizedException.class);
     BulkOperationResults<String, TaskanaException> results =
-        taskService.setOwnerOfTasks(anyUserName, Collections.singletonList(taskReadyId));
+        taskService.setOwnerOfTasks(anyUserName, List.of(taskReadyId));
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorForId(taskReadyId)).isInstanceOf(NotAuthorizedException.class);
   }

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
@@ -93,7 +92,7 @@ class WorkbasketServiceImplIntAutocommitTest {
     workbasket3 = workBasketService.createWorkbasket(workbasket3);
     createWorkbasketWithSecurity(workbasket3, "user-1-1", true, true, false, false);
 
-    List<String> newDistTargets = Collections.singletonList(workbasket3.getId());
+    List<String> newDistTargets = List.of(workbasket3.getId());
     Thread.sleep(SLEEP_TIME);
     workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 

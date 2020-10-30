@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.assertj.core.data.TemporalUnitWithinOffset;
@@ -391,7 +390,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant planned = getInstant("2020-05-03T07:00:00");
     // test bulk operation setPlanned...
     BulkOperationResults<String, TaskanaException> results =
-        taskService.setPlannedPropertyOfTasks(planned, Collections.singletonList(taskId));
+        taskService.setPlannedPropertyOfTasks(planned, List.of(taskId));
     Task task = taskService.getTask(taskId);
     assertThat(results.containsErrors()).isFalse();
     Instant expectedDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));

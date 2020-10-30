@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +60,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     Builder builder =
         MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
-            .classificationIdIn(Collections.singletonList("DOES NOT EXIST"));
+            .classificationIdIn(List.of("DOES NOT EXIST"));
     ThrowingCallable test =
         () -> {
           ClassificationCategoryReport report = builder.buildReport();
@@ -80,8 +79,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
-            .classificationIdIn(
-                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .classificationIdIn(List.of("CLI:000000000000000000000000000000000001"))
             .buildReport();
     assertThat(report).isNotNull();
 
@@ -224,8 +222,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithWorkbasketFilter() throws Exception {
-    List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
+    List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =
@@ -252,7 +249,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithStateFilter() throws Exception {
-    List<TaskState> states = Collections.singletonList(TaskState.READY);
+    List<TaskState> states = List.of(TaskState.READY);
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =
@@ -303,7 +300,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @Test
   void testEachItemOfCategoryReportWithDomainFilter() throws Exception {
-    List<String> domains = Collections.singletonList("DOMAIN_A");
+    List<String> domains = List.of("DOMAIN_A");
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =

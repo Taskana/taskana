@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -112,7 +111,7 @@ class WorkbasketServiceImplTest {
     WorkbasketImpl expectedWb = createTestWorkbasket("ID-1", "Key-1");
     when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
     String otherWorkbasketId = "4711";
-    List<String> destinations = Collections.singletonList(otherWorkbasketId);
+    List<String> destinations = List.of(otherWorkbasketId);
     workbasketServiceSpy.createWorkbasket(expectedWb);
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(eq(expectedWb.getId()));
 

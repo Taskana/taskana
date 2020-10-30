@@ -64,8 +64,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
               () ->
                   MONITOR_SERVICE
                       .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
-                      .listTaskIdsForSelectedItems(
-                          Collections.singletonList(GESCHAEFTSSTELLE_A), timestamp);
+                      .listTaskIdsForSelectedItems(List.of(GESCHAEFTSSTELLE_A), timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
 
@@ -77,8 +76,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
-        Collections.singletonList(
-            new SelectedItem("Geschaeftsstelle A", null, Integer.MIN_VALUE, -5));
+        List.of(new SelectedItem("Geschaeftsstelle A", null, Integer.MIN_VALUE, -5));
 
     List<String> ids =
         MONITOR_SERVICE
@@ -119,8 +117,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCustomFieldValueReportWithWorkbasketFilter() throws Exception {
-    final List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
+    final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
         Arrays.asList(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
@@ -152,7 +149,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .stateIn(Collections.singletonList(TaskState.READY))
+            .stateIn(List.of(TaskState.READY))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids).hasSize(8);
@@ -200,7 +197,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .domainIn(Collections.singletonList("DOMAIN_A"))
+            .domainIn(List.of("DOMAIN_A"))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids).hasSize(3);
@@ -238,7 +235,7 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
   void testThrowsExceptionIfSubKeysAreUsed() {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     final List<SelectedItem> selectedItems =
-        Collections.singletonList(new SelectedItem("Geschaeftsstelle A", "INVALID", -5, -2));
+        List.of(new SelectedItem("Geschaeftsstelle A", "INVALID", -5, -2));
 
     ThrowingCallable call =
         () ->

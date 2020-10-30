@@ -59,7 +59,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
               () ->
                   MONITOR_SERVICE
                       .createWorkbasketReportBuilder()
-                      .listTaskIdsForSelectedItems(Collections.singletonList(S_1), timestamp);
+                      .listTaskIdsForSelectedItems(List.of(S_1), timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
 
@@ -117,8 +117,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .excludedClassificationIdIn(
-                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .excludedClassificationIdIn(List.of("CLI:000000000000000000000000000000000001"))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
@@ -135,8 +134,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
       throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     final List<SelectedItem> selectedItems =
-        Collections.singletonList(
-            new SelectedItem("USER-1-1", null, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        List.of(new SelectedItem("USER-1-1", null, Integer.MIN_VALUE, Integer.MAX_VALUE));
     final List<CombinedClassificationFilter> combinedClassificationFilters =
         Arrays.asList(
             new CombinedClassificationFilter(
