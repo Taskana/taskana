@@ -21,7 +21,7 @@ set -e #fail fast
 #H       if this is a tagged build then TRAVIS_TAG contains the version number.
 #H       pattern: v[DIGIT].[DIGIT].[DIGIT]
 # Arguments:
-#   $1: exitcode
+#   $1: exit code
 function helpAndExit() {
   cat "$0" | grep "^#H" | cut -c4-
   exit "$1"

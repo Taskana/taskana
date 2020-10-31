@@ -34,23 +34,23 @@ function main() {
     ;;
   COMMON)
     set -x
-    mvn -q install -B -f $REL/.. -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -N
-    mvn -q test-compile -B -f $REL/../common
+    mvn -q install -B -T 2C -f $REL/.. -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -N
+    mvn -q test-compile -B -T 2C -f $REL/../common
     ;;
   LIB)
     set -x
-    mvn -q install -B -f $REL/.. -pl :taskana-core -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
-    mvn -q test-compile -B -f $REL/../lib
+    mvn -q install -B -T 2C -f $REL/.. -pl :taskana-core -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
+    mvn -q test-compile -B -T 2C -f $REL/../lib
     ;;
   REST)
     set -x
-    mvn -q install -B -f $REL/.. -pl :taskana-simplehistory-rest-spring -am -Dasciidoctor.skip -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
-    mvn -q test-compile -B -f $REL/../rest
+    mvn -q install -B -T 2C -f $REL/.. -pl :taskana-simplehistory-rest-spring -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Dasciidoctor.skip
+    mvn -q test-compile -B -T 2C -f $REL/../rest
     ;;
   HISTORY)
     set -x
-    mvn -q install -B -f $REL/.. -pl :taskana-rest-spring -am -Dasciidoctor.skip -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
-    mvn -q test-compile -B -f $REL/../history
+    mvn -q install -B -T 2C -f $REL/.. -pl :taskana-rest-spring -am -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Dasciidoctor.skip
+    mvn -q test-compile -B -T 2C -f $REL/../history
     ;;
   esac
 }
