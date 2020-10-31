@@ -34,50 +34,50 @@ function main() {
   H2)
     set -x
     eval "$REL/prepare_db.sh '$1'"
-    # We can not use the fance '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
-    (cd $REL/.. && mvn -q install -B -T 4C -am -Pcoverage -Dcheckstyle.skip)
+    # We can not use the fancy '-f' maven option due to a bug in arquillian. See https://issues.jboss.org/browse/THORN-2049
+    (cd $REL/.. && mvn -q install -B -T 2C -Pcoverage -Dcheckstyle.skip)
     eval "$REL/verify_docs_jar.sh"
     # disabling sonarqube for PRs because it's not supported yet. See https://jira.sonarsource.com/browse/MMF-1371
     if [ -n "$2" ]; then
-      #-Pcoverage to activate jacoco and test coverage reports
+      # -Pcoverage to activate jacoco and test coverage reports
       # send test coverage and build information to sonarcloud
-      mvn sonar:sonar -f $REL/.. -Pcoverage -Dsonar.projectKey="$2"
+      mvn -q sonar:sonar -B -T 2C -f $REL/.. -Pcoverage -Dsonar.projectKey="$2"
     fi
     ;;
   DB2_11_1)
     set -x
     eval "$REL/prepare_db.sh '$1'"
-    mvn -q verify -B -f $REL/.. -am -T 4C -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
+    mvn -q verify -B -T 2C -f $REL/.. -pl :taskana-core -am -Dmaven.javadoc.skip -Dcheckstyle.skip
     ;;
   POSTGRES_10)
     set -x
     eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
-    mvn -q install -B -f $REL/.. -P postgres -am -T 4C -pl :taskana-rest-spring-example-common -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q install -B -T 2C -f $REL/.. -pl :taskana-rest-spring-example-common -am -P postgres -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
 
     ### TEST ###
-    mvn -q verify -B -f $REL/.. -Dmaven.javadoc.skip -Dcheckstyle.skip -pl :taskana-core
+    mvn -q verify -B -T 2C -f $REL/.. -pl :taskana-core -Dmaven.javadoc.skip -Dcheckstyle.skip
     ;;
   WILDFLY)
     set -x
     eval "$REL/prepare_db.sh 'POSTGRES_10'"
     # Same as above (H2) we can not use the fancy '-f' maven option
-    (cd $REL/../rest/taskana-rest-spring-example-wildfly && mvn -q verify -B -Ddb.type=postgres)
+    (cd $REL/../rest/taskana-rest-spring-example-wildfly && mvn -q verify -B -T 2C -Ddb.type=postgres)
     ;;
   HISTORY)
     set -x
     ### INSTALL ###
-    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q install -B -T 2C -f $REL/.. -pl :taskana-rest-spring -am -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
 
     ### TEST ###
-    mvn -q verify -B -f $REL/../history -Dmaven.javadoc.skip -Dcheckstyle.skip
+    mvn -q verify -B -T 2C -f $REL/../history -Dmaven.javadoc.skip -Dcheckstyle.skip
     ;;
   WEB)
     set -x
     ### INSTALL ###
 
     (cd $REL/../web && npm install --silent && npm run build:prod-silent)
-    mvn -q install -B -f $REL/.. -am -T 4C -pl :taskana-rest-spring-example-boot -Dasciidoctor.skip -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -P history.plugin
+    mvn -q install -B -T 2C -f $REL/.. -pl :taskana-rest-spring-example-boot -am -P history.plugin -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
     mvn spring-boot:run -P history.plugin -f $REL/../rest/taskana-rest-spring-example-boot > /dev/null &
 
     ### TEST ###
