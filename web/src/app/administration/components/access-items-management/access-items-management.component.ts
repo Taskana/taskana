@@ -21,6 +21,8 @@ import { AccessItemsManagementSelector } from '../../../shared/store/access-item
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
+import { Console } from 'console';
+
 
 @Component({
   selector: 'taskana-administration-access-items-management',
@@ -32,6 +34,12 @@ export class AccessItemsManagementComponent implements OnInit {
   accessIdPrevious: string;
   isRequired: boolean = false;
   accessIdName;
+  dataSource;
+  fields;
+  re = /custom/gi;
+  str: string;
+  new_str: string;
+  newCustomFields: any[];
 
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();
@@ -72,6 +80,7 @@ export class AccessItemsManagementComponent implements OnInit {
       if (this.accessIdPrevious !== selected.accessId) {
         this.accessIdPrevious = selected.accessId;
         this.accessIdName = selected.name;
+        console.log(this.accessId)
         this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
           this.searchForAccessItemsWorkbaskets();
         });
@@ -80,6 +89,16 @@ export class AccessItemsManagementComponent implements OnInit {
       this.accessItemsForm = null;
     }
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
+    this.newCustomFields = [];
+    this.customFields$.subscribe((fields) => {
+      this.fields = fields;
+      console.log(this.fields);
+      this.fields.forEach((element) => {
+        this.str = element.field;
+        this.new_str = this.str.replace(this.re, 'C');
+        this.newCustomFields.push([element.field, element.visible, this.new_str]);
+      });
+    });
   }
 
   searchForAccessItemsWorkbaskets() {
@@ -92,6 +111,7 @@ export class AccessItemsManagementComponent implements OnInit {
           this.accessItemsForm ? this.accessItemsForm.value.workbasketKeyFilter : undefined,
           this.sortModel
         )
+
       )
       .subscribe((state) => {
         this.setAccessItemsGroups(
@@ -99,6 +119,7 @@ export class AccessItemsManagementComponent implements OnInit {
             ? state['accessItemsManagement'].accessItemsResource.accessItems
             : []
         );
+        console.log(state['accessItemsManagement'].accessItemsResource.accessItems);
       });
   }
 
@@ -124,9 +145,8 @@ export class AccessItemsManagementComponent implements OnInit {
   }
 
   revokeAccess() {
-    this.removeFocus();
     this.notificationService.showDialog(
-      `You are going to delete all access related: ${this.accessIdSelected}. Can you confirm this action?`,
+      `You are going to delete all access related: ${this.accessId.accessId}. Can you confirm this action?`,
       () => {
         this.store.dispatch(new RemoveAccessItemsPermissions(this.accessIdSelected)).subscribe(() => {
           this.searchForAccessItemsWorkbaskets();
@@ -148,17 +168,17 @@ export class AccessItemsManagementComponent implements OnInit {
     this.searchForAccessItemsWorkbaskets();
   }
 
-  openDialog() {
+  /*openDialog() {
     this.removeFocus();
     this.dialog.open(AccessItemsManagementDialogComponent, {
       width: '500px',
       data: this.groups
     });
-  }
+  }*/
 
   removeFocus() {
     if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
+      document.activeElement.focus();
     }
   }
 

@@ -14,7 +14,7 @@ import { AccessItemsManagementState } from '../../../shared/store/access-items-m
 import { Observable } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -28,6 +28,16 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
+import {MatIconModule} from '@angular/material/icon';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+
+
+
+
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -42,6 +52,10 @@ const notificationServiceSpy = jest.fn().mockImplementation(
     showDialog: showDialogFn
   })
 );
+
+const mockDialogRef = {
+  close: jasmine.createSpy("close"),
+};
 
 describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
@@ -77,17 +91,24 @@ describe('AccessItemsManagementComponent', () => {
         MatSelectModule,
         MatAutocompleteModule,
         MatInputModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatDividerModule,
+        MatListModule
       ],
       declarations: [
         AccessItemsManagementComponent,
         TypeAheadComponent,
         TaskanaSharedSortStub,
-        TaskanaSharedSpinnerStub
+        TaskanaSharedSpinnerStub,
+        AccessItemsManagementDialogComponent
       ],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
+        { provide: MatDialogRef, useValue: {mockDialogRef} }, 
         RequestInProgressService,
         ClassificationCategoriesService,
         StartupService,

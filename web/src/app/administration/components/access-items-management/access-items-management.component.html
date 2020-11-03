@@ -1,9 +1,4 @@
 <div class="access-items-management panel panel-default">
-
-  <div class="panel-heading">
-    <h4 class="panel-header">Access items management</h4>
-  </div>
-
   <div class="panel-body">
     <div class="panel-body__typeahead">
       <taskana-shared-type-ahead name="accessIdSelected" [(ngModel)]="accessIdSelected"
@@ -16,108 +11,127 @@
       <h3 class="grey">Select an access id</h3>
       <svg-icon class="empty-icon" src="./assets/icons/users.svg"></svg-icon>
     </div>
-
-    <div *ngIf="accessItemsForm">
-      <ng-form [formGroup]="accessItemsForm">
-        <table id="table-access-items" class="table table-striped table-center">
-          <thead>
-            <tr>
-              <th class="table-access-items__sorting">
-                <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
-                  menuPosition="left">
-                </taskana-shared-sort>
-              </th>
-              <th class="table-access-items__key">Workbasket Key</th>
-              <th>Access Id</th>
-              <th></th>
-              <th>Read</th>
-              <th>Open</th>
-              <th>Append</th>
-              <th>Transfer</th>
-              <th>Distribute</th>
-              <ng-container *ngFor="let customField of customFields$ | async">
-                <th *ngIf="customField.visible">
-                  {{customField.field}}
+    <mat-expansion-panel *ngIf="accessItemsForm" class="expansion-panel" (opened)="panelOpenState = true"
+      (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Belonging groups</mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list class="expansion-panel__list" *ngIf="groups && groups.length > 0; else no">
+        <mat-list-item *ngFor="let group of groups">
+          {{group.name}}
+          <mat-divider></mat-divider>
+        </mat-list-item>
+      </mat-list>
+      <ng-template #no>The user is not associated to
+        any groups
+      </ng-template>
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="accessItemsForm" class="expansion-panel" (opened)="panelOpenState = true"
+      (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Access Details</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngIf="accessItemsForm">
+        <ng-form [formGroup]="accessItemsForm">
+          <table id="table-access-items" class="table table-striped table-center">
+            <thead>
+              <tr>
+                <th class="table-access-items__sorting">
+                  <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
+                    menuPosition="left">
+                  </taskana-shared-sort>
                 </th>
-              </ng-container>
-            </tr>
-            <tr>
-              <th colspan="2">
-                <mat-form-field class="table-access-items__filter" appearance="outline">
-                  <mat-label>Workbasket filter</mat-label>
-                  <input matInput formControlName="workbasketKeyFilter"
-                    (keyup.enter)="searchForAccessItemsWorkbaskets()" type="text">
-                </mat-form-field>
-              </th>
-              <th>
-                <mat-form-field class="table-access-items__filter" appearance="outline">
-                  <mat-label>Access id filter</mat-label>
-                  <input matInput formControlName="accessIdFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
-                    type="text">
-                </mat-form-field>
-              </th>
-              <th>
-                <div class="table-access-items__search-button">
-                  <button mat-icon-button (click)="searchForAccessItemsWorkbaskets()" title="Search">
-                    <mat-icon>search</mat-icon>
-                  </button>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody formArrayName="accessItemsGroups">
-            <tr class="table-access-item__content"
-              *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
-              [formGroupName]="index.toString()">
-              <td colspan="2">
-                <label class="wrap">{{accessItem.value.workbasketKey}}</label>
-              </td>
-              <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2"
-                class="text-align text-width taskana-type-ahead">
-                <label matTooltip="{{accessItem.value.accessId}}" class="wrap">{{accessItem.value.accessName}}</label>
-              </td>
-              <ng-template #accessIdInput>
-                <td colspan="2" class="text-align text-width">
-                  <div>
-                    <label>
-                      <input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
-                       '* Access id is required': ''}}">
-                    </label>
+                <th class="table-access-items__key">Workbasket Key</th>
+                <th>Access Id</th>
+                <th></th>
+                <th>Read</th>
+                <th>Open</th>
+                <th>Append</th>
+                <th>Transfer</th>
+                <th>Distribute</th>
+                <ng-container *ngFor="let customField of customFields$ | async">
+                  <th *ngIf="customField.visible">
+                    {{customField.field}}
+                  </th>
+                </ng-container>
+              </tr>
+              <tr>
+                <th colspan="2">
+                  <mat-form-field class="table-access-items__filter" appearance="outline">
+                    <mat-label>Workbasket filter</mat-label>
+                    <input matInput formControlName="workbasketKeyFilter"
+                      (keyup.enter)="searchForAccessItemsWorkbaskets()" type="text">
+                  </mat-form-field>
+                </th>
+                <th>
+                  <mat-form-field class="table-access-items__filter" appearance="outline">
+                    <mat-label>Access id filter</mat-label>
+                    <input matInput formControlName="accessIdFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
+                      type="text">
+                  </mat-form-field>
+                </th>
+                <th>
+                  <div class="table-access-items__search-button">
+                    <button mat-icon-button (click)="searchForAccessItemsWorkbaskets()" title="Search">
+                      <mat-icon>search</mat-icon>
+                    </button>
                   </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody formArrayName="accessItemsGroups">
+              <tr class="table-access-item__content"
+                *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
+                [formGroupName]="index.toString()">
+                <td colspan="2">
+                  <label class="wrap">{{accessItem.value.workbasketKey}}</label>
                 </td>
-              </ng-template>
-              <td>
-                <mat-checkbox id="checkbox-{{index}}-0" formControlName="permRead"></mat-checkbox>
-              </td>
-              <td>
-                <mat-checkbox id="checkbox-{{index}}-1" formControlName="permOpen"></mat-checkbox>
-              </td>
-              <td>
-                <mat-checkbox id="checkbox-{{index}}-2" formControlName="permAppend"></mat-checkbox>
-              </td>
-              <td>
-                <mat-checkbox id="checkbox-{{index}}-3" formControlName="permTransfer"></mat-checkbox>
-              </td>
-              <td>
-                <mat-checkbox id="checkbox-{{index}}-4" formControlName="permDistribute"></mat-checkbox>
-              </td>
-              <ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
-                <td *ngIf="customField.visible">
-                  <mat-checkbox id="checkbox-{{index}}-{{customIndex + 5}}"
-                    formControlName="permCustom{{customIndex + 1}}"></mat-checkbox>
+                <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2"
+                  class="text-align text-width taskana-type-ahead">
+                  <label matTooltip="{{accessItem.value.accessId}}" class="wrap">{{accessItem.value.accessName}}</label>
                 </td>
-              </ng-container>
-            </tr>
-          </tbody>
-        </table>
-        <button mat-flat-button class="table-access-items__groups-button" color="primary" (click)="openDialog()">
-          Belonging groups
-        </button>
-        <button mat-mini-fab class="table-access-items__revoke-button" color="warn" *ngIf="accessItemsForm"
-          (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
-          <mat-icon>clear</mat-icon>
-        </button>
-      </ng-form>
-    </div>
+                <ng-template #accessIdInput>
+                  <td colspan="2" class="text-align text-width">
+                    <div>
+                      <label>
+                        <input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
+                       '* Access id is required': ''}}">
+                      </label>
+                    </div>
+                  </td>
+                </ng-template>
+                <td>
+                  <mat-checkbox id="checkbox-{{index}}-0" formControlName="permRead"></mat-checkbox>
+                </td>
+                <td>
+                  <mat-checkbox id="checkbox-{{index}}-1" formControlName="permOpen"></mat-checkbox>
+                </td>
+                <td>
+                  <mat-checkbox id="checkbox-{{index}}-2" formControlName="permAppend"></mat-checkbox>
+                </td>
+                <td>
+                  <mat-checkbox id="checkbox-{{index}}-3" formControlName="permTransfer"></mat-checkbox>
+                </td>
+                <td>
+                  <mat-checkbox id="checkbox-{{index}}-4" formControlName="permDistribute"></mat-checkbox>
+                </td>
+                <ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
+                  <td *ngIf="customField.visible">
+                    <mat-checkbox id="checkbox-{{index}}-{{customIndex + 5}}"
+                      formControlName="permCustom{{customIndex + 1}}"></mat-checkbox>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+          <button mat-mini-fab class="table-access-items__revoke-button" color="warn" *ngIf="accessItemsForm"
+            (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
+            <mat-icon>clear</mat-icon>
+          </button>
+        </ng-form>
+      </div>
+    </mat-expansion-panel>
   </div>
 </div>

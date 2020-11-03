@@ -19,10 +19,9 @@
   }
 
 .table {
-
-  width:96%; 
-  margin-left:2%; 
-  margin-right:2%;
+  width:100%; 
+  //margin-left:2%; 
+  //margin-right:2%;
 
 }
 .table > thead > tr > th {
@@ -72,11 +71,13 @@
 
 .table-access-items__filter {
   width: 150px;
+  margin-bottom: -31px;
+  margin-top: -10px;
 }
 
 .table-access-items__search-button {
   margin-left: 20px;
-  margin-bottom: 10px;
+  margin-bottom: -5px;
 }
 
 .table-access-items__groups-button {
@@ -87,10 +88,22 @@
 .table-access-items__revoke-button {
   float: right; 
   margin-right: 30px;
+  outline: none; 
 }
 
 .panel-body__typeahead {
   width: 50%; 
   margin-left: 25%;
   margin-right: 25%;
+  margin-top: 20px;
+}
+
+.expansion-panel {
+  width: 98%;
+  left: 1%;
+}
+
+.expansion-panel__list {
+  max-height: 100px;
+  overflow: auto;
 }
