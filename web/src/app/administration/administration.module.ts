@@ -51,6 +51,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 
 const MODULES = [
   CommonModule,
@@ -103,7 +105,8 @@ const DECLARATIONS = [
     MatCheckboxModule,
     MatRippleModule,
     MatTableModule,
-    MatDialogModule
+    MatDialogModule,
+    MatExpansionModule
   ],
   providers: [
     ClassificationDefinitionService,
