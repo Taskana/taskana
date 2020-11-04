@@ -4,7 +4,7 @@
   <div class="classification-details__wrapper" id="classification-details" *ngIf="classification && !spinnerIsRunning">
 
     <!-- TITLE + ACTION BUTTONS -->
-    <section class="classification-details__action-toolbar">
+    <mat-toolbar class="classification-details__action-toolbar">
       <h4 class="classification-details__headline">{{classification.name}}&nbsp; [{{classification.type}}]
         <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
       </h4>
@@ -40,7 +40,7 @@
       </mat-menu>
       </div>
 
-    </section>
+    </mat-toolbar>
 
     <!-- DETAILED FIELDS -->
     <div class="panel-body" style="padding: 0">
@@ -81,17 +81,19 @@
 
           <!-- SERVICE LEVEL AND PRIORITY-->
           <div class="classification-details__service-and-priority">
-            <mat-form-field appearance="outline" class="classification-details__mat-form-field">
-              <mat-label> Service Level </mat-label>
-              <label for="classification-service-level"></label>
-              <input matInput type="text" required maxlength="255"
-                     id="classification-service-level" placeholder="Service Level"
-                     [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel"
-                     #serviceLevel="ngModel" (input)="validateInputOverflow(serviceLevel, 255)">
-            </mat-form-field>
-            <div *ngIf="inputOverflowMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
+            <div class="classification-details__service">
+              <mat-form-field appearance="outline" class="classification-details__mat-form-field">
+                <mat-label> Service Level </mat-label>
+                <label for="classification-service-level"></label>
+                <input matInput type="text" required maxlength="255"
+                       id="classification-service-level" placeholder="Service Level"
+                       [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel"
+                       #serviceLevel="ngModel" (input)="validateInputOverflow(serviceLevel, 255)">
+              </mat-form-field>
+              <div *ngIf="inputOverflowMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
+            </div>
 
-            <div>
+            <div class="classification-details__priority">
               <!-- I replaced this component by the mat-form-field. Is this the same?
               I don't understand all methods in the number-picker component.
               <taskana-shared-number-picker [(ngModel)]="classification.priority"
