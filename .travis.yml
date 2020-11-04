@@ -96,7 +96,7 @@ jobs:
       before_install: |
         openssl aes-256-cbc -K "$encrypted_21a5d40e43a3_key" -iv "$encrypted_21a5d40e43a3_iv" \
         -in "ci/codesigning.asc.enc" -out "ci/codesigning.asc" -d \
-        && gpg -v --import "ci/codesigning.asc" --passphrase "$GPG_PASSPHRASE" \
+        && gpg --batch --import "ci/codesigning.asc" \
         && nvm install "$NODE_VERSION"
       install: ci/change_version.sh -m .
         && ( cd web && npm install )
