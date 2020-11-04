@@ -1,37 +1,13 @@
-<div>
-    <ul class="nav nav-tabs" role="tablist">
-        <li>
-            <a style="display: none"></a>
-        </li>
-        <li (click)="selectTab('tasks')" [ngClass]="{'active':tabSelected === 'tasks'}" class="active"
-            role="presentation">
-            <a aria-controls="Tasks" aria-expanded="true" data-toggle="tab" href="#tasks-tab" role="tab">Tasks</a>
-        </li>
-        <li (click)="selectTab('workbaskets')" [ngClass]="{'active':tabSelected === 'workbaskets'}">
-            <a aria-controls="Workbaskets" aria-expanded="true" data-toggle="tab" href="#workbaskets-tab" role="tab">Workbaskets</a>
-        </li>
-        <li (click)="selectTab('classifications')" [ngClass]="{'active':tabSelected === 'classifications'}">
-            <a aria-controls="Classifications" aria-expanded="true" data-toggle="tab" href="#classifications-tab"
-               role="tab">Classifications</a>
-        </li>
-        <li (click)="selectTab('timestamp')" [ngClass]="{'active':tabSelected === 'timestamp'}">
-            <a aria-controls="Timestamp" aria-expanded="true" data-toggle="tab" href="#timestamp-tab"
-               role="tab">Timestamp</a>
-        </li>
-
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="tasks-tab" role="tabpanel">
-            <taskana-monitor-task-report></taskana-monitor-task-report>
-        </div>
-        <div class="tab-pane" id="workbaskets-tab" role="tabpanel">
-            <taskana-monitor-workbasket-report></taskana-monitor-workbasket-report>
-        </div>
-        <div class="tab-pane" id="classifications-tab" role="tabpanel">
-            <taskana-monitor-classification-report></taskana-monitor-classification-report>
-        </div>
-        <div class="tab-pane" id="timestamp-tab" role="tabpanel">
-            <taskana-monitor-timestamp-report></taskana-monitor-timestamp-report>
-        </div>
-    </div>
+<nav mat-tab-nav-bar class="nav-bar">
+    <a mat-tab-link routerLink="/taskana/monitor/tasks" [active]="selectedTab == 'tasks'"
+        (click)="selectedTab = 'tasks'">Tasks</a>
+    <a mat-tab-link routerLink="/taskana/monitor/workbaskets" [active]="selectedTab == 'workbaskets'"
+        (click)="selectedTab = 'workbaskets'">Workbaskets</a>
+    <a mat-tab-link routerLink="/taskana/monitor/classifications" [active]="selectedTab == 'classifications'"
+        (click)="selectedTab = 'classifications'">Classifications</a>
+    <a mat-tab-link routerLink="/taskana/monitor/timestamp" [active]="selectedTab == 'timestamp'"
+        (click)="selectedTab = 'timestamp'">Timestamp</a>
+</nav>
+<div *ngIf="selectedTab">
+    <router-outlet></router-outlet>
 </div>
