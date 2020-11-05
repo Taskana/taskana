@@ -4,7 +4,7 @@
 
     <resources>
     <!--the name of your driver -->
-        <resource-root path="postgresql-42.2.16.jar"/>
+        <resource-root path="postgresql-42.2.18.jar"/>
     </resources>
 
     <dependencies>
