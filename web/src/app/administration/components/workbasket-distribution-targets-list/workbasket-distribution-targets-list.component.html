@@ -1,57 +1,78 @@
-<div id="dual-list-Left" class="dual-list list-left col-xs-12 col-md-5-6 container">
-    <!-- ACTION TOOLBAR -->
-    <div class="action-toolbar">
-        <div class="row header">
-            <div class="col-xs-2">
-                <button (click)="allSelected = !allSelected; selectAll(allSelected);"
-                        class="btn btn-default btn-sm no-style" title="Select all">
-                    <span class="material-icons md-20 blue ">{{allSelected ? 'check_box' : 'check_box_outline_blank'}}</span>
-                </button>
-            </div>
-            <div class="col-xs-7">
-                <h5>{{header}}</h5>
-            </div>
-            <div class="pull-right">
-                <button class="btn btn-default btn-sm" type="button" id="collapsedMenufilterWb" aria-expanded="false"
-                        (click)="changeToolbarState(!toolbarState)"
-                        data-toggle="tooltip" title="Filter">
-                    <span class="material-icons md-20 blue ">{{!toolbarState ? 'search' : 'expand_less'}}</span>
-                </button>
-            </div>
+<div id="dual-list-Left" class="distribution-targets-list">
+
+
+
+
+  <!-- WORKBASKET LIST -->
+  <div class="workbasket-list infinite-scroll" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50"
+       (scrolled)="onScroll()"
+       [scrollWindow]="false">
+    <mat-selection-list #workbasket [multiple]="false">
+      <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
+                       *ngFor="let workbasket of distributionTargets"
+                       [class.selected]="workbasket.selected" type="text"
+                       (click)="workbasket.selected = !workbasket.selected"
+                       [value]="workbasket.workbasketId">
+        <div class="workbaskets-item__wrapper">
+
+          <div class="workbaskets-item__icon">
+            <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"
+                                              [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+          </div>
+
+          <div class="workbaskets-item__info">
+            <p>
+              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
+            </p>
+            <p>{{workbasket.description}} &nbsp;</p>
+            <p>{{workbasket.owner}} &nbsp;</p>
+          </div>
+
+          <div class="workbaskets-item__marked" *ngIf="workbasket.markedForDeletion">
+            <span title="Marked for deletion" data-toggle="tooltip"
+                  class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+          </div>
         </div>
 
-        <div [@toggleDown]="toolbarState">
-            <taskana-shared-filter (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
-        </div>
-        <taskana-shared-spinner [isRunning]="requestInProgress" positionClass="centered-spinner"
-                         class="floating"></taskana-shared-spinner>
-    </div>
+        <mat-divider></mat-divider>
 
-    <!-- WORKBASKET LIST -->
-    <div class="workbasket-list" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
-         [scrollWindow]="false" class="infinite-scroll">
-        <ul class="list-group">
-            <li class="list-group-item workbasket-list__distribution-targets"
-                *ngFor="let distributionTarget of distributionTargets | selectWorkbaskets: distributionTargetsSelected: side"
-                [class.selected]="distributionTarget.selected" type="text"
-                (click)="distributionTarget.selected = !distributionTarget.selected">
-                <div class="row">
-                    <dl class="col-xs-1">
-                        <taskana-administration-icon-type [type]="distributionTarget.type"></taskana-administration-icon-type>
-                    </dl>
-                    <dl class="col-xs-10">
-                        <dt>{{distributionTarget.name}},
-                            <i>{{distributionTarget.key}} </i>
-                        </dt>
-                        <dd>{{distributionTarget.description}} &nbsp;</dd>
-                        <dd>{{distributionTarget.owner}} &nbsp;</dd>
-                    </dl>
-                </div>
-            </li>
-            <li class="list-group-item" *ngIf="loadingItems">
-                <taskana-shared-spinner [isRunning]="loadingItems" positionClass="centered-spinner"
-                                 class="floating"></taskana-shared-spinner>
-            </li>
-        </ul>
-    </div>
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  <!--
+  <div class="workbasket-list__workbaskets"
+       *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
+    <mat-selection-list #workbasket [multiple]="false">
+      <mat-list-option class="workbasket-list__workbaskets-item"
+                       *ngFor="let workbasket of (workbasketsSummary$ | async)"
+                       (click)="selectWorkbasket(workbasket.workbasketId)"
+                       [selected]="workbasket.workbasketId == selectedId"
+                       [value]="workbasket.workbasketId">
+        <div class="workbaskets-item__wrapper">
+
+          <div class="workbaskets-item__icon">
+            <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"
+                                              [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+          </div>
+
+          <div class="workbaskets-item__info">
+            <p>
+              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
+            </p>
+            <p>{{workbasket.description}} &nbsp;</p>
+            <p>{{workbasket.owner}} &nbsp;</p>
+          </div>
+
+          <div class="workbaskets-item__marked" *ngIf="workbasket.markedForDeletion">
+            <span title="Marked for deletion" data-toggle="tooltip"
+                  class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  -->
 </div>

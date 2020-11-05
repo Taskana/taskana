@@ -3,6 +3,8 @@ import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'app/shared/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
+import { MatDialog } from '@angular/material/dialog';
+import { WorkbasketDistributionTargetsListDialogComponent } from '../workbasket-distribution-targets-list-dialog/workbasket-distribution-targets-list-dialog.component';
 
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets-list',
@@ -13,17 +15,16 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
 export class WorkbasketDistributionTargetsListComponent implements OnInit {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
-  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
   @Input() requestInProgress = false;
   @Input() loadingItems? = false;
-  @Input() side: Side;
   @Input() header: string;
-  @Output() scrolling = new EventEmitter<Side>();
   @Input() allSelected;
+
+  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
+  @Output() scrolling = new EventEmitter<Side>();
   @Output() allSelectedChange = new EventEmitter<boolean>();
 
   sideNumber = 0;
-  toolbarState = false;
 
   ngOnInit() {
     this.sideNumber = this.side === Side.LEFT ? 0 : 1;
@@ -42,9 +43,5 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit {
 
   performAvailableFilter(filterModel: Filter) {
     this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
-  }
-
-  changeToolbarState(state: boolean) {
-    this.toolbarState = state;
   }
 }
