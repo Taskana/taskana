@@ -1244,10 +1244,11 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidStateException(
           String.format("Task with Id %s has to be claimed before.", task.getId()));
     } else if (!taskanaEngine
-        .getEngine()
-        .getCurrentUserContext()
-        .getAccessIds()
-        .contains(task.getOwner())) {
+            .getEngine()
+            .getCurrentUserContext()
+            .getAccessIds()
+            .contains(task.getOwner())
+        && !taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
       throw new InvalidOwnerException(
           String.format(
               "Owner of task %s is %s, but current user is %s ",
