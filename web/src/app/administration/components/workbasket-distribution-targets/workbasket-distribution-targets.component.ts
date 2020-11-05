@@ -42,9 +42,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   @Input()
   action: ACTION;
 
-  @Input()
-  active: string;
-
   badgeMessage = '';
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
@@ -95,9 +92,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!this.initialized && changes.active && changes.active.currentValue === 'distributionTargets') {
-      this.init();
-    }
     if (changes.action) {
       this.setBadge();
     }

@@ -75,7 +75,27 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(SelectWorkbasket)
   selectWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: SelectWorkbasket): Observable<any> {
-    this.location.go(this.location.path().replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})`));
+    let selectedComponent;
+    switch (ctx.getState().selectedComponent) {
+      case WorkbasketComponent.INFORMATION:
+        selectedComponent = 'information';
+        break;
+      case WorkbasketComponent.ACCESS_ITEMS:
+        selectedComponent = 'access-items';
+        break;
+      case WorkbasketComponent.DISTRIBUTION_TARGETS:
+        selectedComponent = 'distribution-targets';
+        break;
+      default:
+        selectedComponent = 'information';
+    }
+
+    this.location.go(
+      this.location
+        .path()
+        .replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})?tab=${selectedComponent}`)
+    );
+
     const id = action.workbasketId;
     if (typeof id !== 'undefined') {
       return this.workbasketService.getWorkBasket(id).pipe(
@@ -122,12 +142,15 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     switch (action.component) {
       case WorkbasketComponent.INFORMATION:
         ctx.patchState({ selectedComponent: WorkbasketComponent.INFORMATION });
+        this.location.go(this.location.path().replace(/(tab).*/g, 'tab=information'));
         break;
       case WorkbasketComponent.ACCESS_ITEMS:
         ctx.patchState({ selectedComponent: WorkbasketComponent.ACCESS_ITEMS });
+        this.location.go(this.location.path().replace(/(tab).*/g, 'tab=access-items'));
         break;
       case WorkbasketComponent.DISTRIBUTION_TARGETS:
         ctx.patchState({ selectedComponent: WorkbasketComponent.DISTRIBUTION_TARGETS });
+        this.location.go(this.location.path().replace(/(tab).*/g, 'tab=distribution-targets'));
         break;
     }
     return of(null);
