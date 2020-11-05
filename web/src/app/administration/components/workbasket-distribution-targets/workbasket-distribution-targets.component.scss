@@ -1,13 +1,26 @@
-.button-margin-top {
-  margin-top: 100px;
+@import 'src/theme/_colors.scss';
+
+.distribution-targets-list__action-button {
+  margin-right: 0.5rem;
 }
 
-.list-arrows > button {
-  margin: 10px 0px;
+.mat-list-item {
+  height: 90px !important;
 }
-
-.col-md-5-6 {
-  @media (min-width: 992px) {
-    width: 45.82%;
-  }
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
+}
+.workbaskets-item__wrapper {
+  display: flex;
+}
+.workbaskets-item__icon {
+  padding: 32px 32px 32px 16px;
+}
+.workbaskets-item__info {
+  display: block;
+  padding: 8px 0;
+}
+p {
+  margin: 0;
 }

@@ -25,6 +25,8 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketStateModel } from '../../../shared/store/workbasket-store/workbasket.state';
+import { WorkbasketDistributionTargetsListDialogComponent } from '../workbasket-distribution-targets-list-dialog/workbasket-distribution-targets-list-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 export enum Side {
   LEFT,
@@ -43,6 +45,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   action: ACTION;
 
   badgeMessage = '';
+  selectedId = '';
+  toolbarState = false;
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
   distributionTargetsLeft: Array<WorkbasketSummary> = [];
@@ -75,12 +79,16 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     private requestInProgressService: RequestInProgressService,
     private orientationService: OrientationService,
     private notificationsService: NotificationService,
-    private store: Store
+    private store: Store,
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit() {
+    console.log('distribution targets init');
+    this.init();
     this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
       if (typeof workbasketDistributionTargets !== 'undefined') {
+        console.log(this.distributionTargetsSelected);
         this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
         this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
         this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
@@ -102,6 +110,18 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       this.loadingItems = true;
       this.getNextPage(side);
     }
+  }
+
+  changeToolbarState(state: boolean) {
+    this.toolbarState = state;
+  }
+
+  displayDistributionTargetsPicker() {
+    const dialogRef = this.matDialog.open(WorkbasketDistributionTargetsListDialogComponent, {});
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+    });
   }
 
   init() {
@@ -258,7 +278,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   calculateNumberItemsList() {
-    if (this.panelBody) {
+    /*if (this.panelBody) {
       const cardHeight = 72;
       const unusedHeight = 100;
       this.cards =
@@ -268,7 +288,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
           unusedHeight,
           true
         ) + 1; // TODO: warum +1
-    }
+    }*/
   }
 
   fillDistributionTargets(side: Side, workbaskets: WorkbasketSummary[]) {
@@ -291,6 +311,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     return originList.filter((item: any) => item.selected === true);
   }
 
+  selectWorkbasket(workbasketId: string) {
+    this.selectedId = workbasketId;
+  }
   unselectItems(originList: any): Array<any> {
     // eslint-disable-next-line no-restricted-syntax
     for (const item of originList) {

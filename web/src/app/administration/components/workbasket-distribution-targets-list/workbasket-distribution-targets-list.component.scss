@@ -1,112 +1,40 @@
-$selected-item: #e3f3f5;
+@import 'src/theme/_colors.scss';
 
-.dual-list {
-  min-height: 250px;
-  padding: 0px;
-  background-color: #f5f5f5;
-  border: 1px solid #e3e3e3;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  & .row {
-    padding: 0px 0px 0px 3px;
-  }
-  & .row:first {
-    border-top: 1px solid #ddd;
-  }
-
-  & div.pull-right {
-    margin-right: 17px;
-  }
-
-  & > .list-group {
-    margin-bottom: 0px;
-    margin-top: 0px;
-  }
-  & > .list-group > li {
-    border-left: none;
-    border-right: none;
-  }
-
-  overflow-x: hidden;
-  overflow-y: hidden;
-
-  @media screen and (max-width: 991px) {
-    height: calc((100vh - 241px) / 2);
-    min-height: 120px;
-    margin-bottom: 0;
-  }
-  max-height: calc(100vh - 194px);
-  margin-bottom: 2px;
+.distribution-targets-list__action-button {
+  margin-right: 0.5rem;
+}
+.workbasket-list__workbaskets {
+  overflow: scroll !important;
 }
 
-.infinite-scroll {
-  overflow-y: scroll;
-  height: calc(100vh - 233px);
-  @media screen and (max-width: 991px) {
-    height: calc((100vh - 315px) / 2);
-    min-height: 83px;
-  }
+.workbasket-list__workbaskets-item {
+}
+.mat-list-item {
+  height: 90px !important;
+}
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
+}
+.workbaskets-item__wrapper {
+  display: flex;
+}
+.workbaskets-item__icon {
+  padding: 32px 32px 32px 16px;
+}
+.workbaskets-item__info {
+  display: block;
+  padding: 8px 0;
+}
+p {
+  margin: 0;
+}
+.workbasket-list__no-items {
+  text-align: center;
+  padding-top: 150px;
 }
 
-.header {
-  margin: 2px -15px 1px -15px;
-}
-
-.list-group {
-  margin-top: 8px;
-}
-
-ul > li {
-  &:first-child.list-group-item.selected {
-    border-color: #ddd;
-  }
-  &.list-group-item.selected {
-    background-color: $selected-item;
-  }
-}
-
-.list-left li {
-  cursor: pointer;
-}
-
-button.no-style {
-  background: none;
-  border: none;
-}
-
-.row.list-group {
+.button-icon {
   margin-left: 2px;
-}
-
-.list-group > li {
-  border-left: none;
-  border-right: none;
-}
-
-a > label {
-  height: 2em;
-  width: 100%;
-}
-dd,
-dt {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-dt > i {
-  font-weight: normal;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-li > div.row > dl {
-  margin-bottom: 0px;
-}
-
-li.list-group-item:hover {
-  color: #555;
-  text-decoration: none;
-  background-color: #f5f5f5;
+  margin-top: -2px;
 }

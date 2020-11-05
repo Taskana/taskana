@@ -24,6 +24,11 @@ import { WorkbasketAccessItemsComponent } from './components/workbasket-access-i
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
+import { WorkbasketDistributionTargetsListDialogComponent } from './components/workbasket-distribution-targets-list-dialog/workbasket-distribution-targets-list-dialog.component';
+import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
+
+import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
+import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
 /**
  * Services
  */
@@ -31,15 +36,16 @@ import { SavingWorkbasketService } from './services/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export.service';
-import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
-import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
+
+/**
+ * Material Design
+ */
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
@@ -76,7 +82,8 @@ const DECLARATIONS = [
   ClassificationDetailsComponent,
   ImportExportComponent,
   AccessItemsManagementComponent,
-  AdministrationOverviewComponent
+  AdministrationOverviewComponent,
+  WorkbasketDistributionTargetsListDialogComponent
 ];
 
 @NgModule({
@@ -105,6 +112,7 @@ const DECLARATIONS = [
     SavingWorkbasketService,
     ClassificationCategoriesService,
     ImportExportService
-  ]
+  ],
+  entryComponents: [WorkbasketDistributionTargetsListDialogComponent]
 })
 export class AdministrationModule {}

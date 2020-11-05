@@ -1,5 +1,5 @@
 <div *ngIf="workbasket" id="wb-information" class="workbasket-distribution-targets">
-	<!-- ACTION TOOLBAR-->
+  <!-- ACTION TOOLBAR-->
   <!--
     <div class="panel-heading">
         <div class="pull-right btn-group">
@@ -17,50 +17,126 @@
         </h4>
     </div>
 -->
-	<!-- DISTRIBUTION TABLE-->
-    <div #panelBody class="workbasket-distribution-targets__list">
+  <mat-toolbar class="distribution-targets-list__action-toolbar">
+    <!--
+    <button (click)="allSelected = !allSelected; selectAll(allSelected);"
+            class="btn btn-default btn-sm no-style" title="Select all">
+      <span class="material-icons md-20 blue ">{{allSelected ? 'check_box' : 'check_box_outline_blank'}}</span>
+    </button>
+    -->
+    <button mat-flat-button class="distribution-targets-list__action-button">Select all
+      <mat-icon class="button-icon">done_all</mat-icon>
+    </button>
+    <button mat-flat-button class="distribution-targets-list__action-button" (click)="changeToolbarState(!toolbarState)"
+    >
+      <span *ngIf="!toolbarState">
+        Display filter
+        <mat-icon class="button-icon">filter_list</mat-icon>
+      </span>
+      <span *ngIf="toolbarState">
+        Hide filter
+        <mat-icon class="button-icon">keyboard_arrow_up</mat-icon>
+      </span>
+    </button>
+    <button mat-flat-button class="distribution-targets-list__action-button" (click)="displayDistributionTargetsPicker()">Add distribution targets</button>
+  </mat-toolbar>
 
-		<!-- DISTRIBUTION LEFT LIST -->
-        <div class="dual-list list-left col-xs-12 col-md-5-6 container">
-            <taskana-administration-workbasket-distribution-targets-list #dualListLeft id="dual-list-Left" header="Available distribution targets"
-                                          [distributionTargets]="distributionTargetsLeft"
+  <div class="distribution-targets-list__filter">
+    <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
+  </div>
+  <!-- DISTRIBUTION TABLE-->
+
+  <div #panelBody class="workbasket-distribution-targets__list">
+    <taskana-administration-workbasket-distribution-targets-list
+      #dualListLeft id="dual-list-Left"
+      header="Available distribution targets"
+      [distributionTargets]="distributionTargetsLeft"
+      [distributionTargetsSelected]="distributionTargetsSelected"
+      (performDualListFilter)="performFilter($event)"
+      (scrolling)="onScroll($event)"
+      [requestInProgress]="requestInProgressLeft"
+      [loadingItems]="loadingItems"
+      [(allSelected)]="selectAllLeft"
+    >
+
+    </taskana-administration-workbasket-distribution-targets-list>
+    <!--
+    <mat-selection-list #workbasket [multiple]="false">
+      <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
+                       *ngFor="let workbasket of distributionTargetsLeft"
+                       (click)="selectWorkbasket(workbasket.workbasketId)"
+                       [selected]="workbasket.workbasketId == selectedId"
+                       [value]="workbasket.workbasketId">
+        <div class="workbaskets-item__wrapper">
+
+          <div class="workbaskets-item__icon">
+            <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"
+                                              [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+          </div>
+
+          <div class="workbaskets-item__info">
+            <p>
+              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
+            </p>
+            <p>{{workbasket.description}} &nbsp;</p>
+            <p>{{workbasket.owner}} &nbsp;</p>
+          </div>
+
+          <div class="workbaskets-item__marked" *ngIf="workbasket.markedForDeletion">
+            <span title="Marked for deletion" data-toggle="tooltip"
+                  class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+      </mat-list-option>
+    </mat-selection-list>
+-->
+    <!-- DISTRIBUTION LEFT LIST -->
+    <!--
+
+
+     <div class="dual-list list-right col-xs-12 col-md-5-6 container">
+            <taskana-administration-workbasket-dual-list #dualListRight id="dual-list-right" header="Selected distribution targets"
+                                          [distributionTargets]="distributionTargetsRight"
                                           [distributionTargetsSelected]="distributionTargetsSelected"
                                           (performDualListFilter)="performFilter($event)"
-										  (scrolling)="onScroll($event)"
-                                          [side]="side.LEFT"
-                                          [requestInProgress]="requestInProgressLeft"
-										  [loadingItems]="loadingItems"
-                                          [(allSelected)]="selectAllLeft"></taskana-administration-workbasket-distribution-targets-list>
-        </div>
+                                          [requestInProgress]="requestInProgressRight"
+                                          [side]="side.RIGHT"
+                                          [(allSelected)]="selectAllRight"></taskana-administration-workbasket-dual-list>
 
-		<!-- DISTRIBUTION ACTION BUTTONS -->
-        <div class="hidden-xs hidden-sm col-md-1 list-arrows text-center button-margin-top">
-            <button (click)="moveDistributionTargets(side.LEFT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-right" data-toggle="tooltip"
-                    title="Move to selected distribution targets">
-                <span class="material-icons md-20 blue">chevron_right</span>
-            </button>
-            <button (click)="moveDistributionTargets(side.RIGHT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-left" data-toggle="tooltip"
-                    title="Move to available distribution targets">
-                <span class="material-icons md-20 blue">chevron_left</span>
-            </button>
-        </div>
-        <div class="hidden visible-xs visible-sm col-xs-12 list-arrows text-center">
-            <button (click)="moveDistributionTargets(side.LEFT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-down" data-toggle="tooltip"
-                    title="Move to selected distribution targets">
-                <span class="material-icons md-20 blue">expand_more</span>
-            </button>
-            <button (click)="moveDistributionTargets(side.RIGHT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-up" data-toggle="tooltip"
-                    title="Move to available distribution targets">
-                <span class="material-icons md-20 blue">expand_less</span>
-            </button>
-        </div>
-    </div>
+   -->
+    <!-- DISTRIBUTION ACTION BUTTONS -->
+    <!--
+  <div class="hidden-xs hidden-sm col-md-1 list-arrows text-center button-margin-top">
+      <button (click)="moveDistributionTargets(side.LEFT)"
+              [disabled]="requestInProgressLeft || requestInProgressRight"
+              class="btn btn-default move-right" data-toggle="tooltip"
+              title="Move to selected distribution targets">
+          <span class="material-icons md-20 blue">chevron_right</span>
+      </button>
+      <button (click)="moveDistributionTargets(side.RIGHT)"
+              [disabled]="requestInProgressLeft || requestInProgressRight"
+              class="btn btn-default move-left" data-toggle="tooltip"
+              title="Move to available distribution targets">
+          <span class="material-icons md-20 blue">chevron_left</span>
+      </button>
+  </div>
+  <div class="hidden visible-xs visible-sm col-xs-12 list-arrows text-center">
+      <button (click)="moveDistributionTargets(side.LEFT)"
+              [disabled]="requestInProgressLeft || requestInProgressRight"
+              class="btn btn-default move-down" data-toggle="tooltip"
+              title="Move to selected distribution targets">
+          <span class="material-icons md-20 blue">expand_more</span>
+      </button>
+      <button (click)="moveDistributionTargets(side.RIGHT)"
+              [disabled]="requestInProgressLeft || requestInProgressRight"
+              class="btn btn-default move-up" data-toggle="tooltip"
+              title="Move to available distribution targets">
+          <span class="material-icons md-20 blue">expand_less</span>
+      </button>
+  </div>
+    -->
+  </div>
 </div>

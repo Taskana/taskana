@@ -1,0 +1,40 @@
+<mat-toolbar class="distribution-targets-list__action-toolbar">
+  <!--
+  <button (click)="allSelected = !allSelected; selectAll(allSelected);"
+          class="btn btn-default btn-sm no-style" title="Select all">
+    <span class="material-icons md-20 blue ">{{allSelected ? 'check_box' : 'check_box_outline_blank'}}</span>
+  </button>
+  -->
+  <button mat-flat-button class="distribution-targets-list__action-button">Select all
+    <mat-icon class="button-icon">done_all</mat-icon>
+  </button>
+  <button mat-flat-button class="distribution-targets-list__action-button" (click)="changeToolbarState(!toolbarState)"
+  >
+      <span *ngIf="!toolbarState">
+        Display filter
+        <mat-icon class="button-icon">filter_list</mat-icon>
+      </span>
+    <span *ngIf="toolbarState">
+        Hide filter
+        <mat-icon class="button-icon">keyboard_arrow_up</mat-icon>
+      </span>
+  </button>
+</mat-toolbar>
+
+<div class="distribution-targets-list__filter">
+  <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
+</div>
+
+<taskana-administration-workbasket-distribution-targets-list
+  #dualListLeft id="dual-list-Left"
+  header="Available distribution targets"
+  [distributionTargets]="distributionTargetsLeft"
+  [distributionTargetsSelected]="distributionTargetsSelected"
+  (performDualListFilter)="performFilter($event)"
+  (scrolling)="onScroll($event)"
+  [requestInProgress]="requestInProgressLeft"
+  [loadingItems]="loadingItems"
+  [(allSelected)]="selectAllLeft"
+>
+
+</taskana-administration-workbasket-distribution-targets-list>
