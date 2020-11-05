@@ -46,6 +46,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "admin")
+  @Test
+  void should_completeClaimedTaskByAnotherUser_When_UserIsAdmin() throws Exception {
+    assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000029").getState())
+        .isEqualTo(TaskState.CLAIMED);
+    Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000029");
+    assertThat(completedTask).isNotNull();
+    assertThat(completedTask.getCompleted()).isNotNull();
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
+  }
+
+  @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
   void should_ForceCompleteTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
