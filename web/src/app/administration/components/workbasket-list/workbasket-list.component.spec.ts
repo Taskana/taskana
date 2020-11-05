@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { DomainService } from '../../../shared/services/domain/domain.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
@@ -99,6 +100,7 @@ describe('WorkbasketListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([WorkbasketState]),
+        RouterTestingModule,
         MatSnackBarModule,
         MatDialogModule,
         FormsModule,

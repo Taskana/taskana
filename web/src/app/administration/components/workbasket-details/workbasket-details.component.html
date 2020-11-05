@@ -37,7 +37,7 @@
       </button>
     </mat-menu>
   </mat-toolbar>
-  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" [(selectedIndex)]="selectedTab">
+  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" [selectedIndex]="selectedTab$ | async">
     <mat-tab label="Information">
       <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-information>
     </mat-tab>

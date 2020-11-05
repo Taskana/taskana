@@ -30,11 +30,13 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   selectedId: string;
   requestInProgress = false;
   action: ACTION;
-  selectedTab = 0;
   badgeMessage = '';
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
+
+  @Select(WorkbasketSelectors.selectedComponent)
+  selectedTab$: Observable<number>;
 
   @Select(WorkbasketSelectors.workbasketActiveAction)
   activeAction$: Observable<ACTION>;
@@ -79,22 +81,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
           this.getWorkbasketInformation(this.workbasket);
         }
       });
-
-    this.route.queryParams.subscribe((params) => {
-      const tab = params.tab;
-
-      if (tab === 'information') {
-        this.selectedTab = WorkbasketComponent.INFORMATION;
-      }
-      if (tab === 'access-items') {
-        this.selectedTab = WorkbasketComponent.ACCESS_ITEMS;
-      }
-      if (tab === 'distribution-targets') {
-        this.selectedTab = WorkbasketComponent.DISTRIBUTION_TARGETS;
-      }
-
-      this.store.dispatch(new SelectComponent(this.selectedTab));
-    });
   }
 
   ngOnChanges(changes?: SimpleChanges) {}

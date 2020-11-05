@@ -16,6 +16,7 @@ import { TaskanaType } from '../../../shared/models/taskana-type';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -53,6 +54,7 @@ describe('WorkbasketListToolbarComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         NgxsModule.forRoot([WorkbasketState]),
         BrowserAnimationsModule,
         MatIconModule,

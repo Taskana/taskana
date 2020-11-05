@@ -31,6 +31,7 @@ import { WorkbasketDistributionTargets } from '../../models/workbasket-distribut
 import { WorkbasketSummary } from '../../models/workbasket-summary';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 import { ButtonAction } from '../../../administration/models/button-action';
+import { ActivatedRoute } from '@angular/router';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -41,8 +42,35 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   constructor(
     private workbasketService: WorkbasketService,
     private location: Location,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private route: ActivatedRoute
   ) {}
+
+  @Action(InitializeStore)
+  initializeStore(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
+    // read the selected tab from the route
+    this.route.queryParams.pipe(take(2)).subscribe((params) => {
+      let tabName: string = params.tab;
+      let tab: number;
+
+      switch (tabName) {
+        case 'information':
+          tab = WorkbasketComponent.INFORMATION;
+          break;
+        case 'access-items':
+          tab = WorkbasketComponent.ACCESS_ITEMS;
+          break;
+        case 'distribution-targets':
+          tab = WorkbasketComponent.DISTRIBUTION_TARGETS;
+          break;
+        default:
+          tab = WorkbasketComponent.INFORMATION;
+      }
+
+      ctx.dispatch(new SelectComponent(tab));
+    });
+    return of();
+  }
 
   @Action(GetWorkbasketsSummary)
   getWorkbasketsSummary(ctx: StateContext<WorkbasketStateModel>, action: GetWorkbasketsSummary): Observable<any> {
@@ -86,8 +114,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       case WorkbasketComponent.DISTRIBUTION_TARGETS:
         selectedComponent = 'distribution-targets';
         break;
-      default:
-        selectedComponent = 'information';
     }
 
     this.location.go(
@@ -126,6 +152,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.patchState({
       selectedWorkbasket: undefined,
+      selectedComponent: WorkbasketComponent.INFORMATION,
       action: ACTION.CREATE
     });
     return of(null);
