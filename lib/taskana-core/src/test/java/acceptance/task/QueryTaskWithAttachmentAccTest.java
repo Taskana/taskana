@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
@@ -36,6 +37,29 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
     assertThat(attachmentSummaries).hasSize(2);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void testTasksWithMultipleAttachmentsOnlyReturnedOnce() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    // find Task with attachment classification names
+    // 14 attachments belonging to only 7 different tasks
+    List<TaskSummary> tasks =
+        taskService
+            .createTaskQuery()
+            .orderByAttachmentClassificationName(SortDirection.ASCENDING)
+            .list();
+
+    assertThat(tasks).hasSize(7);
+
+    tasks =
+        taskService
+            .createTaskQuery()
+            .attachmentClassificationNameLike("Widerruf", "Beratungsprotokoll", "Dynamik%")
+            .list();
+
+    assertThat(tasks).hasSize(6);
   }
 
   @WithAccessId(user = "user-1-2")

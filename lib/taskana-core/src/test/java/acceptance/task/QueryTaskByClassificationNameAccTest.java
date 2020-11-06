@@ -104,14 +104,14 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .attachmentClassificationNameLike("Widerruf", "Beratungsprotokoll", "Dynamik%")
             .orderByAttachmentClassificationName(SortDirection.ASCENDING)
             .list();
-    assertThat(tasks).hasSize(10);
+    assertThat(tasks).hasSize(6);
     // make sure that unordered query returns the same number of objects
     tasks =
         taskService
             .createTaskQuery()
             .attachmentClassificationNameLike("Widerruf", "Beratungsprotokoll", "Dynamik%")
             .list();
-    assertThat(tasks).hasSize(10);
+    assertThat(tasks).hasSize(6);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -125,14 +125,14 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .orderByAttachmentClassificationName(SortDirection.ASCENDING)
             .list();
-    assertThat(tasks).hasSize(7);
+    assertThat(tasks).hasSize(6);
     // make sure that unordered query returns the same number of objects
     tasks =
         taskService
             .createTaskQuery()
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .list();
-    assertThat(tasks).hasSize(7);
+    assertThat(tasks).hasSize(6);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -156,10 +156,10 @@ class QueryTaskByClassificationNameAccTest extends AbstractAccTest {
         taskQuery
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
             .list();
-    // we expect 4 result objects in this case, because task
+    // we expect 6 result objects in this case, because task
     // TKI:000000000000000000000000000000000001  has 2 attachments with different Classifications
     // therefore task TKI:000000000000000000000000000000000001 occurs twice in the result set
-    assertThat(tasks).hasSize(7);
+    assertThat(tasks).hasSize(6);
     long numberOfTasks =
         taskQuery
             .attachmentClassificationNameIn("Widerruf", "Beratungsprotokoll", "Dynamikänderung")
