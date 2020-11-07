@@ -849,6 +849,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByWorkbasketId(SortDirection sortDirection);
 
   /**
+   * This method sorts the query result according to the workbasket-Name of the tasks.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByWorkbasketName(SortDirection sortDirection);
+
+  /**
    * This method sorts the query result according to the attachment classification key. (Should only
    * be used if there is one attachment per task in other case the result would be wrong.)
    *
