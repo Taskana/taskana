@@ -158,6 +158,7 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean addAttachmentColumnsToSelectClauseForOrdering = false;
   private boolean addClassificationNameToSelectClauseForOrdering = false;
   private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
+  private boolean addWorkbasketNameForOrdering = false;
 
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -849,6 +850,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery orderByWorkbasketId(SortDirection sortDirection) {
     return addOrderCriteria("WORKBASKET_ID", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByWorkbasketName(SortDirection sortDirection) {
+    addWorkbasketNameForOrdering = true;
+    return DB.DB2.dbProductId.equals(getDatabaseId())
+        ? addOrderCriteria("WNAME", sortDirection)
+        : addOrderCriteria("w.NAME", sortDirection);
   }
 
   @Override

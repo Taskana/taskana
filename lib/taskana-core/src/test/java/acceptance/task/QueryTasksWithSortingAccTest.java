@@ -100,6 +100,42 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
+  void testSortByWorkbasketName() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(asc).list();
+
+    // test is only valid with at least 2 results
+    assertThat(
+            results.stream()
+                .map(t -> t.getWorkbasketSummary().getName())
+                .distinct()
+                .collect(Collectors.toList()))
+        .hasSizeGreaterThan(2);
+
+    List<String> idsAsc =
+        results.stream()
+            .map(t -> t.getWorkbasketSummary().getName())
+            .sorted()
+            .collect(Collectors.toList());
+
+    for (int i = 0; i < results.size(); i++) {
+      assertThat(results.get(i).getWorkbasketSummary().getName()).isEqualTo(idsAsc.get(i));
+    }
+    results = taskService.createTaskQuery().orderByWorkbasketName(desc).list();
+
+    List<String> idsDesc =
+        results.stream()
+            .map(t -> t.getWorkbasketSummary().getName())
+            .sorted(Comparator.reverseOrder())
+            .collect(Collectors.toList());
+
+    for (int i = 0; i < results.size(); i++) {
+      assertThat(results.get(i).getWorkbasketSummary().getName()).isEqualTo(idsDesc.get(i));
+    }
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
   void testSortByDomainNameAndCreated() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
