@@ -107,13 +107,13 @@ jobs:
       install: ci/change_version.sh -m .
         && ( cd web && npm install )
         && ( cd web && npm run build:prod-silent )
-        && mvn -q install -B -T 2C -pl :taskana-rest-spring-example-boot,:taskana-cdi -am -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip
-        && mvn -q prepare-package -B -T 2C -pl :taskana-rest-spring
-        && mvn -q install -B -T 2C -f history -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
-        && mvn -q install -B -T 2C -pl :taskana-rest-spring-example-boot -P history.plugin -DskipTests -Dcheckstyle.skip
+        && ./mvnw -q install -B -T 2C -pl :taskana-rest-spring-example-boot,:taskana-cdi -am -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip
+        && ./mvnw -q prepare-package -B -T 2C -pl :taskana-rest-spring
+        && ./mvnw -q install -B -T 2C -f history -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip
+        && ./mvnw -q install -B -T 2C -pl :taskana-rest-spring-example-boot -P history.plugin -DskipTests -Dcheckstyle.skip
       before_script: ci/verify_docs_jar.sh
       script: |
-        mvn deploy -B -T 2C -P `[[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` \
+        ./mvnw deploy -B -T 2C -P `[[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot"` \
         --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip \
         -pl :taskana-parent,\
         :taskana-common-parent,:taskana-common,:taskana-common-data,:taskana-common-test,\
