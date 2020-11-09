@@ -1,5 +1,8 @@
 # See https://github.com/github/gitignore for more about ignoring files.
 
+### MAVEN WRAPPER ###
+.mvn/wrapper/*jar
+
 ### GENERATED ###
 target/
 .apt_generated/
