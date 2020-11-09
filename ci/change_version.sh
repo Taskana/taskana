@@ -45,13 +45,15 @@ function increment_version() {
 # Arguments:
 #   $1: directory of pom
 #   $2: new version
+# Environment variable:
+#   REL: relative path to this file
 function change_version() {
-  mvn -q versions:set -f "$1" -DnewVersion="$2" -DartifactId=* -DgroupId=* versions:commit
+  $REL/../mvnw -q versions:set -f "$1" -DnewVersion="$2" -DartifactId=* -DgroupId=* versions:commit
 }
 
 function main() {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
-
+  REL=$(dirname "$0")
   while [[ $# -gt 0 ]]; do
     case $1 in
     -i)
