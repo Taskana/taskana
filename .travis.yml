@@ -93,10 +93,16 @@ jobs:
 
     - stage: Release / Deploy
       name: release / deploy / commit
+      # This is necessary in order to fix some gpg issues (for signing the artifacts which will be released)
+      # More details: https://discuss.circleci.com/t/error-sending-to-agent-inappropriate-ioctl-for-device/17465/7
       before_install: |
-        openssl aes-256-cbc -K "$encrypted_21a5d40e43a3_key" -iv "$encrypted_21a5d40e43a3_iv" \
+        echo use-agent >> ~/.gnupg/gpg.conf \
+        && echo pinentry-mode loopback >> ~/.gnupg/gpg.conf \
+        && echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf \
+        && echo RELOADAGENT | gpg-connect-agent \
+        && openssl aes-256-cbc -K "$encrypted_21a5d40e43a3_key" -iv "$encrypted_21a5d40e43a3_iv" \
         -in "ci/codesigning.asc.enc" -out "ci/codesigning.asc" -d \
-        && gpg --batch --import "ci/codesigning.asc" \
+        && gpg --batch --no-tty --yes --import "ci/codesigning.asc" \
         && nvm install "$NODE_VERSION"
       install: ci/change_version.sh -m .
         && ( cd web && npm install )
