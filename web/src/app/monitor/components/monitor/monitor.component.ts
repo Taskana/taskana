@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'taskana-monitor',
@@ -6,14 +6,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
   styleUrls: ['./monitor.component.scss']
 })
 export class MonitorComponent implements OnInit, OnDestroy {
-  tabSelected = 'tasks';
-  links = [];
+  @Input() selectedTab = '';
 
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
-
-  selectTab(tab) {
-    this.tabSelected = tab;
-  }
 }
