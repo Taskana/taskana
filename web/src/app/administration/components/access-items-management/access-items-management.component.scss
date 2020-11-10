@@ -15,14 +15,13 @@
 }
 
 .has-changes {
-    border-bottom: 1px solid $brown;
-  }
+  border-bottom: 1px solid $brown;
+}
 
 .table {
-  width:100%; 
-  //margin-left:2%; 
+  width: 100%;
+  //margin-left:2%;
   //margin-right:2%;
-
 }
 .table > thead > tr > th {
   max-width: 150px;
@@ -56,7 +55,7 @@
   box-shadow: none !important;
 }
 
-.header .tr{
+.header .tr {
   border: none !important;
 }
 
@@ -66,13 +65,18 @@
 
 .table-access-items__key {
   text-align: left;
-  padding: 0.2rem  !important;
+  padding: 0.2rem !important;
 }
 
 .table-access-items__filter {
-  width: 150px;
+  width: 130px;
   margin-bottom: -31px;
   margin-top: -10px;
+  margin-left: -20px;
+}
+
+.table-access-items__clearFilter {
+  outline: none;
 }
 
 .table-access-items__search-button {
@@ -81,18 +85,18 @@
 }
 
 .table-access-items__groups-button {
-  margin-bottom: 80px; 
+  margin-bottom: 80px;
   margin-left: 20px;
 }
 
 .table-access-items__revoke-button {
-  float: right; 
+  float: right;
   margin-right: 30px;
-  outline: none; 
+  outline: none;
 }
 
 .panel-body__typeahead {
-  width: 50%; 
+  width: 50%;
   margin-left: 25%;
   margin-right: 25%;
   margin-top: 20px;

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDividerModule } from '@angular/material/divider';
 import { AccessItemsManagementDialogComponent } from './access-items-management-dialog.component';
 import { MatListModule } from '@angular/material/list';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 describe('AccessItemsManagementDialogComponent', () => {
   let component: AccessItemsManagementDialogComponent;
@@ -10,14 +10,15 @@ describe('AccessItemsManagementDialogComponent', () => {
 
   beforeEach(async(() => {
     const mockDialogRef = {
-      close: jasmine.createSpy("close"),
-  };
+      close: jasmine.createSpy('close')
+    };
     TestBed.configureTestingModule({
-      imports: [MatDividerModule,
-                MatListModule,
-                MatDialogModule],
+      imports: [MatDividerModule, MatListModule, MatDialogModule],
       declarations: [AccessItemsManagementDialogComponent],
-      providers: [{ provide: MatDialogRef, useValue: {mockDialogRef}}, {provide: MAT_DIALOG_DATA, useValue: {} } ]
+      providers: [
+        { provide: MatDialogRef, useValue: { mockDialogRef } },
+        { provide: MAT_DIALOG_DATA, useValue: {} }
+      ]
     }).compileComponents();
   }));
 

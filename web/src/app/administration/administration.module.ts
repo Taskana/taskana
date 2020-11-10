@@ -53,7 +53,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-
 const MODULES = [
   CommonModule,
   FormsModule,

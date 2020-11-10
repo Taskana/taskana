@@ -6,7 +6,6 @@
         isRequired="false">
       </taskana-shared-type-ahead>
     </div>
-
     <div *ngIf="!accessItemsForm" class="center-block no-detail">
       <h3 class="grey">Select an access id</h3>
       <svg-icon class="empty-icon" src="./assets/icons/users.svg"></svg-icon>
@@ -15,7 +14,7 @@
       (closed)="panelOpenState = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Belonging groups</mat-panel-title>
+          Groups of {{accessId.accessId}}</mat-panel-title>
       </mat-expansion-panel-header>
       <mat-list class="expansion-panel__list" *ngIf="groups && groups.length > 0; else no">
         <mat-list-item *ngFor="let group of groups">
@@ -27,25 +26,20 @@
         any groups
       </ng-template>
     </mat-expansion-panel>
-    <mat-expansion-panel *ngIf="accessItemsForm" class="expansion-panel" (opened)="panelOpenState = true"
-      (closed)="panelOpenState = false">
+    <mat-expansion-panel *ngIf="accessItemsForm" [expanded]="true" class="expansion-panel" (opened)="panelState = true"
+      (closed)="panelState = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Access Details</mat-panel-title>
+          Authorizations of {{accessId.accessId}}</mat-panel-title>
       </mat-expansion-panel-header>
       <div *ngIf="accessItemsForm">
         <ng-form [formGroup]="accessItemsForm">
           <table id="table-access-items" class="table table-striped table-center">
             <thead>
               <tr>
-                <th class="table-access-items__sorting">
-                  <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
-                    menuPosition="left">
-                  </taskana-shared-sort>
-                </th>
-                <th class="table-access-items__key">Workbasket Key</th>
-                <th>Access Id</th>
                 <th></th>
+                <th>Workbasket Key</th>
+                <th>Access Id</th>
                 <th>Read</th>
                 <th>Open</th>
                 <th>Append</th>
@@ -58,7 +52,12 @@
                 </ng-container>
               </tr>
               <tr>
-                <th colspan="2">
+                <th class="table-access-items__sorting">
+                  <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
+                    menuPosition="left">
+                  </taskana-shared-sort>
+                </th>
+                <th>
                   <mat-form-field class="table-access-items__filter" appearance="outline">
                     <mat-label>Workbasket filter</mat-label>
                     <input matInput formControlName="workbasketKeyFilter"
@@ -73,11 +72,10 @@
                   </mat-form-field>
                 </th>
                 <th>
-                  <div class="table-access-items__search-button">
-                    <button mat-icon-button (click)="searchForAccessItemsWorkbaskets()" title="Search">
-                      <mat-icon>search</mat-icon>
-                    </button>
-                  </div>
+                  <button mat-icon-button class="table-access-items__clearFilter" matTooltip="Clear filter" color="warn"
+                    (click)="clearFilter()" title="clearFilter">
+                    <mat-icon>close</mat-icon>
+                  </button>
                 </th>
               </tr>
             </thead>
@@ -85,15 +83,16 @@
               <tr class="table-access-item__content"
                 *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
                 [formGroupName]="index.toString()">
-                <td colspan="2">
+                <td></td>
+                <td colspan="1" class="text-align text-width taskana-type-ahead">
                   <label class="wrap">{{accessItem.value.workbasketKey}}</label>
                 </td>
-                <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" colspan="2"
+                <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput"
                   class="text-align text-width taskana-type-ahead">
                   <label matTooltip="{{accessItem.value.accessId}}" class="wrap">{{accessItem.value.accessName}}</label>
                 </td>
                 <ng-template #accessIdInput>
-                  <td colspan="2" class="text-align text-width">
+                  <td colspan="1" class="text-align text-width">
                     <div>
                       <label>
                         <input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
@@ -126,8 +125,8 @@
               </tr>
             </tbody>
           </table>
-          <button mat-mini-fab class="table-access-items__revoke-button" color="warn" *ngIf="accessItemsForm"
-            (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
+          <button mat-mini-fab class="table-access-items__revoke-button" matTooltip="Revoke access" color="warn"
+            *ngIf="accessItemsForm" (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
             <mat-icon>clear</mat-icon>
           </button>
         </ng-form>

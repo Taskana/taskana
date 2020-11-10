@@ -29,15 +29,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
-import {MatIconModule} from '@angular/material/icon';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatListModule} from '@angular/material/list';
-
-
-
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -54,7 +51,7 @@ const notificationServiceSpy = jest.fn().mockImplementation(
 );
 
 const mockDialogRef = {
-  close: jasmine.createSpy("close"),
+  close: jasmine.createSpy('close')
 };
 
 describe('AccessItemsManagementComponent', () => {
@@ -96,7 +93,8 @@ describe('AccessItemsManagementComponent', () => {
         MatCheckboxModule,
         MatTooltipModule,
         MatDividerModule,
-        MatListModule
+        MatListModule,
+        MatExpansionModule
       ],
       declarations: [
         AccessItemsManagementComponent,
@@ -108,7 +106,7 @@ describe('AccessItemsManagementComponent', () => {
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
-        { provide: MatDialogRef, useValue: {mockDialogRef} }, 
+        { provide: MatDialogRef, useValue: { mockDialogRef } },
         RequestInProgressService,
         ClassificationCategoriesService,
         StartupService,
@@ -132,11 +130,6 @@ describe('AccessItemsManagementComponent', () => {
 
   it('should create the app', () => {
     expect(app).toBeTruthy();
-  });
-
-  it('should display header correctly as Access items management', () => {
-    const panelHeader = () => debugElement.nativeElement.querySelector('h4.panel-header').textContent;
-    expect(panelHeader()).toBe('Access items management');
   });
 
   it('should render search type ahead', () => {
@@ -191,7 +184,8 @@ describe('AccessItemsManagementComponent', () => {
   }));
 
   it('should display a dialog when access is revoked', async(() => {
-    app.accessIdSelected = '';
+    app.accessIdSelected = 'xyz';
+    app.accessId = { accessId: 'xyz', name: 'xyz' };
     const notificationService = TestBed.inject(NotificationService);
     const showDialogSpy = jest.spyOn(notificationService, 'showDialog').mockImplementation();
     app.revokeAccess();
