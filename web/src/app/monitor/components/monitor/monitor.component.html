@@ -1,13 +1,11 @@
 <nav mat-tab-nav-bar class="nav-bar">
-    <a mat-tab-link routerLink="/taskana/monitor/tasks" [active]="selectedTab == 'tasks'"
+    <a mat-tab-link class="nav-bar__tasks" routerLink="/taskana/monitor/tasks" [active]="selectedTab === 'tasks'"
         (click)="selectedTab = 'tasks'">Tasks</a>
-    <a mat-tab-link routerLink="/taskana/monitor/workbaskets" [active]="selectedTab == 'workbaskets'"
-        (click)="selectedTab = 'workbaskets'">Workbaskets</a>
-    <a mat-tab-link routerLink="/taskana/monitor/classifications" [active]="selectedTab == 'classifications'"
-        (click)="selectedTab = 'classifications'">Classifications</a>
-    <a mat-tab-link routerLink="/taskana/monitor/timestamp" [active]="selectedTab == 'timestamp'"
-        (click)="selectedTab = 'timestamp'">Timestamp</a>
+    <a mat-tab-link class="nav-bar__workbaskets" routerLink="/taskana/monitor/workbaskets"
+        [active]="selectedTab === 'workbaskets'" (click)="selectedTab = 'workbaskets'">Workbaskets</a>
+    <a mat-tab-link class="nav-bar__classifications" routerLink="/taskana/monitor/classifications"
+        [active]="selectedTab === 'classifications'" (click)="selectedTab = 'classifications'">Classifications</a>
+    <a mat-tab-link class="nav-bar__timestamp" routerLink="/taskana/monitor/timestamp"
+        [active]="selectedTab === 'timestamp'" (click)="selectedTab = 'timestamp'">Timestamp</a>
 </nav>
-<div *ngIf="selectedTab">
-    <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
