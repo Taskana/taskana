@@ -69,10 +69,13 @@
 }
 
 .table-access-items__filter {
-  width: 130px;
+  width: 120px;
   margin-bottom: -31px;
   margin-top: -10px;
-  margin-left: -20px;
+  margin-left: -25px;
+  @media only screen and (max-width: 1600px) {
+    margin-left: -5px;
+  }
 }
 
 .table-access-items__clearFilter {

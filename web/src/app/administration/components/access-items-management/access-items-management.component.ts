@@ -72,7 +72,6 @@ export class AccessItemsManagementComponent implements OnInit {
       if (this.accessIdPrevious !== selected.accessId) {
         this.accessIdPrevious = selected.accessId;
         this.accessIdName = selected.name;
-        console.log(this.accessId);
         this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
           this.searchForAccessItemsWorkbaskets();
         });
@@ -100,7 +99,6 @@ export class AccessItemsManagementComponent implements OnInit {
             ? state['accessItemsManagement'].accessItemsResource.accessItems
             : []
         );
-        console.log(state['accessItemsManagement'].accessItemsResource.accessItems);
       });
   }
 
@@ -156,7 +154,6 @@ export class AccessItemsManagementComponent implements OnInit {
   }
 
   clearFilter() {
-    console.log('clear');
     if (this.accessItemsForm) {
       this.accessItemsForm.patchValue({
         workbasketKeyFilter: '',
