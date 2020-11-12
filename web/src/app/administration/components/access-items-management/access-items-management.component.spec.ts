@@ -28,7 +28,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -100,8 +99,7 @@ describe('AccessItemsManagementComponent', () => {
         AccessItemsManagementComponent,
         TypeAheadComponent,
         TaskanaSharedSortStub,
-        TaskanaSharedSpinnerStub,
-        AccessItemsManagementDialogComponent
+        TaskanaSharedSpinnerStub
       ],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },

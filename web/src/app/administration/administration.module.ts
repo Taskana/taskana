@@ -24,7 +24,6 @@ import { WorkbasketAccessItemsComponent } from './components/workbasket-access-i
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
-import { AccessItemsManagementDialogComponent } from './components/access-items-management-dialog/access-items-management-dialog.component';
 /**
  * Services
  */
@@ -50,7 +49,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
-import { MatDialog, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 const MODULES = [
@@ -80,8 +79,7 @@ const DECLARATIONS = [
   ClassificationDetailsComponent,
   ImportExportComponent,
   AccessItemsManagementComponent,
-  AdministrationOverviewComponent,
-  AccessItemsManagementDialogComponent
+  AdministrationOverviewComponent
 ];
 
 @NgModule({
@@ -113,7 +111,6 @@ const DECLARATIONS = [
     SavingWorkbasketService,
     ClassificationCategoriesService,
     ImportExportService
-  ],
-  entryComponents: [AccessItemsManagementDialogComponent]
+  ]
 })
 export class AdministrationModule {}

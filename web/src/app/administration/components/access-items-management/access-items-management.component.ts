@@ -18,9 +18,7 @@ import {
   RemoveAccessItemsPermissions
 } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { AccessItemsManagementSelector } from '../../../shared/store/access-items-management-store/access-items-management.selector';
-import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { AccessItemsManagementDialogComponent } from '../access-items-management-dialog/access-items-management-dialog.component';
 
 @Component({
   selector: 'taskana-administration-access-items-management',
@@ -31,7 +29,7 @@ export class AccessItemsManagementComponent implements OnInit {
   accessIdSelected: string;
   accessIdPrevious: string;
   isRequired: boolean = false;
-  accessIdName;
+  accessIdName: string;
   panelState: boolean = false;
   accessItemsForm: FormGroup;
   toggleValidationAccessIdMap = new Map<number, boolean>();
@@ -127,7 +125,7 @@ export class AccessItemsManagementComponent implements OnInit {
     this.notificationService.showDialog(
       `You are going to delete all access related: ${this.accessId.accessId}. Can you confirm this action?`,
       () => {
-        this.store.dispatch(new RemoveAccessItemsPermissions(this.accessIdSelected)).subscribe(() => {
+        this.store.dispatch(new RemoveAccessItemsPermissions(this.accessId.accessId)).subscribe(() => {
           this.searchForAccessItemsWorkbaskets();
         });
       }

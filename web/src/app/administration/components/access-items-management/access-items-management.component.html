@@ -72,9 +72,15 @@
                   </mat-form-field>
                 </th>
                 <th>
-                  <button mat-icon-button class="table-access-items__clearFilter" matTooltip="Clear filter" color="warn"
+                  <button mat-icon-button class="table-access-items__clear-filter" matTooltip="Clear filter" color="warn"
                     (click)="clearFilter()" title="clearFilter">
                     <mat-icon>close</mat-icon>
+                  </button>
+                </th>
+                <th>
+                  <button mat-icon-button color="basic" class="table-access-items__apply-filter" matTooltip="Apply filter"
+                    (click)="searchForAccessItemsWorkbaskets()" title="applyFilter">
+                    <mat-icon>search</mat-icon>
                   </button>
                 </th>
               </tr>
