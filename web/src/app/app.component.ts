@@ -60,11 +60,11 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    /*this.requestInProgressSubscription = this.requestInProgressService
+    this.requestInProgressSubscription = this.requestInProgressService
       .getRequestInProgress()
       .subscribe((value: boolean) => {
         this.requestInProgress = value;
-      });*/
+      });
 
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       if (value.indexOf('classifications') !== -1) {
