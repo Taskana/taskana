@@ -1,8 +1,8 @@
 <div class="sort">
-  <button class="sort__button" mat-stroked-button style="color: #555;" [matMenuTriggerFor]="sortMenu" matTooltip="Sort workbaskets">
+  <button class="sort__button" mat-stroked-button [matMenuTriggerFor]="sortMenu" matTooltip="Sort workbaskets">
     <mat-icon>sort</mat-icon>
 
-    <mat-menu #sortMenu="matMenu">
+    <mat-menu #sortMenu="matMenu" >
       <button mat-menu-item [matMenuTriggerFor]="sortDirection">Sort direction</button>
       <button mat-menu-item [matMenuTriggerFor]="sortValue">Sort value</button>
     </mat-menu>
