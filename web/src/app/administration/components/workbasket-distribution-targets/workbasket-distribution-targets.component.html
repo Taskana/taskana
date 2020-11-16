@@ -38,18 +38,20 @@
         <mat-icon class="button-icon">keyboard_arrow_up</mat-icon>
       </span>
     </button>
-    <button mat-flat-button class="distribution-targets-list__action-button" (click)="displayDistributionTargetsPicker()">Add distribution targets</button>
+    <button mat-flat-button class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button" (click)="displayDistributionTargetsPicker()">Add distribution targets</button>
   </mat-toolbar>
 
-  <div class="distribution-targets-list__filter">
-    <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
-  </div>
   <!-- DISTRIBUTION TABLE-->
 
   <div #panelBody class="workbasket-distribution-targets__list">
+    <div class="distribution-targets-list__filter">
+      <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
+    </div>
+
     <taskana-administration-workbasket-distribution-targets-list
       #dualListLeft id="dual-list-Left"
       header="Available distribution targets"
+      [distributionTargets]="distributionTargetsSelected"
       [distributionTargetsSelected]="distributionTargetsSelected"
       (performDualListFilter)="performFilter($event)"
       (scrolling)="onScroll()"

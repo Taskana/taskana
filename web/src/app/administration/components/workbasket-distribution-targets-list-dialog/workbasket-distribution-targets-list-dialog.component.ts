@@ -12,7 +12,9 @@ export class WorkbasketDistributionTargetsListDialogComponent implements OnInit 
   constructor(
     public dialogRef: MatDialogRef<WorkbasketDistributionTargetsListDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data
-  ) {}
+  ) {
+    console.log(data.distributionTargets);
+  }
 
   ngOnInit() {}
 

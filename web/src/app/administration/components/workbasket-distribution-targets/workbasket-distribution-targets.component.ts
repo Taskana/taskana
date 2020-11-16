@@ -88,9 +88,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
     this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
       if (typeof workbasketDistributionTargets !== 'undefined') {
-        console.log(this.distributionTargetsSelected);
         this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
         this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
+        console.log(this.distributionTargetsSelected);
         this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
         TaskanaQueryParameters.page = 1;
         this.calculateNumberItemsList();
@@ -112,7 +112,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   displayDistributionTargetsPicker() {
-    const dialogRef = this.matDialog.open(WorkbasketDistributionTargetsListDialogComponent, {});
+    console.log(this.distributionTargetsLeft);
+    const dialogRef = this.matDialog.open(WorkbasketDistributionTargetsListDialogComponent, {
+      data: { distributionTargets: this.distributionTargetsLeft }
+    });
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');

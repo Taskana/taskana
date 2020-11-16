@@ -17,7 +17,6 @@ import {
   SelectComponent
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { ButtonAction } from '../../models/button-action';
-import { WorkbasketComponent } from '../../models/workbasket-component';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
@@ -31,7 +30,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   requestInProgress = false;
   action: ACTION;
   badgeMessage = '';
-  selectedNumber = 2;
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
