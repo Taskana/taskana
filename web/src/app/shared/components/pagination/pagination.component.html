@@ -3,9 +3,12 @@
   <div class="pagination__go-to">
     <div class="pagination__go-to-label">Page: </div>
     <mat-form-field>
-      <mat-select [(ngModel)]="pageSelected" (selectionChange)="goToPage(pageSelected)">
-        <mat-option *ngFor="let pageNumber of pageNumbers" [value]="pageNumber">{{ pageNumber }}</mat-option>
-      </mat-select>
+      <input #inputTypeAhead matInput type="text" [matAutocomplete]="auto" [(ngModel)]="value" name="accessId"
+      (ngModelChange)="filter(value)"/>
+      <mat-autocomplete #autoComplete autoActiveFirstOption (optionSelected)="goToPage($event.option.value)"
+        #auto="matAutocomplete">
+        <mat-option *ngFor="let pageNumber of filteredPages" [value]="pageNumber">{{ pageNumber }}</mat-option>
+      </mat-autocomplete>
     </mat-form-field>
   </div>
 </div>

@@ -26,6 +26,8 @@ export class PaginationComponent implements OnInit, OnChanges {
   hasItems = true;
   pageSelected = 1;
   pageNumbers: number[];
+  filteredPages: string[] = [];
+  value: number;
 
   ngOnInit() {
     // Custom label: EG. "1-7 of 21 workbaskets"
@@ -42,6 +44,7 @@ export class PaginationComponent implements OnInit, OnChanges {
         return `${start} - ${end} of ${length}`;
       }
     };
+    this.value = 1;
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.page && changes.page.currentValue) {
@@ -74,5 +77,10 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.paginator.pageIndex = page - 1;
     this.pageSelected = page;
     this.changePage.emit(page);
+  }
+
+  filter(filterVal) {
+    const filterValue = filterVal.toString();
+    this.filteredPages = this.pageNumbers.map(String).filter((value) => value.includes(filterValue));
   }
 }
