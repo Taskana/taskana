@@ -48,6 +48,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const MODULES = [
   CommonModule,
@@ -97,7 +100,10 @@ const DECLARATIONS = [
     MatProgressBarModule,
     MatToolbarModule,
     MatCheckboxModule,
-    MatRippleModule
+    MatRippleModule,
+    MatTableModule,
+    MatDialogModule,
+    MatExpansionModule
   ],
   providers: [
     ClassificationDefinitionService,
