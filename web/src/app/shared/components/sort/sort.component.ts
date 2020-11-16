@@ -9,7 +9,7 @@ import { Direction, Sorting } from 'app/shared/models/sorting';
 export class SortComponent implements OnInit {
   @Input() sortingFields: Map<string, string>;
   @Input() menuPosition = 'right';
-  @Input() defaultSortBy = 'access-id';
+  @Input() defaultSortBy = 'key';
 
   @Output() performSorting = new EventEmitter<Sorting>();
 
@@ -26,7 +26,6 @@ export class SortComponent implements OnInit {
 
   changeSortBy(sortBy: string) {
     this.sort.sortBy = sortBy;
-    console.log(sortBy);
     this.search();
   }
 
