@@ -26,8 +26,6 @@ export class PaginationComponent implements OnInit, OnChanges {
   hasItems = true;
   pageSelected = 1;
   pageNumbers: number[];
-  pageNumbersString: string[];
-  filterValue: string;
   filteredPages: string[] = [];
   value: number;
 
@@ -81,8 +79,8 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.changePage.emit(page);
   }
 
-  filter(v) {
-    this.filterValue = v.toString();
-    this.filteredPages = this.pageNumbers.map(String).filter((value) => value.includes(this.filterValue));
+  filter(filterVal) {
+    const filterValue = filterVal.toString();
+    this.filteredPages = this.pageNumbers.map(String).filter((value) => value.includes(filterValue));
   }
 }
