@@ -51,9 +51,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   @Input()
   action: ACTION;
 
-  @Input()
-  active: string;
-
   @ViewChildren('htmlInputElement')
   inputs: QueryList<ElementRef>;
 
@@ -142,14 +139,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes?: SimpleChanges) {
-    if (!this.initialized && changes.active && changes.active.currentValue === 'accessItems') {
-      this.init();
-    }
-    if (this.initialized && typeof changes.workbasket !== 'undefined') {
-      if (changes.workbasket.currentValue.workbasketId !== changes.workbasket.previousValue.workbasketId) {
-        this.init();
-      }
-    }
     if (changes.action) {
       this.setBadge();
     }

@@ -74,7 +74,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   ) {}
 
   ngOnInit() {
-    this.store.dispatch(new SelectComponent(WorkbasketComponent.INFORMATION));
     this.allTypes = new Map([
       ['PERSONAL', 'Personal'],
       ['GROUP', 'Group'],
