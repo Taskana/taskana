@@ -1,18 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'taskana-monitor',
   templateUrl: './monitor.component.html',
   styleUrls: ['./monitor.component.scss']
 })
-export class MonitorComponent implements OnInit, OnDestroy {
-  tabSelected = 'tasks';
+export class MonitorComponent implements OnInit {
+  selectedTab = '';
 
-  ngOnInit(): void {}
+  constructor(public router: Router) {
+    this.router.navigate(['/taskana/monitor/tasks']);
+  }
 
-  ngOnDestroy(): void {}
-
-  selectTab(tab) {
-    this.tabSelected = tab;
+  ngOnInit(): void {
+    this.selectedTab = 'tasks';
   }
 }
