@@ -31,6 +31,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   requestInProgress = false;
   action: ACTION;
   badgeMessage = '';
+  selectedNumber = 2;
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;

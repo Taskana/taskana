@@ -28,13 +28,7 @@
 <taskana-administration-workbasket-distribution-targets-list
   #dualListLeft id="dual-list-Left"
   header="Available distribution targets"
-  [distributionTargets]="distributionTargetsLeft"
-  [distributionTargetsSelected]="distributionTargetsSelected"
-  (performDualListFilter)="performFilter($event)"
-  (scrolling)="onScroll($event)"
-  [requestInProgress]="requestInProgressLeft"
-  [loadingItems]="loadingItems"
-  [(allSelected)]="selectAllLeft"
+  isDialog="true"
 >
 
 </taskana-administration-workbasket-distribution-targets-list>

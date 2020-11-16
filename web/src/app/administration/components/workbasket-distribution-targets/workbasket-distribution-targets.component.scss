@@ -3,24 +3,7 @@
 .distribution-targets-list__action-button {
   margin-right: 0.5rem;
 }
-
-.mat-list-item {
-  height: 90px !important;
-}
-.mat-list-single-selected-option {
-  background-color: $green !important;
-  color: white;
-}
-.workbaskets-item__wrapper {
-  display: flex;
-}
-.workbaskets-item__icon {
-  padding: 32px 32px 32px 16px;
-}
-.workbaskets-item__info {
-  display: block;
-  padding: 8px 0;
-}
-p {
-  margin: 0;
+.workbasket-distribution-targets__list {
+  padding: 16px;
+  background-color: $light-grey;
 }

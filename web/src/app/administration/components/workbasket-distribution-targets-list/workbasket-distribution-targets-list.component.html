@@ -4,9 +4,8 @@
 
 
   <!-- WORKBASKET LIST -->
-  <div class="workbasket-list infinite-scroll" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50"
-       (scrolled)="onScroll()"
-       [scrollWindow]="false">
+  <div class="workbasket-list infinite-scroll" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
+       [scrollWindow]="false" *ngIf="distributionTargets">
     <mat-selection-list #workbasket [multiple]="false">
       <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
                        *ngFor="let workbasket of distributionTargets"
@@ -38,6 +37,10 @@
 
       </mat-list-option>
     </mat-selection-list>
+  </div>
+
+  <div class="distribution-target-list__empty-list"  *ngIf="!distributionTargets">
+    There is currently no distributed workbasket
   </div>
   <!--
   <div class="workbasket-list__workbaskets"

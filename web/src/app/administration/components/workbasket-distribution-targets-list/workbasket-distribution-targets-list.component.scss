@@ -1,34 +1,47 @@
 @import 'src/theme/_colors.scss';
 
-.distribution-targets-list__action-button {
-  margin-right: 0.5rem;
-}
-.workbasket-list__workbaskets {
-  overflow: scroll !important;
+.workbasket-list {
+  overflow-y: scroll;
+  min-width: 50vw;
+  background-color: white;
+  border-radius: 10px;
 }
 
-.workbasket-list__workbaskets-item {
+.infinite-scroll {
+  overflow-y: scroll;
+  height: calc(100vh - 315px);
+  @media screen and (max-width: 991px) {
+    height: calc((100vh - 315px));
+    min-height: 83px;
+  }
 }
+
 .mat-list-item {
   height: 90px !important;
 }
+
 .mat-list-single-selected-option {
   background-color: $green !important;
   color: white;
 }
+
 .workbaskets-item__wrapper {
   display: flex;
 }
+
 .workbaskets-item__icon {
   padding: 32px 32px 32px 16px;
 }
+
 .workbaskets-item__info {
   display: block;
   padding: 8px 0;
 }
+
 p {
   margin: 0;
 }
+
 .workbasket-list__no-items {
   text-align: center;
   padding-top: 150px;
@@ -37,4 +50,19 @@ p {
 .button-icon {
   margin-left: 2px;
   margin-top: -2px;
+}
+
+.distribution-targets-list__action-button {
+  margin-right: 0.5rem;
+}
+.distribution-target-list__empty-list {
+  height: calc(100vh - 315px);
+  border-radius: 10px;
+  background-color: white;
+  font-size: 24px;
+  font-weight: bold;
+  color: $dark-green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -37,7 +37,7 @@ export enum Side {
   templateUrl: './workbasket-distribution-targets.component.html',
   styleUrls: ['./workbasket-distribution-targets.component.scss']
 })
-export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges, OnDestroy {
+export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy {
   @Input()
   workbasket: Workbasket;
 
@@ -84,11 +84,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   ) {}
 
   ngOnInit() {
-    console.log('distribution targets init');
     this.init();
+
     this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
       if (typeof workbasketDistributionTargets !== 'undefined') {
-        console.log(this.distributionTargetsSelected);
         this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
         this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
         this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
@@ -99,16 +98,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.action) {
-      this.setBadge();
-    }
-  }
-
-  onScroll(side: Side) {
-    if (side === this.side.LEFT && this.page.totalPages > TaskanaQueryParameters.page) {
+  onScroll() {
+    console.log(this.page);
+    if (this.page.totalPages > TaskanaQueryParameters.page) {
       this.loadingItems = true;
-      this.getNextPage(side);
+      this.getNextPage();
     }
   }
 
@@ -125,12 +119,12 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   }
 
   init() {
-    this.onRequest();
     if (!this.workbasket._links.distributionTargets) {
       return;
     }
 
     this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
+
     this.savingWorkbaskets
       .triggeredDistributionTargetsSaving()
       .pipe(takeUntil(this.destroy$))
@@ -174,13 +168,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
           this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
           this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
         }
-        this.onRequest(true);
       });
   }
 
   performFilter(dualListFilter: any) {
     this.fillDistributionTargets(dualListFilter.side, undefined);
-    this.onRequest(false, dualListFilter.side);
     this.store
       .dispatch(
         new GetWorkbasketsSummary(
@@ -201,7 +193,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
       )
       .subscribe((state: WorkbasketStateModel) => {
         this.fillDistributionTargets(dualListFilter.side, state.paginatedWorkbasketsSummary.workbaskets);
-        this.onRequest(true, dualListFilter.side);
       });
   }
 
@@ -296,15 +287,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     this.distributionTargetsRight = side === Side.RIGHT ? workbaskets : this.distributionTargetsRight;
   }
 
-  getNextPage(side: Side) {
+  getNextPage(side?: Side) {
     TaskanaQueryParameters.page += 1;
     this.getWorkbaskets(side);
-  }
-
-  setBadge() {
-    if (this.action === ACTION.COPY) {
-      this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
-    }
   }
 
   getSelectedItems(originList: any): Array<any> {
@@ -314,8 +299,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
   selectWorkbasket(workbasketId: string) {
     this.selectedId = workbasketId;
   }
+
   unselectItems(originList: any): Array<any> {
-    // eslint-disable-next-line no-restricted-syntax
     for (const item of originList) {
       if (item.selected && item.selected === true) {
         item.selected = false;
@@ -333,37 +318,12 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnChanges
     return originList;
   }
 
-  onRequest(finished: boolean = false, side?: Side) {
-    this.loadingItems = false;
-    const inProgress = !finished;
-    switch (side) {
-      case Side.LEFT:
-        this.requestInProgressLeft = inProgress;
-        break;
-      case Side.RIGHT:
-        this.requestInProgressRight = inProgress;
-        break;
-      default:
-        this.requestInProgressLeft = inProgress;
-        this.requestInProgressRight = inProgress;
-    }
-  }
-
   getSeletedIds(): Array<string> {
     const distributionTargetsSelelected: Array<string> = [];
     this.distributionTargetsSelected.forEach((item) => {
       distributionTargetsSelelected.push(item.workbasketId);
     });
     return distributionTargetsSelelected;
-  }
-
-  private uncheckSelectAll(side: number) {
-    if (side === Side.LEFT && this.selectAllLeft) {
-      this.selectAllLeft = false;
-    }
-    if (side === Side.RIGHT && this.selectAllRight) {
-      this.selectAllRight = false;
-    }
   }
 
   ngOnDestroy() {
