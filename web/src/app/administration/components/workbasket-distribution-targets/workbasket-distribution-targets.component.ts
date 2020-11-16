@@ -88,6 +88,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
     this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
       if (typeof workbasketDistributionTargets !== 'undefined') {
+        console.log(this.distributionTargetsSelected);
         this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
         this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
         this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
