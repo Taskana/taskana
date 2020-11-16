@@ -16,6 +16,7 @@ import { CreateWorkbasket, SelectWorkbasket } from '../../../shared/store/workba
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
+import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 
 const showDialogFn = jest.fn().mockReturnValue(true);
 const NotificationServiceSpy = jest.fn().mockImplementation(
@@ -41,7 +42,9 @@ const mockActivatedRouteAlternative = {
   }
 };
 
-const mockActivatedRouteNoParams = {};
+const mockActivatedRouteNoParams = {
+  url: of([{ path: 'workbaskets' }])
+};
 
 @Component({ selector: 'taskana-administration-workbasket-list', template: '' })
 class WorkbasketListStub {}
@@ -102,7 +105,7 @@ describe('WorkbasketOverviewComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   });
 
-  it('should display details when params id exists', async((done) => {
+  it('should display details when params id exists', async(() => {
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => (actionDispatched = true));
     component.ngOnInit();
@@ -142,7 +145,7 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
     fixture.detectChanges();
   }));
 
-  it('should display details when params id exists', async((done) => {
+  it('should display details when params id exists', async(() => {
     expect(component.routerParams.id).toBeTruthy();
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
@@ -154,6 +157,8 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
 describe('WorkbasketOverviewComponent No Params', () => {
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
   let component: WorkbasketOverviewComponent;
+  let store: Store;
+  let actions$: Observable<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -174,9 +179,23 @@ describe('WorkbasketOverviewComponent No Params', () => {
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
     component = fixture.debugElement.componentInstance;
     fixture.detectChanges();
+    store = TestBed.inject(Store);
+    actions$ = TestBed.inject(Actions);
+
+    store.reset({
+      ...store.snapshot(),
+      workbasket: workbasketReadStateMock
+    });
   }));
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dispatch SelectWorkbasket action when route contains workbasket', async () => {
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
+    component.ngOnInit();
+    expect(actionDispatched).toBe(true);
   });
 });
