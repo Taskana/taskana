@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { MonitorComponent } from './components/monitor/monitor.component';
 import { TaskReportComponent } from './components/task-report/task-report.component';
 import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
-import { DomainGuard } from 'app/shared/guards/domain.guard';
 import { ClassificationReportComponent } from './components/classification-report/classification-report.component';
 import { TimestampReportComponent } from './components/timestamp-report/timestamp-report.component';
 

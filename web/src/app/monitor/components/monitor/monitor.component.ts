@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./monitor.component.scss']
 })
 export class MonitorComponent implements OnInit {
-  @Input() selectedTab = '';
+  selectedTab = '';
 
   constructor(public router: Router) {
     this.router.navigate(['/taskana/monitor/tasks']);
