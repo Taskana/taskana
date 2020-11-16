@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AlertModule } from 'ngx-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MapToIterable } from 'app/shared/pipes/map-to-iterable.pipe';
@@ -32,7 +33,8 @@ const MODULES = [
   TabsModule.forRoot(),
   HttpClientModule,
   AngularSvgIconModule,
-  SharedModule
+  SharedModule,
+  MatTabsModule
 ];
 const DECLARATIONS = [
   ReportTableComponent,
