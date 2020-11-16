@@ -37,15 +37,15 @@
       </button>
     </mat-menu>
   </mat-toolbar>
-  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)">
+  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" [selectedIndex]="selectedTab$ | async">
     <mat-tab label="Information">
       <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-information>
     </mat-tab>
     <mat-tab label="Access">
-      <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-access-items>
+      <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-access-items>
     </mat-tab>
     <mat-tab label="Distribution Targets">
-      <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action" [active]="tabSelected"></taskana-administration-workbasket-distribution-targets>
+      <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-distribution-targets>
     </mat-tab>
   </mat-tab-group>
   <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>

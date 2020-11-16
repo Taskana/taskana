@@ -15,11 +15,7 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import {
-  engineConfigurationMock,
-  selectedWorkbasketMock,
-  workbasketReadStateMock
-} from '../../../shared/store/mock-data/mock-store';
+import { selectedWorkbasketMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
@@ -29,6 +25,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { take } from 'rxjs/operators';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -140,7 +138,6 @@ describe('WorkbasketDetailsComponent', () => {
       workbasket: workbasketCreateState
     });
     fixture.detectChanges();
-    expect(component.tabSelected).toMatch('information');
     expect(component.selectedId).toBeUndefined();
   });
 
@@ -165,9 +162,13 @@ describe('WorkbasketDetailsComponent', () => {
     expect(component.workbasket).toEqual(selectedWorkbasketMock);
   });
 
-  it('should select information tab when action is CREATE', () => {
-    component.action = ACTION.CREATE;
-    component.selectTab('workbasket');
-    expect(component.tabSelected).toEqual('information');
+  it('should select information tab when action is CREATE', (done) => {
+    component.selectComponent(1);
+    store.dispatch(new CreateWorkbasket());
+    fixture.detectChanges();
+    component.selectedTab$.pipe(take(1)).subscribe((tab) => {
+      expect(tab).toEqual(0);
+      done();
+    });
   });
 });

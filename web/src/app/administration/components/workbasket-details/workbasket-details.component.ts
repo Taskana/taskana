@@ -9,6 +9,7 @@ import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
 import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { TaskanaDate } from '../../../shared/util/taskana.date';
+import { Location } from '@angular/common';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import {
   DeselectWorkbasket,
@@ -16,6 +17,7 @@ import {
   SelectComponent
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { ButtonAction } from '../../models/button-action';
+import { WorkbasketComponent } from '../../models/workbasket-component';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
@@ -28,11 +30,13 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   selectedId: string;
   requestInProgress = false;
   action: ACTION;
-  tabSelected = 'information';
   badgeMessage = '';
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
+
+  @Select(WorkbasketSelectors.selectedComponent)
+  selectedTab$: Observable<number>;
 
   @Select(WorkbasketSelectors.workbasketActiveAction)
   activeAction$: Observable<ACTION>;
@@ -43,6 +47,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   destroy$ = new Subject<void>();
 
   constructor(
+    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
     private domainService: DomainService,
@@ -54,7 +59,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
     this.selectedWorkbasketAndAction$.pipe(takeUntil(this.destroy$)).subscribe((selectedWorkbasketAndAction) => {
       this.action = selectedWorkbasketAndAction.action;
       if (this.action === ACTION.CREATE) {
-        this.tabSelected = 'information';
         this.selectedId = undefined;
         this.badgeMessage = 'Creating new workbasket';
         this.initWorkbasket();
@@ -99,10 +103,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
     this.router.navigate(['./'], { relativeTo: this.route.parent });
   }
 
-  selectTab(tab) {
-    this.tabSelected = this.action === ACTION.CREATE ? 'information' : tab;
-  }
-
   getWorkbasketInformation(selectedWorkbasket?: Workbasket) {
     let workbasketIdSelected: string;
     if (selectedWorkbasket) {
@@ -145,19 +145,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
 
   selectComponent(index) {
     this.store.dispatch(new SelectComponent(index));
-    switch (index) {
-      case 0:
-        this.selectTab('information');
-        break;
-      case 1:
-        this.selectTab('access-items');
-        break;
-      case 2:
-        this.selectTab('distribution-targets');
-        break;
-      default:
-        break;
-    }
   }
 
   onSubmit() {
