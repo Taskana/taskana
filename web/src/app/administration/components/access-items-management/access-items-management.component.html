@@ -51,7 +51,7 @@
             <tr>
               <th class="align-left">
                 <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
-                  menuPosition="left">
+                  menuPosition="left" defaultSortBy="access-id">
                 </taskana-shared-sort>
               </th>
               <th>
@@ -69,8 +69,8 @@
                 </mat-form-field>
               </th>
               <th>
-                <button mat-icon-button matTooltip="Clear filter" color="warn"
-                  (click)="clearFilter()" title="clearFilter">
+                <button mat-icon-button matTooltip="Clear filter" color="warn" (click)="clearFilter()"
+                  title="clearFilter">
                   <mat-icon>close</mat-icon>
                 </button>
               </th>
@@ -117,8 +117,9 @@
             </tr>
           </tbody>
         </table>
-        <button mat-mini-fab class="access-items__authorization-expansion-panel__revoke-button" matTooltip="Revoke access" color="warn"
-          *ngIf="accessItemsForm" (click)="revokeAccess()" title="Revoke access" [disabled]=isGroup>
+        <button mat-mini-fab class="access-items__authorization-expansion-panel__revoke-button"
+          matTooltip="Revoke access" color="warn" *ngIf="accessItemsForm" (click)="revokeAccess()" title="Revoke access"
+          [disabled]=isGroup>
           <mat-icon>clear</mat-icon>
         </button>
       </ng-form>

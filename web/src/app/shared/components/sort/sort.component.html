@@ -1,8 +1,8 @@
 <div class="sort">
-  <button mat-stroked-button style="color: #555;" [matMenuTriggerFor]="sortMenu" matTooltip="Sort workbaskets">
+  <button class="sort__button" mat-stroked-button [matMenuTriggerFor]="sortMenu" matTooltip="Sort workbaskets">
     <mat-icon>sort</mat-icon>
 
-    <mat-menu #sortMenu="matMenu">
+    <mat-menu #sortMenu="matMenu" >
       <button mat-menu-item [matMenuTriggerFor]="sortDirection">Sort direction</button>
       <button mat-menu-item [matMenuTriggerFor]="sortValue">Sort value</button>
     </mat-menu>
@@ -38,7 +38,7 @@
     <mat-menu #sortValue="matMenu">
       <button mat-menu-item *ngFor="let sortingField of sortingFields | mapValues"
               (click)="changeSortBy(sortingField.key)">
-        <span *ngIf="sortingField.value.toLowerCase() === sort.sortBy; else coloredValue" class="sort__selected-value">
+        <span class="{{sortingField.key === sort.sortBy  ? 'sort__selected-value' : ''}}">
           {{sortingField.value}}
         </span>
         <ng-template #coloredValue>
