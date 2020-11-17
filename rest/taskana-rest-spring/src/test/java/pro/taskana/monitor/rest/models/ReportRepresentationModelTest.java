@@ -1,9 +1,6 @@
 package pro.taskana.monitor.rest.models;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -60,24 +57,24 @@ class ReportRepresentationModelTest {
 
     // meta
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
-    assertEquals("WorkbasketReport", meta.getName());
-    assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"WORKBASKET"}, meta.getRowDesc());
-    assertArrayEquals(
-        headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
-    assertEquals("Total", meta.getTotalDesc());
+    assertThat(meta.getName()).isEqualTo("WorkbasketReport");
+    assertThat(meta.getDate()).isEqualTo("2019-01-02T00:00:00Z");
+    assertThat(meta.getRowDesc()).isEqualTo(new String[] {"WORKBASKET"});
+    assertThat(meta.getHeader())
+        .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
+    assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
-    assertTrue(resource.getRows().isEmpty());
+    assertThat(resource.getRows()).isEmpty();
 
     // sumRow
-    assertEquals(1, resource.getSumRow().size());
+    assertThat(resource.getSumRow()).hasSize(1);
     ReportRepresentationModel.RowResource sumRow = resource.getSumRow().get(0);
-    assertArrayEquals(new String[] {"Total"}, sumRow.getDesc());
-    assertTrue(sumRow.isDisplay());
-    assertEquals(0, sumRow.getDepth());
-    assertEquals(0, sumRow.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 0}, sumRow.getCells());
+    assertThat(sumRow.getDesc()).isEqualTo(new String[] {"Total"});
+    assertThat(sumRow.isDisplay()).isTrue();
+    assertThat(sumRow.getDepth()).isZero();
+    assertThat(sumRow.getTotal()).isZero();
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 0});
   }
 
   @Test
@@ -96,32 +93,32 @@ class ReportRepresentationModelTest {
 
     // meta
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
-    assertEquals("ClassificationReport", meta.getName());
-    assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"CLASSIFICATION"}, meta.getRowDesc());
-    assertArrayEquals(
-        headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
-    assertEquals("Total", meta.getTotalDesc());
+    assertThat(meta.getName()).isEqualTo("ClassificationReport");
+    assertThat(meta.getDate()).isEqualTo("2019-01-02T00:00:00Z");
+    assertThat(meta.getRowDesc()).isEqualTo(new String[] {"CLASSIFICATION"});
+    assertThat(meta.getHeader())
+        .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
+    assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowResource> rows = resource.getRows();
-    assertEquals(1, rows.size());
+    assertThat(rows.size()).isEqualTo(1);
     ReportRepresentationModel.RowResource row = rows.get(0);
-    assertArrayEquals(new String[] {"key"}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertEquals(2, row.getTotal());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key"});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.getTotal()).isEqualTo(2);
 
-    assertTrue(row.isDisplay());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     // sumRow
-    assertEquals(1, resource.getSumRow().size());
+    assertThat(resource.getSumRow().size()).isEqualTo(1);
     ReportRepresentationModel.RowResource sumRow = resource.getSumRow().get(0);
-    assertArrayEquals(new String[] {"Total"}, sumRow.getDesc());
-    assertTrue(sumRow.isDisplay());
-    assertEquals(0, sumRow.getDepth());
-    assertEquals(2, sumRow.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, sumRow.getCells());
+    assertThat(sumRow.getDesc()).isEqualTo(new String[] {"Total"});
+    assertThat(sumRow.isDisplay()).isTrue();
+    assertThat(sumRow.getDepth()).isZero();
+    assertThat(sumRow.getTotal()).isEqualTo(2);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
   }
 
   @Test
@@ -142,39 +139,39 @@ class ReportRepresentationModelTest {
 
     // meta
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
-    assertEquals("ClassificationReport", meta.getName());
-    assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"CLASSIFICATION"}, meta.getRowDesc());
-    assertArrayEquals(
-        headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
-    assertEquals("Total", meta.getTotalDesc());
+    assertThat(meta.getName()).isEqualTo("ClassificationReport");
+    assertThat(meta.getDate()).isEqualTo("2019-01-02T00:00:00Z");
+    assertThat(meta.getRowDesc()).isEqualTo(new String[] {"CLASSIFICATION"});
+    assertThat(meta.getHeader())
+        .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
+    assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowResource> rows = resource.getRows();
-    assertEquals(2, rows.size());
+    assertThat(rows.size()).isEqualTo(2);
 
     ReportRepresentationModel.RowResource row = rows.get(0);
-    assertArrayEquals(new String[] {"key"}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key"});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = rows.get(1);
-    assertArrayEquals(new String[] {"key2"}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key2"});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     // sumRow
-    assertEquals(1, resource.getSumRow().size());
+    assertThat(resource.getSumRow()).hasSize(1);
     ReportRepresentationModel.RowResource sumRow = resource.getSumRow().get(0);
-    assertArrayEquals(new String[] {"Total"}, sumRow.getDesc());
-    assertEquals(0, sumRow.getDepth());
-    assertTrue(sumRow.isDisplay());
-    assertEquals(4, sumRow.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 4}, sumRow.getCells());
+    assertThat(sumRow.getDesc()).isEqualTo(new String[] {"Total"});
+    assertThat(sumRow.getDepth()).isZero();
+    assertThat(sumRow.isDisplay()).isTrue();
+    assertThat(sumRow.getTotal()).isEqualTo(4);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 4});
   }
 
   @Test
@@ -197,62 +194,62 @@ class ReportRepresentationModelTest {
 
     // meta
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
-    assertEquals("DetailedClassificationReport", meta.getName());
-    assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"}, meta.getRowDesc());
-    assertArrayEquals(
-        headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
-    assertEquals("Total", meta.getTotalDesc());
+    assertThat(meta.getName()).isEqualTo("DetailedClassificationReport");
+    assertThat(meta.getDate()).isEqualTo("2019-01-02T00:00:00Z");
+    assertThat(meta.getRowDesc()).isEqualTo(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
+    assertThat(meta.getHeader())
+        .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
+    assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowResource> rows = resource.getRows();
-    assertEquals(1 + 2, rows.size());
+    assertThat(rows).hasSize(1 + 2);
 
     ReportRepresentationModel.RowResource row = rows.get(0);
-    assertArrayEquals(new String[] {"key", null}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(4, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 4}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key", null});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(4);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 4});
 
     row = rows.get(1);
-    assertArrayEquals(new String[] {"key", "attachment"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key", "attachment"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = rows.get(2);
-    assertArrayEquals(new String[] {"key", "N/A"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key", "N/A"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     // sumRow
     List<ReportRepresentationModel.RowResource> sumRow = resource.getSumRow();
-    assertEquals(1 + 2, sumRow.size());
+    assertThat(sumRow).hasSize(1 + 2);
 
     row = sumRow.get(0);
-    assertArrayEquals(new String[] {"Total", null}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(4, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 4}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"Total", null});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(4);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 4});
 
     row = sumRow.get(1);
-    assertArrayEquals(new String[] {"Total", "attachment"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"Total", "attachment"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = sumRow.get(2);
-    assertArrayEquals(new String[] {"Total", "N/A"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"Total", "N/A"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
   }
 
   @Test
@@ -277,76 +274,76 @@ class ReportRepresentationModelTest {
 
     // meta
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
-    assertEquals("DetailedClassificationReport", meta.getName());
-    assertEquals("2019-01-02T00:00:00Z", meta.getDate());
-    assertArrayEquals(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"}, meta.getRowDesc());
-    assertArrayEquals(
-        headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray(), meta.getHeader());
-    assertEquals("Total", meta.getTotalDesc());
+    assertThat(meta.getName()).isEqualTo("DetailedClassificationReport");
+    assertThat(meta.getDate()).isEqualTo("2019-01-02T00:00:00Z");
+    assertThat(meta.getRowDesc()).isEqualTo(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
+    assertThat(meta.getHeader())
+        .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
+    assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowResource> rows = resource.getRows();
-    assertEquals((1 + 2) + (1 + 1), rows.size());
+    assertThat(rows).hasSize((1 + 2) + (1 + 1));
 
     ReportRepresentationModel.RowResource row = rows.get(0);
-    assertArrayEquals(new String[] {"key", null}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(4, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 4}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key", null});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(4);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 4});
 
     row = rows.get(1);
-    assertArrayEquals(new String[] {"key", "attachment"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key", "attachment"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = rows.get(2);
-    assertArrayEquals(new String[] {"key", "N/A"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key", "N/A"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = rows.get(3);
-    assertArrayEquals(new String[] {"key2", null}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key2", null});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = rows.get(4);
-    assertArrayEquals(new String[] {"key2", "N/A"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"key2", "N/A"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     // sumRow
 
     List<ReportRepresentationModel.RowResource> sumRow = resource.getSumRow();
-    assertEquals(1 + 2, sumRow.size());
+    assertThat(sumRow).hasSize(1 + 2);
 
     row = sumRow.get(0);
-    assertArrayEquals(new String[] {"Total", null}, row.getDesc());
-    assertEquals(0, row.getDepth());
-    assertTrue(row.isDisplay());
-    assertEquals(6, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 6}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"Total", null});
+    assertThat(row.getDepth()).isZero();
+    assertThat(row.isDisplay()).isTrue();
+    assertThat(row.getTotal()).isEqualTo(6);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 6});
 
     row = sumRow.get(1);
-    assertArrayEquals(new String[] {"Total", "attachment"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(2, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 2}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"Total", "attachment"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(2);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     row = sumRow.get(2);
-    assertArrayEquals(new String[] {"Total", "N/A"}, row.getDesc());
-    assertEquals(1, row.getDepth());
-    assertFalse(row.isDisplay());
-    assertEquals(4, row.getTotal());
-    assertArrayEquals(new int[] {0, 0, 0, 0, 4}, row.getCells());
+    assertThat(row.getDesc()).isEqualTo(new String[] {"Total", "N/A"});
+    assertThat(row.getDepth()).isEqualTo(1);
+    assertThat(row.isDisplay()).isFalse();
+    assertThat(row.getTotal()).isEqualTo(4);
+    assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 4});
   }
 }

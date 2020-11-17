@@ -6,7 +6,6 @@ import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -113,21 +112,21 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
       WorkbasketSummary summary, WorkbasketSummaryRepresentationModel repModel) {
     assertThat(summary).hasNoNullFieldsOrProperties();
     assertThat(repModel).hasNoNullFieldsOrProperties();
-    Assert.assertEquals(summary.getDescription(), repModel.getDescription());
-    Assert.assertEquals(summary.getDomain(), repModel.getDomain());
-    Assert.assertEquals(summary.getId(), repModel.getWorkbasketId());
-    Assert.assertEquals(summary.getKey(), repModel.getKey());
-    Assert.assertEquals(summary.getName(), repModel.getName());
-    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_1), repModel.getCustom1());
-    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_2), repModel.getCustom2());
-    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_3), repModel.getCustom3());
-    Assert.assertEquals(summary.getCustomAttribute(CUSTOM_4), repModel.getCustom4());
-    Assert.assertEquals(summary.getOrgLevel1(), repModel.getOrgLevel1());
-    Assert.assertEquals(summary.getOrgLevel2(), repModel.getOrgLevel2());
-    Assert.assertEquals(summary.getOrgLevel3(), repModel.getOrgLevel3());
-    Assert.assertEquals(summary.getOrgLevel4(), repModel.getOrgLevel4());
-    Assert.assertEquals(summary.getOwner(), repModel.getOwner());
-    Assert.assertEquals(summary.getType(), repModel.getType());
+    assertThat(summary.getDescription()).isEqualTo(repModel.getDescription());
+    assertThat(summary.getDomain()).isEqualTo(repModel.getDomain());
+    assertThat(summary.getId()).isEqualTo(repModel.getWorkbasketId());
+    assertThat(summary.getKey()).isEqualTo(repModel.getKey());
+    assertThat(summary.getName()).isEqualTo(repModel.getName());
+    assertThat(summary.getCustomAttribute(CUSTOM_1)).isEqualTo(repModel.getCustom1());
+    assertThat(summary.getCustomAttribute(CUSTOM_2)).isEqualTo(repModel.getCustom2());
+    assertThat(summary.getCustomAttribute(CUSTOM_3)).isEqualTo(repModel.getCustom3());
+    assertThat(summary.getCustomAttribute(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(summary.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
+    assertThat(summary.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
+    assertThat(summary.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());
+    assertThat(summary.getOrgLevel4()).isEqualTo(repModel.getOrgLevel4());
+    assertThat(summary.getOwner()).isEqualTo(repModel.getOwner());
+    assertThat(summary.getType()).isEqualTo(repModel.getType());
   }
 
   private void testLinks(WorkbasketSummaryRepresentationModel repModel) {}

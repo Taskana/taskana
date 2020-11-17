@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Locale;
 import javax.sql.DataSource;
-import org.junit.Assume;
+import org.assertj.core.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,7 +44,8 @@ class TestSchemaNameCustomizable {
   @Test
   void checkCustomSchemaNameIsDefined_Postgres() throws SQLException {
     resetDb();
-    Assume.assumeTrue("Test only executed with Postgres database", isPostgres);
+    Assumptions.assumeThat(isPostgres).isTrue();
+    ;
     try (Connection connection = dataSource.getConnection()) {
 
       try (PreparedStatement preparedStatement =
@@ -66,7 +67,7 @@ class TestSchemaNameCustomizable {
   @Test
   void checkCustomSchemaNameIsDefined_OtherDb() throws SQLException {
     resetDb();
-    Assume.assumeFalse("Test only executed if NOT Postgres", isPostgres);
+    Assumptions.assumeThat(isPostgres).isTrue();
     try (Connection connection = dataSource.getConnection()) {
 
       try (PreparedStatement preparedStatement =
