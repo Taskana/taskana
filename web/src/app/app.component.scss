@@ -16,7 +16,9 @@
   width: 350px;
   background-color: $dark-green;
 }
-
+.mat-drawer-content {
+  overflow: hidden !important;
+}
 .sidenav__drawer-list-item {
   margin-left: 30px;
 }

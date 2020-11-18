@@ -131,6 +131,11 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             selectedWorkbasket,
             action: ACTION.READ
           });
+
+          ctx.dispatch(new GetWorkbasketAccessItems(ctx.getState().selectedWorkbasket._links.accessItems.href));
+          ctx.dispatch(
+            new GetWorkbasketDistributionTargets(ctx.getState().selectedWorkbasket._links.distributionTargets.href)
+          );
         })
       );
     }

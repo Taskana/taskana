@@ -119,6 +119,13 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
+      result.filter((target) => {
+        if (target['selected']) {
+          this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...target];
+
+          console.log(target);
+        }
+      });
     });
   }
 
