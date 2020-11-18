@@ -255,7 +255,7 @@
                     jndi-name="java:/TaskanaDS/PostgreSQL"
                     pool-name="TASKANA PostgreSQL Datasource"
                     enabled="true" use-ccm="false">
-                    <connection-url>jdbc:postgresql://localhost:50102/postgres
+                    <connection-url>jdbc:postgresql://localhost:5102/postgres
                     </connection-url>
                     <driver-class>org.postgresql.Driver</driver-class>
                     <driver>postgresql</driver>
