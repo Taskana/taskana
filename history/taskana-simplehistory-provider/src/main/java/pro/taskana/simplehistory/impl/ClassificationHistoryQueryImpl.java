@@ -493,14 +493,10 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
     LOGGER.debug("entry to single(), this = {}", this);
     ClassificationHistoryEvent result = null;
     try {
+
       taskanaHistoryEngine.openConnection();
-      List<ClassificationHistoryEvent> results =
-          taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
-      if (results.isEmpty()) {
-        return result;
-      } else {
-        result = results.get(0);
-      }
+      result = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+
       return result;
     } catch (SQLException e) {
       LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());

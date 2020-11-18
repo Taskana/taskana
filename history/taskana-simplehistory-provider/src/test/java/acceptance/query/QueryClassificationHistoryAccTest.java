@@ -1,11 +1,13 @@
 package acceptance.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.api.ClassificationCustomField;
@@ -96,15 +98,29 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
   @Test
   void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
     ClassificationHistoryEvent single =
-        historyService.createClassificationHistoryQuery().userIdIn("peter").single();
+        historyService
+            .createClassificationHistoryQuery()
+            .userIdIn("peter")
+            .classificationIdIn("CLI:000000000000000000000000000000000001")
+            .single();
     assertThat(single.getEventType()).isEqualTo(ClassificationHistoryEventType.CREATED.getName());
 
     single =
         historyService
             .createClassificationHistoryQuery()
             .eventTypeIn(ClassificationHistoryEventType.CREATED.getName(), "xy")
+            .classificationIdIn("CLI:000000000000000000000000000000000001")
             .single();
     assertThat(single.getUserId()).isEqualTo("peter");
+  }
+
+  @Test
+  void should_ThrowException_When_SingleMethodRetrievesMoreThanOneEventFromDatabase() {
+
+    ClassificationHistoryQuery query =
+        getHistoryService().createClassificationHistoryQuery().userIdIn("peter");
+
+    assertThatThrownBy(() -> query.single()).isInstanceOf(TooManyResultsException.class);
   }
 
   @Test

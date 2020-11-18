@@ -1,11 +1,13 @@
 package acceptance.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -96,15 +98,29 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
   @Test
   void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
     WorkbasketHistoryEvent single =
-        historyService.createWorkbasketHistoryQuery().userIdIn("peter").single();
+        historyService
+            .createWorkbasketHistoryQuery()
+            .userIdIn("peter")
+            .idIn("WHI:000000000000000000000000000000000000")
+            .single();
     assertThat(single.getEventType()).isEqualTo(WorkbasketHistoryEventType.CREATED.getName());
 
     single =
         historyService
             .createWorkbasketHistoryQuery()
             .eventTypeIn(WorkbasketHistoryEventType.CREATED.getName(), "xy")
+            .idIn("WHI:000000000000000000000000000000000000")
             .single();
     assertThat(single.getUserId()).isEqualTo("peter");
+  }
+
+  @Test
+  void should_ThrowException_When_SingleMethodRetrievesMoreThanOneEventFromDatabase() {
+
+    WorkbasketHistoryQuery query =
+        getHistoryService().createWorkbasketHistoryQuery().userIdIn("peter");
+
+    assertThatThrownBy(() -> query.single()).isInstanceOf(TooManyResultsException.class);
   }
 
   @Test

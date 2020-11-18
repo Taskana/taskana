@@ -546,13 +546,8 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
     WorkbasketHistoryEvent result = null;
     try {
       taskanaHistoryEngine.openConnection();
-      List<WorkbasketHistoryEvent> results =
-          taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
-      if (results.isEmpty()) {
-        return result;
-      } else {
-        result = results.get(0);
-      }
+      result = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+
       return result;
     } catch (SQLException e) {
       LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
