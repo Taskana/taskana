@@ -5,7 +5,7 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
 :MENU
     ECHO.
     ECHO -----------------------------------------------------
-    ECHO PRESS a number to select your task - anthing to EXIT.
+    ECHO PRESS a number to select your task - anything to EXIT.
     ECHO -----------------------------------------------------
     ECHO.
     ECHO 1 - Start DB2 11.1
@@ -29,24 +29,11 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
 
 :START_DB2_11_1
     ECHO ---
-    docker ps -aq -f name=^/taskana-db2_11_1$ -f status=running > %TEMP%\temp
-    SET /P CONTAINER_RUNNING=< %TEMP%\temp
-    docker ps -aq -f name=^/taskana-db2_11_1$ > %TEMP%\temp
-    SET /P CONTAINER_EXISTS=< %TEMP%\temp
-    del %TEMP%\temp
-
-    IF DEFINED CONTAINER_EXISTS (
-        ECHO docker start taskana-db2_11_1
-        docker start taskana-db2_11_1
-    )
-
-    IF NOT DEFINED CONTAINER_EXISTS (
-        ECHO docker run -d -p 50101:50000 --name taskana-db2_11_1 taskana/db2:11.1 -d
-        docker run -d -p 50101:50000 --name taskana-db2_11_1 taskana/db2:11.1 -d
-    )
+    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-db2_11-1
+    docker-compose -f %~dp0/docker-compose.yml up -d taskana-db2_11-1
 
     ECHO jdbcDriver=com.ibm.db2.jcc.DB2Driver> %PROP_FILE%
-    ECHO jdbcUrl=jdbc:db2://localhost:50101/tskdb>> %PROP_FILE%
+    ECHO jdbcUrl=jdbc:db2://localhost:5101/tskdb>> %PROP_FILE%
     ECHO dbUserName=db2inst1>> %PROP_FILE%
     ECHO dbPassword=db2inst1-pwd>> %PROP_FILE%
     ECHO schemaName=taskana>> %PROP_FILE%
@@ -55,17 +42,18 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
 
 :STOP_DB2_11_1
     ECHO ---
-    ECHO docker stop taskana-db2_11_1 
-    docker stop taskana-db2_11_1
+    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-db2_11-1
+    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-db2_11-1
     ECHO ---
-    GOTO MENU
+    GOTO REMOVE_PROP
 
 :START_POSTGRES_10
-    ECHO docker-compose -f %~dp0/docker-compose.yml up -d
-    docker-compose -f %~dp0/docker-compose.yml up -d
+    ECHO ---
+    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_10
+    docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_10
 
     ECHO jdbcDriver=org.postgresql.Driver> %PROP_FILE%
-    ECHO jdbcUrl=jdbc:postgresql://localhost:50102/postgres>> %PROP_FILE%
+    ECHO jdbcUrl=jdbc:postgresql://localhost:5102/postgres>> %PROP_FILE%
     ECHO dbUserName=postgres>> %PROP_FILE%
     ECHO dbPassword=postgres>> %PROP_FILE%
     ECHO schemaName=taskana>> %PROP_FILE%
@@ -75,18 +63,17 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
 :STOP_POSTGRES_10
     ECHO ---
     ECHO docker stop taskana-postgres_10 
-    docker stop taskana-postgres_10
+    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_10
+    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_10
     ECHO ---
-    GOTO MENU
+    GOTO REMOVE_PROP
 
 :STOP_ALL
     ECHO ---
-    ECHO docker stop taskana-db2_11_1
-    docker stop taskana-db2_11_1
-    ECHO docker stop taskana-postgres_10
-    docker stop takana-postgres_10
+    ECHO docker-compose -f %~dp0/docker-compose.yml down -v
+    docker-compose -f %~dp0/docker-compose.yml down -v
     ECHO ---
-    GOTO MENU
+    GOTO REMOVE_PROP
 
 :REMOVE_PROP
     ECHO ---
