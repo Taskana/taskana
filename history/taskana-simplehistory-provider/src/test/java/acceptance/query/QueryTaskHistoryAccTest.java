@@ -2,11 +2,13 @@ package acceptance.query;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -86,15 +88,29 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   @Test
   void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
     TaskHistoryEvent single =
-        getHistoryService().createTaskHistoryQuery().userIdIn("peter").single();
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .userIdIn("peter")
+            .taskIdIn("TKI:000000000000000000000000000000000036")
+            .single();
+
     assertThat(single.getEventType()).isEqualTo(TaskHistoryEventType.CREATED.getName());
 
     single =
         getHistoryService()
             .createTaskHistoryQuery()
             .eventTypeIn(TaskHistoryEventType.CREATED.getName(), "xy")
+            .idIn("THI:000000000000000000000000000000000003")
             .single();
     assertThat(single.getUserId()).isEqualTo("peter");
+  }
+
+  @Test
+  void should_ThrowException_When_SingleMethodRetrievesMoreThanOneEventFromDatabase() {
+
+    TaskHistoryQuery query = getHistoryService().createTaskHistoryQuery().userIdIn("peter");
+
+    assertThatThrownBy(() -> query.single()).isInstanceOf(TooManyResultsException.class);
   }
 
   @Test
