@@ -17,6 +17,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -53,7 +54,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testSortByTaskIdDesc() {
+  void should_sortByTaskIdDesc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
@@ -78,7 +79,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testSortByTaskIdAsc() {
+  void should_sortByTaskIdAsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results =
         taskService
@@ -100,38 +101,28 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testSortByWorkbasketName() {
+  void should_sortByWorkbasketNameAsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(asc).list();
 
-    // test is only valid with at least 2 results
-    assertThat(
-            results.stream()
-                .map(t -> t.getWorkbasketSummary().getName())
-                .distinct()
-                .collect(Collectors.toList()))
-        .hasSizeGreaterThan(2);
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(TaskSummary::getWorkbasketSummary)
+        .extracting(WorkbasketSummary::getName)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+  }
 
-    List<String> idsAsc =
-        results.stream()
-            .map(t -> t.getWorkbasketSummary().getName())
-            .sorted()
-            .collect(Collectors.toList());
+  @WithAccessId(user = "admin")
+  @Test
+  void should_sortByWorkbasketNameDsc_When_TaskQueryFilterIsApplied() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(desc).list();
 
-    for (int i = 0; i < results.size(); i++) {
-      assertThat(results.get(i).getWorkbasketSummary().getName()).isEqualTo(idsAsc.get(i));
-    }
-    results = taskService.createTaskQuery().orderByWorkbasketName(desc).list();
-
-    List<String> idsDesc =
-        results.stream()
-            .map(t -> t.getWorkbasketSummary().getName())
-            .sorted(Comparator.reverseOrder())
-            .collect(Collectors.toList());
-
-    for (int i = 0; i < results.size(); i++) {
-      assertThat(results.get(i).getWorkbasketSummary().getName()).isEqualTo(idsDesc.get(i));
-    }
+    assertThat(results)
+        .hasSizeGreaterThan(2)
+        .extracting(TaskSummary::getWorkbasketSummary)
+        .extracting(WorkbasketSummary::getName)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @WithAccessId(user = "admin")
