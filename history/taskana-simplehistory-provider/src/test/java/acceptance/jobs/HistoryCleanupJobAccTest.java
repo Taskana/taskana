@@ -6,6 +6,7 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -382,14 +383,15 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(jobsToRun).hasSize(30);
 
+    List<ScheduledJob> historyCleanupJobs =
+        jobsToRun.stream()
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.HISTORYCLEANUPJOB))
+            .collect(Collectors.toList());
+
     HistoryCleanupJob.initializeSchedule(taskanaEngine);
 
     jobsToRun = getJobMapper().findJobsToRun();
 
-    assertThat(jobsToRun).hasSize(20);
-
-    assertThat(jobsToRun)
-        .extracting(ScheduledJob::getType)
-        .containsOnly(Type.CLASSIFICATIONCHANGEDJOB, Type.UPDATETASKSJOB);
+    assertThat(jobsToRun).doesNotContainAnyElementsOf(historyCleanupJobs);
   }
 }

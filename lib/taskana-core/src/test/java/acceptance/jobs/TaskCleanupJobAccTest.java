@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,15 +106,16 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(jobsToRun).hasSize(30);
 
+    List<ScheduledJob> taskCleanupJobs =
+        jobsToRun.stream()
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.TASKCLEANUPJOB))
+            .collect(Collectors.toList());
+
     TaskCleanupJob.initializeSchedule(taskanaEngine);
 
     jobsToRun = getJobMapper().findJobsToRun();
 
-    assertThat(jobsToRun).hasSize(20);
-
-    assertThat(jobsToRun)
-        .extracting(ScheduledJob::getType)
-        .containsOnly(Type.CLASSIFICATIONCHANGEDJOB, Type.UPDATETASKSJOB);
+    assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
   }
 
   private Task createAndCompleteTask() throws Exception {
