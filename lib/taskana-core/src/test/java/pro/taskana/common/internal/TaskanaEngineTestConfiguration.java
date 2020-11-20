@@ -17,7 +17,7 @@ public final class TaskanaEngineTestConfiguration {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(TaskanaEngineTestConfiguration.class);
   private static final int POOL_TIME_TO_WAIT = 50;
-  private static DataSource dataSource;
+  private static final DataSource dataSource;
   private static String schemaName = null;
 
   static {

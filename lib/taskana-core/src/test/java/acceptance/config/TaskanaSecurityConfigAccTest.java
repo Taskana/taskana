@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.ibm.db2.jcc.am.SqlException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -25,10 +27,10 @@ class TaskanaSecurityConfigAccTest {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
 
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-    sampleDataGenerator.dropDb();
     DbSchemaCreator dbSchemaCreator = new DbSchemaCreator(dataSource, schemaName);
     dbSchemaCreator.run();
+    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    sampleDataGenerator.clearDb();
   }
 
   @Test
@@ -37,17 +39,7 @@ class TaskanaSecurityConfigAccTest {
 
     setSecurityFlag(true);
 
-    ThrowingCallable createUnsecuredTaskanaEngineConfiguration =
-        () -> {
-          TaskanaEngineConfiguration taskanaEngineConfiguration =
-              new TaskanaEngineConfiguration(
-                  TaskanaEngineTestConfiguration.getDataSource(),
-                  false,
-                  false,
-                  TaskanaEngineTestConfiguration.getSchemaName());
-        };
-
-    assertThatThrownBy(createUnsecuredTaskanaEngineConfiguration)
+    assertThatThrownBy(() -> createTaskanaEngine(false))
         .isInstanceOf(SystemException.class)
         .hasMessageContaining("Secured TASKANA mode is enforced, can't start in unsecured mode");
   }
@@ -58,17 +50,8 @@ class TaskanaSecurityConfigAccTest {
 
     setSecurityFlag(false);
 
-    ThrowingCallable createUnsecuredTaskanaEngineConfiguration =
-        () -> {
-          TaskanaEngineConfiguration taskanaEngineConfiguration =
-              new TaskanaEngineConfiguration(
-                  TaskanaEngineTestConfiguration.getDataSource(),
-                  false,
-                  false,
-                  TaskanaEngineTestConfiguration.getSchemaName());
-        };
 
-    assertThatCode(createUnsecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
+    assertThatCode(() -> createTaskanaEngine(false)).doesNotThrowAnyException();
   }
 
   @Test
@@ -77,17 +60,7 @@ class TaskanaSecurityConfigAccTest {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
-    ThrowingCallable createUnsecuredTaskanaEngineConfiguration =
-        () -> {
-          TaskanaEngineConfiguration taskanaEngineConfiguration =
-              new TaskanaEngineConfiguration(
-                  TaskanaEngineTestConfiguration.getDataSource(),
-                  false,
-                  false,
-                  TaskanaEngineTestConfiguration.getSchemaName());
-        };
-
-    assertThatCode(createUnsecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
+    assertThatCode(() -> createTaskanaEngine(false)).doesNotThrowAnyException();
 
     assertThat(retrieveSecurityFlag()).isFalse();
   }
@@ -98,19 +71,18 @@ class TaskanaSecurityConfigAccTest {
 
     assertThat(retrieveSecurityFlag()).isNull();
 
-    ThrowingCallable createSecuredTaskanaEngineConfiguration =
-        () -> {
-          TaskanaEngineConfiguration taskanaEngineConfiguration =
-              new TaskanaEngineConfiguration(
-                  TaskanaEngineTestConfiguration.getDataSource(),
-                  false,
-                  true,
-                  TaskanaEngineTestConfiguration.getSchemaName());
-        };
-
-    assertThatCode(createSecuredTaskanaEngineConfiguration).doesNotThrowAnyException();
+    assertThatCode(() -> createTaskanaEngine(true)).doesNotThrowAnyException();
 
     assertThat(retrieveSecurityFlag()).isTrue();
+  }
+
+  private void createTaskanaEngine(boolean securityEnabled) throws SQLException {
+    new TaskanaEngineConfiguration(
+            TaskanaEngineTestConfiguration.getDataSource(),
+            false,
+            securityEnabled,
+            TaskanaEngineTestConfiguration.getSchemaName())
+        .buildTaskanaEngine();
   }
 
   private Boolean retrieveSecurityFlag() throws Exception {

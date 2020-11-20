@@ -39,6 +39,8 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
+import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.configuration.SecurityVerifier;
 import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.Pair;
 

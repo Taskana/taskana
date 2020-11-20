@@ -2,6 +2,7 @@ package pro.taskana.classification.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,7 +42,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @BeforeEach
-  void setup() {
+  void setup() throws SQLException {
     TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     classificationService = taskanaEngine.getClassificationService();
     TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
