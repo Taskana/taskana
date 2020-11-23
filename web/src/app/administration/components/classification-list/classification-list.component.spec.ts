@@ -19,6 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({ selector: 'taskana-administration-import-export', template: '' })
 class ImportExportStub {
@@ -28,11 +29,6 @@ class ImportExportStub {
 
 @Component({ selector: 'taskana-administration-classification-types-selector', template: '' })
 class ClassificationTypesSelectorStub {}
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning;
-}
 
 @Component({ selector: 'taskana-administration-tree', template: '' })
 class TreeStub {
@@ -75,6 +71,13 @@ const importExportServiceSpy = jest.fn().mockImplementation(
   })
 );
 
+const requestInProgressServiceSpy = jest.fn().mockImplementation(
+  (): Partial<RequestInProgressService> => ({
+    setRequestInProgress: jest.fn().mockReturnValue(of()),
+    getRequestInProgress: jest.fn().mockReturnValue(of(false))
+  })
+);
+
 describe('ClassificationListComponent', () => {
   let fixture: ComponentFixture<ClassificationListComponent>;
   let debugElement: DebugElement;
@@ -96,7 +99,6 @@ describe('ClassificationListComponent', () => {
       declarations: [
         ClassificationListComponent,
         ClassificationTypesSelectorStub,
-        SpinnerStub,
         TreeStub,
         SvgIconStub,
         ImportExportStub,
@@ -106,7 +108,8 @@ describe('ClassificationListComponent', () => {
         { provide: ClassificationsService, useClass: classificationServiceSpy },
         { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
         { provide: DomainService, useClass: domainServiceSpy },
-        { provide: ImportExportService, useClass: importExportServiceSpy }
+        { provide: ImportExportService, useClass: importExportServiceSpy },
+        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
       ]
     }).compileComponents();
 

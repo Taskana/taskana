@@ -17,12 +17,12 @@ import { Filter } from '../../../shared/models/filter';
 import { ICONTYPES } from '../../../shared/models/icon-types';
 import { Page } from '../../../shared/models/page';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { MatListModule, MatSelectionList } from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
@@ -59,6 +59,13 @@ const domainServiceSpy = jest.fn().mockImplementation(
   })
 );
 
+const requestInProgressServiceSpy = jest.fn().mockImplementation(
+  (): Partial<RequestInProgressService> => ({
+    setRequestInProgress: jest.fn().mockReturnValue(of()),
+    getRequestInProgress: jest.fn().mockReturnValue(of(false))
+  })
+);
+
 @Component({ selector: 'taskana-administration-workbasket-list-toolbar', template: '' })
 class WorkbasketListToolbarStub {
   @Input() workbaskets: Array<WorkbasketSummary>;
@@ -71,11 +78,6 @@ class WorkbasketListToolbarStub {
 class IconTypeStub {
   @Input() type: ICONTYPES = ICONTYPES.ALL;
   @Input() selected = false;
-}
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
 }
 
 @Component({ selector: 'taskana-shared-pagination', template: '' })
@@ -108,19 +110,13 @@ describe('WorkbasketListComponent', () => {
         MatSelectModule,
         MatListModule
       ],
-      declarations: [
-        WorkbasketListComponent,
-        WorkbasketListToolbarStub,
-        IconTypeStub,
-        SpinnerStub,
-        PaginationStub,
-        SvgIconStub
-      ],
+      declarations: [WorkbasketListComponent, WorkbasketListToolbarStub, IconTypeStub, PaginationStub, SvgIconStub],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceMock },
         { provide: OrientationService, useClass: orientationServiceMock },
         { provide: ImportExportService, useClass: importExportServiceMock },
-        { provide: DomainService, useClass: domainServiceSpy }
+        { provide: DomainService, useClass: domainServiceSpy },
+        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
       ]
     }).compileComponents();
 

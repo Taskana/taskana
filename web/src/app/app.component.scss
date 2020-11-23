@@ -1,4 +1,5 @@
 @import '../theme/variables';
+@import 'src/theme/_colors.scss';
 
 .sidenav {
   position: absolute;
@@ -6,7 +7,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .sidenav__drawer {
@@ -56,9 +57,11 @@
   outline: none;
 }
 
-mat-sidenav-content {
-  height: unset;
+.taskana-main__progress-bar {
+  height: 4px;
+  background-color: $light-grey;
 }
+
 ::ng-deep .mat-drawer-inner-container {
   overflow: visible !important;
 }

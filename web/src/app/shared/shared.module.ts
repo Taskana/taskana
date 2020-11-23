@@ -29,7 +29,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { SortComponent } from './components/sort/sort.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NumberPickerComponent } from './components/number-picker/number-picker.component';
-import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 
@@ -60,6 +60,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const MODULES = [
   CommonModule,
@@ -97,7 +98,7 @@ const DECLARATIONS = [
   FieldErrorDisplayComponent,
   PaginationComponent,
   NumberPickerComponent,
-  ProgressBarComponent,
+  ProgressSpinnerComponent,
   DatePickerComponent,
   DropdownComponent,
   ToastComponent,
@@ -116,7 +117,8 @@ const DECLARATIONS = [
     MatTooltipModule,
     MatPaginatorModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatProgressSpinnerModule
   ],
   exports: DECLARATIONS,
   providers: [

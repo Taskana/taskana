@@ -20,7 +20,6 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { Classification } from '../../../shared/models/classification';
 import { customFieldCount } from '../../../shared/models/classification-summary';
-import { CategoriesResponse } from '../../../shared/services/classification-categories/classification-categories.service';
 
 import {
   SaveCreatedClassification,
@@ -40,19 +39,18 @@ import {
 })
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   classification: Classification;
-  requestInProgress = false;
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationType) selectedClassificationType$: Observable<string>;
   @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<Classification>;
   @Select(ClassificationSelectors.getBadgeMessage) badgeMessage$: Observable<string>;
 
-  spinnerIsRunning = false;
   customFields$: Observable<CustomField[]>;
   isCreatingNewClassification: boolean = false;
   readonly lengthError = 'You have reached the maximum length for this field';
   inputOverflowMap = new Map<string, boolean>();
   validateInputOverflow: Function;
+  requestInProgress: boolean;
 
   @ViewChild('ClassificationForm') classificationForm: NgForm;
   toggleValidationMap = new Map<string, boolean>();
@@ -84,6 +82,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.store.dispatch(new SelectClassification(this.classification.classificationId));
+      });
+
+    this.requestInProgressService
+      .getRequestInProgress()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.requestInProgress = value;
       });
 
     this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
@@ -139,10 +144,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           : new Pair(iconMap.missing, 'Category does not match with the configuration')
       )
     );
-  }
-
-  spinnerRunning(value) {
-    this.spinnerIsRunning = value;
   }
 
   validChanged(): void {

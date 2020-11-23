@@ -8,6 +8,7 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { Subscription } from 'rxjs';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { take } from 'rxjs/operators';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-task',
@@ -16,7 +17,6 @@ import { take } from 'rxjs/operators';
 })
 export class TaskComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription;
-  requestInProgress = false;
 
   regex = /\${(.*?)}/g;
   address = 'https://bing.com/';
@@ -29,6 +29,7 @@ export class TaskComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private workbasketService: WorkbasketService,
     private classificationService: ClassificationsService,
+    private requestInProgressService: RequestInProgressService,
     private route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer
@@ -39,20 +40,20 @@ export class TaskComponent implements OnInit, OnDestroy {
       const { id } = params;
       this.getTask(id);
 
-      this.requestInProgress = true;
+      this.requestInProgressService.setRequestInProgress(true);
       this.taskService
         .claimTask(id)
         .pipe(take(1))
         .subscribe((task) => {
           this.task = task;
           this.taskService.publishUpdatedTask(task);
-          this.requestInProgress = false;
+          this.requestInProgressService.setRequestInProgress(false);
         });
     });
   }
 
   async getTask(id: string) {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     this.task = await this.taskService.getTask(id).toPromise();
     this.taskService.selectTask(this.task);
     const classification = await this.classificationService
@@ -61,13 +62,13 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;
     this.link = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
     this.getWorkbaskets();
-    this.requestInProgress = false;
+    this.requestInProgressService.setRequestInProgress(false);
   }
 
   getWorkbaskets() {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     this.workbasketService.getAllWorkBaskets().subscribe((workbaskets) => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.workbaskets = workbaskets.workbaskets;
 
       const index = this.workbaskets.findIndex((workbasket) => workbasket.name === this.task.workbasketSummary.name);
@@ -78,18 +79,18 @@ export class TaskComponent implements OnInit, OnDestroy {
   }
 
   transferTask(workbasket: Workbasket) {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     this.taskService.transferTask(this.task.taskId, workbasket.workbasketId).subscribe((task) => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.task = task;
     });
     this.navigateBack();
   }
 
   completeTask() {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     this.taskService.completeTask(this.task.taskId).subscribe((task) => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.task = task;
       this.taskService.publishUpdatedTask(task);
       this.navigateBack();
@@ -97,14 +98,14 @@ export class TaskComponent implements OnInit, OnDestroy {
   }
 
   cancelClaimTask() {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     this.taskService
       .cancelClaimTask(this.task.taskId)
       .pipe(take(1))
       .subscribe((task) => {
         this.task = task;
         this.taskService.publishUpdatedTask(task);
-        this.requestInProgress = false;
+        this.requestInProgressService.setRequestInProgress(false);
       });
     this.navigateBack();
   }

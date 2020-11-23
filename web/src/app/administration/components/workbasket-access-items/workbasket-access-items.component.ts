@@ -61,7 +61,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   accessItemsRepresentation: WorkbasketAccessItemsRepresentation;
   accessItemsClone: Array<WorkbasketAccessItems>;
   accessItemsResetClone: Array<WorkbasketAccessItems>;
-  requestInProgress = false;
   AccessItemsForm = this.formBuilder.group({
     accessItemsGroups: this.formBuilder.array([])
   });
@@ -148,9 +147,9 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     if (!this.workbasket._links.accessItems) {
       return;
     }
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     this.store.dispatch(new GetWorkbasketAccessItems(this.workbasket._links.accessItems.href)).subscribe(() => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
     });
 
     this.savingWorkbaskets

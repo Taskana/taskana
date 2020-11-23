@@ -28,11 +28,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { take } from 'rxjs/operators';
 
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
-}
-
 @Component({ selector: 'taskana-administration-workbasket-information', template: '<div>i</div>' })
 class WorkbasketInformationStub {
   @Input() workbasket: Workbasket;
@@ -91,7 +86,6 @@ describe('WorkbasketDetailsComponent', () => {
       ],
       declarations: [
         WorkbasketDetailsComponent,
-        SpinnerStub,
         WorkbasketAccessItemsStub,
         WorkbasketDistributionTargetsStub,
         WorkbasketInformationStub
@@ -126,7 +120,6 @@ describe('WorkbasketDetailsComponent', () => {
 
   it('should render information component when workbasket details is opened', () => {
     component.workbasket = { workbasketId: '1' };
-    component.requestInProgress = false;
     fixture.detectChanges();
     const information = debugElement.nativeElement.querySelector('taskana-administration-workbasket-information');
     expect(information).toBeTruthy();

@@ -17,6 +17,7 @@ import {
   SelectComponent
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { ButtonAction } from '../../models/button-action';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { WorkbasketComponent } from '../../models/workbasket-component';
 
 @Component({
@@ -28,7 +29,6 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   workbasket: Workbasket;
   workbasketCopy: Workbasket;
   selectedId: string;
-  requestInProgress = false;
   action: ACTION;
   badgeMessage = '';
 
@@ -52,6 +52,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
     private router: Router,
     private domainService: DomainService,
     private importExportService: ImportExportService,
+    private requestInProgressService: RequestInProgressService,
     private store: Store
   ) {}
 
@@ -108,7 +109,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
     if (selectedWorkbasket) {
       workbasketIdSelected = selectedWorkbasket.workbasketId;
     }
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     if (!workbasketIdSelected && this.action === ACTION.CREATE) {
       // CREATE
       this.workbasket = {};
@@ -118,16 +119,16 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
         .subscribe((domain) => {
           this.workbasket.domain = domain;
         });
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
     } else if (!workbasketIdSelected && this.action === ACTION.COPY) {
       // COPY
       this.workbasket = { ...this.workbasketCopy };
       delete this.workbasket.workbasketId;
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
     }
     if (workbasketIdSelected) {
       this.workbasket = selectedWorkbasket;
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.checkDomainAndRedirect();
     }
   }
