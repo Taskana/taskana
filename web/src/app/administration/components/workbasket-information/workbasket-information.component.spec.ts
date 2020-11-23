@@ -41,11 +41,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
-}
-
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
   @Input() displayError: boolean;
@@ -120,7 +115,6 @@ describe('WorkbasketInformationComponent', () => {
       ],
       declarations: [
         WorkbasketInformationComponent,
-        SpinnerStub,
         FieldErrorDisplayStub,
         IconTypeStub,
         TypeAheadComponent,

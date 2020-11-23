@@ -1,0 +1,7 @@
+<div class="progress-spinner-component">
+  <div class="progress-spinner-component__spinner-wrapper">
+    <mat-progress-spinner [value]="currentValue"></mat-progress-spinner>
+  </div>
+  <h4 class="progress-spinner-component__text">Uploading file</h4>
+</div>
+<div *ngIf="currentValue" class="mask"></div>

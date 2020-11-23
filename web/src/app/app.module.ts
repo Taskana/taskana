@@ -60,6 +60,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -92,7 +93,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatSidenavModule, MatIconModule, MatToolbarModule, MatProgressBarModule],
+  imports: [MODULES, MatSidenavModule, MatIconModule, MatToolbarModule, MatProgressBarModule, MatProgressSpinnerModule],
   providers: [
     WindowRefService,
     DomainService,

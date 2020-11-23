@@ -21,12 +21,15 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <taskana-shared-nav-bar></taskana-shared-nav-bar>
-    <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
     <div (window:resize)="onResize()">
       <div class="taskana-main">
+        <div class="taskana-main__progress-bar">
+          <mat-progress-bar [hidden]="!requestInProgress" mode="indeterminate"></mat-progress-bar>
+        </div>
         <router-outlet></router-outlet>
-        <taskana-shared-progress-bar [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
-        </taskana-shared-progress-bar>
+        <taskana-shared-progress-spinner
+          [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
+        </taskana-shared-progress-spinner>
       </div>
     </div>
   </mat-sidenav-content>
