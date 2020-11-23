@@ -21,6 +21,8 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.internal.configuration.DB;
+
 /** This class generates sample data for manual testing purposes. */
 public class SampleDataGenerator {
 
@@ -90,9 +92,10 @@ public class SampleDataGenerator {
 
   private List<String> parseScripts(Stream<String> scripts) {
     try (Connection connection = dataSource.getConnection()) {
-      String dbProductName = connection.getMetaData().getDatabaseProductName();
+      String dbProductId =
+          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
       return scripts
-          .map(script -> SqlReplacer.getScriptAsSql(dbProductName, now, script))
+          .map(script -> SqlReplacer.getScriptAsSql(dbProductId, now, script))
           .collect(Collectors.toList());
     } catch (SQLException e) {
       throw new RuntimeSqlException("Connection to database failed.", e);

@@ -17,7 +17,7 @@ public final class TaskanaEngineTestConfiguration {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(TaskanaEngineTestConfiguration.class);
   private static final int POOL_TIME_TO_WAIT = 50;
-  private static final DataSource dataSource;
+  private static final DataSource DATA_SOURCE;
   private static String schemaName = null;
 
   static {
@@ -25,9 +25,9 @@ public final class TaskanaEngineTestConfiguration {
     String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
     File f = new File(propertiesFileName);
     if (f.exists() && !f.isDirectory()) {
-      dataSource = createDataSourceFromProperties(propertiesFileName);
+      DATA_SOURCE = createDataSourceFromProperties(propertiesFileName);
     } else {
-      dataSource = createDefaultDataSource();
+      DATA_SOURCE = createDefaultDataSource();
     }
   }
 
@@ -45,7 +45,7 @@ public final class TaskanaEngineTestConfiguration {
    * @return dataSource for unit test
    */
   public static DataSource getDataSource() {
-    return dataSource;
+    return DATA_SOURCE;
   }
 
   /**

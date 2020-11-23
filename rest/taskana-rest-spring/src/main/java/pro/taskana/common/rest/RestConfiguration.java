@@ -53,14 +53,14 @@ public class RestConfiguration {
   }
 
   @Bean
-  public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
+      throws SQLException {
     return taskanaEngineConfiguration.buildTaskanaEngine();
   }
 
   @Bean
   @ConditionalOnMissingBean(TaskanaEngineConfiguration.class)
-  public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource)
-      throws SQLException {
+  public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) {
     return new SpringTaskanaEngineConfiguration(dataSource, true, true, schemaName);
   }
 

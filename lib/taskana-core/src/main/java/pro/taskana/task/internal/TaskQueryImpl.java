@@ -710,7 +710,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery orderByClassificationKey(SortDirection sortDirection) {
-    return DB.DB2.dbProductId.equals(getDatabaseId())
+    return DB.isDb2(getDatabaseId())
         ? addOrderCriteria("TCLASSIFICATION_KEY", sortDirection)
         : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
   }
@@ -719,7 +719,7 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByClassificationName(SortDirection sortDirection) {
     joinWithClassifications = true;
     addClassificationNameToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
+    return DB.isDb2(getDatabaseId())
         ? addOrderCriteria("CNAME", sortDirection)
         : addOrderCriteria("c.NAME", sortDirection);
   }
@@ -866,7 +866,7 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
+    return DB.isDb2(getDatabaseId())
         ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
         : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
   }
@@ -875,7 +875,7 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentClassificationNameToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
+    return DB.isDb2(getDatabaseId())
         ? addOrderCriteria("ACNAME", sortDirection)
         : addOrderCriteria("ac.NAME", sortDirection);
   }
@@ -884,7 +884,7 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2.dbProductId.equals(getDatabaseId())
+    return DB.isDb2(getDatabaseId())
         ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
         : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
   }
@@ -1059,7 +1059,7 @@ public class TaskQueryImpl implements TaskQuery {
   // optimized query for db2 can't be used for now in case of selectAndClaim because of temporary
   // tables and the "for update" clause clashing in db2
   public String getLinkToMapperScript() {
-    if (DB.DB2.dbProductId.equals(getDatabaseId()) && !selectAndClaim) {
+    if (DB.isDb2(getDatabaseId()) && !selectAndClaim) {
       return LINK_TO_MAPPER_DB2;
     } else {
       return LINK_TO_MAPPER;
@@ -1067,7 +1067,7 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   public String getLinkToCounterTaskScript() {
-    return DB.DB2.dbProductId.equals(getDatabaseId()) ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
+    return DB.isDb2(getDatabaseId()) ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
   }
 
   public boolean isUseDistinctKeyword() {

@@ -189,6 +189,7 @@ public class TaskanaEngineConfiguration {
    * This method creates the TaskanaEngine without an sqlSessionFactory.
    *
    * @return the TaskanaEngine
+   * @throws SQLException if a database access error occurs
    */
   public TaskanaEngine buildTaskanaEngine() throws SQLException {
     return TaskanaEngineImpl.createTaskanaEngine(this);
@@ -470,8 +471,9 @@ public class TaskanaEngineConfiguration {
     }
 
     try (Connection connection = dataSource.getConnection()) {
-      String databaseProductName = connection.getMetaData().getDatabaseProductName();
-      if (DB.isPostgreSql(databaseProductName)) {
+      String databaseProductId =
+          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
+      if (DB.isPostgres(databaseProductId)) {
         this.schemaName = this.schemaName.toLowerCase();
       } else {
         this.schemaName = this.schemaName.toUpperCase();

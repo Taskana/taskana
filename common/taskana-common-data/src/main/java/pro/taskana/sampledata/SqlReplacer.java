@@ -23,8 +23,8 @@ final class SqlReplacer {
   // to prevent initialization
   private SqlReplacer() {}
 
-  static String getScriptAsSql(String dbProductName, ZonedDateTime now, String scriptPath) {
-    return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductName);
+  static String getScriptAsSql(String dbProductId, ZonedDateTime now, String scriptPath) {
+    return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductId);
   }
 
   /**
@@ -65,10 +65,9 @@ final class SqlReplacer {
   }
 
   private static String parseAndReplace(
-      BufferedReader bufferedReader, ZonedDateTime now, String dbProductname) {
-    boolean isDb2 = DB.isDb2(dbProductname);
+      BufferedReader bufferedReader, ZonedDateTime now, String dbProductId) {
     String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-    if (isDb2) {
+    if (DB.isDb2(dbProductId)) {
       sql = replaceBooleanWithInteger(sql);
     }
     return replaceDatePlaceholder(now, sql);
