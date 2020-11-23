@@ -1,6 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { SidenavService } from './shared/services/sidenav/sidenav.service';
 import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
@@ -12,6 +12,7 @@ import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-e
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { environment } from 'environments/environment';
 import { MatSidenav } from '@angular/material/sidenav';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-root',
@@ -25,13 +26,11 @@ export class AppComponent implements OnInit, OnDestroy {
   requestInProgress = false;
   currentProgressValue = 0;
 
-  requestInProgressSubscription: Subscription;
-  selectedRouteSubscription: Subscription;
-  routerSubscription: Subscription;
-  uploadingFileSubscription: Subscription;
   error: ErrorModel;
   version: string;
   toggle: boolean = false;
+
+  destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -53,33 +52,43 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
   ngOnInit() {
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.selectedRouteService.selectRoute(event);
         this.formsValidatorService.formSubmitAttempt = false;
       }
     });
 
-    this.requestInProgressSubscription = this.requestInProgressService
+    this.requestInProgressService
       .getRequestInProgress()
+      .pipe(takeUntil(this.destroy$))
       .subscribe((value: boolean) => {
         this.requestInProgress = value;
       });
 
-    this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
-      if (value.indexOf('classifications') !== -1) {
-        this.workbasketsRoute = false;
-      }
-      this.selectedRoute = value;
-    });
+    this.selectedRouteService
+      .getSelectedRoute()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        if (value.indexOf('classifications') !== -1) {
+          this.workbasketsRoute = false;
+        }
+        this.selectedRoute = value;
+      });
 
-    this.uploadingFileSubscription = this.uploadService.getCurrentProgressObservable().subscribe((value) => {
-      this.currentProgressValue = value;
-    });
+    this.uploadService
+      .getCurrentProgressObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.currentProgressValue = value;
+      });
 
-    this.taskanaEngineService.getVersion().subscribe((restVersion) => {
-      this.version = restVersion.version;
-    });
+    this.taskanaEngineService
+      .getVersion()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((restVersion) => {
+        this.version = restVersion.version;
+      });
   }
 
   logout() {
@@ -97,17 +106,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
-    if (this.requestInProgressSubscription) {
-      this.requestInProgressSubscription.unsubscribe();
-    }
-    if (this.selectedRouteSubscription) {
-      this.selectedRouteSubscription.unsubscribe();
-    }
-    if (this.uploadingFileSubscription) {
-      this.uploadingFileSubscription.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -61,11 +61,9 @@
 
 
   <!-- CLASSIFICATION TREE -->
-  <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
-
   <taskana-administration-tree *ngIf="(classifications && classifications.length) else empty_classifications"
                                [filterText]="inputValue" [filterIcon]="selectedCategory"
-                               (switchTaskanaSpinnerEmit)="requestInProgress=$event"></taskana-administration-tree>
+                               (switchTaskanaSpinnerEmit)="setRequestInProgress($event)"></taskana-administration-tree>
   <ng-template #empty_classifications>
     <div *ngIf="!requestInProgress" class="classification-list__no-items">
       <h3 class="grey">There are no classifications</h3>

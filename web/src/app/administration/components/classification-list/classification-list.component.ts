@@ -18,6 +18,7 @@ import {
 } from '../../../shared/store/classification-store/classification.actions';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationSummary } from '../../../shared/models/classification-summary';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-administration-classification-list',
@@ -43,15 +44,16 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
   constructor(
     private location: Location,
     private importExportService: ImportExportService,
+    private domainService: DomainService,
+    private requestInProgressService: RequestInProgressService,
     private store: Store,
-    private ngxsActions$: Actions,
-    private domainService: DomainService
+    private ngxsActions$: Actions
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetClassifications), takeUntil(this.destroy$)).subscribe(() => {
-      this.requestInProgress = true;
+      this.requestInProgressService.setRequestInProgress(true);
     });
     this.ngxsActions$.pipe(ofActionCompleted(GetClassifications), takeUntil(this.destroy$)).subscribe(() => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
     });
   }
 
@@ -79,6 +81,13 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
       .subscribe((domain) => {
         this.store.dispatch(GetClassifications);
       });
+
+    this.requestInProgressService
+      .getRequestInProgress()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.requestInProgress = value;
+      });
   }
 
   addClassification() {
@@ -105,6 +114,10 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
 
   displayFilter() {
     this.showFilter = !this.showFilter;
+  }
+
+  setRequestInProgress(value: boolean) {
+    this.requestInProgressService.setRequestInProgress(value);
   }
 
   ngOnDestroy() {

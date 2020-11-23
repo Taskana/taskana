@@ -1,0 +1,30 @@
+@import 'src/theme/_colors.scss';
+
+.progress-spinner-component {
+  z-index: 3000;
+  width: 170px;
+  height: 160px;
+  position: absolute;
+  left: 50%;
+  top: 33%;
+  margin-left: -85px;
+  > .item {
+    margin-left: 10px;
+  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.progress-spinner-component__spinner-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.progress-spinner-component__text {
+  color: $aquamarine;
+  text-align: center;
+}
+
+//TODO: Change color of spinner
+

@@ -4,7 +4,6 @@
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
       (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
     </taskana-administration-workbasket-list-toolbar>
-    <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
   </section>
 
   <!-- WORKBASKET LIST -->
@@ -43,7 +42,7 @@
 
   <!-- SPINNER and EMPTY WORKBASKET LIST -->
   <ng-template #empty_workbaskets>
-    <div *ngIf="!requestInProgress" class="workbasket-list__no-items">
+    <div *ngIf="!requestInProgress && !requestInProgressLocal" class="workbasket-list__no-items">
       <h3 class="grey">There are no workbaskets</h3>
     </div>
   </ng-template>

@@ -32,11 +32,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning;
-}
-
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
   @Input() displayError;
@@ -87,7 +82,8 @@ const importExportServiceSpy = jest.fn().mockImplementation(
 
 const requestInProgressServiceSpy = jest.fn().mockImplementation(
   (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn().mockReturnValue(of())
+    setRequestInProgress: jest.fn().mockReturnValue(of()),
+    getRequestInProgress: jest.fn().mockReturnValue(of(false))
   })
 );
 
@@ -133,14 +129,7 @@ describe('ClassificationDetailsComponent', () => {
         MatMenuModule,
         BrowserAnimationsModule
       ],
-      declarations: [
-        ClassificationDetailsComponent,
-        SpinnerStub,
-        InputStub,
-        FieldErrorDisplayStub,
-        SvgIconStub,
-        TextareaStub
-      ],
+      declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
       providers: [
         { provide: ClassificationsService, useClass: classificationServiceSpy },
         { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
@@ -254,7 +243,7 @@ describe('ClassificationDetailsComponent', () => {
   /* HTML */
 
   it('should not show details when spinner is running', () => {
-    component.spinnerIsRunning = true;
+    component.requestInProgress = true;
     component.classification = {};
     fixture.detectChanges();
     expect(debugElement.nativeElement.querySelector('.classification-details__action-toolbar')).toBeFalsy();
@@ -262,7 +251,7 @@ describe('ClassificationDetailsComponent', () => {
   });
 
   it('should not show details when classification does not exist', () => {
-    component.spinnerIsRunning = false;
+    component.requestInProgress = false;
     component.classification = null;
     fixture.detectChanges();
     expect(debugElement.nativeElement.querySelector('.classification-details__action-toolbar')).toBeFalsy();
