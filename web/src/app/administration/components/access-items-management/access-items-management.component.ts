@@ -7,7 +7,6 @@ import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
 import { Direction, Sorting } from 'app/shared/models/sorting';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { takeUntil } from 'rxjs/operators';
-import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
@@ -40,9 +39,7 @@ export class AccessItemsManagementComponent implements OnInit {
     ['workbasket-key', 'Workbasket Key']
   ]);
   sortModel: Sorting = new Sorting('access-id', Direction.DESC);
-  isGroup: boolean = false;
   accessItems: any[];
-  list_filtered: any[];
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
     AccessItemsCustomisation
@@ -54,7 +51,6 @@ export class AccessItemsManagementComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private formsValidatorService: FormsValidatorService,
-    private requestInProgressService: RequestInProgressService,
     private notificationService: NotificationService,
     private store: Store,
     public dialog: MatDialog
