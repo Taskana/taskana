@@ -41,6 +41,8 @@ export class AccessItemsManagementComponent implements OnInit {
   ]);
   sortModel: Sorting = new Sorting('access-id', Direction.DESC);
   isGroup: boolean = false;
+  accessItems: any[];
+  list_filtered: any[];
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
     AccessItemsCustomisation
@@ -83,14 +85,7 @@ export class AccessItemsManagementComponent implements OnInit {
   searchForAccessItemsWorkbaskets() {
     this.removeFocus();
     this.store
-      .dispatch(
-        new GetAccessItems(
-          [this.accessId, ...this.groups],
-          this.accessItemsForm ? this.accessItemsForm.value.accessIdFilter : undefined,
-          this.accessItemsForm ? this.accessItemsForm.value.workbasketKeyFilter : undefined,
-          this.sortModel
-        )
-      )
+      .dispatch(new GetAccessItems([this.accessId, ...this.groups], '', '', this.sortModel))
       .subscribe((state) => {
         this.setAccessItemsGroups(
           state['accessItemsManagement'].accessItemsResource
@@ -108,6 +103,7 @@ export class AccessItemsManagementComponent implements OnInit {
         accessItemGroup.controls[key].disable();
       });
     });
+
     const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormGroups);
     if (!this.accessItemsForm) {
       this.accessItemsForm = this.formBuilder.group({});
@@ -118,6 +114,29 @@ export class AccessItemsManagementComponent implements OnInit {
     }
     if (!this.accessItemsForm.value.accessIdFilter) {
       this.accessItemsForm.addControl('accessIdFilter', new FormControl());
+    }
+    this.accessItems = accessItems;
+    if (this.accessItemsForm.value.workbasketKeyFilter || this.accessItemsForm.value.accessIdFilter) {
+      this.filterAccessItems();
+    }
+  }
+
+  filterAccessItems() {
+    if (!this.accessItemsForm.value.accessIdFilter) {
+      this.accessItems = this.accessItems.filter((value) =>
+        value.workbasketKey.toLowerCase().includes(this.accessItemsForm.value.workbasketKeyFilter)
+      );
+    } else if (!this.accessItemsForm.value.workbasketKeyFilter) {
+      this.accessItems = this.accessItems.filter((value) =>
+        value.accessName.toLowerCase().includes(this.accessItemsForm.value.accessIdFilter)
+      );
+    } else {
+      this.accessItems = this.accessItems.filter((value) =>
+        value.workbasketKey.toLowerCase().includes(this.accessItemsForm.value.workbasketKeyFilter)
+      );
+      this.accessItems = this.accessItems.filter((value) =>
+        value.accessName.toLowerCase().includes(this.accessItemsForm.value.accessIdFilter)
+      );
     }
   }
 
