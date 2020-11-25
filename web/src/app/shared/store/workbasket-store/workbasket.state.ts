@@ -1,5 +1,5 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
-import { take, tap } from 'rxjs/operators';
+import { take, takeUntil, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
@@ -8,6 +8,7 @@ import {
   CopyWorkbasket,
   CreateWorkbasket,
   DeselectWorkbasket,
+  GetAvailableDistributionTargets,
   GetWorkbasketAccessItems,
   GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
@@ -32,6 +33,8 @@ import { WorkbasketSummary } from '../../models/workbasket-summary';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 import { ButtonAction } from '../../../administration/models/button-action';
 import { ActivatedRoute } from '@angular/router';
+import { TaskanaQueryParameters } from '../../util/query-parameters';
+import { append } from '@ngxs/store/operators';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -352,6 +355,19 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     );
   }
 
+  @Action(GetAvailableDistributionTargets)
+  getAvailableDistributionTargets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
+    return this.workbasketService.getWorkBasketsSummary(true).pipe(
+      take(1),
+      tap((workbasketAvailableDistributionTargets: WorkbasketSummaryRepresentation) => {
+        console.log(workbasketAvailableDistributionTargets);
+        ctx.patchState({
+          workbasketAvailableDistributionTargets: workbasketAvailableDistributionTargets.workbaskets
+        });
+      })
+    );
+  }
+
   @Action(UpdateWorkbasketDistributionTargets)
   updateWorkbasketDistributionTargets(
     ctx: StateContext<WorkbasketStateModel>,
@@ -397,6 +413,7 @@ export interface WorkbasketStateModel {
   action: ACTION;
   workbasketAccessItems: WorkbasketAccessItemsRepresentation;
   workbasketDistributionTargets: WorkbasketDistributionTargets;
+  workbasketAvailableDistributionTargets: WorkbasketSummary[];
   selectedComponent: WorkbasketComponent;
   button: ButtonAction | undefined;
 }

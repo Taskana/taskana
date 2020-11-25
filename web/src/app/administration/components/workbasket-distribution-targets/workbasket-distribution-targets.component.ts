@@ -19,6 +19,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
+  GetAvailableDistributionTargets,
   GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
   UpdateWorkbasketDistributionTargets
@@ -54,6 +55,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   distributionTargetsSelected: Array<WorkbasketSummary>;
   distributionTargetsClone: Array<WorkbasketSummary>;
   distributionTargetsSelectedClone: Array<WorkbasketSummary>;
+  availableDistributionTargets: WorkbasketSummary[] = [];
+  displayingDistributionTargetsPicker = false;
 
   requestInProgressLeft = false;
   requestInProgressRight = false;
@@ -65,11 +68,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   selectAllLeft = false;
   selectAllRight = false;
 
-  @ViewChild('panelBody')
-  panelBody: ElementRef;
-
   @Select(WorkbasketSelectors.workbasketDistributionTargets)
   workbasketDistributionTargets$: Observable<WorkbasketDistributionTargets>;
+
+  @Select(WorkbasketSelectors.availableDistributionTargets)
+  availableDistributionTargets$: Observable<WorkbasketSummary[]>;
 
   destroy$ = new Subject<void>();
 
@@ -84,57 +87,15 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   ) {}
 
   ngOnInit() {
-    this.init();
-
-    this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
-      if (typeof workbasketDistributionTargets !== 'undefined') {
-        this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
-        this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
-        console.log(this.distributionTargetsSelected);
-        this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
-        TaskanaQueryParameters.page = 1;
-        this.calculateNumberItemsList();
-        this.getWorkbaskets();
-      }
-    });
-  }
-
-  onScroll() {
-    console.log(this.page);
-    if (this.page.totalPages > TaskanaQueryParameters.page) {
-      this.loadingItems = true;
-      this.getNextPage();
-    }
-  }
-
-  changeToolbarState(state: boolean) {
-    this.toolbarState = state;
-  }
-
-  displayDistributionTargetsPicker() {
-    console.log(this.distributionTargetsLeft);
-    const dialogRef = this.matDialog.open(WorkbasketDistributionTargetsListDialogComponent, {
-      data: { distributionTargets: this.distributionTargetsLeft }
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
-      result.filter((target) => {
-        if (target['selected']) {
-          this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...target];
-
-          console.log(target);
-        }
-      });
-    });
-  }
-
-  init() {
     if (!this.workbasket._links.distributionTargets) {
       return;
     }
-
     this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
+    this.store.dispatch(new GetAvailableDistributionTargets());
+
+    this.availableDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((availableDistributionTargets) => {
+      this.availableDistributionTargets = availableDistributionTargets;
+    });
 
     this.savingWorkbaskets
       .triggeredDistributionTargetsSaving()
@@ -151,8 +112,36 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.calculateNumberItemsList();
-        this.getWorkbaskets();
+        //this.getWorkbaskets();
       });
+
+    this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
+      if (typeof workbasketDistributionTargets !== 'undefined') {
+        this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
+        this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
+        this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
+        TaskanaQueryParameters.page = 1;
+        this.calculateNumberItemsList();
+        this.getWorkbaskets();
+        // this.store.dispatch(new GetAvailableDistributionTargets());
+      }
+    });
+  }
+
+  onScroll() {
+    console.log('Scroll!');
+    if (this.page.totalPages > TaskanaQueryParameters.page) {
+      this.loadingItems = true;
+      this.getNextPage();
+    }
+  }
+
+  changeToolbarState(state: boolean) {
+    this.toolbarState = state;
+  }
+
+  displayDistributionTargetsPicker() {
+    this.displayingDistributionTargetsPicker = true;
   }
 
   getWorkbaskets(side?: Side) {
@@ -180,6 +169,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
           this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
         }
       });
+  }
+
+  getNextPage(side?: Side) {
+    TaskanaQueryParameters.page += 1;
+    this.getWorkbaskets(side);
   }
 
   performFilter(dualListFilter: any) {
@@ -226,7 +220,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
           return false;
         }
       );
-    /* TODO: OLD IMPLEMENTATION, KEPT HERE FOR REFERENCE
+    /*
     this.workbasketService.updateWorkBasketsDistributionTargets(
       this.distributionTargetsSelectedResource._links.self.href, this.getSeletedIds()
     ).subscribe(response => {
@@ -279,28 +273,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
   }
 
-  calculateNumberItemsList() {
-    /*if (this.panelBody) {
-      const cardHeight = 72;
-      const unusedHeight = 100;
-      this.cards =
-        this.orientationService.calculateNumberItemsList(
-          this.panelBody.nativeElement.offsetHeight,
-          cardHeight,
-          unusedHeight,
-          true
-        ) + 1; // TODO: warum +1
-    }*/
-  }
+  calculateNumberItemsList() {}
 
   fillDistributionTargets(side: Side, workbaskets: WorkbasketSummary[]) {
     this.distributionTargetsLeft = side === Side.LEFT ? workbaskets : this.distributionTargetsLeft;
     this.distributionTargetsRight = side === Side.RIGHT ? workbaskets : this.distributionTargetsRight;
-  }
-
-  getNextPage(side?: Side) {
-    TaskanaQueryParameters.page += 1;
-    this.getWorkbaskets(side);
   }
 
   getSelectedItems(originList: any): Array<any> {
