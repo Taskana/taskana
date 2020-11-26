@@ -300,7 +300,9 @@ class ClassificationControllerRestDocumentation extends BaseRestDocumentation {
                 RestDocumentationRequestBuilders.post(
                         restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS))
                     .contentType("application/hal+json")
-                    .content("{\"key\":\"Key0815casdgdgh\", \"domain\":\"DOMAIN_B\"}")
+                    .content(
+                        "{\"key\":\"Key0815casdgdgh\", \"domain\":\"DOMAIN_B\", "
+                            + "\"serviceLevel\":\"P1D\"}")
                     .header("Authorization", TEAMLEAD_1_CREDENTIALS))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andDo(

@@ -123,7 +123,7 @@ class ClassificationControllerIntTest {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\","
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
+            + "\"name\":\"new classification\",\"type\":\"TASK\", \"serviceLevel\":\"P1D\"}";
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
@@ -138,7 +138,7 @@ class ClassificationControllerIntTest {
     newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\","
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
+            + "\"name\":\"new classification\",\"type\":\"TASK\", \"serviceLevel\":\"P1D\"}";
 
     responseEntity =
         template.exchange(
@@ -178,7 +178,7 @@ class ClassificationControllerIntTest {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\","
             + "\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\","
+            + "\"name\":\"new classification\",\"type\":\"TASK\",\"serviceLevel\":\"P1D\","
             + "\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
@@ -199,7 +199,7 @@ class ClassificationControllerIntTest {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\","
             + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
-            + "\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
+            + "\"type\":\"TASK\",\"parentKey\":\"T2100\",\"serviceLevel\":\"P1D\"}";
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
@@ -218,7 +218,7 @@ class ClassificationControllerIntTest {
     String newClassification =
         "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\","
             + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
-            + "\"type\":\"TASK\",\"parentKey\":\"T2100\"}";
+            + "\"type\":\"TASK\",\"parentKey\":\"T2100\",\"serviceLevel\":\"P1D\"}";
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         template.exchange(
@@ -260,7 +260,7 @@ class ClassificationControllerIntTest {
         "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\","
             + "\"key\":\"NEW_CLASS_P3\",\"name\":\"new classification\","
             + "\"type\":\"TASK\",\"parentId\":\"CLI:200000000000000000000000000000000015\","
-            + "\"parentKey\":\"T2000\"}";
+            + "\"parentKey\":\"T2000\",\"serviceLevel\":\"P1D\"}";
 
     ThrowingCallable httpCall =
         () -> {
@@ -282,7 +282,7 @@ class ClassificationControllerIntTest {
     String newClassification =
         "{\"classificationId\":\"someId\",\"category\":\"MANUAL\","
             + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
+            + "\"name\":\"new classification\",\"type\":\"TASK\",\"serviceLevel\":\"P1D\"}";
 
     ThrowingCallable httpCall =
         () -> {

@@ -70,6 +70,8 @@ class ClassificationServiceImplIntExplicitTest {
           (ClassificationImpl) this.createNewClassificationWithUniqueKey("", "TASK");
       expectedClassification.setKey(key);
       expectedClassification.setDomain("DOMAIN_B");
+      expectedClassification.setServiceLevel("P1D");
+
       classificationService.createClassification(expectedClassification);
       connection.commit();
       Classification actualClassification =
@@ -106,11 +108,14 @@ class ClassificationServiceImplIntExplicitTest {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngine.setConnection(connection);
       Classification classification0 = this.createNewClassificationWithUniqueKey("", "TASK");
+      classification0.setServiceLevel("P1D");
       classificationService.createClassification(classification0);
       Classification classification1 = this.createNewClassificationWithUniqueKey("", "TASK");
+      classification1.setServiceLevel("P1D");
       classificationService.createClassification(classification1);
       Classification classification2 = this.createNewClassificationWithUniqueKey("", "TASK");
       classification2.setParentId(classification0.getId());
+      classification2.setServiceLevel("P1D");
       classificationService.createClassification(classification2);
 
       assertThat(classificationService.createClassificationQuery().list()).hasSize(2 + 1);
@@ -124,6 +129,7 @@ class ClassificationServiceImplIntExplicitTest {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
+      classification.setServiceLevel("P1D");
       connection.commit();
       classification = classificationService.createClassification(classification);
 
@@ -144,6 +150,7 @@ class ClassificationServiceImplIntExplicitTest {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
+      classification.setServiceLevel("P1D");
       classificationService.createClassification(classification);
       List<ClassificationSummary> list =
           classificationService
@@ -161,6 +168,7 @@ class ClassificationServiceImplIntExplicitTest {
       taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
       classification.setDescription("");
+      classification.setServiceLevel("P1D");
       classification = classificationService.createClassification(classification);
       classification.setDescription("description");
       classification = classificationService.updateClassification(classification);
@@ -190,10 +198,12 @@ class ClassificationServiceImplIntExplicitTest {
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngine.setConnection(connection);
       Classification classification = this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
+      classification.setServiceLevel("P1D");
       classification = classificationService.createClassification(classification);
 
       Classification classification1 =
           this.createNewClassificationWithUniqueKey("DOMAIN_A", "TASK");
+      classification1.setServiceLevel("P1D");
       classification1 = classificationService.createClassification(classification1);
       classification1.setParentId(classification.getId());
       classification1 = classificationService.updateClassification(classification1);

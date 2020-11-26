@@ -87,6 +87,7 @@ class TaskServiceImplIntAutocommitTest {
 
     Classification classification =
         classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     taskanaEngine.getClassificationService().createClassification(classification);
 
     Task task = taskServiceImpl.newTask(wb.getId());
@@ -112,6 +113,7 @@ class TaskServiceImplIntAutocommitTest {
 
     Classification classification =
         classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     classification = taskanaEngine.getClassificationService().createClassification(classification);
     classification =
         taskanaEngine
@@ -140,6 +142,7 @@ class TaskServiceImplIntAutocommitTest {
     taskanaEngine.getWorkbasketService().createWorkbasket(wb);
     Classification classification =
         classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     taskanaEngine.getClassificationService().createClassification(classification);
 
     Task task = taskServiceImpl.newTask(wb.getKey(), wb.getDomain());
@@ -196,6 +199,7 @@ class TaskServiceImplIntAutocommitTest {
         (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
     classification.setCategory("EXTERNAL");
     classification.setName("Transfert-Task Classification");
+    classification.setServiceLevel("P1D");
     classificationService.createClassification(classification);
 
     // Task which should be transfered
@@ -247,6 +251,7 @@ class TaskServiceImplIntAutocommitTest {
         (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
     classification.setCategory("EXTERNAL");
     classification.setName("Transfert-Task Classification");
+    classification.setServiceLevel("P1D");
     classificationService.createClassification(classification);
 
     WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("k5", "DOMAIN_A");
@@ -325,6 +330,7 @@ class TaskServiceImplIntAutocommitTest {
     taskanaEngine.getWorkbasketService().createWorkbasket(wb);
     Classification classification =
         classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     taskanaEngine.getClassificationService().createClassification(classification);
 
     Task task = taskServiceImpl.newTask(wb.getId());

@@ -409,6 +409,7 @@ class ClassificationDefinitionControllerIntTest {
     classificationRepresentationModel.setDomain(domain);
     classificationRepresentationModel.setParentId(parentId);
     classificationRepresentationModel.setParentKey(parentKey);
+    classificationRepresentationModel.setServiceLevel("P1D");
     return classificationRepresentationModel;
   }
 

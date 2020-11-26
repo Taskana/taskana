@@ -33,6 +33,7 @@ class CreateHistoryEventOnClassificationsCreationAccTest extends AbstractAccTest
     Classification newClassification =
         classificationService.newClassification("somekey", "DOMAIN_A", "TASK");
     newClassification.setDescription("some description");
+    newClassification.setServiceLevel("P1D");
     newClassification = classificationService.createClassification(newClassification);
 
     List<ClassificationHistoryEvent> events =
