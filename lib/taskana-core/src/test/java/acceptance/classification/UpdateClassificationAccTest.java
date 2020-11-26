@@ -260,6 +260,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
     Classification classification =
         classificationService.newClassification("Key=0818", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     Classification created = classificationService.createClassification(classification);
     created.setServiceLevel("");
 

@@ -51,7 +51,8 @@ class ClassificationDefinitionControllerRestDocumentation extends BaseRestDocume
   @Test
   void importClassificationDefinitions() throws Exception {
     String definitionString =
-        "{\"classifications\":[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\"}]}";
+        "{\"classifications\":[{\"key\":\"Key0815\", \"domain\":\"DOMAIN_B\", "
+            + "\"serviceLevel\":\"P1D\"}]}";
 
     this.mockMvc
         .perform(

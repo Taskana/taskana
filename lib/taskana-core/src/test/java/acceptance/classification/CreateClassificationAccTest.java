@@ -30,9 +30,11 @@ class CreateClassificationAccTest extends AbstractAccTest {
   @WithAccessId(user = "businessadmin")
   @Test
   void testCreateMasterClassification() throws Exception {
-    long amountOfClassificationsBefore = CLASSIFICATION_SERVICE.createClassificationQuery().count();
+    final long amountOfClassificationsBefore =
+        CLASSIFICATION_SERVICE.createClassificationQuery().count();
     Classification classification = CLASSIFICATION_SERVICE.newClassification("Key0", "", "TASK");
     classification.setIsValidInDomain(true);
+    classification.setServiceLevel("P1D");
     classification = CLASSIFICATION_SERVICE.createClassification(classification);
 
     // check only 1 created
@@ -57,6 +59,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     Classification classification =
         CLASSIFICATION_SERVICE.newClassification("Key1", "DOMAIN_A", "TASK");
     classification.setIsValidInDomain(true);
+    classification.setServiceLevel("P1D");
     classification = CLASSIFICATION_SERVICE.createClassification(classification);
 
     // Check returning one is the "original"
@@ -98,12 +101,14 @@ class CreateClassificationAccTest extends AbstractAccTest {
   @Test
   void testCreateClassificationWithExistingMaster() throws Exception {
 
-    CLASSIFICATION_SERVICE.createClassification(
-        CLASSIFICATION_SERVICE.newClassification("Key0815", "", "TASK"));
+    Classification classification = CLASSIFICATION_SERVICE.newClassification("Key0815", "", "TASK");
+    classification.setServiceLevel("P1D");
+    CLASSIFICATION_SERVICE.createClassification(classification);
 
     long amountOfClassificationsBefore = CLASSIFICATION_SERVICE.createClassificationQuery().count();
     Classification expected =
         CLASSIFICATION_SERVICE.newClassification("Key0815", "DOMAIN_B", "TASK");
+    expected.setServiceLevel("P1D");
     Classification actual = CLASSIFICATION_SERVICE.createClassification(expected);
     long amountOfClassificationsAfter = CLASSIFICATION_SERVICE.createClassificationQuery().count();
 
@@ -116,18 +121,48 @@ class CreateClassificationAccTest extends AbstractAccTest {
   @Test
   void testCreateChildInDomainAndCopyInMaster() throws Exception {
     Classification parent = CLASSIFICATION_SERVICE.newClassification("Key0816", "DOMAIN_A", "TASK");
+    parent.setServiceLevel("P1D");
     Classification actualParent = CLASSIFICATION_SERVICE.createClassification(parent);
     assertThat(actualParent).isNotNull();
 
-    long amountOfClassificationsBefore = CLASSIFICATION_SERVICE.createClassificationQuery().count();
+    final long amountOfClassificationsBefore =
+        CLASSIFICATION_SERVICE.createClassificationQuery().count();
     Classification child = CLASSIFICATION_SERVICE.newClassification("Key0817", "DOMAIN_A", "TASK");
     child.setParentId(actualParent.getId());
     child.setParentKey(actualParent.getKey());
+    child.setServiceLevel("P1D");
     Classification actualChild = CLASSIFICATION_SERVICE.createClassification(child);
     long amountOfClassificationsAfter = CLASSIFICATION_SERVICE.createClassificationQuery().count();
 
     assertThat(amountOfClassificationsAfter).isEqualTo(amountOfClassificationsBefore + 2);
     assertThat(actualChild).isNotNull();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ThrowException_When_TryingToCreateClassificationWithMissingServiceLevel() {
+
+    Classification classification =
+        CLASSIFICATION_SERVICE.newClassification("someKey", "DOMAIN_A", "TASK");
+    assertThatThrownBy(() -> CLASSIFICATION_SERVICE.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ThrowException_When_TryingToUpdateClassificationWithMissingServiceLevel()
+      throws Exception {
+
+    Classification classification =
+        CLASSIFICATION_SERVICE.newClassification("someKey2", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
+
+    Classification createdClassification =
+        CLASSIFICATION_SERVICE.createClassification(classification);
+
+    createdClassification.setServiceLevel(null);
+    assertThatThrownBy(() -> CLASSIFICATION_SERVICE.updateClassification(createdClassification))
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -154,6 +189,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
   @Test
   void testCreateClassificationAlreadyExisting() throws Exception {
     Classification classification = CLASSIFICATION_SERVICE.newClassification("Key3", "", "TASK");
+    classification.setServiceLevel("P1D");
     Classification classificationCreated =
         CLASSIFICATION_SERVICE.createClassification(classification);
     assertThatThrownBy(() -> CLASSIFICATION_SERVICE.createClassification(classificationCreated))

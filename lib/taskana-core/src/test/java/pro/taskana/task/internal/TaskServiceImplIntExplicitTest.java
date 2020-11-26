@@ -110,6 +110,7 @@ class TaskServiceImplIntExplicitTest {
       workbasket.setType(WorkbasketType.GROUP);
       final Classification classification =
           classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+      classification.setServiceLevel("P1D");
       taskanaEngineImpl.getWorkbasketService().createWorkbasket(workbasket);
 
       WorkbasketAccessItem accessItem = workbasketService.newWorkbasketAccessItem("1", "user-1-1");
@@ -214,6 +215,7 @@ class TaskServiceImplIntExplicitTest {
       workbasket.setName("workbasket");
       Classification classification =
           classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+      classification.setServiceLevel("P1D");
       classificationService.createClassification(classification);
       workbasket.setId("1"); // set id manually for authorization tests
       workbasket.setType(WorkbasketType.GROUP);
@@ -299,6 +301,7 @@ class TaskServiceImplIntExplicitTest {
           (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
       classification.setCategory("EXTERNAL");
       classification.setName("Transfert-Task Classification");
+      classification.setServiceLevel("P1D");
       classificationService.createClassification(classification);
 
       // Task which should be transfered
@@ -358,6 +361,7 @@ class TaskServiceImplIntExplicitTest {
         (ClassificationImpl) classificationService.newClassification("KEY", "DOMAIN_A", "TASK");
     classification.setCategory("EXTERNAL");
     classification.setName("Transfert-Task Classification");
+    classification.setServiceLevel("P1D");
     classificationService.createClassification(classification);
 
     WorkbasketImpl wb = (WorkbasketImpl) workbasketService.newWorkbasket("wbKey1", "DOMAIN_A");
@@ -447,6 +451,7 @@ class TaskServiceImplIntExplicitTest {
 
     Classification classification =
         classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     taskanaEngine.getClassificationService().createClassification(classification);
 
     Task task = taskServiceImpl.newTask(workbasket.getId());

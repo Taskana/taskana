@@ -113,9 +113,11 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
   @Test
   void testTimestampsOnCreateMasterClassification() throws Exception {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
-    long amountOfClassificationsBefore = classificationService.createClassificationQuery().count();
+    final long amountOfClassificationsBefore =
+        classificationService.createClassificationQuery().count();
     Classification classification = classificationService.newClassification("Key0", "", "TASK");
     classification.setIsValidInDomain(true);
+    classification.setServiceLevel("P1D");
     classification = classificationService.createClassification(classification);
 
     // check only 1 created

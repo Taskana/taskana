@@ -49,6 +49,7 @@ public class ExampleBootstrap {
     taskanaEngine.getWorkbasketService().createWorkbasket(wb);
     Classification classification =
         taskanaEngine.getClassificationService().newClassification("TEST", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     taskanaEngine.getClassificationService().createClassification(classification);
 
     Task task = taskanaEngine.getTaskService().newTask(wb.getId());
