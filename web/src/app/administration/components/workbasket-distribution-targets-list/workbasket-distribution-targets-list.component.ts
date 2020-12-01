@@ -39,6 +39,7 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
 
   sideNumber = 0;
   toolbarState = false;
+  component = '';
   @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
 
   constructor(private changeDetector: ChangeDetectorRef) {}
@@ -60,12 +61,18 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
     this.allSelectedChange.emit(this.allSelected);
   }
 
+  setComponent(component: string) {
+    this.component = component;
+  }
+
   onScroll() {
     this.scrolling.emit(this.side);
   }
 
   performAvailableFilter(filterModel: Filter) {
-    this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
+    if (this.component === 'distribution-target') {
+      this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
+    }
   }
 
   changeToolbarState(state: boolean) {

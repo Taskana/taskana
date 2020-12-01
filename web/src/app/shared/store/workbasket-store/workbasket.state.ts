@@ -360,7 +360,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return this.workbasketService.getWorkBasketsSummary(true).pipe(
       take(1),
       tap((workbasketAvailableDistributionTargets: WorkbasketSummaryRepresentation) => {
-        console.log(workbasketAvailableDistributionTargets);
         ctx.patchState({
           workbasketAvailableDistributionTargets: workbasketAvailableDistributionTargets.workbaskets
         });

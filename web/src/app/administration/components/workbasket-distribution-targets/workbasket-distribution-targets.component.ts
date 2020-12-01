@@ -130,7 +130,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   onScroll() {
-    console.log('Scroll!');
     if (this.page.totalPages > TaskanaQueryParameters.page) {
       this.loadingItems = true;
       this.getNextPage();
@@ -178,27 +177,38 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   performFilter(dualListFilter: any) {
-    this.fillDistributionTargets(dualListFilter.side, undefined);
-    this.store
-      .dispatch(
-        new GetWorkbasketsSummary(
-          true,
-          '',
-          '',
-          '',
-          dualListFilter.filterBy.filterParams.name,
-          dualListFilter.filterBy.filterParams.description,
-          '',
-          dualListFilter.filterBy.filterParams.owner,
-          dualListFilter.filterBy.filterParams.type,
-          '',
-          dualListFilter.filterBy.filterParams.key,
-          '',
-          true
-        )
+    this.workbasketService
+      .getWorkBasketsSummary(
+        true,
+        '',
+        '',
+        '',
+        dualListFilter.filterBy.filterParams.name,
+        dualListFilter.filterBy.filterParams.description,
+        '',
+        dualListFilter.filterBy.filterParams.owner,
+        dualListFilter.filterBy.filterParams.type,
+        '',
+        dualListFilter.filterBy.filterParams.key,
+        '',
+        true
       )
-      .subscribe((state: WorkbasketStateModel) => {
-        this.fillDistributionTargets(dualListFilter.side, state.paginatedWorkbasketsSummary.workbaskets);
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
+        console.log(distributionTargetsAvailable);
+        if (TaskanaQueryParameters.page === 1) {
+          this.distributionTargetsLeft = [];
+          this.page = distributionTargetsAvailable.page;
+        }
+        if (dualListFilter.side === this.side.LEFT) {
+          this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
+        } else if (dualListFilter.side === this.side.RIGHT) {
+          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+        } else {
+          this.distributionTargetsLeft.push(...distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
+        }
       });
   }
 
@@ -302,7 +312,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     const copyList = [...originList];
     for (let index = originList.length - 1; index >= 0; index--) {
       if (selectedItemList.some((itemToRemove) => originList[index].workbasketId === itemToRemove.workbasketId)) {
-        console.log(originList, index);
         copyList.splice(index, 1);
       }
     }

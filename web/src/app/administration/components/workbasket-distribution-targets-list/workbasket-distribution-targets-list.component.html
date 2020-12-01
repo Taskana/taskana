@@ -21,7 +21,8 @@
       <mat-icon class="button-icon" *ngIf="allSelected">check_box_outline_blank</mat-icon>
     </button>
   </mat-toolbar>
-  <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"></taskana-shared-filter>
+  <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"
+                         component="distribution-target" (inputComponent)="setComponent($event)"></taskana-shared-filter>
 
   <!-- WORKBASKET LIST -->
   <div class="workbasket-list infinite-scroll" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
