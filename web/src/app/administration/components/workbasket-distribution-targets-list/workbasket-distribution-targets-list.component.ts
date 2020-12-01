@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterContentChecked,
+  ChangeDetectorRef,
+  ViewChild
+} from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'app/shared/animations/expand.animation';
@@ -8,6 +17,7 @@ import { TaskanaQueryParameters } from '../../../shared/util/query-parameters';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { Subject } from 'rxjs';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
+import { MatSelectionList } from '@angular/material/list';
 
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets-list',
@@ -15,7 +25,7 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
   styleUrls: ['./workbasket-distribution-targets-list.component.scss'],
   animations: [expandDown]
 })
-export class WorkbasketDistributionTargetsListComponent implements OnInit {
+export class WorkbasketDistributionTargetsListComponent implements OnInit, AfterContentChecked {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
   @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
@@ -24,20 +34,28 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit {
   @Input() side: Side;
   @Input() header: string;
   @Output() scrolling = new EventEmitter<Side>();
-  @Input() allSelected;
+  @Input() allSelected = false;
   @Output() allSelectedChange = new EventEmitter<boolean>();
 
   sideNumber = 0;
   toolbarState = false;
+  @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
+
+  constructor(private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.allSelected = !this.allSelected;
     this.sideNumber = this.side === Side.LEFT ? 0 : 1;
-    console.log(this.distributionTargets);
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   selectAll(selected: boolean) {
-    this.distributionTargets.forEach((element: any) => {
-      element.selected = selected;
+    this.allSelected = !this.allSelected;
+    this.distributionTargetsList.options.forEach((workbasket: any) => {
+      workbasket.selected = selected;
     });
     this.allSelectedChange.emit(this.allSelected);
   }

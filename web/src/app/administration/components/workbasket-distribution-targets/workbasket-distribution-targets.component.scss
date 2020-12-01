@@ -1,20 +1,24 @@
 @import 'src/theme/_colors.scss';
 
-.distribution-targets-list__action-button {
-  margin-right: 0.5rem;
-}
-.workbasket-distribution-targets__list {
-  padding: 16px;
-  background-color: $light-grey;
-}
-.distribution-targets-list-dialog__add-button {
-  background-color: $aquamarine;
-  color: white;
-}
-.distribution-targets--grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.right {
+.distribution-targets-list {
+  &__action-buttons {
+    display: flex;
+    flex-grow: 1;
+  }
+  &__action-button {
+    margin-right: 0.5rem;
+  }
+  &__lists {
+    padding: 0 16px 16px 16px;
+    background-color: $light-grey;
+    &--side {
+      display: flex;
+      taskana-administration-workbasket-distribution-targets-list {
+        width: 48%;
+      }
+    }
+    &--left-side {
+      margin-right: 1%;
+    }
+  }
 }

@@ -2,14 +2,14 @@
 
 .workbasket-list {
   overflow-y: scroll;
-  min-width: 40vw;
+  min-width: 100%;
   background-color: white;
   border-radius: 10px;
 }
 
 .infinite-scroll {
   overflow-y: scroll;
-  height: calc(100vh - 315px);
+  height: calc(100vh - 360px);
   @media screen and (max-width: 991px) {
     height: calc((100vh - 315px));
     min-height: 83px;
@@ -53,7 +53,7 @@ p {
 }
 
 .distribution-targets-list__action-button {
-  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 }
 .distribution-target-list__empty-list {
   height: calc(100vh - 315px);

@@ -48,6 +48,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   badgeMessage = '';
   selectedId = '';
   toolbarState = false;
+  sideBySide = false;
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
   distributionTargetsLeft: Array<WorkbasketSummary> = [];
@@ -298,12 +299,14 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   removeSelectedItems(originList: any, selectedItemList) {
+    const copyList = [...originList];
     for (let index = originList.length - 1; index >= 0; index--) {
       if (selectedItemList.some((itemToRemove) => originList[index].workbasketId === itemToRemove.workbasketId)) {
-        originList.splice(index, 1);
+        console.log(originList, index);
+        copyList.splice(index, 1);
       }
     }
-    return originList;
+    return copyList;
   }
 
   getSeletedIds(): Array<string> {
@@ -312,6 +315,13 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       distributionTargetsSelelected.push(item.workbasketId);
     });
     return distributionTargetsSelelected;
+  }
+
+  toggleSideBySideView() {
+    this.sideBySide = !this.sideBySide;
+    if (!this.displayingDistributionTargetsPicker) {
+      this.displayingDistributionTargetsPicker = !this.displayingDistributionTargetsPicker;
+    }
   }
 
   ngOnDestroy() {
