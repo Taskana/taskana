@@ -1,6 +1,6 @@
 <div id="dual-list-Left" class="distribution-targets-list">
   <mat-toolbar>
-    <span>{{header}}</span>
+    <span class="distribution-targets-list__header">{{header}}</span>
 
     <button mat-flat-button class="distribution-targets-list__action-button" (click)="changeToolbarState(!toolbarState)"
     >
@@ -25,7 +25,7 @@
                          component="distribution-target" (inputComponent)="setComponent($event)"></taskana-shared-filter>
 
   <!-- WORKBASKET LIST -->
-  <div class="workbasket-list infinite-scroll" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
+  <div class="distribution-targets-list__list" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
        [scrollWindow]="false" *ngIf="distributionTargets?.length > 0">
     <mat-selection-list #workbasket [multiple]="true">
       <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
@@ -33,14 +33,14 @@
                        [selected]="workbasket.selected" type="text"
                        (click)="workbasket.selected = !workbasket.selected"
                        [value]="workbasket.workbasketId">
-        <div class="workbaskets-item__wrapper">
+        <div class="distribution-targets-list__item-wrapper">
 
-          <div class="workbaskets-item__icon">
+          <div class="distribution-targets-list__item-icon">
             <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"
                                               [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
           </div>
 
-          <div class="workbaskets-item__info">
+          <div class="distribution-targets-list__item-info">
             <p>
               <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
             </p>
@@ -60,7 +60,7 @@
     </mat-selection-list>
   </div>
 
-  <div class="distribution-target-list__empty-list"  *ngIf="distributionTargets?.length == 0">
+  <div class="distribution-targets-list__empty-list"  *ngIf="distributionTargets?.length == 0">
     There is currently no distributed workbasket
   </div>
 </div>

@@ -24,7 +24,6 @@ import { WorkbasketAccessItemsComponent } from './components/workbasket-access-i
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
-import { WorkbasketDistributionTargetsListDialogComponent } from './components/workbasket-distribution-targets-list-dialog/workbasket-distribution-targets-list-dialog.component';
 import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
@@ -85,8 +84,7 @@ const DECLARATIONS = [
   ClassificationDetailsComponent,
   ImportExportComponent,
   AccessItemsManagementComponent,
-  AdministrationOverviewComponent,
-  WorkbasketDistributionTargetsListDialogComponent
+  AdministrationOverviewComponent
 ];
 
 @NgModule({
@@ -119,6 +117,6 @@ const DECLARATIONS = [
     ClassificationCategoriesService,
     ImportExportService
   ],
-  entryComponents: [WorkbasketDistributionTargetsListDialogComponent]
+  entryComponents: []
 })
 export class AdministrationModule {}

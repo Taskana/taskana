@@ -13,8 +13,8 @@
     </button>
 
     <!-- SIDE BY SIDE VIEW BUTTONS -->
-    <div *ngIf="sideBySide" style="display: flex;">
-      <div class="distribution-targets-list__action-buttons distribution-targets-list__action-buttons--selected"
+    <div class="distribution-targets-list__action-buttons"  *ngIf="sideBySide">
+      <div class="distribution-targets-list__action-buttons--selected"
            style="justify-content: flex-end; margin-right: 2%">
         <button mat-flat-button color="warn"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
@@ -22,9 +22,9 @@
           Remove selected distribution target
         </button>
       </div>
-      <span style="flex: 1 1 auto"> </span>
-      <div class="distribution-targets-list__action-buttons distribution-targets-list__action-buttons--chooser"
-           style="justify-content: flex-end; margin-right: 3%">
+      <span style="flex-grow: 1"> </span>
+      <div class="distribution-targets-list__action-buttons--chooser"
+           style="justify-content: flex-end;">
         <button mat-flat-button color="accent"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
                 (click)="moveDistributionTargets(side.LEFT)">

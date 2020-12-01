@@ -26,7 +26,6 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketStateModel } from '../../../shared/store/workbasket-store/workbasket.state';
-import { WorkbasketDistributionTargetsListDialogComponent } from '../workbasket-distribution-targets-list-dialog/workbasket-distribution-targets-list-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 export enum Side {
@@ -196,6 +195,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
         console.log(distributionTargetsAvailable);
+        this.fillDistributionTargets(dualListFilter.side, []);
+
         if (TaskanaQueryParameters.page === 1) {
           this.distributionTargetsLeft = [];
           this.page = distributionTargetsAvailable.page;
