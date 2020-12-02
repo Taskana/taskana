@@ -2,6 +2,7 @@ package pro.taskana.classification.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.lang.NonNull;
@@ -13,10 +14,10 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.rest.ClassificationController;
+import pro.taskana.classification.rest.models.ClassificationCollectionRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 
 /**
  * Transforms {@link Classification} to its resource counterpart {@link
@@ -24,7 +25,10 @@ import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
  */
 @Component
 public class ClassificationRepresentationModelAssembler
-    implements TaskanaPagingAssembler<Classification, ClassificationRepresentationModel> {
+    implements CollectionRepresentationModelAssembler<
+        Classification,
+        ClassificationRepresentationModel,
+        ClassificationCollectionRepresentationModel> {
 
   final ClassificationService classificationService;
 
@@ -72,11 +76,6 @@ public class ClassificationRepresentationModelAssembler
     return repModel;
   }
 
-  @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return TaskanaPagedModelKeys.CLASSIFICATIONS;
-  }
-
   public Classification toEntityModel(ClassificationRepresentationModel repModel) {
     ClassificationImpl classification =
         (ClassificationImpl)
@@ -104,5 +103,11 @@ public class ClassificationRepresentationModelAssembler
     classification.setCreated(repModel.getCreated());
     classification.setModified(repModel.getModified());
     return classification;
+  }
+
+  @Override
+  public ClassificationCollectionRepresentationModel buildCollectionEntity(
+      List<ClassificationRepresentationModel> content) {
+    return new ClassificationCollectionRepresentationModel(content);
   }
 }

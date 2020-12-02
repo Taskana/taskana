@@ -33,21 +33,26 @@ public class RestHelper {
 
   public static final RestTemplate TEMPLATE = getRestTemplate();
 
-  private final Environment environment;
+  private Environment environment;
+  private int port;
 
   @Autowired
   public RestHelper(Environment environment) {
     this.environment = environment;
   }
 
+  public RestHelper(int port) {
+    this.port = port;
+  }
+
   public String toUrl(String relativeUrl, Object... uriVariables) {
     return UriComponentsBuilder.fromPath(relativeUrl)
-        .scheme("http")
-        .host("127.0.0.1")
-        .port(environment.getProperty("local.server.port"))
-        .build(false)
-        .expand(uriVariables)
-        .toString();
+               .scheme("http")
+               .host("127.0.0.1")
+               .port(getPort())
+               .build(false)
+               .expand(uriVariables)
+               .toString();
   }
 
   public HttpEntity<String> defaultRequest() {
@@ -101,6 +106,13 @@ public class RestHelper {
     headers.add("Authorization", AUTHORIZATION_USER_B_1);
     headers.add("Content-Type", "application/json");
     return headers;
+  }
+
+  private int getPort() {
+    if (environment != null) {
+      return environment.getRequiredProperty("local.server.port", int.class);
+    }
+    return port;
   }
 
   /**

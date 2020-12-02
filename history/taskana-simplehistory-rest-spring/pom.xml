@@ -60,18 +60,39 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-data</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.unboundid</groupId>
+      <artifactId>unboundid-ldapsdk</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -81,28 +102,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.restdocs</groupId>
-      <artifactId>spring-restdocs-core</artifactId>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -110,11 +111,98 @@
       <artifactId>spring-restdocs-mockmvc</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy-agent</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>capital.scalable</groupId>
+      <artifactId>spring-auto-restdocs-core</artifactId>
+      <version>${version.auto-restdocs}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${version.hibernate}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
-
+  
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${version.maven.resources}</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/generated-javadoc-json</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>../../rest/taskana-rest-spring/target/generated-javadoc-json
+                  </directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${version.maven.javadoc}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <tags>
+            <tag>
+              <name>title</name>
+              <placement>m</placement>
+            </tag>
+          </tags>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-javadoc-json</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>javadoc-no-fork</goal>
+            </goals>
+            <configuration>
+              <doclet>capital.scalable.restdocs.jsondoclet.ExtractDocumentationAsJsonDoclet</doclet>
+              <docletArtifact>
+                <groupId>capital.scalable</groupId>
+                <!--
+                    currently the jdk9+ version of this doclet has a very bad bug.
+                    see: https://github.com/ScaCap/spring-auto-restdocs/issues/412
+                -->
+                <artifactId>spring-auto-restdocs-json-doclet</artifactId>
+                <version>${version.auto-restdocs}</version>
+              </docletArtifact>
+              <destDir>generated-javadoc-json</destDir>
+              <reportOutputDirectory>${project.build.directory}</reportOutputDirectory>
+              <useStandardDocletOptions>false</useStandardDocletOptions>
+              <show>package</show>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -126,39 +214,28 @@
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
-            <configuration>
-              <backend>html</backend>
-              <doctype>book</doctype>
-              <attributes>
-                <snippets>target/generated-snippets</snippets>
-                <docinfo>shared</docinfo>
-              </attributes>
-            </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>${version.maven.resources}</version>
-        <executions>
-          <execution>
-            <id>copy-rest-docs</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>
-                ${project.build.directory}/generated-docs
-              </outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.basedir}/src/js</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <backend>html5</backend>
+          <doctype>book</doctype>
+          <attributes>
+            <snippets>${project.build.directory}/generated-snippets</snippets>
+            <doctype>book</doctype>
+            <icons>font</icons>
+            <source-highlighter>highlightjs</source-highlighter>
+            <toc>left</toc>
+            <docinfo>shared</docinfo>
+            <toclevels>4</toclevels>
+            <sectlinks/>
+          </attributes>
+          <logHandler>
+            <outputToConsole>false</outputToConsole>
+            <failIf>
+              <severity>ERROR</severity>
+            </failIf>
+          </logHandler>
+        </configuration>
       </plugin>
     </plugins>
   </build>

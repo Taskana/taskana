@@ -16,13 +16,14 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
+import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /**
@@ -67,13 +68,12 @@ public class TaskanaWildflyTest extends AbstractAccTest {
   @Test
   @RunAsClient
   public void should_ReturnUserInformationForAuthenticatedUser_IfRequested() {
-    HttpEntity<String> httpEntity = new HttpEntity<>(getHeadersTeamlead_1());
     ResponseEntity<TaskanaUserInfoRepresentationModel> response =
-        getRestTemplate()
+        RestHelper.TEMPLATE
             .exchange(
-                "http://127.0.0.1:" + "8080" + "/taskana/api/v1/current-user-info",
+                restHelper.toUrl("/taskana" + RestEndpoints.URL_CURRENT_USER),
                 HttpMethod.GET,
-                httpEntity,
+                restHelper.defaultRequest(),
                 ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
@@ -86,14 +86,14 @@ public class TaskanaWildflyTest extends AbstractAccTest {
   @Test
   @RunAsClient
   public void should_ReturnUserFromLdap_WhenWildcardSearchIsConducted() {
-    HttpEntity<String> httpEntity = new HttpEntity<>(getHeadersTeamlead_1());
     ResponseEntity<List<AccessIdRepresentationModel>> response =
-        getRestTemplate()
+        RestHelper.TEMPLATE
             .exchange(
-                "http://127.0.0.1:8080/taskana/api/v1/access-ids?search-for=rig",
+                restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
                 HttpMethod.GET,
-                httpEntity,
-                new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {});
+                restHelper.defaultRequest(),
+                new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {
+                });
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).hasSize(2);
   }
@@ -101,13 +101,12 @@ public class TaskanaWildflyTest extends AbstractAccTest {
   @Test
   @RunAsClient
   public void should_ReturnTask_WhenRequested() {
-    HttpEntity<String> httpEntity = new HttpEntity<>(getHeadersTeamlead_1());
     ResponseEntity<TaskRepresentationModel> response =
-        getRestTemplate()
-            .exchange(
-                "http://127.0.0.1:8080/taskana/api/v1/tasks/TKI:000000000000000000000000000000000001",
+        RestHelper.TEMPLATE
+            .exchange(restHelper.toUrl("/taskana" + RestEndpoints.URL_TASKS_ID,
+                "TKI:000000000000000000000000000000000001"),
                 HttpMethod.GET,
-                httpEntity,
+                restHelper.defaultRequest(),
                 ParameterizedTypeReference.forType(TaskRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();

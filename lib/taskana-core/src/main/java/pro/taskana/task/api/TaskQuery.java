@@ -447,7 +447,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @param customField identifies which custom attribute is affected.
    * @param searchArguments the customField values of the searched for tasks
    * @return the query
-   * @throws InvalidArgumentException when searchArguments is not given
+   * @throws InvalidArgumentException if searchArguments is not given
    */
   TaskQuery customAttributeIn(TaskCustomField customField, String... searchArguments)
       throws InvalidArgumentException;

@@ -162,7 +162,7 @@ public interface ClassificationQuery
    * @param customField identifies which custom attribute is affected.
    * @param searchArguments the customField values of the searched for tasks
    * @return the query
-   * @throws InvalidArgumentException when searchArguments is empty or null
+   * @throws InvalidArgumentException if searchArguments is empty or null
    */
   ClassificationQuery customAttributeIn(
       ClassificationCustomField customField, String... searchArguments)
@@ -176,7 +176,7 @@ public interface ClassificationQuery
    * @param customField identifies which custom attribute is affected.
    * @param searchArguments the customField values of the searched-for tasks
    * @return the query
-   * @throws InvalidArgumentException when searchArguments is empty or null
+   * @throws InvalidArgumentException if searchArguments is empty or null
    */
   ClassificationQuery customAttributeLike(
       ClassificationCustomField customField, String... searchArguments)

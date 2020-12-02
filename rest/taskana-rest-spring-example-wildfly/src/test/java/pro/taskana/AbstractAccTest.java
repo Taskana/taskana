@@ -1,67 +1,29 @@
 package pro.taskana;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Collections;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
-import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.common.rest.RestEndpoints;
+import pro.taskana.common.test.rest.RestHelper;
+import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.simplehistory.rest.HistoryRestEndpoints;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventPagedRepresentationModel;
+import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
+@TaskanaSpringBootTest
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "4.1.1-SNAPSHOT";
-  private static final String AUTHORIZATION_TEAMLEAD_1 = "Basic dGVhbWxlYWQtMTp0ZWFtbGVhZC0x";
+  protected static final String DEPENDENCY_VERSION = "4.2.1-SNAPSHOT";
 
-  /**
-   * Return a REST template which is capable of dealing with responses in HAL format.
-   *
-   * @return RestTemplate
-   */
-  protected static RestTemplate getRestTemplate() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    mapper.registerModule(new Jackson2HalModule());
-    mapper
-        .registerModule(new ParameterNamesModule())
-        .registerModule(new Jdk8Module())
-        .registerModule(new JavaTimeModule());
-
-    MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-    converter.setSupportedMediaTypes(Collections.singletonList(MediaTypes.HAL_JSON));
-    converter.setObjectMapper(mapper);
-
-    RestTemplate template = new RestTemplate();
-    // important to add first to ensure priority
-    template.getMessageConverters().add(0, converter);
-    return template;
-  }
-
-  protected HttpHeaders getHeadersTeamlead_1() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_TEAMLEAD_1);
-    headers.add("Content-Type", "application/json");
-    return headers;
-  }
+  protected RestHelper restHelper = new RestHelper(8080);
 
   protected TaskRepresentationModel getTaskResourceSample() {
     ClassificationSummaryRepresentationModel classificationResource =
@@ -71,7 +33,7 @@ public class AbstractAccTest {
         new WorkbasketSummaryRepresentationModel();
     workbasketSummary.setWorkbasketId("WBI:100000000000000000000000000000000004");
 
-    ObjectReference objectReference = new ObjectReference();
+    ObjectReferenceRepresentationModel objectReference = new ObjectReferenceRepresentationModel();
     objectReference.setCompany("MyCompany1");
     objectReference.setSystem("MySystem1");
     objectReference.setSystemInstance("MyInstance1");
@@ -85,33 +47,25 @@ public class AbstractAccTest {
     return taskRepresentationModel;
   }
 
-  protected ResponseEntity<TaskHistoryEventListResource> performGetHistoryEventsRestCall() {
-
-    HttpEntity<TaskHistoryEventListResource> httpEntity = new HttpEntity<>(getHeadersTeamlead_1());
-
-    ResponseEntity<TaskHistoryEventListResource> response =
-        getRestTemplate()
-            .exchange(
-                "http://127.0.0.1:" + "8080" + "/taskana/api/v1/task-history-event",
-                HttpMethod.GET,
-                httpEntity,
-                ParameterizedTypeReference.forType(TaskHistoryEventListResource.class));
-
-    return response;
+  protected ResponseEntity<TaskHistoryEventPagedRepresentationModel>
+      performGetHistoryEventsRestCall() {
+    return RestHelper.TEMPLATE
+               .exchange(
+                   restHelper.toUrl("/taskana" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
+                   HttpMethod.GET,
+                   restHelper.defaultRequest(),
+                   ParameterizedTypeReference
+                       .forType(TaskHistoryEventPagedRepresentationModel.class));
   }
 
   protected ResponseEntity<TaskRepresentationModel> performCreateTaskRestCall() {
-
     TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-    ResponseEntity<TaskRepresentationModel> responseCreateTask =
-        getRestTemplate()
-            .exchange(
-                "http://127.0.0.1:" + "8080" + "/taskana/api/v1/tasks",
-                HttpMethod.POST,
-                new HttpEntity<>(taskRepresentationModel, getHeadersTeamlead_1()),
-                ParameterizedTypeReference.forType(TaskRepresentationModel.class));
-
-    return responseCreateTask;
+    return RestHelper.TEMPLATE
+               .exchange(
+                   restHelper.toUrl("/taskana" + RestEndpoints.URL_TASKS),
+                   HttpMethod.POST,
+                   new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
+                   ParameterizedTypeReference.forType(TaskRepresentationModel.class));
   }
 
   protected String parseServerLog() throws Exception {

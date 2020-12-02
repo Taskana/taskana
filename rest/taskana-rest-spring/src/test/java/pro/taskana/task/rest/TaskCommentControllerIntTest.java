@@ -18,18 +18,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.task.rest.models.TaskCommentCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
 /** Test TaskCommentController. */
 @TaskanaSpringBootTest
 class TaskCommentControllerIntTest {
 
-  private static final ParameterizedTypeReference<TaskanaPagedModel<TaskCommentRepresentationModel>>
+  private static final ParameterizedTypeReference<TaskCommentCollectionRepresentationModel>
       TASK_COMMENT_PAGE_MODEL_TYPE =
-          new ParameterizedTypeReference<TaskanaPagedModel<TaskCommentRepresentationModel>>() {};
+          new ParameterizedTypeReference<TaskCommentCollectionRepresentationModel>() {};
 
   private final RestHelper restHelper;
 
@@ -82,10 +82,10 @@ class TaskCommentControllerIntTest {
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
 
-    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+    ResponseEntity<TaskCommentCollectionRepresentationModel>
         getTaskCommentsSortedByModifiedOrderedByDescendingResponse =
             TEMPLATE.exchange(
-                url + "?sort-by=modified&order=desc",
+                url + "?sort-by=MODIFIED&order=DESCENDING",
                 HttpMethod.GET,
                 new HttpEntity<String>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
@@ -96,10 +96,10 @@ class TaskCommentControllerIntTest {
         .extracting(TaskCommentRepresentationModel::getModified)
         .isSortedAccordingTo(Comparator.reverseOrder());
 
-    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+    ResponseEntity<TaskCommentCollectionRepresentationModel>
         getTaskCommentsSortedByModifiedOrderedByAscendingResponse =
             TEMPLATE.exchange(
-                url + "?sort-by=modified",
+                url + "?sort-by=MODIFIED",
                 HttpMethod.GET,
                 new HttpEntity<String>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
@@ -110,10 +110,10 @@ class TaskCommentControllerIntTest {
         .extracting(TaskCommentRepresentationModel::getModified)
         .isSortedAccordingTo(Comparator.naturalOrder());
 
-    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+    ResponseEntity<TaskCommentCollectionRepresentationModel>
         getTaskCommentsSortedByCreatedOrderedByDescendingResponse =
             TEMPLATE.exchange(
-                url + "?sort-by=created&order=desc",
+                url + "?sort-by=CREATED&order=DESCENDING",
                 HttpMethod.GET,
                 new HttpEntity<String>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
@@ -124,10 +124,10 @@ class TaskCommentControllerIntTest {
         .extracting(TaskCommentRepresentationModel::getCreated)
         .isSortedAccordingTo(Comparator.reverseOrder());
 
-    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+    ResponseEntity<TaskCommentCollectionRepresentationModel>
         getTaskCommentsSortedByCreatedOrderedByAscendingResponse =
             TEMPLATE.exchange(
-                url + "?sort-by=created",
+                url + "?sort-by=CREATED",
                 HttpMethod.GET,
                 new HttpEntity<String>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
@@ -323,7 +323,7 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToDeleteTaskComment_When_UserHasNoAuthorization() {
 
-    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
+    ResponseEntity<TaskCommentCollectionRepresentationModel>
         getTaskCommentsBeforeDeleteionResponse =
             TEMPLATE.exchange(
                 restHelper.toUrl(

@@ -15,6 +15,7 @@ import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
+import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 
 /** Test for {@link AttachmentSummaryRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
@@ -36,7 +37,7 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
-    ObjectReference reference = new ObjectReference();
+    ObjectReferenceRepresentationModel reference = new ObjectReferenceRepresentationModel();
     reference.setId("abc");
     ClassificationSummaryRepresentationModel summary =
         new ClassificationSummaryRepresentationModel();
@@ -118,7 +119,8 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
     assertThat(attachment.getReceived()).isEqualTo(repModel.getReceived());
     assertThat(attachment.getClassificationSummary().getId())
         .isEqualTo(repModel.getClassificationSummary().getClassificationId());
-    assertThat(attachment.getObjectReference()).isEqualTo(repModel.getObjectReference());
+    ObjectReferenceRepresentationModelAssemblerTest.testEquality(
+        attachment.getObjectReference(), repModel.getObjectReference());
     assertThat(attachment.getChannel()).isEqualTo(repModel.getChannel());
   }
 

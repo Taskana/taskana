@@ -2,27 +2,26 @@ package pro.taskana.task.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.TASK_COMMENTS;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.task.rest.TaskCommentController;
+import pro.taskana.task.rest.models.TaskCommentCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
 /** EntityModel assembler for {@link TaskCommentRepresentationModel}. */
 @Component
 public class TaskCommentRepresentationModelAssembler
-    implements TaskanaPagingAssembler<TaskComment, TaskCommentRepresentationModel> {
+    implements CollectionRepresentationModelAssembler<
+        TaskComment, TaskCommentRepresentationModel, TaskCommentCollectionRepresentationModel> {
 
   private final TaskService taskService;
 
@@ -51,6 +50,12 @@ public class TaskCommentRepresentationModelAssembler
     return repModel;
   }
 
+  @Override
+  public TaskCommentCollectionRepresentationModel buildCollectionEntity(
+      List<TaskCommentRepresentationModel> content) {
+    return new TaskCommentCollectionRepresentationModel(content);
+  }
+
   public TaskComment toEntityModel(TaskCommentRepresentationModel repModel) {
     TaskCommentImpl taskComment =
         (TaskCommentImpl) taskService.newTaskComment(repModel.getTaskId());
@@ -60,17 +65,5 @@ public class TaskCommentRepresentationModelAssembler
     taskComment.setCreated(repModel.getCreated());
     taskComment.setModified(repModel.getModified());
     return taskComment;
-  }
-
-  @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return TASK_COMMENTS;
-  }
-
-  @Override
-  public TaskanaPagedModel<TaskCommentRepresentationModel> toPageModel(
-      Iterable<TaskComment> taskComments, PageMetadata pageMetadata) {
-    return addLinksToPagedResource(
-        TaskanaPagingAssembler.super.toPageModel(taskComments, pageMetadata));
   }
 }

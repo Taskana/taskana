@@ -81,7 +81,10 @@ jobs:
     - stage: Test
       install: skip
       env: DB=POSTGRES_10
-      script: ci/test.sh "$DB" && export JAVA_HOME=/usr/local/lib/jvm/openjdk8 && ci/test.sh WILDFLY
+      script: ci/test.sh "$DB"
+        && ./mvnw -q install -f history -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
+        && export JAVA_HOME=/usr/local/lib/jvm/openjdk8
+        && ci/test.sh WILDFLY
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Test

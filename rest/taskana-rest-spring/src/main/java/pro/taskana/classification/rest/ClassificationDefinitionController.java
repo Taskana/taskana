@@ -2,10 +2,10 @@ package pro.taskana.classification.rest;
 
 import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,16 +34,15 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
+import pro.taskana.classification.rest.models.ClassificationCollectionRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
 
 /** Controller for Importing / Exporting classifications. */
-@SuppressWarnings("unused")
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ClassificationDefinitionController {
@@ -66,26 +65,36 @@ public class ClassificationDefinitionController {
     this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
   }
 
+  /**
+   * This endpoint exports all configured Classifications.
+   *
+   * @title Export Classifications
+   * @param domain Filter the export by domain
+   * @return the configured Classifications.
+   */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> exportClassifications(
-      @RequestParam(required = false) String domain) {
-    LOGGER.debug("Entry to exportClassifications(domain= {})", domain);
+  public ResponseEntity<ClassificationCollectionRepresentationModel> exportClassifications(
+      @RequestParam(required = false) String[] domain) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to exportClassifications(domain= {})", Arrays.toString(domain));
+    }
     ClassificationQuery query = classificationService.createClassificationQuery();
 
     List<ClassificationSummary> summaries =
         domain != null ? query.domainIn(domain).list() : query.list();
 
-    TaskanaPagedModel<ClassificationRepresentationModel> pageModel =
+    ClassificationCollectionRepresentationModel collectionModel =
         summaries.stream()
             .map(ClassificationSummary::getId)
             .map(wrap(classificationService::getClassification))
             .collect(
                 Collectors.collectingAndThen(
-                    Collectors.toList(), classificationRepresentationModelAssembler::toPageModel));
+                    Collectors.toList(),
+                    classificationRepresentationModelAssembler::toTaskanaCollectionModel));
 
-    ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
-        ResponseEntity.ok(pageModel);
+    ResponseEntity<ClassificationCollectionRepresentationModel> response =
+        ResponseEntity.ok(collectionModel);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from exportClassifications(), returning {}", response);
     }
@@ -93,6 +102,21 @@ public class ClassificationDefinitionController {
     return response;
   }
 
+  /**
+   * This endpoint imports all Classifications. Existing Classifications will not be removed.
+   * Existing Classifications with the same key/domain will be overridden.
+   *
+   * @title Import Classifications
+   * @param file the file containing the Classifications which should be imported.
+   * @return nothing
+   * @throws InvalidArgumentException if any Classification within the import file is invalid
+   * @throws NotAuthorizedException if the current user is not authorized to import Classification
+   * @throws ConcurrencyException TODO: this makes no sense
+   * @throws ClassificationNotFoundException TODO: this makes no sense
+   * @throws ClassificationAlreadyExistException TODO: this makes no sense
+   * @throws DomainNotFoundException if the domain for a specific Classification does not exist
+   * @throws IOException if the import file could not be parsed
+   */
   @PostMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importClassifications(@RequestParam("file") MultipartFile file)
@@ -101,13 +125,13 @@ public class ClassificationDefinitionController {
           DomainNotFoundException, IOException {
     LOGGER.debug("Entry to importClassifications()");
     Map<String, String> systemIds = getSystemIds();
-    TaskanaPagedModel<ClassificationRepresentationModel> classificationsResources =
+    ClassificationCollectionRepresentationModel collection =
         extractClassificationResourcesFromFile(file);
-    checkForDuplicates(classificationsResources.getContent());
+    checkForDuplicates(collection.getContent());
 
     Map<Classification, String> childrenInFile =
-        mapChildrenToParentKeys(classificationsResources.getContent(), systemIds);
-    insertOrUpdateClassificationsWithoutParent(classificationsResources.getContent(), systemIds);
+        mapChildrenToParentKeys(collection.getContent(), systemIds);
+    insertOrUpdateClassificationsWithoutParent(collection.getContent(), systemIds);
     updateParentChildrenRelations(childrenInFile);
     ResponseEntity<Void> response = ResponseEntity.noContent().build();
     LOGGER.debug("Exit from importClassifications(), returning {}", response);
@@ -120,11 +144,10 @@ public class ClassificationDefinitionController {
             Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
   }
 
-  private TaskanaPagedModel<ClassificationRepresentationModel>
-      extractClassificationResourcesFromFile(MultipartFile file) throws IOException {
+  private ClassificationCollectionRepresentationModel extractClassificationResourcesFromFile(
+      MultipartFile file) throws IOException {
     return mapper.readValue(
-        file.getInputStream(),
-        new TypeReference<TaskanaPagedModel<ClassificationRepresentationModel>>() {});
+        file.getInputStream(), ClassificationCollectionRepresentationModel.class);
   }
 
   private void checkForDuplicates(

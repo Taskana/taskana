@@ -1,7 +1,9 @@
 package pro.taskana.workbasket.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -9,11 +11,13 @@ import org.springframework.hateoas.RepresentationModel;
 public class WorkbasketDefinitionRepresentationModel
     extends RepresentationModel<WorkbasketDefinitionRepresentationModel> {
 
+  /** The workbasket which is represented. */
   @JsonIgnoreProperties("_links")
   private WorkbasketRepresentationModel workbasket;
-
-  private Collection<WorkbasketAccessItemRepresentationModel> authorizations;
-  private Set<String> distributionTargets;
+  /** The workbasket authorizations. */
+  private Collection<WorkbasketAccessItemRepresentationModel> authorizations = new ArrayList<>();
+  /** The distribution targets for this workbasket. */
+  private Set<String> distributionTargets = new HashSet<>();
 
   public Set<String> getDistributionTargets() {
     return distributionTargets;

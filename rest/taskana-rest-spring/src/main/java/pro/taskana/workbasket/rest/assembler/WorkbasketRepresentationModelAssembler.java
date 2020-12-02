@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
@@ -88,7 +86,7 @@ public class WorkbasketRepresentationModelAssembler
 
   private WorkbasketRepresentationModel addLinks(
       WorkbasketRepresentationModel resource, Workbasket wb)
-      throws NotAuthorizedException, WorkbasketNotFoundException, InvalidArgumentException {
+      throws NotAuthorizedException, WorkbasketNotFoundException {
     resource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
     resource.add(
@@ -98,7 +96,7 @@ public class WorkbasketRepresentationModelAssembler
         linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
     resource.add(
-        linkTo(methodOn(WorkbasketController.class).getWorkbaskets(new LinkedMultiValueMap<>()))
+        linkTo(methodOn(WorkbasketController.class).getWorkbaskets(null, null, null))
             .withRel("allWorkbaskets"));
     resource.add(
         linkTo(

@@ -36,6 +36,7 @@ import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
+import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -73,6 +74,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
         (AttachmentSummaryImpl) this.taskService.newAttachment().asSummary();
     attachment.setClassificationSummary(classification);
     attachment.setId("attachmentId");
+    attachment.setObjectReference(primaryObjRef);
     final WorkbasketSummary workbasket =
         this.workbasketService.newWorkbasket("key", "domain").asSummary();
     TaskSummaryImpl task = (TaskSummaryImpl) this.taskService.newTask().asSummary();
@@ -124,7 +126,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() throws Exception {
-    ObjectReference primaryObjRef = new ObjectReference();
+    ObjectReferenceRepresentationModel primaryObjRef = new ObjectReferenceRepresentationModel();
     primaryObjRef.setId("abc");
     WorkbasketSummaryRepresentationModel workbasketResource =
         new WorkbasketSummaryRepresentationModel();
@@ -137,6 +139,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     AttachmentRepresentationModel attachment = new AttachmentRepresentationModel();
     attachment.setClassificationSummary(classificationSummary);
     attachment.setAttachmentId("attachmentId");
+    attachment.setObjectReference(primaryObjRef);
     TaskSummaryRepresentationModel repModel = new TaskRepresentationModel();
     repModel.setAttachmentSummaries(List.of(attachment));
     repModel.setClassificationSummary(classificationSummary);
@@ -268,7 +271,8 @@ class TaskSummaryRepresentationModelAssemblerTest {
     assertThat(taskSummary.getParentBusinessProcessId())
         .isEqualTo(repModel.getParentBusinessProcessId());
     assertThat(taskSummary.getOwner()).isEqualTo(repModel.getOwner());
-    assertThat(taskSummary.getPrimaryObjRef()).isEqualTo(repModel.getPrimaryObjRef());
+    ObjectReferenceRepresentationModelAssemblerTest.testEquality(
+        taskSummary.getPrimaryObjRef(), repModel.getPrimaryObjRef());
     assertThat(taskSummary.isRead()).isEqualTo(repModel.isRead());
     assertThat(taskSummary.isTransferred()).isEqualTo(repModel.isTransferred());
     assertThat(taskSummary.getCustomAttribute(CUSTOM_1)).isEqualTo(repModel.getCustom1());

@@ -23,6 +23,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
+import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -53,7 +54,7 @@ class TaskRepresentationModelAssemberTest {
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() throws Exception {
     // given
-    ObjectReference primaryObjRef = new ObjectReference();
+    ObjectReferenceRepresentationModel primaryObjRef = new ObjectReferenceRepresentationModel();
     primaryObjRef.setId("abc");
     WorkbasketSummaryRepresentationModel workbasketResource =
         new WorkbasketSummaryRepresentationModel();
@@ -66,6 +67,7 @@ class TaskRepresentationModelAssemberTest {
     AttachmentRepresentationModel attachment = new AttachmentRepresentationModel();
     attachment.setClassificationSummary(classificationSummary);
     attachment.setAttachmentId("attachmentId");
+    attachment.setObjectReference(primaryObjRef);
     TaskRepresentationModel repModel = new TaskRepresentationModel();
     repModel.setTaskId("taskId");
     repModel.setExternalId("externalId");
@@ -126,6 +128,7 @@ class TaskRepresentationModelAssemberTest {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setClassificationSummary(classification);
     attachment.setId("attachmentId");
+    attachment.setObjectReference(primaryObjRef);
     TaskImpl task = (TaskImpl) taskService.newTask();
     task.setId("taskId");
     task.setExternalId("externalId");
@@ -187,6 +190,7 @@ class TaskRepresentationModelAssemberTest {
     AttachmentImpl attachment = (AttachmentImpl) taskService.newAttachment();
     attachment.setClassificationSummary(classification);
     attachment.setId("attachmentId");
+    attachment.setObjectReference(primaryObjRef);
     TaskImpl task = (TaskImpl) taskService.newTask();
     task.setId("taskId");
     task.setExternalId("externalId");

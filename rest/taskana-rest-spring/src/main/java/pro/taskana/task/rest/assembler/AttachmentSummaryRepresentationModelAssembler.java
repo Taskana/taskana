@@ -17,15 +17,18 @@ public class AttachmentSummaryRepresentationModelAssembler
     implements RepresentationModelAssembler<
         AttachmentSummary, AttachmentSummaryRepresentationModel> {
 
-  private final TaskService taskService;
   private final ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler;
+  private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
+  private final TaskService taskService;
 
   @Autowired
   public AttachmentSummaryRepresentationModelAssembler(
       TaskService taskService,
-      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler) {
+      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler,
+      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler) {
     this.taskService = taskService;
     this.classificationSummaryAssembler = classificationSummaryAssembler;
+    this.objectReferenceAssembler = objectReferenceAssembler;
   }
 
   @NonNull
@@ -39,7 +42,7 @@ public class AttachmentSummaryRepresentationModelAssembler
     repModel.setReceived(summary.getReceived());
     repModel.setClassificationSummary(
         classificationSummaryAssembler.toModel(summary.getClassificationSummary()));
-    repModel.setObjectReference(summary.getObjectReference());
+    repModel.setObjectReference(objectReferenceAssembler.toModel(summary.getObjectReference()));
     repModel.setChannel(summary.getChannel());
     return repModel;
   }
@@ -54,7 +57,7 @@ public class AttachmentSummaryRepresentationModelAssembler
     attachment.setReceived(repModel.getReceived());
     attachment.setClassificationSummary(
         classificationSummaryAssembler.toEntityModel(repModel.getClassificationSummary()));
-    attachment.setObjectReference(repModel.getObjectReference());
+    attachment.setObjectReference(objectReferenceAssembler.toEntity(repModel.getObjectReference()));
     attachment.setChannel(repModel.getChannel());
     return attachment;
   }

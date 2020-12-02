@@ -118,16 +118,16 @@ class WorkbasketRepresentationModelAssemblerTest {
   private void testLinks(WorkbasketRepresentationModel workbasket) {
     assertThat(workbasket.getLinks()).hasSize(5);
     assertThat(workbasket.getRequiredLink("self").getHref())
-        .isEqualTo(
+        .endsWith(
             RestEndpoints.URL_WORKBASKET_ID.replaceAll("\\{.*}", workbasket.getWorkbasketId()));
     assertThat(workbasket.getRequiredLink("distributionTargets").getHref())
-        .isEqualTo(
+        .endsWith(
             RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));
     assertThat(workbasket.getRequiredLink("allWorkbaskets").getHref())
-        .isEqualTo(RestEndpoints.URL_WORKBASKET);
+        .endsWith(RestEndpoints.URL_WORKBASKET);
     assertThat(workbasket.getRequiredLink("removeDistributionTargets").getHref())
-        .isEqualTo(
+        .endsWith(
             RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION.replaceAll(
                 "\\{.*}", workbasket.getWorkbasketId()));
   }

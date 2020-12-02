@@ -1,47 +1,39 @@
 package pro.taskana.workbasket.rest;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.beans.ConstructorProperties;
 import java.util.List;
+import java.util.function.BiConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.AbstractPagingController;
-import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.QueryPagingParameter;
+import pro.taskana.common.rest.QuerySortBy;
+import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.ldap.LdapClient;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.rest.assembler.WorkbasketAccessItemRepresentationModelAssembler;
-import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
+import pro.taskana.workbasket.rest.models.WorkbasketAccessItemPagedRepresentationModel;
 
 /** Controller for Workbasket access. */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-public class WorkbasketAccessItemController extends AbstractPagingController {
+public class WorkbasketAccessItemController {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(WorkbasketAccessItemController.class);
-
-  private static final String LIKE = "%";
-  private static final String WORKBASKET_KEY = "workbasket-key";
-  private static final String WORKBASKET_KEY_LIKE = "workbasket-key-like";
-  private static final String ACCESS_ID = "access-id";
-  private static final String ACCESS_ID_LIKE = "access-id-like";
-  private static final String ACCESS_IDS = "access-ids";
 
   private final LdapClient ldapClient;
   private final WorkbasketService workbasketService;
@@ -58,33 +50,32 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
   }
 
   /**
-   * This GET method return all workbasketAccessItems that correspond the given data.
+   * This endpoint retrieves a list of existing Workbasket Access Items. Filters can be applied.
    *
-   * @param params filter, order and access ids.
-   * @return all WorkbasketAccesItemResource.
+   * @title Get a list of all Workbasket Access Items
+   * @param filterParameter the filter parameters
+   * @param sortParameter the sort parameters
+   * @param pagingParameter the paging parameters
+   * @return the Workbasket Access Items with the given filter, sort and paging options.
    * @throws NotAuthorizedException if the user is not authorized.
-   * @throws InvalidArgumentException if some argument is invalid.
    */
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
-  public ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>>
-      getWorkbasketAccessItems(@RequestParam MultiValueMap<String, String> params)
-          throws NotAuthorizedException, InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getWorkbasketAccessItems(params= {})", params);
-    }
+  public ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> getWorkbasketAccessItems(
+      WorkbasketAccessItemQueryFilterParameter filterParameter,
+      WorkbasketAccessItemQuerySortParameter sortParameter,
+      QueryPagingParameter<WorkbasketAccessItem, WorkbasketAccessItemQuery> pagingParameter)
+      throws NotAuthorizedException {
 
     WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
-    applyAccessIdIn(query, params);
-    applyFilterParams(query, params);
-    applySortingParams(query, params);
+    filterParameter.applyToQuery(query);
+    sortParameter.applyToQuery(query);
 
-    PageMetadata pageMetadata = getPageMetadata(params, query);
-    List<WorkbasketAccessItem> workbasketAccessItems = getQueryList(query, pageMetadata);
+    List<WorkbasketAccessItem> workbasketAccessItems = pagingParameter.applyToQuery(query);
 
-    TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> pagedResources =
-        modelAssembler.toPageModel(workbasketAccessItems, pageMetadata);
+    WorkbasketAccessItemPagedRepresentationModel pagedResources =
+        modelAssembler.toPagedModel(workbasketAccessItems, pagingParameter.getPageMetadata());
 
-    ResponseEntity<TaskanaPagedModel<WorkbasketAccessItemRepresentationModel>> response =
+    ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         ResponseEntity.ok(pagedResources);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
@@ -94,10 +85,11 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
   }
 
   /**
-   * This DELETE method delete all workbasketAccessItems that correspond the given accessId.
+   * This endpoint deletes all Workbasket Access Items for a provided Access Id.
    *
-   * @param accessId which need remove his workbasketAccessItems.
-   * @return ResponseEntity if the user is not authorized.
+   * @title Delete a Workbasket Access Item
+   * @param accessId the Access Id which should be removed
+   * @return no content
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
@@ -125,85 +117,38 @@ public class WorkbasketAccessItemController extends AbstractPagingController {
     return response;
   }
 
-  private void applyAccessIdIn(
-      WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getAccessIds(query= {}, params= {})", query, params);
+  public enum WorkbasketAccessItemSortBy implements QuerySortBy<WorkbasketAccessItemQuery> {
+    WORKBASKET_KEY(WorkbasketAccessItemQuery::orderByWorkbasketKey),
+    ACCESS_ID(WorkbasketAccessItemQuery::orderByAccessId);
+
+    private final BiConsumer<WorkbasketAccessItemQuery, SortDirection> consumer;
+
+    WorkbasketAccessItemSortBy(BiConsumer<WorkbasketAccessItemQuery, SortDirection> consumer) {
+      this.consumer = consumer;
     }
 
-    if (params.containsKey(ACCESS_IDS)) {
-      String[] accessIds = extractVerticalBarSeparatedFields(params.get(ACCESS_IDS));
-      query.accessIdIn(accessIds);
-      params.remove(ACCESS_IDS);
-    }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getAccessIds(), returning {}", query);
+    @Override
+    public void applySortByForQuery(WorkbasketAccessItemQuery query, SortDirection sortDirection) {
+      consumer.accept(query, sortDirection);
     }
   }
 
-  private void applyFilterParams(
-      WorkbasketAccessItemQuery query, MultiValueMap<String, String> params) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to applyFilterParams(query= {}, params= {})", query, params);
+  // Unfortunately this class is necessary, since spring can not inject the generic 'sort-by'
+  // parameter from the super class.
+  public static class WorkbasketAccessItemQuerySortParameter
+      extends QuerySortParameter<WorkbasketAccessItemQuery, WorkbasketAccessItemSortBy> {
+
+    @ConstructorProperties({"sort-by", "order"})
+    public WorkbasketAccessItemQuerySortParameter(
+        List<WorkbasketAccessItemSortBy> sortBy, List<SortDirection> order)
+        throws InvalidArgumentException {
+      super(sortBy, order);
     }
 
-    if (params.containsKey(WORKBASKET_KEY)) {
-      String[] keys = extractCommaSeparatedFields(params.get(WORKBASKET_KEY));
-      query.workbasketKeyIn(keys);
-      params.remove(WORKBASKET_KEY);
+    // this getter is necessary for the documentation!
+    @Override
+    public List<WorkbasketAccessItemSortBy> getSortBy() {
+      return super.getSortBy();
     }
-    if (params.containsKey(WORKBASKET_KEY_LIKE)) {
-      query.workbasketKeyLike(LIKE + params.get(WORKBASKET_KEY_LIKE).get(0) + LIKE);
-      params.remove(WORKBASKET_KEY_LIKE);
-    }
-    if (params.containsKey(ACCESS_ID)) {
-      String[] accessId = extractCommaSeparatedFields(params.get(ACCESS_ID));
-      query.accessIdIn(accessId);
-      params.remove(ACCESS_ID);
-    }
-    if (params.containsKey(ACCESS_ID_LIKE)) {
-      query.accessIdLike(LIKE + params.get(ACCESS_ID_LIKE).get(0) + LIKE);
-      params.remove(ACCESS_ID_LIKE);
-    }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from applyFilterParams(), returning {}", query);
-    }
-  }
-
-  private void applySortingParams(
-      WorkbasketAccessItemQuery query, MultiValueMap<String, String> params)
-      throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to applySortingParams(query= {}, params= {})", query, params);
-    }
-
-    QueryHelper.applyAndRemoveSortingParams(
-        params,
-        (sortBy, sortDirection) -> {
-          switch (sortBy) {
-            case (WORKBASKET_KEY):
-              query.orderByWorkbasketKey(sortDirection);
-              break;
-            case (ACCESS_ID):
-              query.orderByAccessId(sortDirection);
-              break;
-            default:
-              throw new InvalidArgumentException("Unknown order '" + sortBy + "'");
-          }
-        });
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from applySortingParams(), returning {}", query);
-    }
-  }
-
-  private String[] extractVerticalBarSeparatedFields(List<String> searchFor) {
-    List<String> values = new ArrayList<>();
-    if (searchFor != null) {
-      searchFor.forEach(item -> Collections.addAll(values, item.split("\\|")));
-    }
-    return values.toArray(new String[0]);
   }
 }
