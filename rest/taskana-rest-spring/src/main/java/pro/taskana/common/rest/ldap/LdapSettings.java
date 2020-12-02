@@ -9,6 +9,7 @@ enum LdapSettings {
   TASKANA_LDAP_USER_SEARCH_FILTER_VALUE("taskana.ldap.userSearchFilterValue"),
   TASKANA_LDAP_USER_FIRSTNAME_ATTRIBUTE("taskana.ldap.userFirstnameAttribute"),
   TASKANA_LDAP_USER_LASTNAME_ATTRIBUTE("taskana.ldap.userLastnameAttribute"),
+  TASKANA_LDAP_USER_FULLNAME_ATTRIBUTE("taskana.ldap.userFullnameAttribute"),
   TASKANA_LDAP_USER_ID_ATTRIBUTE("taskana.ldap.userIdAttribute"),
   TASKANA_LDAP_GROUP_SEARCH_BASE("taskana.ldap.groupSearchBase"),
   TASKANA_LDAP_BASE_DN("taskana.ldap.baseDn"),
