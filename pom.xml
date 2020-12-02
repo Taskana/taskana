@@ -68,6 +68,8 @@
     <version.openpojo>0.8.13</version.openpojo>
     <version.jacoco>0.8.6</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>
+    <version.auto-restdocs>2.0.9</version.auto-restdocs>
+    <version.hibernate>6.1.6.Final</version.hibernate>
 
     <!-- database driver versions -->
     <version.db2>11.1.1.1</version.db2>
@@ -313,11 +315,6 @@
         <version>${version.maven.surefire}</version>
         <configuration>
           <argLine>${argLine}</argLine>
-          <!-- Required for generation of REST documentation -->
-          <includes>
-            <include>**/*Test.java</include>
-            <include>**/*Documentation.java</include>
-          </includes>
         </configuration>
       </plugin>
       <plugin>

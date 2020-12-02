@@ -3,20 +3,25 @@ package pro.taskana.simplehistory.rest.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import org.springframework.hateoas.server.RepresentationModelAssembler;
+import java.util.Collection;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
+import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.simplehistory.rest.TaskHistoryEventController;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventPagedRepresentationModel;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
-/** Transforms any {@link TaskHistoryEvent} into its {@link TaskHistoryEventRepresentationModel}. */
 @Component
 public class TaskHistoryEventRepresentationModelAssembler
-    implements RepresentationModelAssembler<TaskHistoryEvent, TaskHistoryEventRepresentationModel> {
+    implements PagedRepresentationModelAssembler<
+        TaskHistoryEvent,
+        TaskHistoryEventRepresentationModel,
+        TaskHistoryEventPagedRepresentationModel> {
 
   @NonNull
   @Override
@@ -53,8 +58,14 @@ public class TaskHistoryEventRepresentationModelAssembler
                       .getTaskHistoryEvent(historyEvent.getId()))
               .withSelfRel());
     } catch (Exception e) {
-      throw new SystemException("caught unexpecte Exception", e);
+      throw new SystemException("caught unexpected Exception", e);
     }
     return repModel;
+  }
+
+  @Override
+  public TaskHistoryEventPagedRepresentationModel buildPageableEntity(
+      Collection<TaskHistoryEventRepresentationModel> content, PageMetadata pageMetadata) {
+    return new TaskHistoryEventPagedRepresentationModel(content, pageMetadata);
   }
 }

@@ -16,6 +16,7 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
+import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 
 /** Test for {@link AttachmentRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
@@ -37,7 +38,7 @@ class AttachmentRepresentationModelAssemblerTest {
 
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
-    ObjectReference reference = new ObjectReference();
+    ObjectReferenceRepresentationModel reference = new ObjectReferenceRepresentationModel();
     reference.setId("abc");
     ClassificationSummaryRepresentationModel summary =
         new ClassificationSummaryRepresentationModel();

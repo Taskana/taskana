@@ -17,6 +17,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.NotFoundException;
+import pro.taskana.common.rest.models.TaskanaErrorData;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;

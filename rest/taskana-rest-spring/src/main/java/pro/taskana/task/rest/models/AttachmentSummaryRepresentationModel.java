@@ -5,19 +5,26 @@ import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.task.api.models.AttachmentSummary;
-import pro.taskana.task.api.models.ObjectReference;
 
 /** EntityModel class for {@link AttachmentSummary}. */
 public class AttachmentSummaryRepresentationModel
     extends RepresentationModel<AttachmentSummaryRepresentationModel> {
 
+  /** Unique Id. */
   protected String attachmentId;
+  /** the referenced task id. */
   protected String taskId;
+  /** The creation timestamp of the attachment in the system. */
   protected Instant created;
+  /** Timestamp of the last modification of the attachment. */
   protected Instant modified;
+  /** Timestamp of the entry of the attachment. */
   protected Instant received;
+  /** The classification of this attachment. */
   protected ClassificationSummaryRepresentationModel classificationSummary;
-  protected ObjectReference objectReference;
+  /** The Objects primary ObjectReference. */
+  protected ObjectReferenceRepresentationModel objectReference;
+  /** Determines on which channel this attachment was received. */
   protected String channel;
 
   public String getAttachmentId() {
@@ -69,11 +76,11 @@ public class AttachmentSummaryRepresentationModel
     this.classificationSummary = classificationSummary;
   }
 
-  public ObjectReference getObjectReference() {
+  public ObjectReferenceRepresentationModel getObjectReference() {
     return objectReference;
   }
 
-  public void setObjectReference(ObjectReference objectReference) {
+  public void setObjectReference(ObjectReferenceRepresentationModel objectReference) {
     this.objectReference = objectReference;
   }
 

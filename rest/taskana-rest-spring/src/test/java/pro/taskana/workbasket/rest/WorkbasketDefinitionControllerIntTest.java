@@ -34,11 +34,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
+import pro.taskana.workbasket.rest.models.WorkbasketDefinitionCollectionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 
 /** Integration tests for WorkbasketDefinitionController. */
@@ -68,7 +67,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testExportWorkbasketFromDomain() {
-    ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>> response =
+    ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> response =
         executeExportRequestForDomain("DOMAIN_A");
 
     assertThat(response.getBody()).isNotNull();
@@ -97,16 +96,15 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testExportWorkbasketsFromWrongDomain() {
-    ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>> response =
+    ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> response =
         executeExportRequestForDomain("wrongDomain");
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).isEmpty();
-    assertThat(response.getBody().getKey()).isSameAs(TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS);
   }
 
   @Test
   void testImportEveryWorkbasketFromDomainA() throws Exception {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
+    WorkbasketDefinitionCollectionRepresentationModel wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
     assertThat(wbList).isNotNull();
     for (WorkbasketDefinitionRepresentationModel w : wbList.getContent()) {
@@ -116,7 +114,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithoutDistributionTargets() throws Exception {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
+    WorkbasketDefinitionCollectionRepresentationModel pagedModel =
         executeExportRequestForDomain("DOMAIN_A").getBody();
     assertThat(pagedModel).isNotNull();
     WorkbasketDefinitionRepresentationModel w = pagedModel.getContent().iterator().next();
@@ -129,7 +127,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithDistributionTargetsInImportFile() throws Exception {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
+    WorkbasketDefinitionCollectionRepresentationModel wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
     assertThat(wbList).isNotNull();
     Iterator<WorkbasketDefinitionRepresentationModel> iterator = wbList.getContent().iterator();
@@ -154,7 +152,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithDistributionTargetsInSystem() throws Exception {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
+    WorkbasketDefinitionCollectionRepresentationModel wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
     assertThat(wbList).isNotNull();
@@ -170,7 +168,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testImportWorkbasketWithDistributionTargetsNotInSystem() {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
+    WorkbasketDefinitionCollectionRepresentationModel wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
     assertThat(wbList).isNotNull();
@@ -195,7 +193,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testFailOnImportDuplicates() {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
+    WorkbasketDefinitionCollectionRepresentationModel pagedModel =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
     assertThat(pagedModel).isNotNull();
@@ -211,7 +209,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testNoErrorWhenImportWithSameIdButDifferentKeyAndDomain() throws Exception {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> wbList =
+    WorkbasketDefinitionCollectionRepresentationModel wbList =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
     assertThat(wbList).isNotNull();
@@ -231,7 +229,7 @@ class WorkbasketDefinitionControllerIntTest {
 
   @Test
   void testErrorWhenImportWithSameAccessIdAndWorkbasket() {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
+    WorkbasketDefinitionCollectionRepresentationModel pagedModel =
         executeExportRequestForDomain("DOMAIN_A").getBody();
 
     assertThat(pagedModel).isNotNull();
@@ -256,27 +254,25 @@ class WorkbasketDefinitionControllerIntTest {
     }
   }
 
-  private ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
+  private ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel>
       executeExportRequestForDomain(String domain) {
     return TEMPLATE.exchange(
         restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
-        new ParameterizedTypeReference<
-            TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>() {});
+        new ParameterizedTypeReference<WorkbasketDefinitionCollectionRepresentationModel>() {});
   }
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
       HttpStatus expectedStatus, WorkbasketDefinitionRepresentationModel... workbaskets)
       throws Exception {
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
-        new TaskanaPagedModel<>(TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS, List.of(workbaskets));
+    WorkbasketDefinitionCollectionRepresentationModel pagedModel =
+        new WorkbasketDefinitionCollectionRepresentationModel(List.of(workbaskets));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(expectedStatus, pagedModel);
   }
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
-      HttpStatus expectedStatus,
-      TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pageModel)
+      HttpStatus expectedStatus, WorkbasketDefinitionCollectionRepresentationModel pageModel)
       throws Exception {
     File tmpFile = File.createTempFile("test", ".tmp");
     try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(tmpFile), UTF_8)) {

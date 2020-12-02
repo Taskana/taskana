@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
+import pro.taskana.workbasket.rest.models.WorkbasketDefinitionCollectionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 
@@ -27,7 +27,10 @@ import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
  */
 @Component
 public class WorkbasketDefinitionRepresentationModelAssembler
-    implements TaskanaPagingAssembler<Workbasket, WorkbasketDefinitionRepresentationModel> {
+    implements CollectionRepresentationModelAssembler<
+        Workbasket,
+        WorkbasketDefinitionRepresentationModel,
+        WorkbasketDefinitionCollectionRepresentationModel> {
 
   private final WorkbasketService workbasketService;
   private final WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler;
@@ -70,7 +73,8 @@ public class WorkbasketDefinitionRepresentationModelAssembler
   }
 
   @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS;
+  public WorkbasketDefinitionCollectionRepresentationModel buildCollectionEntity(
+      List<WorkbasketDefinitionRepresentationModel> content) {
+    return new WorkbasketDefinitionCollectionRepresentationModel(content);
   }
 }

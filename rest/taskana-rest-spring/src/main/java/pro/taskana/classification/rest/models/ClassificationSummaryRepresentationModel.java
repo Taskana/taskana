@@ -1,5 +1,6 @@
 package pro.taskana.classification.rest.models;
 
+import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -8,24 +9,56 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 public class ClassificationSummaryRepresentationModel
     extends RepresentationModel<ClassificationSummaryRepresentationModel> {
 
-  protected String classificationId;
-  protected String key;
+  /** Unique Id. */
+  @NotNull protected String classificationId;
+  /**
+   * The key of the classification. This is typically an externally known code or abbreviation of
+   * the classification.
+   */
+  @NotNull protected String key;
+  /**
+   * The logical name of the entry point, the task list application should redirect to work on a
+   * task of this classification.
+   */
   protected String applicationEntryPoint;
-  protected String category;
+  /**
+   * The category of the classification. Categories can be configured in the file
+   * 'taskana.properties'.
+   */
+  @NotNull protected String category;
+  /** The domain for which this classification is specified. */
   protected String domain;
-  protected String name;
+  /** The name of the classification. */
+  @NotNull protected String name;
+  /** The id of the parent classification. Empty string ("") if this is a root classification. */
   protected String parentId;
+  /** The key of the parent classification. Empty string ("") if this is a root classification. */
   protected String parentKey;
-  protected int priority;
+  /** The priority of the classification. */
+  @NotNull protected int priority;
+  /**
+   * The service level of the classification.
+   *
+   * <p>This is stated according to ISO 8601.
+   */
   protected String serviceLevel;
+  /** The type of classification. Types can be configured in the file 'taskana.properties'. */
   protected String type;
+  /** A custom property with name "1". */
   protected String custom1;
+  /** A custom property with name "2". */
   protected String custom2;
+  /** A custom property with name "3". */
   protected String custom3;
+  /** A custom property with name "4". */
   protected String custom4;
+  /** A custom property with name "5". */
   protected String custom5;
+  /** A custom property with name "6". */
   protected String custom6;
+  /** A custom property with name "7". */
   protected String custom7;
+  /** A custom property with name "8". */
   protected String custom8;
 
   public String getClassificationId() {

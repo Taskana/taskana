@@ -71,7 +71,7 @@ public interface ClassificationService {
    *
    * @param classification the classification to insert
    * @return classification which is persisted with unique ID.
-   * @throws ClassificationAlreadyExistException when the classification does already exists at the
+   * @throws ClassificationAlreadyExistException if the classification does already exists at the
    *     given domain.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
@@ -88,9 +88,9 @@ public interface ClassificationService {
    *
    * @param classification the Classification to update
    * @return the updated Classification.
-   * @throws ClassificationNotFoundException when the classification OR it´s parent does not exist.
-   * @throws NotAuthorizedException when the caller got no ADMIN or BUSINESS_ADMIN permissions.
-   * @throws ConcurrencyException when the Classification was modified meanwhile and is not latest
+   * @throws ClassificationNotFoundException if the classification OR it´s parent does not exist.
+   * @throws NotAuthorizedException if the caller got no ADMIN or BUSINESS_ADMIN permissions.
+   * @throws ConcurrencyException if the Classification was modified meanwhile and is not latest
    *     anymore.
    * @throws InvalidArgumentException if the ServiceLevel property does not comply with the ISO 8601
    *     specification

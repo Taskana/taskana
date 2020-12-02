@@ -22,7 +22,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     "classpath:/static/", "classpath:/public/"
   };
 
-  @Autowired private ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
+
+  @Autowired
+  public WebMvcConfig(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {

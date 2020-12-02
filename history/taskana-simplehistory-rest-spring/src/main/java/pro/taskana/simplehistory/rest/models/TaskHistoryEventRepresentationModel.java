@@ -9,29 +9,57 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 public class TaskHistoryEventRepresentationModel
     extends RepresentationModel<TaskHistoryEventRepresentationModel> {
 
+  /** Unique ID. */
   private String taskHistoryId;
+  /** The id of the business process. */
   private String businessProcessId;
+  /** The id of the parent business process. */
   private String parentBusinessProcessId;
+  /** The id of the task. */
   private String taskId;
+  /** The type of the event. */
   private String eventType;
+  /**
+   * The time was created.
+   *
+   * <p>The format is ISO-8601.
+   */
   private Instant created;
+  /** The id of the user. */
   private String userId;
+  /** Domain. */
   private String domain;
+  /** The key of workbasket. */
   private String workbasketKey;
+  /** The company referenced primary object belongs to. */
   private String porCompany;
+  /** The type of the reference (contract, claim, policy, customer, ...). */
   private String porType;
+  /** The (kind of) system, the object resides in (e.g. SAP, MySystem A, ...). */
   private String porSystem;
+  /** The instance of the system, the object resides in. */
   private String porInstance;
+  /** The value of the primary object reference. */
   private String porValue;
+  /** The key of classification task. */
   private String taskClassificationKey;
+  /** The category of classification. */
   private String taskClassificationCategory;
+  /** The key of the task's attachment. */
   private String attachmentClassificationKey;
+  /** The old value. */
   private String oldValue;
+  /** The new value. */
   private String newValue;
+  /** A custom property with name "1". */
   private String custom1;
+  /** A custom property with name "2". */
   private String custom2;
+  /** A custom property with name "3". */
   private String custom3;
+  /** A custom property with name "4". */
   private String custom4;
+  /** details of changes within the task. */
   private String details;
 
   public String getTaskHistoryId() {

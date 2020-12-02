@@ -53,7 +53,7 @@ function main() {
     set -x
     eval "$REL/prepare_db.sh '$1'"
     ### INSTALL ###
-    $REL/../mvnw -q install -B -T 2C -f $REL/.. -pl :taskana-rest-spring-example-common -am -P postgres -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
+    $REL/../mvnw -q install -B -T 2C -f $REL/.. -pl :taskana-rest-spring-example-common -am -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
 
     ### TEST ###
     $REL/../mvnw -q verify -B -T 2C -f $REL/.. -pl :taskana-core -Dmaven.javadoc.skip -Dcheckstyle.skip

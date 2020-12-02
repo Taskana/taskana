@@ -13,6 +13,7 @@ public final class RestEndpoints {
   public static final String URL_CLASSIFICATION_TYPES = API_V1 + "classification-types";
   public static final String URL_CLASSIFICATION_CATEGORIES_BY_TYPES =
       API_V1 + "classifications-by-type";
+  public static final String URL_HISTORY_ENABLED = API_V1 + "history-provider-enabled";
 
   // access id endpoints
   public static final String URL_ACCESS_ID = API_V1 + "access-ids";
@@ -60,10 +61,6 @@ public final class RestEndpoints {
   public static final String URL_MONITOR_TASKS_CLASSIFICATION_REPORT =
       API_V1 + "monitor/tasks-classification-report";
   public static final String URL_MONITOR_TIMESTAMP_REPORT = API_V1 + "monitor/timestamp-report";
-
-  public static final String URL_HISTORY_ENABLED = API_V1 + "history-provider-enabled";
-  public static final String URL_HISTORY_EVENTS = API_V1 + "task-history-event";
-  public static final String URL_HISTORY_EVENTS_ID = "/{historyEventId}";
 
   private RestEndpoints() {}
 }

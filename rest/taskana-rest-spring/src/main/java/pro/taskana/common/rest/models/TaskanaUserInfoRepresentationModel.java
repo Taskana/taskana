@@ -10,8 +10,11 @@ import pro.taskana.common.api.TaskanaRole;
 public class TaskanaUserInfoRepresentationModel
     extends RepresentationModel<TaskanaUserInfoRepresentationModel> {
 
+  /** The user id of the current user. */
   private String userId;
+  /** All groups the current user is a member of. */
   private List<String> groupIds = new ArrayList<>();
+  /** All taskana roles the current user is a member of. */
   private List<TaskanaRole> roles = new ArrayList<>();
 
   public String getUserId() {
@@ -40,13 +43,12 @@ public class TaskanaUserInfoRepresentationModel
 
   @Override
   public String toString() {
-    return "TaskanaUserInfoRepresentationModel ["
-        + "userId= "
-        + this.userId
-        + "groupIds= "
+    return "TaskanaUserInfoRepresentationModel [userId="
+        + userId
+        + ", groupIds="
         + groupIds
-        + "roles= "
-        + this.roles
+        + ", roles="
+        + roles
         + "]";
   }
 }

@@ -9,11 +9,17 @@ import pro.taskana.task.api.models.TaskComment;
 public class TaskCommentRepresentationModel
     extends RepresentationModel<TaskCommentRepresentationModel> {
 
+  /** Unique ID. */
   private String taskCommentId;
+  /** Task ID. Can identify the task to which the comment belongs. */
   private String taskId;
+  /** The content of the comment. */
   private String textField;
+  /** The creator of the task comment. */
   private String creator;
+  /** The creation timestamp of the task comment in the system. */
   private Instant created;
+  /** Timestamp of the last modification of the task comment. */
   private Instant modified;
 
   public String getTaskCommentId() {

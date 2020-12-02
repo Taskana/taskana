@@ -90,7 +90,7 @@ public interface WorkbasketService {
    *
    * @param workbasketAccessItem the new workbasketAccessItem
    * @return the created WorkbasketAccessItem
-   * @throws InvalidArgumentException when the preconditions dont match the required ones.
+   * @throws InvalidArgumentException if the preconditions dont match the required ones.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketNotFoundException if the workbasketAccessItem refers to a not existing

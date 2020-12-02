@@ -8,26 +8,27 @@ import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_5;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_6;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
-import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.CLASSIFICATIONS;
 
+import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
+import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
+import pro.taskana.common.rest.models.PageMetadata;
 
 /** EntityModel assembler for {@link ClassificationSummaryRepresentationModel}. */
 @Component
 public class ClassificationSummaryRepresentationModelAssembler
-    implements TaskanaPagingAssembler<
-        ClassificationSummary, ClassificationSummaryRepresentationModel> {
+    implements PagedRepresentationModelAssembler<
+        ClassificationSummary,
+        ClassificationSummaryRepresentationModel,
+        ClassificationSummaryPagedRepresentationModel> {
 
   private final ClassificationService classificationService;
 
@@ -91,14 +92,8 @@ public class ClassificationSummaryRepresentationModelAssembler
   }
 
   @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return CLASSIFICATIONS;
-  }
-
-  @Override
-  public TaskanaPagedModel<ClassificationSummaryRepresentationModel> toPageModel(
-      Iterable<ClassificationSummary> entities, PageMetadata pageMetadata) {
-    return addLinksToPagedResource(
-        TaskanaPagingAssembler.super.toPageModel(entities, pageMetadata));
+  public ClassificationSummaryPagedRepresentationModel buildPageableEntity(
+      Collection<ClassificationSummaryRepresentationModel> content, PageMetadata pageMetadata) {
+    return new ClassificationSummaryPagedRepresentationModel(content, pageMetadata);
   }
 }

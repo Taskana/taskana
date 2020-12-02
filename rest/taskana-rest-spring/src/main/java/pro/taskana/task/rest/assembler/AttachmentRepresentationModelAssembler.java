@@ -22,13 +22,16 @@ public class AttachmentRepresentationModelAssembler
   private final TaskService taskService;
 
   private final ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler;
+  private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
 
   @Autowired
   public AttachmentRepresentationModelAssembler(
       TaskService taskService,
-      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler) {
+      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler,
+      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler) {
     this.taskService = taskService;
     this.classificationSummaryAssembler = classificationSummaryAssembler;
+    this.objectReferenceAssembler = objectReferenceAssembler;
   }
 
   @NonNull
@@ -42,7 +45,7 @@ public class AttachmentRepresentationModelAssembler
     repModel.setReceived(attachment.getReceived());
     repModel.setClassificationSummary(
         classificationSummaryAssembler.toModel(attachment.getClassificationSummary()));
-    repModel.setObjectReference(attachment.getObjectReference());
+    repModel.setObjectReference(objectReferenceAssembler.toModel(attachment.getObjectReference()));
     repModel.setChannel(attachment.getChannel());
     repModel.setCustomAttributes(attachment.getCustomAttributeMap());
     repModel.add(linkTo(AttachmentController.class).slash(attachment.getId()).withSelfRel());
@@ -59,7 +62,8 @@ public class AttachmentRepresentationModelAssembler
     attachment.setClassificationSummary(
         classificationSummaryAssembler.toEntityModel(
             attachmentRepresentationModel.getClassificationSummary()));
-    attachment.setObjectReference(attachmentRepresentationModel.getObjectReference());
+    attachment.setObjectReference(
+        objectReferenceAssembler.toEntity(attachmentRepresentationModel.getObjectReference()));
     attachment.setChannel(attachmentRepresentationModel.getChannel());
     attachment.setCustomAttributeMap(attachmentRepresentationModel.getCustomAttributes());
     return attachment;

@@ -69,7 +69,7 @@ class ReportRepresentationModelTest {
 
     // sumRow
     assertThat(resource.getSumRow()).hasSize(1);
-    ReportRepresentationModel.RowResource sumRow = resource.getSumRow().get(0);
+    ReportRepresentationModel.RowRepresentationModel sumRow = resource.getSumRow().get(0);
     assertThat(sumRow.getDesc()).isEqualTo(new String[] {"Total"});
     assertThat(sumRow.isDisplay()).isTrue();
     assertThat(sumRow.getDepth()).isZero();
@@ -101,9 +101,9 @@ class ReportRepresentationModelTest {
     assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
-    List<ReportRepresentationModel.RowResource> rows = resource.getRows();
+    List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
     assertThat(rows.size()).isEqualTo(1);
-    ReportRepresentationModel.RowResource row = rows.get(0);
+    ReportRepresentationModel.RowRepresentationModel row = rows.get(0);
     assertThat(row.getDesc()).isEqualTo(new String[] {"key"});
     assertThat(row.getDepth()).isZero();
     assertThat(row.getTotal()).isEqualTo(2);
@@ -113,7 +113,7 @@ class ReportRepresentationModelTest {
 
     // sumRow
     assertThat(resource.getSumRow().size()).isEqualTo(1);
-    ReportRepresentationModel.RowResource sumRow = resource.getSumRow().get(0);
+    ReportRepresentationModel.RowRepresentationModel sumRow = resource.getSumRow().get(0);
     assertThat(sumRow.getDesc()).isEqualTo(new String[] {"Total"});
     assertThat(sumRow.isDisplay()).isTrue();
     assertThat(sumRow.getDepth()).isZero();
@@ -147,10 +147,10 @@ class ReportRepresentationModelTest {
     assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
-    List<ReportRepresentationModel.RowResource> rows = resource.getRows();
+    List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
     assertThat(rows.size()).isEqualTo(2);
 
-    ReportRepresentationModel.RowResource row = rows.get(0);
+    ReportRepresentationModel.RowRepresentationModel row = rows.get(0);
     assertThat(row.getDesc()).isEqualTo(new String[] {"key"});
     assertThat(row.getDepth()).isZero();
     assertThat(row.isDisplay()).isTrue();
@@ -166,7 +166,7 @@ class ReportRepresentationModelTest {
 
     // sumRow
     assertThat(resource.getSumRow()).hasSize(1);
-    ReportRepresentationModel.RowResource sumRow = resource.getSumRow().get(0);
+    ReportRepresentationModel.RowRepresentationModel sumRow = resource.getSumRow().get(0);
     assertThat(sumRow.getDesc()).isEqualTo(new String[] {"Total"});
     assertThat(sumRow.getDepth()).isZero();
     assertThat(sumRow.isDisplay()).isTrue();
@@ -202,10 +202,10 @@ class ReportRepresentationModelTest {
     assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
-    List<ReportRepresentationModel.RowResource> rows = resource.getRows();
+    List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
     assertThat(rows).hasSize(1 + 2);
 
-    ReportRepresentationModel.RowResource row = rows.get(0);
+    ReportRepresentationModel.RowRepresentationModel row = rows.get(0);
     assertThat(row.getDesc()).isEqualTo(new String[] {"key", null});
     assertThat(row.getDepth()).isZero();
     assertThat(row.isDisplay()).isTrue();
@@ -227,7 +227,7 @@ class ReportRepresentationModelTest {
     assertThat(row.getCells()).isEqualTo(new int[] {0, 0, 0, 0, 2});
 
     // sumRow
-    List<ReportRepresentationModel.RowResource> sumRow = resource.getSumRow();
+    List<ReportRepresentationModel.RowRepresentationModel> sumRow = resource.getSumRow();
     assertThat(sumRow).hasSize(1 + 2);
 
     row = sumRow.get(0);
@@ -282,10 +282,10 @@ class ReportRepresentationModelTest {
     assertThat(meta.getTotalDesc()).isEqualTo("Total");
 
     // rows
-    List<ReportRepresentationModel.RowResource> rows = resource.getRows();
+    List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
     assertThat(rows).hasSize((1 + 2) + (1 + 1));
 
-    ReportRepresentationModel.RowResource row = rows.get(0);
+    ReportRepresentationModel.RowRepresentationModel row = rows.get(0);
     assertThat(row.getDesc()).isEqualTo(new String[] {"key", null});
     assertThat(row.getDepth()).isZero();
     assertThat(row.isDisplay()).isTrue();
@@ -322,7 +322,7 @@ class ReportRepresentationModelTest {
 
     // sumRow
 
-    List<ReportRepresentationModel.RowResource> sumRow = resource.getSumRow();
+    List<ReportRepresentationModel.RowRepresentationModel> sumRow = resource.getSumRow();
     assertThat(sumRow).hasSize(1 + 2);
 
     row = sumRow.get(0);

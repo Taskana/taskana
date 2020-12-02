@@ -133,7 +133,7 @@ public interface TimeIntervalReportBuilder<
    * @param timestamp The task timestamp of interest
    * @return The build report
    * @throws NotAuthorizedException if the user has no rights to access the monitor
-   * @throws InvalidArgumentException when an error occurs
+   * @throws InvalidArgumentException if an error occurs
    */
   Report<I, H> buildReport(TaskTimestamp timestamp)
       throws NotAuthorizedException, InvalidArgumentException;
