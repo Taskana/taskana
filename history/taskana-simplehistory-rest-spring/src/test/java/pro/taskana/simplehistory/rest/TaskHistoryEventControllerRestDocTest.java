@@ -5,9 +5,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.test.BaseRestDocumentationTest;
+import pro.taskana.common.test.BaseRestDocTest;
 
-class TaskHistoryEventControllerRestDocumentationTest extends BaseRestDocumentationTest {
+class TaskHistoryEventControllerRestDocTest extends BaseRestDocTest {
 
   @Test
   void getAllTaskHistoryEventsDocTest() throws Exception {

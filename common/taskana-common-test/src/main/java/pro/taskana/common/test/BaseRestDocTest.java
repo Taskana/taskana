@@ -34,7 +34,7 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 @TaskanaSpringBootTest
 @ExtendWith(RestDocumentationExtension.class)
-public class BaseRestDocumentationTest {
+public class BaseRestDocTest {
 
   protected MockMvc mockMvc;
   @Autowired protected ObjectMapper objectMapper;

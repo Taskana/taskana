@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocumentationTest;
+import pro.taskana.common.test.BaseRestDocTest;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -20,7 +20,7 @@ import pro.taskana.task.rest.assembler.TaskCommentRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
 @ExtendWith(JaasExtension.class)
-class TaskCommentControllerRestDocumentationTest extends BaseRestDocumentationTest {
+class TaskCommentControllerRestDocTest extends BaseRestDocTest {
 
   @Autowired TaskCommentRepresentationModelAssembler assembler;
   @Autowired TaskService taskService;

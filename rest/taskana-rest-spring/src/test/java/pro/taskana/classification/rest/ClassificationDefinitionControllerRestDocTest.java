@@ -13,9 +13,9 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationCollectionRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocumentationTest;
+import pro.taskana.common.test.BaseRestDocTest;
 
-class ClassificationDefinitionControllerRestDocumentationTest extends BaseRestDocumentationTest {
+class ClassificationDefinitionControllerRestDocTest extends BaseRestDocTest {
 
   @Autowired ClassificationRepresentationModelAssembler assembler;
   @Autowired ClassificationService classificationService;

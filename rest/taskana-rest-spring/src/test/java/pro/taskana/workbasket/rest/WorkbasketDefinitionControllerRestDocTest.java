@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocumentationTest;
+import pro.taskana.common.test.BaseRestDocTest;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -21,7 +21,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketDefinitionCollectionRepresen
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 
 @ExtendWith(JaasExtension.class)
-class WorkbasketDefinitionControllerRestDocumentationTest extends BaseRestDocumentationTest {
+class WorkbasketDefinitionControllerRestDocTest extends BaseRestDocTest {
 
   @Autowired WorkbasketService workbasketService;
   @Autowired WorkbasketRepresentationModelAssembler assembler;
