@@ -1,15 +1,17 @@
 <div *ngIf="workbasket" id="wb-information" class="workbasket-distribution-targets">
-  <mat-toolbar class="distribution-targets-list__action-toolbar">
+  <mat-toolbar class="distribution-targets-list__action-toolbar" >
+    <button mat-button (click)="onClear()">clear</button>
+    <button mat-button (click)="onSave()">save</button>
 
     <button mat-flat-button class="distribution-targets-list__action-button"
             *ngIf="!sideBySide" (click)="toggleSideBySideView()">
       Display side-by-side
-      <mat-icon class="button-icon">view_week</mat-icon>
+      <mat-icon class="distribution-targets-list__button-icon">view_week</mat-icon>
     </button>
     <button mat-flat-button class="distribution-targets-list__action-button"
             *ngIf="sideBySide" (click)="toggleSideBySideView()">
       Display in single-view
-      <mat-icon class="button-icon">view_agenda</mat-icon>
+      <mat-icon class="distribution-targets-list__button-icon">view_agenda</mat-icon>
     </button>
 
     <!-- SIDE BY SIDE VIEW BUTTONS -->
@@ -20,6 +22,7 @@
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
                 (click)="moveDistributionTargets(side.RIGHT)">
           Remove selected distribution target
+          <mat-icon>remove</mat-icon>
         </button>
       </div>
       <span style="flex-grow: 1"> </span>
@@ -29,6 +32,7 @@
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
                 (click)="moveDistributionTargets(side.LEFT)">
           Add selected distribution targets
+          <mat-icon>add</mat-icon>
         </button>
       </div>
     </div>
@@ -40,7 +44,7 @@
               class="distribution-targets-list__action-button distribution-targets-list-dialog__display-button"
               (click)="displayDistributionTargetsPicker()">
         Display available distribution targets
-        <mat-icon class="button-icon">launch</mat-icon>
+        <mat-icon>launch</mat-icon>
       </button>
 
       <span style="flex: 1 1 auto"> </span>
@@ -49,6 +53,7 @@
               class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
               (click)="moveDistributionTargets(side.RIGHT)">
         Remove selected distribution target
+        <mat-icon>remove</mat-icon>
       </button>
     </div>
 
@@ -59,6 +64,7 @@
               class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
               (click)="moveDistributionTargets(side.LEFT)">
         Add selected distribution targets
+        <mat-icon>add</mat-icon>
       </button>
 
       <span style="flex: 1 1 auto"> </span>
@@ -66,7 +72,7 @@
       <button mat-flat-button color="warn" class="distribution-targets-list-dialog__check-button"
               (click)="displayingDistributionTargetsPicker=!displayingDistributionTargetsPicker">
         Close selection
-        <mat-icon class="button-icon">close</mat-icon>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
   </mat-toolbar>
@@ -95,7 +101,7 @@
     <taskana-administration-workbasket-distribution-targets-list
       #dualListR id="dual-list-right"
       header="Available distribution targets"
-      [distributionTargets]="distributionTargetsLeft"
+      [distributionTargets]="availableDistributionTargets"
       [side]="side.LEFT"
       [distributionTargetsSelected]="distributionTargetsSelected"
       (performDualListFilter)="performFilter($event)"

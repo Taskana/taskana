@@ -35,6 +35,7 @@ import { ButtonAction } from '../../../administration/models/button-action';
 import { ActivatedRoute } from '@angular/router';
 import { TaskanaQueryParameters } from '../../util/query-parameters';
 import { append } from '@ngxs/store/operators';
+import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -46,7 +47,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     private workbasketService: WorkbasketService,
     private location: Location,
     private notificationService: NotificationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private requestInProgressService: RequestInProgressService
   ) {}
 
   @Action(InitializeStore)
@@ -357,7 +359,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(GetAvailableDistributionTargets)
   getAvailableDistributionTargets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
-    return this.workbasketService.getWorkBasketsSummary(true).pipe(
+    return this.workbasketService.getWorkBasketsSummary({ allPages: true }).pipe(
       take(1),
       tap((workbasketAvailableDistributionTargets: WorkbasketSummaryRepresentation) => {
         ctx.patchState({
@@ -376,6 +378,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       take(1),
       tap(
         (updatedWorkbasketsDistributionTargets) => {
+          ctx.patchState({
+            workbasketDistributionTargets: updatedWorkbasketsDistributionTargets
+          });
+          this.requestInProgressService.setRequestInProgress(false);
           this.notificationService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT_8,
             new Map<string, string>([['workbasketName', ctx.getState().selectedWorkbasket.name]])
@@ -383,6 +389,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         },
         (error) => {
           this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_3, error);
+          this.requestInProgressService.setRequestInProgress(false);
         }
       )
     );
