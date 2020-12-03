@@ -5,9 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.test.BaseRestDocumentationTest;
+import pro.taskana.common.test.BaseRestDocTest;
 
-public class AccessIdControllerRestDocumentationTest extends BaseRestDocumentationTest {
+public class AccessIdControllerRestDocTest extends BaseRestDocTest {
 
   @Test
   void searchForAccessIdDocTest() throws Exception {

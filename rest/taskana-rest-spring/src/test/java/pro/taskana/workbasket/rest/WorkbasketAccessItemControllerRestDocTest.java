@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocumentationTest;
+import pro.taskana.common.test.BaseRestDocTest;
 
-class WorkbasketAccessItemControllerRestDocumentationTest extends BaseRestDocumentationTest {
+class WorkbasketAccessItemControllerRestDocTest extends BaseRestDocTest {
 
   @Test
   void getWorkbasketAccessItemsDocTest() throws Exception {

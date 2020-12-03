@@ -17,5 +17,5 @@ Using HATEOAS allows us to change some endpoints without breaking any frontend.
 
 == History event
 
-include::{snippets}/TaskHistoryEventControllerRestDocumentationTest/getAllTaskHistoryEventsDocTest/auto-section.adoc[]
-include::{snippets}/TaskHistoryEventControllerRestDocumentationTest/getSpecificTaskHistoryEventDocTest/auto-section.adoc[]
+include::{snippets}/TaskHistoryEventControllerRestDocTest/getAllTaskHistoryEventsDocTest/auto-section.adoc[]
+include::{snippets}/TaskHistoryEventControllerRestDocTest/getSpecificTaskHistoryEventDocTest/auto-section.adoc[]
