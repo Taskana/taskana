@@ -88,7 +88,7 @@ public class WorkbasketAccessItemController {
    * This endpoint deletes all Workbasket Access Items for a provided Access Id.
    *
    * @title Delete a Workbasket Access Item
-   * @param accessId the Access Id which should be removed
+   * @param accessId the Access Id whose Workbasket Access Items should be removed
    * @return no content
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.

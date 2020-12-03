@@ -59,7 +59,7 @@ public class TaskSummaryRepresentationModel
   protected String businessProcessId;
   /** the parent business process id. */
   protected String parentBusinessProcessId;
-  /** The owner of the tasks. The owner is set upon claiming of the task. */
+  /** The owner of the task. The owner is set upon claiming of the task. */
   protected String owner;
   /** The Objects primary ObjectReference. */
   @NotNull protected ObjectReferenceRepresentationModel primaryObjRef;

@@ -11,7 +11,7 @@ NOTE: HATEOAS support is still in development. Please have a look at example res
 TASKANA uses the https://restfulapi.net/hateoas/)[HATEOAS] (Hypermedia as the Engine of Application State) REST constraint.
 Most of our resources contain a `_links` section which contains navigation links.
 These navigation links not only help navigate through our REST API, they encapsulate API.
-Using HATEOAS allows us to change some Endpoints without breaking any frontend.
+Using HATEOAS allows us to change some endpoints without breaking any frontend.
 
 == Task Resource
 
@@ -81,6 +81,7 @@ include::{snippets}/TaskanaEngineControllerRestDocumentationTest/getClassificati
 include::{snippets}/TaskanaEngineControllerRestDocumentationTest/getClassificationCategoriesByTypeMapDocTest/auto-section.adoc[]
 include::{snippets}/TaskanaEngineControllerRestDocumentationTest/getCurrentUserInfoDocTest/auto-section.adoc[]
 include::{snippets}/TaskanaEngineControllerRestDocumentationTest/getHistoryProviderIsEnabledDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocumentationTest/getCurrentVersionDocTest/auto-section.adoc[]
 
 == Import / Export
 

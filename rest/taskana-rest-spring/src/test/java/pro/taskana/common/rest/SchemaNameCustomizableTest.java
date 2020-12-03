@@ -19,7 +19,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Test that the schema name can be customized. */
 @TaskanaSpringBootTest
-class TestSchemaNameCustomizable {
+class SchemaNameCustomizableTest {
 
   String schemaName = "CUSTOMSCHEMANAME";
   boolean isPostgres = false;

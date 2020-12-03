@@ -95,12 +95,12 @@ public class ClassificationController {
   }
 
   /**
-   * This endpoints retrieves a single Classification.
+   * This endpoint retrieves a single Classification.
    *
-   * @title Get a single Classification
    * @param classificationId the id of the requested Classification.
    * @return the requested classification
-   * @throws ClassificationNotFoundException if the provided classification is not found.
+   * @throws ClassificationNotFoundException if the requested classification is not found.
+   * @title Get a single Classification
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -121,7 +121,7 @@ public class ClassificationController {
   }
 
   /**
-   * This endpoints creates a new Classification.
+   * This endpoint creates a new Classification.
    *
    * @title Create a new Classification
    * @param repModel the Classification which should be created.
@@ -165,8 +165,7 @@ public class ClassificationController {
    * @throws ClassificationNotFoundException if the requested Classification is not found
    * @throws ConcurrencyException if the requested Classification id has been modified in the
    *     meantime by a different process.
-   * @throws InvalidArgumentException if the id in the path and in the the request body does not
-   *     match
+   * @throws InvalidArgumentException if the id in the path and in the request body does not match
    */
   @PutMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(rollbackFor = Exception.class)

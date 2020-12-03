@@ -147,12 +147,11 @@ public class TaskController {
   /**
    * This endpoint retrieves a specific Task.
    *
-   * @title Get a single Task
    * @param taskId the id of the requested Task
    * @return the requested Task
    * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws NotAuthorizedException if the current user is not authorized to get the requested
-   *     Task.
+   * @throws NotAuthorizedException if the current user is not authorized to get the requested Task.
+   * @title Get a single Task
    */
   @GetMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -172,15 +171,15 @@ public class TaskController {
   /**
    * This endpoint claims a Task if possible.
    *
-   * @title Claim a Task
-   * @param taskId the requested Task which should be claimed
+   * @param taskId the id of the Task which should be claimed
    * @param userName TODO: this is currently not used
    * @return the claimed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException then the state of the requested Task is not READY.
+   * @throws InvalidStateException if the state of the requested Task is not READY.
    * @throws InvalidOwnerException if the Task is already claimed by someone else.
    * @throws NotAuthorizedException if the current user has no read permissions for the requested
    *     Task.
+   * @title Claim a Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
@@ -202,15 +201,15 @@ public class TaskController {
   }
 
   /**
-   * Selects the first Task returned by the Task Query and claims it.
+   * This endpoint selects the first Task returned by the Task Query and claims it.
    *
-   * @title Select and claim a Task
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @return the claimed Task
-   * @throws InvalidOwnerException If the Task is already claimed by someone else
+   * @throws InvalidOwnerException if the Task is already claimed by someone else
    * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
    *     the Task is in
+   * @title Select and claim a Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM)
   @Transactional(rollbackFor = Exception.class)
@@ -236,16 +235,17 @@ public class TaskController {
   }
 
   /**
-   * Cancel the claim of an existing Task if it was claimed by the current user before.
+   * This endpoint cancels the claim of an existing Task if it was claimed by the current user
+   * before.
    *
-   * @title Cancel a claimed Task
    * @param taskId the id of the requested Task.
    * @return the unclaimed Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException if the Task is already in a final state.
+   * @throws InvalidStateException if the Task is already in an end state.
    * @throws InvalidOwnerException if the Task is claimed by a different user.
    * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
    *     the Task is in
+   * @title Cancel a claimed Task
    */
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
@@ -268,14 +268,14 @@ public class TaskController {
   /**
    * This endpoint completes a Task.
    *
-   * @title Complete a Task
-   * @param taskId the requested Task.
+   * @param taskId id of the requested Task to complete.
    * @return the completed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidOwnerException if current user is not the owner of the Task or an administrator.
-   * @throws InvalidStateException if Task wasn't claimed before.
+   * @throws InvalidStateException if Task wasn't claimed previously.
    * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
    *     the Task is in
+   * @title Complete a Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE)
   @Transactional(rollbackFor = Exception.class)
@@ -319,15 +319,15 @@ public class TaskController {
   /**
    * This endpoint creates a persistent Task.
    *
-   * @title Create a new Task
    * @param taskRepresentationModel the Task which should be created.
    * @return the created Task
    * @throws WorkbasketNotFoundException if the referenced Workbasket does not exist
    * @throws ClassificationNotFoundException if the referenced Classification does not exist
-   * @throws NotAuthorizedException if the current user is not authorized to append a Task in the
+   * @throws NotAuthorizedException if the current user is not authorized to append a Task to the
    *     referenced Workbasket
    * @throws TaskAlreadyExistException if the requested Task already exists.
    * @throws InvalidArgumentException if any input is semantically wrong.
+   * @title Create a new Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(rollbackFor = Exception.class)
@@ -384,9 +384,8 @@ public class TaskController {
   /**
    * This endpoint updates a requested Task.
    *
-   * @title Update a Task
    * @param taskId the id of the Task which should be updated
-   * @param taskRepresentationModel the new Task
+   * @param taskRepresentationModel the new Task for the requested id.
    * @return the updated Task
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws ClassificationNotFoundException if the updated Classification does not exist.
@@ -394,9 +393,11 @@ public class TaskController {
    * @throws ConcurrencyException if the Task has been updated by a different process in the
    *     meantime
    * @throws NotAuthorizedException if the current user is not authorized.
-   * @throws AttachmentPersistenceException if the Task contains two attachments with the same id.
+   * @throws AttachmentPersistenceException if the modified Task contains two attachments with the
+   *     same id.
    * @throws InvalidStateException if an attempt is made to change the owner of the Task and the
    *     Task is not in state READY.
+   * @title Update a Task
    */
   @PutMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)

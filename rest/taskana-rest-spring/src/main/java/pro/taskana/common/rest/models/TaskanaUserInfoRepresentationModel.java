@@ -3,6 +3,7 @@ package pro.taskana.common.rest.models;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.lang.NonNull;
 
 import pro.taskana.common.api.TaskanaRole;
 
@@ -14,7 +15,7 @@ public class TaskanaUserInfoRepresentationModel
   private String userId;
   /** All groups the current user is a member of. */
   private List<String> groupIds = new ArrayList<>();
-  /** All taskana roles the current user is a member of. */
+  /** All taskana roles the current user fulfills. */
   private List<TaskanaRole> roles = new ArrayList<>();
 
   public String getUserId() {
@@ -42,7 +43,7 @@ public class TaskanaUserInfoRepresentationModel
   }
 
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return "TaskanaUserInfoRepresentationModel [userId="
         + userId
         + ", groupIds="

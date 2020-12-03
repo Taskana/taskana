@@ -18,5 +18,4 @@ public class TaskanaWildFlyApplication extends SpringBootServletInitializer {
   public static void main(String[] args) {
     SpringApplication.run(TaskanaWildFlyApplication.class, args);
   }
-
 }

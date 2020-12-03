@@ -37,7 +37,7 @@ class CancelTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testQeryCancelledTasks() {
+  void testQueryCancelledTasks() {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CANCELLED).list();
     assertThat(taskSummaries).hasSize(5);

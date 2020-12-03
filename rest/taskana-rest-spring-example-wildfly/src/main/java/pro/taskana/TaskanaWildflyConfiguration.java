@@ -33,7 +33,7 @@ public class TaskanaWildflyConfiguration {
   @Primary
   @ConfigurationProperties(prefix = "datasource")
   public DataSourceProperties dataSourceProperties(
-      @Value("${taskana.schemaName:TASKANA}")  String schemaName) {
+      @Value("${taskana.schemaName:TASKANA}") String schemaName) {
     DataSourceProperties props = new DataSourceProperties();
     props.setUrl(
         "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS "

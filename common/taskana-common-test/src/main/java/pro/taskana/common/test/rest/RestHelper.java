@@ -47,12 +47,12 @@ public class RestHelper {
 
   public String toUrl(String relativeUrl, Object... uriVariables) {
     return UriComponentsBuilder.fromPath(relativeUrl)
-               .scheme("http")
-               .host("127.0.0.1")
-               .port(getPort())
-               .build(false)
-               .expand(uriVariables)
-               .toString();
+        .scheme("http")
+        .host("127.0.0.1")
+        .port(getPort())
+        .build(false)
+        .expand(uriVariables)
+        .toString();
   }
 
   public HttpEntity<String> defaultRequest() {

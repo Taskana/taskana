@@ -13,9 +13,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import pro.taskana.common.rest.SpringSecurityToJaasFilter;
 
-/**
- * Default basic configuration for taskana web example.
- */
+/** Default basic configuration for taskana web example. */
 @EnableWebSecurity
 public class BootWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -116,5 +114,4 @@ public class BootWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     filter.setCreateEmptySubject(true);
     return filter;
   }
-
 }

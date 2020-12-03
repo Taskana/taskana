@@ -15,8 +15,8 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   private final String[] name;
 
   /**
-   * Filter by the name of the workbasket. This results into a substring search. (% is appended to
-   * the front and end of the requested value). Further SQL "Like" wildcard characters will be
+   * Filter by the name of the workbasket. This results in a substring search. (% is appended to the
+   * beginning and end of the requested value). Further SQL "Like" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("name-like")
@@ -26,8 +26,8 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   private final String[] key;
 
   /**
-   * Filter by the key of the workbasket. This results into a substring search. (% is appended to
-   * the front and end of the requested value). Further SQL "Like" wildcard characters will be
+   * Filter by the key of the workbasket. This results in a substring search.. (% is appended to the
+   * beginning and end of the requested value). Further SQL "Like" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("key-like")
@@ -37,22 +37,22 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   private final String[] owner;
 
   /**
-   * Filter by the owner of the workbasket. This results into a substring search. (% is appended to
-   * the front and end of the requested value). Further SQL "Like" wildcard characters will be
+   * Filter by the owner of the workbasket. This results in a substring search.. (% is appended to
+   * the beginning and end of the requested value). Further SQL "Like" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("owner-like")
   private final String[] ownerLike;
 
   /**
-   * Filter by the description of the workbasket. This results into a substring search. (% is
-   * appended to the front and end of the requested value). Further SQL "Like" wildcard characters
-   * will be resolved correctly.
+   * Filter by the description of the workbasket. This results in a substring search.. (% is
+   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * characters will be resolved correctly.
    */
   @JsonProperty("description-like")
   private final String[] descriptionLike;
 
-  /** Filter by the name of the workbasket. This is an exact match. */
+  /** Filter by the domain of the workbasket. This is an exact match. */
   private final String[] domain;
 
   /** Filter by the type of the workbasket. This is an exact match. */

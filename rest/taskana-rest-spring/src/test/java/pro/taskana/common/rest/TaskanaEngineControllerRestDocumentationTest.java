@@ -48,4 +48,11 @@ class TaskanaEngineControllerRestDocumentationTest extends BaseRestDocumentation
         .perform(get(RestEndpoints.URL_HISTORY_ENABLED))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
+
+  @Test
+  void getCurrentVersionDocTest() throws Exception {
+    mockMvc
+        .perform(get(RestEndpoints.URL_VERSION))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
 }

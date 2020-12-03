@@ -90,8 +90,8 @@ public interface ClassificationService {
    * @return the updated Classification.
    * @throws ClassificationNotFoundException if the classification OR it´s parent does not exist.
    * @throws NotAuthorizedException if the caller got no ADMIN or BUSINESS_ADMIN permissions.
-   * @throws ConcurrencyException if the Classification was modified meanwhile and is not latest
-   *     anymore.
+   * @throws ConcurrencyException If the classification was modified in the meantime and is not the
+   *     most up to date anymore.
    * @throws InvalidArgumentException if the ServiceLevel property does not comply with the ISO 8601
    *     specification
    */

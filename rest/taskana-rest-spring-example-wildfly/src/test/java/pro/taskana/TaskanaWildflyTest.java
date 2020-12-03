@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.io.File;
 import java.util.List;
@@ -23,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
-import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /**
@@ -69,12 +69,11 @@ public class TaskanaWildflyTest extends AbstractAccTest {
   @RunAsClient
   public void should_ReturnUserInformationForAuthenticatedUser_IfRequested() {
     ResponseEntity<TaskanaUserInfoRepresentationModel> response =
-        RestHelper.TEMPLATE
-            .exchange(
-                restHelper.toUrl("/taskana" + RestEndpoints.URL_CURRENT_USER),
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
+        TEMPLATE.exchange(
+            restHelper.toUrl("/taskana" + RestEndpoints.URL_CURRENT_USER),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
     assertThat(currentUser).isNotNull();
@@ -87,13 +86,11 @@ public class TaskanaWildflyTest extends AbstractAccTest {
   @RunAsClient
   public void should_ReturnUserFromLdap_WhenWildcardSearchIsConducted() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
-        RestHelper.TEMPLATE
-            .exchange(
-                restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {
-                });
+        TEMPLATE.exchange(
+            restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {});
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).hasSize(2);
   }
@@ -102,12 +99,13 @@ public class TaskanaWildflyTest extends AbstractAccTest {
   @RunAsClient
   public void should_ReturnTask_WhenRequested() {
     ResponseEntity<TaskRepresentationModel> response =
-        RestHelper.TEMPLATE
-            .exchange(restHelper.toUrl("/taskana" + RestEndpoints.URL_TASKS_ID,
+        TEMPLATE.exchange(
+            restHelper.toUrl(
+                "/taskana" + RestEndpoints.URL_TASKS_ID,
                 "TKI:000000000000000000000000000000000001"),
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(TaskRepresentationModel.class));
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(TaskRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
   }

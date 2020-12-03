@@ -8,7 +8,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
 public class WorkbasketRepresentationModel extends WorkbasketSummaryRepresentationModel {
 
   /**
-   * The creation timestamp of the classification in the system.
+   * The creation timestamp of the workbasket in the system.
    *
    * <p>The format is ISO-8601.
    */

@@ -110,7 +110,7 @@ public class ClassificationDefinitionController {
    * @param file the file containing the Classifications which should be imported.
    * @return nothing
    * @throws InvalidArgumentException if any Classification within the import file is invalid
-   * @throws NotAuthorizedException if the current user is not authorized to import Classification
+   * @throws NotAuthorizedException if the current user is not authorized to import Classifications
    * @throws ConcurrencyException TODO: this makes no sense
    * @throws ClassificationNotFoundException TODO: this makes no sense
    * @throws ClassificationAlreadyExistException TODO: this makes no sense

@@ -87,12 +87,13 @@ public class TaskHistoryEventController {
   }
 
   /**
-   * This endpoints retrieves a single Task History Event.
+   * This endpoint retrieves a single Task History Event.
    *
    * @title Get a single Task History Event
    * @param historyEventId the id of the requested Task History Event.
    * @return the requested Task History Event
-   * @throws TaskanaHistoryEventNotFoundException if the provided Task History Event is not found.
+   * @throws TaskanaHistoryEventNotFoundException If a Task History Event can't be found by the
+   *     provided historyEventId
    */
   @GetMapping(path = HistoryRestEndpoints.URL_HISTORY_EVENTS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -117,6 +118,7 @@ public class TaskHistoryEventController {
   }
 
   public enum TaskHistoryQuerySortBy implements QuerySortBy<TaskHistoryQuery> {
+    TASK_HISTORY_EVENT_ID(TaskHistoryQuery::orderByTaskHistoryEventId),
     BUSINESS_PROCESS_ID(TaskHistoryQuery::orderByBusinessProcessId),
     PARENT_BUSINESS_PROCESS_ID(TaskHistoryQuery::orderByParentBusinessProcessId),
     TASK_ID(TaskHistoryQuery::orderByTaskId),

@@ -41,7 +41,7 @@ public class ClassificationSummaryRepresentationModel
    *
    * <p>This is stated according to ISO 8601.
    */
-  protected String serviceLevel;
+  @NotNull protected String serviceLevel;
   /** The type of classification. Types can be configured in the file 'taskana.properties'. */
   protected String type;
   /** A custom property with name "1". */

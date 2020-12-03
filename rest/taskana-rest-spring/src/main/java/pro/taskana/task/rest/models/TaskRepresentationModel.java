@@ -13,7 +13,7 @@ import pro.taskana.task.api.models.Task;
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   // All objects have to be serializable
-  /** Additional information on the task. */
+  /** Additional information of the task. */
   private List<CustomAttribute> customAttributes = Collections.emptyList();
 
   /** Callback Information of the task. */

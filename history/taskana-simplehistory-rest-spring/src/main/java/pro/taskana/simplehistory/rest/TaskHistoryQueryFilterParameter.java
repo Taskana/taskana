@@ -13,30 +13,26 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 
 public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHistoryQuery, Void> {
 
-  /**
-   * Filter by the event type of the Task History Event. This is an exact match.
-   */
+  /** Filter by the event type of the Task History Event. This is an exact match. */
   @JsonProperty("event-type")
   private final String[] eventType;
 
   /**
-   * Filter by the event type of the Task History Event. This results into a substring search. (% is
-   * appended to the front and end of the requested value). Further SQL "Like" wildcard characters
-   * will be resolved correctly.
+   * Filter by the event type of the Task History Event. This results in a substring search.. (% is
+   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * characters will be resolved correctly.
    */
   @JsonProperty("event-type-like")
   private final String[] eventTypeLike;
 
-  /**
-   * Filter by the user id of the Task History Event. This is an exact match.
-   */
+  /** Filter by the user id of the Task History Event. This is an exact match. */
   @JsonProperty("user-id")
   private final String[] userId;
 
   /**
-   * Filter by the user id of the Task History Event. This results into a substring search. (% is
-   * appended to the front and end of the requested value). Further SQL "Like" wildcard characters
-   * will be resolved correctly.
+   * Filter by the user id of the Task History Event. This results in a substring search.. (% is
+   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * characters will be resolved correctly.
    */
   @JsonProperty("user-id-like")
   private final String[] userIdLike;
@@ -49,62 +45,52 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
    */
   private final Instant[] created;
 
-  /**
-   * Filter by the domain of the Task History Event. This is an exact match.
-   */
+  /** Filter by the domain of the Task History Event. This is an exact match. */
   private final String[] domain;
 
-  /**
-   * Filter by the task id of the Task History Event. This is an exact match.
-   */
+  /** Filter by the task id of the Task History Event. This is an exact match. */
   @JsonProperty("task-id")
   private final String[] taskId;
 
   /**
-   * Filter by the task id of the Task History Event. This results into a substring search. (% is
-   * appended to the front and end of the requested value). Further SQL "Like" wildcard characters
-   * will be resolved correctly.
+   * Filter by the task id of the Task History Event. This results in a substring search.. (% is
+   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * characters will be resolved correctly.
    */
   @JsonProperty("task-id-like")
   private final String[] taskIdLike;
 
-  /**
-   * Filter by the business process id of the Task History Event. This is an exact match.
-   */
+  /** Filter by the business process id of the Task History Event. This is an exact match. */
   @JsonProperty("business-process-id")
   private final String[] businessProcessId;
 
   /**
    * Filter by the business process id of the Task History Event. This results into a substring
-   * search. (% is appended to the front and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("business-process-id-like")
   private final String[] businessProcessIdLike;
 
-  /**
-   * Filter by the parent business process id of the Task History Event. This is an exact match.
-   */
+  /** Filter by the parent business process id of the Task History Event. This is an exact match. */
   @JsonProperty("parent-business-process-id")
   private final String[] parentBusinessProcessId;
 
   /**
    * Filter by the parent business process id of the Task History Event. This results into a
-   * substring search. (% is appended to the front and end of the requested value). Further SQL
+   * substring search. (% is appended to the beginning and end of the requested value). Further SQL
    * "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("parent-business-process-id-like")
   private final String[] parentBusinessProcessIdLike;
 
-  /**
-   * Filter by the task classification key of the Task History Event. This is an exact match.
-   */
+  /** Filter by the task classification key of the Task History Event. This is an exact match. */
   @JsonProperty("task-classification-key")
   private final String[] taskClassificationKey;
 
   /**
    * Filter by the task classification key of the Task History Event. This results into a substring
-   * search. (% is appended to the front and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("task-classification-key-like")
@@ -118,7 +104,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the task classification category of the Task History Event. This results into a
-   * substring search. (% is appended to the front and end of the requested value). Further SQL
+   * substring search. (% is appended to the beginning and end of the requested value). Further SQL
    * "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("task-classification-category-like")
@@ -132,21 +118,19 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the attachment classification key of the Task History Event. This results into a
-   * substring search. (% is appended to the front and end of the requested value). Further SQL
+   * substring search. (% is appended to the beginning and end of the requested value). Further SQL
    * "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("attachment-classification-key-like")
   private final String[] attachmentClassificationKeyLike;
 
-  /**
-   * Filter by the workbasket key of the Task History Event. This is an exact match.
-   */
+  /** Filter by the workbasket key of the Task History Event. This is an exact match. */
   @JsonProperty("workbasket-key")
   private final String[] workbasketKey;
 
   /**
-   * Filter by the workbasket key of the Task History Event. This results into a substring search.
-   * (% is appended to the front and end of the requested value). Further SQL "Like" wildcard
+   * Filter by the workbasket key of the Task History Event. This results in a substring search.. (%
+   * is appended to the beginning and end of the requested value). Further SQL "Like" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("workbasket-key-like")
@@ -161,8 +145,8 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the company of the primary object reference of the Task History Event. This results
-   * into a substring search. (% is appended to the front and end of the requested value). Further
-   * SQL "Like" wildcard characters will be resolved correctly.
+   * into a substring search. (% is appended to the beginning and end of the requested value).
+   * Further SQL "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-company-like")
   private final String[] porCompanyLike;
@@ -176,8 +160,8 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the system of the primary object reference of the Task History Event. This results
-   * into a substring search. (% is appended to the front and end of the requested value). Further
-   * SQL "Like" wildcard characters will be resolved correctly.
+   * into a substring search. (% is appended to the beginning and end of the requested value).
+   * Further SQL "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-system-like")
   private final String[] porSystemLike;
@@ -191,8 +175,8 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the system instance of the primary object reference of the Task History Event. This
-   * results into a substring search. (% is appended to the front and end of the requested value).
-   * Further SQL "Like" wildcard characters will be resolved correctly.
+   * results into a substring search. (% is appended to the beginning and end of the requested
+   * value). Further SQL "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-instance-like")
   private final String[] porInstanceLike;
@@ -206,63 +190,55 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the value of the primary object reference of the Task History Event. This results
-   * into a substring search. (% is appended to the front and end of the requested value). Further
-   * SQL "Like" wildcard characters will be resolved correctly.
+   * into a substring search. (% is appended to the beginning and end of the requested value).
+   * Further SQL "Like" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-value-like")
   private final String[] porValueLike;
 
-  /**
-   * Filter by the value of the field custom1. This is an exact match.
-   */
+  /** Filter by the value of the field custom1. This is an exact match. */
   @JsonProperty("custom-1")
   private final String[] custom1;
 
   /**
    * Filter by the value of the field custom1. This is an exact match. This results into a substring
-   * search. (% is appended to the front and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-1-like")
   private final String[] custom1Like;
 
-  /**
-   * Filter by the value of the field custom2. This is an exact match.
-   */
+  /** Filter by the value of the field custom2. This is an exact match. */
   @JsonProperty("custom-2")
   private final String[] custom2;
 
   /**
-   * Filter by the value of the field custom1. This is an exact match. This results into a substring
-   * search. (% is appended to the front and end of the requested value). Further SQL "Like"
+   * Filter by the value of the field custom2. This is an exact match. This results into a substring
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-2-like")
   private final String[] custom2Like;
 
-  /**
-   * Filter by the value of the field custom3. This is an exact match.
-   */
+  /** Filter by the value of the field custom3. This is an exact match. */
   @JsonProperty("custom-3")
   private final String[] custom3;
 
   /**
-   * Filter by the value of the field custom1. This is an exact match. This results into a substring
-   * search. (% is appended to the front and end of the requested value). Further SQL "Like"
+   * Filter by the value of the field custom3. This is an exact match. This results into a substring
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-3-like")
   private final String[] custom3Like;
 
-  /**
-   * Filter by the value of the field custom4. This is an exact match.
-   */
+  /** Filter by the value of the field custom4. This is an exact match. */
   @JsonProperty("custom-4")
   private final String[] custom4;
 
   /**
-   * Filter by the value of the field custom1. This is an exact match. This results into a substring
-   * search. (% is appended to the front and end of the requested value). Further SQL "Like"
+   * Filter by the value of the field custom4. This is an exact match. This results into a substring
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-4-like")
@@ -270,31 +246,31 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   @SuppressWarnings("indentation")
   @ConstructorProperties({
-      "event-type",
-      "event-type-like",
-      "user-id",
-      "user-id-like",
-      "created",
-      "domain",
-      "task-id",
-      "task-id-like",
-      "business-process-id",
-      "business-process-id-like",
-      "parent-business-process-id",
-      "parent-business-process-id-like",
-      "task-classification-key",
-      "task-classification-key-like",
-      "task-classification-category",
-      "task-classification-category-like",
-      "attachment-classification-key",
-      "attachment-classification-key-like",
-      "workbasket-key",
-      "workbasket-key-like",
-      "por-company",
-      "por-company-like",
-      "por-system",
-      "por-system-like",
-      "por-instance",
+    "event-type",
+    "event-type-like",
+    "user-id",
+    "user-id-like",
+    "created",
+    "domain",
+    "task-id",
+    "task-id-like",
+    "business-process-id",
+    "business-process-id-like",
+    "parent-business-process-id",
+    "parent-business-process-id-like",
+    "task-classification-key",
+    "task-classification-key-like",
+    "task-classification-category",
+    "task-classification-category-like",
+    "attachment-classification-key",
+    "attachment-classification-key-like",
+    "workbasket-key",
+    "workbasket-key-like",
+    "por-company",
+    "por-company-like",
+    "por-system",
+    "por-system-like",
+    "por-instance",
     "por-instance-like",
     "por-value",
     "por-value-like",

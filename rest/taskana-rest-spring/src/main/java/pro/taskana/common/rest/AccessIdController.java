@@ -40,9 +40,9 @@ public class AccessIdController {
    * @title Search for Access Id (users and groups)
    * @param searchFor the Access Id which should be searched for.
    * @return a list of all found Access Ids
-   * @throws InvalidArgumentException if the provided search for access id is shorter thant the
-   *                                  configured one.
-   * @throws NotAuthorizedException   if the current user is not ADMIN or BUSINESS_ADMIN.
+   * @throws InvalidArgumentException if the provided search for access id is shorter than the
+   *     configured one.
+   * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
    */
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID)
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroups(

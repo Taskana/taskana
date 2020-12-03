@@ -178,10 +178,9 @@ public class TaskCommentController {
    * @throws NotAuthorizedException if the current user does not have access to the Task Comment
    * @throws TaskNotFoundException if the referenced Task within the Task Comment does not exist
    * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
-   * @throws InvalidArgumentException if the id in the path and in the the request body does not
-   *     match
-   * @throws ConcurrencyException if the requested Task Comment has been updated in the meantime
-   *     by a different process.
+   * @throws InvalidArgumentException if the id in the path and in the request body does not match
+   * @throws ConcurrencyException if the requested Task Comment has been updated in the meantime by
+   *     a different process.
    */
   @PutMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -223,7 +222,7 @@ public class TaskCommentController {
    *
    * @title Create a new Task Comment
    * @param taskId the id of the Task where a Task Comment should be created.
-   * @param taskCommentRepresentationModel the body of the Task Comment
+   * @param taskCommentRepresentationModel the Task Comment to create.
    * @return the created Task Comment
    * @throws NotAuthorizedException if the current user is not authorized to create a Task Comment
    * @throws InvalidArgumentException if the Task Comment id is null or empty
@@ -270,18 +269,7 @@ public class TaskCommentController {
     if (sortBy != null) {
       for (int i = 0; i < sortBy.size(); i++) {
         SortDirection sortDirection = order == null ? SortDirection.ASCENDING : order.get(i);
-        Comparator<TaskComment> temp;
-        switch (sortBy.get(i)) {
-          case CREATED:
-            temp = Comparator.comparing(TaskComment::getCreated);
-            break;
-          case MODIFIED:
-            temp = Comparator.comparing(TaskComment::getModified);
-            break;
-          default:
-            throw new InvalidArgumentException(
-                String.format("Unknown sort-by '%s'", sortBy.get(i)));
-        }
+        Comparator<TaskComment> temp = sortBy.get(i).getComparator();
         if (sortDirection == SortDirection.DESCENDING) {
           temp = temp.reversed();
         }
@@ -292,7 +280,17 @@ public class TaskCommentController {
   }
 
   enum TaskCommentsSortBy {
-    CREATED,
-    MODIFIED
+    CREATED(Comparator.comparing(TaskComment::getCreated)),
+    MODIFIED(Comparator.comparing(TaskComment::getModified));
+
+    private final Comparator<TaskComment> comparator;
+
+    TaskCommentsSortBy(Comparator<TaskComment> comparing) {
+      comparator = comparing;
+    }
+
+    public Comparator<TaskComment> getComparator() {
+      return comparator;
+    }
   }
 }
