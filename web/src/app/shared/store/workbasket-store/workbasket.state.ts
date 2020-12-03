@@ -196,6 +196,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(OnButtonPressed)
   doWorkbasketDetailsAction(ctx: StateContext<WorkbasketStateModel>, action: OnButtonPressed): Observable<any> {
     ctx.patchState({ button: action.button });
+    setTimeout(() => {
+      ctx.patchState({ button: undefined });
+    }, 500);
     return of(null);
   }
 
@@ -359,7 +362,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(GetAvailableDistributionTargets)
   getAvailableDistributionTargets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
-    return this.workbasketService.getWorkBasketsSummary({ allPages: true }).pipe(
+    return this.workbasketService.getWorkBasketsSummary(true).pipe(
       take(1),
       tap((workbasketAvailableDistributionTargets: WorkbasketSummaryRepresentation) => {
         ctx.patchState({

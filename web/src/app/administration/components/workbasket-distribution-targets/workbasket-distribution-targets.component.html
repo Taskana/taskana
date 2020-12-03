@@ -1,8 +1,5 @@
 <div *ngIf="workbasket" id="wb-information" class="workbasket-distribution-targets">
   <mat-toolbar class="distribution-targets-list__action-toolbar" >
-    <button mat-button (click)="onClear()">clear</button>
-    <button mat-button (click)="onSave()">save</button>
-
     <button mat-flat-button class="distribution-targets-list__action-button"
             *ngIf="!sideBySide" (click)="toggleSideBySideView()">
       Display side-by-side
@@ -20,7 +17,7 @@
            style="justify-content: flex-end; margin-right: 2%">
         <button mat-flat-button color="warn"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
-                (click)="moveDistributionTargets(side.RIGHT)">
+                (click)="moveDistributionTargets(side.SELECTED)">
           Remove selected distribution target
           <mat-icon>remove</mat-icon>
         </button>
@@ -30,7 +27,7 @@
            style="justify-content: flex-end;">
         <button mat-flat-button color="accent"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
-                (click)="moveDistributionTargets(side.LEFT)">
+                (click)="moveDistributionTargets(side.AVAILABLE)">
           Add selected distribution targets
           <mat-icon>add</mat-icon>
         </button>
@@ -40,20 +37,20 @@
     <!-- SINGLE VIEW BUTTONS WHEN DISPLAYING SELECTED DISTRIBUTION TARGETS -->
     <div class="distribution-targets-list__action-buttons distribution-targets-list__action-buttons--selected"
          *ngIf="!displayingDistributionTargetsPicker && !sideBySide">
-      <button mat-flat-button color="accent"
-              class="distribution-targets-list__action-button distribution-targets-list-dialog__display-button"
-              (click)="displayDistributionTargetsPicker()">
-        Display available distribution targets
-        <mat-icon>launch</mat-icon>
+      <button mat-flat-button color="warn"
+              class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
+              (click)="moveDistributionTargets(side.SELECTED)">
+        Remove selected distribution target
+        <mat-icon>remove</mat-icon>
       </button>
 
       <span style="flex: 1 1 auto"> </span>
 
-      <button mat-flat-button color="warn"
-              class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
-              (click)="moveDistributionTargets(side.RIGHT)">
-        Remove selected distribution target
-        <mat-icon>remove</mat-icon>
+      <button mat-stroked-button
+              class="distribution-targets-list__action-button distribution-targets-list-dialog__display-button"
+              (click)="displayDistributionTargetsPicker()">
+        Display available distribution targets
+        <mat-icon>launch</mat-icon>
       </button>
     </div>
 
@@ -62,7 +59,7 @@
          *ngIf="displayingDistributionTargetsPicker && !sideBySide">
       <button mat-flat-button color="accent"
               class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
-              (click)="moveDistributionTargets(side.LEFT)">
+              (click)="moveDistributionTargets(side.AVAILABLE)">
         Add selected distribution targets
         <mat-icon>add</mat-icon>
       </button>
@@ -84,12 +81,11 @@
     <!-- DISTRIBUTION TABLE-->
     <taskana-administration-workbasket-distribution-targets-list
       [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
-      #dualListLeft id="dual-list-Left"
       header="Selected distribution targets"
       [distributionTargets]="distributionTargetsRight"
       [distributionTargetsSelected]="distributionTargetsSelected"
       (performDualListFilter)="performFilter($event)"
-      [side]="side.RIGHT"
+      [side]="side.SELECTED"
       (scrolling)="onScroll()"
       [loadingItems]="loadingItems"
       [(allSelected)]="selectAllLeft"
@@ -99,10 +95,9 @@
     </taskana-administration-workbasket-distribution-targets-list>
 
     <taskana-administration-workbasket-distribution-targets-list
-      #dualListR id="dual-list-right"
       header="Available distribution targets"
       [distributionTargets]="availableDistributionTargets"
-      [side]="side.LEFT"
+      [side]="side.AVAILABLE"
       [distributionTargetsSelected]="distributionTargetsSelected"
       (performDualListFilter)="performFilter($event)"
       (scrolling)="onScroll()"

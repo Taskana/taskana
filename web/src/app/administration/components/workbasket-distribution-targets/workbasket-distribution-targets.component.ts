@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
@@ -12,7 +12,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/shared/models/page';
 import { Select, Store } from '@ngxs/store';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
@@ -22,10 +22,11 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { MatDialog } from '@angular/material/dialog';
+import { ButtonAction } from '../../models/button-action';
 
 export enum Side {
-  LEFT,
-  RIGHT
+  AVAILABLE,
+  SELECTED
 }
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets',
@@ -41,6 +42,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   toolbarState = false;
   sideBySide = false;
+  displayingDistributionTargetsPicker = true;
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
   availableDistributionTargets: Array<WorkbasketSummary> = [];
@@ -49,10 +51,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   distributionTargetsClone: Array<WorkbasketSummary>;
   distributionTargetsSelectedClone: Array<WorkbasketSummary>;
 
-  displayingDistributionTargetsPicker = false;
-
-  requestInProgressLeft = false;
-  requestInProgressRight = false;
   loadingItems = false;
   side = Side;
   private initialized = false;
@@ -66,6 +64,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   @Select(WorkbasketSelectors.availableDistributionTargets)
   availableDistributionTargets$: Observable<WorkbasketSummary[]>;
+
+  @Select(WorkbasketSelectors.buttonAction)
+  buttonAction$: Observable<ButtonAction>;
 
   destroy$ = new Subject<void>();
 
@@ -103,9 +104,23 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
         this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
         TaskanaQueryParameters.page = 1;
         this.getWorkbaskets();
-        // this.store.dispatch(new GetAvailableDistributionTargets());
       }
     });
+    this.buttonAction$
+      .pipe(takeUntil(this.destroy$))
+      .pipe(filter((buttonAction) => typeof buttonAction !== 'undefined'))
+      .subscribe((button) => {
+        switch (button) {
+          case ButtonAction.SAVE:
+            this.onSave();
+            break;
+          case ButtonAction.UNDO:
+            this.onClear();
+            break;
+          default:
+            break;
+        }
+      });
   }
 
   onScroll() {
@@ -129,7 +144,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
     }
 
-    // TODO: Implement this into NGXS
     this.workbasketService
       .getWorkBasketsSummary(true)
       .pipe(takeUntil(this.destroy$))
@@ -138,10 +152,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
           this.availableDistributionTargets = [];
           this.page = distributionTargetsAvailable.page;
         }
-        if (side === this.side.LEFT) {
+        if (side === this.side.AVAILABLE) {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-        } else if (side === this.side.RIGHT) {
-          console.log(this.distributionTargetsRight);
+        } else if (side === this.side.SELECTED) {
           this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
         } else {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
@@ -181,9 +194,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
           this.availableDistributionTargets = [];
           this.page = distributionTargetsAvailable.page;
         }
-        if (dualListFilter.side === this.side.LEFT) {
+        if (dualListFilter.side === this.side.AVAILABLE) {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-        } else if (dualListFilter.side === this.side.RIGHT) {
+        } else if (dualListFilter.side === this.side.SELECTED) {
           this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
         } else {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
@@ -205,7 +218,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   moveDistributionTargets(side: number) {
-    if (side === Side.LEFT) {
+    if (side === Side.AVAILABLE) {
       const itemsLeft = this.availableDistributionTargets.length;
       const itemsRight = this.distributionTargetsRight.length;
       const itemsSelected = this.getSelectedItems(this.availableDistributionTargets);
@@ -235,8 +248,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   fillDistributionTargets(side: Side, workbaskets: WorkbasketSummary[]) {
-    this.availableDistributionTargets = side === Side.LEFT ? workbaskets : this.availableDistributionTargets;
-    this.distributionTargetsRight = side === Side.RIGHT ? workbaskets : this.distributionTargetsRight;
+    this.availableDistributionTargets = side === Side.AVAILABLE ? workbaskets : this.availableDistributionTargets;
+    this.distributionTargetsRight = side === Side.SELECTED ? workbaskets : this.distributionTargetsRight;
   }
 
   getSelectedItems(originList: any): Array<any> {

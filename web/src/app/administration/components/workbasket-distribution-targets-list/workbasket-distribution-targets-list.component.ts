@@ -6,7 +6,8 @@ import {
   EventEmitter,
   AfterContentChecked,
   ChangeDetectorRef,
-  ViewChild
+  ViewChild,
+  OnChanges
 } from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
@@ -34,10 +35,9 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
   @Input() side: Side;
   @Input() header: string;
   @Output() scrolling = new EventEmitter<Side>();
-  @Input() allSelected = false;
+  @Input() allSelected;
   @Output() allSelectedChange = new EventEmitter<boolean>();
 
-  sideNumber = 0;
   toolbarState = false;
   component = '';
   @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
@@ -46,7 +46,6 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
 
   ngOnInit() {
     this.allSelected = !this.allSelected;
-    this.sideNumber = this.side === Side.LEFT ? 0 : 1;
   }
 
   ngAfterContentChecked(): void {
@@ -54,11 +53,12 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
   }
 
   selectAll(selected: boolean) {
-    this.allSelected = !this.allSelected;
-    this.distributionTargetsList.options.forEach((workbasket: any) => {
-      workbasket.selected = selected;
-    });
-    this.allSelectedChange.emit(this.allSelected);
+    if (typeof this.distributionTargetsList !== 'undefined') {
+      this.allSelected = !this.allSelected;
+      this.distributionTargetsList.options.map((item) => (item['selected'] = selected));
+      this.distributionTargets.map((item) => (item['selected'] = selected));
+      this.allSelectedChange.emit(this.allSelected);
+    }
   }
 
   setComponent(component: string) {

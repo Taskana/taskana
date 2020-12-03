@@ -48,16 +48,16 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     component = fixture.componentInstance;
     component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
     component.distributionTargetsSelected = [];
-    component.side = Side.LEFT;
+    component.side = Side.AVAILABLE;
   }));
 
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set sideNumber to 0 when side is Side.LEFT', () => {
+  it('should set sideNumber to 0 when side is Side.AVAILABLE', () => {
     fixture.detectChanges();
-    expect(component.sideNumber).toBe(0);
+    expect(component.side).toBe(Side.AVAILABLE);
   });
 
   it('should select all distribution targets', () => {
