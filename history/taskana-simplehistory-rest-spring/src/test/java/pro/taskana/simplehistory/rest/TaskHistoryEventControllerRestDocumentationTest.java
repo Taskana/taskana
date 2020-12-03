@@ -10,18 +10,19 @@ import pro.taskana.common.test.BaseRestDocumentationTest;
 class TaskHistoryEventControllerRestDocumentationTest extends BaseRestDocumentationTest {
 
   @Test
-  void getAllTaskHistoryEventDocTest() throws Exception {
+  void getAllTaskHistoryEventsDocTest() throws Exception {
     mockMvc
-        .perform(
-            get(HistoryRestEndpoints.URL_HISTORY_EVENTS + "?page=1&page-size=3"))
+        .perform(get(HistoryRestEndpoints.URL_HISTORY_EVENTS + "?page=1&page-size=3"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
   void getSpecificTaskHistoryEventDocTest() throws Exception {
     mockMvc
-        .perform(get(HistoryRestEndpoints.URL_HISTORY_EVENTS_ID,
-            "THI:000000000000000000000000000000000000"))
+        .perform(
+            get(
+                HistoryRestEndpoints.URL_HISTORY_EVENTS_ID,
+                "THI:000000000000000000000000000000000000"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 }

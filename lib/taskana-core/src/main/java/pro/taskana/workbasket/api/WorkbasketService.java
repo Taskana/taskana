@@ -279,8 +279,8 @@ public interface WorkbasketService {
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Remove a distribution target from a workbasket. If the the specified distribution target
-   * doesn't exist, the method silently returns without doing anything.
+   * Remove a distribution target from a workbasket. If the specified distribution target doesn't
+   * exist, the method silently returns without doing anything.
    *
    * @param sourceWorkbasketId The id of the source workbasket
    * @param targetWorkbasketId The id of the target workbasket

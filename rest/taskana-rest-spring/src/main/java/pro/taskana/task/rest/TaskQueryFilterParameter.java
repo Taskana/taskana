@@ -24,60 +24,54 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by the name of the task. This is an exact match. */
   private final String[] name;
   /**
-   * Filter by the name of the task. This results into a substring search. (% is appended to the
+   * Filter by the name of the task. This results in a substring search.. (% is appended to the
    * front and end of the requested value). Further SQL "Like" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("name-like")
   private final String[] nameLike;
-  /** Filter by the priority of the task. */
+  /** Filter by the priority of the task. This is an exact match. */
   private final int[] priority;
-
-  /** Filter by the task state. */
+  /** Filter by the task state. This is an exact match. */
   private final TaskState[] state;
-  /** Filter by the classification key. */
+  /** Filter by the classification key. This is an exact match. */
   @JsonProperty("classification.key")
   private final String[] classificationKeys;
-  /** Filter by task id. */
+  /** Filter by task id. This is an exact match. */
   @JsonProperty("task-id")
   private final String[] taskIds;
-  /** Filter by workbasket id. */
+  /** Filter by workbasket id. This is an exact match. */
   @JsonProperty("workbasket-id")
   private final String[] workbasketIds;
   /** Filter by workbasket keys. This parameter can only be used in combination with 'domain' */
   @JsonProperty("workbasket-key")
   private final String[] workbasketKeys;
-
-  /** Filter by domain. */
+  /** Filter by domain. This is an exact match. */
   private final String domain;
-  /** Filter by owner. */
+  /** Filter by owner. This is an exact match. */
   private final String[] owner;
   /**
-   * Filter by the owner of the task. This results into a substring search. (% is appended to the
+   * Filter by the owner of the task. This results in a substring search.. (% is appended to the
    * front and end of the requested value). Further SQL "Like" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("owner-like")
   private final String[] ownerLike;
-  /** Filter by the company of the primary object reference. */
+  /** Filter by the company of the primary object reference. This is an exact match. */
   @JsonProperty("por.company")
   private final String[] porCompany;
-
-  /** Filter by the system of the primary object reference. */
+  /** Filter by the system of the primary object reference. This is an exact match. */
   @JsonProperty("por.system")
   private final String[] porSystem;
-  /** Filter by the system instance of the primary object reference. */
+  /** Filter by the system instance of the primary object reference. This is an exact match. */
   @JsonProperty("por.instance")
   private final String[] porInstance;
-
-  /** Filter by the type of the primary object reference. */
+  /** Filter by the type of the primary object reference. This is an exact match. */
   @JsonProperty("por.type")
   private final String[] porType;
-
-  /** Filter by the value of the primary object reference. */
+  /** Filter by the value of the primary object reference. This is an exact match. */
   @JsonProperty("por.value")
   private final String[] porValue;
-
   /**
    * Filter by a planned time interval. The length of the provided values has to be even. To create
    * an open interval you can either use 'null' or just leave it blank.
@@ -146,14 +140,14 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final WildcardSearchField[] wildcardSearchFields;
 
   /**
-   * Filter by wildcard search field.
+   * Filter by wildcard search field. This is an exact match.
    *
    * <p>This must be used in combination with 'wildcard-search-value'
    */
   @JsonProperty("wildcard-search-value")
   private final String wildcardSearchValue;
 
-  /** Filter by the external id. */
+  /** Filter by the external id. This is an exact match. */
   @JsonProperty("external-id")
   private final String[] externalIds;
 

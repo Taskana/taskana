@@ -11,7 +11,7 @@ import pro.taskana.monitor.api.reports.row.SingleRow;
 /** EntityModel class for {@link Report}. */
 public class ReportRepresentationModel extends RepresentationModel<ReportRepresentationModel> {
 
-  /** Object holding metainfo on the report. */
+  /** Object holding meta info on the report. */
   private final MetaInformation meta;
 
   /** Array holding the rows of the report. */
@@ -109,22 +109,22 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     private final Instant date;
     /** Column-headers of the report. */
     private final String[] header;
-    /** Descriptions for the rows the report. */
+    /** Descriptions for the rows of the report. */
     private final String[] rowDesc;
     /** Description for the sum column. */
-    private final String totalDesc;
+    private final String sumRowDesc;
 
     public MetaInformation(
-        String name, Instant date, String[] header, String[] rowDesc, String totalDesc) {
+        String name, Instant date, String[] header, String[] rowDesc, String sumRowDesc) {
       this.name = name;
       this.date = date;
       this.header = header;
       this.rowDesc = rowDesc;
-      this.totalDesc = totalDesc;
+      this.sumRowDesc = sumRowDesc;
     }
 
-    public String getTotalDesc() {
-      return totalDesc;
+    public String getSumRowDesc() {
+      return sumRowDesc;
     }
 
     public String getName() {
@@ -154,7 +154,7 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
           + ", rowDesc="
           + Arrays.toString(rowDesc)
           + ", totalDesc="
-          + totalDesc
+          + sumRowDesc
           + "]";
     }
   }

@@ -25,5 +25,4 @@ public class WildflyWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     filter.setCreateEmptySubject(true);
     return filter;
   }
-
 }

@@ -59,7 +59,7 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
       throws InvalidArgumentException {
     if (sortBy == null && order != null) {
       throw new InvalidArgumentException(
-          "Only 'order' were provided. Please also provide 'sort-by' parameter(s)");
+          "Only 'order' parameters were provided. Please also provide 'sort-by' parameter(s)");
     }
   }
 

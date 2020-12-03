@@ -1,7 +1,7 @@
 = TASKANA History module RESTful API Documentation
 
 == Overview
-This is the REST documentation for http://taskana.pro)[TASKANA]'s simplehistory REST Endpoints.
+This is the REST documentation for http://taskana.pro)[TASKANA]'s simplehistory REST endpoints.
 
 For all Query Parameters:: whenever a parameter is an array type multiple values can be passed by declaring that parameter multiple times.
 
@@ -13,9 +13,9 @@ Please have a look at example responses for each resource to determine the avail
 TASKANA uses the https://restfulapi.net/hateoas/)[HATEOAS] (Hypermedia as the Engine of Application State) REST constraint.
 Most of our resources contain a `_links` section which contains navigation links.
 These navigation links not only help navigate through our REST API, they encapsulate API.
-Using HATEOAS allows us to change some Endpoints without breaking any frontend.
+Using HATEOAS allows us to change some endpoints without breaking any frontend.
 
 == History event
 
-include::{snippets}/TaskHistoryEventControllerRestDocumentationTest/getAllTaskHistoryEventDocTest/auto-section.adoc[]
+include::{snippets}/TaskHistoryEventControllerRestDocumentationTest/getAllTaskHistoryEventsDocTest/auto-section.adoc[]
 include::{snippets}/TaskHistoryEventControllerRestDocumentationTest/getSpecificTaskHistoryEventDocTest/auto-section.adoc[]

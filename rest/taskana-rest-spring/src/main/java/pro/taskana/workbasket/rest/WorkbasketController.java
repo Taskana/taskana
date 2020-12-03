@@ -153,8 +153,7 @@ public class WorkbasketController {
    * @title Delete a Workbasket
    * @param workbasketId the id of the Workbasket which should be deleted
    * @return the deleted Workbasket
-   * @throws NotAuthorizedException if the current user is not authorized to delete this
-   *     Workbasket.
+   * @throws NotAuthorizedException if the current user is not authorized to delete this Workbasket.
    * @throws InvalidArgumentException if the requested Workbasket id is null or empty
    * @throws WorkbasketNotFoundException if the requested Workbasket is not found
    * @throws WorkbasketInUseException if the Workbasket contains tasks.
@@ -224,10 +223,10 @@ public class WorkbasketController {
    *
    * @title Update a Workbasket
    * @param workbasketId the id of the Workbasket which should be updated.
-   * @param workbasketRepresentationModel the new Workbasket.
+   * @param workbasketRepresentationModel the new Workbasket for the requested id.
    * @return the updated Workbasket
-   * @throws InvalidWorkbasketException if the requested id and the id within the new Workbasket
-   *     do not match.
+   * @throws InvalidWorkbasketException if the requested id and the id within the new Workbasket do
+   *     not match.
    * @throws WorkbasketNotFoundException if the requested workbasket does not
    * @throws NotAuthorizedException if the current user is not authorized to update the Workbasket
    * @throws ConcurrencyException if an attempt is made to update the Workbasket and another user
@@ -270,7 +269,7 @@ public class WorkbasketController {
    * @return the access items for the requested workbasket.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
-   * @throws WorkbasketNotFoundException the requested Workbasket does not exist.
+   * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
    */
   @GetMapping(
       path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
@@ -300,29 +299,29 @@ public class WorkbasketController {
    *
    * @title Set all Workbasket Access Items
    * @param workbasketId the id of the Workbasket whose Workbasket Access Items will be replaced
-   * @param workbasketAccessResourceItems the new Workbasket Access Items.
+   * @param workbasketAccessItemRepModels the new Workbasket Access Items.
    * @return the new Workbasket Access Items for the requested Workbasket
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws InvalidArgumentException if the new Workbasket Access Items are not provided.
    * @throws WorkbasketNotFoundException TODO: this is never thrown.
-   * @throws WorkbasketAccessItemAlreadyExistException if a duplicate Workbasket Access Item
-   *     exists in the provided list.
+   * @throws WorkbasketAccessItemAlreadyExistException if a duplicate Workbasket Access Item exists
+   *     in the provided list.
    */
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> setWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId,
-      @RequestBody WorkbasketAccessItemCollectionRepresentationModel workbasketAccessResourceItems)
+      @RequestBody WorkbasketAccessItemCollectionRepresentationModel workbasketAccessItemRepModels)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketAccessItemAlreadyExistException {
     LOGGER.debug("Entry to setWorkbasketAccessItems(workbasketId= {})", workbasketId);
-    if (workbasketAccessResourceItems == null) {
+    if (workbasketAccessItemRepModels == null) {
       throw new InvalidArgumentException("Can´t create something with NULL body-value.");
     }
 
     List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
-    workbasketAccessResourceItems
+    workbasketAccessItemRepModels
         .getContent()
         .forEach(
             item ->
@@ -364,10 +363,10 @@ public class WorkbasketController {
     LOGGER.debug("Entry to getDistributionTargets(workbasketId= {})", workbasketId);
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
-    DistributionTargetsCollectionRepresentationModel distributionTargetListResource =
+    DistributionTargetsCollectionRepresentationModel distributionTargetRepModels =
         workbasketSummaryRepresentationModelAssembler.toTaskanaCollectionModel(distributionTargets);
     ResponseEntity<DistributionTargetsCollectionRepresentationModel> result =
-        ResponseEntity.ok(distributionTargetListResource);
+        ResponseEntity.ok(distributionTargetRepModels);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getDistributionTargets(), returning {}", result);
     }
@@ -383,7 +382,7 @@ public class WorkbasketController {
    * @param targetWorkbasketIds the destination Workbaskets.
    * @return the new Distribution Targets for the requested Workbasket.
    * @throws WorkbasketNotFoundException if any Workbasket was not found (either source or target)
-   * @throws NotAuthorizedException if the current used doesn't have READ permission for the source
+   * @throws NotAuthorizedException if the current user doesn't have READ permission for the source
    *     Workbasket
    */
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION)

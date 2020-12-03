@@ -336,6 +336,15 @@ public interface TaskHistoryQuery extends BaseQuery<TaskHistoryEvent, TaskHistor
       TaskHistoryCustomField customField, String... searchArguments);
 
   /**
+   * Sort the query result by the id of the events.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskHistoryQuery orderByTaskHistoryEventId(SortDirection sortDirection);
+
+  /**
    * Sort the query result by businessProcessId.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.

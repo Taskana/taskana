@@ -20,7 +20,7 @@ public class TaskHistoryEventRepresentationModel
   /** The type of the event. */
   private String eventType;
   /**
-   * The time was created.
+   * The time of event creation.
    *
    * <p>The format is ISO-8601.
    */
@@ -29,23 +29,23 @@ public class TaskHistoryEventRepresentationModel
   private String userId;
   /** Domain. */
   private String domain;
-  /** The key of workbasket. */
+  /** The key of the Workbasket. */
   private String workbasketKey;
-  /** The company referenced primary object belongs to. */
+  /** The company the referenced primary object belongs to. */
   private String porCompany;
-  /** The type of the reference (contract, claim, policy, customer, ...). */
+  /** The type of the referenced primary object (contract, claim, policy, customer, ...). */
   private String porType;
-  /** The (kind of) system, the object resides in (e.g. SAP, MySystem A, ...). */
+  /** The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, ...). */
   private String porSystem;
-  /** The instance of the system, the object resides in. */
+  /** The instance of the system, the referenced primary object resides in. */
   private String porInstance;
   /** The value of the primary object reference. */
   private String porValue;
-  /** The key of classification task. */
+  /** The key of the task's classification. */
   private String taskClassificationKey;
-  /** The category of classification. */
+  /** The category of the task's classification. */
   private String taskClassificationCategory;
-  /** The key of the task's attachment. */
+  /** The classification key of the task's attachment. */
   private String attachmentClassificationKey;
   /** The old value. */
   private String oldValue;

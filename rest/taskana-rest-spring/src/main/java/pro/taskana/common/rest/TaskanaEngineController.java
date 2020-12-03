@@ -38,7 +38,6 @@ public class TaskanaEngineController {
    *
    * @return An array with the domain-names as strings
    */
-  // TODO: this is not proper usage of this endpoint..
   @GetMapping(path = RestEndpoints.URL_DOMAIN)
   public ResponseEntity<List<String>> getDomains() {
     ResponseEntity<List<String>> response =

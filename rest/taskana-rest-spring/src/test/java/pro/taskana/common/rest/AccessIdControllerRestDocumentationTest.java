@@ -18,8 +18,8 @@ public class AccessIdControllerRestDocumentationTest extends BaseRestDocumentati
 
   @Test
   void getGroupsForAccessIdDocTest() throws Exception {
-    mockMvc.perform(get(RestEndpoints.URL_ACCESS_ID_GROUPS + "?access-id=teamlead-1"))
+    mockMvc
+        .perform(get(RestEndpoints.URL_ACCESS_ID_GROUPS + "?access-id=teamlead-1"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
-
 }

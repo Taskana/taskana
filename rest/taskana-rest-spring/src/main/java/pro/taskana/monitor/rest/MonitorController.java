@@ -46,7 +46,7 @@ public class MonitorController {
   }
 
   /**
-   * This endpoints generates a Task Status Report.
+   * This endpoint generates a Task Status Report.
    *
    * <p>A Task Status Report contains the total number of tasks, clustered in their Task States and
    * grouped by Workbaskets. Each row represents a Workbasket while each column represents a Task
@@ -55,7 +55,7 @@ public class MonitorController {
    * @param domains Filter the report values by domains.
    * @param states Filter the report values by task states.
    * @return the computed TaskStatusReport
-   * @throws NotAuthorizedException if the current user is not authenticated to compute the report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @title Get a Task Status Report
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
@@ -83,7 +83,7 @@ public class MonitorController {
   }
 
   /**
-   * This endpoints generates a Workbasket Report.
+   * This endpoint generates a Workbasket Report.
    *
    * <p>A WorkbasketReport contains the total numbers of tasks, clustered by the a Task Timestamp
    * date range and grouped by Workbaskets. Each row represents a Workbasket while each column
@@ -92,7 +92,7 @@ public class MonitorController {
    * @param states Filter the report by task states
    * @param taskTimestamp determine which task timestamp should be used for comparison
    * @return the computed report
-   * @throws NotAuthorizedException if the current user is not authenticated to compute the report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown ...
    * @title Get a Workbasket Report
    */
@@ -154,16 +154,16 @@ public class MonitorController {
   }
 
   /**
-   * This endpoints generates a Classification Report.
+   * This endpoint generates a Classification Report.
    *
-   * <p>A Classification Report contains the total numbers of tasks, clustered by the a Task
-   * Timestamp date range and grouped by Classifications. Each row represents a Classification while
-   * each column represents a date range.
+   * <p>A Classification Report contains the total numbers of tasks, clustered by the Task Timestamp
+   * date range and grouped by Classifications. Each row represents a Classification while each
+   * column represents a date range.
    *
    * @title Get a Classification Report
    * @return the computed report
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
-   * @throws NotAuthorizedException if the current user is not authenticated to compute the report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION_REPORT)
@@ -192,15 +192,15 @@ public class MonitorController {
   }
 
   /**
-   * This endpoints generates a Timestamp Report.
+   * This endpoint generates a Timestamp Report.
    *
-   * <p>A Timestamp Report contains the total numbers of tasks, clustered by date range and grouped
+   * <p>A Timestamp Report contains the total number of tasks, clustered by date range and grouped
    * by its Task Status. Each row represents a Task Status while each column represents a date
    * range. Each row can be expanded to further group the tasks by their Org Level (1-4)
    *
    * @title Get a Timestamp Report
    * @return the computed report
-   * @throws NotAuthorizedException if the current user is not authenticated to compute the report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT)

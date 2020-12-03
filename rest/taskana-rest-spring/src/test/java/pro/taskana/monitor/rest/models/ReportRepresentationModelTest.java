@@ -62,7 +62,7 @@ class ReportRepresentationModelTest {
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"WORKBASKET"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
-    assertThat(meta.getTotalDesc()).isEqualTo("Total");
+    assertThat(meta.getSumRowDesc()).isEqualTo("Total");
 
     // rows
     assertThat(resource.getRows()).isEmpty();
@@ -98,7 +98,7 @@ class ReportRepresentationModelTest {
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"CLASSIFICATION"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
-    assertThat(meta.getTotalDesc()).isEqualTo("Total");
+    assertThat(meta.getSumRowDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
@@ -144,7 +144,7 @@ class ReportRepresentationModelTest {
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"CLASSIFICATION"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
-    assertThat(meta.getTotalDesc()).isEqualTo("Total");
+    assertThat(meta.getSumRowDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
@@ -199,7 +199,7 @@ class ReportRepresentationModelTest {
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
-    assertThat(meta.getTotalDesc()).isEqualTo("Total");
+    assertThat(meta.getSumRowDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();
@@ -279,7 +279,7 @@ class ReportRepresentationModelTest {
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"TASK CLASSIFICATION", "ATTACHMENT"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
-    assertThat(meta.getTotalDesc()).isEqualTo("Total");
+    assertThat(meta.getSumRowDesc()).isEqualTo("Total");
 
     // rows
     List<ReportRepresentationModel.RowRepresentationModel> rows = resource.getRows();

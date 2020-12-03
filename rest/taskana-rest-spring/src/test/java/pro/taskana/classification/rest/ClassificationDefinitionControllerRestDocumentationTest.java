@@ -15,8 +15,7 @@ import pro.taskana.classification.rest.models.ClassificationCollectionRepresenta
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.BaseRestDocumentationTest;
 
-class ClassificationDefinitionControllerRestDocumentationTest
-    extends BaseRestDocumentationTest {
+class ClassificationDefinitionControllerRestDocumentationTest extends BaseRestDocumentationTest {
 
   @Autowired ClassificationRepresentationModelAssembler assembler;
   @Autowired ClassificationService classificationService;
@@ -32,6 +31,7 @@ class ClassificationDefinitionControllerRestDocumentationTest
   void importClassificationDefinitionsDocTest() throws Exception {
     Classification classification =
         classificationService.newClassification("Key0815", "DOMAIN_B", "TASK");
+    classification.setServiceLevel("P1D");
 
     ClassificationCollectionRepresentationModel importCollection =
         assembler.toTaskanaCollectionModel(List.of(classification));

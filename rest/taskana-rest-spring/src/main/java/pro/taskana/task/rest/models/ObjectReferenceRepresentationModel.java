@@ -7,13 +7,13 @@ public class ObjectReferenceRepresentationModel
 
   /** Unique ID. */
   private String id;
-  /** The company referenced primary object belongs to. */
+  /** The company the referenced primary object belongs to. */
   private String company;
-  /** The (kind of) system, the object resides in (e.g. SAP, MySystem A, ...). */
+  /** The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, ...). */
   private String system;
-  /** The instance of the system, the object resides in. */
+  /** The instance of the system, the referenced primary object resides in. */
   private String systemInstance;
-  /** The type of the reference (contract, claim, policy, customer, ...). */
+  /** The type of the referenced primary object (contract, claim, policy, customer, ...). */
   private String type;
   /** The value of the primary object reference. */
   private String value;

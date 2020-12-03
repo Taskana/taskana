@@ -1,6 +1,7 @@
 package pro.taskana.common.rest.models;
 
 import java.beans.ConstructorProperties;
+import java.util.Objects;
 
 /**
  * This is copied from {@link org.springframework.hateoas.PagedModel.PageMetadata}. Reason: The
@@ -40,5 +41,38 @@ public class PageMetadata {
 
   public long getNumber() {
     return number;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(size, totalElements, totalPages, number);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof PageMetadata)) {
+      return false;
+    }
+    PageMetadata other = (PageMetadata) obj;
+    return size == other.size
+        && totalElements == other.totalElements
+        && totalPages == other.totalPages
+        && number == other.number;
+  }
+
+  @Override
+  public String toString() {
+    return "PageMetadata [size="
+        + size
+        + ", totalElements="
+        + totalElements
+        + ", totalPages="
+        + totalPages
+        + ", number="
+        + number
+        + "]";
   }
 }

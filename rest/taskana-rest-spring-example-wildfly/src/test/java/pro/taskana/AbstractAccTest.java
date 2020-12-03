@@ -49,23 +49,20 @@ public class AbstractAccTest {
 
   protected ResponseEntity<TaskHistoryEventPagedRepresentationModel>
       performGetHistoryEventsRestCall() {
-    return RestHelper.TEMPLATE
-               .exchange(
-                   restHelper.toUrl("/taskana" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
-                   HttpMethod.GET,
-                   restHelper.defaultRequest(),
-                   ParameterizedTypeReference
-                       .forType(TaskHistoryEventPagedRepresentationModel.class));
+    return RestHelper.TEMPLATE.exchange(
+        restHelper.toUrl("/taskana" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
+        HttpMethod.GET,
+        restHelper.defaultRequest(),
+        ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
   }
 
   protected ResponseEntity<TaskRepresentationModel> performCreateTaskRestCall() {
     TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-    return RestHelper.TEMPLATE
-               .exchange(
-                   restHelper.toUrl("/taskana" + RestEndpoints.URL_TASKS),
-                   HttpMethod.POST,
-                   new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
-                   ParameterizedTypeReference.forType(TaskRepresentationModel.class));
+    return RestHelper.TEMPLATE.exchange(
+        restHelper.toUrl("/taskana" + RestEndpoints.URL_TASKS),
+        HttpMethod.POST,
+        new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1()),
+        ParameterizedTypeReference.forType(TaskRepresentationModel.class));
   }
 
   protected String parseServerLog() throws Exception {

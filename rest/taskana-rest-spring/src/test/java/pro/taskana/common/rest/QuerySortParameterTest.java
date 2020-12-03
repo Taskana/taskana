@@ -19,8 +19,8 @@ class QuerySortParameterTest {
     MockQuery query = mock(MockQuery.class);
     MockSortBy sortBy = mock(MockSortBy.class);
 
-    QuerySortParameter<MockQuery, MockSortBy> sortByParameter = new QuerySortParameter<>(
-        List.of(sortBy), List.of(SortDirection.ASCENDING));
+    QuerySortParameter<MockQuery, MockSortBy> sortByParameter =
+        new QuerySortParameter<>(List.of(sortBy), List.of(SortDirection.ASCENDING));
 
     sortByParameter.applyToQuery(query);
 
@@ -73,8 +73,8 @@ class QuerySortParameterTest {
     MockSortBy sortBy2 = mock(MockSortBy.class);
 
     QuerySortParameter<MockQuery, MockSortBy> sortByParameter =
-        new QuerySortParameter<>(List.of(sortBy1, sortBy2),
-            List.of(SortDirection.ASCENDING, SortDirection.ASCENDING));
+        new QuerySortParameter<>(
+            List.of(sortBy1, sortBy2), List.of(SortDirection.ASCENDING, SortDirection.ASCENDING));
 
     sortByParameter.applyToQuery(query);
 
@@ -87,10 +87,10 @@ class QuerySortParameterTest {
     MockSortBy sortBy = mock(MockSortBy.class);
     SortDirection sortDirection = SortDirection.ASCENDING;
     assertThatThrownBy(
-        () -> new QuerySortParameter<>(List.of(sortBy, sortBy), List.of(sortDirection)))
+            () -> new QuerySortParameter<>(List.of(sortBy, sortBy), List.of(sortDirection)))
         .isInstanceOf(InvalidArgumentException.class);
     assertThatThrownBy(
-        () -> new QuerySortParameter<>(List.of(sortBy), List.of(sortDirection, sortDirection)))
+            () -> new QuerySortParameter<>(List.of(sortBy), List.of(sortDirection, sortDirection)))
         .isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -102,11 +102,7 @@ class QuerySortParameterTest {
 
   private enum MockColumnNames implements QueryColumnName {}
 
-  private abstract static class MockSortBy implements QuerySortBy<MockQuery> {
+  private abstract static class MockSortBy implements QuerySortBy<MockQuery> {}
 
-  }
-
-  private abstract static class MockQuery implements BaseQuery<Void, MockColumnNames> {
-
-  }
+  private abstract static class MockQuery implements BaseQuery<Void, MockColumnNames> {}
 }
