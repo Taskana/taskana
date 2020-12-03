@@ -1,8 +1,8 @@
 package pro.taskana.doc.api;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -466,7 +466,7 @@ class WorkbasketControllerRestDocumentation extends BaseRestDocumentation {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", ADMIN_CREDENTIALS);
-    assertEquals(200, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(200);
 
     String modifiedWorkbasket;
     try (BufferedReader in =

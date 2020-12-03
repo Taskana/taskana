@@ -28,7 +28,7 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 
 /** Test WorkbasketAccessItemController. */
-@TestMethodOrder(MethodOrderer.Alphanumeric.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @TaskanaSpringBootTest
 class WorkbasketAccessItemControllerIntTest {
 
