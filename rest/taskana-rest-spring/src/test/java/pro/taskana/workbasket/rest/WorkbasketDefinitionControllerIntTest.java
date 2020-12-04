@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,6 +40,7 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionCollectionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
+import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 
 /** Integration tests for WorkbasketDefinitionController. */
 @TaskanaSpringBootTest
@@ -92,6 +94,20 @@ class WorkbasketDefinitionControllerIntTest {
     }
     assertThat(allDistributionTargetsAreEmpty).isFalse();
     assertThat(allAuthorizationsAreEmpty).isFalse();
+  }
+
+  @Test
+  void should_NotContainAnyLinks_When_ExportIsRequested() {
+    ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> response =
+        executeExportRequestForDomain("DOMAIN_A");
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getLinks()).isEmpty();
+    assertThat(response.getBody().getContent())
+        .extracting(WorkbasketDefinitionRepresentationModel::getWorkbasket)
+        .extracting(WorkbasketRepresentationModel::getLinks)
+        .extracting(Links::isEmpty)
+        .containsOnly(true);
   }
 
   @Test
@@ -236,9 +252,7 @@ class WorkbasketDefinitionControllerIntTest {
     WorkbasketDefinitionRepresentationModel w = pagedModel.getContent().iterator().next();
 
     ThrowingCallable httpCall =
-        () -> {
-          expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
-        };
+        () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
     assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
   }
 
@@ -260,7 +274,8 @@ class WorkbasketDefinitionControllerIntTest {
         restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
-        new ParameterizedTypeReference<WorkbasketDefinitionCollectionRepresentationModel>() {});
+        ParameterizedTypeReference.forType(
+            WorkbasketDefinitionCollectionRepresentationModel.class));
   }
 
   private void expectStatusWhenExecutingImportRequestOfWorkbaskets(
@@ -275,15 +290,18 @@ class WorkbasketDefinitionControllerIntTest {
       HttpStatus expectedStatus, WorkbasketDefinitionCollectionRepresentationModel pageModel)
       throws Exception {
     File tmpFile = File.createTempFile("test", ".tmp");
-    try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(tmpFile), UTF_8)) {
+    try (FileOutputStream out = new FileOutputStream(tmpFile);
+        OutputStreamWriter writer = new OutputStreamWriter(out, UTF_8)) {
       objMapper.writeValue(writer, pageModel);
     }
-    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
-    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+    MultiValueMap<String, FileSystemResource> body = new LinkedMultiValueMap<>();
     body.add("file", new FileSystemResource(tmpFile));
 
-    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+    HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+    HttpEntity<?> requestEntity = new HttpEntity<>(body, headers);
     String serverUrl = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS);
 
     ResponseEntity<Void> responseImport =

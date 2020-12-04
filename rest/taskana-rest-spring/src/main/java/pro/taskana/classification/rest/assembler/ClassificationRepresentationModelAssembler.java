@@ -40,6 +40,20 @@ public class ClassificationRepresentationModelAssembler
   @NonNull
   @Override
   public ClassificationRepresentationModel toModel(@NonNull Classification classification) {
+    ClassificationRepresentationModel repModel = toModelWithoutLinks(classification);
+    try {
+      repModel.add(
+          WebMvcLinkBuilder.linkTo(
+                  methodOn(ClassificationController.class)
+                      .getClassification(classification.getId()))
+              .withSelfRel());
+    } catch (ClassificationNotFoundException e) {
+      throw new SystemException("caught unexpected Exception.", e.getCause());
+    }
+    return repModel;
+  }
+
+  public ClassificationRepresentationModel toModelWithoutLinks(Classification classification) {
     ClassificationRepresentationModel repModel = new ClassificationRepresentationModel();
     repModel.setClassificationId(classification.getId());
     repModel.setApplicationEntryPoint(classification.getApplicationEntryPoint());
@@ -64,15 +78,6 @@ public class ClassificationRepresentationModelAssembler
     repModel.setCreated(classification.getCreated());
     repModel.setModified(classification.getModified());
     repModel.setDescription(classification.getDescription());
-    try {
-      repModel.add(
-          WebMvcLinkBuilder.linkTo(
-                  methodOn(ClassificationController.class)
-                      .getClassification(classification.getId()))
-              .withSelfRel());
-    } catch (ClassificationNotFoundException e) {
-      throw new SystemException("caught unexpected Exception.", e.getCause());
-    }
     return repModel;
   }
 

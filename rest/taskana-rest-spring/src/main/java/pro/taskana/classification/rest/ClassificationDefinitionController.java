@@ -33,8 +33,9 @@ import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistExcep
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
-import pro.taskana.classification.rest.models.ClassificationCollectionRepresentationModel;
+import pro.taskana.classification.rest.assembler.ClassificationDefinitionCollectionRepresentationModel;
+import pro.taskana.classification.rest.assembler.ClassificationDefinitionRepresentationModelAssembler;
+import pro.taskana.classification.rest.models.ClassificationDefinitionRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -52,30 +53,29 @@ public class ClassificationDefinitionController {
 
   private final ObjectMapper mapper;
   private final ClassificationService classificationService;
-  private final ClassificationRepresentationModelAssembler
-      classificationRepresentationModelAssembler;
+  private final ClassificationDefinitionRepresentationModelAssembler assembler;
 
   @Autowired
   ClassificationDefinitionController(
       ObjectMapper mapper,
       ClassificationService classificationService,
-      ClassificationRepresentationModelAssembler classificationRepresentationModelAssembler) {
+      ClassificationDefinitionRepresentationModelAssembler assembler) {
     this.mapper = mapper;
     this.classificationService = classificationService;
-    this.classificationRepresentationModelAssembler = classificationRepresentationModelAssembler;
+    this.assembler = assembler;
   }
 
   /**
    * This endpoint exports all configured Classifications.
    *
-   * @title Export Classifications
    * @param domain Filter the export by domain
    * @return the configured Classifications.
+   * @title Export Classifications
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ClassificationCollectionRepresentationModel> exportClassifications(
-      @RequestParam(required = false) String[] domain) {
+  public ResponseEntity<ClassificationDefinitionCollectionRepresentationModel>
+      exportClassifications(@RequestParam(required = false) String[] domain) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to exportClassifications(domain= {})", Arrays.toString(domain));
     }
@@ -84,16 +84,15 @@ public class ClassificationDefinitionController {
     List<ClassificationSummary> summaries =
         domain != null ? query.domainIn(domain).list() : query.list();
 
-    ClassificationCollectionRepresentationModel collectionModel =
+    ClassificationDefinitionCollectionRepresentationModel collectionModel =
         summaries.stream()
             .map(ClassificationSummary::getId)
             .map(wrap(classificationService::getClassification))
             .collect(
                 Collectors.collectingAndThen(
-                    Collectors.toList(),
-                    classificationRepresentationModelAssembler::toTaskanaCollectionModel));
+                    Collectors.toList(), assembler::toTaskanaCollectionModel));
 
-    ResponseEntity<ClassificationCollectionRepresentationModel> response =
+    ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         ResponseEntity.ok(collectionModel);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from exportClassifications(), returning {}", response);
@@ -125,7 +124,7 @@ public class ClassificationDefinitionController {
           DomainNotFoundException, IOException {
     LOGGER.debug("Entry to importClassifications()");
     Map<String, String> systemIds = getSystemIds();
-    ClassificationCollectionRepresentationModel collection =
+    ClassificationDefinitionCollectionRepresentationModel collection =
         extractClassificationResourcesFromFile(file);
     checkForDuplicates(collection.getContent());
 
@@ -144,17 +143,18 @@ public class ClassificationDefinitionController {
             Collectors.toMap(i -> i.getKey() + "|" + i.getDomain(), ClassificationSummary::getId));
   }
 
-  private ClassificationCollectionRepresentationModel extractClassificationResourcesFromFile(
-      MultipartFile file) throws IOException {
+  private ClassificationDefinitionCollectionRepresentationModel
+      extractClassificationResourcesFromFile(MultipartFile file) throws IOException {
     return mapper.readValue(
-        file.getInputStream(), ClassificationCollectionRepresentationModel.class);
+        file.getInputStream(), ClassificationDefinitionCollectionRepresentationModel.class);
   }
 
   private void checkForDuplicates(
-      Collection<ClassificationRepresentationModel> classificationList) {
+      Collection<ClassificationDefinitionRepresentationModel> definitionList) {
     List<String> identifiers = new ArrayList<>();
     Set<String> duplicates = new HashSet<>();
-    for (ClassificationRepresentationModel classification : classificationList) {
+    for (ClassificationDefinitionRepresentationModel definition : definitionList) {
+      ClassificationRepresentationModel classification = definition.getClassification();
       String identifier = classification.getKey() + "|" + classification.getDomain();
       if (identifiers.contains(identifier)) {
         duplicates.add(identifier);
@@ -169,20 +169,23 @@ public class ClassificationDefinitionController {
   }
 
   private Map<Classification, String> mapChildrenToParentKeys(
-      Collection<ClassificationRepresentationModel> classificationRepresentationModels,
+      Collection<ClassificationDefinitionRepresentationModel> definitionList,
       Map<String, String> systemIds) {
     LOGGER.debug("Entry to mapChildrenToParentKeys()");
     Map<Classification, String> childrenInFile = new HashMap<>();
     Set<String> newKeysWithDomain = new HashSet<>();
-    classificationRepresentationModels.forEach(
-        cl -> newKeysWithDomain.add(cl.getKey() + "|" + cl.getDomain()));
+    definitionList.stream()
+        .map(ClassificationDefinitionRepresentationModel::getClassification)
+        .forEach(cl -> newKeysWithDomain.add(cl.getKey() + "|" + cl.getDomain()));
 
-    for (ClassificationRepresentationModel cl : classificationRepresentationModels) {
+    for (ClassificationDefinitionRepresentationModel def : definitionList) {
+      ClassificationRepresentationModel cl = def.getClassification();
       cl.setParentId(cl.getParentId() == null ? "" : cl.getParentId());
       cl.setParentKey(cl.getParentKey() == null ? "" : cl.getParentKey());
 
       if (!cl.getParentId().equals("") && cl.getParentKey().equals("")) {
-        for (ClassificationRepresentationModel parent : classificationRepresentationModels) {
+        for (ClassificationDefinitionRepresentationModel parentDef : definitionList) {
+          ClassificationRepresentationModel parent = parentDef.getClassification();
           if (cl.getParentId().equals(parent.getClassificationId())) {
             cl.setParentKey(parent.getKey());
           }
@@ -194,8 +197,7 @@ public class ClassificationDefinitionController {
           && !cl.getParentKey().equals("")
           && (newKeysWithDomain.contains(parentKeyAndDomain)
               || systemIds.containsKey(parentKeyAndDomain)))) {
-        childrenInFile.put(
-            classificationRepresentationModelAssembler.toEntityModel(cl), cl.getParentKey());
+        childrenInFile.put(assembler.toEntityModel(def), cl.getParentKey());
       }
     }
     if (LOGGER.isDebugEnabled()) {
@@ -206,29 +208,26 @@ public class ClassificationDefinitionController {
   }
 
   private void insertOrUpdateClassificationsWithoutParent(
-      Collection<ClassificationRepresentationModel> classificationRepresentationModels,
+      Collection<ClassificationDefinitionRepresentationModel> definitionList,
       Map<String, String> systemIds)
       throws ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException,
           ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException {
     LOGGER.debug("Entry to insertOrUpdateClassificationsWithoutParent()");
 
-    for (ClassificationRepresentationModel classificationRepresentationModel :
-        classificationRepresentationModels) {
-      classificationRepresentationModel.setParentKey(null);
-      classificationRepresentationModel.setParentId(null);
-      classificationRepresentationModel.setClassificationId(null);
+    for (ClassificationDefinitionRepresentationModel definition : definitionList) {
+      ClassificationRepresentationModel classificationRepModel = definition.getClassification();
+      classificationRepModel.setParentKey(null);
+      classificationRepModel.setParentId(null);
+      classificationRepModel.setClassificationId(null);
+
+      Classification newClassification = assembler.toEntityModel(definition);
 
       String systemId =
-          systemIds.get(
-              classificationRepresentationModel.getKey()
-                  + "|"
-                  + classificationRepresentationModel.getDomain());
+          systemIds.get(classificationRepModel.getKey() + "|" + classificationRepModel.getDomain());
       if (systemId != null) {
-        updateExistingClassification(classificationRepresentationModel, systemId);
+        updateExistingClassification(newClassification, systemId);
       } else {
-        classificationService.createClassification(
-            classificationRepresentationModelAssembler.toEntityModel(
-                classificationRepresentationModel));
+        classificationService.createClassification(newClassification);
       }
     }
     LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");
@@ -260,31 +259,48 @@ public class ClassificationDefinitionController {
     LOGGER.debug("Exit from updateParentChildrenRelations()");
   }
 
-  private void updateExistingClassification(ClassificationRepresentationModel cl, String systemId)
+  private void updateExistingClassification(Classification newClassification, String systemId)
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InvalidArgumentException {
     LOGGER.debug("Entry to updateExistingClassification()");
     Classification currentClassification = classificationService.getClassification(systemId);
-    if (cl.getType() != null && !cl.getType().equals(currentClassification.getType())) {
+    if (newClassification.getType() != null
+        && !newClassification.getType().equals(currentClassification.getType())) {
       throw new InvalidArgumentException("Can not change the type of a classification.");
     }
-    currentClassification.setCategory(cl.getCategory());
-    currentClassification.setIsValidInDomain(cl.getIsValidInDomain());
-    currentClassification.setName(cl.getName());
-    currentClassification.setParentId(cl.getParentId());
-    currentClassification.setParentKey(cl.getParentKey());
-    currentClassification.setDescription(cl.getDescription());
-    currentClassification.setPriority(cl.getPriority());
-    currentClassification.setServiceLevel(cl.getServiceLevel());
-    currentClassification.setApplicationEntryPoint(cl.getApplicationEntryPoint());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, cl.getCustom1());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_2, cl.getCustom2());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_3, cl.getCustom3());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_4, cl.getCustom4());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_5, cl.getCustom5());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_6, cl.getCustom6());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_7, cl.getCustom7());
-    currentClassification.setCustomAttribute(ClassificationCustomField.CUSTOM_8, cl.getCustom8());
+    currentClassification.setCategory(newClassification.getCategory());
+    currentClassification.setIsValidInDomain(newClassification.getIsValidInDomain());
+    currentClassification.setName(newClassification.getName());
+    currentClassification.setParentId(newClassification.getParentId());
+    currentClassification.setParentKey(newClassification.getParentKey());
+    currentClassification.setDescription(newClassification.getDescription());
+    currentClassification.setPriority(newClassification.getPriority());
+    currentClassification.setServiceLevel(newClassification.getServiceLevel());
+    currentClassification.setApplicationEntryPoint(newClassification.getApplicationEntryPoint());
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_1,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_1));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_2,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_2));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_3,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_3));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_4,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_4));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_5,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_5));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_6,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_6));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_7,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_7));
+    currentClassification.setCustomAttribute(
+        ClassificationCustomField.CUSTOM_8,
+        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_8));
     classificationService.updateClassification(currentClassification);
     LOGGER.debug("Exit from updateExistingClassification()");
   }
