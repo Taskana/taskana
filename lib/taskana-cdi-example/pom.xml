@@ -1,30 +1,31 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>taskana-cdi-example</artifactId>
-	<packaging>war</packaging>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-cdi-example</artifactId>
+  <packaging>war</packaging>
 
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>The Taskana Spring sample application.</description>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>The Taskana Spring sample application.</description>
 
-	<parent>
-		<groupId>pro.taskana</groupId>
-		<artifactId>taskana-lib-parent</artifactId>
-		<version>4.2.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-lib-parent</artifactId>
+    <version>4.2.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>${version.javaee-api}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>pro.taskana</groupId>
-			<artifactId>taskana-cdi</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>${version.javaee-api}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-cdi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>
