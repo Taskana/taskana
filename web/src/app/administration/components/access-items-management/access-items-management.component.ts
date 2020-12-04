@@ -40,6 +40,7 @@ export class AccessItemsManagementComponent implements OnInit {
   ]);
   sortModel: Sorting = new Sorting('access-id', Direction.DESC);
   accessItems: any[];
+  isGroup: boolean = false;
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
     AccessItemsCustomisation
@@ -118,20 +119,14 @@ export class AccessItemsManagementComponent implements OnInit {
   }
 
   filterAccessItems() {
-    if (!this.accessItemsForm.value.accessIdFilter) {
-      this.accessItems = this.accessItems.filter((value) =>
-        value.workbasketKey.toLowerCase().includes(this.accessItemsForm.value.workbasketKeyFilter)
-      );
-    } else if (!this.accessItemsForm.value.workbasketKeyFilter) {
+    if (this.accessItemsForm.value.accessIdFilter) {
       this.accessItems = this.accessItems.filter((value) =>
         value.accessName.toLowerCase().includes(this.accessItemsForm.value.accessIdFilter)
       );
-    } else {
+    }
+    if (this.accessItemsForm.value.workbasketKeyFilter) {
       this.accessItems = this.accessItems.filter((value) =>
         value.workbasketKey.toLowerCase().includes(this.accessItemsForm.value.workbasketKeyFilter)
-      );
-      this.accessItems = this.accessItems.filter((value) =>
-        value.accessName.toLowerCase().includes(this.accessItemsForm.value.accessIdFilter)
       );
     }
   }
