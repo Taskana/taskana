@@ -12,13 +12,13 @@ public class ClassificationSummaryRepresentationModel
   /** Unique Id. */
   @NotNull protected String classificationId;
   /**
-   * The key of the classification. This is typically an externally known code or abbreviation of
-   * the classification.
+   * The key of the Classification. This is typically an externally known code or abbreviation of
+   * the Classification.
    */
   @NotNull protected String key;
   /**
-   * The logical name of the entry point, the task list application should redirect to work on a
-   * task of this classification.
+   * The logical name of the entry point. This is needed by the task list application to determine
+   * the redirect to work on a task of this Classification.
    */
   protected String applicationEntryPoint;
   /**
@@ -30,7 +30,7 @@ public class ClassificationSummaryRepresentationModel
   protected String domain;
   /** The name of the classification. */
   @NotNull protected String name;
-  /** The id of the parent classification. Empty string ("") if this is a root classification. */
+  /** The Id of the parent classification. Empty string ("") if this is a root classification. */
   protected String parentId;
   /** The key of the parent classification. Empty string ("") if this is a root classification. */
   protected String parentKey;

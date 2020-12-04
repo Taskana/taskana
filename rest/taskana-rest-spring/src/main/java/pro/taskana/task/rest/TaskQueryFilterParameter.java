@@ -25,7 +25,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] name;
   /**
    * Filter by the name of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "Like" wildcard characters will be resolved
+   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("name-like")
@@ -52,7 +52,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] owner;
   /**
    * Filter by the owner of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "Like" wildcard characters will be resolved
+   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("owner-like")

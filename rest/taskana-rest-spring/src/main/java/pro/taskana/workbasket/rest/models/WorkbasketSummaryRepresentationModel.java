@@ -9,7 +9,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 public class WorkbasketSummaryRepresentationModel
     extends RepresentationModel<WorkbasketSummaryRepresentationModel> {
 
-  /** Unique ID. */
+  /** Unique Id. */
   protected String workbasketId;
   /** the professional key for the workbasket. */
   protected String key;

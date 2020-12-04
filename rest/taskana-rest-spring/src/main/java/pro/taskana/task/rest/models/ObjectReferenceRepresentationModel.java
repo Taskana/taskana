@@ -11,7 +11,7 @@ public class ObjectReferenceRepresentationModel
   private String company;
   /** The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, ...). */
   private String system;
-  /** The instance of the system, the referenced primary object resides in. */
+  /** The instance of the system where the referenced primary object is located. */
   private String systemInstance;
   /** The type of the referenced primary object (contract, claim, policy, customer, ...). */
   private String type;

@@ -16,7 +16,7 @@ public class WorkbasketAccessItemQueryFilterParameter
 
   /**
    * Filter by the key of the workbasket. This results in a substring search.. (% is appended to the
-   * beginning and end of the requested value). Further SQL "Like" wildcard characters will be
+   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("workbasket-key-like")
@@ -28,7 +28,7 @@ public class WorkbasketAccessItemQueryFilterParameter
 
   /**
    * Filter by the name of the access id. This results in a substring search.. (% is appended to the
-   * beginning and end of the requested value). Further SQL "Like" wildcard characters will be
+   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("access-id-like")

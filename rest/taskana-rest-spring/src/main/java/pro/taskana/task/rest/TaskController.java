@@ -147,7 +147,7 @@ public class TaskController {
   /**
    * This endpoint retrieves a specific Task.
    *
-   * @param taskId the id of the requested Task
+   * @param taskId the Id of the requested Task
    * @return the requested Task
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws NotAuthorizedException if the current user is not authorized to get the requested Task.
@@ -171,7 +171,7 @@ public class TaskController {
   /**
    * This endpoint claims a Task if possible.
    *
-   * @param taskId the id of the Task which should be claimed
+   * @param taskId the Id of the Task which should be claimed
    * @param userName TODO: this is currently not used
    * @return the claimed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
@@ -238,7 +238,7 @@ public class TaskController {
    * This endpoint cancels the claim of an existing Task if it was claimed by the current user
    * before.
    *
-   * @param taskId the id of the requested Task.
+   * @param taskId the Id of the requested Task.
    * @return the unclaimed Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidStateException if the Task is already in an end state.
@@ -268,7 +268,7 @@ public class TaskController {
   /**
    * This endpoint completes a Task.
    *
-   * @param taskId id of the requested Task to complete.
+   * @param taskId Id of the requested Task to complete.
    * @return the completed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidOwnerException if current user is not the owner of the Task or an administrator.
@@ -298,7 +298,7 @@ public class TaskController {
    * This endpoint deletes a Task.
    *
    * @title Delete a Task
-   * @param taskId the id of the Task which should be deleted.
+   * @param taskId the Id of the Task which should be deleted.
    * @return the deleted Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidStateException TODO: this is never thrown
@@ -356,8 +356,8 @@ public class TaskController {
    * This endpoint transfers a given Task to a given Workbasket, if possible.
    *
    * @title Transfer a Task to another Workbasket
-   * @param taskId the id of the Task which should be transferred
-   * @param workbasketId the id of the destination Workbasket
+   * @param taskId the Id of the Task which should be transferred
+   * @param workbasketId the Id of the destination Workbasket
    * @return the successfully transferred Task.
    * @throws TaskNotFoundException if the requested Task does not exist
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist
@@ -384,7 +384,7 @@ public class TaskController {
   /**
    * This endpoint updates a requested Task.
    *
-   * @param taskId the id of the Task which should be updated
+   * @param taskId the Id of the Task which should be updated
    * @param taskRepresentationModel the new Task for the requested id.
    * @return the updated Task
    * @throws TaskNotFoundException if the requested Task does not exist.

@@ -19,7 +19,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the event type of the Task History Event. This results in a substring search.. (% is
-   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * appended to the beginning and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("event-type-like")
@@ -31,7 +31,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the user id of the Task History Event. This results in a substring search.. (% is
-   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * appended to the beginning and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("user-id-like")
@@ -54,7 +54,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the task id of the Task History Event. This results in a substring search.. (% is
-   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * appended to the beginning and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("task-id-like")
@@ -66,7 +66,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the business process id of the Task History Event. This results into a substring
-   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "LIKE"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("business-process-id-like")
@@ -90,7 +90,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the task classification key of the Task History Event. This results into a substring
-   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "LIKE"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("task-classification-key-like")
@@ -130,7 +130,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the workbasket key of the Task History Event. This results in a substring search.. (%
-   * is appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * is appended to the beginning and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("workbasket-key-like")
@@ -146,7 +146,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
   /**
    * Filter by the company of the primary object reference of the Task History Event. This results
    * into a substring search. (% is appended to the beginning and end of the requested value).
-   * Further SQL "Like" wildcard characters will be resolved correctly.
+   * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-company-like")
   private final String[] porCompanyLike;
@@ -161,7 +161,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
   /**
    * Filter by the system of the primary object reference of the Task History Event. This results
    * into a substring search. (% is appended to the beginning and end of the requested value).
-   * Further SQL "Like" wildcard characters will be resolved correctly.
+   * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-system-like")
   private final String[] porSystemLike;
@@ -176,7 +176,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
   /**
    * Filter by the system instance of the primary object reference of the Task History Event. This
    * results into a substring search. (% is appended to the beginning and end of the requested
-   * value). Further SQL "Like" wildcard characters will be resolved correctly.
+   * value). Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-instance-like")
   private final String[] porInstanceLike;
@@ -191,7 +191,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
   /**
    * Filter by the value of the primary object reference of the Task History Event. This results
    * into a substring search. (% is appended to the beginning and end of the requested value).
-   * Further SQL "Like" wildcard characters will be resolved correctly.
+   * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
   @JsonProperty("por-value-like")
   private final String[] porValueLike;
@@ -202,7 +202,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the value of the field custom1. This is an exact match. This results into a substring
-   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "LIKE"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-1-like")
@@ -214,7 +214,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the value of the field custom2. This is an exact match. This results into a substring
-   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "LIKE"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-2-like")
@@ -226,7 +226,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the value of the field custom3. This is an exact match. This results into a substring
-   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "LIKE"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-3-like")
@@ -238,7 +238,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
 
   /**
    * Filter by the value of the field custom4. This is an exact match. This results into a substring
-   * search. (% is appended to the beginning and end of the requested value). Further SQL "Like"
+   * search. (% is appended to the beginning and end of the requested value). Further SQL "LIKE"
    * wildcard characters will be resolved correctly.
    */
   @JsonProperty("custom-4-like")

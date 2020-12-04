@@ -116,7 +116,7 @@ public class WorkbasketController {
    * This endpoint retrieves a single Workbasket.
    *
    * @title Get a single Workbasket
-   * @param workbasketId the id of the requested Workbasket
+   * @param workbasketId the Id of the requested Workbasket
    * @return the requested Workbasket
    * @throws WorkbasketNotFoundException if the requested Workbasket is not found
    * @throws NotAuthorizedException if the current user has no permissions to access the requested
@@ -151,10 +151,10 @@ public class WorkbasketController {
    * </ul>
    *
    * @title Delete a Workbasket
-   * @param workbasketId the id of the Workbasket which should be deleted
+   * @param workbasketId the Id of the Workbasket which should be deleted
    * @return the deleted Workbasket
    * @throws NotAuthorizedException if the current user is not authorized to delete this Workbasket.
-   * @throws InvalidArgumentException if the requested Workbasket id is null or empty
+   * @throws InvalidArgumentException if the requested Workbasket Id is null or empty
    * @throws WorkbasketNotFoundException if the requested Workbasket is not found
    * @throws WorkbasketInUseException if the Workbasket contains tasks.
    */
@@ -222,10 +222,10 @@ public class WorkbasketController {
    * This endpoint updates a given Workbasket.
    *
    * @title Update a Workbasket
-   * @param workbasketId the id of the Workbasket which should be updated.
+   * @param workbasketId the Id of the Workbasket which should be updated.
    * @param workbasketRepresentationModel the new Workbasket for the requested id.
    * @return the updated Workbasket
-   * @throws InvalidWorkbasketException if the requested id and the id within the new Workbasket do
+   * @throws InvalidWorkbasketException if the requested Id and the Id within the new Workbasket do
    *     not match.
    * @throws WorkbasketNotFoundException if the requested workbasket does not
    * @throws NotAuthorizedException if the current user is not authorized to update the Workbasket
@@ -265,8 +265,8 @@ public class WorkbasketController {
    * This endpoint retrieves all Workbasket Access Items for a given Workbasket.
    *
    * @title Get all Workbasket Access Items
-   * @param workbasketId the id of the requested workbasket.
-   * @return the access items for the requested workbasket.
+   * @param workbasketId the Id of the requested Workbasket.
+   * @return the access items for the requested Workbasket.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
@@ -298,7 +298,7 @@ public class WorkbasketController {
    * ones.
    *
    * @title Set all Workbasket Access Items
-   * @param workbasketId the id of the Workbasket whose Workbasket Access Items will be replaced
+   * @param workbasketId the Id of the Workbasket whose Workbasket Access Items will be replaced
    * @param workbasketAccessItemRepModels the new Workbasket Access Items.
    * @return the new Workbasket Access Items for the requested Workbasket
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
@@ -346,7 +346,7 @@ public class WorkbasketController {
    * This endpoint retrieves all Distribution Targets for a requested Workbasket.
    *
    * @title Get all Distribution Targets for a Workbasket
-   * @param workbasketId the id of the Workbasket whose Distribution Targets will be retrieved
+   * @param workbasketId the Id of the Workbasket whose Distribution Targets will be retrieved
    * @return the Distribution Targets for the requested Workbasket
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
    * @throws NotAuthorizedException if the current user has no read permission for the specified
@@ -418,7 +418,7 @@ public class WorkbasketController {
    * This endpoint removes all Distribution Target references for a provided Workbasket.
    *
    * @title Remove a Workbasket as Distribution Target
-   * @param targetWorkbasketId the id of the requested Workbasket.
+   * @param targetWorkbasketId the Id of the requested Workbasket.
    * @return no content
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
    * @throws NotAuthorizedException if the requested user ist not ADMIN or BUSINESS_ADMIN.

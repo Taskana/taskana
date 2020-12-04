@@ -18,7 +18,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
-/** Controller for access id validation. */
+/** Controller for Access Id validation. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class AccessIdController {
@@ -35,12 +35,12 @@ public class AccessIdController {
   }
 
   /**
-   * This endpoint searches a provided access id in the configured ldap.
+   * This endpoint searches a provided access Id in the configured ldap.
    *
    * @title Search for Access Id (users and groups)
    * @param searchFor the Access Id which should be searched for.
    * @return a list of all found Access Ids
-   * @throws InvalidArgumentException if the provided search for access id is shorter than the
+   * @throws InvalidArgumentException if the provided search for Access Id is shorter than the
    *     configured one.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
    */
@@ -66,7 +66,7 @@ public class AccessIdController {
    * This endpoint retrieves all groups a given Access Id belongs to.
    *
    * @title Get groups for Access Id
-   * @param accessId the access id whose groups should be determined.
+   * @param accessId the Access Id whose groups should be determined.
    * @return a list of the group Access Ids the requested Access Id belongs to
    * @throws InvalidArgumentException if the requested Access Id does not exist or is not unique.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
