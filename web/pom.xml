@@ -1,44 +1,45 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>taskana-web</artifactId>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-web</artifactId>
 
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>taskana web</description>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>taskana web</description>
 
-	<parent>
-		<groupId>pro.taskana</groupId>
-		<artifactId>taskana-rest-parent</artifactId>
-		<version>4.2.1-SNAPSHOT</version>
-		<relativePath>../rest/pom.xml</relativePath>
-	</parent>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${version.maven.resources}</version>
-				<executions>
-					<execution>
-						<id>copy-static</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.outputDirectory}/static
-							</outputDirectory>
-							<resources>
-								<resource>
-									<directory>dist</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-rest-parent</artifactId>
+    <version>4.2.1-SNAPSHOT</version>
+    <relativePath>../rest/pom.xml</relativePath>
+  </parent>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${version.maven.resources}</version>
+        <executions>
+          <execution>
+            <id>copy-static</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.outputDirectory}/static
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>dist</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

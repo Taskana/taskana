@@ -1,24 +1,26 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>taskana-lib-parent</artifactId>
-	<packaging>pom</packaging>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-lib-parent</artifactId>
+  <packaging>pom</packaging>
 
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>This pom is parent to all taskana core modules and serves the common build.</description>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>This pom is parent to all taskana core modules and serves the common build.
+  </description>
 
-	<parent>
-		<groupId>pro.taskana</groupId>
-		<artifactId>taskana-parent</artifactId>
-		<version>4.2.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-parent</artifactId>
+    <version>4.2.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-	<modules>
-		<module>taskana-core</module>
-		<module>taskana-cdi</module>
-		<module>taskana-spring</module>
-		<module>taskana-cdi-example</module>
-		<module>taskana-spring-example</module>
-	</modules>
+  <modules>
+    <module>taskana-core</module>
+    <module>taskana-cdi</module>
+    <module>taskana-spring</module>
+    <module>taskana-cdi-example</module>
+    <module>taskana-spring-example</module>
+  </modules>
 </project>
