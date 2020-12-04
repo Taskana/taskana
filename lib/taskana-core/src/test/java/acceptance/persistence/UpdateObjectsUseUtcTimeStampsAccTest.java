@@ -2,7 +2,7 @@ package acceptance.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;

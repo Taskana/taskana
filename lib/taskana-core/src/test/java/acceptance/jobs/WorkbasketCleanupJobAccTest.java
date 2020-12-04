@@ -2,8 +2,8 @@ package acceptance.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import acceptance.AbstractAccTest;
 import java.time.Instant;
+import helper.AbstractAccTest;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;

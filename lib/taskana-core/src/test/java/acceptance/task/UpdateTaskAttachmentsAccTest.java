@@ -3,7 +3,7 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddNewAttachment() throws Exception {
+  void should_UpdateTaskCorrectlyInDatabase_When_AddingAnAttachment() throws Exception {
     final int attachmentCount = task.getAttachments().size();
     assertThat(task.getPriority()).isEqualTo(1);
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
@@ -80,7 +80,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddValidAttachmentTwice() throws Exception {
+  void should_NotAddSameAttachmentAgain_When_AddingToTaskSummary() throws Exception {
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
@@ -100,7 +100,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddNewAttachmentTwiceWithoutTaskanaMethodWillThrowAttachmentPersistenceException()
+  void should_ThrowAttachmentPersistenceException_When_UpdatingTaskWithTwoIdenticalAttachments()
       throws Exception {
     final int attachmentCount = 0;
     task.getAttachments().clear();
@@ -118,7 +118,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddExistingAttachmentAgainWillUpdateWhenNotEqual() throws Exception {
+  void should_UpdateExistingAttachment_When_AddingSameButNotEqualAttachmentAgain()
+      throws Exception {
     // Add attachment before
     task = taskService.getTask(task.getId());
     final int attachmentCount = task.getAttachments().size();
@@ -150,7 +151,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testAddExistingAttachmentAgainWillDoNothingWhenEqual() throws Exception {
+  void should_NotUpdateExistingAttachment_When_AddingIdenticalAttachmentAgain() throws Exception {
     // Add Attachment before
     final int attachmentCount = task.getAttachments().size();
     ((AttachmentImpl) attachment).setId("TAI:0001");

@@ -6,7 +6,7 @@ import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.workbasket.api.WorkbasketQueryColumnName.NAME;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;

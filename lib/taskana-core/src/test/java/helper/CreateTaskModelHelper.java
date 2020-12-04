@@ -1,4 +1,4 @@
-package pro.taskana.task.internal;
+package helper;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -9,7 +9,6 @@ import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 public class CreateTaskModelHelper {
 
@@ -20,15 +19,6 @@ public class CreateTaskModelHelper {
     classification.setKey("dummy-classification-key");
     classification.setId("DummyClassificationId");
     return classification;
-  }
-
-  public static WorkbasketImpl createWorkbasket(String id, String key) {
-    WorkbasketImpl workbasket = new WorkbasketImpl();
-    workbasket.setId(id);
-    workbasket.setDomain("Domain1");
-    workbasket.setKey(key);
-    workbasket.setName("Workbasket " + id);
-    return workbasket;
   }
 
   public static AttachmentImpl createAttachment(String id, String taskId) {

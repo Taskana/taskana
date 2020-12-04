@@ -1,9 +1,9 @@
-package pro.taskana.task.internal.models;
+package acceptance.task;
 
+import static helper.CreateTaskModelHelper.createAttachment;
+import static helper.CreateTaskModelHelper.createDummyClassification;
+import static helper.CreateTaskModelHelper.createUnitTestTask;
 import static org.assertj.core.api.Assertions.assertThat;
-import static pro.taskana.task.internal.CreateTaskModelHelper.createAttachment;
-import static pro.taskana.task.internal.CreateTaskModelHelper.createDummyClassification;
-import static pro.taskana.task.internal.CreateTaskModelHelper.createUnitTestTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +14,11 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.AttachmentSummaryImpl;
+import pro.taskana.task.internal.models.TaskCommentImpl;
+import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 class TaskModelsCloneTest {
 

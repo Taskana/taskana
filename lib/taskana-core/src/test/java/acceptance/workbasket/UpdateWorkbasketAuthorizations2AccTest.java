@@ -2,7 +2,7 @@ package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;

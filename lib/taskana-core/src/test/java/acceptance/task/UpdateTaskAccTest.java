@@ -13,7 +13,7 @@ import static pro.taskana.task.api.TaskCustomField.CUSTOM_3;
 import static pro.taskana.task.api.TaskCustomField.CUSTOM_5;
 import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;

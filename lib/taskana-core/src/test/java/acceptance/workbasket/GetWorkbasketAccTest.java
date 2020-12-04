@@ -7,7 +7,7 @@ import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;

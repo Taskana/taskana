@@ -1,4 +1,4 @@
-package pro.taskana.common.internal.util;
+package acceptance.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketType;

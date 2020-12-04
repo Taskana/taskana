@@ -1,7 +1,8 @@
-package pro.taskana.common.internal;
+package acceptance.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import helper.TaskanaEngineTestConfiguration;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +11,10 @@ import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
 
 /** Test of configuration. */
-class TaskanaEngineConfigurationTest {
+class TaskanaEngineConfigTest {
 
   @Test
-  void testCreateTaskanaEngine() throws Exception {
+  void should_ReturnTaskanaEngine_When_BuildingWithConfiguration() throws Exception {
     DataSource ds = TaskanaEngineTestConfiguration.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(ds, false, TaskanaEngineTestConfiguration.getSchemaName());
@@ -30,7 +31,7 @@ class TaskanaEngineConfigurationTest {
         new TaskanaEngineConfiguration(
             ds,
             false,
-            false,
+            true,
             "/corpusChristiEnabled.properties",
             "|",
             TaskanaEngineTestConfiguration.getSchemaName());
@@ -46,7 +47,7 @@ class TaskanaEngineConfigurationTest {
         new TaskanaEngineConfiguration(
             ds,
             false,
-            false,
+            true,
             "/custom_holiday_taskana.properties",
             "|",
             TaskanaEngineTestConfiguration.getSchemaName());
@@ -62,7 +63,7 @@ class TaskanaEngineConfigurationTest {
         new TaskanaEngineConfiguration(
             ds,
             false,
-            false,
+            true,
             "/custom_holiday_With_Wrong_format_taskana.properties",
             "|",
             TaskanaEngineTestConfiguration.getSchemaName());

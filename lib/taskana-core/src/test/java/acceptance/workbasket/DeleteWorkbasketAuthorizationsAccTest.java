@@ -3,7 +3,7 @@ package acceptance.workbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;

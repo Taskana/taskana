@@ -3,14 +3,14 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
+import helper.TaskanaEngineProxy;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 

@@ -1,4 +1,4 @@
-package pro.taskana.workbasket.internal.models;
+package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 class WorkbasketModelsCloneTest {
 

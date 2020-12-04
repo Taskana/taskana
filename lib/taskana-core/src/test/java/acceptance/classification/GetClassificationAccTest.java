@@ -11,7 +11,7 @@ import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_6;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 
-import acceptance.AbstractAccTest;
+import helper.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;

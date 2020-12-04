@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import helper.TaskanaEngineTestConfiguration;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
