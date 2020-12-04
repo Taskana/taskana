@@ -157,13 +157,16 @@ public class DbSchemaCreator {
     ScriptRunner runner = getScriptRunnerInstance(connection);
     StringWriter errorWriter = new StringWriter();
     runner.setErrorLogWriter(new PrintWriter(errorWriter));
-    try {
-      String scriptPath = selectDbSchemaDetectionScript(dbProductId);
-      InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
-      BufferedReader reader =
-          new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
+
+    String scriptPath = selectDbSchemaDetectionScript(dbProductId);
+
+    try (InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
+        InputStreamReader inputReader =
+            new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(inputReader)) {
       runner.runScript(getSqlSchemaNameParsed(reader));
-    } catch (RuntimeSqlException e) {
+
+    } catch (RuntimeSqlException | IOException e) {
       LOGGER.debug("Schema does not exist.");
       if (!errorWriter.toString().trim().isEmpty()) {
         LOGGER.debug(errorWriter.toString());
