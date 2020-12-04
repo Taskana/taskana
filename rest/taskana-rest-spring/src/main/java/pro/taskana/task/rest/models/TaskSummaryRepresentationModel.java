@@ -15,20 +15,20 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 public class TaskSummaryRepresentationModel
     extends RepresentationModel<TaskSummaryRepresentationModel> {
 
-  /** Unique ID. */
+  /** Unique Id. */
   protected String taskId;
   /**
-   * External ID. Can be used to enforce idempotence at task creation. Can identify an external
+   * External Id. Can be used to enforce idempotence at task creation. Can identify an external
    * task.
    */
   protected String externalId;
   /** The creation timestamp of the task in the system. */
   protected Instant created;
-  /** The timestamp of the last claim-operation on the task. */
+  /** The timestamp of the last claim-operation. */
   protected Instant claimed;
-  /** The timestamp of the completion of the task. */
+  /** The timestamp of the completion. */
   protected Instant completed;
-  /** Timestamp of the last modification of the task. */
+  /** The timestamp of the last modification. */
   protected Instant modified;
   /**
    * Planned start of the task. The actual completion of the task should be between PLANNED and DUE.

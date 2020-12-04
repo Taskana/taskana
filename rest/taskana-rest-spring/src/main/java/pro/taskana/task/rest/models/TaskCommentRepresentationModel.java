@@ -9,9 +9,9 @@ import pro.taskana.task.api.models.TaskComment;
 public class TaskCommentRepresentationModel
     extends RepresentationModel<TaskCommentRepresentationModel> {
 
-  /** Unique ID. */
+  /** Unique Id. */
   private String taskCommentId;
-  /** Task ID. Can identify the task to which the comment belongs. */
+  /** Task Id. Can identify the task to which the comment belongs. */
   private String taskId;
   /** The content of the comment. */
   private String textField;

@@ -97,7 +97,7 @@ public class ClassificationController {
   /**
    * This endpoint retrieves a single Classification.
    *
-   * @param classificationId the id of the requested Classification.
+   * @param classificationId the Id of the requested Classification.
    * @return the requested classification
    * @throws ClassificationNotFoundException if the requested classification is not found.
    * @title Get a single Classification
@@ -158,14 +158,14 @@ public class ClassificationController {
    * This endpoint updates a Classification.
    *
    * @title Update a Classification
-   * @param classificationId the id of the Classification which should be updated.
+   * @param classificationId the Id of the Classification which should be updated.
    * @param resource the new Classification for the requested id.
    * @return the updated Classification
    * @throws NotAuthorizedException if the current user is not authorized to update a Classification
    * @throws ClassificationNotFoundException if the requested Classification is not found
-   * @throws ConcurrencyException if the requested Classification id has been modified in the
+   * @throws ConcurrencyException if the requested Classification Id has been modified in the
    *     meantime by a different process.
-   * @throws InvalidArgumentException if the id in the path and in the request body does not match
+   * @throws InvalidArgumentException if the Id in the path and in the request body does not match
    */
   @PutMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(rollbackFor = Exception.class)
@@ -203,7 +203,7 @@ public class ClassificationController {
    * This endpoint deletes a requested Classification if possible.
    *
    * @title Delete a Classification
-   * @param classificationId the requested Classification id which should be deleted
+   * @param classificationId the requested Classification Id which should be deleted
    * @return no content
    * @throws ClassificationNotFoundException if the requested Classification could not be found
    * @throws ClassificationInUseException if there are tasks existing referring to the requested

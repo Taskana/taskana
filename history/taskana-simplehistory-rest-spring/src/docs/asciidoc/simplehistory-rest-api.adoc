@@ -3,7 +3,7 @@
 == Overview
 This is the REST documentation for http://taskana.pro)[TASKANA]'s simplehistory REST endpoints.
 
-For all Query Parameters:: whenever a parameter is an array type multiple values can be passed by declaring that parameter multiple times.
+*For all Query Parameters:* whenever a parameter is an array type, several values can be passed by declaring that parameter multiple times.
 
 === Hypermedia Support
 
@@ -12,8 +12,8 @@ Please have a look at example responses for each resource to determine the avail
 
 TASKANA uses the https://restfulapi.net/hateoas/)[HATEOAS] (Hypermedia as the Engine of Application State) REST constraint.
 Most of our resources contain a `_links` section which contains navigation links.
-These navigation links not only help navigate through our REST API, they encapsulate API.
-Using HATEOAS allows us to change some endpoints without breaking any frontend.
+Besides, helping to navigate through our REST API, the navigation links also encapsulate the API.
+Using HATEOAS allows us to change some endpoints without modifying your frontend.
 
 == History event
 

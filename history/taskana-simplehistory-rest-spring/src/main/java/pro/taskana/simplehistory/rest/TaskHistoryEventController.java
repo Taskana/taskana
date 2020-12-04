@@ -90,7 +90,7 @@ public class TaskHistoryEventController {
    * This endpoint retrieves a single Task History Event.
    *
    * @title Get a single Task History Event
-   * @param historyEventId the id of the requested Task History Event.
+   * @param historyEventId the Id of the requested Task History Event.
    * @return the requested Task History Event
    * @throws TaskanaHistoryEventNotFoundException If a Task History Event can't be found by the
    *     provided historyEventId

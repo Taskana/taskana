@@ -11,7 +11,7 @@ import pro.taskana.common.api.TaskanaRole;
 public class TaskanaUserInfoRepresentationModel
     extends RepresentationModel<TaskanaUserInfoRepresentationModel> {
 
-  /** The user id of the current user. */
+  /** The user Id of the current user. */
   private String userId;
   /** All groups the current user is a member of. */
   private List<String> groupIds = new ArrayList<>();

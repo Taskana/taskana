@@ -16,7 +16,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
 
   /**
    * Filter by the name of the workbasket. This results in a substring search. (% is appended to the
-   * beginning and end of the requested value). Further SQL "Like" wildcard characters will be
+   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("name-like")
@@ -27,7 +27,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
 
   /**
    * Filter by the key of the workbasket. This results in a substring search.. (% is appended to the
-   * beginning and end of the requested value). Further SQL "Like" wildcard characters will be
+   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("key-like")
@@ -38,7 +38,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
 
   /**
    * Filter by the owner of the workbasket. This results in a substring search.. (% is appended to
-   * the beginning and end of the requested value). Further SQL "Like" wildcard characters will be
+   * the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("owner-like")
@@ -46,7 +46,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
 
   /**
    * Filter by the description of the workbasket. This results in a substring search.. (% is
-   * appended to the beginning and end of the requested value). Further SQL "Like" wildcard
+   * appended to the beginning and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("description-like")

@@ -56,12 +56,12 @@ public class TaskCommentController {
    * This endpoint fetches a Task Comment.
    *
    * @title Get a single Task Comment
-   * @param taskCommentId the id of the Task Comment
+   * @param taskCommentId the Id of the Task Comment
    * @return the Task Comment
    * @throws NotAuthorizedException if the user is not authorized for the requested Task Comment
    * @throws TaskNotFoundException TODO: this is never thrown
    * @throws TaskCommentNotFoundException if the requested Task Comment is not found
-   * @throws InvalidArgumentException if the requested id is null or empty
+   * @throws InvalidArgumentException if the requested Id is null or empty
    */
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -91,7 +91,7 @@ public class TaskCommentController {
   /**
    * This endpoint retrieves all Task Comments for a specific Task. Further filters can be applied.
    *
-   * @param taskId the id of the Task whose comments are requested
+   * @param taskId the Id of the Task whose comments are requested
    * @param sortBy Sort the result by a given field. Multiple sort values can be declared. When the
    *     primary sort value is the same, the second one will be used.
    * @param order The order direction for each sort value. This value requires the use of 'sort-by'.
@@ -101,7 +101,7 @@ public class TaskCommentController {
    * @return a list of Task Comments
    * @throws NotAuthorizedException If the current user has no authorization to retrieve a Task
    *     Comment from a certain Task or is not authorized to access the Task.
-   * @throws TaskNotFoundException If the given task id in the Task Comment does not refer to an
+   * @throws TaskNotFoundException If the given Task Id in the Task Comment does not refer to an
    *     existing Task
    * @throws InvalidArgumentException if some parameters were not supplied correctly
    * @title Get a list of all Task Comments for a specific Task
@@ -139,13 +139,13 @@ public class TaskCommentController {
    * This endpoint deletes a given Task Comment.
    *
    * @title Delete a Task Comment
-   * @param taskCommentId the id of the Task Comment which should be deleted
+   * @param taskCommentId the Id of the Task Comment which should be deleted
    * @return no content, if everything went well.
    * @throws NotAuthorizedException if the current user is not authorized to delete a Task Comment
-   * @throws TaskNotFoundException If the given task id in the Task Comment does not refer to an
+   * @throws TaskNotFoundException If the given Task Id in the Task Comment does not refer to an
    *     existing task.
    * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
-   * @throws InvalidArgumentException if the requested Task Comment id is null or empty
+   * @throws InvalidArgumentException if the requested Task Comment Id is null or empty
    */
   @DeleteMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -178,7 +178,7 @@ public class TaskCommentController {
    * @throws NotAuthorizedException if the current user does not have access to the Task Comment
    * @throws TaskNotFoundException if the referenced Task within the Task Comment does not exist
    * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
-   * @throws InvalidArgumentException if the id in the path and in the request body does not match
+   * @throws InvalidArgumentException if the Id in the path and in the request body does not match
    * @throws ConcurrencyException if the requested Task Comment has been updated in the meantime by
    *     a different process.
    */
@@ -221,11 +221,11 @@ public class TaskCommentController {
    * This endpoint creates a Task Comment.
    *
    * @title Create a new Task Comment
-   * @param taskId the id of the Task where a Task Comment should be created.
+   * @param taskId the Id of the Task where a Task Comment should be created.
    * @param taskCommentRepresentationModel the Task Comment to create.
    * @return the created Task Comment
    * @throws NotAuthorizedException if the current user is not authorized to create a Task Comment
-   * @throws InvalidArgumentException if the Task Comment id is null or empty
+   * @throws InvalidArgumentException if the Task Comment Id is null or empty
    * @throws TaskNotFoundException if the requested task does not exist
    */
   @PostMapping(path = RestEndpoints.URL_TASK_COMMENTS)

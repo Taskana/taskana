@@ -3,7 +3,7 @@ package pro.taskana.common.rest.models;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
 
-/** EntityModel for access id validation. */
+/** EntityModel for Access Id. */
 public class AccessIdRepresentationModel extends RepresentationModel<AccessIdRepresentationModel> {
 
   /** The name of this Access Id. */

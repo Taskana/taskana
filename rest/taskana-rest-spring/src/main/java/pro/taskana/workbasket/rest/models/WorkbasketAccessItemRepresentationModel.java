@@ -8,9 +8,9 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 public class WorkbasketAccessItemRepresentationModel
     extends RepresentationModel<WorkbasketAccessItemRepresentationModel> {
 
-  /** Unique ID. */
+  /** Unique Id. */
   private String accessItemId;
-  /** The workbasket id. */
+  /** The workbasket Id. */
   private String workbasketId;
   /** The access id. This could be either a userid or a full qualified group id. */
   private String accessId;

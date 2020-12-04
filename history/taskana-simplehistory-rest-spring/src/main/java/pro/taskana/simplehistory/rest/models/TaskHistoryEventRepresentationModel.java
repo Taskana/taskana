@@ -9,13 +9,13 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 public class TaskHistoryEventRepresentationModel
     extends RepresentationModel<TaskHistoryEventRepresentationModel> {
 
-  /** Unique ID. */
+  /** Unique Id. */
   private String taskHistoryId;
-  /** The id of the business process. */
+  /** The Id of the business process. */
   private String businessProcessId;
-  /** The id of the parent business process. */
+  /** The Id of the parent business process. */
   private String parentBusinessProcessId;
-  /** The id of the task. */
+  /** The Id of the task. */
   private String taskId;
   /** The type of the event. */
   private String eventType;
@@ -25,7 +25,7 @@ public class TaskHistoryEventRepresentationModel
    * <p>The format is ISO-8601.
    */
   private Instant created;
-  /** The id of the user. */
+  /** The Id of the user. */
   private String userId;
   /** Domain. */
   private String domain;
@@ -37,7 +37,7 @@ public class TaskHistoryEventRepresentationModel
   private String porType;
   /** The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, ...). */
   private String porSystem;
-  /** The instance of the system, the referenced primary object resides in. */
+  /** The instance of the system where the referenced primary object is located. */
   private String porInstance;
   /** The value of the primary object reference. */
   private String porValue;
