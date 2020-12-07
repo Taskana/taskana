@@ -246,21 +246,21 @@ describe('ClassificationDetailsComponent', () => {
     component.requestInProgress = true;
     component.classification = {};
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('.classification-details__action-toolbar')).toBeFalsy();
-    expect(debugElement.nativeElement.querySelector('.classification__detailed-fields')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.action-toolbar')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.detailed-fields')).toBeFalsy();
   });
 
   it('should not show details when classification does not exist', () => {
     component.requestInProgress = false;
     component.classification = null;
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('.classification-details__action-toolbar')).toBeFalsy();
-    expect(debugElement.nativeElement.querySelector('.classification__detailed-fields')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.action-toolbar')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.detailed-fields')).toBeFalsy();
   });
 
   it('should show details when classification exists and spinner is not running', () => {
-    expect(debugElement.nativeElement.querySelector('.classification-details__action-toolbar')).toBeTruthy();
-    expect(debugElement.nativeElement.querySelector('.classification__detailed-fields')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('.action-toolbar')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('.detailed-fields')).toBeTruthy();
   });
 
   /* HTML: TITLE + ACTION BUTTONS */
@@ -268,7 +268,7 @@ describe('ClassificationDetailsComponent', () => {
     component.classification = { name: 'Recommendation', type: 'DOCUMENT' };
     component.isCreatingNewClassification = true;
     fixture.detectChanges();
-    const headline = debugElement.nativeElement.querySelector('.classification-details__headline');
+    const headline = debugElement.nativeElement.querySelector('.action-toolbar__headline');
     expect(headline).toBeTruthy();
     expect(headline.textContent).toContain('Recommendation');
     expect(headline.textContent).toContain('DOCUMENT');
@@ -288,8 +288,7 @@ describe('ClassificationDetailsComponent', () => {
   });
 
   it('should restore selected classification when button is clicked', async () => {
-    const button = debugElement.nativeElement.querySelector('.classification-details__action-toolbar').children[1]
-      .children[1];
+    const button = debugElement.nativeElement.querySelector('.action-toolbar').children[1].children[1];
     expect(button).toBeTruthy();
     expect(button.textContent).toContain('Undo Changes');
     expect(button.textContent).toContain('restore');
@@ -389,7 +388,7 @@ describe('ClassificationDetailsComponent', () => {
   });
 
   it('should change isValidInDomain when button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.domain-and-category__domain-checkbox-icon').parentNode;
+    const button = debugElement.nativeElement.querySelector('.detailed-fields__domain-checkbox-icon').parentNode;
     expect(button).toBeTruthy();
     component.classification.isValidInDomain = false;
     button.click();
