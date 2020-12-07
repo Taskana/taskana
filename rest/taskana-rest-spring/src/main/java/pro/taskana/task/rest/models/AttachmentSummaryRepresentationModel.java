@@ -14,11 +14,11 @@ public class AttachmentSummaryRepresentationModel
   protected String attachmentId;
   /** the referenced task id. */
   protected String taskId;
-  /** The creation timestamp of the attachment in the system. */
+  /** The creation timestamp in the system. */
   protected Instant created;
-  /** Timestamp of the last modification of the attachment. */
+  /** The timestamp of the last modification. */
   protected Instant modified;
-  /** Timestamp of the entry of the attachment. */
+  /** The timestamp of the entry date. */
   protected Instant received;
   /** The classification of this attachment. */
   protected ClassificationSummaryRepresentationModel classificationSummary;

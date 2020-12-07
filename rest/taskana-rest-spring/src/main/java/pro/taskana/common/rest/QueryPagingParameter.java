@@ -12,11 +12,11 @@ import pro.taskana.common.rest.models.PageMetadata;
 public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     implements QueryParameter<Q, List<T>> {
 
-  /** Request a specific page. Requires the definition of the page-size. */
+  /** Request a specific page. Requires the definition of the 'page-size'. */
   @Min(1)
   private final Integer page;
 
-  /** Defines the page size for each page. This requires that a specific page is requested. */
+  /** Defines the size for each page. This requires a specific requested 'page'. */
   @JsonProperty("page-size")
   @Min(1)
   private final Integer pageSize;

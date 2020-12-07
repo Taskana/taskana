@@ -53,7 +53,7 @@ public class TaskCommentController {
   }
 
   /**
-   * This endpoint fetches a Task Comment.
+   * This endpoint retrieves a Task Comment.
    *
    * @title Get a single Task Comment
    * @param taskCommentId the Id of the Task Comment
@@ -96,7 +96,7 @@ public class TaskCommentController {
    *     primary sort value is the same, the second one will be used.
    * @param order The order direction for each sort value. This value requires the use of 'sort-by'.
    *     The amount of sort-by and order declarations have to match. Alternatively the value can be
-   *     omitted. If done so the default sort order (ASCENDING) will be applied to every sort-by
+   *     omitted. In this case the default sort order (ASCENDING) will be applied to every sort-by
    *     value.
    * @return a list of Task Comments
    * @throws NotAuthorizedException If the current user has no authorization to retrieve a Task

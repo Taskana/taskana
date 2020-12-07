@@ -81,15 +81,6 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * <p>This parameter can't be used together with 'planned-from' or 'planned-until'.
    */
   private final Instant[] planned;
-  /**
-   * Filter by a due time interval. The length of the provided values has to be even. To create an
-   * open interval you can either use 'null' or just leave it blank.
-   *
-   * <p>The format is ISO-8601.
-   *
-   * <p>This parameter can't be used together with 'due-from' or 'due-until'.
-   */
-  private final Instant[] due;
 
   /**
    * Filter since a given planned timestamp.
@@ -110,6 +101,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("planned-until")
   private final Instant plannedUntil;
+
+  /**
+   * Filter by a due time interval. The length of the provided values has to be even. To create an
+   * open interval you can either use 'null' or just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'due-from' or 'due-until'.
+   */
+  private final Instant[] due;
+
 
   /**
    * Filter since a given due timestamp.

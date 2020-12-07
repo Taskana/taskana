@@ -11,15 +11,15 @@ public class TaskCommentRepresentationModel
 
   /** Unique Id. */
   private String taskCommentId;
-  /** Task Id. Can identify the task to which the comment belongs. */
+  /** Task Id. Can identify the task the comment belongs to. */
   private String taskId;
   /** The content of the comment. */
   private String textField;
   /** The creator of the task comment. */
   private String creator;
-  /** The creation timestamp of the task comment in the system. */
+  /** The creation timestamp in the system. */
   private Instant created;
-  /** Timestamp of the last modification of the task comment. */
+  /** Timestamp of the last task comment modification. */
   private Instant modified;
 
   public String getTaskCommentId() {

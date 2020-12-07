@@ -12,7 +12,7 @@ public class WorkbasketAccessItemRepresentationModel
   private String accessItemId;
   /** The workbasket Id. */
   private String workbasketId;
-  /** The access id. This could be either a userid or a full qualified group id. */
+  /** The Access Id. This could be either a user Id or a full qualified group Id. */
   private String accessId;
   /** The workbasket key. */
   private String workbasketKey;

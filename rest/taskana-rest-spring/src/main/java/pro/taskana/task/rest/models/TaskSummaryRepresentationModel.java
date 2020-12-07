@@ -22,7 +22,7 @@ public class TaskSummaryRepresentationModel
    * task.
    */
   protected String externalId;
-  /** The creation timestamp of the task in the system. */
+  /** The creation timestamp in the system. */
   protected Instant created;
   /** The timestamp of the last claim-operation. */
   protected Instant claimed;
