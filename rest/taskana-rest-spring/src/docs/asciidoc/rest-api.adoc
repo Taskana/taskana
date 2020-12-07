@@ -40,7 +40,7 @@ include::{snippets}/TaskCommentControllerRestDocTest/deleteTaskCommentDocTest/au
 include::{snippets}/ClassificationControllerRestDocTest/createClassificationDocTest/auto-section.adoc[]
 include::{snippets}/ClassificationControllerRestDocTest/getClassificationDocTest/auto-section.adoc[]
 include::{snippets}/ClassificationControllerRestDocTest/getAllClassificationsDocTest/auto-section.adoc[]
-include::{snippets}/ClassificationControllerRestDocTest/updateClzassificationDocTest/auto-section.adoc[]
+include::{snippets}/ClassificationControllerRestDocTest/updateClassificationDocTest/auto-section.adoc[]
 include::{snippets}/ClassificationControllerRestDocTest/deleteClassificationDocTest/auto-section.adoc[]
 
 == Workbasket Resource

@@ -107,7 +107,7 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     private final String name;
     /** Date of the report creation. */
     private final Instant date;
-    /** Column-headers of the report. */
+    /** Column headers of the report. */
     private final String[] header;
     /** Descriptions for the rows of the report. */
     private final String[] rowDesc;

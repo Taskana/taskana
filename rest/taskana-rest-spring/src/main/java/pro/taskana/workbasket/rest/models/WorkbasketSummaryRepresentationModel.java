@@ -38,7 +38,7 @@ public class WorkbasketSummaryRepresentationModel
    * The first Org Level (the top one).
    *
    * <p>The Org Level is an association with an org hierarchy level in the organization. The values
-   * are used for monitoring and statistical purposes and should reflect the responsibility of the
+   * are used for monitoring and statistical purposes and should reflect who is responsible of the
    * tasks in the workbasket.
    */
   protected String orgLevel1;
