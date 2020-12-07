@@ -40,6 +40,7 @@ class SortStub {
 
 @Component({ selector: 'taskana-shared-filter', template: '' })
 class FilterStub {
+  @Input() isExpanded = false;
   @Output() performFilter = new EventEmitter<Filter>();
 }
 
@@ -138,15 +139,20 @@ describe('WorkbasketListToolbarComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-shared-sort')).toBeTruthy();
   });
 
-  it('should show filter component only when filter button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.workbasket-list-toolbar__filter-button');
+  it('should display filter component', () => {
+    expect(debugElement.nativeElement.querySelector('taskana-shared-filter')).toBeTruthy();
+  });
+
+  it('should show expanded filter component only when filter button is clicked', () => {
+    const button = debugElement.nativeElement.querySelector('.filter__filter-button');
     expect(button).toBeTruthy();
-    expect(button.textContent).toBe('filter_list');
-    expect(debugElement.nativeElement.querySelector('filter')).toBeFalsy();
     button.click();
     fixture.detectChanges();
-    expect(component.showFilter).toBe(true);
+    expect(component.isExpanded).toBe(true);
     expect(button.textContent).toBe('keyboard_arrow_up');
-    expect(debugElement.nativeElement.querySelector('taskana-shared-filter')).toBeTruthy();
+    button.click();
+    fixture.detectChanges();
+    expect(component.isExpanded).toBe(false);
+    expect(button.textContent).toBe('filter_list');
   });
 });

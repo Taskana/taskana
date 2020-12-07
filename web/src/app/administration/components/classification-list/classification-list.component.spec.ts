@@ -144,9 +144,7 @@ describe('ClassificationListComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-administration-import-export')).toBeTruthy();
   });
 
-  it('should display classification-types-selector component when showFilter is true', () => {
-    component.showFilter = true;
-    fixture.detectChanges();
+  it('should display classification-types-selector component', () => {
     const typesSelectorComponent = debugElement.nativeElement.querySelector(
       'taskana-administration-classification-types-selector'
     );
@@ -154,25 +152,19 @@ describe('ClassificationListComponent', () => {
   });
 
   /* HTML: FILTER */
-  it('should display filter input field when showFilter is true', () => {
-    component.showFilter = true;
-    fixture.detectChanges();
+  it('should display filter input field', () => {
     const button = debugElement.nativeElement.querySelector('.filter__input-field');
     expect(button).toBeTruthy();
     expect(button.textContent).toBe('Filter classification');
   });
 
-  it('should display filter button when showFilter is true', () => {
-    component.showFilter = true;
-    fixture.detectChanges();
+  it('should display filter button', () => {
     const button = debugElement.nativeElement.querySelector('.category-filter__filter-button');
     expect(button).toBeTruthy();
     expect(button.textContent).toBe('filter_list');
   });
 
   it('should change selectedCategory property when button is clicked', () => {
-    component.showFilter = true;
-    fixture.detectChanges();
     const filterButton = debugElement.nativeElement.querySelector('.category-filter__filter-button');
     filterButton.click();
     fixture.detectChanges();
@@ -184,8 +176,6 @@ describe('ClassificationListComponent', () => {
   });
 
   it('should display list of categories which can be selected', () => {
-    component.showFilter = true;
-    fixture.detectChanges();
     const filterButton = debugElement.nativeElement.querySelector('.category-filter__filter-button');
     filterButton.click();
     fixture.detectChanges();

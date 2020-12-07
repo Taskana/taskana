@@ -4,12 +4,16 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 10px;
 }
 
-.filter__text-input {
+.filter__collapsed-filter {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  height: 36px;
+}
+
+.collapsed-filter_input-field {
+  top: -10px;
 }
 
 .filter__action-buttons {
@@ -22,7 +26,6 @@
 .filter__search-button {
   background: $aquamarine;
   color: white;
-  margin-left: 4px;
 }
 
 .filter__name-and-key-input {
@@ -38,14 +41,15 @@
 }
 
 .list-group-search {
-  padding: 0px 15px;
+  padding: 0 15px;
   border-top: 1px solid #ddd;
 }
 .list-group-search {
   border-top: none;
 }
+
 row.padding {
-  padding: 1px 0px;
+  padding: 1px 0;
 }
 
 .filter-list {

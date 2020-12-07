@@ -5,16 +5,16 @@
   width: 500px;
 }
 .classification-list__action-toolbar {
-  padding: 0 16px;
-  min-height: 68px;
+  padding: 16px 16px 0;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 .classification-list__action-buttons {
   display: flex;
   border: none;
   margin-bottom: 0;
-  padding: 16px 4px 8px 4px;
+  padding: 0 4px;
 }
+
 .action-toolbar__add-button {
   background-color: $aquamarine;
   color: white;
@@ -25,11 +25,12 @@
 }
 .classification-list__filter {
   display: flex;
+  padding: 7px 4px 0;
 }
-
 .classification-list__category-filter {
   padding-top: 7px;
 }
+
 .category-filter__icons {
   height: 33px;
   width: 16px;
@@ -39,9 +40,10 @@
   margin: 0;
   top: -2px;
 }
-
 .category-filter__filter-button {
   color: #555;
+  top: 3px;
+  margin-right: 12px;
 }
 
 .filter__input {
