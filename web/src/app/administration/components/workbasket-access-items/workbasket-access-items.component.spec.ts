@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
-import { Component, DebugElement, Input } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -32,18 +32,11 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ACTION } from '../../../shared/models/action';
-import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
-  @Input() positionClass: string;
-}
 
 const savingWorkbasketServiceSpy = jest.fn().mockImplementation(
   (): Partial<SavingWorkbasketService> => ({
@@ -100,7 +93,7 @@ describe('WorkbasketAccessItemsComponent', () => {
         MatAutocompleteModule,
         MatProgressBarModule
       ],
-      declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
+      declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent],
       providers: [
         { provide: SavingWorkbasketService, useClass: savingWorkbasketServiceSpy },
         { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },

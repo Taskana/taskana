@@ -22,6 +22,7 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 import { Workbasket } from '../../../shared/models/workbasket';
 import { MatSelectionList } from '@angular/material/list';
 import { DomainService } from '../../../shared/services/domain/domain.service';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -30,7 +31,6 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 })
 export class WorkbasketListComponent implements OnInit, OnDestroy {
   selectedId = '';
-  requestInProgress = false;
   pageSelected = 1;
   pageSize = 9;
   type = 'workbaskets';
@@ -38,6 +38,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   workbasketDefaultSortBy: string = 'name';
   sort: Sorting = new Sorting(this.workbasketDefaultSortBy);
   filterBy: Filter = new Filter({ name: '', owner: '', type: '', description: '', key: '' });
+  requestInProgress: boolean;
+  requestInProgressLocal = false;
 
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
@@ -61,18 +63,21 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     private orientationService: OrientationService,
     private importExportService: ImportExportService,
     private domainService: DomainService,
+    private requestInProgressService: RequestInProgressService,
     private ngxsActions$: Actions
   ) {
     this.ngxsActions$.pipe(ofActionDispatched(GetWorkbasketsSummary), takeUntil(this.destroy$)).subscribe(() => {
-      this.requestInProgress = true;
+      this.requestInProgressService.setRequestInProgress(true);
+      this.requestInProgressLocal = true;
     });
     this.ngxsActions$.pipe(ofActionCompleted(GetWorkbasketsSummary), takeUntil(this.destroy$)).subscribe(() => {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
+      this.requestInProgressLocal = false;
     });
   }
 
   ngOnInit() {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
 
     this.selectedWorkbasket$.pipe(takeUntil(this.destroy$)).subscribe((selectedWorkbasket) => {
       if (typeof selectedWorkbasket !== 'undefined') {
@@ -117,10 +122,17 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .getWorkbasketActionToolbarExpansion()
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.requestInProgress = true;
+        this.requestInProgressService.setRequestInProgress(true);
         setTimeout(() => {
           this.refreshWorkbasketList();
         }, 1);
+      });
+
+    this.requestInProgressService
+      .getRequestInProgress()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.requestInProgress = value;
       });
   }
 
@@ -176,7 +188,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(() => {
-        this.requestInProgress = false;
+        this.requestInProgressService.setRequestInProgress(false);
       });
     TaskanaQueryParameters.pageSize = this.cards;
   }

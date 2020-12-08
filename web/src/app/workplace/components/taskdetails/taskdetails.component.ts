@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TaskService } from 'app/workplace/services/task.service';
@@ -12,6 +12,7 @@ import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-task-details',
@@ -26,6 +27,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   currentWorkbasket: Workbasket;
   currentId: string;
   showDetail = false;
+  destroy$ = new Subject<void>();
 
   private routeSubscription: Subscription;
   private workbasketSubscription: Subscription;
@@ -47,6 +49,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.workbasketSubscription = this.workplaceService.getSelectedWorkbasket().subscribe((workbasket) => {
       this.currentWorkbasket = workbasket;
     });
+
     this.routeSubscription = this.route.params.subscribe((params) => {
       this.currentId = params.id;
       // redirect if user enters through a deep-link
@@ -55,9 +58,17 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       }
       this.getTask();
     });
+
     this.masterAndDetailSubscription = this.masterAndDetailService.getShowDetail().subscribe((showDetail) => {
       this.showDetail = showDetail;
     });
+
+    this.requestInProgressService
+      .getRequestInProgress()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.requestInProgress = value;
+      });
   }
 
   resetTask(): void {
@@ -69,14 +80,14 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   getTask(): void {
-    this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
     if (this.currentId === 'new-task') {
-      this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.task = new Task('', new ObjectReference(), this.currentWorkbasket);
     } else {
       this.taskService.getTask(this.currentId).subscribe(
         (task) => {
-          this.requestInProgress = false;
+          this.requestInProgressService.setRequestInProgress(false);
           this.task = task;
           this.cloneTask();
           this.taskService.selectTask(task);
@@ -139,6 +150,9 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     if (this.deleteTaskSubscription) {
       this.deleteTaskSubscription.unsubscribe();
     }
+
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private onSave() {

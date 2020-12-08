@@ -43,7 +43,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   workbasketClone: Workbasket;
   allTypes: Map<string, string>;
-  requestInProgress = false;
   badgeMessage = '';
   toggleValidationMap = new Map<string, boolean>();
   lookupField = false;

@@ -60,11 +60,6 @@ describe('AccessItemsManagementComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  @Component({ selector: 'taskana-shared-spinner', template: '' })
-  class TaskanaSharedSpinnerStub {
-    @Input() isRunning: boolean;
-  }
-
   @Component({ selector: 'taskana-shared-sort', template: '' })
   class TaskanaSharedSortStub {
     @Input() sortingFields: Map<string, string>;
@@ -95,12 +90,7 @@ describe('AccessItemsManagementComponent', () => {
         MatListModule,
         MatExpansionModule
       ],
-      declarations: [
-        AccessItemsManagementComponent,
-        TypeAheadComponent,
-        TaskanaSharedSortStub,
-        TaskanaSharedSpinnerStub
-      ],
+      declarations: [AccessItemsManagementComponent, TypeAheadComponent, TaskanaSharedSortStub],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },

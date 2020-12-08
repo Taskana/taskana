@@ -1,7 +1,6 @@
 <div class="classification-details">
-  <mat-progress-bar mode="query" *ngIf="requestInProgress"></mat-progress-bar>
 
-  <div class="classification-details__wrapper" id="classification-details" *ngIf="classification && !spinnerIsRunning">
+  <div class="classification-details__wrapper" id="classification-details" *ngIf="classification && !requestInProgress">
 
     <!-- TITLE + ACTION BUTTONS -->
     <mat-toolbar class="classification-details__action-toolbar">
