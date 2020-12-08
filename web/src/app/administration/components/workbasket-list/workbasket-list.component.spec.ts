@@ -23,17 +23,20 @@ import { MatListModule } from '@angular/material/list';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
+import { selectedWorkbasketMock } from '../../../shared/store/mock-data/mock-store';
 
 const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
-const getWorkbasketFn = jest.fn().mockReturnValue(of({ workbasketId: '1' }));
+const getWorkbasketFn = jest.fn().mockReturnValue(of(selectedWorkbasketMock));
 const getWorkbasketActionToolbarExpansionFn = jest.fn().mockReturnValue(of(false));
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
     workbasketSavedTriggered: workbasketSavedTriggeredFn,
     getWorkBasketsSummary: workbasketSummaryFn,
     getWorkBasket: getWorkbasketFn,
-    getWorkbasketActionToolbarExpansion: getWorkbasketActionToolbarExpansionFn
+    getWorkbasketActionToolbarExpansion: getWorkbasketActionToolbarExpansionFn,
+    getWorkBasketAccessItems: jest.fn().mockReturnValue(of({})),
+    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of({}))
   })
 );
 
@@ -137,7 +140,7 @@ describe('WorkbasketListComponent', () => {
     fixture.detectChanges();
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
-    component.selectWorkbasket('1');
+    component.selectWorkbasket('WBI:000000000000000000000000000000000902');
     expect(actionDispatched).toBe(true);
   }));
 

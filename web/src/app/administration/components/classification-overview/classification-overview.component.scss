@@ -1,10 +1,13 @@
 .classification-overview {
   display: flex;
-  flex-direction: row;
+  height: 100%;
   width: 100%;
   overflow: hidden;
   align-items: stretch;
 }
+taskana-administration-classification-list {
+  width: 500px;
+}
 taskana-administration-classification-details {
-  width: 100%;
+  flex-grow: 1;
 }

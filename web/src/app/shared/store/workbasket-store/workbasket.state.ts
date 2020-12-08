@@ -8,6 +8,7 @@ import {
   CopyWorkbasket,
   CreateWorkbasket,
   DeselectWorkbasket,
+  GetAvailableDistributionTargets,
   GetWorkbasketAccessItems,
   GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
@@ -32,6 +33,7 @@ import { WorkbasketSummary } from '../../models/workbasket-summary';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 import { ButtonAction } from '../../../administration/models/button-action';
 import { ActivatedRoute } from '@angular/router';
+import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -43,7 +45,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     private workbasketService: WorkbasketService,
     private location: Location,
     private notificationService: NotificationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private requestInProgressService: RequestInProgressService
   ) {}
 
   @Action(InitializeStore)
@@ -131,6 +134,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             selectedWorkbasket,
             action: ACTION.READ
           });
+          ctx.dispatch(new GetWorkbasketAccessItems(ctx.getState().selectedWorkbasket._links.accessItems.href));
+          ctx.dispatch(
+            new GetWorkbasketDistributionTargets(ctx.getState().selectedWorkbasket._links.distributionTargets.href)
+          );
         })
       );
     }
@@ -186,6 +193,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   @Action(OnButtonPressed)
   doWorkbasketDetailsAction(ctx: StateContext<WorkbasketStateModel>, action: OnButtonPressed): Observable<any> {
     ctx.patchState({ button: action.button });
+    setTimeout(() => {
+      ctx.patchState({ button: undefined });
+    }, 500);
     return of(null);
   }
 
@@ -347,15 +357,32 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     );
   }
 
+  @Action(GetAvailableDistributionTargets)
+  getAvailableDistributionTargets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
+    return this.workbasketService.getWorkBasketsSummary(true).pipe(
+      take(1),
+      tap((workbasketAvailableDistributionTargets: WorkbasketSummaryRepresentation) => {
+        ctx.patchState({
+          workbasketAvailableDistributionTargets: workbasketAvailableDistributionTargets.workbaskets
+        });
+      })
+    );
+  }
+
   @Action(UpdateWorkbasketDistributionTargets)
   updateWorkbasketDistributionTargets(
     ctx: StateContext<WorkbasketStateModel>,
     action: UpdateWorkbasketDistributionTargets
   ): Observable<any> {
+    this.requestInProgressService.setRequestInProgress(true);
     return this.workbasketService.updateWorkBasketsDistributionTargets(action.url, action.distributionTargetsIds).pipe(
       take(1),
       tap(
         (updatedWorkbasketsDistributionTargets) => {
+          ctx.patchState({
+            workbasketDistributionTargets: updatedWorkbasketsDistributionTargets
+          });
+          this.requestInProgressService.setRequestInProgress(false);
           this.notificationService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT_8,
             new Map<string, string>([['workbasketName', ctx.getState().selectedWorkbasket.name]])
@@ -363,6 +390,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         },
         (error) => {
           this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_3, error);
+          this.requestInProgressService.setRequestInProgress(false);
         }
       )
     );
@@ -392,6 +420,7 @@ export interface WorkbasketStateModel {
   action: ACTION;
   workbasketAccessItems: WorkbasketAccessItemsRepresentation;
   workbasketDistributionTargets: WorkbasketDistributionTargets;
+  workbasketAvailableDistributionTargets: WorkbasketSummary[];
   selectedComponent: WorkbasketComponent;
   button: ButtonAction | undefined;
 }

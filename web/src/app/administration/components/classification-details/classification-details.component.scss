@@ -1,7 +1,6 @@
 @import 'src/theme/_colors.scss';
 
 .classification-details {
-  width: 100%;
   height: calc(100vh - 100px);
   overflow-y: auto;
 }
@@ -12,12 +11,12 @@
 
 /* ACTION TOOLBAR */
 .classification-details__headline {
-  padding-top: 0.5rem;
+  font-size: 1.5rem;
+  padding: 0.5rem;
 }
 .classification-details__action-toolbar {
-  width: calc(100% - 500px);
-  position: fixed;
-  padding: 12px 32px 12px 24px;
+  padding: 8px 30px 12px 24px;
+  height: 68px;
   background-color: #fff;
   display: flex;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -98,11 +97,18 @@
 
 .classification-details__service-and-priority {
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+}
+.classification-details__service {
+  width: 100%;
+  margin-right: 10px;
+}
+.classification-details__priority {
+  flex-grow: 1;
 }
 
 .classification-details__mat-form-field {
-  width: 70%;
+  width: 100%;
   margin-right: 10px;
 }
 
