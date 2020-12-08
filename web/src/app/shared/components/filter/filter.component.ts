@@ -9,6 +9,7 @@ import { TaskanaType } from 'app/shared/models/taskana-type';
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
+  @Input() component: string;
   @Input() allTypes: Map<ICONTYPES, string> = new Map([
     [ICONTYPES.ALL, 'All'],
     [ICONTYPES.PERSONAL, 'Personal'],
@@ -25,13 +26,10 @@ export class FilterComponent implements OnInit {
   ]);
 
   @Input() filterParams = { name: '', key: '', type: '', description: '', owner: '' };
-
   @Input() filterType = TaskanaType.WORKBASKETS;
-
   @Input() isExpanded = true;
-
-  @Output()
-  performFilter = new EventEmitter<Filter>();
+  @Output() performFilter = new EventEmitter<Filter>();
+  @Output() inputComponent = new EventEmitter<string>();
 
   filter: Filter;
   filterParamKeys = [];
@@ -62,6 +60,7 @@ export class FilterComponent implements OnInit {
   }
 
   search() {
+    this.inputComponent.emit(this.component);
     this.performFilter.emit(this.filter);
   }
 

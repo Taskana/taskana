@@ -43,6 +43,8 @@ export class WorkbasketListToolbarComponent implements OnInit {
   filterParams = { name: '', key: '', type: '', description: '', owner: '' };
   filterType = TaskanaType.WORKBASKETS;
   isExpanded = false;
+  showFilter = false;
+  component = '';
 
   @Select(WorkbasketSelectors.workbasketActiveAction)
   workbasketActiveAction$: Observable<ACTION>;
@@ -63,7 +65,13 @@ export class WorkbasketListToolbarComponent implements OnInit {
   }
 
   filtering(filterBy: Filter) {
-    this.performFilter.emit(filterBy);
+    if (this.component === 'workbasket-list') {
+      this.performFilter.emit(filterBy);
+    }
+  }
+
+  setComponent(component: string) {
+    this.component = component;
   }
 
   addWorkbasket() {

@@ -19,11 +19,15 @@ import { WorkbasketListToolbarComponent } from './components/workbasket-list-too
 import { WorkbasketDetailsComponent } from './components/workbasket-details/workbasket-details.component';
 import { WorkbasketInformationComponent } from './components/workbasket-information/workbasket-information.component';
 import { WorkbasketDistributionTargetsComponent } from './components/workbasket-distribution-targets/workbasket-distribution-targets.component';
-import { WorkbasketDualListComponent } from './components/workbasket-dual-list/workbasket-dual-list.component';
+import { WorkbasketDistributionTargetsListComponent } from './components/workbasket-distribution-targets-list/workbasket-distribution-targets-list.component';
 import { WorkbasketAccessItemsComponent } from './components/workbasket-access-items/workbasket-access-items.component';
 import { ClassificationListComponent } from './components/classification-list/classification-list.component';
 import { ClassificationDetailsComponent } from './components/classification-details/classification-details.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
+import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
+
+import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
+import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
 /**
  * Services
  */
@@ -31,15 +35,16 @@ import { SavingWorkbasketService } from './services/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export.service';
-import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
-import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
+
+/**
+ * Material Design
+ */
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
@@ -72,7 +77,7 @@ const DECLARATIONS = [
   WorkbasketDetailsComponent,
   WorkbasketInformationComponent,
   WorkbasketDistributionTargetsComponent,
-  WorkbasketDualListComponent,
+  WorkbasketDistributionTargetsListComponent,
   ClassificationOverviewComponent,
   ClassificationListComponent,
   ClassificationTypesSelectorComponent,
@@ -111,6 +116,7 @@ const DECLARATIONS = [
     SavingWorkbasketService,
     ClassificationCategoriesService,
     ImportExportService
-  ]
+  ],
+  entryComponents: []
 })
 export class AdministrationModule {}

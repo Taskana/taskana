@@ -60,6 +60,11 @@ export class WorkbasketSelectors {
   static workbasketDistributionTargets(state: WorkbasketStateModel): WorkbasketDistributionTargets {
     return state.workbasketDistributionTargets;
   }
+
+  @Selector([WorkbasketState])
+  static availableDistributionTargets(state: WorkbasketStateModel): WorkbasketSummary[] {
+    return state.workbasketAvailableDistributionTargets;
+  }
 }
 
 export interface WorkbasketAndAction {

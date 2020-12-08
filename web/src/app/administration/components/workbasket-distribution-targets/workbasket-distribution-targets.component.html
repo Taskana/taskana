@@ -1,77 +1,111 @@
-<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
-	<!-- ACTION TOOLBAR-->
-  <!--
-    <div class="panel-heading">
-        <div class="pull-right btn-group">
-            <button type="button" (click)="onSave()" [disabled]="action === 'COPY'" data-toggle="tooltip" title="Save"
-                    class="btn btn-default btn-primary">
-                <span class="material-icons md-20">save</span>
-            </button>
-            <button type="button" (click)="onClear()" data-toggle="tooltip" title="Undo Changes"
-                    class="btn btn-default">
-                <span class="material-icons md-20 blue">undo</span>
-            </button>
-        </div>
-        <h4 class="panel-header">{{workbasket.name}}
-            <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
-        </h4>
+<div *ngIf="workbasket" id="wb-information" class="workbasket-distribution-targets">
+  <mat-toolbar class="distribution-targets-list__action-toolbar" >
+    <button mat-flat-button class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
+            *ngIf="!sideBySide" (click)="toggleSideBySideView()">
+      Display side-by-side
+      <mat-icon class="distribution-targets-list__button-icon">view_week</mat-icon>
+    </button>
+    <button mat-flat-button class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
+            *ngIf="sideBySide" (click)="toggleSideBySideView()">
+      Display in single-view
+      <mat-icon class="distribution-targets-list__button-icon">view_agenda</mat-icon>
+    </button>
+
+    <!-- SIDE BY SIDE VIEW BUTTONS -->
+    <div class="distribution-targets-list__action-buttons"  *ngIf="sideBySide">
+      <div class="distribution-targets-list__action-buttons--selected"
+           style="justify-content: flex-end; margin-right: 2%">
+        <button mat-flat-button color="warn"
+                class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
+                (click)="moveDistributionTargets(side.SELECTED)">
+          Remove selected distribution target
+          <mat-icon>remove</mat-icon>
+        </button>
+      </div>
+      <span style="flex-grow: 1"> </span>
+      <div class="distribution-targets-list__action-buttons--chooser"
+           style="justify-content: flex-end;">
+        <button mat-flat-button color="accent"
+                class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
+                (click)="moveDistributionTargets(side.AVAILABLE)">
+          Add selected distribution targets
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
     </div>
--->
-	<!-- DISTRIBUTION TABLE-->
-    <div #panelBody class="panel-body">
 
-		<!-- DISTRIBUTION LEFT LIST -->
-        <div class="dual-list list-left col-xs-12 col-md-5-6 container">
-            <taskana-administration-workbasket-dual-list #dualListLeft id="dual-list-Left" header="Available distribution targets"
-                                          [distributionTargets]="distributionTargetsLeft"
-                                          [distributionTargetsSelected]="distributionTargetsSelected"
-                                          (performDualListFilter)="performFilter($event)"
-										  (scrolling)="onScroll($event)"
-                                          [side]="side.LEFT"
-                                          [requestInProgress]="requestInProgressLeft"
-										  [loadingItems]="loadingItems"
-                                          [(allSelected)]="selectAllLeft"></taskana-administration-workbasket-dual-list>
-        </div>
+    <!-- SINGLE VIEW BUTTONS WHEN DISPLAYING SELECTED DISTRIBUTION TARGETS -->
+    <div class="distribution-targets-list__action-buttons distribution-targets-list__action-buttons--selected"
+         *ngIf="!displayingDistributionTargetsPicker && !sideBySide">
+      <button mat-flat-button color="warn"
+              class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
+              (click)="moveDistributionTargets(side.SELECTED)">
+        Remove selected distribution target
+        <mat-icon>remove</mat-icon>
+      </button>
 
-		<!-- DISTRIBUTION ACTION BUTTONS -->
-        <div class="hidden-xs hidden-sm col-md-1 list-arrows text-center button-margin-top">
-            <button (click)="moveDistributionTargets(side.LEFT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-right" data-toggle="tooltip"
-                    title="Move to selected distribution targets">
-                <span class="material-icons md-20 blue">chevron_right</span>
-            </button>
-            <button (click)="moveDistributionTargets(side.RIGHT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-left" data-toggle="tooltip"
-                    title="Move to available distribution targets">
-                <span class="material-icons md-20 blue">chevron_left</span>
-            </button>
-        </div>
-        <div class="hidden visible-xs visible-sm col-xs-12 list-arrows text-center">
-            <button (click)="moveDistributionTargets(side.LEFT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-down" data-toggle="tooltip"
-                    title="Move to selected distribution targets">
-                <span class="material-icons md-20 blue">expand_more</span>
-            </button>
-            <button (click)="moveDistributionTargets(side.RIGHT)"
-                    [disabled]="requestInProgressLeft || requestInProgressRight"
-                    class="btn btn-default move-up" data-toggle="tooltip"
-                    title="Move to available distribution targets">
-                <span class="material-icons md-20 blue">expand_less</span>
-            </button>
-        </div>
+      <span style="flex: 1 1 auto"> </span>
 
-		<!-- DISTRIBUTION RIGHT LIST -->
-        <div class="dual-list list-right col-xs-12 col-md-5-6 container">
-            <taskana-administration-workbasket-dual-list #dualListRight id="dual-list-right" header="Selected distribution targets"
-                                          [distributionTargets]="distributionTargetsRight"
-                                          [distributionTargetsSelected]="distributionTargetsSelected"
-                                          (performDualListFilter)="performFilter($event)"
-                                          [requestInProgress]="requestInProgressRight"
-                                          [side]="side.RIGHT"
-                                          [(allSelected)]="selectAllRight"></taskana-administration-workbasket-dual-list>
-        </div>
+      <button mat-stroked-button
+              class="distribution-targets-list__action-button distribution-targets-list-dialog__display-button"
+              (click)="toggleDistributionTargetsPicker()">
+        Display available distribution targets
+        <mat-icon>launch</mat-icon>
+      </button>
     </div>
+
+    <!-- SINGLE VIEW BUTTONS WHEN CHOOSING DISTRIBUTION TARGETS -->
+    <div class="distribution-targets-list__action-buttons distribution-targets-list__action-buttons--chooser"
+         *ngIf="displayingDistributionTargetsPicker && !sideBySide">
+      <button mat-flat-button color="accent"
+              class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
+              (click)="moveDistributionTargets(side.AVAILABLE)">
+        Add selected distribution targets
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <span style="flex: 1 1 auto"> </span>
+
+      <button mat-flat-button color="warn" class="distribution-targets-list-dialog__check-button"
+              (click)="toggleDistributionTargetsPicker()">
+        Close selection
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+
+  <div class="distribution-targets-list__lists"
+       [ngClass]="sideBySide ? 'distribution-targets-list__lists--side' : 'distribution-targets-list__lists--single'">
+
+    <!-- DISTRIBUTION TABLE-->
+    <taskana-administration-workbasket-distribution-targets-list
+      [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
+      header="Selected distribution targets"
+      [distributionTargets]="distributionTargetsRight"
+      [distributionTargetsSelected]="distributionTargetsSelected"
+      (performDualListFilter)="performFilter($event)"
+      [side]="side.SELECTED"
+      (scrolling)="onScroll()"
+      [loadingItems]="loadingItems"
+      [(allSelected)]="selectAllLeft"
+      [hidden]="displayingDistributionTargetsPicker && !sideBySide"
+    >
+
+    </taskana-administration-workbasket-distribution-targets-list>
+
+    <taskana-administration-workbasket-distribution-targets-list
+      header="Available distribution targets"
+      [distributionTargets]="availableDistributionTargets"
+      [side]="side.AVAILABLE"
+      [distributionTargetsSelected]="distributionTargetsSelected"
+      (performDualListFilter)="performFilter($event)"
+      (scrolling)="onScroll()"
+      [loadingItems]="loadingItems"
+      [(allSelected)]="selectAllRight"
+      *ngIf="displayingDistributionTargetsPicker"
+    >
+
+    </taskana-administration-workbasket-distribution-targets-list>
+  </div>
 </div>

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketListToolbarComponent } from './workbasket-list-toolbar.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -44,6 +45,12 @@ class FilterStub {
   @Output() performFilter = new EventEmitter<Filter>();
 }
 
+const requestInProgressServiceSpy = jest.fn().mockImplementation(
+  (): Partial<RequestInProgressService> => ({
+    setRequestInProgress: jest.fn().mockReturnValue(of())
+  })
+);
+
 describe('WorkbasketListToolbarComponent', () => {
   let fixture: ComponentFixture<WorkbasketListToolbarComponent>;
   let debugElement: DebugElement;
@@ -63,7 +70,11 @@ describe('WorkbasketListToolbarComponent', () => {
         MatDialogModule
       ],
       declarations: [WorkbasketListToolbarComponent, ImportExportStub, SortStub, FilterStub],
-      providers: [{ provide: DomainService, useClass: domainServiceMock }, WorkbasketService]
+      providers: [
+        { provide: DomainService, useClass: domainServiceMock },
+        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
+        WorkbasketService
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkbasketListToolbarComponent);
@@ -108,7 +119,7 @@ describe('WorkbasketListToolbarComponent', () => {
     expect(sort).toMatchObject(mockSort);
   });
 
-  it('should emit value when filtering is called', (done) => {
+  it('should emit value when filtering is called', async((done) => {
     const mockFilter: Filter = { filterParams: 'abc' };
     let filterBy: Filter = { filterParams: 'abc' };
     component.performFilter.subscribe((filter: Filter) => {
@@ -117,7 +128,7 @@ describe('WorkbasketListToolbarComponent', () => {
     });
     component.filtering(filterBy);
     expect(filterBy).toMatchObject(mockFilter);
-  });
+  }));
 
   /* HTML */
 

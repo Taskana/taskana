@@ -24,7 +24,7 @@
   <!-- FILTER -->
   <div class="workbasket-list-toolbar__filter">
     <button mat-stroked-button class="filter__filter-button" matTooltip="Display more filter options" (click)="onClickFilter()">
-      <mat-icon *ngIf="!isExpanded">filter_list</mat-icon>
+      <mat-icon *ngIf="!isExpanded">keyboard_arrow_down</mat-icon>
       <mat-icon *ngIf="isExpanded">keyboard_arrow_up</mat-icon>
     </button>
 
@@ -33,4 +33,5 @@
     </div>
   </div>
 
+  <taskana-shared-filter *ngIf="showFilter" (performFilter)="filtering($event)" component="workbasket-list" (inputComponent)="setComponent($event)"></taskana-shared-filter>
 </div>
