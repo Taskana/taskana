@@ -6,17 +6,11 @@ import {
   EventEmitter,
   AfterContentChecked,
   ChangeDetectorRef,
-  ViewChild,
-  OnChanges
+  ViewChild
 } from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'app/shared/animations/expand.animation';
-import { takeUntil } from 'rxjs/operators';
-import { WorkbasketSummaryRepresentation } from '../../../shared/models/workbasket-summary-representation';
-import { TaskanaQueryParameters } from '../../../shared/util/query-parameters';
-import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
-import { Subject } from 'rxjs';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 import { MatSelectionList } from '@angular/material/list';
 

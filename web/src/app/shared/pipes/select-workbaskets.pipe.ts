@@ -4,7 +4,7 @@ import { WorkbasketSummary } from '../models/workbasket-summary';
 
 @Pipe({ name: 'selectWorkbaskets' })
 export class SelectWorkBasketPipe implements PipeTransform {
-  transform(originArray: any, selectionArray: any, arg1: any): Array<WorkbasketSummary> {
+  transform(originArray: any, selectionArray: any, arg1: any): WorkbasketSummary[] {
     let returnArray = [];
     if (!originArray || !selectionArray) {
       return returnArray;

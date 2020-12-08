@@ -8,7 +8,6 @@ import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-dist
 import { ACTION } from 'app/shared/models/action';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
-import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/shared/models/page';
 import { Select, Store } from '@ngxs/store';

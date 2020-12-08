@@ -1,5 +1,5 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
-import { take, takeUntil, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
@@ -33,8 +33,6 @@ import { WorkbasketSummary } from '../../models/workbasket-summary';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 import { ButtonAction } from '../../../administration/models/button-action';
 import { ActivatedRoute } from '@angular/router';
-import { TaskanaQueryParameters } from '../../util/query-parameters';
-import { append } from '@ngxs/store/operators';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
 
 class InitializeStore {

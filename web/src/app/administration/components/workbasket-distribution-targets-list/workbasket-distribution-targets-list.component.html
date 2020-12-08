@@ -17,8 +17,8 @@
     <span style="flex: 1 1 auto"> </span>
 
     <button mat-flat-button class="distribution-targets-list__action-button" (click)="selectAll(allSelected);">
-      <mat-icon class="button-icon" *ngIf="!allSelected">check_box</mat-icon>
-      <mat-icon class="button-icon" *ngIf="allSelected">check_box_outline_blank</mat-icon>
+      <mat-icon class="button-icon" *ngIf="!allSelected" matTooltip="Deselect all items">check_box</mat-icon>
+      <mat-icon class="button-icon" *ngIf="allSelected" matTooltip="Select all items">check_box_outline_blank</mat-icon>
     </button>
   </mat-toolbar>
   <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"
@@ -48,7 +48,7 @@
           </div>
 
           <div class="workbaskets-item__marked" *ngIf="workbasket.markedForDeletion">
-            <span title="Marked for deletion" data-toggle="tooltip"
+            <span title="Marked for deletion" matTooltip="Marked for deletion"
                   class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
           </div>
         </div>
