@@ -82,7 +82,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
     this.customFields$ = this.workbasketsCustomisation$.pipe(
       map((customisation) => customisation.information),
-      getCustomFields(customFieldCount)
+      getCustomFields(customFieldCount),
+      map((customFields) => customFields.filter((customisation) => customisation.visible))
     );
     this.workbasketsCustomisation$.pipe(takeUntil(this.destroy$)).subscribe((workbasketsCustomization) => {
       if (workbasketsCustomization.information.owner) {
