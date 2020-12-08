@@ -1,9 +1,8 @@
 @import 'src/theme/_colors.scss';
 
 .workbasket-list-toolbar {
-  padding: 16px 16px 8px 16px;
+  padding: 16px 16px 20px;
   flex-wrap: wrap;
-  min-height: 68px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
@@ -27,8 +26,18 @@
   height: 36px;
 }
 
-.workbasket-list-toolbar__filter-button {
+.workbasket-list-toolbar__filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 8px 0 4px;
+}
+
+.filter__filter-button {
   padding: 0 5px;
   color: #555;
   height: 36px;
+}
+
+.filter__filter-component-wrapper {
+  width: 380px;
 }

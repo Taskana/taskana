@@ -26,9 +26,8 @@ export class FilterComponent implements OnInit {
   ]);
 
   @Input() filterParams = { name: '', key: '', type: '', description: '', owner: '' };
-
   @Input() filterType = TaskanaType.WORKBASKETS;
-
+  @Input() isExpanded = true;
   @Output() performFilter = new EventEmitter<Filter>();
   @Output() inputComponent = new EventEmitter<string>();
 

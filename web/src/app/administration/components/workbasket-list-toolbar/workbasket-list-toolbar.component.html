@@ -19,14 +19,19 @@
       style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy">
     </taskana-shared-sort>
 
-    <!-- FILTER -->
-    <button mat-stroked-button class="workbasket-list-toolbar__filter-button" matTooltip="Display filter options" (click)="onClickFilter()">
-      <mat-icon *ngIf="!showFilter">filter_list</mat-icon>
-      <mat-icon *ngIf="showFilter">keyboard_arrow_up</mat-icon>
+  </div>
+
+  <!-- FILTER -->
+  <div class="workbasket-list-toolbar__filter">
+    <button mat-stroked-button class="filter__filter-button" matTooltip="Display more filter options" (click)="onClickFilter()">
+      <mat-icon *ngIf="!isExpanded">keyboard_arrow_down</mat-icon>
+      <mat-icon *ngIf="isExpanded">keyboard_arrow_up</mat-icon>
     </button>
 
+    <div class="filter__filter-component-wrapper">
+      <taskana-shared-filter [isExpanded]="isExpanded" (performFilter)="filtering($event)"></taskana-shared-filter>
+    </div>
   </div>
 
   <taskana-shared-filter *ngIf="showFilter" (performFilter)="filtering($event)" component="workbasket-list" (inputComponent)="setComponent($event)"></taskana-shared-filter>
-
 </div>
