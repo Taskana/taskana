@@ -164,6 +164,6 @@ describe('WorkbasketListToolbarComponent', () => {
     button.click();
     fixture.detectChanges();
     expect(component.isExpanded).toBe(false);
-    expect(button.textContent).toBe('filter_list');
+    expect(button.textContent).toBe('keyboard_arrow_down');
   });
 });

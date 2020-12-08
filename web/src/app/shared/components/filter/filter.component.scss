@@ -1,6 +1,7 @@
 @import 'src/theme/_colors.scss';
 
 .filter {
+  margin: -10px 0 0 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -8,12 +9,13 @@
 
 .filter__collapsed-filter {
   display: flex;
-  justify-content: space-between;
   height: 36px;
 }
 
 .collapsed-filter_input-field {
   top: -10px;
+  flex-grow: 1;
+  margin: 0 8px 0 8px;
 }
 
 .filter__action-buttons {
@@ -22,10 +24,13 @@
   display: flex;
   justify-content: space-between;
 }
-
+.filter__undo-buttons {
+  margin-left: 4px;
+}
 .filter__search-button {
   background: $aquamarine;
   color: white;
+  margin-left: 4px;
 }
 
 .filter__name-and-key-input {
