@@ -107,16 +107,17 @@
               </mat-form-field>
 
               <!-- DESCRIPTION -->
-              <mat-form-field appearance="outline" style="width: 68%">
-                <mat-label>Description</mat-label>
-                <label for="workbasket-description"></label>
-                <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="6" cdkAutosizeMaxRows="6" maxlength="255"
-                          id="workbasket-description" placeholder="Description" [(ngModel)]="workbasket.description"
-                          name="workbasket.description" #description="ngModel"
-                          (input)="validateInputOverflow(description, 255)"></textarea>
-              </mat-form-field>
-              <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}} </div>
-
+              <div style="display: block; width: 68%">
+                <mat-form-field appearance="outline" style="width: 100%">
+                  <mat-label>Description</mat-label>
+                  <label for="workbasket-description"></label>
+                  <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="5" cdkAutosizeMaxRows="10" maxlength="255"
+                            id="workbasket-description" placeholder="Description" [(ngModel)]="workbasket.description"
+                            name="workbasket.description" #description="ngModel"
+                            (input)="validateInputOverflow(description, 255)"></textarea>
+                </mat-form-field>
+                <mat-error *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}} </mat-error>
+              </div>
             </div>
           </div>
 
