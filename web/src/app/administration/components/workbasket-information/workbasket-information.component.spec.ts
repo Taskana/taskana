@@ -61,7 +61,9 @@ const workbasketServiceMock = jest.fn().mockImplementation(
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
     createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
-    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
+    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+    getWorkBasketAccessItems: jest.fn().mockReturnValue(of()),
+    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
   })
 );
 
