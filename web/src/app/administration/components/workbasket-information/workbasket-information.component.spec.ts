@@ -158,7 +158,7 @@ describe('WorkbasketInformationComponent', () => {
   });
 
   it('should display custom fields correctly', () => {
-    const customFields = debugElement.nativeElement.getElementsByClassName('workbasket-information__custom-fields');
+    const customFields = debugElement.nativeElement.getElementsByClassName('custom-fields__form-field');
     expect(customFields.length).toBe(3); //mock data has custom1->4 but engineConfig disables custom3 -> [1,2,4]
   });
 
