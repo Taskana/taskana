@@ -42,6 +42,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
 
   filterParams = { name: '', key: '', type: '', description: '', owner: '' };
   filterType = TaskanaType.WORKBASKETS;
+  isExpanded = false;
   showFilter = false;
   component = '';
 
@@ -80,8 +81,8 @@ export class WorkbasketListToolbarComponent implements OnInit {
   }
 
   onClickFilter() {
-    this.showFilter = !this.showFilter;
-    this.workbasketService.expandWorkbasketActionToolbar(this.showFilter);
+    this.isExpanded = !this.isExpanded;
+    this.workbasketService.expandWorkbasketActionToolbar(this.isExpanded);
   }
 
   ngOnDestroy() {
