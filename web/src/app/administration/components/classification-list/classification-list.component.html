@@ -23,8 +23,8 @@
     <!-- FILTER -->
     <div class="classification-list__filter" *ngIf="showFilter">
       <div class="classification-list__category-filter">
-        <button mat-icon-button class="mr-2 category-filter__filter-button" [matMenuTriggerFor]="menu"
-                matTooltip="Filter Category">
+        <button mat-icon-button [matMenuTriggerFor]="menu"
+                matTooltip="Filter Category" class="category-filter__filter-button">
           <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
           <svg-icon class="category-filter__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
                     [title]="(getCategoryIcon(selectedCategory) | async)?.text"
@@ -34,12 +34,12 @@
 
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="selectCategory('')" class="category-filter__all-button">
-            <svg-icon class="category-filter__categories pr-2" src="./assets/icons/asterisk.svg"
+            <svg-icon class="category-filter__categories" src="./assets/icons/asterisk.svg"
                       [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
             <span>All</span>
           </button>
           <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-            <svg-icon class="category-filter__categories pr-2" [src]="(getCategoryIcon(category) | async)?.name"
+            <svg-icon class="category-filter__categories" [src]="(getCategoryIcon(category) | async)?.name"
                       [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
             <span> {{category}} </span>
           </button>

@@ -1,11 +1,11 @@
 <div class="classification-details">
 
-  <div class="classification-details__wrapper" id="classification-details" *ngIf="classification && !requestInProgress">
+  <div class="classification-details-wrapper" id="classification-details" *ngIf="classification && !requestInProgress">
 
     <!-- TITLE + ACTION BUTTONS -->
-    <mat-toolbar class="classification-details__action-toolbar">
-      <h4 class="classification-details__headline">{{classification.name}}&nbsp; [{{classification.type}}]
-        <span *ngIf="isCreatingNewClassification" class="badge warning"> {{badgeMessage$ | async}}</span>
+    <mat-toolbar class="action-toolbar">
+      <h4 class="action-toolbar__headline">{{classification.name}}&nbsp; [{{classification.type}}]
+        <span *ngIf="isCreatingNewClassification" class="action-toolbar__badge-message"> {{badgeMessage$ | async}}</span>
       </h4>
 
       <div>
@@ -16,7 +16,7 @@
 
       <button mat-stroked-button class="action-toolbar__button" matTooltip="Revert changes to previous saved state" (click)="onRestore()">
         Undo Changes
-        <mat-icon class="button__green-blue md-20">restore</mat-icon>
+        <mat-icon class="action-toolbar__aquamarine-button md-20">restore</mat-icon>
       </button>
 
       <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button" id="action-toolbar__more-buttons">
@@ -25,11 +25,11 @@
 
       <mat-menu #buttonMenu="matMenu">
         <button mat-menu-item class="action-toolbar__dropdown" matTooltip="Copy current values to create new classification" (click)="onCopy()">
-          <mat-icon class="button__green-blue">content_copy</mat-icon>
+          <mat-icon class="action-toolbar__aquamarine-button">content_copy</mat-icon>
           <span>Copy</span>
         </button>
         <button mat-menu-item class="action-toolbar__dropdown" matTooltip="Delete this classification" (click)="onRemoveClassification()">
-          <mat-icon class="button__red">delete</mat-icon>
+          <mat-icon class="action-toolbar__red-button">delete</mat-icon>
           <span>Delete</span>
         </button>
         <button mat-menu-item class="action-toolbar__dropdown" style="border-bottom-style: none;"  matTooltip="Close this classification and discard all changes" (click)="onCloseClassification()">
@@ -38,172 +38,184 @@
         </button>
       </mat-menu>
       </div>
-
     </mat-toolbar>
 
+
     <!-- DETAILED FIELDS -->
-    <div class="panel-body" style="padding: 0">
+    <div style="padding: 0">
       <ng-form #ClassificationForm="ngForm">
-        <div class="classification__detailed-fields">
+        <div class="detailed-fields">
 
-          <h6 class="classification-details__subheading" style="margin-top: 65px;"> General </h6>
-          <mat-divider class="classification-details__horizontal-line"> </mat-divider>
+          <h6 class="detailed-fields__subheading" style="margin-top: 65px;"> General </h6>
+          <mat-divider class="detailed-fields__horizontal-line"> </mat-divider>
 
-          <!-- KEY -->
-          <mat-form-field appearance="outline">
-            <mat-label>Key</mat-label>
-            <label for="classification-key"></label>
-            <input matInput required type="text" #key="ngModel" maxlength="32" [disabled]="!isCreatingNewClassification"
-                   id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
-                   name="classification.key" (input)="validateInputOverflow(key, 32)">
-          </mat-form-field>
-          <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
-          <!-- <taskana-shared-field-error-display [displayError]="key.invalid && key.dirty"
-          errorMessage="* Key is required">
-          </taskana-shared-field-error-display> -->
+          <!-- GENERAL -->
+          <div class="detailed-fields__general">
 
-            <!-- NAME -->
-            <mat-form-field appearance="outline">
-              <mat-label>Name</mat-label>
-              <label for="classification-name"></label>
-              <input matInput type="text" required maxlength="255" #name="ngModel"
-                     id="classification-name" placeholder="Name"
-                     [(ngModel)]="classification.name" name="classification.name"
-                     (input)="validateInputOverflow(name, 255)">
-            </mat-form-field>
-          <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
-          <!--
-          <taskana-shared-field-error-display [displayError]="name.invalid && name.dirty"
-                                              errorMessage="* Name is required">
-          </taskana-shared-field-error-display> -->
+            <!-- GENERAL LEFT COLUMN -->
+            <div class="detailed-fields__general-left-column">
 
-
-          <!-- SERVICE LEVEL AND PRIORITY-->
-          <div class="classification-details__service-and-priority">
-            <div class="classification-details__service">
-              <mat-form-field appearance="outline" class="classification-details__mat-form-field">
-                <mat-label> Service Level </mat-label>
-                <label for="classification-service-level"></label>
-                <input matInput type="text" required maxlength="255"
-                       id="classification-service-level" placeholder="Service Level"
-                       [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel"
-                       #serviceLevel="ngModel" (input)="validateInputOverflow(serviceLevel, 255)">
-              </mat-form-field>
-              <div *ngIf="inputOverflowMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
-            </div>
-
-            <div class="classification-details__priority">
-              <!-- I replaced this component by the mat-form-field. Is this the same?
-              I don't understand all methods in the number-picker component.
-              <taskana-shared-number-picker [(ngModel)]="classification.priority"
-                                            name="classification.priority"
-                                            id="classification-priority"
-                                            [required]="true"
-                                            [name]="'Priority'">
-              </taskana-shared-number-picker> -->
+              <!-- KEY -->
               <mat-form-field appearance="outline">
-                <mat-label>Priority</mat-label>
-                <label for="classification-priority"></label>
-                <input matInput type="number" [(ngModel)]="classification.priority"
-                       name="classification.priority" id="classification-priority" required min="0">
+                <mat-label>Key</mat-label>
+                <label for="classification-key"></label>
+                <input matInput required type="text" #key="ngModel" maxlength="32" [disabled]="!isCreatingNewClassification"
+                       id="classification-key" placeholder="Key" [(ngModel)]="classification.key"
+                       name="classification.key" (input)="validateInputOverflow(key, 32)">
+              </mat-form-field>
+              <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
+              <!-- <taskana-shared-field-error-display [displayError]="key.invalid && key.dirty"
+              errorMessage="* Key is required">
+              </taskana-shared-field-error-display> -->
+
+              <!-- NAME -->
+              <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <label for="classification-name"></label>
+                <input matInput type="text" required maxlength="255" #name="ngModel"
+                       id="classification-name" placeholder="Name"
+                       [(ngModel)]="classification.name" name="classification.name"
+                       (input)="validateInputOverflow(name, 255)">
+              </mat-form-field>
+              <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
+              <!--
+              <taskana-shared-field-error-display [displayError]="name.invalid && name.dirty"
+                                                  errorMessage="* Name is required">
+              </taskana-shared-field-error-display> -->
+
+              <!-- DESCRIPTION -->
+              <mat-form-field appearance="outline">
+                <mat-label>Description</mat-label>
+                <label for="classification-description"></label>
+                <textarea matInput
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="6"
+                          cdkAutosizeMaxRows="6"
+                          maxlength="255"
+                          id="classification-description" placeholder="Description"
+                          [(ngModel)]="classification.description"
+                          name="classification.description" #description="ngModel"
+                          (input)="validateInputOverflow(description, 255)"></textarea>
+              </mat-form-field>
+              <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</div>
+            </div>
+
+
+
+            <div class="detailed-fields__spacer"> </div>
+
+
+
+            <!-- GENERAL RIGHT ROW -->
+            <div class="detailed-fields__general-right-column">
+
+              <!-- DOMAIN -->
+              <mat-form-field appearance="outline">
+                <mat-label>Domain</mat-label>
+                <label for="classification-domain"></label>
+                <input matInput type="text" disabled id="classification-domain"
+                       placeholder="Domain" [(ngModel)]="classification.domain"
+                       name="classification.domain">
               </mat-form-field>
 
-              <taskana-shared-field-error-display
-                [displayError]="!isFieldValid('classification.priority')"
-                [validationTrigger]="this.toggleValidationMap.get('classification.priority.name')"
-                errorMessage="* Priority is required">
-              </taskana-shared-field-error-display>
+              <div *ngIf="!masterDomainSelected()" class="detailed-fields__domain-checkbox">
+                Valid in Domain
+                <a (click)="validChanged()" title="Valid in Domain">
+                  <mat-icon class="detailed-fields__domain-checkbox-icon">{{classification.isValidInDomain ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                </a>
+              </div>
+
+              <!-- SERVICE LEVEL AND PRIORITY-->
+              <div class="detailed-fields__service-and-priority">
+
+                <!-- SERVICE LEVEL -->
+                <div style="width: 48%">
+                  <mat-form-field appearance="outline" style="width: 100%">
+                    <mat-label> Service Level </mat-label>
+                    <label for="classification-service-level"></label>
+                    <input matInput type="text" required maxlength="255"
+                           id="classification-service-level" placeholder="Service Level"
+                           [(ngModel)]="classification.serviceLevel" name="classification.serviceLevel"
+                           #serviceLevel="ngModel" (input)="validateInputOverflow(serviceLevel, 255)">
+                  </mat-form-field>
+                  <div *ngIf="inputOverflowMap.get(serviceLevel.name)" class="error">{{lengthError}}</div>
+                </div>
+
+                <!-- PRIORITY-->
+                <div style="width: 48%">
+                  <mat-form-field appearance="outline"  style="width: 100%">
+                    <mat-label>Priority</mat-label>
+                    <label for="classification-priority"></label>
+                    <input matInput type="number" [(ngModel)]="classification.priority"
+                           name="classification.priority" id="classification-priority" required min="0">
+                  </mat-form-field>
+
+                  <taskana-shared-field-error-display
+                    [displayError]="!isFieldValid('classification.priority')"
+                    [validationTrigger]="this.toggleValidationMap.get('classification.priority.name')"
+                    errorMessage="* Priority is required">
+                  </taskana-shared-field-error-display>
+                </div>
+              </div>
+
+              <!-- APPLICATION ENTRY POINT -->
+              <mat-form-field appearance="outline">
+                <mat-label>Application entry point</mat-label>
+                <label for="classification-application-entry-point"></label>
+                <input matInput type="text" maxlength="255"
+                       id="classification-application-entry-point"
+                       placeholder="Application entry point"
+                       [(ngModel)]="classification.applicationEntryPoint"
+                       name="classification.applicationEntryPoint" #appEntryPoint="ngModel"
+                       (input)="validateInputOverflow(appEntryPoint, 255)">
+              </mat-form-field>
+              <div *ngIf="inputOverflowMap.get(appEntryPoint.name)" class="error">{{lengthError}}</div>
+
+              <!-- CATEGORY -->
+              <mat-form-field appearance="outline">
+                <mat-label>Category</mat-label>
+                <mat-select required [(value)]="this.classification.category">
+                  <mat-select-trigger>
+                    <svg-icon
+                      class="detailed-fields__category-icon" [src]="(getCategoryIcon(this.classification.category) | async)?.name">
+                    </svg-icon>
+                    {{this.classification.category}}
+                  </mat-select-trigger>
+                  <mat-option *ngFor="let category of categories$ | async" value="{{category}}">
+                    <svg-icon class="detailed-fields__category-icon" [src]="(getCategoryIcon(category) | async)?.name"></svg-icon>
+                    {{category}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
 
             </div>
           </div>
 
 
-            <!-- DOMAIN AND CATEGORY -->
-          <div class="classification-details__domain-and-category">
-
-            <mat-form-field class="classification-details__mat-form-field" appearance="outline">
-              <mat-label>Domain</mat-label>
-              <label for="classification-domain"></label>
-              <input matInput type="text" disabled id="classification-domain"
-                     placeholder="Domain" [(ngModel)]="classification.domain"
-                     name="classification.domain">
-            </mat-form-field>
-
-            <div class="domain-and-category__domain-checkbox">
-              Valid in Domain
-              <a *ngIf="!masterDomainSelected()" (click)="validChanged()" title="Valid in Domain">
-                <mat-icon class="domain-and-category__domain-checkbox-icon">{{classification.isValidInDomain ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
-              </a>
-            </div>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Category</mat-label>
-              <mat-select required [(value)]="this.classification.category">
-                <mat-select-trigger>
-                  <svg-icon
-                    class="domain-and-category__category-icon" [src]="(getCategoryIcon(this.classification.category) | async)?.name">
-                  </svg-icon>
-                  {{this.classification.category}}
-                </mat-select-trigger>
-                <mat-option *ngFor="let category of categories$ | async" value="{{category}}">
-                  <svg-icon class="domain-and-category__category-icon" [src]="(getCategoryIcon(category) | async)?.name"></svg-icon>
-                  {{category}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
 
 
-          <!-- APPLICATION ENTRY POINT -->
-          <mat-form-field appearance="outline">
-            <mat-label>Application entry point</mat-label>
-            <label for="classification-application-entry-point"></label>
-            <input matInput type="text" maxlength="255"
-                   id="classification-application-entry-point"
-                   placeholder="Application entry point"
-                   [(ngModel)]="classification.applicationEntryPoint"
-                   name="classification.applicationEntryPoint" #appEntryPoint="ngModel"
-                   (input)="validateInputOverflow(appEntryPoint, 255)">
-          </mat-form-field>
-          <div *ngIf="inputOverflowMap.get(appEntryPoint.name)" class="error">{{lengthError}}</div>
 
-          <!-- DESCRIPTION -->
-          <mat-form-field appearance="outline">
-            <mat-label>Description</mat-label>
-            <label for="classification-description"></label>
-              <textarea matInput
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="1"
-                        cdkAutosizeMaxRows="5"
-                        maxlength="255"
-                        id="classification-description" placeholder="Description"
-                        [(ngModel)]="classification.description"
-                        name="classification.description" #description="ngModel"
-                        (input)="validateInputOverflow(description, 255)"></textarea>
-          </mat-form-field>
-          <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</div>
+
 
 
           <!-- CUSTOM FIELDS -->
-          <h6 class="classification-details__subheading" style="padding-top: 50px"> Custom Fields </h6>
-            <mat-divider class="classification-details__horizontal-line"> </mat-divider>
+          <h6 class="detailed-fields__subheading" style="padding-top: 50px"> Custom Fields </h6>
+          <mat-divider class="detailed-fields__horizontal-line"> </mat-divider>
 
-
-          <div *ngFor="let customField of (customFields$ | async), let i = index" >
-            <div *ngIf="customField.visible">
-              <mat-form-field appearance="outline" style="width: 100%">
-                  <mat-label>{{customField.field}}</mat-label>
-                  <label for="classification-custom-{{i + 1}}"></label>
-                  <input matInput type="text" maxlength="255"
-                         id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
-                         [(ngModel)]="classification[getClassificationCustom(i + 1)]"
-                         name="classification.custom{{i + 1}}" #custom="ngModel"
-                         (input)="validateInputOverflow(custom, 255)">
-              </mat-form-field>
-              <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
+          <div class="detailed-fields__custom-fields">
+            <div *ngFor="let customField of (customFields$ | async), let i = index" class="detailed-fields__input-custom-field">
+                <mat-form-field appearance="outline" style="width: 100%">
+                    <mat-label>{{customField.field}}</mat-label>
+                    <label for="classification-custom-{{i + 1}}"></label>
+                    <input matInput type="text" maxlength="255"
+                           id="classification-custom-{{i + 1}}" placeholder="{{customField.field}}"
+                           [(ngModel)]="classification[getClassificationCustom(i + 1)]"
+                           name="classification.custom{{i + 1}}" #custom="ngModel"
+                           (input)="validateInputOverflow(custom, 255)">
+                </mat-form-field>
+                <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
             </div>
           </div>
-
         </div>
       </ng-form>
     </div>
