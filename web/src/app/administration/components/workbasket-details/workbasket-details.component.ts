@@ -18,7 +18,6 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { ButtonAction } from '../../models/button-action';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
-import { WorkbasketComponent } from '../../models/workbasket-component';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',

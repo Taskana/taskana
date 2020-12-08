@@ -1,13 +1,27 @@
-.button-margin-top {
-  margin-top: 100px;
-}
+@import 'src/theme/_colors.scss';
 
-.list-arrows > button {
-  margin: 10px 0px;
-}
-
-.col-md-5-6 {
-  @media (min-width: 992px) {
-    width: 45.82%;
+.distribution-targets-list {
+  &__action-buttons {
+    display: flex;
+    flex-grow: 1;
+  }
+  &__action-button {
+    margin-right: 0.5rem;
+  }
+  &__button-icon {
+    color: #555;
+  }
+  &__lists {
+    padding: 0 16px 16px 16px;
+    background-color: $light-grey;
+    &--side {
+      display: flex;
+      taskana-administration-workbasket-distribution-targets-list {
+        width: 50%;
+      }
+    }
+    &--left-side {
+      margin-right: 1%;
+    }
   }
 }

@@ -1,7 +1,6 @@
 @import 'src/theme/_colors.scss';
 
 .classification-details {
-  width: 100%;
   height: calc(100vh - 100px);
   overflow-y: auto;
 }
@@ -11,9 +10,8 @@
 }
 
 .action-toolbar {
-  width: calc(100% - 500px);
-  position: fixed;
-  padding: 12px 32px 12px 24px;
+  padding: 8px 30px 12px 24px;
+  height: 68px;
   background-color: #fff;
   display: flex;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -22,7 +20,8 @@
   z-index: 10;
 
   &__headline {
-    padding-top: 0.5rem;
+    font-size: 1.5rem;
+    padding: 0.5rem;
   }
 
   &__badge-message {
@@ -55,7 +54,6 @@
     color: $invalid;
   }
 }
-
 
 .detailed-fields {
   padding: 15px;
@@ -140,4 +138,3 @@
 input:invalid.dirty {
   border-color: $invalid;
 }
-

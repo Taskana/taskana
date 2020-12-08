@@ -61,7 +61,9 @@ const workbasketServiceMock = jest.fn().mockImplementation(
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
     createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
-    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock }))
+    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+    getWorkBasketAccessItems: jest.fn().mockReturnValue(of()),
+    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
   })
 );
 
@@ -156,7 +158,7 @@ describe('WorkbasketInformationComponent', () => {
   });
 
   it('should display custom fields correctly', () => {
-    const customFields = debugElement.nativeElement.getElementsByClassName('workbasket-information__custom-fields');
+    const customFields = debugElement.nativeElement.getElementsByClassName('custom-fields__form-field');
     expect(customFields.length).toBe(3); //mock data has custom1->4 but engineConfig disables custom3 -> [1,2,4]
   });
 

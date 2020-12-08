@@ -3,7 +3,7 @@
   <div class="classification-details-wrapper" id="classification-details" *ngIf="classification && !requestInProgress">
 
     <!-- TITLE + ACTION BUTTONS -->
-    <section class="action-toolbar">
+    <mat-toolbar class="action-toolbar">
       <h4 class="action-toolbar__headline">{{classification.name}}&nbsp; [{{classification.type}}]
         <span *ngIf="isCreatingNewClassification" class="action-toolbar__badge-message"> {{badgeMessage$ | async}}</span>
       </h4>
@@ -38,8 +38,7 @@
         </button>
       </mat-menu>
       </div>
-
-    </section>
+    </mat-toolbar>
 
 
     <!-- DETAILED FIELDS -->
@@ -49,7 +48,6 @@
 
           <h6 class="detailed-fields__subheading" style="margin-top: 65px;"> General </h6>
           <mat-divider class="detailed-fields__horizontal-line"> </mat-divider>
-
 
           <!-- GENERAL -->
           <div class="detailed-fields__general">

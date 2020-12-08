@@ -31,6 +31,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
@@ -120,6 +121,7 @@ describe('ClassificationDetailsComponent', () => {
         NgxsModule.forRoot([ClassificationState, EngineConfigurationState]),
         FormsModule,
         MatIconModule,
+        MatToolbarModule,
         MatDividerModule,
         MatFormFieldModule,
         MatInputModule,
