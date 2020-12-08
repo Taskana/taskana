@@ -173,38 +173,30 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
-      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException {
+      throws NotAuthorizedException, WorkbasketNotFoundException, ConcurrencyException,
+          InvalidWorkbasketException {
 
     LOGGER.debug("entry to updateWorkbasket(Workbasket = {})", workbasketToUpdate);
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
-
-    WorkbasketImpl workbasketImplToUpdate = null;
+    WorkbasketImpl workbasketImplToUpdate = (WorkbasketImpl) workbasketToUpdate;
+    validateNameAndType(workbasketToUpdate);
 
     try {
-
       taskanaEngine.openConnection();
-
-      workbasketImplToUpdate = (WorkbasketImpl) workbasketToUpdate;
 
       Workbasket oldWorkbasket =
           this.getWorkbasket(workbasketImplToUpdate.getKey(), workbasketImplToUpdate.getDomain());
-
       checkModifiedHasNotChanged(oldWorkbasket, workbasketImplToUpdate);
-
       workbasketImplToUpdate.setModified(Instant.now());
 
       if (workbasketImplToUpdate.getId() == null || workbasketImplToUpdate.getId().isEmpty()) {
-
         workbasketMapper.updateByKeyAndDomain(workbasketImplToUpdate);
-
       } else {
-
         workbasketMapper.update(workbasketImplToUpdate);
       }
 
       if (HistoryEventManager.isHistoryEnabled()) {
-
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
                 oldWorkbasket, workbasketToUpdate);
@@ -216,15 +208,13 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
+
       LOGGER.debug(
           "Method updateWorkbasket() updated workbasket '{}'", workbasketImplToUpdate.getId());
 
       return workbasketImplToUpdate;
-
     } finally {
-
       taskanaEngine.returnConnection();
-
       LOGGER.debug("exit from updateWorkbasket(). Returning result {} ", workbasketImplToUpdate);
     }
   }
@@ -841,7 +831,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     LOGGER.debug("entry to deleteWorkbasket(workbasketId = {})", workbasketId);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
-    validateWorkbasketId(workbasketId);
+    validateId(workbasketId);
 
     try {
       taskanaEngine.openConnection();
@@ -1104,16 +1094,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     return accessItems;
   }
 
-  private void validateWorkbasketId(String workbasketId) throws InvalidArgumentException {
-    if (workbasketId == null) {
-      throw new InvalidArgumentException("The WorkbasketId can´t be NULL");
-    }
-
-    if (workbasketId.isEmpty()) {
-      throw new InvalidArgumentException("The WorkbasketId can´t be EMPTY for deleteWorkbasket()");
-    }
-  }
-
   private long getCountTasksByWorkbasketId(String workbasketId) {
     return taskanaEngine
         .getEngine()
@@ -1158,24 +1138,42 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   private void validateWorkbasket(Workbasket workbasket)
       throws InvalidWorkbasketException, DomainNotFoundException {
     // check that required properties (database not null) are set
+    validateNameAndType(workbasket);
+
     if (workbasket.getId() == null || workbasket.getId().length() == 0) {
       throw new InvalidWorkbasketException("Id must not be null for " + workbasket);
-    } else if (workbasket.getKey() == null || workbasket.getKey().length() == 0) {
-      throw new InvalidWorkbasketException("Key must not be null for " + workbasket);
     }
-    if (workbasket.getName() == null || workbasket.getName().length() == 0) {
-      throw new InvalidWorkbasketException("Name must not be null for " + workbasket);
+    if (workbasket.getKey() == null || workbasket.getKey().length() == 0) {
+      throw new InvalidWorkbasketException("Key must not be null for " + workbasket);
     }
     if (workbasket.getDomain() == null) {
       throw new InvalidWorkbasketException("Domain must not be null for " + workbasket);
-    }
-    if (workbasket.getType() == null) {
-      throw new InvalidWorkbasketException("Type must not be null for " + workbasket);
     }
     if (!taskanaEngine.domainExists(workbasket.getDomain())) {
       throw new DomainNotFoundException(
           workbasket.getDomain(),
           "Domain " + workbasket.getDomain() + " does not exist in the configuration.");
+    }
+  }
+
+  private void validateId(String workbasketId) throws InvalidArgumentException {
+    if (workbasketId == null) {
+      throw new InvalidArgumentException("The WorkbasketId can´t be NULL");
+    }
+    if (workbasketId.isEmpty()) {
+      throw new InvalidArgumentException("The WorkbasketId can´t be EMPTY for deleteWorkbasket()");
+    }
+  }
+
+  private void validateNameAndType(Workbasket workbasket) throws InvalidWorkbasketException {
+    if (workbasket.getName() == null) {
+      throw new InvalidWorkbasketException("Name must not be NULL for " + workbasket);
+    }
+    if (workbasket.getName().length() == 0) {
+      throw new InvalidWorkbasketException("Name must not be EMPTY for " + workbasket);
+    }
+    if (workbasket.getType() == null) {
+      throw new InvalidWorkbasketException("Type must not be NULL for " + workbasket);
     }
   }
 
@@ -1199,7 +1197,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
-      validateWorkbasketId(workbasketId);
+      validateId(workbasketId);
       WorkbasketImpl workbasket = workbasketMapper.findById(workbasketId);
       workbasket.setMarkedForDeletion(true);
       workbasketMapper.update(workbasket);
