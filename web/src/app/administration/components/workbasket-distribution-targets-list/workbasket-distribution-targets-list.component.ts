@@ -56,9 +56,9 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
     if (typeof this.distributionTargetsList !== 'undefined') {
       this.allSelected = !this.allSelected;
       this.distributionTargetsList.options.map((item) => (item['selected'] = selected));
-      this.distributionTargets.map((item) => (item['selected'] = selected));
-      this.allSelectedChange.emit(this.allSelected);
     }
+    this.distributionTargets.map((item) => (item['selected'] = selected));
+    this.allSelectedChange.emit(this.allSelected);
   }
 
   setComponent(component: string) {

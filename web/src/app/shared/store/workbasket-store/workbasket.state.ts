@@ -377,6 +377,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ctx: StateContext<WorkbasketStateModel>,
     action: UpdateWorkbasketDistributionTargets
   ): Observable<any> {
+    this.requestInProgressService.setRequestInProgress(true);
     return this.workbasketService.updateWorkBasketsDistributionTargets(action.url, action.distributionTargetsIds).pipe(
       take(1),
       tap(

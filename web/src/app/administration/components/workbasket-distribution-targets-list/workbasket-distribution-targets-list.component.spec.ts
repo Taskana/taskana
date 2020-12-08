@@ -8,6 +8,9 @@ import { SelectWorkBasketPipe } from '../../../shared/pipes/select-workbaskets.p
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
 
 @Component({ selector: 'taskana-shared-filter', template: '' })
 class FilterStub {
@@ -32,7 +35,7 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [InfiniteScrollModule, BrowserAnimationsModule],
+      imports: [MatIconModule, MatToolbarModule, MatListModule, InfiniteScrollModule, BrowserAnimationsModule],
       declarations: [
         WorkbasketDistributionTargetsListComponent,
         FilterStub,
@@ -73,13 +76,6 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     expect(scrollingEmitSpy).toHaveBeenCalledWith(component.side);
   });
 
-  it('should emit filter model and side when performing filter', () => {
-    const performDualListFilterSpy = jest.spyOn(component.performDualListFilter, 'emit');
-    const filterModelMock: Filter = { filterParams: 'filter' };
-    component.performAvailableFilter(filterModelMock);
-    expect(performDualListFilterSpy).toHaveBeenCalledWith({ filterBy: filterModelMock, side: component.side });
-  });
-
   it('should change toolbar state', () => {
     expect(component.toolbarState).toBe(false);
     component.changeToolbarState(true);
@@ -89,7 +85,7 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   it('should display all available workbaskets', () => {
     fixture.detectChanges();
     const distributionTargetList = debugElement.nativeElement.getElementsByClassName(
-      'workbasket-list__distribution-targets'
+      'workbasket-distribution-targets__workbaskets-item'
     );
     expect(distributionTargetList).toHaveLength(5);
   });

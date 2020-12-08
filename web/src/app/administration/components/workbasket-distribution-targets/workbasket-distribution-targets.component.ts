@@ -41,7 +41,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   action: ACTION;
 
   toolbarState = false;
-  sideBySide = false;
+  sideBySide = true;
   displayingDistributionTargetsPicker = true;
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
@@ -73,12 +73,15 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   constructor(
     private workbasketService: WorkbasketService,
     private savingWorkbaskets: SavingWorkbasketService,
-    private requestInProgressService: RequestInProgressService,
     private notificationsService: NotificationService,
     private store: Store,
     public matDialog: MatDialog
   ) {}
 
+  /**
+   * Rework with modification based on old components,
+   * would be ideal to completely redo whole components using drag and drop angular components and clearer logics
+   */
   ngOnInit() {
     this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
     this.store.dispatch(new GetAvailableDistributionTargets());
@@ -134,8 +137,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.toolbarState = state;
   }
 
-  displayDistributionTargetsPicker() {
-    this.displayingDistributionTargetsPicker = true;
+  toggleDistributionTargetsPicker() {
+    this.displayingDistributionTargetsPicker = !this.displayingDistributionTargetsPicker;
   }
 
   getWorkbaskets(side?: Side) {
@@ -207,7 +210,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   onSave() {
-    this.requestInProgressService.setRequestInProgress(true);
     this.store.dispatch(
       new UpdateWorkbasketDistributionTargets(
         this.distributionTargetsSelectedResource._links.self.href,
@@ -280,9 +282,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   toggleSideBySideView() {
     this.sideBySide = !this.sideBySide;
-    if (!this.displayingDistributionTargetsPicker) {
-      this.displayingDistributionTargetsPicker = !this.displayingDistributionTargetsPicker;
-    }
+    this.displayingDistributionTargetsPicker = true; //always display picker when toggle from side-by-side to single
   }
 
   ngOnDestroy() {
