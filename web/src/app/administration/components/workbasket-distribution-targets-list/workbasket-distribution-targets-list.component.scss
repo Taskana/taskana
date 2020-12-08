@@ -1,0 +1,61 @@
+@import 'src/theme/_colors.scss';
+.distribution-targets-list {
+  &__header {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 50%;
+    @media screen and (max-width: 1280px) {
+      max-width: 100px;
+    }
+  }
+  &__action-button {
+    margin-left: 0.5rem;
+  }
+
+  &__list {
+    min-width: 100%;
+    background-color: white;
+    border-radius: 10px;
+
+    overflow-y: scroll;
+    height: calc(100vh - 360px) !important;
+    @media screen and (max-width: 991px) {
+      height: calc((100vh - 315px));
+      min-height: 83px;
+    }
+  }
+  &__item-wrapper {
+    display: flex;
+  }
+  &__item-icon {
+    padding: 32px 24px 24px 8px;
+  }
+  &__item-info {
+    display: block;
+    padding: 8px 0;
+  }
+  &__empty-list {
+    height: calc(100vh - 360px);
+    border-radius: 10px;
+    background-color: white;
+    font-size: 24px;
+    font-weight: bold;
+    color: $dark-green;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.mat-list-item {
+  height: 90px !important;
+}
+
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
+}
+
+p {
+  margin: 0;
+}

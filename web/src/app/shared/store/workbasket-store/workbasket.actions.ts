@@ -99,6 +99,10 @@ export class GetWorkbasketDistributionTargets {
   constructor(public url: string) {}
 }
 
+export class GetAvailableDistributionTargets {
+  static readonly type = '[Workbasket] Get available distribution targets';
+}
+
 export class UpdateWorkbasketDistributionTargets {
   static readonly type = '[Workbasket] Update workbasket distribution targets';
   constructor(public url: string, public distributionTargetsIds: string[]) {}
