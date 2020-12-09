@@ -49,14 +49,16 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.value = 1;
   }
   ngOnChanges(changes: SimpleChanges): void {
-    const rangeLabel = this.paginationWrapper.nativeElement.querySelector('.mat-paginator-range-label');
-    const container = this.paginationWrapper.nativeElement.querySelector('.mat-paginator-container');
-    if (!this.expanded) {
-      container.style.justifyContent = 'center';
-      rangeLabel.style.display = 'none';
-    } else {
-      container.style.justifyContent = 'flex-end';
-      rangeLabel.style.display = 'block';
+    const rangeLabel = this.paginationWrapper?.nativeElement?.querySelector('.mat-paginator-range-label');
+    const container = this.paginationWrapper?.nativeElement?.querySelector('.mat-paginator-container');
+    if (rangeLabel && container) {
+      if (!this.expanded) {
+        container.style.justifyContent = 'center';
+        rangeLabel.style.display = 'none';
+      } else {
+        container.style.justifyContent = 'flex-end';
+        rangeLabel.style.display = 'block';
+      }
     }
 
     if (changes.page && changes.page.currentValue) {

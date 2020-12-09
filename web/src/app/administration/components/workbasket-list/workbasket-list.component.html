@@ -2,7 +2,7 @@
   <!-- TOOLBAR -->
   <section #wbToolbar class="workbasket-list__toolbar">
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
-      (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
+      (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy" [workbasketListExpanded]="expanded">
     </taskana-administration-workbasket-list-toolbar>
   </section>
 
@@ -53,7 +53,7 @@
 <taskana-shared-pagination
         [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
         [type]="type"
-        [(expanded)]="expanded"
+        [expanded]="expanded"
         [numberOfItems]="(workbasketsSummary$ | async)?.length"
         (changePage)="changePage($event)">
 </taskana-shared-pagination>

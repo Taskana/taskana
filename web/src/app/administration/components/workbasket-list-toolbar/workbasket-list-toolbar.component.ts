@@ -19,6 +19,7 @@ import { WorkbasketService } from '../../../shared/services/workbasket/workbaske
   styleUrls: ['./workbasket-list-toolbar.component.scss']
 })
 export class WorkbasketListToolbarComponent implements OnInit {
+  @Input() workbasketListExpanded: boolean = true;
   @Input() workbaskets: Array<WorkbasketSummary>;
   @Input() workbasketDefaultSortBy: string;
   @Output() performSorting = new EventEmitter<Sorting>();
