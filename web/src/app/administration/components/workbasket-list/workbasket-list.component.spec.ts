@@ -73,6 +73,7 @@ const requestInProgressServiceSpy = jest.fn().mockImplementation(
 class WorkbasketListToolbarStub {
   @Input() workbaskets: Array<WorkbasketSummary>;
   @Input() workbasketDefaultSortBy: string;
+  @Input() workbasketListExpanded: boolean;
   @Output() performSorting = new EventEmitter<Sorting>();
   @Output() performFilter = new EventEmitter<Filter>();
 }
@@ -87,6 +88,7 @@ class IconTypeStub {
 class PaginationStub {
   @Input() page: Page;
   @Input() type: String;
+  @Input() expanded: boolean;
   @Output() changePage = new EventEmitter<number>();
   @Input() numberOfItems: number;
 }

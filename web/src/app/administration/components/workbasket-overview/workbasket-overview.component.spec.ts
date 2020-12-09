@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -17,6 +17,7 @@ import { StartupService } from '../../../shared/services/startup/startup.service
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
+import { MatIconModule } from '@angular/material/icon';
 
 const showDialogFn = jest.fn().mockReturnValue(true);
 const NotificationServiceSpy = jest.fn().mockImplementation(
@@ -47,7 +48,9 @@ const mockActivatedRouteNoParams = {
 };
 
 @Component({ selector: 'taskana-administration-workbasket-list', template: '' })
-class WorkbasketListStub {}
+class WorkbasketListStub {
+  @Input() expanded: boolean;
+}
 
 @Component({ selector: 'taskana-administration-workbasket-details', template: '' })
 class WorkbasketDetailsStub {}
@@ -64,7 +67,12 @@ describe('WorkbasketOverviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        NgxsModule.forRoot([WorkbasketState])
+      ],
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
@@ -124,7 +132,12 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        NgxsModule.forRoot([WorkbasketState])
+      ],
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
@@ -162,7 +175,12 @@ describe('WorkbasketOverviewComponent No Params', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        NgxsModule.forRoot([WorkbasketState])
+      ],
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
