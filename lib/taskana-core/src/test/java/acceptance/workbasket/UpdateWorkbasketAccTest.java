@@ -66,12 +66,12 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     WorkbasketImpl workbasket =
         (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
     workbasket.setName(null);
-    assertThatExceptionOfType(InvalidWorkbasketException.class)
-        .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
 
-    workbasket.setName(null);
-    assertThatExceptionOfType(InvalidWorkbasketException.class)
-        .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
+    workbasket.setName("");
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -83,8 +83,8 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
         (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
     workbasket.setType(null);
 
-    assertThatExceptionOfType(InvalidWorkbasketException.class)
-        .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
   }
 
   @WithAccessId(user = "businessadmin")
