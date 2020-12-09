@@ -3,7 +3,7 @@ import { Select, Store } from '@ngxs/store';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { AccessItemWorkbasket } from 'app/shared/models/access-item-workbasket';
+import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { Direction, Sorting } from 'app/shared/models/sorting';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { takeUntil } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export class AccessItemsManagementComponent implements OnInit {
     ['workbasket-key', 'Workbasket Key']
   ]);
   sortModel: Sorting = new Sorting('access-id', Direction.DESC);
-  accessItems: any[];
+  accessItems: WorkbasketAccessItems[];
   isGroup: boolean = false;
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
@@ -92,7 +92,7 @@ export class AccessItemsManagementComponent implements OnInit {
       });
   }
 
-  setAccessItemsGroups(accessItems: Array<AccessItemWorkbasket>) {
+  setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
     const AccessItemsFormGroups = accessItems.map((accessItem) => this.formBuilder.group(accessItem));
     AccessItemsFormGroups.forEach((accessItemGroup) => {
       accessItemGroup.controls.accessId.setValidators(Validators.required);
