@@ -169,7 +169,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.performRequest();
   }
 
-  performRequest(): void {
+  performRequest() {
+    TaskanaQueryParameters.pageSize = this.cards;
     this.store
       .dispatch(
         new GetWorkbasketsSummary(
@@ -190,7 +191,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.requestInProgressService.setRequestInProgress(false);
       });
-    TaskanaQueryParameters.pageSize = this.cards;
   }
 
   ngOnDestroy() {
