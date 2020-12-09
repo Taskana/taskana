@@ -16,7 +16,7 @@
                        [value]="workbasket.workbasketId">
         <div class="workbaskets-item__wrapper">
 
-          <div class="workbaskets-item__icon">
+          <div class="workbaskets-item__icon" *ngIf="expanded">
             <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
           </div>
 
@@ -53,6 +53,7 @@
 <taskana-shared-pagination
         [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
         [type]="type"
+        [(expanded)]="expanded"
         [numberOfItems]="(workbasketsSummary$ | async)?.length"
         (changePage)="changePage($event)">
 </taskana-shared-pagination>
