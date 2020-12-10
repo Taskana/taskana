@@ -84,14 +84,13 @@
           </thead>
           <tbody formArrayName="accessItemsGroups">
             <tr class="access-items__authorization-expansion-panel__content"
-              *ngFor="let accessItem of accessItemsGroups.controls; let index = index;"
-              [formGroupName]="index.toString()">
+              *ngFor="let accessItem of accessItems; let index = index;" [formGroupName]="index.toString()">
               <td></td>
               <td class="align-left">
-                <label class="wrap">{{accessItem.value.workbasketKey}}</label>
+                <label class="wrap">{{accessItem.workbasketKey}}</label>
               </td>
               <td class="align-left" *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField">
-                <label matTooltip="{{accessItem.value.accessId}}" class="wrap">{{accessItem.value.accessName}}</label>
+                <label matTooltip="{{accessItem.accessId}}" class="wrap">{{accessItem.accessName}}</label>
               </td>
               <td>
                 <mat-checkbox id="checkbox-{{index}}-0" formControlName="permRead"></mat-checkbox>

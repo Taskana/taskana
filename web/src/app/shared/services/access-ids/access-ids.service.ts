@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { Observable, of } from 'rxjs';
-import { AccessItemWorkbasketResource } from 'app/shared/models/access-item-workbasket-resource';
+import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Sorting } from 'app/shared/models/sorting';
 import { QueryParameters } from 'app/shared/models/query-parameters';
@@ -38,8 +38,8 @@ export class AccessIdsService {
     accessIdLike?: string,
     workbasketKeyLike?: string,
     sortModel: Sorting = new Sorting('workbasket-key')
-  ): Observable<AccessItemWorkbasketResource> {
-    return this.httpClient.get<AccessItemWorkbasketResource>(
+  ): Observable<WorkbasketAccessItemsRepresentation> {
+    return this.httpClient.get<WorkbasketAccessItemsRepresentation>(
       encodeURI(
         `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
           AccessIdsService.accessIdsParameters(sortModel, accessIds, accessIdLike, workbasketKeyLike)
@@ -49,7 +49,7 @@ export class AccessIdsService {
   }
 
   removeAccessItemsPermissions(accessId: string) {
-    return this.httpClient.delete<AccessItemWorkbasketResource>(
+    return this.httpClient.delete<WorkbasketAccessItemsRepresentation>(
       `${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`
     );
   }
