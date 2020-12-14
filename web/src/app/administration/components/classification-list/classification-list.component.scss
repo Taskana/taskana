@@ -1,59 +1,67 @@
 @import 'src/theme/_colors.scss';
 
 .classification-list {
-  height: calc(100vh - 55px);
-}
-.classification-list__action-toolbar {
-  padding: 16px 16px 0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
-.classification-list__action-buttons {
-  display: flex;
-  border: none;
-  margin-bottom: 0;
-  padding: 0 4px;
-}
+  height: 100%;
 
-.action-toolbar__add-button {
-  background-color: $aquamarine;
-  color: white;
-}
+  &__no-items {
+    text-align: center;
+    padding-top: 150px;
+  }
 
-.classification-list__import-export {
-  display: flex;
-}
-.classification-list__filter {
-  display: flex;
-  padding: 7px 4px 0;
-}
-.classification-list__category-filter {
-  padding-top: 7px;
-}
+  &__action-toolbar {
+    padding: 16px 16px 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
 
-.category-filter__icons {
-  height: 33px;
-  width: 16px;
-  fill: #555;
-}
-.category-filter__categories {
-  fill: #555;
-  margin: 0;
-  top: -2px;
-}
-.category-filter__filter-button {
-  color: #555;
-  top: 3px;
-  margin-right: 12px;
-}
+  &__action-buttons {
+    display: flex;
+    border: none;
+    margin-bottom: 0;
+    padding: 0 4px;
+  }
 
-.filter__input {
-  width: 100%;
-  margin-right: 12px;
-}
-.filter__input-field {
-  width: 100% !important;
-}
-.classification-list__no-items {
-  text-align: center;
-  padding-top: 150px;
+  &__add-button {
+    background-color: $aquamarine;
+    color: white;
+  }
+
+  &__import-export {
+    display: flex;
+  }
+
+  &__filter {
+    display: flex;
+    padding: 7px 4px 0;
+  }
+
+  &__category-filter {
+    padding-top: 7px;
+  }
+
+  &__icons {
+    height: 33px;
+    width: 16px;
+    fill: #555;
+  }
+
+  &__categories {
+    fill: #555;
+    margin: 0;
+    top: -2px;
+  }
+
+  &__filter-button {
+    color: #555;
+    top: 3px;
+    margin-right: 12px;
+  }
+
+  &__input {
+    width: 100%;
+    margin-right: 12px;
+  }
+
+  &__input-field {
+    width: 100% !important;
+  }
 }
