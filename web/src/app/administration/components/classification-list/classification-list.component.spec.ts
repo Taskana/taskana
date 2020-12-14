@@ -132,7 +132,7 @@ describe('ClassificationListComponent', () => {
 
   /* HTML: ACTION TOOLBAR */
   it('should call CreateClassification when add-classification button is clicked', async () => {
-    const button = debugElement.nativeElement.querySelector('.action-toolbar__add-button');
+    const button = debugElement.nativeElement.querySelector('.classification-list__add-button');
     expect(button).toBeTruthy();
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(CreateClassification)).subscribe(() => (actionDispatched = true));
@@ -153,33 +153,33 @@ describe('ClassificationListComponent', () => {
 
   /* HTML: FILTER */
   it('should display filter input field', () => {
-    const button = debugElement.nativeElement.querySelector('.filter__input-field');
+    const button = debugElement.nativeElement.querySelector('.classification-list__input-field');
     expect(button).toBeTruthy();
     expect(button.textContent).toBe('Filter classification');
   });
 
   it('should display filter button', () => {
-    const button = debugElement.nativeElement.querySelector('.category-filter__filter-button');
+    const button = debugElement.nativeElement.querySelector('.classification-list__filter-button');
     expect(button).toBeTruthy();
     expect(button.textContent).toBe('filter_list');
   });
 
   it('should change selectedCategory property when button is clicked', () => {
-    const filterButton = debugElement.nativeElement.querySelector('.category-filter__filter-button');
+    const filterButton = debugElement.nativeElement.querySelector('.classification-list__filter-button');
     filterButton.click();
     fixture.detectChanges();
     component.selectedCategory = 'EXTERNAL';
-    const allButton = debugElement.query(By.css('.category-filter__all-button'));
+    const allButton = debugElement.query(By.css('.classification-list__all-button'));
     expect(allButton).toBeTruthy();
     allButton.nativeElement.click();
     expect(component.selectedCategory).toBe('');
   });
 
   it('should display list of categories which can be selected', () => {
-    const filterButton = debugElement.nativeElement.querySelector('.category-filter__filter-button');
+    const filterButton = debugElement.nativeElement.querySelector('.classification-list__filter-button');
     filterButton.click();
     fixture.detectChanges();
-    const matMenu = debugElement.queryAll(By.css('.category-filter__categories'));
+    const matMenu = debugElement.queryAll(By.css('.classification-list__categories'));
     expect(matMenu.length).toBe(4);
   });
 
