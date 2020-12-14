@@ -22,6 +22,9 @@
   &__headline {
     font-size: 1.5rem;
     padding: 0.5rem;
+    max-width: calc(100% - 350px);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__badge-message {
