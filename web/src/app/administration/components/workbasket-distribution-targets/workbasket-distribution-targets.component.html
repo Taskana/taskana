@@ -82,7 +82,7 @@
     <taskana-administration-workbasket-distribution-targets-list
       [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
       header="Selected distribution targets"
-      [distributionTargets]="distributionTargetsRight"
+      [distributionTargets]="distributionTargetsLeft"
       [distributionTargetsSelected]="distributionTargetsSelected"
       (performDualListFilter)="performFilter($event)"
       [side]="side.SELECTED"

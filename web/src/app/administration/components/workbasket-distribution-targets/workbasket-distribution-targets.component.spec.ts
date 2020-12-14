@@ -137,7 +137,7 @@ describe('WorkbasketDistributionTargetsComponent', () => {
 
   it('should move distribution targets to selected list', () => {
     component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    component.distributionTargetsRight = component.distributionTargetsSelected;
+    component.distributionTargetsLeft = component.distributionTargetsSelected;
     component.moveDistributionTargets(Side.AVAILABLE);
     expect(component.distributionTargetsSelected).toHaveLength(4); // mock-data only has 3
   });
@@ -146,7 +146,7 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     component.distributionTargetsClone = component.availableDistributionTargets;
     component.distributionTargetsSelectedClone = component.distributionTargetsSelected;
     component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    component.distributionTargetsRight = component.distributionTargetsSelected;
+    component.distributionTargetsLeft = component.distributionTargetsSelected;
     component.moveDistributionTargets(Side.AVAILABLE);
     expect(component.distributionTargetsSelected).toHaveLength(4); // mock-data only has 3
 
