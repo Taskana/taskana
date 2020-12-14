@@ -5,7 +5,7 @@
     <div class="classification-list__action-buttons">
 
       <!-- ADD BUTTON -->
-      <button mat-flat-button class="action-toolbar__add-button mr-1" matTooltip="Create new classification"
+      <button mat-flat-button class="classification-list__add-button mr-1" matTooltip="Create new classification"
               (click)="addClassification()">
         Add
         <mat-icon class="md-20">add</mat-icon>
@@ -22,24 +22,24 @@
 
       <!-- CATEGORY FILTER -->
       <div class="classification-list__category-filter">
-        <button mat-stroked-button class="category-filter__filter-button" [matMenuTriggerFor]="menu"
+        <button mat-stroked-button class="classification-list__filter-button" [matMenuTriggerFor]="menu"
                 matTooltip="Filter Category">
 
           <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
-          <svg-icon class="category-filter__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
+          <svg-icon class="classification-list__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
                     [title]="(getCategoryIcon(selectedCategory) | async)?.text"
                     *ngIf="selectedCategory != ''">
           </svg-icon>
         </button>
 
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="selectCategory('')" class="category-filter__all-button">
-            <svg-icon class="category-filter__categories" src="./assets/icons/asterisk.svg"
+          <button class="classification-list__all-button" mat-menu-item (click)="selectCategory('')">
+            <svg-icon class="classification-list__categories" src="./assets/icons/asterisk.svg"
                       [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
             <span>All</span>
           </button>
           <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-            <svg-icon class="category-filter__categories" [src]="(getCategoryIcon(category) | async)?.name"
+            <svg-icon class="classification-list__categories" [src]="(getCategoryIcon(category) | async)?.name"
                       [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
             <span> {{category}} </span>
           </button>
@@ -47,8 +47,8 @@
       </div>
 
       <!-- FILTER INPUT FIELD -->
-      <div class="filter__input">
-        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+      <div class="classification-list__input">
+        <mat-form-field class="classification-list__input-field" appearance="legacy" floatLabel="auto">
           <mat-label>Filter classification</mat-label>
           <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event" matTooltip="Type to filter classifications">
         </mat-form-field>
