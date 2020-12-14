@@ -382,6 +382,16 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           ctx.patchState({
             workbasketDistributionTargets: updatedWorkbasketsDistributionTargets
           });
+          const workbasketId = ctx.getState().selectedWorkbasket?.workbasketId;
+
+          if (typeof workbasketId !== 'undefined') {
+            this.workbasketService.getWorkBasket(workbasketId).subscribe((selectedWorkbasket) => {
+              ctx.patchState({
+                selectedWorkbasket,
+                action: ACTION.READ
+              });
+            });
+          }
           this.requestInProgressService.setRequestInProgress(false);
           this.notificationService.showToast(
             NOTIFICATION_TYPES.SUCCESS_ALERT_8,
