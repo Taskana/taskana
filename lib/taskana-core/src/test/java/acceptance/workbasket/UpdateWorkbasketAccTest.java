@@ -18,6 +18,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
+import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -55,6 +56,35 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     assertThat(updatedWorkbasket.getName()).isEqualTo("new name");
     assertThat(updatedWorkbasket.getType()).isEqualTo(WorkbasketType.TOPIC);
     assertThat(updatedWorkbasket.getModified()).isNotEqualTo(modified);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ThrowException_When_UpdatingWorkbasketWithInvalidName() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketImpl workbasket =
+        (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+    workbasket.setName(null);
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
+
+    workbasket.setName("");
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ThrowException_When_UpdatingWorkbasketWithTypeNull() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketImpl workbasket =
+        (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
+    workbasket.setType(null);
+
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(InvalidWorkbasketException.class);
   }
 
   @WithAccessId(user = "businessadmin")
