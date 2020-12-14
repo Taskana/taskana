@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
@@ -40,6 +40,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   filterBy: Filter = new Filter({ name: '', owner: '', type: '', description: '', key: '' });
   requestInProgress: boolean;
   requestInProgressLocal = false;
+  @Input() expanded: boolean;
 
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;

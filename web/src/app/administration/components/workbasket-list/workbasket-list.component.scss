@@ -12,6 +12,7 @@
 }
 .mat-list-item {
   height: 90px !important;
+  overflow: hidden;
 }
 .mat-list-single-selected-option {
   background-color: $green !important;
@@ -25,6 +26,7 @@
 }
 .workbaskets-item__info {
   display: block;
+  overflow: hidden;
   padding: 8px 0;
 }
 p {

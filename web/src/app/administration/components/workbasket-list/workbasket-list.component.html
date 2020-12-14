@@ -2,7 +2,7 @@
   <!-- TOOLBAR -->
   <section #wbToolbar class="workbasket-list__toolbar">
     <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async" (performFilter)="performFilter($event)"
-      (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy">
+      (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy" [workbasketListExpanded]="expanded">
     </taskana-administration-workbasket-list-toolbar>
   </section>
 
@@ -16,7 +16,7 @@
                        [value]="workbasket.workbasketId">
         <div class="workbaskets-item__wrapper">
 
-          <div class="workbaskets-item__icon">
+          <div class="workbaskets-item__icon" *ngIf="expanded">
             <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
           </div>
 
@@ -24,7 +24,7 @@
             <p>
               <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
             </p>
-            <p>{{workbasket.description}} &nbsp;</p>
+            <p style="max-height: 20px; overflow: hidden; text-overflow: ellipsis">{{workbasket.description}} &nbsp;</p>
             <p>{{workbasket.owner}} &nbsp;</p>
           </div>
 
@@ -53,6 +53,7 @@
 <taskana-shared-pagination
         [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
         [type]="type"
+        [expanded]="expanded"
         [numberOfItems]="(workbasketsSummary$ | async)?.length"
         (changePage)="changePage($event)">
 </taskana-shared-pagination>

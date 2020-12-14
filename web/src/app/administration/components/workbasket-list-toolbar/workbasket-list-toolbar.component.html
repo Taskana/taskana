@@ -10,7 +10,7 @@
     </button>
 
     <!-- IMPORT EXPORT -->
-    <taskana-administration-import-export [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
+    <taskana-administration-import-export *ngIf="workbasketListExpanded" [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
 
     <span class="workbasket-details__spacer" style="flex: 1 1 auto"> </span>
 
@@ -29,9 +29,10 @@
     </button>
 
     <div class="filter__filter-component-wrapper">
-      <taskana-shared-filter [isExpanded]="isExpanded" (performFilter)="filtering($event)"></taskana-shared-filter>
+      <taskana-shared-filter [isExpanded]="isExpanded"
+                             (performFilter)="filtering($event)"
+                             component="workbasket-list"
+                             (inputComponent)="setComponent($event)"></taskana-shared-filter>
     </div>
   </div>
-
-  <taskana-shared-filter *ngIf="showFilter" (performFilter)="filtering($event)" component="workbasket-list" (inputComponent)="setComponent($event)"></taskana-shared-filter>
 </div>

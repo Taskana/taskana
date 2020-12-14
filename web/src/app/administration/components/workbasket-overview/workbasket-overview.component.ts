@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -19,6 +19,10 @@ export class WorkbasketOverviewComponent implements OnInit {
   @Select(WorkbasketSelectors.selectedWorkbasket) selectedWorkbasket$: Observable<Workbasket>;
   destroy$ = new Subject<void>();
   routerParams: any;
+  expanded = true;
+
+  @ViewChild('workbasketList') workbasketList: ElementRef;
+  @ViewChild('toggleButton') toggleButton: ElementRef;
 
   constructor(private route: ActivatedRoute, private store: Store) {}
 
@@ -50,6 +54,20 @@ export class WorkbasketOverviewComponent implements OnInit {
     this.selectedWorkbasketAndAction$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
       this.showDetail = !!state.selectedWorkbasket || state.action === 1;
     });
+  }
+
+  toggleWidth() {
+    if (this.workbasketList.nativeElement.offsetWidth === 250) {
+      this.expanded = true;
+      this.workbasketList.nativeElement.style.width = '500px';
+      this.workbasketList.nativeElement.style.minWidth = '500px';
+      this.toggleButton.nativeElement.style.left = '480px';
+    } else {
+      this.expanded = false;
+      this.workbasketList.nativeElement.style.width = '250px';
+      this.workbasketList.nativeElement.style.minWidth = '250px';
+      this.toggleButton.nativeElement.style.left = '230px';
+    }
   }
 
   ngOnDestroy() {
