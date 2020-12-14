@@ -45,9 +45,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
   availableDistributionTargets: Array<WorkbasketSummary> = [];
-  distributionTargetsRight: Array<WorkbasketSummary> = [];
-  distributionTargetsSelected: Array<WorkbasketSummary>;
   distributionTargetsClone: Array<WorkbasketSummary>;
+
+  distributionTargetsLeft: Array<WorkbasketSummary> = [];
+  distributionTargetsSelected: Array<WorkbasketSummary>;
   distributionTargetsSelectedClone: Array<WorkbasketSummary>;
 
   loadingItems = false;
@@ -85,9 +86,12 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
     this.store.dispatch(new GetAvailableDistributionTargets());
 
-    this.availableDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((availableDistributionTargets) => {
-      this.availableDistributionTargets = availableDistributionTargets;
-    });
+    this.availableDistributionTargets$
+      .pipe(takeUntil(this.destroy$))
+      .pipe(filter((availableDistributionTargets) => typeof availableDistributionTargets !== 'undefined'))
+      .subscribe((availableDistributionTargets) => {
+        this.availableDistributionTargets = [...availableDistributionTargets];
+      });
 
     this.savingWorkbaskets
       .triggeredDistributionTargetsSaving()
@@ -157,10 +161,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
         if (side === this.side.AVAILABLE) {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
         } else if (side === this.side.SELECTED) {
-          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
         } else {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
           this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
         }
       });
@@ -199,10 +203,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
         if (dualListFilter.side === this.side.AVAILABLE) {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
         } else if (dualListFilter.side === this.side.SELECTED) {
-          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
         } else {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-          this.distributionTargetsRight = Object.assign([], distributionTargetsAvailable.workbaskets);
+          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
           this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
         }
       });
@@ -221,10 +225,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   moveDistributionTargets(side: number) {
     if (side === Side.AVAILABLE) {
       const itemsLeft = this.availableDistributionTargets.length;
-      const itemsRight = this.distributionTargetsRight.length;
+      const itemsRight = this.distributionTargetsLeft.length;
       const itemsSelected = this.getSelectedItems(this.availableDistributionTargets);
       this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...itemsSelected];
-      this.distributionTargetsRight = this.distributionTargetsRight.concat(itemsSelected);
+      this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
       if (
         itemsLeft - itemsSelected.length <= TaskanaQueryParameters.pageSize &&
         itemsLeft + itemsRight < this.page.totalElements
@@ -233,9 +237,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       }
       this.unselectItems(this.distributionTargetsSelected);
     } else {
-      const itemsSelected = this.getSelectedItems(this.distributionTargetsRight);
+      const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft);
       this.distributionTargetsSelected = this.removeSelectedItems(this.distributionTargetsSelected, itemsSelected);
-      this.distributionTargetsRight = this.removeSelectedItems(this.distributionTargetsRight, itemsSelected);
+      this.distributionTargetsLeft = this.removeSelectedItems(this.distributionTargetsLeft, itemsSelected);
       this.availableDistributionTargets = this.availableDistributionTargets.concat(itemsSelected);
       this.unselectItems(itemsSelected);
     }
@@ -244,13 +248,13 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   onClear() {
     this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
     this.availableDistributionTargets = Object.assign([], this.distributionTargetsClone);
-    this.distributionTargetsRight = Object.assign([], this.distributionTargetsSelectedClone);
+    this.distributionTargetsLeft = Object.assign([], this.distributionTargetsSelectedClone);
     this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
   }
 
   fillDistributionTargets(side: Side, workbaskets: WorkbasketSummary[]) {
     this.availableDistributionTargets = side === Side.AVAILABLE ? workbaskets : this.availableDistributionTargets;
-    this.distributionTargetsRight = side === Side.SELECTED ? workbaskets : this.distributionTargetsRight;
+    this.distributionTargetsLeft = side === Side.SELECTED ? workbaskets : this.distributionTargetsLeft;
   }
 
   getSelectedItems(originList: any): Array<any> {
