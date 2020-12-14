@@ -68,6 +68,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   @Select(WorkbasketSelectors.buttonAction)
   buttonAction$: Observable<ButtonAction>;
 
+  @Select(WorkbasketSelectors.selectedWorkbasket)
+  selectedWorkbasket$: Observable<Workbasket>;
+
   destroy$ = new Subject<void>();
 
   constructor(
@@ -83,8 +86,15 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
    * would be ideal to completely redo whole components using drag and drop angular components and clearer logics
    */
   ngOnInit() {
-    this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
-    this.store.dispatch(new GetAvailableDistributionTargets());
+    this.selectedWorkbasket$
+      .pipe(filter((selectedWorkbasket) => typeof selectedWorkbasket !== 'undefined'))
+      .subscribe((selectedWorkbasket) => {
+        this.workbasket = selectedWorkbasket;
+      });
+    if (Object.keys(this.workbasket).length !== 0) {
+      this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
+      this.store.dispatch(new GetAvailableDistributionTargets());
+    }
 
     this.availableDistributionTargets$
       .pipe(takeUntil(this.destroy$))
