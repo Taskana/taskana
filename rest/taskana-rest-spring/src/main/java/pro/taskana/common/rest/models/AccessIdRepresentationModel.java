@@ -1,10 +1,6 @@
 package pro.taskana.common.rest.models;
 
-/**
- * resource class for access id validation.
- *
- * @author bbr
- */
+/** resource class for access id validation. */
 public class AccessIdRepresentationModel {
 
   private String name;

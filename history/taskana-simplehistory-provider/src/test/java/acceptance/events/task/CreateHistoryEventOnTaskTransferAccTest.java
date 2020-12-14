@@ -95,6 +95,5 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
     assertThat(events)
         .extracting(TaskHistoryEvent::getNewValue)
         .containsOnly("WBI:100000000000000000000000000000000007");
-
   }
 }

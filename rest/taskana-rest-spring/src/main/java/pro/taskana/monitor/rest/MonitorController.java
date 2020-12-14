@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -45,7 +45,7 @@ public class MonitorController {
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKS_STATUS)
+  @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksStatusReport(
       @RequestParam(required = false) List<String> domains,
@@ -69,7 +69,7 @@ public class MonitorController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKS_WORKBASKET)
+  @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketReport(
       @RequestParam(value = "states") List<TaskState> states)
@@ -92,7 +92,7 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKS_WORKBASKET_PLANNED)
+  @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_PLANNED_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketPlannedDateReport(
       @RequestParam(value = "daysInPast") int daysInPast,
@@ -120,7 +120,7 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TASKS_CLASSIFICATION)
+  @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTasksClassificationReport()
       throws NotAuthorizedException, InvalidArgumentException {
@@ -140,7 +140,7 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
-  @GetMapping(path = Mapping.URL_MONITOR_TIMESTAMP)
+  @GetMapping(path = RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getDailyEntryExitReport()
       throws NotAuthorizedException, InvalidArgumentException {

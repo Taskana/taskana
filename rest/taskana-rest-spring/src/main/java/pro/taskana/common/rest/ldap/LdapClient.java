@@ -27,11 +27,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
-/**
- * Class for Ldap access.
- *
- * @author bbr
- */
+/** Class for Ldap access. */
 @Component
 public class LdapClient {
 
@@ -99,6 +95,7 @@ public class LdapClient {
 
     orFilter.or(new WhitespaceWildcardsFilter(getUserFirstnameAttribute(), name));
     orFilter.or(new WhitespaceWildcardsFilter(getUserLastnameAttribute(), name));
+    orFilter.or(new WhitespaceWildcardsFilter(getUserFullnameAttribute(), name));
     orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
     andFilter.and(orFilter);
 
@@ -385,6 +382,10 @@ public class LdapClient {
       dn = dn + "," + getBaseDn();
     }
     return dn;
+  }
+
+  private String getUserFullnameAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_FULLNAME_ATTRIBUTE.getValueFromEnv(env);
   }
 
   /** Context Mapper for user entries. */

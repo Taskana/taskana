@@ -19,11 +19,7 @@ import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/**
- * Unit Test for TaskServiceImpl.
- *
- * @author EH
- */
+/** Unit Test for TaskServiceImpl. */
 @ExtendWith(MockitoExtension.class)
 class TaskServiceImplTest {
 

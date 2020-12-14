@@ -3,8 +3,6 @@ package pro.taskana.workbasket.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -30,11 +28,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/**
- * Integration Test for workbasketServiceImpl with connection mode EXPLICIT.
- *
- * @author bbr
- */
+/** Integration Test for workbasketServiceImpl with connection mode EXPLICIT. */
 @ExtendWith(JaasExtension.class)
 class WorkbasketServiceImplIntExplicitTest {
 
@@ -89,7 +83,7 @@ class WorkbasketServiceImplIntExplicitTest {
       workbasket2 = workBasketService.createWorkbasket(workbasket2);
       createWorkbasketWithSecurity(workbasket2, "user-1-1", true, true, false, false);
 
-      List<String> distTargets = Arrays.asList(workbasket0.getId(), workbasket1.getId());
+      List<String> distTargets = List.of(workbasket0.getId(), workbasket1.getId());
       Thread.sleep(SLEEP_TIME);
       workBasketService.setDistributionTargets(workbasket2.getId(), distTargets);
 
@@ -100,7 +94,7 @@ class WorkbasketServiceImplIntExplicitTest {
       workbasket3 = workBasketService.createWorkbasket(workbasket3);
       createWorkbasketWithSecurity(workbasket3, "user-1-1", true, true, false, false);
 
-      List<String> newDistTargets = Collections.singletonList(workbasket3.getId());
+      List<String> newDistTargets = List.of(workbasket3.getId());
       Thread.sleep(SLEEP_TIME);
       workBasketService.setDistributionTargets(workbasket2.getId(), newDistTargets);
 

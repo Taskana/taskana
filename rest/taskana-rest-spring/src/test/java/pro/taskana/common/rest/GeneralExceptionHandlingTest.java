@@ -26,8 +26,7 @@ class GeneralExceptionHandlingTest {
           new ParameterizedTypeReference<
               TaskanaPagedModel<ClassificationSummaryRepresentationModel>>() {};
   private static RestTemplate template;
-  @Autowired
-  RestHelper restHelper;
+  @Autowired RestHelper restHelper;
 
   @BeforeAll
   static void init() {
@@ -39,7 +38,7 @@ class GeneralExceptionHandlingTest {
     ThrowingCallable httpCall =
         () -> {
           template.exchange(
-              restHelper.toUrl(Mapping.URL_CLASSIFICATIONS_ID, "non-existing-id"),
+              restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, "non-existing-id"),
               HttpMethod.DELETE,
               restHelper.defaultRequest(),
               CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);

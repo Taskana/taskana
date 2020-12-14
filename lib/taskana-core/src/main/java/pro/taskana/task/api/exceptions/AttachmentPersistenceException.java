@@ -9,8 +9,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
  */
 public class AttachmentPersistenceException extends TaskanaException {
 
-  private static final long serialVersionUID = 123L;
-
   public AttachmentPersistenceException(String msg, Throwable cause) {
     super(msg, cause);
   }

@@ -4,9 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -37,7 +34,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketSummary workbasketSummary =
         workbasketService.createWorkbasketQuery().keyIn("GPK_KSC").single();
     List<String> expectedTargetIds =
-        Arrays.asList(
+        List.of(
             "WBI:100000000000000000000000000000000002",
             "WBI:100000000000000000000000000000000003",
             "WBI:100000000000000000000000000000000004",
@@ -58,7 +55,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketSummary workbasketSummary =
         workbasketService.createWorkbasketQuery().keyIn("GPK_KSC").single();
     List<String> expectedTargetIds =
-        Arrays.asList(
+        List.of(
             "WBI:100000000000000000000000000000000002",
             "WBI:100000000000000000000000000000000003",
             "WBI:100000000000000000000000000000000004",
@@ -88,8 +85,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
 
     call =
         () -> {
-          workbasketService.setDistributionTargets(
-              existingWb, Collections.singletonList(nonExistingWb));
+          workbasketService.setDistributionTargets(existingWb, List.of(nonExistingWb));
         };
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
 
@@ -128,7 +124,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> {
           workbasketService.setDistributionTargets(
-              existingWb, Collections.singletonList("WBI:100000000000000000000000000000000002"));
+              existingWb, List.of("WBI:100000000000000000000000000000000002"));
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
 
@@ -267,16 +263,10 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     List<WorkbasketSummary> distributionSources =
         workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
 
-    assertThat(distributionSources).hasSize(2);
-    List<String> expectedIds =
-        new ArrayList<>(
-            Arrays.asList(
-                "WBI:100000000000000000000000000000000001",
-                "WBI:100000000000000000000000000000000002"));
-
-    for (WorkbasketSummary foundSummary : distributionSources) {
-      assertThat(expectedIds.contains(foundSummary.getId())).isTrue();
-    }
+    assertThat(distributionSources)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactlyInAnyOrder(
+            "WBI:100000000000000000000000000000000001", "WBI:100000000000000000000000000000000002");
   }
 
   @WithAccessId(user = "teamlead-1")
@@ -287,16 +277,10 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     List<WorkbasketSummary> distributionSources =
         workbasketService.getDistributionSources("TEAMLEAD-1", "DOMAIN_A");
 
-    assertThat(distributionSources).hasSize(2);
-    List<String> expectedIds =
-        new ArrayList<>(
-            Arrays.asList(
-                "WBI:100000000000000000000000000000000001",
-                "WBI:100000000000000000000000000000000002"));
-
-    for (WorkbasketSummary foundSummary : distributionSources) {
-      assertThat(expectedIds.contains(foundSummary.getId())).isTrue();
-    }
+    assertThat(distributionSources)
+        .extracting(WorkbasketSummary::getId)
+        .containsExactlyInAnyOrder(
+            "WBI:100000000000000000000000000000000001", "WBI:100000000000000000000000000000000002");
   }
 
   @WithAccessId(user = "unknownuser")
@@ -305,9 +289,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     ThrowingCallable call =
-        () -> {
-          workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
-        };
+        () -> workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -317,9 +299,7 @@ class DistributionTargetsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     ThrowingCallable call =
-        () -> {
-          workbasketService.getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004");
-        };
+        () -> workbasketService.getDistributionSources("WBI:10dasgibtsdochnicht00000000000000004");
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 }

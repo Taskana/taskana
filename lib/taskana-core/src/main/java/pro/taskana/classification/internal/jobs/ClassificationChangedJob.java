@@ -13,11 +13,7 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 
-/**
- * This class executes a job of type CLASSIFICATIONCHANGEDJOB.
- *
- * @author bbr
- */
+/** This class executes a job of type CLASSIFICATIONCHANGEDJOB. */
 public class ClassificationChangedJob extends AbstractTaskanaJob {
 
   public static final String TASK_IDS = "taskIds";
@@ -68,8 +64,8 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
       if (!taskIdBatch.isEmpty()) {
         String taskIds = String.join(",", affectedTaskIds);
         args.put(TASK_IDS, taskIds);
-        args.put(PRIORITY_CHANGED, Boolean.valueOf(priorityChanged).toString());
-        args.put(SERVICE_LEVEL_CHANGED, Boolean.valueOf(serviceLevelChanged).toString());
+        args.put(PRIORITY_CHANGED, Boolean.toString(priorityChanged));
+        args.put(SERVICE_LEVEL_CHANGED, Boolean.toString(serviceLevelChanged));
         ScheduledJob job = new ScheduledJob();
         job.setType(ScheduledJob.Type.UPDATETASKSJOB);
         job.setArguments(args);

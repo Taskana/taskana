@@ -155,9 +155,11 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean joinWithAttachments = false;
   private boolean joinWithClassifications = false;
   private boolean joinWithAttachmentClassifications = false;
+  private boolean joinWithWorkbaskets = false;
   private boolean addAttachmentColumnsToSelectClauseForOrdering = false;
   private boolean addClassificationNameToSelectClauseForOrdering = false;
   private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
+  private boolean addWorkbasketNameToSelectClauseForOrdering = false;
 
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -849,6 +851,15 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery orderByWorkbasketId(SortDirection sortDirection) {
     return addOrderCriteria("WORKBASKET_ID", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByWorkbasketName(SortDirection sortDirection) {
+    joinWithWorkbaskets = true;
+    addWorkbasketNameToSelectClauseForOrdering = true;
+    return DB.DB2.dbProductId.equals(getDatabaseId())
+        ? addOrderCriteria("WNAME", sortDirection)
+        : addOrderCriteria("w.NAME", sortDirection);
   }
 
   @Override
@@ -1888,12 +1899,16 @@ public class TaskQueryImpl implements TaskQuery {
         + joinWithClassifications
         + ", joinWithAttachmentClassifications="
         + joinWithAttachmentClassifications
+        + ", joinWithWorkbaskets="
+        + joinWithWorkbaskets
         + ", addAttachmentColumnsToSelectClauseForOrdering="
         + addAttachmentColumnsToSelectClauseForOrdering
         + ", addClassificationNameToSelectClauseForOrdering="
         + addClassificationNameToSelectClauseForOrdering
         + ", addAttachmentClassificationNameToSelectClauseForOrdering="
         + addAttachmentClassificationNameToSelectClauseForOrdering
+        + ", addWorkbasketNameToSelectClauseForOrdering="
+        + addWorkbasketNameToSelectClauseForOrdering
         + "]";
   }
 }

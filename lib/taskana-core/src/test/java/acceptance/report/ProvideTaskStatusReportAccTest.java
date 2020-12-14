@@ -1,12 +1,10 @@
 package acceptance.report;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,9 +71,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void should_NotThrowSqlExceptionDuringAugmentation_When_ReportContainsNoRows() {
     TaskStatusReport.Builder builder =
-        MONITOR_SERVICE
-            .createTaskStatusReportBuilder()
-            .domainIn(Collections.singletonList("DOES NOT EXIST"));
+        MONITOR_SERVICE.createTaskStatusReportBuilder().domainIn(List.of("DOES NOT EXIST"));
     ThrowingCallable test =
         () -> {
           TaskStatusReport report = builder.buildReport();
@@ -116,7 +112,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     TaskStatusReport report =
         MONITOR_SERVICE
             .createTaskStatusReportBuilder()
-            .domainIn(asList("DOMAIN_C", "DOMAIN_A"))
+            .domainIn(List.of("DOMAIN_C", "DOMAIN_A"))
             .buildReport();
 
     assertThat(report).isNotNull();
@@ -145,7 +141,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     TaskStatusReport report =
         MONITOR_SERVICE
             .createTaskStatusReportBuilder()
-            .stateIn(Collections.singletonList(TaskState.READY))
+            .stateIn(List.of(TaskState.READY))
             .buildReport();
 
     assertThat(report).isNotNull();
@@ -181,7 +177,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE
             .createTaskStatusReportBuilder()
             .stateIn(
-                Arrays.asList(
+                List.of(
                     TaskState.READY,
                     TaskState.CLAIMED,
                     TaskState.COMPLETED,
@@ -200,7 +196,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     TaskStatusReport report =
         MONITOR_SERVICE
             .createTaskStatusReportBuilder()
-            .workbasketIdsIn(Collections.singletonList("WBI:000000000000000000000000000000000003"))
+            .workbasketIdsIn(List.of("WBI:000000000000000000000000000000000003"))
             .buildReport();
 
     assertThat(report).isNotNull();

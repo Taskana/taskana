@@ -17,7 +17,6 @@ import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 /** Generate documentation for the history event controller. */
 class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumentation {
 
-
   private final HashMap<String, String> taskHistoryEventFieldDescriptionsMap = new HashMap<>();
 
   private FieldDescriptor[] allTaskHistoryEventFieldDescriptors;
@@ -119,7 +118,7 @@ class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumentation 
   }
 
   @Test
-  public void getAllTaskHistoryEventDocTest() throws Exception {
+  void getAllTaskHistoryEventDocTest() throws Exception {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
@@ -134,7 +133,7 @@ class TaskHistoryEventControllerRestDocumentation extends BaseRestDocumentation 
   }
 
   @Test
-  public void getSpecificTaskHistoryEventDocTest() throws Exception {
+  void getSpecificTaskHistoryEventDocTest() throws Exception {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(

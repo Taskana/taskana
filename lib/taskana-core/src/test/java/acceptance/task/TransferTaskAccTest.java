@@ -8,7 +8,6 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -310,7 +309,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_TransferTasks_When_TransferTasksWithListNotSupportingRemove() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<String> taskIds = Collections.singletonList("TKI:000000000000000000000000000000000006");
+    List<String> taskIds = List.of("TKI:000000000000000000000000000000000006");
 
     ThrowingCallable call =
         () -> {
@@ -327,19 +326,18 @@ class TransferTaskAccTest extends AbstractAccTest {
     // test with invalid list
 
     ThrowingCallable call =
-        () -> {
-          taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
-        };
+        () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not be null.");
 
     // test with list containing only invalid arguments
     call =
-        () -> {
-          taskService.transferTasks(
-              "WBI:100000000000000000000000000000000006", Arrays.asList("", "", "", null));
-        };
+        () ->
+            taskService.transferTasks(
+                "WBI:100000000000000000000000000000000006",
+                /* we can't use List.of because of the null value we insert */
+                Arrays.asList("", "", "", null));
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not contain only invalid arguments.");

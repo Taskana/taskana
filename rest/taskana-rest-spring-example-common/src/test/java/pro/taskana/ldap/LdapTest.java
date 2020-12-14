@@ -24,4 +24,13 @@ class LdapTest {
         .containsExactlyInAnyOrder(
             "teamlead-1", "teamlead-2", "cn=ksc-teamleads,cn=groups,ou=Test,O=TASKANA");
   }
+
+  @Test
+  void should_findUserByWholeName_WhenSearchingWithLdapClient() throws Exception {
+    List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("Elena");
+    assertThat(usersAndGroups).hasSize(2);
+
+    usersAndGroups = ldapClient.searchUsersAndGroups("Elena Faul");
+    assertThat(usersAndGroups).hasSize(1);
+  }
 }

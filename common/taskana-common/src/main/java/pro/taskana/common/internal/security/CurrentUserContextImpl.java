@@ -5,7 +5,6 @@ import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.api.security.GroupPrincipal;
 
 public class CurrentUserContextImpl implements CurrentUserContext {
 
@@ -50,7 +50,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {
-      Set<Group> groups = subject.getPrincipals(Group.class);
+      Set<GroupPrincipal> groups = subject.getPrincipals(GroupPrincipal.class);
       LOGGER.trace("Public groups of caller: {}", groups);
       return groups.stream()
           .map(Principal::getName)
@@ -115,7 +115,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
       Set<Principal> principals = subject.getPrincipals();
       LOGGER.trace("Public principals of caller: {}", principals);
       return principals.stream()
-          .filter(principal -> !(principal instanceof Group))
+          .filter(principal -> !(principal instanceof GroupPrincipal))
           .map(Principal::getName)
           .filter(Objects::nonNull)
           .map(this::convertAccessId)

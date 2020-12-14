@@ -24,11 +24,7 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/**
- * Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT.
- *
- * @author EH
- */
+/** Integration Test for ClassificationServiceImpl with connection management mode AUTOCOMMIT. */
 class ClassificationServiceImplIntAutoCommitTest {
 
   private static SampleDataGenerator sampleDataGenerator;
@@ -56,11 +52,14 @@ class ClassificationServiceImplIntAutoCommitTest {
   @Test
   void testFindAllClassifications() throws Exception {
     Classification classification0 = classificationService.newClassification("TEST1", "", "TASK");
+    classification0.setServiceLevel("P1D");
     classificationService.createClassification(classification0);
     Classification classification1 = classificationService.newClassification("TEST2", "", "TASK");
+    classification1.setServiceLevel("P1D");
     classificationService.createClassification(classification1);
     Classification classification2 = classificationService.newClassification("TEST3", "", "TASK");
     classification2.setParentId(classification0.getId());
+    classification2.setServiceLevel("P1D");
     classificationService.createClassification(classification2);
 
     assertThat(classificationService.createClassificationQuery().list()).hasSize(2 + 1);
@@ -72,6 +71,7 @@ class ClassificationServiceImplIntAutoCommitTest {
     Classification classification =
         classificationService.newClassification("TEST434", "DOMAIN_A", "TASK");
     classification.setDescription("");
+    classification.setServiceLevel("P1D");
     classification = classificationService.createClassification(classification);
     classification.setDescription("TEST SOMETHING");
     classificationService.updateClassification(classification);
@@ -86,6 +86,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   void testInsertClassification() throws Exception {
     Classification classification =
         classificationService.newClassification("TEST1333", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     classificationService.createClassification(classification);
 
     List<ClassificationSummary> list =
@@ -102,6 +103,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   void testUpdateClassification() throws Exception {
     Classification classification =
         classificationService.newClassification("TEST32451", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     classification = classificationService.createClassification(classification);
     classification.setDescription("description");
     classification = classificationService.updateClassification(classification);
@@ -123,10 +125,12 @@ class ClassificationServiceImplIntAutoCommitTest {
   void testDefaultSettings() throws Exception {
     Classification classification =
         classificationService.newClassification("TEST7771", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
     classification = classificationService.createClassification(classification);
 
     Classification classification1 =
         classificationService.newClassification("TEST1865", "DOMAIN_A", "TASK");
+    classification1.setServiceLevel("P1D");
     classification1 = classificationService.createClassification(classification1);
 
     classification1.setParentId(classification.getId());

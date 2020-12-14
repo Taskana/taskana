@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -60,7 +59,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
       assertThat(
               attachmentMapper.findAttachmentSummariesByTaskIds(
-                  Arrays.asList(
+                  List.of(
                       "TKI:000000000000000000000000000000000067",
                       "TKI:000000000000000000000000000000000068")))
           .hasSize(4);
@@ -69,14 +68,14 @@ class DeleteTaskAccTest extends AbstractAccTest {
     }
 
     taskService.deleteTasks(
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000067",
             "TKI:000000000000000000000000000000000068"));
     try {
 
       assertThat(
               attachmentMapper.findAttachmentSummariesByTaskIds(
-                  Arrays.asList(
+                  List.of(
                       "TKI:000000000000000000000000000000000067",
                       "TKI:000000000000000000000000000000000068")))
           .isEmpty();
@@ -129,7 +128,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<String> taskIds =
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000008",
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000008",

@@ -9,8 +9,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,14 +50,13 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   }
 
   @Test
-  void testGetTotalNumbersOfCatgoryReport() throws Exception {
-    final List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    final List<String> categories = Collections.singletonList("EXTERN");
-    final List<String> domains = Collections.singletonList("DOMAIN_A");
-    final List<String> classificationIds = Collections.singletonList("L10000");
-    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
+  void testGetTotalNumbersOfCategoryReport() throws Exception {
+    final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = List.of("EXTERN");
+    final List<String> domains = List.of("DOMAIN_A");
+    final List<String> classificationIds = List.of("L10000");
+    final List<String> excludedClassificationIds = List.of("L20000");
     Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
 
@@ -110,17 +107,16 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
 
   @Test
   void testGetCategoryReportWithReportLineItemDefinitions() throws Exception {
-    final List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    final List<String> categories = Collections.singletonList("EXTERN");
-    final List<String> domains = Collections.singletonList("DOMAIN_A");
-    final List<String> classificationIds = Collections.singletonList("L10000");
-    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = List.of("EXTERN");
+    final List<String> domains = List.of("DOMAIN_A");
+    final List<String> classificationIds = List.of("L10000");
+    final List<String> excludedClassificationIds = List.of("L20000");
     Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
-        Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
+        List.of(new TimeIntervalColumnHeader(0, 0));
 
     final List<MonitorQueryItem> expectedResult = new ArrayList<>();
     MonitorQueryItem monitorQueryItem = new MonitorQueryItem();
@@ -172,23 +168,20 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
 
   @Test
   void testListTaskIdsOfCategoryReportForSelectedItems() throws Exception {
-    final List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    final List<String> categories = Collections.singletonList("EXTERN");
-    final List<String> domains = Collections.singletonList("DOMAIN_A");
-    final List<String> classificationIds = Collections.singletonList("L10000");
-    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = List.of("EXTERN");
+    final List<String> domains = List.of("DOMAIN_A");
+    final List<String> classificationIds = List.of("L10000");
+    final List<String> excludedClassificationIds = List.of("L20000");
     final Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
-        Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
+        List.of(new TimeIntervalColumnHeader(0, 0));
 
-    List<SelectedItem> selectedItems =
-        Collections.singletonList(new SelectedItem("EXTERN", null, 1, 5));
+    List<SelectedItem> selectedItems = List.of(new SelectedItem("EXTERN", null, 1, 5));
 
-    List<String> expectedResult =
-        Collections.singletonList("TKI:000000000000000000000000000000000001");
+    List<String> expectedResult = List.of("TKI:000000000000000000000000000000000001");
     when(monitorMapperMock.getTaskIdsForSelectedItems(
             workbasketIds,
             states,
@@ -249,25 +242,24 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     List<String> result =
         cut.createClassificationCategoryReportBuilder()
             .listTaskIdsForSelectedItems(
-                Collections.singletonList(new SelectedItem("BLA", null, 0, 0)), TaskTimestamp.DUE);
+                List.of(new SelectedItem("BLA", null, 0, 0)), TaskTimestamp.DUE);
     assertThat(result).isNotNull();
   }
 
   @Test
   void testListCustomAttributeValuesForCustomAttributeName() throws Exception {
-    final List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
-    final List<TaskState> states = Arrays.asList(TaskState.CLAIMED, TaskState.READY);
-    final List<String> categories = Collections.singletonList("EXTERN");
-    final List<String> domains = Collections.singletonList("DOMAIN_A");
-    final List<String> classificationIds = Collections.singletonList("L10000");
-    final List<String> excludedClassificationIds = Collections.singletonList("L20000");
+    final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
+    final List<TaskState> states = List.of(TaskState.CLAIMED, TaskState.READY);
+    final List<String> categories = List.of("EXTERN");
+    final List<String> domains = List.of("DOMAIN_A");
+    final List<String> classificationIds = List.of("L10000");
+    final List<String> excludedClassificationIds = List.of("L20000");
     Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders =
-        Collections.singletonList(new TimeIntervalColumnHeader(0, 0));
+        List.of(new TimeIntervalColumnHeader(0, 0));
 
-    List<String> expectedResult = Collections.singletonList("Geschaeftsstelle A");
+    List<String> expectedResult = List.of("Geschaeftsstelle A");
     when(monitorMapperMock.getCustomAttributeValuesForReport(
             workbasketIds,
             states,
@@ -313,7 +305,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
   void testListCustomAttributeValuesForCustomAttributeNameIsEmptyResult() throws Exception {
     List<String> result =
         cut.createClassificationCategoryReportBuilder()
-            .workbasketIdIn(Collections.singletonList("DieGibtsSicherNed"))
+            .workbasketIdIn(List.of("DieGibtsSicherNed"))
             .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_1);
     assertThat(result).isNotNull();
   }

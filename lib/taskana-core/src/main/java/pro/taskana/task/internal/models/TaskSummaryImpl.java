@@ -1,6 +1,7 @@
 package pro.taskana.task.internal.models;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -131,56 +132,56 @@ public class TaskSummaryImpl implements TaskSummary {
 
   @Override
   public Instant getCreated() {
-    return created;
+    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setCreated(Instant created) {
-    this.created = created;
+    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
   public Instant getClaimed() {
-    return claimed;
+    return claimed != null ? claimed.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setClaimed(Instant claimed) {
-    this.claimed = claimed;
+    this.claimed = claimed != null ? claimed.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
   public Instant getCompleted() {
-    return completed;
+    return completed != null ? completed.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setCompleted(Instant completed) {
-    this.completed = completed;
+    this.completed = completed != null ? completed.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
   public Instant getModified() {
-    return modified;
+    return modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setModified(Instant modified) {
-    this.modified = modified;
+    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
   public Instant getPlanned() {
-    return planned;
+    return planned != null ? planned.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setPlanned(Instant planned) {
-    this.planned = planned;
+    this.planned = planned != null ? planned.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
   public Instant getDue() {
-    return due;
+    return due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   public void setDue(Instant due) {
-    this.due = due;
+    this.due = due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override

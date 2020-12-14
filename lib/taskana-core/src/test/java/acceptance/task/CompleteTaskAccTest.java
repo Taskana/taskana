@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -39,6 +39,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000001").getState())
         .isEqualTo(TaskState.CLAIMED);
     Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000001");
+    assertThat(completedTask).isNotNull();
+    assertThat(completedTask.getCompleted()).isNotNull();
+    assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
+    assertThat(completedTask.getModified()).isNotEqualTo(completedTask.getCreated());
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_completeClaimedTaskByAnotherUser_When_UserIsAdmin() throws Exception {
+    assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000029").getState())
+        .isEqualTo(TaskState.CLAIMED);
+    Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000029");
     assertThat(completedTask).isNotNull();
     assertThat(completedTask.getCompleted()).isNotNull();
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
@@ -279,9 +291,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteAllTasks_When_BulkCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000102";
     String id2 = "TKI:000000000000000000000000000000000101";
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
@@ -306,9 +318,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteValidTasksEvenIfErrorsExist_When_BulkCompletingTasks() throws Exception {
     String invalid = "invalid-id";
     String validId = "TKI:000000000000000000000000000000000103";
-    List<String> taskIdList = Arrays.asList(invalid, validId);
+    List<String> taskIdList = List.of(invalid, validId);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
@@ -327,6 +339,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String invalid2 = null;
     String invalid3 = "invalid-id";
     String notAuthorized = "TKI:000000000000000000000000000000000002";
+    // we can't use List.of because of the null value we insert
     List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -341,7 +354,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_AddErrorForTaskWhichIsNotClaimed_When_BulkCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000025"; // task is not claimed
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -357,7 +370,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_AddErrorForTasksInEndState_When_BulkCompletingTasks() throws Exception {
     String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
     String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -374,7 +387,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_DoNothingForCompletedTask_When_BulkCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000036"; // task is completed
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task before = TASK_SERVICE.getTask(id);
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
@@ -388,7 +401,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_AddErrorForTaskIfOwnerDoesNotMach_When_BulkCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000035";
-    List<String> taskIdList = Collections.singletonList(id1);
+    List<String> taskIdList = List.of(id1);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -402,9 +415,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteAllTasks_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000026";
     String id2 = "TKI:000000000000000000000000000000000027";
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
 
@@ -430,9 +443,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteValidTasksEvenIfErrorsExist_When_BulkForceCompletingTasks() throws Exception {
     String invalid = "invalid-id";
     String validId = "TKI:000000000000000000000000000000000028";
-    List<String> taskIdList = Arrays.asList(invalid, validId);
+    List<String> taskIdList = List.of(invalid, validId);
 
-    Instant beforeBulkComplete = Instant.now();
+    Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
 
@@ -452,6 +465,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String invalid2 = null;
     String invalid3 = "invalid-id";
     String notAuthorized = "TKI:000000000000000000000000000000000002";
+    // we can't use List.of because of the null value we insert
     List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
 
     BulkOperationResults<String, TaskanaException> results =
@@ -468,7 +482,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_AddErrorForTasksInEndState_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
     String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
@@ -486,7 +500,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_DoNothingForCompletedTask_When_BulkForceCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000036"; // task is completed
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task before = TASK_SERVICE.getTask(id);
     BulkOperationResults<String, TaskanaException> results =
@@ -502,11 +516,11 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_CompleteTaskWhenAlreadyClaimedByDifferentUser_When_BulkForceCompletingTasks()
       throws Exception {
     String id = "TKI:000000000000000000000000000000000002";
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task beforeClaim = TASK_SERVICE.getTask(id);
     assertThat(beforeClaim.getOwner()).isNotEqualTo("user-1-2");
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
     Task afterClaim = TASK_SERVICE.getTask(id);
@@ -524,13 +538,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ClaimTaskWhenNotClaimed_When_BulkForceCompletingTasks() throws Exception {
     String id = "TKI:000000000000000000000000000000000033";
-    List<String> taskIdList = Collections.singletonList(id);
+    List<String> taskIdList = List.of(id);
 
     Task task = TASK_SERVICE.getTask(id);
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
@@ -550,13 +564,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
   void should_OnlyClaimTasksWhichAreNotClaimed_When_BulkForceCompletingTasks() throws Exception {
     String id1 = "TKI:000000000000000000000000000000000043"; // task is already claimed
     String id2 = "TKI:000000000000000000000000000000000044"; // task is ready
-    List<String> taskIdList = Arrays.asList(id1, id2);
+    List<String> taskIdList = List.of(id1, id2);
 
     Task task = TASK_SERVICE.getTask(id2);
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
-    final Instant beforeBulkComplete = Instant.now();
+    final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);

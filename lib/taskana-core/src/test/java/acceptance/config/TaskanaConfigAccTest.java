@@ -19,11 +19,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 
-/**
- * Test taskana configuration without roles.
- *
- * @author bbr
- */
+/** Test taskana configuration without roles. */
 class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
   TaskanaConfigAccTest() throws Exception {

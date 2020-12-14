@@ -10,7 +10,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate REST Docu for the TaskanaEngineController. */
@@ -52,7 +52,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getAllDomainsDocTest() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_DOMAIN))
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(RestEndpoints.URL_DOMAIN))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -66,7 +66,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_CLASSIFICATION_CATEGORIES))
+                    restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -80,7 +80,8 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getAllClassificationTypesDocTest() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_CLASSIFICATION_TYPES))
+            RestDocumentationRequestBuilders.get(
+                    restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -94,7 +95,7 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getCurrentUserInfo() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_CURRENT_USER))
+            RestDocumentationRequestBuilders.get(restHelper.toUrl(RestEndpoints.URL_CURRENT_USER))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -107,7 +108,8 @@ class TaskanaEngineControllerRestDocumentation extends BaseRestDocumentation {
   void getHistoryProviderIsEnabled() throws Exception {
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.get(restHelper.toUrl(Mapping.URL_HISTORY_ENABLED))
+            RestDocumentationRequestBuilders.get(
+                    restHelper.toUrl(RestEndpoints.URL_HISTORY_ENABLED))
                 .accept("application/json")
                 .header("Authorization", TEAMLEAD_1_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -44,7 +43,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
         () ->
             MONITOR_SERVICE
                 .createWorkbasketReportBuilder()
-                .listTaskIdsForSelectedItems(Collections.emptyList(), TaskTimestamp.DUE);
+                .listTaskIdsForSelectedItems(List.of(), TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -59,7 +58,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
               () ->
                   MONITOR_SERVICE
                       .createWorkbasketReportBuilder()
-                      .listTaskIdsForSelectedItems(Collections.singletonList(S_1), timestamp);
+                      .listTaskIdsForSelectedItems(List.of(S_1), timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
 
@@ -70,7 +69,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
+    final List<SelectedItem> selectedItems = List.of(S_1, S_2, S_3);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -86,7 +85,7 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReport() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
+    final List<SelectedItem> selectedItems = List.of(S_1, S_2, S_3);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -110,18 +109,16 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void testGetTaskIdsOfWorkbasketReportWithExcludedClassifications() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
-    final List<SelectedItem> selectedItems = Arrays.asList(S_1, S_2, S_3);
+    final List<SelectedItem> selectedItems = List.of(S_1, S_2, S_3);
 
     List<String> ids =
         MONITOR_SERVICE
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .excludedClassificationIdIn(
-                Collections.singletonList("CLI:000000000000000000000000000000000001"))
+            .excludedClassificationIdIn(List.of("CLI:000000000000000000000000000000000001"))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).hasSize(4);
     assertThat(ids)
         .containsExactlyInAnyOrder(
             "TKI:000000000000000000000000000000000006",
@@ -136,10 +133,9 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
       throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     final List<SelectedItem> selectedItems =
-        Collections.singletonList(
-            new SelectedItem("USER-1-1", null, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        List.of(new SelectedItem("USER-1-1", null, Integer.MIN_VALUE, Integer.MAX_VALUE));
     final List<CombinedClassificationFilter> combinedClassificationFilters =
-        Arrays.asList(
+        List.of(
             new CombinedClassificationFilter(
                 "CLI:000000000000000000000000000000000003",
                 "CLI:000000000000000000000000000000000008"),
@@ -157,10 +153,10 @@ class GetTaskIdsOfWorkbasketReportAccTest extends AbstractReportAccTest {
 
     assertThat(ids)
         .containsExactlyInAnyOrder(
-            "TKI:000000000000000000000000000000000001",  // from second filter
-            "TKI:000000000000000000000000000000000013",  // from second filter
-            "TKI:000000000000000000000000000000000025",  // from first filter
-            "TKI:000000000000000000000000000000000036",  // from first filter
+            "TKI:000000000000000000000000000000000001", // from second filter
+            "TKI:000000000000000000000000000000000013", // from second filter
+            "TKI:000000000000000000000000000000000025", // from first filter
+            "TKI:000000000000000000000000000000000036", // from first filter
             "TKI:000000000000000000000000000000000044"); // from first filter
   }
 

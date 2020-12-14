@@ -1,7 +1,7 @@
 package pro.taskana.doc.api;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -20,7 +20,7 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.doc.api.BaseRestDocumentation;
 
 /** Generate REST Documentation for the TaskController. */
@@ -466,7 +466,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_TASKS) + "?por.type=VNR&por.value=22334455")
+                    restHelper.toUrl(RestEndpoints.URL_TASKS) + "?por.type=VNR&por.value=22334455")
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -481,7 +481,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
-                        Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"))
+                        RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -496,7 +496,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.get(
                     restHelper.toUrl(
-                        Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"))
+                        RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -508,11 +508,13 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
   @Test
   void updateTaskDocTest() throws Exception {
     URL url =
-        new URL(restHelper.toUrl(Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"));
+        new URL(
+            restHelper.toUrl(
+                RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"));
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     con.setRequestProperty("Authorization", ADMIN_CREDENTIALS);
-    assertEquals(200, con.getResponseCode());
+    assertThat(con.getResponseCode()).isEqualTo(200);
 
     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), UTF_8));
     String inputLine;
@@ -528,7 +530,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.put(
                     restHelper.toUrl(
-                        Mapping.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"))
+                        RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000"))
                 .header("Authorization", ADMIN_CREDENTIALS)
                 .contentType("application/json")
                 .content(originalTask))
@@ -545,7 +547,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.post(
-                    restHelper.toUrl(Mapping.URL_TASKS_ID_SELECT_AND_CLAIM) + "?custom14=abc")
+                    restHelper.toUrl(RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM) + "?custom14=abc")
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -560,7 +562,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     MvcResult result =
         this.mockMvc
             .perform(
-                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
+                RestDocumentationRequestBuilders.post(restHelper.toUrl(RestEndpoints.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummary\":{\"key\":\"L11010\"},"
@@ -583,7 +585,8 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
 
     this.mockMvc
         .perform(
-            RestDocumentationRequestBuilders.delete(restHelper.toUrl(Mapping.URL_TASKS_ID, newId))
+            RestDocumentationRequestBuilders.delete(
+                    restHelper.toUrl(RestEndpoints.URL_TASKS_ID, newId))
                 .header("Authorization", "Basic YWRtaW46YWRtaW4=")) // admin
         .andExpect(MockMvcResultMatchers.status().isNoContent())
         .andDo(MockMvcRestDocumentation.document("DeleteTaskDocTest"));
@@ -594,7 +597,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.get(
-                    restHelper.toUrl(Mapping.URL_TASKS)
+                    restHelper.toUrl(RestEndpoints.URL_TASKS)
                         + "?task-id=TKI:000000000000000000000000000000000036,"
                         + "TKI:000000000000000000000000000000000037,"
                         + "TKI:000000000000000000000000000000000038"
@@ -613,7 +616,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     MvcResult result =
         this.mockMvc
             .perform(
-                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
+                RestDocumentationRequestBuilders.post(restHelper.toUrl(RestEndpoints.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummary\":{\"key\":\"L11010\"},"
@@ -633,7 +636,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.post(
-                    restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, newId))
+                    restHelper.toUrl(RestEndpoints.URL_TASKS_ID_CLAIM, newId))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS)
                 .content("{}"))
@@ -649,7 +652,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     MvcResult result =
         this.mockMvc
             .perform(
-                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
+                RestDocumentationRequestBuilders.post(restHelper.toUrl(RestEndpoints.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummary\":{\"key\":\"L11010\"},"
@@ -669,7 +672,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.delete(
-                    restHelper.toUrl(Mapping.URL_TASKS_ID_CLAIM, newId))
+                    restHelper.toUrl(RestEndpoints.URL_TASKS_ID_CLAIM, newId))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS)
                 .content("{}"))
@@ -684,7 +687,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     MvcResult result =
         this.mockMvc
             .perform(
-                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
+                RestDocumentationRequestBuilders.post(restHelper.toUrl(RestEndpoints.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummary\":{\"key\":\"L11010\"},"
@@ -703,7 +706,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     this.mockMvc
         .perform(
             RestDocumentationRequestBuilders.post(
-                    restHelper.toUrl(Mapping.URL_TASKS_ID_COMPLETE, newId))
+                    restHelper.toUrl(RestEndpoints.URL_TASKS_ID_COMPLETE, newId))
                 .accept("application/hal+json")
                 .header("Authorization", ADMIN_CREDENTIALS)
                 .content("{}"))
@@ -718,7 +721,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
     MvcResult result =
         this.mockMvc
             .perform(
-                RestDocumentationRequestBuilders.post(restHelper.toUrl(Mapping.URL_TASKS))
+                RestDocumentationRequestBuilders.post(restHelper.toUrl(RestEndpoints.URL_TASKS))
                     .contentType("application/hal+json")
                     .content(
                         "{\"classificationSummary\":{\"key\":\"L11010\"},"
@@ -741,7 +744,7 @@ class TaskControllerRestDocumentation extends BaseRestDocumentation {
         .perform(
             RestDocumentationRequestBuilders.post(
                     restHelper.toUrl(
-                        Mapping.URL_TASKS_ID_TRANSFER_WORKBASKETID,
+                        RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
                         newId,
                         "WBI:100000000000000000000000000000000001"))
                 .header("Authorization", ADMIN_CREDENTIALS))

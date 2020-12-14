@@ -13,8 +13,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static pro.taskana.common.rest.QueryHelper.applyAndRemoveSortingParams;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -35,8 +33,8 @@ class QueryHelperTest {
   @Test
   void should_RemoveSortByAndOrderDirection_When_ApplyingSortingParams() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Collections.singletonList("sort-by"));
-    map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList("order"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by"));
+    map.put(QueryHelper.ORDER_DIRECTION, List.of("order"));
 
     applyAndRemoveSortingParams(map, mock(MockBiConsumer.class));
     assertThat(map).isEmpty();
@@ -46,9 +44,9 @@ class QueryHelperTest {
   void should_IgnoreMapContent_When_ApplyingSortingParams() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     String key = "unknown";
-    List<String> value = Collections.singletonList("sort-by");
+    List<String> value = List.of("sort-by");
     map.put(key, value);
-    map.put(QueryHelper.SORT_BY, Collections.singletonList("sort-by"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by"));
 
     applyAndRemoveSortingParams(map, mock(MockBiConsumer.class));
     assertThat(map).containsExactly(new SimpleEntry<>(key, value));
@@ -67,7 +65,7 @@ class QueryHelperTest {
   @Test
   void should_CallConsumerWithSortByValue_When_MapContainsOneSortBy() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Collections.singletonList("sort-by-value"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by-value"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
 
     applyAndRemoveSortingParams(map, consumer);
@@ -79,7 +77,7 @@ class QueryHelperTest {
   void should_CallConsumerWithAscSortDirection_When_MapDoesNotContainSortDirection()
       throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Collections.singletonList("sort-by-value"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by-value"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
 
     applyAndRemoveSortingParams(map, consumer);
@@ -90,12 +88,12 @@ class QueryHelperTest {
   @TestFactory
   Stream<DynamicTest>
       should_CallConsumerWithDescSortDirection_When_MapDoesContainsDescSortDirection() {
-    Iterator<String> testCases = Arrays.asList("desc", "DESC", "Desc", "desC", "DeSc").iterator();
+    Iterator<String> testCases = List.of("desc", "DESC", "Desc", "desC", "DeSc").iterator();
     ThrowingConsumer<String> test =
         desc -> {
           MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-          map.put(QueryHelper.SORT_BY, Collections.singletonList("sort-by-value"));
-          map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList(desc));
+          map.put(QueryHelper.SORT_BY, List.of("sort-by-value"));
+          map.put(QueryHelper.ORDER_DIRECTION, List.of(desc));
           MockBiConsumer consumer = mock(MockBiConsumer.class);
 
           applyAndRemoveSortingParams(map, consumer);
@@ -109,7 +107,7 @@ class QueryHelperTest {
   @Test
   void should_CallConsumerMultipleTimes_When_MapContainsMultipleSortBy() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Arrays.asList("sort-by-value1", "sort-by-value2"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by-value1", "sort-by-value2"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
 
     applyAndRemoveSortingParams(map, consumer);
@@ -123,8 +121,8 @@ class QueryHelperTest {
   void should_MatchSortDirectionForEachSortBy_When_MapContainsMultipleSortByAndOrderBy()
       throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Arrays.asList("sort-by-value1", "sort-by-value2"));
-    map.put(QueryHelper.ORDER_DIRECTION, Arrays.asList("desc", "asc"));
+    map.put(QueryHelper.SORT_BY, List.of("sort-by-value1", "sort-by-value2"));
+    map.put(QueryHelper.ORDER_DIRECTION, List.of("desc", "asc"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
 
     applyAndRemoveSortingParams(map, consumer);
@@ -136,7 +134,7 @@ class QueryHelperTest {
   @Test
   void should_ThrowError_When_MapContainsOrderByButNoSortBy() {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList("desc"));
+    map.put(QueryHelper.ORDER_DIRECTION, List.of("desc"));
     assertThatThrownBy(() -> applyAndRemoveSortingParams(map, mock(MockBiConsumer.class)))
         .isInstanceOf(InvalidArgumentException.class);
   }
@@ -144,8 +142,8 @@ class QueryHelperTest {
   @Test
   void should_ThrowError_When_SortByAndOrderByCountDoesNotMatch() {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Arrays.asList("1", "2"));
-    map.put(QueryHelper.ORDER_DIRECTION, Collections.singletonList("desc"));
+    map.put(QueryHelper.SORT_BY, List.of("1", "2"));
+    map.put(QueryHelper.ORDER_DIRECTION, List.of("desc"));
     assertThatThrownBy(() -> applyAndRemoveSortingParams(map, mock(MockBiConsumer.class)))
         .isInstanceOf(InvalidArgumentException.class);
   }
@@ -153,7 +151,7 @@ class QueryHelperTest {
   @Test
   void should_ThrowError_When_ConsumerRaisesException() throws Exception {
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-    map.put(QueryHelper.SORT_BY, Collections.singletonList("1"));
+    map.put(QueryHelper.SORT_BY, List.of("1"));
     MockBiConsumer consumer = mock(MockBiConsumer.class);
     doThrow(new InvalidArgumentException("")).when(consumer).accept(any(), any());
     assertThatThrownBy(() -> applyAndRemoveSortingParams(map, consumer))

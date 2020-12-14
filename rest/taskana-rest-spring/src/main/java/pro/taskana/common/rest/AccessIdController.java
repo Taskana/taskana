@@ -18,11 +18,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
-/**
- * Controller for access id validation.
- *
- * @author bbr
- */
+/** Controller for access id validation. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class AccessIdController {
@@ -38,7 +34,7 @@ public class AccessIdController {
     this.taskanaEngine = taskanaEngine;
   }
 
-  @GetMapping(path = Mapping.URL_ACCESSID)
+  @GetMapping(path = RestEndpoints.URL_ACCESS_ID)
   public ResponseEntity<List<AccessIdRepresentationModel>> validateAccessIds(
       @RequestParam("search-for") String searchFor)
       throws InvalidArgumentException, NotAuthorizedException {
@@ -64,7 +60,7 @@ public class AccessIdController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_ACCESSID_GROUPS)
+  @GetMapping(path = RestEndpoints.URL_ACCESS_ID_GROUPS)
   public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
       @RequestParam("access-id") String accessId)
       throws InvalidArgumentException, NotAuthorizedException {

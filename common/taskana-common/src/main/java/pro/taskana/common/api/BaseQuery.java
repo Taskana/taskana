@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * Main query interface.
  *
- * @author EH
  * @param <T> specifies the return type of the follwing methods
  * @param <U> specifies the type of the enum used
  */
@@ -77,6 +76,9 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
 
   default String[] toUpperCopy(String... source) {
     if (source == null || source.length == 0) {
+      // we are currently aware that this is a code smell. Unfortunately the resolution of this
+      // would cause havoc in our queries, since we do not have a concept
+      // for a user input validation yet. As soon as that is done we can resolve this code smell.
       return null;
     } else {
       String[] target = new String[source.length];
@@ -87,11 +89,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
     }
   }
 
-  /**
-   * Determines the sort direction.
-   *
-   * @author bbr
-   */
+  /** Determines the sort direction. */
   enum SortDirection {
     ASCENDING("ASC"),
     DESCENDING("DESC");

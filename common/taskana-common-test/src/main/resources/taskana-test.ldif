@@ -119,6 +119,19 @@ ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Elena Eifrig
 userPassword: user-1-2
 
+dn: uid=user-1-3,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Elena
+description: desc
+uid: user-1-3
+sn: Faul
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Elena Faul
+userPassword: user-1-3
+
 dn: uid=Max,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson

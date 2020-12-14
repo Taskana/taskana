@@ -85,7 +85,8 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference1 = new ObjectReference();
     objectReference1.setValue("11223344");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery()
+        TASK_SERVICE
+            .createTaskQuery()
             .primaryObjectReferenceIn(objectReference, objectReference1)
             .list();
     assertThat(results).hasSize(56);
@@ -101,9 +102,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     objectReference.setType("VNR");
     objectReference.setValue("67890123");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery()
-            .primaryObjectReferenceIn(objectReference)
-            .list();
+        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(1);
   }
 

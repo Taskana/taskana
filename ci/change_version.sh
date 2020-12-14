@@ -21,7 +21,7 @@ set -e #fail fast
 #H       if this is a tagged build then TRAVIS_TAG contains the version number.
 #H       pattern: v[DIGIT].[DIGIT].[DIGIT]
 # Arguments:
-#   $1: exitcode
+#   $1: exit code
 function helpAndExit() {
   cat "$0" | grep "^#H" | cut -c4-
   exit "$1"
@@ -45,13 +45,15 @@ function increment_version() {
 # Arguments:
 #   $1: directory of pom
 #   $2: new version
+# Environment variable:
+#   REL: relative path to this file
 function change_version() {
-  mvn -q versions:set -f "$1" -DnewVersion="$2" -DartifactId=* -DgroupId=* versions:commit
+  $REL/../mvnw -q versions:set -f "$1" -DnewVersion="$2" -DartifactId=* -DgroupId=* versions:commit
 }
 
 function main() {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
-
+  REL=$(dirname "$0")
   while [[ $# -gt 0 ]]; do
     case $1 in
     -i)

@@ -12,11 +12,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
-/**
- * Acceptance test for classification queries and authorization.
- *
- * @author bbr
- */
+/** Acceptance test for classification queries and authorization. */
 @ExtendWith(JaasExtension.class)
 class ClassificationQueryAccTest extends AbstractAccTest {
 
@@ -26,7 +22,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertThat(classificationSummaryList).isNotNull();
     assertThat(classificationSummaryList).hasSize(18);
   }
 
@@ -37,7 +32,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertThat(classificationSummaryList).isNotNull();
     assertThat(classificationSummaryList).hasSize(18);
   }
 
@@ -48,7 +42,6 @@ class ClassificationQueryAccTest extends AbstractAccTest {
     List<ClassificationSummary> classificationSummaryList =
         classificationService.createClassificationQuery().domainIn("DOMAIN_A").list();
 
-    assertThat(classificationSummaryList).isNotNull();
     assertThat(classificationSummaryList).hasSize(18);
   }
 }

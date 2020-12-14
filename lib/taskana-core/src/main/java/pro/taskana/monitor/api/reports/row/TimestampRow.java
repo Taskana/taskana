@@ -71,7 +71,7 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
    */
   public static final class OrgLevel3Row extends FoldableRow<TimestampQueryItem> {
 
-    private OrgLevel3Row(String key,  int columnSize) {
+    private OrgLevel3Row(String key, int columnSize) {
       super(key, columnSize, TimestampQueryItem::getOrgLevel4);
     }
 

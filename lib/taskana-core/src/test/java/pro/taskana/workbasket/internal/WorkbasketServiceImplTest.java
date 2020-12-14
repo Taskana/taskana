@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,11 +41,7 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/**
- * Unit Test for workbasketServiceImpl.
- *
- * @author EH
- */
+/** Unit Test for workbasketServiceImpl. */
 @ExtendWith(MockitoExtension.class)
 class WorkbasketServiceImplTest {
 
@@ -74,7 +69,7 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testCreateWorkbasket_WithDistibutionTargets() throws Exception {
+  void testCreateWorkbasket_WithDistributionTargets() throws Exception {
     final int distTargetAmount = 2;
     WorkbasketImpl expectedWb = createTestWorkbasket(null, "Key-1");
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(any());
@@ -112,11 +107,11 @@ class WorkbasketServiceImplTest {
   }
 
   @Test
-  void testCreateWorkbasket_DistibutionTargetNotExisting() throws Exception {
+  void testCreateWorkbasket_DistributionTargetNotExisting() throws Exception {
     WorkbasketImpl expectedWb = createTestWorkbasket("ID-1", "Key-1");
     when(internalTaskanaEngineMock.domainExists(any())).thenReturn(true);
     String otherWorkbasketId = "4711";
-    List<String> destinations = Collections.singletonList(otherWorkbasketId);
+    List<String> destinations = List.of(otherWorkbasketId);
     workbasketServiceSpy.createWorkbasket(expectedWb);
     doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(eq(expectedWb.getId()));
 

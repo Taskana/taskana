@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -42,7 +42,7 @@ class TaskCommentControllerIntTest {
   void should_FailToReturnTaskComment_When_TaskCommentIsNotExisting() {
 
     String urlToNonExistingTaskComment =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "Non existing task comment Id");
+        restHelper.toUrl(RestEndpoints.URL_TASK_COMMENT, "Non existing task comment Id");
 
     ThrowingCallable httpCall =
         () ->
@@ -60,7 +60,8 @@ class TaskCommentControllerIntTest {
   void should_FailToReturnTaskComments_When_TaskIstNotVisible() {
 
     String urlToNotVisibleTask =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004");
 
     ThrowingCallable httpCall =
         () ->
@@ -78,7 +79,8 @@ class TaskCommentControllerIntTest {
   void should_ReturnSortedAndOrederedTaskCommentsSortedByModified_When_UsingSortAndOrderParams() {
 
     String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>>
         getTaskCommentsSortedByModifiedOrderedByDescendingResponse =
@@ -141,7 +143,8 @@ class TaskCommentControllerIntTest {
   void should_ThrowException_When_UsingInvalidSortParam() {
 
     String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
 
     ThrowingCallable httpCall =
         () ->
@@ -159,7 +162,8 @@ class TaskCommentControllerIntTest {
   void should_FailToReturnTaskComment_When_TaskIstNotVisible() {
 
     String urlToNotVisibleTask =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000012");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000012");
 
     ThrowingCallable httpCall =
         () ->
@@ -185,7 +189,7 @@ class TaskCommentControllerIntTest {
         () ->
             TEMPLATE.exchange(
                 restHelper.toUrl(
-                    Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000"),
+                    RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000"),
                 HttpMethod.POST,
                 new HttpEntity<>(
                     taskCommentRepresentationModelToCreate, restHelper.getHeadersUser_b_1()),
@@ -206,7 +210,7 @@ class TaskCommentControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_TASK_COMMENTS, "DefinatelyNotExistingId"),
+                restHelper.toUrl(RestEndpoints.URL_TASK_COMMENTS, "DefinatelyNotExistingId"),
                 HttpMethod.POST,
                 new HttpEntity<>(
                     taskCommentRepresentationModelToCreate, restHelper.getHeadersAdmin()),
@@ -219,7 +223,8 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToUpdateTaskComment_When_TaskCommentWasModifiedConcurrently() {
     String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
         TEMPLATE.exchange(
@@ -250,7 +255,8 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToUpdateTaskComment_When_UserHasNoAuthorization() {
     String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
         TEMPLATE.exchange(
@@ -282,7 +288,8 @@ class TaskCommentControllerIntTest {
   void should_FailToUpdateTaskComment_When_TaskCommentIdInResourceDoesNotMatchPathVariable() {
 
     String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
 
     ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
         TEMPLATE.exchange(
@@ -320,7 +327,7 @@ class TaskCommentControllerIntTest {
         getTaskCommentsBeforeDeleteionResponse =
             TEMPLATE.exchange(
                 restHelper.toUrl(
-                    Mapping.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001"),
+                    RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001"),
                 HttpMethod.GET,
                 new HttpEntity<String>(restHelper.getHeadersUser_1_2()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
@@ -328,7 +335,8 @@ class TaskCommentControllerIntTest {
     assertThat(getTaskCommentsBeforeDeleteionResponse.getBody().getContent()).hasSize(2);
 
     String url =
-        restHelper.toUrl(Mapping.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000004");
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000004");
 
     ThrowingCallable httpCall =
         () ->
@@ -347,7 +355,7 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToDeleteTaskComment_When_TaskCommentIsNotExisting() {
 
-    String url = restHelper.toUrl(Mapping.URL_TASK_COMMENT, "NotExistingTaskComment");
+    String url = restHelper.toUrl(RestEndpoints.URL_TASK_COMMENT, "NotExistingTaskComment");
 
     ThrowingCallable httpCall =
         () ->

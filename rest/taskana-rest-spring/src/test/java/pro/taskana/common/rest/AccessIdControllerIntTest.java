@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
@@ -22,8 +20,10 @@ import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
 @TaskanaSpringBootTest
-@ActiveProfiles({"test"})
 class AccessIdControllerIntTest {
+
+  private static final ParameterizedTypeReference<List<AccessIdRepresentationModel>>
+      ACCESS_ID_LIST_TYPE = new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {};
 
   private final RestHelper restHelper;
 
@@ -34,13 +34,13 @@ class AccessIdControllerIntTest {
 
   @Test
   void testQueryGroupsByDn() {
-    ResponseEntity<AccessIdListResource> response =
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID)
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
                 + "?search-for=cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody())
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
@@ -50,13 +50,13 @@ class AccessIdControllerIntTest {
 
   @Test
   void testQueryUserByDn() {
-    ResponseEntity<AccessIdListResource> response =
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID)
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
                 + "?search-for=uid=teamlead-1,cn=users,OU=Test,O=TASKANA",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody())
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
@@ -66,12 +66,12 @@ class AccessIdControllerIntTest {
 
   @Test
   void testQueryGroupsByCn() {
-    ResponseEntity<AccessIdListResource> response =
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc-use",
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=ksc-use",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody())
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
@@ -81,12 +81,12 @@ class AccessIdControllerIntTest {
 
   @Test
   void should_ReturnEmptyResults_ifInvalidCharacterIsUsedInCondition() {
-    ResponseEntity<AccessIdListResource> response =
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=ksc-teamleads,cn=groups",
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=ksc-teamleads,cn=groups",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody()).isNotNull().isEmpty();
   }
 
@@ -94,10 +94,10 @@ class AccessIdControllerIntTest {
   void testGetMatches() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=rig",
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=rig",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
         .isNotNull()
@@ -109,10 +109,10 @@ class AccessIdControllerIntTest {
   void should_ReturnAccessIdWithUmlauten_ifBased64EncodedUserIsLookedUp() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=läf",
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=läf",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
         .isNotNull()
@@ -125,7 +125,7 @@ class AccessIdControllerIntTest {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+                restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=al",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
                 ParameterizedTypeReference.forType(List.class));
@@ -140,10 +140,10 @@ class AccessIdControllerIntTest {
   void should_ReturnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
         .isNotNull()
@@ -162,10 +162,11 @@ class AccessIdControllerIntTest {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2,cn=users",
+                restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS)
+                    + "?access-id=teamlead-2,cn=users",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(AccessIdListResource.class));
+                ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
@@ -178,12 +179,12 @@ class AccessIdControllerIntTest {
   void should_ReturnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfGroupIsGiven() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS)
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS)
                 + "?access-id=cn=Organisationseinheit KSC 1,"
                 + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(AccessIdListResource.class));
+            ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
         .isNotNull()
@@ -197,10 +198,10 @@ class AccessIdControllerIntTest {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_ACCESSID_GROUPS) + "?access-id=teamlead-2",
+                restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2",
                 HttpMethod.GET,
                 new HttpEntity<>(restHelper.getHeadersUser_1_1()),
-                ParameterizedTypeReference.forType(AccessIdListResource.class));
+                ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
@@ -213,18 +214,14 @@ class AccessIdControllerIntTest {
     ThrowingCallable call =
         () ->
             TEMPLATE.exchange(
-                restHelper.toUrl(Mapping.URL_ACCESSID) + "?search-for=al",
+                restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=al",
                 HttpMethod.GET,
                 new HttpEntity<>(restHelper.getHeadersUser_1_1()),
-                ParameterizedTypeReference.forType(AccessIdListResource.class));
+                ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
-  }
-
-  static class AccessIdListResource extends ArrayList<AccessIdRepresentationModel> {
-    private static final long serialVersionUID = 1L;
   }
 }

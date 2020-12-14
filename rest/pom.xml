@@ -1,25 +1,26 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>taskana-rest-parent</artifactId>
-	<packaging>pom</packaging>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-rest-parent</artifactId>
+  <packaging>pom</packaging>
 
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>This pom is parent to all taskana rest modules and serves the common build.</description>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>This pom is parent to all taskana rest modules and serves the common build.
+  </description>
 
-	<parent>
-		<groupId>pro.taskana</groupId>
-		<artifactId>taskana-parent</artifactId>
-		<version>4.2.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-parent</artifactId>
+    <version>4.2.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-	<modules>
-		<module>taskana-rest-spring</module>
-		<module>../web</module>
-		<module>taskana-rest-spring-example-common</module>
-		<module>taskana-rest-spring-example-boot</module>
-		<module>taskana-rest-spring-example-wildfly</module>
-	</modules>
+  <modules>
+    <module>taskana-rest-spring</module>
+    <module>../web</module>
+    <module>taskana-rest-spring-example-common</module>
+    <module>taskana-rest-spring-example-boot</module>
+  </modules>
 
 </project>

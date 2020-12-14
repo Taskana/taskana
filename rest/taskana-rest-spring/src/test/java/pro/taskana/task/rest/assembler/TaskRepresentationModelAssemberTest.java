@@ -3,7 +3,6 @@ package pro.taskana.task.rest.assembler;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
@@ -90,11 +89,9 @@ class TaskRepresentationModelAssemberTest {
     repModel.setPrimaryObjRef(primaryObjRef);
     repModel.setRead(true);
     repModel.setTransferred(true);
-    repModel.setCustomAttributes(
-        Collections.singletonList(TaskRepresentationModel.CustomAttribute.of("abc", "def")));
-    repModel.setCallbackInfo(
-        Collections.singletonList(TaskRepresentationModel.CustomAttribute.of("ghi", "jkl")));
-    repModel.setAttachments(Collections.singletonList(attachment));
+    repModel.setCustomAttributes(List.of(TaskRepresentationModel.CustomAttribute.of("abc", "def")));
+    repModel.setCallbackInfo(List.of(TaskRepresentationModel.CustomAttribute.of("ghi", "jkl")));
+    repModel.setAttachments(List.of(attachment));
     repModel.setCustom1("custom1");
     repModel.setCustom2("custom2");
     repModel.setCustom3("custom3");
@@ -152,9 +149,9 @@ class TaskRepresentationModelAssemberTest {
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
-    task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
-    task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
-    task.setAttachments(Collections.singletonList(attachment));
+    task.setCustomAttributeMap(Map.of("abc", "def"));
+    task.setCallbackInfo(Map.of("ghi", "jkl"));
+    task.setAttachments(List.of(attachment));
     task.setCustomAttribute(TaskCustomField.CUSTOM_1, "custom1");
     task.setCustomAttribute(TaskCustomField.CUSTOM_2, "custom2");
     task.setCustomAttribute(TaskCustomField.CUSTOM_3, "custom3");
@@ -213,9 +210,9 @@ class TaskRepresentationModelAssemberTest {
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
-    task.setCustomAttributeMap(Collections.singletonMap("abc", "def"));
-    task.setCallbackInfo(Collections.singletonMap("ghi", "jkl"));
-    task.setAttachments(Collections.singletonList(attachment));
+    task.setCustomAttributeMap(Map.of("abc", "def"));
+    task.setCallbackInfo(Map.of("ghi", "jkl"));
+    task.setAttachments(List.of(attachment));
     task.setCustom1("custom1");
     task.setCustom2("custom2");
     task.setCustom3("custom3");
@@ -270,6 +267,6 @@ class TaskRepresentationModelAssemberTest {
   private void testLinks(TaskRepresentationModel repModel) {
     assertThat(repModel.getLinks()).hasSize(1);
     assertThat(repModel.getRequiredLink("self").getHref())
-        .isEqualTo(Mapping.URL_TASKS_ID.replaceAll("\\{.*}", repModel.getTaskId()));
+        .isEqualTo(RestEndpoints.URL_TASKS_ID.replaceAll("\\{.*}", repModel.getTaskId()));
   }
 }

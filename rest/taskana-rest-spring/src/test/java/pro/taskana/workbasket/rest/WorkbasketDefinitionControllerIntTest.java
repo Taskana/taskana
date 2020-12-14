@@ -10,11 +10,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +33,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import pro.taskana.common.rest.Mapping;
+import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.common.test.rest.RestHelper;
@@ -139,11 +138,11 @@ class WorkbasketDefinitionControllerIntTest {
     w.setDistributionTargets(new HashSet<>());
     String letMeBeYourDistributionTarget = w.getWorkbasket().getWorkbasketId();
     WorkbasketDefinitionRepresentationModel w2 = iterator.next();
-    w2.setDistributionTargets(Collections.singleton(letMeBeYourDistributionTarget));
+    w2.setDistributionTargets(Set.of(letMeBeYourDistributionTarget));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w, w2);
 
     this.changeWorkbasketIdOrKey(w, "fancyNewId", null);
-    w2.setDistributionTargets(Collections.singleton("fancyNewId"));
+    w2.setDistributionTargets(Set.of("fancyNewId"));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.NO_CONTENT, w, w2);
 
     this.changeWorkbasketIdOrKey(w, null, "nowImANewWB");
@@ -176,7 +175,7 @@ class WorkbasketDefinitionControllerIntTest {
 
     assertThat(wbList).isNotNull();
     WorkbasketDefinitionRepresentationModel w = wbList.getContent().iterator().next();
-    w.setDistributionTargets(Collections.singleton("invalidWorkbasketId"));
+    w.setDistributionTargets(Set.of("invalidWorkbasketId"));
     ThrowingCallable httpCall =
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
     assertThatThrownBy(httpCall)
@@ -224,7 +223,7 @@ class WorkbasketDefinitionControllerIntTest {
     // breaks the logic but not the script- should we really allow this case?
     WorkbasketDefinitionRepresentationModel theDestroyer = iterator.next();
     theDestroyer.setDistributionTargets(
-        Collections.singleton(differentLogicalId.getWorkbasket().getWorkbasketId()));
+        Set.of(differentLogicalId.getWorkbasket().getWorkbasketId()));
 
     expectStatusWhenExecutingImportRequestOfWorkbaskets(
         HttpStatus.NO_CONTENT, w, differentLogicalId, theDestroyer);
@@ -260,7 +259,7 @@ class WorkbasketDefinitionControllerIntTest {
   private ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
       executeExportRequestForDomain(String domain) {
     return TEMPLATE.exchange(
-        restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
+        restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
         restHelper.defaultRequest(),
         new ParameterizedTypeReference<
@@ -271,8 +270,7 @@ class WorkbasketDefinitionControllerIntTest {
       HttpStatus expectedStatus, WorkbasketDefinitionRepresentationModel... workbaskets)
       throws Exception {
     TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pagedModel =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS, Arrays.asList(workbaskets));
+        new TaskanaPagedModel<>(TaskanaPagedModelKeys.WORKBASKET_DEFINITIONS, List.of(workbaskets));
     expectStatusWhenExecutingImportRequestOfWorkbaskets(expectedStatus, pagedModel);
   }
 
@@ -290,7 +288,7 @@ class WorkbasketDefinitionControllerIntTest {
     body.add("file", new FileSystemResource(tmpFile));
 
     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-    String serverUrl = restHelper.toUrl(Mapping.URL_WORKBASKET_DEFINITIONS);
+    String serverUrl = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS);
 
     ResponseEntity<Void> responseImport =
         TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);

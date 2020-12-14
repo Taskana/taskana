@@ -206,7 +206,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * Add the owner for pattern matching to your query. It will be compared in SQL with the LIKE
    * operator. You may use a wildcard like % to specify the pattern.
    *
-   * <p>If you specify multiple arguments they are combined with the OR keyword.</p>
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param owners the owners of the searched tasks
    * @return the query
@@ -215,10 +215,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
 
   /**
    * Add the {@link ObjectReference} to exact match to your query. Each individual value has to
-   * match. Fields with the value 'null' will be ignored.
-   * The id of each ObjectReference will be ignored
+   * match. Fields with the value 'null' will be ignored. The id of each ObjectReference will be
+   * ignored
    *
-   * <p>If you specify multiple arguments they are combined with the OR keyword.</p>
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param objectReferences the combined values which are searched together.
    * @return the query
@@ -847,6 +847,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @return the query
    */
   TaskQuery orderByWorkbasketId(SortDirection sortDirection);
+
+  /**
+   * This method sorts the query result according to the workbasket name of the tasks.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByWorkbasketName(SortDirection sortDirection);
 
   /**
    * This method sorts the query result according to the attachment classification key. (Should only

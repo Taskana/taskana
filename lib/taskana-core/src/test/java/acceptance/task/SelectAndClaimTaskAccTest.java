@@ -46,8 +46,8 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
       threads[i] = new Thread(test);
       threads[i].start();
     }
-    for (int i = 0; i < threads.length; i++) {
-      threads[i].join();
+    for (Thread thread : threads) {
+      thread.join();
     }
 
     assertThat(selectedAndClaimedTasks)
@@ -67,12 +67,8 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   void should_ThrowException_When_TryingToSelectAndClaimNonExistingTask() {
 
-    TaskQuery query = taskanaEngine.getTaskService().createTaskQuery();
-    query.idIn("notexisting");
-    ThrowingCallable call =
-        () -> {
-          taskanaEngine.getTaskService().selectAndClaim(query);
-        };
+    TaskQuery query = taskanaEngine.getTaskService().createTaskQuery().idIn("notexisting");
+    ThrowingCallable call = () -> taskanaEngine.getTaskService().selectAndClaim(query);
     assertThatThrownBy(call)
         .isInstanceOf(SystemException.class)
         .hasMessageContaining(
@@ -81,27 +77,23 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
   }
 
   private Runnable getRunnableTest(List<Task> selectedAndClaimedTasks, List<String> accessIds) {
+    return () -> {
+      Subject subject = new Subject();
+      subject.getPrincipals().add(new UserPrincipal(accessIds.remove(0)));
 
-    Runnable test =
-        () -> {
-          Subject subject = new Subject();
-          subject.getPrincipals().add(new UserPrincipal(accessIds.remove(0)));
-
-          Consumer<TaskService> consumer =
-              CheckedConsumer.wrap(
-                  taskService -> {
-                    Task task = taskService.selectAndClaim(getTaskQuery());
-                    selectedAndClaimedTasks.add(task);
-                  });
-          PrivilegedAction<Void> action =
-              () -> {
-                consumer.accept(taskanaEngine.getTaskService());
-                return null;
-              };
-          Subject.doAs(subject, action);
-        };
-
-    return test;
+      Consumer<TaskService> consumer =
+          CheckedConsumer.wrap(
+              taskService -> {
+                Task task = taskService.selectAndClaim(getTaskQuery());
+                selectedAndClaimedTasks.add(task);
+              });
+      PrivilegedAction<Void> action =
+          () -> {
+            consumer.accept(taskanaEngine.getTaskService());
+            return null;
+          };
+      Subject.doAs(subject, action);
+    };
   }
 
   private TaskQuery getTaskQuery() {

@@ -28,12 +28,11 @@ class TaskanaEngineControllerIntTest {
     this.restHelper = restHelper;
   }
 
-
   @Test
   void testDomains() {
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_DOMAIN),
+            restHelper.toUrl(RestEndpoints.URL_DOMAIN),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
@@ -44,7 +43,7 @@ class TaskanaEngineControllerIntTest {
   void testClassificationTypes() {
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATION_TYPES),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
@@ -55,7 +54,7 @@ class TaskanaEngineControllerIntTest {
   void testClassificationCategories() {
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CLASSIFICATION_CATEGORIES),
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(List.class));
@@ -67,7 +66,7 @@ class TaskanaEngineControllerIntTest {
   void testGetCurrentUserInfo() {
     ResponseEntity<TaskanaUserInfoRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(Mapping.URL_CURRENT_USER),
+            restHelper.toUrl(RestEndpoints.URL_CURRENT_USER),
             HttpMethod.GET,
             restHelper.defaultRequest(),
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));

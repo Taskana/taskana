@@ -3,9 +3,7 @@ package pro.taskana.task.internal;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.TaskCustomField;
 
-/**
- * Determines which custom properties are to be updated.
- */
+/** Determines which custom properties are to be updated. */
 public class TaskCustomPropertySelector {
 
   boolean custom1 = false;

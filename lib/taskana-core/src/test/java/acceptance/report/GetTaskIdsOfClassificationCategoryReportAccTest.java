@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +46,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
         () ->
             MONITOR_SERVICE
                 .createClassificationCategoryReportBuilder()
-                .listTaskIdsForSelectedItems(Collections.emptyList(), TaskTimestamp.DUE);
+                .listTaskIdsForSelectedItems(List.of(), TaskTimestamp.DUE);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -62,7 +61,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
               () ->
                   MONITOR_SERVICE
                       .createClassificationCategoryReportBuilder()
-                      .listTaskIdsForSelectedItems(Collections.singletonList(EXTERN), timestamp);
+                      .listTaskIdsForSelectedItems(List.of(EXTERN), timestamp);
           assertThatCode(callable).doesNotThrowAnyException();
         };
 
@@ -72,11 +71,9 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void should_SelectCompletedItems_When_CompletedTimeStampIsRequested() throws Exception {
-    final List<TimeIntervalColumnHeader> columnHeaders =
-        Collections.singletonList(new TimeIntervalColumnHeader(0));
+    final List<TimeIntervalColumnHeader> columnHeaders = List.of(new TimeIntervalColumnHeader(0));
 
-    final List<SelectedItem> selectedItems =
-        Collections.singletonList(new SelectedItem("EXTERN", null, 0, 0));
+    final List<SelectedItem> selectedItems = List.of(new SelectedItem("EXTERN", null, 0, 0));
 
     List<String> ids =
         MONITOR_SERVICE
@@ -95,7 +92,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   void testGetTaskIdsOfCategoryReport() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -122,11 +119,10 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithWorkbasketFilter() throws Exception {
-    final List<String> workbasketIds =
-        Collections.singletonList("WBI:000000000000000000000000000000000001");
+    final List<String> workbasketIds = List.of("WBI:000000000000000000000000000000000001");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -147,10 +143,10 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithStateFilter() throws Exception {
-    final List<TaskState> states = Collections.singletonList(TaskState.READY);
+    final List<TaskState> states = List.of(TaskState.READY);
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -178,10 +174,10 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithCategoryFilter() throws Exception {
-    final List<String> categories = Arrays.asList("AUTOMATIC", "MANUAL");
+    final List<String> categories = List.of("AUTOMATIC", "MANUAL");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -201,10 +197,10 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   @WithAccessId(user = "monitor")
   @Test
   void testGetTaskIdsOfCategoryReportWithDomainFilter() throws Exception {
-    final List<String> domains = Collections.singletonList("DOMAIN_A");
+    final List<String> domains = List.of("DOMAIN_A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -229,7 +225,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
     customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems = Arrays.asList(EXTERN, AUTOMATIC, MANUAL);
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
 
     List<String> ids =
         MONITOR_SERVICE
@@ -253,8 +249,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
   void testThrowsExceptionIfSubKeysAreUsed() {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
-    final List<SelectedItem> selectedItems =
-        Collections.singletonList(new SelectedItem("EXTERN", "INVALID", -5, -2));
+    final List<SelectedItem> selectedItems = List.of(new SelectedItem("EXTERN", "INVALID", -5, -2));
 
     ThrowingCallable call =
         () ->

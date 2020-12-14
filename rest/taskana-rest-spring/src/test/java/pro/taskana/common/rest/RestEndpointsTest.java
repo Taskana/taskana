@@ -10,13 +10,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import pro.taskana.task.rest.TaskController;
 
-/** Test Mapping and Linkbuilder. */
-class MappingTest {
+/** Test RestEndpoints and Linkbuilder. */
+class RestEndpointsTest {
 
   @Test
   void testMapping() throws Exception {
 
-    String mapUrl = Mapping.URL_TASKS;
+    String mapUrl = RestEndpoints.URL_TASKS;
     String buildUrl =
         linkTo(methodOn(TaskController.class).getTasks(new LinkedMultiValueMap<>())).toString();
     assertThat(buildUrl).isEqualTo(mapUrl);
@@ -28,7 +28,7 @@ class MappingTest {
     String id = "25";
 
     String mapUrl =
-        UriComponentsBuilder.fromPath(Mapping.URL_TASKS_ID).buildAndExpand(id).toUriString();
+        UriComponentsBuilder.fromPath(RestEndpoints.URL_TASKS_ID).buildAndExpand(id).toUriString();
     String buildUrl = linkTo(methodOn(TaskController.class).getTask(id)).toString();
     assertThat(buildUrl).isEqualTo(mapUrl);
   }

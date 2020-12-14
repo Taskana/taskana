@@ -19,7 +19,6 @@ import static pro.taskana.task.api.TaskCustomField.CUSTOM_8;
 import static pro.taskana.task.api.TaskCustomField.CUSTOM_9;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +76,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     final WorkbasketSummary workbasket =
         this.workbasketService.newWorkbasket("key", "domain").asSummary();
     TaskSummaryImpl task = (TaskSummaryImpl) this.taskService.newTask().asSummary();
-    task.setAttachmentSummaries(Collections.singletonList(attachment));
+    task.setAttachmentSummaries(List.of(attachment));
     task.setClassificationSummary(classification);
     task.setWorkbasketSummary(workbasket);
     task.setId("taskId");
@@ -139,7 +138,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     attachment.setClassificationSummary(classificationSummary);
     attachment.setAttachmentId("attachmentId");
     TaskSummaryRepresentationModel repModel = new TaskRepresentationModel();
-    repModel.setAttachmentSummaries(Collections.singletonList(attachment));
+    repModel.setAttachmentSummaries(List.of(attachment));
     repModel.setClassificationSummary(classificationSummary);
     repModel.setWorkbasketSummary(workbasketResource);
     repModel.setPrimaryObjRef(primaryObjRef);

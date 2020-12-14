@@ -4,11 +4,7 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.AttachmentImpl;
 
-/**
- * This class contains helper methods for Junit Tests.
- *
- * @author bbr
- */
+/** This class contains helper methods for Junit Tests. */
 public final class JunitHelper {
 
   private JunitHelper() {}

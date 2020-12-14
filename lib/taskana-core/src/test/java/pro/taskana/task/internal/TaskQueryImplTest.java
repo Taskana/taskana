@@ -22,11 +22,7 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 
-/**
- * Test for TaskQueryImpl.
- *
- * @author EH
- */
+/** Test for TaskQueryImpl. */
 @ExtendWith(MockitoExtension.class)
 class TaskQueryImplTest {
 

@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -89,7 +87,7 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
         .isInstanceOf(NotAuthorizedException.class);
     BulkOperationResults<String, TaskanaException> results =
-        taskService.setOwnerOfTasks(anyUserName, Collections.singletonList(taskReadyId));
+        taskService.setOwnerOfTasks(anyUserName, List.of(taskReadyId));
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorForId(taskReadyId)).isInstanceOf(NotAuthorizedException.class);
   }
@@ -99,7 +97,7 @@ class SetOwnerAccTest extends AbstractAccTest {
   void testSetOwnerOfTasksWithDuplicatesSucceeds() {
 
     List<String> taskIds =
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000058",
             "TKI:000000000000000000000000000000000059",
             "TKI:000000000000000000000000000000000058",
@@ -113,7 +111,7 @@ class SetOwnerAccTest extends AbstractAccTest {
   @Test
   void testSetOwnerOfTasksWithDuplicatesAndNotExistingSucceeds() {
     List<String> taskIds =
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000058",
             "TKI:000000000000000000000000000047110059",
             "TKI:000000000000000000000000000000000059",
@@ -132,7 +130,7 @@ class SetOwnerAccTest extends AbstractAccTest {
   void testSetOwnerOfTasksWithNoQualifyingTasks() {
 
     List<String> taskIds =
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000008",
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000008",

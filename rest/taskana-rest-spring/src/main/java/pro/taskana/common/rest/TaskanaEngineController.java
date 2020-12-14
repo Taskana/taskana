@@ -36,7 +36,7 @@ public class TaskanaEngineController {
     this.taskanaEngine = taskanaEngine;
   }
 
-  @GetMapping(path = Mapping.URL_DOMAIN)
+  @GetMapping(path = RestEndpoints.URL_DOMAIN)
   public ResponseEntity<List<String>> getDomains() {
     ResponseEntity<List<String>> response =
         ResponseEntity.ok(taskanaEngineConfiguration.getDomains());
@@ -46,7 +46,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATION_CATEGORIES)
+  @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES)
   public ResponseEntity<List<String>> getClassificationCategories(String type) {
     LOGGER.debug("Entry to getClassificationCategories(type = {})", type);
     ResponseEntity<List<String>> response;
@@ -65,7 +65,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATION_TYPES)
+  @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_TYPES)
   public ResponseEntity<List<String>> getClassificationTypes() {
     ResponseEntity<List<String>> response =
         ResponseEntity.ok(taskanaEngineConfiguration.getClassificationTypes());
@@ -75,7 +75,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
+  @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
   public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
     ResponseEntity<Map<String, List<String>>> response =
         ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap());
@@ -85,7 +85,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_CURRENT_USER)
+  @GetMapping(path = RestEndpoints.URL_CURRENT_USER)
   public ResponseEntity<TaskanaUserInfoRepresentationModel> getCurrentUserInfo() {
     LOGGER.debug("Entry to getCurrentUserInfo()");
     TaskanaUserInfoRepresentationModel resource = new TaskanaUserInfoRepresentationModel();
@@ -104,7 +104,7 @@ public class TaskanaEngineController {
     return response;
   }
 
-  @GetMapping(path = Mapping.URL_HISTORY_ENABLED)
+  @GetMapping(path = RestEndpoints.URL_HISTORY_ENABLED)
   public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
     ResponseEntity<Boolean> response = ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
     LOGGER.debug("Exit from getIsHistoryProviderEnabled(), returning {}", response);
@@ -116,7 +116,7 @@ public class TaskanaEngineController {
    *
    * @return The current version.
    */
-  @GetMapping(path = Mapping.URL_VERSION)
+  @GetMapping(path = RestEndpoints.URL_VERSION)
   public ResponseEntity<VersionRepresentationModel> currentVersion() {
     LOGGER.debug("Entry to currentVersion()");
     VersionRepresentationModel resource = new VersionRepresentationModel();

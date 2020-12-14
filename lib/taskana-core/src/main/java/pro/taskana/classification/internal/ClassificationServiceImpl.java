@@ -421,7 +421,8 @@ public class ClassificationServiceImpl implements ClassificationService {
    * Fill missing values and validate classification before saving the classification.
    *
    * @param classification the classification which will be verified.
-   * @throws InvalidArgumentException if the given classification has no key.
+   * @throws InvalidArgumentException if the given classification has no key, the service level is
+   *     null, the type is not valid or the category for the provided type is invalid.
    */
   private void initDefaultClassificationValues(ClassificationImpl classification)
       throws InvalidArgumentException {
@@ -442,7 +443,9 @@ public class ClassificationServiceImpl implements ClassificationService {
       classification.setIsValidInDomain(true);
     }
 
-    if (classification.getServiceLevel() != null && !"".equals(classification.getServiceLevel())) {
+    if (classification.getServiceLevel() == null) {
+      throw new InvalidArgumentException("Classification Service Level must not be null!");
+    } else if (!classification.getServiceLevel().isEmpty()) {
       validateServiceLevel(classification.getServiceLevel());
     }
 

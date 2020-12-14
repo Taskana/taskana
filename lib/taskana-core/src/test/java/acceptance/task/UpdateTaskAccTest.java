@@ -15,7 +15,6 @@ import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +261,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTaskCustomAttributes_When_UpdateTasksIsCalled() throws Exception {
     List<String> taskIds =
-        Arrays.asList(
+        List.of(
             "TKI:000000000000000000000000000000000008",
             "TKI:000000000000000000000000000000000009",
             "TKI:000000000000000000000000000000000010");
@@ -308,8 +307,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
-    assertThat(createdTask.isRead()).isEqualTo(false);
-    assertThat(createdTask.isTransferred()).isEqualTo(false);
+    assertThat(createdTask.isRead()).isFalse();
+    assertThat(createdTask.isTransferred()).isFalse();
 
     Task retrievedTask = taskService.getTask(createdTask.getId());
 

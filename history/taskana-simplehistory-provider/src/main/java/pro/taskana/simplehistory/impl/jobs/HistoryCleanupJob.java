@@ -177,7 +177,9 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
                       .getValue()
                       .get(TaskHistoryEventType.CREATED.getName())
                       .size()
-                  == idsOfTasksInSameParentBusinessProcessGroupedByType.getValue().entrySet()
+                  == idsOfTasksInSameParentBusinessProcessGroupedByType
+                      .getValue()
+                      .entrySet()
                       .stream()
                       .filter(
                           entry -> !entry.getKey().equals(TaskHistoryEventType.CREATED.getName()))
