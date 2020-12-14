@@ -95,6 +95,7 @@ public class LdapClient {
 
     orFilter.or(new WhitespaceWildcardsFilter(getUserFirstnameAttribute(), name));
     orFilter.or(new WhitespaceWildcardsFilter(getUserLastnameAttribute(), name));
+    orFilter.or(new WhitespaceWildcardsFilter(getUserFullnameAttribute(), name));
     orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
     andFilter.and(orFilter);
 
@@ -381,6 +382,10 @@ public class LdapClient {
       dn = dn + "," + getBaseDn();
     }
     return dn;
+  }
+
+  private String getUserFullnameAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_FULLNAME_ATTRIBUTE.getValueFromEnv(env);
   }
 
   /** Context Mapper for user entries. */

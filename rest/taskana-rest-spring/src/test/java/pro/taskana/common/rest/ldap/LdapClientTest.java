@@ -136,7 +136,7 @@ class LdapClientTest {
               {"taskana.ldap.userIdAttribute", "uid"},
               {"taskana.ldap.userLastnameAttribute", "sn"},
               {"taskana.ldap.userFirstnameAttribute", "givenName"},
-              {"taskana.ldap.userFirstnameAttribute", "givenName"},
+              {"taskana.ldap.userFullnameAttribute", "cn"},
               {"taskana.ldap.userSearchFilterValue", "person"}
             })
         .forEach(
