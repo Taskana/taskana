@@ -7,8 +7,8 @@ export class ErrorModel {
   public readonly message: string;
 
   constructor(key: NOTIFICATION_TYPES, passedError?: HttpErrorResponse, addition?: Map<String, String>) {
-    this.title = notifications.get(key).name;
-    let messageTemp = notifications.get(key).text;
+    this.title = notifications.get(key).left;
+    let messageTemp = notifications.get(key).right;
     this.errObj = passedError;
     if (addition) {
       addition.forEach((value: string, replacementKey: string) => {

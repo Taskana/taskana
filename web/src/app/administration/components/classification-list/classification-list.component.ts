@@ -6,7 +6,6 @@ import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@
 import { ImportExportService } from 'app/administration/services/import-export.service';
 
 import { TaskanaType } from 'app/shared/models/taskana-type';
-import { Pair } from 'app/shared/models/pair';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { Location } from '@angular/common';
@@ -19,6 +18,7 @@ import {
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationSummary } from '../../../shared/models/classification-summary';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
+import { Pair } from '../../../shared/models/pair';
 
 @Component({
   selector: 'taskana-administration-classification-list',
@@ -94,15 +94,15 @@ export class ClassificationListComponent implements OnInit, OnDestroy {
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications/new-classification'));
   }
 
-  getCategoryIcon(category: string): Observable<Pair> {
+  getCategoryIcon(category: string): Observable<Pair<string, string>> {
     return this.categoryIcons$.pipe(
       map((iconMap) => {
         if (category === '') {
-          return new Pair(iconMap['all'], 'All');
+          return { left: iconMap['all'], right: 'All' };
         }
         return iconMap[category]
-          ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration');
+          ? { left: iconMap[category], right: category }
+          : { left: iconMap.missing, right: 'Category does not match with the configuration' };
       })
     );
   }

@@ -1,10 +1,11 @@
 import { Workbasket } from '../../models/workbasket';
-import { TaskanaQueryParameters } from '../../util/query-parameters';
-import { Direction } from '../../models/sorting';
+import { Sorting, WorkbasketQuerySortParameter } from '../../models/sorting';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 import { ButtonAction } from '../../../administration/models/button-action';
+import { QueryPagingParameter } from '../../models/query-paging-parameter';
+import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-parameters';
 
 // Workbasket List
 export class GetWorkbasketsSummary {
@@ -12,18 +13,9 @@ export class GetWorkbasketsSummary {
 
   constructor(
     public forceRequest: boolean = false,
-    public sortBy: string = TaskanaQueryParameters.parameters.KEY,
-    public order: string = Direction.ASC,
-    public name?: string,
-    public nameLike?: string,
-    public descLike?: string,
-    public owner?: string,
-    public ownerLike?: string,
-    public type?: string,
-    public key?: string,
-    public keyLike?: string,
-    public requiredPermission?: string,
-    public allPages: boolean = false
+    public filterParameter: WorkbasketQueryFilterParameter,
+    public sortParameter: Sorting<WorkbasketQuerySortParameter>,
+    public pageParameter: QueryPagingParameter
   ) {}
 }
 

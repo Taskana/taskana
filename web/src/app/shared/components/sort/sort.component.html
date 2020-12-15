@@ -10,8 +10,8 @@
     <!-- SORT DIRECTION -->
     <mat-menu #sortDirection="matMenu">
       <!-- ASCENDING ORDER BUTTON -->
-      <button mat-menu-item (click)="changeOrder('asc')">
-        <span *ngIf="sort.sortDirection === 'asc'; else coloredAsc">
+      <button mat-menu-item (click)="changeOrder(sortDirectionEnum.ASC)">
+        <span *ngIf="sort.order === 'asc'; else coloredAsc">
           <mat-icon class="sort__selected-value"> arrow_upward </mat-icon>
           <span class="sort__selected-value"> Ascending </span>
         </span>
@@ -22,8 +22,8 @@
       </button>
 
       <!-- DESCENDING ORDER BUTTON -->
-      <button mat-menu-item (click)="changeOrder('desc')">
-        <span *ngIf="sort.sortDirection === 'desc'; else coloredDesc">
+      <button mat-menu-item (click)="changeOrder(sortDirectionEnum.DESC)">
+        <span *ngIf="sort.order === 'desc'; else coloredDesc">
           <mat-icon class="sort__selected-value"> arrow_downward </mat-icon>
           <span class="sort__selected-value"> Descending </span>
         </span>
@@ -38,7 +38,7 @@
     <mat-menu #sortValue="matMenu">
       <button mat-menu-item *ngFor="let sortingField of sortingFields | mapValues"
               (click)="changeSortBy(sortingField.key)">
-        <span class="{{sortingField.key === sort.sortBy  ? 'sort__selected-value' : ''}}">
+        <span class="{{sortingField.key === sort['sort-by']  ? 'sort__selected-value' : ''}}">
           {{sortingField.value}}
         </span>
         <ng-template #coloredValue>

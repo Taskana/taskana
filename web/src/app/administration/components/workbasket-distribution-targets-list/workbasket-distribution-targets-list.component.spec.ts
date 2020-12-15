@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
-import { Filter } from '../../../shared/models/filter';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { ICONTYPES } from '../../../shared/models/icon-types';
+import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { SelectWorkBasketPipe } from '../../../shared/pipes/select-workbaskets.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
@@ -11,10 +10,11 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
 
-@Component({ selector: 'taskana-shared-filter', template: '' })
+@Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {
-  @Output() performFilter = new EventEmitter<Filter>();
+  @Output() performFilter = new EventEmitter<WorkbasketQueryFilterParameter>();
 }
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
@@ -24,7 +24,7 @@ class SpinnerStub {
 
 @Component({ selector: 'taskana-administration-icon-type', template: '' })
 class IconTypeStub {
-  @Input() type: ICONTYPES = ICONTYPES.ALL;
+  @Input() type: WorkbasketType;
   @Input() text: string;
 }
 

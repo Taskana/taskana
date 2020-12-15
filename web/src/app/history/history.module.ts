@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from 'app/shared/shared.module';
 import { HistoryRoutingModule } from './history-routing.module';
-import { TaskQueryComponent } from './task-query/task-query.component';
+import { TaskHistoryQueryComponent } from './task-history-query/task-history-query.component';
 
 @NgModule({
   imports: [CommonModule, HistoryRoutingModule, SharedModule, FormsModule, ReactiveFormsModule],
-  declarations: [TaskQueryComponent]
+  declarations: [TaskHistoryQueryComponent]
 })
 export class HistoryModule {}

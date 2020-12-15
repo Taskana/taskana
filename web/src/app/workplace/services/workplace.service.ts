@@ -1,37 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ObjectReference } from '../models/object-reference';
 
 @Injectable()
 export class WorkplaceService {
-  // necessary because the TaskdetailsComponent is not always initialized when the first workbasket was selected.
-  currentWorkbasket: Workbasket;
-  objectReference: ObjectReference;
-  private workbasketSelectedSource = new Subject<Workbasket>();
-  workbasketSelectedStream = this.workbasketSelectedSource.asObservable();
-  private objectReferenceSource = new Subject<ObjectReference>();
-  objectReferenceSelectedStream = this.objectReferenceSource.asObservable();
+  private workbasketSelected = new BehaviorSubject<Workbasket>(undefined);
+  private objectReferenceSelected = new BehaviorSubject<ObjectReference>(undefined);
 
-  selectWorkbasket(workbasket?: Workbasket) {
-    this.currentWorkbasket = workbasket;
-    this.workbasketSelectedSource.next(workbasket);
+  selectWorkbasket(workbasket?: Workbasket): void {
+    this.workbasketSelected.next(workbasket);
   }
 
   getSelectedWorkbasket(): Observable<Workbasket> {
-    return this.workbasketSelectedStream;
+    return this.workbasketSelected.asObservable();
   }
 
-  selectObjectReference(objectReference?: ObjectReference) {
-    this.objectReference = new ObjectReference();
-    if (objectReference) {
-      this.objectReference.type = objectReference.type;
-      this.objectReference.value = objectReference.value;
-    }
-    this.objectReferenceSource.next(objectReference);
+  selectObjectReference(objectReference?: ObjectReference): void {
+    this.objectReferenceSelected.next(objectReference);
   }
 
-  getObjectReference() {
-    return this.objectReferenceSelectedStream;
+  getSelectedObjectReference(): Observable<ObjectReference> {
+    return this.objectReferenceSelected.asObservable();
   }
 }

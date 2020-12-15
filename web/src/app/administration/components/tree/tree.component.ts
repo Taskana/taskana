@@ -13,7 +13,6 @@ import {
 import { TreeNodeModel } from 'app/administration/models/tree-node';
 
 import { ITreeOptions, KEYS, TREE_ACTIONS, TreeComponent } from 'angular-tree-component';
-import { Pair } from 'app/shared/models/pair';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Select, Store } from '@ngxs/store';
@@ -32,6 +31,7 @@ import {
   UpdateClassification
 } from '../../../shared/store/classification-store/classification.actions';
 import { ClassificationTreeService } from '../../services/classification-tree.service';
+import { Pair } from '../../../shared/models/pair';
 
 @Component({
   selector: 'taskana-administration-tree',
@@ -168,12 +168,12 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     }
   }
 
-  getCategoryIcon(category: string): Observable<Pair> {
+  getCategoryIcon(category: string): Observable<Pair<string, string>> {
     return this.categoryIcons$.pipe(
       map((iconMap) =>
         iconMap[category]
-          ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration')
+          ? { left: iconMap[category], right: category }
+          : { left: iconMap.missing, right: 'Category does not match with the configuration' }
       )
     );
   }

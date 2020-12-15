@@ -3,13 +3,12 @@ import { Task } from 'app/workplace/models/task';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { TaskService } from 'app/workplace/services/task.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { Sorting } from 'app/shared/models/sorting';
-import { Filter } from 'app/shared/models/filter';
-import { TaskanaType } from 'app/shared/models/taskana-type';
+import { Sorting, TASK_SORT_PARAMETER_NAMING, TaskQuerySortParameter } from 'app/shared/models/sorting';
 import { expandDown } from 'app/shared/animations/expand.animation';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { ObjectReference } from 'app/workplace/models/object-reference';
+import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
 
 export enum Search {
   byWorkbasket = 'workbasket',
@@ -23,20 +22,14 @@ export enum Search {
   styleUrls: ['./task-list-toolbar.component.scss']
 })
 export class TaskListToolbarComponent implements OnInit {
-  @Input() taskDefaultSortBy: string;
-  @Output() performSorting = new EventEmitter<Sorting>();
-  @Output() performFilter = new EventEmitter<Filter>();
+  @Input() taskDefaultSortBy: TaskQuerySortParameter;
+  @Output() performSorting = new EventEmitter<Sorting<TaskQuerySortParameter>>();
+  @Output() performFilter = new EventEmitter<TaskQueryFilterParameter>();
   @Output() selectSearchType = new EventEmitter();
 
-  sortingFields = new Map([
-    ['name', 'Name'],
-    ['priority', 'Priority'],
-    ['due', 'Due'],
-    ['planned', 'Planned']
-  ]);
-  filterParams = { name: '', key: '', owner: '', priority: '', state: '' };
-  tasks: Task[] = [];
+  sortingFields: Map<TaskQuerySortParameter, string> = TASK_SORT_PARAMETER_NAMING;
 
+  tasks: Task[] = [];
   workbasketNames: string[] = [];
   resultName = '';
   resultId = '';
@@ -44,7 +37,6 @@ export class TaskListToolbarComponent implements OnInit {
   currentBasket: Workbasket;
   workbasketSelected = false;
   toolbarState = false;
-  filterType = TaskanaType.TASKS;
   searched = false;
 
   search = Search;
@@ -116,11 +108,11 @@ export class TaskListToolbarComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  sorting(sort: Sorting) {
+  sorting(sort: Sorting<TaskQuerySortParameter>) {
     this.performSorting.emit(sort);
   }
 
-  filtering(filterBy: Filter) {
+  filtering(filterBy: TaskQueryFilterParameter) {
     this.performFilter.emit(filterBy);
   }
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Orientation } from 'app/shared/models/orientation';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 
 @Injectable()
 export class OrientationService {
@@ -9,8 +8,15 @@ export class OrientationService {
   private currentOrientation;
   public orientation = new BehaviorSubject<Orientation>(this.currentOrientation);
 
+  private static detectOrientation(): Orientation {
+    if (window.innerHeight > window.innerWidth) {
+      return Orientation.portrait;
+    }
+    return Orientation.landscape;
+  }
+
   onResize() {
-    const orientation = this.detectOrientation();
+    const orientation = OrientationService.detectOrientation();
     if (orientation !== this.currentOrientation) {
       this.currentOrientation = orientation;
       if (!this.lock) {
@@ -41,14 +47,6 @@ export class OrientationService {
     if (doubleList && window.innerWidth < 992) {
       cards = Math.floor(cards / 2);
     }
-    TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
     return cards;
-  }
-
-  private detectOrientation(): Orientation {
-    if (window.innerHeight > window.innerWidth) {
-      return Orientation.portrait;
-    }
-    return Orientation.landscape;
   }
 }

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
@@ -14,11 +14,11 @@ import { AccessItemsManagementState } from '../../../shared/store/access-items-m
 import { Observable } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Direction, Sorting } from '../../../shared/models/sorting';
+import { Direction, Sorting, WorkbasketAccessItemQuerySortParameter } from '../../../shared/models/sorting';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
@@ -62,8 +62,9 @@ describe('AccessItemsManagementComponent', () => {
 
   @Component({ selector: 'taskana-shared-sort', template: '' })
   class TaskanaSharedSortStub {
-    @Input() sortingFields: Map<string, string>;
-    @Output() performSorting = new EventEmitter<Sorting>();
+    @Input() sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string>;
+    @Input() defaultSortBy: WorkbasketAccessItemQuerySortParameter;
+    @Output() performSorting = new EventEmitter<Sorting<WorkbasketAccessItemQuerySortParameter>>();
   }
 
   beforeEach(async(() => {
@@ -159,7 +160,7 @@ describe('AccessItemsManagementComponent', () => {
       { accessId: '1', name: 'users' },
       { accessId: '2', name: 'users' }
     ];
-    app.sortModel = { sortBy: 'access-id', sortDirection: 'desc' };
+    app.sortModel = { 'sort-by': WorkbasketAccessItemQuerySortParameter.ACCESS_ID, order: Direction.DESC };
     app.searchForAccessItemsWorkbaskets();
     fixture.detectChanges();
     let actionDispatched = false;
@@ -188,7 +189,10 @@ describe('AccessItemsManagementComponent', () => {
   });
 
   it('should invoke sorting function correctly', () => {
-    const newSort = new Sorting('access-id', Direction.DESC);
+    const newSort: Sorting<WorkbasketAccessItemQuerySortParameter> = {
+      'sort-by': WorkbasketAccessItemQuerySortParameter.ACCESS_ID,
+      order: Direction.DESC
+    };
     app.accessId = { accessId: '1', name: 'max' };
     app.groups = [{ accessId: '1', name: 'users' }];
     app.sorting(newSort);

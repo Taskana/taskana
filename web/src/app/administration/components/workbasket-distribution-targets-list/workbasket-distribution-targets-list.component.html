@@ -21,8 +21,8 @@
       <mat-icon class="button-icon" *ngIf="allSelected" matTooltip="Select all items">check_box_outline_blank</mat-icon>
     </button>
   </mat-toolbar>
-  <taskana-shared-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"
-                         component="distribution-target" (inputComponent)="setComponent($event)"></taskana-shared-filter>
+  <taskana-shared-workbasket-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"
+                                    isExpanded="true" component="distribution-target"></taskana-shared-workbasket-filter>
 
   <!-- WORKBASKET LIST -->
   <div class="distribution-targets-list__list" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
@@ -30,7 +30,7 @@
     <mat-selection-list #workbasket [multiple]="true">
       <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
                        *ngFor="let workbasket of distributionTargets | selectWorkbaskets: distributionTargetsSelected: side"
-                       [selected]="workbasket.selected" type="text"
+                       [selected]="workbasket.selected"
                        (click)="workbasket.selected = !workbasket.selected"
                        [value]="workbasket.workbasketId">
         <div class="distribution-targets-list__item-wrapper">

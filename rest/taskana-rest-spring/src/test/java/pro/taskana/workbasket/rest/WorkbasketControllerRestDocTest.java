@@ -103,7 +103,8 @@ class WorkbasketControllerRestDocTest extends BaseRestDocTest {
     accessItem.setPermission(WorkbasketPermission.OPEN, true);
 
     WorkbasketAccessItemCollectionRepresentationModel repModel =
-        accessItemAssembler.toTaskanaCollectionModel(List.of(accessItem));
+        new WorkbasketAccessItemCollectionRepresentationModel(
+            List.of(accessItemAssembler.toModel(accessItem)));
 
     mockMvc
         .perform(

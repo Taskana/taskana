@@ -1,56 +1,36 @@
 import { Injectable } from '@angular/core';
-import { TaskHistoryEventData } from 'app/shared/models/task-history-event';
 import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
 import { QueryParameters } from 'app/shared/models/query-parameters';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Direction } from 'app/shared/models/sorting';
+import { Sorting, TaskHistoryQuerySortParameter } from 'app/shared/models/sorting';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'environments/environment';
 import { StartupService } from '../../../shared/services/startup/startup.service';
+import { TaskHistoryQueryFilterParameter } from '../../../shared/models/task-history-query-filter-parameter';
+import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
+import { asUrlQueryString } from '../../../shared/util/query-parameters-v2';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaskQueryService {
+export class TaskHistoryQueryService {
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
   get url(): string {
     return this.startupService.getTaskanaRestUrl();
   }
 
-  queryTask(
-    orderBy: string = 'created',
-    sortDirection: string = Direction.ASC,
-    searchForValues: TaskHistoryEventData,
-    allPages: boolean = false
+  getTaskHistoryEvents(
+    filterParameter?: TaskHistoryQueryFilterParameter,
+    sortParameter?: Sorting<TaskHistoryQuerySortParameter>,
+    pagingParameter?: QueryPagingParameter
   ): Observable<TaskHistoryEventResourceData> {
     return this.httpClient.get<TaskHistoryEventResourceData>(
-      `${this.url}/v1/task-history-event${this.getQueryParameters(
-        orderBy,
-        sortDirection,
-        searchForValues.taskId,
-        searchForValues.parentBusinessProcessId,
-        searchForValues.businessProcessId,
-        searchForValues.eventType,
-        searchForValues.userId,
-        searchForValues.domain,
-        searchForValues.workbasketKey,
-        searchForValues.porCompany,
-        searchForValues.porSystem,
-        searchForValues.porInstance,
-        searchForValues.porType,
-        searchForValues.porValue,
-        searchForValues.taskClassificationKey,
-        searchForValues.taskClassificationCategory,
-        searchForValues.attachmentClassificationKey,
-        searchForValues.custom1,
-        searchForValues.custom2,
-        searchForValues.custom3,
-        searchForValues.custom4,
-        searchForValues.created,
-        allPages
-      )}`
+      `${this.url}/v1/task-history-event${asUrlQueryString({
+        ...filterParameter,
+        ...sortParameter,
+        ...pagingParameter
+      })}`
     );
   }
 
@@ -78,7 +58,7 @@ export class TaskQueryService {
     custom4: string,
     created: string,
     allPages: boolean = false
-  ): string {
+  ): void {
     const parameters = new QueryParameters();
     parameters.SORTBY = orderBy;
     parameters.SORTDIRECTION = sortDirection;
@@ -107,7 +87,5 @@ export class TaskQueryService {
       delete TaskanaQueryParameters.page;
       delete TaskanaQueryParameters.pageSize;
     }
-
-    return TaskanaQueryParameters.getQueryParameters(parameters);
   }
 }

@@ -4,7 +4,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ICONTYPES } from '../../../shared/models/icon-types';
+import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from '../../../shared/pipes/remove-empty-type.pipe';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
@@ -50,7 +50,7 @@ class FieldErrorDisplayStub {
 
 @Component({ selector: 'taskana-administration-icon-type', template: '' })
 class IconTypeStub {
-  @Input() type: ICONTYPES = ICONTYPES.ALL;
+  @Input() type: WorkbasketType;
   @Input() text: string;
 }
 

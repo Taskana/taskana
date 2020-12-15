@@ -1,31 +1,21 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { WorkbasketSummary } from '../models/workbasket-summary';
+import { Side } from '../../administration/components/workbasket-distribution-targets/workbasket-distribution-targets.component';
 
 @Pipe({ name: 'selectWorkbaskets' })
 export class SelectWorkBasketPipe implements PipeTransform {
-  transform(originArray: any, selectionArray: any, arg1: any): WorkbasketSummary[] {
-    let returnArray = [];
-    if (!originArray || !selectionArray) {
-      return returnArray;
+  transform(
+    allWorkbaskets: WorkbasketSummary[],
+    selectedWorkbaskets: WorkbasketSummary[],
+    side: Side
+  ): WorkbasketSummary[] {
+    if (!allWorkbaskets || !selectedWorkbaskets) {
+      return [];
     }
-    for (let index = originArray.length - 1; index >= 0; index--) {
-      if (
-        (arg1 &&
-          !selectionArray.some(
-            (elementToRemove) => originArray[index].workbasketId === elementToRemove.workbasketId
-          )) ||
-        (!arg1 &&
-          selectionArray.some((elementToRemove) => originArray[index].workbasketId === elementToRemove.workbasketId))
-      ) {
-        originArray.splice(index, 1);
-      }
+    if (side === Side.SELECTED) {
+      return selectedWorkbaskets;
     }
-
-    if (originArray.length > TaskanaQueryParameters.pageSize) {
-      originArray.slice(0, TaskanaQueryParameters.pageSize);
-    }
-    returnArray = originArray;
-    return returnArray;
+    const isNotSelectedWorkbasket = (wb) => !selectedWorkbaskets.some((sWb) => sWb.workbasketId === wb.workbasketId);
+    return allWorkbaskets.filter(isNotSelectedWorkbasket);
   }
 }

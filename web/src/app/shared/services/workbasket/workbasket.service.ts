@@ -7,13 +7,14 @@ import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-distribution-targets';
-import { Direction } from 'app/shared/models/sorting';
+import { Sorting, WorkbasketQuerySortParameter } from 'app/shared/models/sorting';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
-import { QueryParameters } from 'app/shared/models/query-parameters';
 import { WorkbasketRepresentation } from '../../models/workbasket-representation';
+import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-parameters';
+import { QueryPagingParameter } from '../../models/query-paging-parameter';
+import { asUrlQueryString } from '../../util/query-parameters-v2';
 
 @Injectable()
 export class WorkbasketService {
@@ -28,18 +29,9 @@ export class WorkbasketService {
   // GET
   getWorkBasketsSummary(
     forceRequest: boolean = false,
-    sortBy: string = TaskanaQueryParameters.parameters.KEY,
-    order: string = Direction.ASC,
-    name?: string,
-    nameLike?: string,
-    descLike?: string,
-    owner?: string,
-    ownerLike?: string,
-    type?: string,
-    key?: string,
-    keyLike?: string,
-    requiredPermission?: string,
-    allPages: boolean = false
+    filterParameter?: WorkbasketQueryFilterParameter,
+    sortParameter?: Sorting<WorkbasketQuerySortParameter>,
+    pagingParameter?: QueryPagingParameter
   ) {
     if (this.workbasketSummaryRef && !forceRequest) {
       return this.workbasketSummaryRef;
@@ -48,23 +40,11 @@ export class WorkbasketService {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap((domain) => {
         this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryRepresentation>(
-          `${environment.taskanaRestUrl}/v1/workbaskets/${TaskanaQueryParameters.getQueryParameters(
-            this.workbasketParameters(
-              sortBy,
-              order,
-              name,
-              nameLike,
-              descLike,
-              owner,
-              ownerLike,
-              type,
-              key,
-              keyLike,
-              requiredPermission,
-              allPages,
-              domain
-            )
-          )}`
+          `${environment.taskanaRestUrl}/v1/workbaskets/${asUrlQueryString({
+            ...filterParameter,
+            ...sortParameter,
+            ...pagingParameter
+          })}`
         );
         return this.workbasketSummaryRef;
       }),
@@ -177,41 +157,6 @@ export class WorkbasketService {
       errMsg = error.message ? error.message : error.toString();
     }
     return observableThrowError(errMsg);
-  }
-
-  private workbasketParameters(
-    sortBy: string = TaskanaQueryParameters.parameters.KEY,
-    order: string = Direction.ASC,
-    name?: string,
-    nameLike?: string,
-    descLike?: string,
-    owner?: string,
-    ownerLike?: string,
-    type?: string,
-    key?: string,
-    keyLike?: string,
-    requiredPermission?: string,
-    allPages?: boolean,
-    domain?: string
-  ): QueryParameters {
-    const parameters = new QueryParameters();
-    parameters.SORTBY = sortBy;
-    parameters.SORTDIRECTION = order;
-    parameters.NAME = name;
-    parameters.NAMELIKE = nameLike;
-    parameters.DESCLIKE = descLike;
-    parameters.OWNER = owner;
-    parameters.OWNERLIKE = ownerLike;
-    parameters.TYPE = type;
-    parameters.KEY = key;
-    parameters.KEYLIKE = keyLike;
-    parameters.REQUIREDPERMISSION = requiredPermission;
-    parameters.DOMAIN = domain;
-    if (allPages) {
-      delete TaskanaQueryParameters.page;
-      delete TaskanaQueryParameters.pageSize;
-    }
-    return parameters;
   }
 
   // #endregion

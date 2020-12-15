@@ -60,7 +60,7 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
   getAccessItems(ctx: StateContext<AccessItemsManagementStateModel>, action: GetAccessItems): Observable<any> {
     this.requestInProgressService.setRequestInProgress(true);
     return this.accessIdsService
-      .getAccessItems(action.accessIds, action.accessIdLike, action.workbasketKeyLike, action.sortModel)
+      .getAccessItems(action.filterParameter, action.sortParameter, action.pagingParameter)
       .pipe(
         take(1),
         tap(

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TaskQueryComponent } from './task-query/task-query.component';
+import { TaskHistoryQueryComponent } from './task-history-query/task-history-query.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: TaskQueryComponent
+    component: TaskHistoryQueryComponent
   },
   {
     path: '**',

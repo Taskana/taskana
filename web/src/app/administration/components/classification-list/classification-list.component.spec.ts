@@ -200,8 +200,8 @@ describe('ClassificationListComponent', () => {
   it('should return icon for category when getCategoryIcon is called and category exists', (done) => {
     const categoryIcon = component.getCategoryIcon('MANUAL');
     categoryIcon.subscribe((iconPair) => {
-      expect(iconPair.name).toBe('assets/icons/categories/manual.svg');
-      expect(iconPair.text).toBe('MANUAL');
+      expect(iconPair.left).toBe('assets/icons/categories/manual.svg');
+      expect(iconPair.right).toBe('MANUAL');
       done();
     });
   });
@@ -209,7 +209,7 @@ describe('ClassificationListComponent', () => {
   it('should return a special icon when getCategoryIcon is called and category does not exist', (done) => {
     const categoryIcon = component.getCategoryIcon('CLOUD');
     categoryIcon.subscribe((iconPair) => {
-      expect(iconPair.name).toBe('assets/icons/categories/missing-icon.svg');
+      expect(iconPair.left).toBe('assets/icons/categories/missing-icon.svg');
       done();
     });
   });

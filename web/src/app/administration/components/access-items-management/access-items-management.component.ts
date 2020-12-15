@@ -4,7 +4,12 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { Observable, Subject } from 'rxjs';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
-import { Direction, Sorting } from 'app/shared/models/sorting';
+import {
+  Direction,
+  Sorting,
+  WORKBASKET_ACCESS_ITEM_SORT_PARAMETER_NAMING,
+  WorkbasketAccessItemQuerySortParameter
+} from 'app/shared/models/sorting';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { takeUntil } from 'rxjs/operators';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
@@ -18,6 +23,7 @@ import {
 } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { AccessItemsManagementSelector } from '../../../shared/store/access-items-management-store/access-items-management.selector';
 import { MatDialog } from '@angular/material/dialog';
+import { WorkbasketAccessItemQueryFilterParameter } from '../../../shared/models/workbasket-access-item-query-filter-parameter';
 
 @Component({
   selector: 'taskana-administration-access-items-management',
@@ -31,20 +37,19 @@ export class AccessItemsManagementComponent implements OnInit {
   accessIdName: string;
   panelState: boolean = false;
   accessItemsForm: FormGroup;
-  toggleValidationAccessIdMap = new Map<number, boolean>();
   accessId: AccessIdDefinition;
   groups: AccessIdDefinition[];
-  sortingFields = new Map([
-    ['access-id', 'Access id'],
-    ['workbasket-key', 'Workbasket Key']
-  ]);
-  sortModel: Sorting = new Sorting('access-id', Direction.DESC);
+  defaultSortBy: WorkbasketAccessItemQuerySortParameter = WorkbasketAccessItemQuerySortParameter.ACCESS_ID;
+  sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string> = WORKBASKET_ACCESS_ITEM_SORT_PARAMETER_NAMING;
+  sortModel: Sorting<WorkbasketAccessItemQuerySortParameter> = {
+    'sort-by': this.defaultSortBy,
+    order: Direction.DESC
+  };
   accessItems: WorkbasketAccessItems[];
   isGroup: boolean = false;
 
-  @Select(EngineConfigurationSelectors.accessItemsCustomisation) accessItemsCustomization$: Observable<
-    AccessItemsCustomisation
-  >;
+  @Select(EngineConfigurationSelectors.accessItemsCustomisation)
+  accessItemsCustomization$: Observable<AccessItemsCustomisation>;
   @Select(AccessItemsManagementSelector.groups) groups$: Observable<AccessIdDefinition[]>;
   customFields$: Observable<CustomField[]>;
   destroy$ = new Subject<void>();
@@ -81,15 +86,16 @@ export class AccessItemsManagementComponent implements OnInit {
 
   searchForAccessItemsWorkbaskets() {
     this.removeFocus();
-    this.store
-      .dispatch(new GetAccessItems([this.accessId, ...this.groups], '', '', this.sortModel))
-      .subscribe((state) => {
-        this.setAccessItemsGroups(
-          state['accessItemsManagement'].accessItemsResource
-            ? state['accessItemsManagement'].accessItemsResource.accessItems
-            : []
-        );
-      });
+    const filterParameter: WorkbasketAccessItemQueryFilterParameter = {
+      'access-id': [this.accessId, ...this.groups].map((a) => a.accessId)
+    };
+    this.store.dispatch(new GetAccessItems(filterParameter, this.sortModel)).subscribe((state) => {
+      this.setAccessItemsGroups(
+        state['accessItemsManagement'].accessItemsResource
+          ? state['accessItemsManagement'].accessItemsResource.accessItems
+          : []
+      );
+    });
   }
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
@@ -150,7 +156,7 @@ export class AccessItemsManagementComponent implements OnInit {
     return this.formsValidatorService.isFieldValid(this.accessItemsGroups[index], field);
   }
 
-  sorting(sort: Sorting) {
+  sorting(sort: Sorting<WorkbasketAccessItemQuerySortParameter>) {
     this.sortModel = sort;
     this.searchForAccessItemsWorkbaskets();
   }

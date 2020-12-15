@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { TaskanaDate } from '../../../shared/util/taskana.date';
 import { Location } from '@angular/common';
-import { ICONTYPES } from '../../../shared/models/icon-types';
+import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import {
   DeselectWorkbasket,
   OnButtonPressed,
@@ -94,7 +94,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   initWorkbasket() {
     const emptyWorkbasket: Workbasket = {};
     emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
-    emptyWorkbasket.type = ICONTYPES.PERSONAL;
+    emptyWorkbasket.type = WorkbasketType.PERSONAL;
     this.addDateToWorkbasket(emptyWorkbasket);
     this.workbasket = emptyWorkbasket;
   }

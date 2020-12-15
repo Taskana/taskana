@@ -15,7 +15,7 @@ export class ToastComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
-      this.message = notifications.get(this.data.key).text;
+      this.message = notifications.get(this.data.key).right;
       if (this.data.additions) {
         this.data.additions.forEach((value: string, replacementKey: string) => {
           this.message = this.message.replace(`{${replacementKey}}`, value);

@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ReportData } from '../../models/report-data';
 import { ChartData } from '../../models/chart-data';
 import { ChartColorsDefinition } from '../../models/chart-colors';
-import { RestConnectorService } from '../../services/rest-connector.service';
+import { MonitorService } from '../../services/monitor.service';
 import { MetaInfoData } from '../../models/meta-info-data';
 
 @Component({
@@ -27,7 +27,7 @@ export class WorkbasketReportPlannedDateComponent implements OnInit {
 
   lineChartColors = ChartColorsDefinition.getColors();
 
-  constructor(private restConnectorService: RestConnectorService) {}
+  constructor(private restConnectorService: MonitorService) {}
 
   async ngOnInit() {
     this.reportData = await this.restConnectorService.getWorkbasketStatisticsQueryingByPlannedDate().toPromise();

@@ -7,7 +7,6 @@ import { highlight } from 'app/shared/animations/validation.animation';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { Pair } from 'app/shared/models/pair';
 import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
@@ -30,6 +29,7 @@ import {
   CopyClassification,
   DeselectClassification
 } from '../../../shared/store/classification-store/classification.actions';
+import { Pair } from '../../../shared/models/pair';
 
 @Component({
   selector: 'taskana-administration-classification-details',
@@ -137,12 +137,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new DeselectClassification());
   }
 
-  getCategoryIcon(category: string): Observable<Pair> {
+  getCategoryIcon(category: string): Observable<Pair<string, string>> {
     return this.categoryIcons$.pipe(
       map((iconMap) =>
         iconMap[category]
-          ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration')
+          ? { left: iconMap[category], right: category }
+          : { left: iconMap.missing, right: 'Category does not match with the configuration' }
       )
     );
   }

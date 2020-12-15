@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportData } from '../../models/report-data';
-import { RestConnectorService } from '../../services/rest-connector.service';
+import { MonitorService } from '../../services/monitor.service';
 
 @Component({
   selector: 'taskana-monitor-timestamp-report',
@@ -10,7 +10,7 @@ import { RestConnectorService } from '../../services/rest-connector.service';
 export class TimestampReportComponent implements OnInit {
   reportData: ReportData;
 
-  constructor(private restConnectorService: RestConnectorService) {}
+  constructor(private restConnectorService: MonitorService) {}
 
   ngOnInit() {
     this.restConnectorService.getDailyEntryExitReport().subscribe((data: ReportData) => {

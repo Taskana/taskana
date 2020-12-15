@@ -51,7 +51,7 @@
             <tr>
               <th class="align-left">
                 <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)"
-                  menuPosition="left" defaultSortBy="access-id">
+                  menuPosition="left" [defaultSortBy]="defaultSortBy">
                 </taskana-shared-sort>
               </th>
               <th>

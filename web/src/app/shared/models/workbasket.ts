@@ -1,12 +1,12 @@
 import { Links } from './links';
-import { ICONTYPES } from './icon-types';
+import { WorkbasketType } from './workbasket-type';
 
 export interface Workbasket {
   workbasketId?: string;
   key?: string;
   name?: string;
   domain?: string;
-  type?: ICONTYPES;
+  type?: WorkbasketType;
   description?: string;
   owner?: string;
   custom1?: string;
@@ -21,6 +21,8 @@ export interface Workbasket {
   created?: string;
   modified?: string;
   _links?: Links;
+  // this is not part of the API, but needed for frontend
+  selected?: boolean;
 }
 
 export const customFieldCount: number = 4;

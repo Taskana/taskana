@@ -29,10 +29,9 @@
     </button>
 
     <div class="filter__filter-component-wrapper">
-      <taskana-shared-filter [isExpanded]="isExpanded"
-                             (performFilter)="filtering($event)"
-                             component="workbasket-list"
-                             (inputComponent)="setComponent($event)"></taskana-shared-filter>
+      <taskana-shared-workbasket-filter [isExpanded]="isExpanded"
+                                        (performFilter)="filtering($event)"
+                                        component="workbasket-list"></taskana-shared-workbasket-filter>
     </div>
   </div>
 </div>

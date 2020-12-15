@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -102,7 +103,7 @@ class WorkbasketDefinitionControllerIntTest {
         executeExportRequestForDomain("DOMAIN_A");
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getLinks()).isEmpty();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isPresent();
     assertThat(response.getBody().getContent())
         .extracting(WorkbasketDefinitionRepresentationModel::getWorkbasket)
         .extracting(WorkbasketRepresentationModel::getLinks)

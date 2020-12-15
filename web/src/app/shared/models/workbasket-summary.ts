@@ -1,11 +1,11 @@
-import { ICONTYPES } from './icon-types';
+import { WorkbasketType } from './workbasket-type';
 
 export interface WorkbasketSummary {
   workbasketId?: string;
   key?: string;
   name?: string;
   domain?: string;
-  type?: ICONTYPES;
+  type?: WorkbasketType;
   description?: string;
   owner?: string;
   custom1?: string;

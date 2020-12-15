@@ -9,10 +9,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
-import { Filter } from 'app/shared/models/filter';
 import { expandDown } from 'app/shared/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 import { MatSelectionList } from '@angular/material/list';
+import { Pair } from '../../../shared/models/pair';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
 
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets-list',
@@ -23,7 +24,7 @@ import { MatSelectionList } from '@angular/material/list';
 export class WorkbasketDistributionTargetsListComponent implements OnInit, AfterContentChecked {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
-  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
+  @Output() performDualListFilter = new EventEmitter<Pair<Side, WorkbasketQueryFilterParameter>>();
   @Input() requestInProgress = false;
   @Input() loadingItems? = false;
   @Input() side: Side;
@@ -33,7 +34,6 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
   @Output() allSelectedChange = new EventEmitter<boolean>();
 
   toolbarState = false;
-  component = '';
   @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
 
   constructor(private changeDetector: ChangeDetectorRef) {}
@@ -55,17 +55,13 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
     this.allSelectedChange.emit(this.allSelected);
   }
 
-  setComponent(component: string) {
-    this.component = component;
-  }
-
   onScroll() {
     this.scrolling.emit(this.side);
   }
 
-  performAvailableFilter(filterModel: Filter) {
-    if (this.component === 'distribution-target') {
-      this.performDualListFilter.emit({ filterBy: filterModel, side: this.side });
+  performAvailableFilter(pair: Pair<string, WorkbasketQueryFilterParameter>) {
+    if (pair.left === 'distribution-target') {
+      this.performDualListFilter.emit({ left: this.side, right: pair.right });
     }
   }
 

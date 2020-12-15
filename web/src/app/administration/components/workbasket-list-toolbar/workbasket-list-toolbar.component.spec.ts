@@ -9,8 +9,7 @@ import { WorkbasketService } from '../../../shared/services/workbasket/workbaske
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Filter } from '../../../shared/models/filter';
-import { Sorting } from '../../../shared/models/sorting';
+import { Direction, Sorting, WorkbasketQuerySortParameter } from '../../../shared/models/sorting';
 import { ACTION } from '../../../shared/models/action';
 import { TaskanaType } from '../../../shared/models/taskana-type';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +17,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
+import { Pair } from '../../../shared/models/pair';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -34,15 +35,15 @@ class ImportExportStub {
 
 @Component({ selector: 'taskana-shared-sort', template: '' })
 class SortStub {
-  @Input() sortingFields: Map<string, string>;
-  @Input() defaultSortBy = 'key';
-  @Output() performSorting = new EventEmitter<Sorting>();
+  @Input() sortingFields: Map<WorkbasketQuerySortParameter, string>;
+  @Input() defaultSortBy: WorkbasketQuerySortParameter;
+  @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
 }
 
-@Component({ selector: 'taskana-shared-filter', template: '' })
+@Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {
   @Input() isExpanded = false;
-  @Output() performFilter = new EventEmitter<Filter>();
+  @Output() performFilter = new EventEmitter<WorkbasketQueryFilterParameter>();
 }
 
 const requestInProgressServiceSpy = jest.fn().mockImplementation(
@@ -109,25 +110,35 @@ describe('WorkbasketListToolbarComponent', () => {
   }));
 
   it('should emit value when sorting is called', (done) => {
-    const mockSort: Sorting = { sortBy: '123', sortDirection: 'asc' };
-    let sort: Sorting = { sortBy: '123', sortDirection: 'asc' };
-    component.performSorting.subscribe((sortBy: Sorting) => {
+    const mockSort: Sorting<WorkbasketQuerySortParameter> = {
+      'sort-by': WorkbasketQuerySortParameter.KEY,
+      order: Direction.ASC
+    };
+    let sort: Sorting<WorkbasketQuerySortParameter> = undefined;
+    component.performSorting.subscribe((sortBy: Sorting<WorkbasketQuerySortParameter>) => {
       sort = sortBy;
       done();
     });
-    component.sorting(sort);
+    component.sorting(mockSort);
     expect(sort).toMatchObject(mockSort);
   });
 
-  it('should emit value when filtering is called', async((done) => {
-    const mockFilter: Filter = { filterParams: 'abc' };
-    let filterBy: Filter = { filterParams: 'abc' };
-    component.performFilter.subscribe((filter: Filter) => {
-      filterBy = filter;
-      done();
-    });
-    component.filtering(filterBy);
-    expect(filterBy).toMatchObject(mockFilter);
+  it('should NOT emit value when filtering is called with wrong component', async((done) => {
+    const mockFilter: Pair<string, WorkbasketQueryFilterParameter> = { left: 'foo', right: { domain: ['DOMAIN_A'] } };
+    const performFilterSpy = jest.spyOn(component.performFilter, 'emit');
+    component.filtering(mockFilter);
+    expect(performFilterSpy).toBeCalledTimes(0);
+  }));
+
+  it('should emit value when filtering is called with correct component', async((done) => {
+    const mockFilter: Pair<string, WorkbasketQueryFilterParameter> = {
+      left: 'workbasket-list',
+      right: { domain: ['DOMAIN_A'] }
+    };
+    const performFilterSpy = jest.spyOn(component.performFilter, 'emit');
+    component.filtering(mockFilter);
+    expect(performFilterSpy).toBeCalledTimes(1);
+    expect(performFilterSpy).toBeCalledWith(mockFilter.right);
   }));
 
   /* HTML */
@@ -151,7 +162,7 @@ describe('WorkbasketListToolbarComponent', () => {
   });
 
   it('should display filter component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-filter')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('taskana-shared-workbasket-filter')).toBeTruthy();
   });
 
   it('should show expanded filter component only when filter button is clicked', () => {
