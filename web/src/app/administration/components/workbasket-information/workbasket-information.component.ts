@@ -19,12 +19,12 @@ import {
   MarkWorkbasketForDeletion,
   RemoveDistributionTarget,
   SaveNewWorkbasket,
-  SelectComponent,
   UpdateWorkbasket
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketComponent } from '../../models/workbasket-component';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
+import { AccessIdDefinition } from '../../../shared/models/access-id';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -94,7 +94,9 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
       this.inputOverflowMap = inputOverflowMap;
     });
     this.validateInputOverflow = (inputFieldModel, maxLength) => {
-      this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
+      if (typeof inputFieldModel.value !== 'undefined') {
+        this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
+      }
     };
     this.buttonAction$
       .pipe(takeUntil(this.destroy$))
@@ -217,6 +219,10 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     this.store.dispatch(new MarkWorkbasketForDeletion(this.workbasket._links.self.href)).subscribe(() => {
       this.afterRequest();
     });
+  }
+
+  onSelectedOwner(owner: AccessIdDefinition) {
+    this.workbasket.owner = owner.accessId;
   }
 
   getWorkbasketCustomProperty(custom: number) {
