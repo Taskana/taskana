@@ -161,7 +161,7 @@ public class TaskanaEngineConfiguration {
 
     if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
       throw new SystemException(
-          "The Database Schema Version doesn't match the expected version "
+          "The Database Schema Version doesn't match the expected minimal version "
               + TASKANA_SCHEMA_VERSION);
     }
 

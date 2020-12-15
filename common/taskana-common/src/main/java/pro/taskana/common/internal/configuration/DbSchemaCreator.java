@@ -18,6 +18,8 @@ import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.internal.util.ComparableVersion;
+
 /** This class create the schema for taskana. */
 public class DbSchemaCreator {
 
@@ -75,7 +77,7 @@ public class DbSchemaCreator {
     }
   }
 
-  public boolean isValidSchemaVersion(String expectedVersion) {
+  public boolean isValidSchemaVersion(String expectedMinVersion) {
     try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(this.schemaName);
       SqlRunner runner = new SqlRunner(connection);
@@ -83,15 +85,18 @@ public class DbSchemaCreator {
 
       String query =
           "select VERSION from TASKANA_SCHEMA_VERSION where "
-              + "VERSION = (select max(VERSION) from TASKANA_SCHEMA_VERSION) "
-              + "AND VERSION = ?";
+              + "VERSION = (select max(VERSION) from TASKANA_SCHEMA_VERSION) ";
 
-      Map<String, Object> queryResult = runner.selectOne(query, expectedVersion);
-      if (queryResult == null || queryResult.isEmpty()) {
+      Map<String, Object> queryResult = runner.selectOne(query);
+
+      ComparableVersion actualVersion = new ComparableVersion((String) queryResult.get("VERSION"));
+      ComparableVersion minVersion = new ComparableVersion(expectedMinVersion);
+
+      if (actualVersion.compareTo(minVersion) < 0) {
         LOGGER.error(
             "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
-                + "has not the expected value {}",
-            expectedVersion);
+                + "has not the expected min value {}",
+            expectedMinVersion);
         return false;
       } else {
         LOGGER.debug("Schema version is valid.");
@@ -101,8 +106,8 @@ public class DbSchemaCreator {
     } catch (RuntimeSqlException | SQLException e) {
       LOGGER.error(
           "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
-              + "has not the expected value {}",
-          expectedVersion);
+              + "has not the expected min value {}",
+          expectedMinVersion);
       return false;
     }
   }
