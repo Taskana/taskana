@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Sorting } from 'app/shared/models/sorting';
-import { Filter } from 'app/shared/models/filter';
+import { Sorting, WORKBASKET_SORT_PARAMETER_NAMING, WorkbasketQuerySortParameter } from 'app/shared/models/sorting';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { TaskanaType } from 'app/shared/models/taskana-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
@@ -11,6 +10,8 @@ import { ACTION } from '../../../shared/models/action';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { Pair } from '../../../shared/models/pair';
 
 @Component({
   selector: 'taskana-administration-workbasket-list-toolbar',
@@ -21,31 +22,15 @@ import { WorkbasketService } from '../../../shared/services/workbasket/workbaske
 export class WorkbasketListToolbarComponent implements OnInit {
   @Input() workbasketListExpanded: boolean = true;
   @Input() workbaskets: Array<WorkbasketSummary>;
-  @Input() workbasketDefaultSortBy: string;
-  @Output() performSorting = new EventEmitter<Sorting>();
-  @Output() performFilter = new EventEmitter<Filter>();
+  @Input() workbasketDefaultSortBy: WorkbasketQuerySortParameter;
+  @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
+  @Output() performFilter = new EventEmitter<WorkbasketQueryFilterParameter>();
 
   selectionToImport = TaskanaType.WORKBASKETS;
-  sortingFields = new Map([
-    ['name', 'Name'],
-    ['key', 'Key'],
-    ['description', 'Description'],
-    ['owner', 'Owner'],
-    ['type', 'Type']
-  ]);
-  filteringTypes = new Map([
-    ['ALL', 'All'],
-    ['PERSONAL', 'Personal'],
-    ['GROUP', 'Group'],
-    ['CLEARANCE', 'Clearance'],
-    ['TOPIC', 'Topic']
-  ]);
+  sortingFields: Map<WorkbasketQuerySortParameter, string> = WORKBASKET_SORT_PARAMETER_NAMING;
 
-  filterParams = { name: '', key: '', type: '', description: '', owner: '' };
-  filterType = TaskanaType.WORKBASKETS;
   isExpanded = false;
   showFilter = false;
-  component = '';
 
   @Select(WorkbasketSelectors.workbasketActiveAction)
   workbasketActiveAction$: Observable<ACTION>;
@@ -61,18 +46,14 @@ export class WorkbasketListToolbarComponent implements OnInit {
     });
   }
 
-  sorting(sort: Sorting) {
+  sorting(sort: Sorting<WorkbasketQuerySortParameter>) {
     this.performSorting.emit(sort);
   }
 
-  filtering(filterBy: Filter) {
-    if (this.component === 'workbasket-list') {
-      this.performFilter.emit(filterBy);
+  filtering({ left: component, right: filter }: Pair<string, WorkbasketQueryFilterParameter>) {
+    if (component === 'workbasket-list') {
+      this.performFilter.emit(filter);
     }
-  }
-
-  setComponent(component: string) {
-    this.component = component;
   }
 
   addWorkbasket() {

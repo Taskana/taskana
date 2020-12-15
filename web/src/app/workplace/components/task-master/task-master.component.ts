@@ -2,11 +2,9 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { Task } from 'app/workplace/models/task';
 import { TaskService } from 'app/workplace/services/task.service';
 import { Subject } from 'rxjs';
-import { Sorting } from 'app/shared/models/sorting';
+import { Direction, Sorting, TaskQuerySortParameter } from 'app/shared/models/sorting';
 import { Workbasket } from 'app/shared/models/workbasket';
-import { Filter } from 'app/shared/models/filter';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Page } from 'app/shared/models/page';
 import { takeUntil } from 'rxjs/operators';
@@ -14,6 +12,8 @@ import { ObjectReference } from '../../models/object-reference';
 import { Search } from '../task-list-toolbar/task-list-toolbar.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
+import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
 
 @Component({
   selector: 'taskana-task-master',
@@ -26,17 +26,16 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   type = 'tasks';
   currentBasket: Workbasket;
   selectedId = '';
-  taskDefaultSortBy: string = 'priority';
-  sort: Sorting = new Sorting(this.taskDefaultSortBy);
-  filterBy: Filter = new Filter({
-    name: '',
-    owner: '',
-    priority: '',
-    state: '',
-    classificationKey: '',
-    workbasketId: '',
-    workbasketKey: ''
-  });
+  taskDefaultSortBy: TaskQuerySortParameter = TaskQuerySortParameter.PRIORITY;
+  sort: Sorting<TaskQuerySortParameter> = {
+    'sort-by': this.taskDefaultSortBy,
+    order: Direction.ASC
+  };
+  paging: QueryPagingParameter = {
+    page: 1,
+    'page-size': 9
+  };
+  filterBy: TaskQueryFilterParameter = undefined;
 
   requestInProgress = false;
   selectedSearchType: Search = Search.byWorkbasket;
@@ -79,27 +78,33 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
         this.refreshWorkbasketList();
       });
 
-    this.workplaceService.workbasketSelectedStream.pipe(takeUntil(this.destroy$)).subscribe((workbasket) => {
-      this.currentBasket = workbasket;
-      if (this.selectedSearchType === Search.byWorkbasket) {
-        this.getTasks();
-      }
-    });
+    this.workplaceService
+      .getSelectedWorkbasket()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((workbasket) => {
+        this.currentBasket = workbasket;
+        if (this.selectedSearchType === Search.byWorkbasket) {
+          this.getTasks();
+        }
+      });
 
-    this.workplaceService.objectReferenceSelectedStream.pipe(takeUntil(this.destroy$)).subscribe((objectReference) => {
-      if (objectReference) {
-        delete this.currentBasket;
-        this.getTasks(objectReference);
-      }
-    });
+    this.workplaceService
+      .getSelectedObjectReference()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((objectReference) => {
+        if (objectReference) {
+          delete this.currentBasket;
+          this.getTasks(objectReference);
+        }
+      });
   }
 
-  performSorting(sort: Sorting) {
+  performSorting(sort: Sorting<TaskQuerySortParameter>) {
     this.sort = sort;
     this.getTasks();
   }
 
-  performFilter(filterBy: Filter) {
+  performFilter(filterBy: TaskQueryFilterParameter) {
     this.filterBy = filterBy;
     this.getTasks();
   }
@@ -110,7 +115,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   }
 
   changePage(page) {
-    TaskanaQueryParameters.page = page;
+    this.paging.page = page;
     this.getTasks();
   }
 
@@ -126,8 +131,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       const unusedHeight = 150;
       const totalHeight = window.innerHeight;
       const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
-      TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
-      TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
+      this.paging['page-size'] = cards > 0 ? cards : 1;
     }
   }
 
@@ -139,17 +143,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     } else {
       this.calculateHeightCard();
       this.taskService
-        .findTasksWithWorkbasket(
-          this.currentBasket ? this.currentBasket.workbasketId : '',
-          this.sort.sortBy,
-          this.sort.sortDirection,
-          this.filterBy.filterParams.name,
-          this.filterBy.filterParams.owner,
-          this.filterBy.filterParams.priority,
-          this.filterBy.filterParams.state,
-          objectReference ? objectReference.type : '',
-          objectReference ? objectReference.value : ''
-        )
+        .findTasksWithWorkbasket(this.filterBy, this.sort, this.paging)
         .pipe(takeUntil(this.destroy$))
         .subscribe((taskResource) => {
           this.requestInProgress = false;

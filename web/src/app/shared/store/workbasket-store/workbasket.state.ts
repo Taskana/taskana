@@ -81,21 +81,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       paginatedWorkbasketsSummary: undefined
     });
     return this.workbasketService
-      .getWorkBasketsSummary(
-        action.forceRequest,
-        action.sortBy,
-        action.order,
-        action.name,
-        action.nameLike,
-        action.descLike,
-        action.owner,
-        action.ownerLike,
-        action.type,
-        action.key,
-        action.keyLike,
-        action.requiredPermission,
-        action.allPages
-      )
+      .getWorkBasketsSummary(action.forceRequest, action.filterParameter, action.sortParameter, action.pageParameter)
       .pipe(
         take(1),
         tap((paginatedWorkbasketsSummary) => {

@@ -4,28 +4,40 @@ import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { ChartData } from 'app/monitor/models/chart-data';
 import { ReportData } from '../models/report-data';
+import { asUrlQueryString } from '../../shared/util/query-parameters-v2';
+import { TaskState } from '../../shared/models/task-state';
 
 const monitorUrl = '/v1/monitor/';
 
 @Injectable()
-export class RestConnectorService {
+export class MonitorService {
   constructor(private httpClient: HttpClient) {}
 
   getTaskStatusReport(): Observable<ReportData> {
+    const queryParams = {
+      states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
+    };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}tasks-status-report?states=READY,CLAIMED,COMPLETED`
+      `${environment.taskanaRestUrl + monitorUrl}tasks-status-report${asUrlQueryString(queryParams)}`
     );
   }
 
   getWorkbasketStatisticsQueryingByDueDate(): Observable<ReportData> {
+    const queryParams = {
+      states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
+    };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}tasks-workbasket-report?states=READY,CLAIMED,COMPLETED`
+      `${environment.taskanaRestUrl + monitorUrl}tasks-workbasket-report${asUrlQueryString(queryParams)}`
     );
   }
 
   getWorkbasketStatisticsQueryingByPlannedDate(): Observable<ReportData> {
+    const queryParams = {
+      daysInPast: 7,
+      states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
+    };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl}/v1/monitor/tasks-workbasket-planned-date-report?daysInPast=7&states=READY,CLAIMED,COMPLETED`
+      `${environment.taskanaRestUrl}/v1/monitor/tasks-workbasket-planned-date-report${asUrlQueryString(queryParams)}`
     );
   }
 

@@ -22,7 +22,7 @@
                 <span class="icon-space">
                   {{getHeaderFieldDescription(taskHeader.key)}}
                 </span>
-                <span *ngIf="orderBy.sortBy === taskHeader.key"
+                <span *ngIf="orderBy['sort-by'] === taskHeader.key"
                       [ngClass]="{'flip': orderBy.sortDirection === 'desc'}"
                       class="material-icons md-20 blue pull-right">sort</span>
               </div>

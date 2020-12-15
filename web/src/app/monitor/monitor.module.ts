@@ -17,7 +17,7 @@ import { TaskReportComponent } from './components/task-report/task-report.compon
 import { ClassificationReportComponent } from './components/classification-report/classification-report.component';
 import { TimestampReportComponent } from './components/timestamp-report/timestamp-report.component';
 
-import { RestConnectorService } from './services/rest-connector.service';
+import { MonitorService } from './services/monitor.service';
 
 import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
 import { WorkbasketReportPlannedDateComponent } from './components/workbasket-report-planned-date/workbasket-report-planned-date.component';
@@ -51,6 +51,6 @@ const DECLARATIONS = [
 @NgModule({
   declarations: DECLARATIONS,
   imports: MODULES,
-  providers: [RestConnectorService, MapToIterable]
+  providers: [MonitorService, MapToIterable]
 })
 export class MonitorModule {}

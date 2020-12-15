@@ -45,7 +45,6 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.currentWorkbasket = this.workplaceService.currentWorkbasket;
     this.workbasketSubscription = this.workplaceService.getSelectedWorkbasket().subscribe((workbasket) => {
       this.currentWorkbasket = workbasket;
     });

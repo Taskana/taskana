@@ -34,7 +34,7 @@ class ClassificationDefinitionControllerRestDocTest extends BaseRestDocTest {
     classification.setServiceLevel("P1D");
 
     ClassificationCollectionRepresentationModel importCollection =
-        assembler.toTaskanaCollectionModel(List.of(classification));
+        new ClassificationCollectionRepresentationModel(List.of(assembler.toModel(classification)));
 
     this.mockMvc
         .perform(

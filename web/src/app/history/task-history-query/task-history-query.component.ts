@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Direction, Sorting } from 'app/shared/models/sorting';
+import { Direction, Sorting, TaskHistoryQuerySortParameter } from 'app/shared/models/sorting';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Subscription } from 'rxjs';
 import { Orientation } from 'app/shared/models/orientation';
@@ -8,29 +8,30 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskHistoryEventData } from '../../shared/models/task-history-event';
-import { TaskQueryService } from '../services/task-query/task-query.service';
-import { NotificationService } from '../../shared/services/notifications/notification.service';
+import { TaskHistoryQueryService } from '../services/task-history-query/task-history-query.service';
 
 @Component({
   selector: 'taskana-task-query',
-  templateUrl: './task-query.component.html',
-  styleUrls: ['./task-query.component.scss']
+  templateUrl: './task-history-query.component.html',
+  styleUrls: ['./task-history-query.component.scss']
 })
-export class TaskQueryComponent implements OnInit {
+export class TaskHistoryQueryComponent implements OnInit {
   taskQueryResource: TaskHistoryEventResourceData;
   taskQuery: Array<TaskHistoryEventData>;
   taskQueryHeader = new TaskHistoryEventData();
-  orderBy = new Sorting(TaskanaQueryParameters.parameters.CREATED);
+  orderBy: Sorting<TaskHistoryQuerySortParameter> = {
+    'sort-by': TaskHistoryQuerySortParameter.CREATED,
+    order: Direction.ASC
+  };
   orientationSubscription: Subscription;
   taskQuerySubscription: Subscription;
 
   taskQueryForm = new FormGroup({});
 
   constructor(
-    private taskQueryService: TaskQueryService,
+    private taskQueryService: TaskHistoryQueryService,
     private orientationService: OrientationService,
-    private requestInProgressService: RequestInProgressService,
-    private errorsService: NotificationService
+    private requestInProgressService: RequestInProgressService
   ) {}
 
   ngOnInit() {
@@ -146,11 +147,12 @@ export class TaskQueryComponent implements OnInit {
   }
 
   changeOrderBy(key: string) {
+    console.log(key);
     if (this.filterFieldsToAllowQuerying(key)) {
-      if (this.orderBy.sortBy === key) {
-        this.orderBy.sortDirection = this.toggleSortDirection(this.orderBy.sortDirection);
-      }
-      this.orderBy.sortBy = key;
+      // if (this.orderBy.sortBy === key) {
+      //   this.orderBy.sortDirection = this.toggleSortDirection(this.orderBy.sortDirection);
+      // }
+      // this.orderBy.sortBy = key;
     }
   }
 
@@ -193,12 +195,12 @@ export class TaskQueryComponent implements OnInit {
     this.requestInProgressService.setRequestInProgress(true);
     this.calculateQueryPages();
     this.taskQuerySubscription = this.taskQueryService
-      .queryTask(
-        this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
-        this.orderBy.sortDirection,
-        new TaskHistoryEventData(this.taskQueryForm.value),
-        false
-      )
+      .getTaskHistoryEvents
+      // this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
+      // this.orderBy.sortDirection,
+      // new TaskHistoryEventData(this.taskQueryForm.value),
+      // false
+      ()
       .subscribe((taskQueryResource) => {
         this.requestInProgressService.setRequestInProgress(false);
         this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;

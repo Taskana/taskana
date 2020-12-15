@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { Side, WorkbasketDistributionTargetsComponent } from './workbasket-distribution-targets.component';
 import { WorkbasketSummary } from '../../../shared/models/workbasket-summary';
-import { Filter } from '../../../shared/models/filter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +19,8 @@ import {
   selectedWorkbasketMock,
   workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { Pair } from '../../../shared/models/pair';
 
 const routeParamsMock = { id: 'workbasket' };
 const activatedRouteMock = {
@@ -31,7 +32,7 @@ const activatedRouteMock = {
 class WorkbasketDistributionTargetsListStub {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() distributionTargetsSelected: WorkbasketSummary[];
-  @Output() performDualListFilter = new EventEmitter<{ filterBy: Filter; side: Side }>();
+  @Output() performDualListFilter = new EventEmitter<Pair<Side, WorkbasketQueryFilterParameter>>();
   @Input() requestInProgress = false;
   @Input() loadingItems? = false;
   @Input() side: Side;
@@ -128,11 +129,14 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     expect(component.distributionTargetsSelected).toHaveLength(3); //mock-data has 3 entries
   });
 
+  // TODO: was ist das für ein test?
   it('should emit filter model and side when performing filter', () => {
     const performDualListFilterSpy = jest.spyOn(component, 'performFilter');
-    const filterModelMock: Filter = { filterParams: { name: '', description: '', owner: '', type: '', key: '' } };
-    component.performFilter({ filterBy: filterModelMock, side: component.side });
-    expect(performDualListFilterSpy).toHaveBeenCalledWith({ filterBy: filterModelMock, side: component.side });
+    const filterModelMock: WorkbasketQueryFilterParameter = { domain: ['DOMAIN_A'] };
+
+    component.performFilter({ left: Side.AVAILABLE, right: filterModelMock });
+
+    expect(performDualListFilterSpy).toHaveBeenCalledWith({ right: filterModelMock, left: Side.AVAILABLE });
   });
 
   it('should move distribution targets to selected list', () => {

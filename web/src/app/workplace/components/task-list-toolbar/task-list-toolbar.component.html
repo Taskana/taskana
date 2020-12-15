@@ -21,7 +21,8 @@
         placeholder="Search by value ..." />
     </div>
     <div *ngIf="searched" class="pull-right margin-right btn-group">
-      <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group" [defaultSortBy] = "taskDefaultSortBy"> </taskana-shared-sort>
+      <taskana-shared-sort class="btn-group" [sortingFields]="sortingFields" [defaultSortBy]="taskDefaultSortBy"
+                           (performSorting)="sorting($event)"> </taskana-shared-sort>
       <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
         <span class="material-icons md-20 blue">search</span>
       </button>
@@ -61,7 +62,6 @@
     </div>
   </div>
   <div [@toggleDown]="toolbarState" class="row no-overflow">
-    <taskana-shared-filter [filterParams]="filterParams" [filterType]="filterType" (performFilter)="filtering($event)">
-    </taskana-shared-filter>
+    <taskana-shared-task-filter (performFilter)="filtering($event)"></taskana-shared-task-filter>
   </div>
 </li>

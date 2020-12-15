@@ -1,5 +1,5 @@
 import { Workbasket } from '../../models/workbasket';
-import { ICONTYPES } from '../../models/icon-types';
+import { WorkbasketType } from '../../models/workbasket-type';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 
@@ -93,7 +93,7 @@ export const selectedWorkbasketMock: Workbasket = {
   key: 'sOrt003',
   name: 'bAsxet2',
   domain: 'DOMAIN_A',
-  type: ICONTYPES.TOPIC,
+  type: WorkbasketType.TOPIC,
   description: 'Lorem ipsum dolor sit amet.',
   owner: 'Max',
   custom1: '',
@@ -194,7 +194,7 @@ export const workbasketReadStateMock = {
         key: 'USER-2-1',
         name: 'PPK User 1 KSC 2',
         domain: 'DOMAIN_A',
-        type: ICONTYPES.PERSONAL,
+        type: WorkbasketType.PERSONAL,
         description: 'PPK User 1 KSC 2',
         owner: '',
         custom1: '',
@@ -212,7 +212,7 @@ export const workbasketReadStateMock = {
         key: 'USER-1-2',
         name: 'PPK User 2 KSC 1',
         domain: 'DOMAIN_A',
-        type: ICONTYPES.PERSONAL,
+        type: WorkbasketType.PERSONAL,
         description: 'PPK User 2 KSC 1',
         owner: 'Peter Maier',
         custom1: 'custom1',
@@ -230,7 +230,7 @@ export const workbasketReadStateMock = {
         key: 'USER-2-2',
         name: 'PPK User 2 KSC 2',
         domain: 'DOMAIN_A',
-        type: ICONTYPES.PERSONAL,
+        type: WorkbasketType.PERSONAL,
         description: 'PPK User 2 KSC 2',
         owner: '',
         custom1: '',
@@ -248,7 +248,7 @@ export const workbasketReadStateMock = {
         key: 'TPK_VIP',
         name: 'Themenpostkorb VIP',
         domain: 'DOMAIN_A',
-        type: ICONTYPES.TOPIC,
+        type: WorkbasketType.TOPIC,
         description: 'Themenpostkorb VIP',
         owner: '',
         custom1: '',
@@ -266,7 +266,7 @@ export const workbasketReadStateMock = {
         key: 'TPK_VIP_2',
         name: 'Themenpostkorb VIP 2',
         domain: 'DOMAIN_A',
-        type: ICONTYPES.TOPIC,
+        type: WorkbasketType.TOPIC,
         description: 'Themenpostkorb VIP',
         owner: '',
         custom1: '',

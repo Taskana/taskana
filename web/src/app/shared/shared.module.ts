@@ -19,7 +19,6 @@ import { SpinnerComponent } from 'app/shared/components/spinner/spinner.componen
 import { MasterAndDetailComponent } from 'app/shared/components/master-and-detail/master-and-detail.component';
 import { TaskanaTreeComponent } from 'app/administration/components/tree/tree.component';
 import { TypeAheadComponent } from 'app/shared/components/type-ahead/type-ahead.component';
-import { FilterComponent } from 'app/shared/components/filter/filter.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/components/field-error-display/field-error-display.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -61,6 +60,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { WorkbasketFilterComponent } from './components/workbasket-filter/workbasket-filter.component';
+import { TaskFilterComponent } from './components/task-filter/task-filter.component';
 
 const MODULES = [
   CommonModule,
@@ -93,7 +94,6 @@ const DECLARATIONS = [
   OrderBy,
   MapToIterable,
   SortComponent,
-  FilterComponent,
   IconTypeComponent,
   FieldErrorDisplayComponent,
   PaginationComponent,
@@ -102,7 +102,9 @@ const DECLARATIONS = [
   DatePickerComponent,
   DropdownComponent,
   ToastComponent,
-  DialogPopUpComponent
+  DialogPopUpComponent,
+  WorkbasketFilterComponent,
+  TaskFilterComponent
 ];
 
 @NgModule({

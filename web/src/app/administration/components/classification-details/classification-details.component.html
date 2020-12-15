@@ -177,12 +177,12 @@
                 <mat-select required [(value)]="this.classification.category">
                   <mat-select-trigger>
                     <svg-icon
-                      class="detailed-fields__category-icon" [src]="(getCategoryIcon(this.classification.category) | async)?.name">
+                      class="detailed-fields__category-icon" [src]="(getCategoryIcon(this.classification.category) | async)?.left">
                     </svg-icon>
                     {{this.classification.category}}
                   </mat-select-trigger>
                   <mat-option *ngFor="let category of categories$ | async" value="{{category}}">
-                    <svg-icon class="detailed-fields__category-icon" [src]="(getCategoryIcon(category) | async)?.name"></svg-icon>
+                    <svg-icon class="detailed-fields__category-icon" [src]="(getCategoryIcon(category) | async)?.left"></svg-icon>
                     {{category}}
                   </mat-option>
                 </mat-select>

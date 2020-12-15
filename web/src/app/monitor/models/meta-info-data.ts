@@ -3,5 +3,5 @@ export class MetaInfoData {
   date: string;
   header: Array<string>;
   rowDesc: Array<string>;
-  totalDesc: string;
+  sumRowDesc: string;
 }

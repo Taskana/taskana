@@ -1,0 +1,89 @@
+<div>
+  <!-- COLLAPSED WORKBASKET FILTER -->
+  <div class="filter__collapsed-filter" *ngIf="!isExpanded">
+    <!-- TEXT INPUT -->
+    <mat-form-field appearance="legacy" floatLabel="auto" class="collapsed-filter_input-field">
+      <mat-label>Filter by name</mat-label>
+      <input matInput [(ngModel)]="filter['name-like'][0]" matTooltip="Type to filter by name"
+             (keyup.enter)="search()">
+    </mat-form-field>
+
+    <!-- CLEAR BUTTON -->
+    <button mat-stroked-button (click)="clear(); search()" matTooltip="Clear workbasket filter"
+            class="filter__undo-button">
+      <mat-icon style="color: #555">undo</mat-icon>
+    </button>
+
+    <!-- SEARCH BUTTON -->
+    <button mat-stroked-button (click)="search()" matTooltip="Search by given filter" class="filter__search-button">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+
+
+  <!-- EXPANDED WORKBASKET FILTER -->
+  <div class="filter" *ngIf="isExpanded">
+
+    <!-- TEXT INPUT -->
+    <div class="filter__text-input">
+      <div class="filter__name-and-key-input">
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by name</mat-label>
+          <input matInput [(ngModel)]="filter['name-like'][0]" matTooltip="Type to filter by name"
+                 (keyup.enter)="search()">
+        </mat-form-field>
+
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by key</mat-label>
+          <input matInput [(ngModel)]="filter['key-like'][0]" matTooltip="Type to filter by key"
+                 (keyup.enter)="search()">
+        </mat-form-field>
+      </div>
+
+      <div class="filter__name-and-key-input">
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by description</mat-label>
+          <input matInput [(ngModel)]="filter['description-like']" matTooltip="Type to filter by description"
+                 (keyup.enter)="search()">
+        </mat-form-field>
+
+        <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
+          <mat-label>Filter by owner</mat-label>
+          <input matInput [(ngModel)]="filter['owner-like'][0]" matTooltip="Type to filter by owner"
+                 (keyup.enter)="search()">
+        </mat-form-field>
+      </div>
+    </div>
+
+
+    <!-- SEARCH AND CLEAR BUTTON -->
+    <div class="filter__action-buttons">
+
+      <!-- TYPE FILTER -->
+      <button mat-stroked-button [matMenuTriggerFor]="menu" matTooltip="Filter workbaskets by type">
+        Filter by type
+        <mat-icon *ngIf="filter.type" style="color: #555">filter_list</mat-icon>
+        <taskana-administration-icon-type *ngIf="filter.type[0]"
+                                          [type]="filter.type[0]"></taskana-administration-icon-type>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let type of allTypes | mapValues" (click)="selectType(type.key); search()">
+          <taskana-administration-icon-type [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
+        </button>
+      </mat-menu>
+
+      <!-- CLEAR BUTTON -->
+      <button mat-stroked-button (click)="clear(); search()" matTooltip="Clear workbasket filter">
+        Reset
+        <mat-icon style="color: #555">undo</mat-icon>
+      </button>
+
+      <!-- SEARCH BUTTON -->
+      <button mat-stroked-button (click)="search()" matTooltip="Search by given filter" class="filter__search-button">
+        Apply
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

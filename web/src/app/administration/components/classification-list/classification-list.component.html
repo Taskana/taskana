@@ -26,21 +26,21 @@
                 matTooltip="Filter Category">
 
           <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
-          <svg-icon class="classification-list__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.name"
-                    [title]="(getCategoryIcon(selectedCategory) | async)?.text"
+          <svg-icon class="classification-list__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.left"
+                    [title]="(getCategoryIcon(selectedCategory) | async)?.right"
                     *ngIf="selectedCategory != ''">
           </svg-icon>
         </button>
 
         <mat-menu #menu="matMenu">
           <button class="classification-list__all-button" mat-menu-item (click)="selectCategory('')">
-            <svg-icon class="classification-list__categories" src="./assets/icons/asterisk.svg"
-                      [title]="(getCategoryIcon('all') | async)?.text"></svg-icon>
+            <svg-icon class="classification-list__categories"  [src]="(getCategoryIcon('all') | async)?.left"
+                      [title]="(getCategoryIcon('all') | async)?.right"></svg-icon>
             <span>All</span>
           </button>
           <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-            <svg-icon class="classification-list__categories" [src]="(getCategoryIcon(category) | async)?.name"
-                      [title]="(getCategoryIcon(category) | async)?.text"></svg-icon>
+            <svg-icon class="classification-list__categories" [src]="(getCategoryIcon(category) | async)?.left"
+                      [title]="(getCategoryIcon(category) | async)?.right"></svg-icon>
             <span> {{category}} </span>
           </button>
         </mat-menu>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportData } from 'app/monitor/models/report-data';
-import { RestConnectorService } from '../../services/rest-connector.service';
+import { MonitorService } from '../../services/monitor.service';
 
 @Component({
   selector: 'taskana-monitor-task-report',
@@ -13,7 +13,7 @@ export class TaskReportComponent implements OnInit {
   pieChartType = 'pie';
   reportData: ReportData;
 
-  constructor(private restConnectorService: RestConnectorService) {}
+  constructor(private restConnectorService: MonitorService) {}
 
   async ngOnInit() {
     this.reportData = await this.restConnectorService.getTaskStatusReport().toPromise();

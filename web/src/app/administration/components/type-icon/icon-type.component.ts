@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ICONTYPES } from 'app/shared/models/icon-types';
+import { WorkbasketType } from 'app/shared/models/workbasket-type';
 
 @Component({
   selector: 'taskana-administration-icon-type',
@@ -8,7 +8,7 @@ import { ICONTYPES } from 'app/shared/models/icon-types';
 })
 export class IconTypeComponent {
   @Input()
-  type: ICONTYPES = ICONTYPES.ALL;
+  type: WorkbasketType;
 
   @Input()
   selected = false;
@@ -22,24 +22,15 @@ export class IconTypeComponent {
   @Input()
   size = 'small';
 
-  public static get allTypes(): Map<string, string> {
-    return new Map([
-      ['PERSONAL', 'Personal'],
-      ['GROUP', 'Group'],
-      ['CLEARANCE', 'Clearance'],
-      ['TOPIC', 'Topic']
-    ]);
-  }
-
-  getIconPath(type: string) {
+  getIconPath(type: WorkbasketType) {
     switch (type) {
-      case 'PERSONAL':
+      case WorkbasketType.PERSONAL:
         return 'user.svg';
-      case 'GROUP':
+      case WorkbasketType.GROUP:
         return 'users.svg';
-      case 'TOPIC':
+      case WorkbasketType.TOPIC:
         return 'topic.svg';
-      case 'CLEARANCE':
+      case WorkbasketType.CLEARANCE:
         return 'clearance.svg';
       default:
         return 'asterisk.svg';

@@ -8,7 +8,6 @@ import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-dist
 import { ACTION } from 'app/shared/models/action';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Page } from 'app/shared/models/page';
 import { Select, Store } from '@ngxs/store';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -20,8 +19,10 @@ import {
   UpdateWorkbasketDistributionTargets
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
-import { MatDialog } from '@angular/material/dialog';
 import { ButtonAction } from '../../models/button-action';
+import { Pair } from '../../../shared/models/pair';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 
 export enum Side {
   AVAILABLE,
@@ -54,7 +55,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   loadingItems = false;
   side = Side;
   private initialized = false;
-  page: Page;
+  currentPage: Page;
+  pageParameter: QueryPagingParameter = {
+    page: 1,
+    'page-size': 9
+  };
   cards: number;
   selectAllLeft = false;
   selectAllRight = false;
@@ -77,8 +82,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     private workbasketService: WorkbasketService,
     private savingWorkbaskets: SavingWorkbasketService,
     private notificationsService: NotificationService,
-    private store: Store,
-    public matDialog: MatDialog
+    private store: Store
   ) {}
 
   /**
@@ -100,7 +104,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$))
       .pipe(filter((availableDistributionTargets) => typeof availableDistributionTargets !== 'undefined'))
       .subscribe((availableDistributionTargets) => {
-        this.availableDistributionTargets = [...availableDistributionTargets];
+        this.availableDistributionTargets = availableDistributionTargets.map((wb) => ({ ...wb }));
       });
 
     this.savingWorkbaskets
@@ -118,7 +122,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
         this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
         this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
         this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
-        TaskanaQueryParameters.page = 1;
+        this.pageParameter.page = 1;
         this.getWorkbaskets();
       }
     });
@@ -140,7 +144,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   onScroll() {
-    if (this.page.totalPages > TaskanaQueryParameters.page) {
+    if (this.currentPage && this.currentPage.totalPages > this.pageParameter.page) {
       this.loadingItems = true;
       this.getNextPage();
     }
@@ -157,20 +161,20 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   getWorkbaskets(side?: Side) {
     if (this.distributionTargetsSelected && !this.initialized) {
       this.initialized = true;
-      TaskanaQueryParameters.pageSize = this.cards + this.distributionTargetsSelected.length;
+      this.pageParameter['page-size'] = this.cards + this.distributionTargetsSelected.length;
     }
 
     this.workbasketService
-      .getWorkBasketsSummary(true)
+      .getWorkBasketsSummary(true, undefined, undefined, this.pageParameter)
       .pipe(takeUntil(this.destroy$))
       .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
-        if (TaskanaQueryParameters.page === 1) {
+        if (this.pageParameter === 1) {
           this.availableDistributionTargets = [];
-          this.page = distributionTargetsAvailable.page;
+          this.currentPage = distributionTargetsAvailable.page;
         }
-        if (side === this.side.AVAILABLE) {
+        if (side === Side.AVAILABLE) {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-        } else if (side === this.side.SELECTED) {
+        } else if (side === Side.SELECTED) {
           this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
         } else {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
@@ -181,38 +185,24 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   getNextPage(side?: Side) {
-    TaskanaQueryParameters.page += 1;
+    this.pageParameter.page += 1;
     this.getWorkbaskets(side);
   }
 
-  performFilter(dualListFilter: any) {
+  performFilter({ left: side, right: filter }: Pair<Side, WorkbasketQueryFilterParameter>) {
     this.workbasketService
-      .getWorkBasketsSummary(
-        true,
-        '',
-        '',
-        '',
-        dualListFilter.filterBy.filterParams.name,
-        dualListFilter.filterBy.filterParams.description,
-        '',
-        dualListFilter.filterBy.filterParams.owner,
-        dualListFilter.filterBy.filterParams.type,
-        '',
-        dualListFilter.filterBy.filterParams.key,
-        '',
-        true
-      )
+      .getWorkBasketsSummary(true, filter)
       .pipe(takeUntil(this.destroy$))
       .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
-        this.fillDistributionTargets(dualListFilter.side, []);
+        this.fillDistributionTargets(side, []);
 
-        if (TaskanaQueryParameters.page === 1) {
+        if (this.pageParameter === 1) {
           this.availableDistributionTargets = [];
-          this.page = distributionTargetsAvailable.page;
+          this.currentPage = distributionTargetsAvailable.page;
         }
-        if (dualListFilter.side === this.side.AVAILABLE) {
+        if (side === Side.AVAILABLE) {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-        } else if (dualListFilter.side === this.side.SELECTED) {
+        } else if (side === Side.SELECTED) {
           this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
         } else {
           this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
@@ -240,8 +230,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...itemsSelected];
       this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
       if (
-        itemsLeft - itemsSelected.length <= TaskanaQueryParameters.pageSize &&
-        itemsLeft + itemsRight < this.page.totalElements
+        itemsLeft - itemsSelected.length <= this.pageParameter['page-size'] &&
+        itemsLeft + itemsRight < this.currentPage.totalElements
       ) {
         this.getNextPage(side);
       }

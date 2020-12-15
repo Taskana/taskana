@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RestConnectorService } from 'app/monitor/services/rest-connector.service';
+import { MonitorService } from 'app/monitor/services/monitor.service';
 import { ChartData } from 'app/monitor/models/chart-data';
 import { ReportData } from '../../models/report-data';
 import { ChartColorsDefinition } from '../../models/chart-colors';
@@ -22,7 +22,7 @@ export class ClassificationReportComponent implements OnInit {
 
   lineChartColors = ChartColorsDefinition.getColors();
 
-  constructor(private restConnectorService: RestConnectorService) {}
+  constructor(private restConnectorService: MonitorService) {}
 
   async ngOnInit() {
     this.reportData = await this.restConnectorService.getClassificationTasksReport().toPromise();

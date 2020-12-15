@@ -185,8 +185,8 @@ describe('ClassificationDetailsComponent', () => {
   it('should return icon for category when getCategoryIcon() is called and category exists', (done) => {
     const categoryIcon = component.getCategoryIcon('AUTOMATIC');
     categoryIcon.subscribe((iconPair) => {
-      expect(iconPair.name).toBe('assets/icons/categories/automatic.svg');
-      expect(iconPair.text).toBe('AUTOMATIC');
+      expect(iconPair.left).toBe('assets/icons/categories/automatic.svg');
+      expect(iconPair.right).toBe('AUTOMATIC');
       done();
     });
   });
@@ -194,7 +194,7 @@ describe('ClassificationDetailsComponent', () => {
   it('should return icon when getCategoryIcon() is called and category does not exist', (done) => {
     const categoryIcon = component.getCategoryIcon('WATER');
     categoryIcon.subscribe((iconPair) => {
-      expect(iconPair.name).toBe('assets/icons/categories/missing-icon.svg');
+      expect(iconPair.left).toBe('assets/icons/categories/missing-icon.svg');
       done();
     });
   });

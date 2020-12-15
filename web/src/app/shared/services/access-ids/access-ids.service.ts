@@ -4,10 +4,11 @@ import { environment } from 'environments/environment';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { Observable, of } from 'rxjs';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Sorting } from 'app/shared/models/sorting';
-import { QueryParameters } from 'app/shared/models/query-parameters';
+import { Sorting, WorkbasketAccessItemQuerySortParameter } from 'app/shared/models/sorting';
 import { StartupService } from '../startup/startup.service';
+import { WorkbasketAccessItemQueryFilterParameter } from '../../models/workbasket-access-item-query-filter-parameter';
+import { QueryPagingParameter } from '../../models/query-paging-parameter';
+import { asUrlQueryString } from '../../util/query-parameters-v2';
 
 @Injectable({
   providedIn: 'root'
@@ -34,16 +35,17 @@ export class AccessIdsService {
   }
 
   getAccessItems(
-    accessIds: AccessIdDefinition[],
-    accessIdLike?: string,
-    workbasketKeyLike?: string,
-    sortModel: Sorting = new Sorting('workbasket-key')
+    filterParameter?: WorkbasketAccessItemQueryFilterParameter,
+    sortParameter?: Sorting<WorkbasketAccessItemQuerySortParameter>,
+    pagingParameter?: QueryPagingParameter
   ): Observable<WorkbasketAccessItemsRepresentation> {
     return this.httpClient.get<WorkbasketAccessItemsRepresentation>(
       encodeURI(
-        `${environment.taskanaRestUrl}/v1/workbasket-access-items/${TaskanaQueryParameters.getQueryParameters(
-          AccessIdsService.accessIdsParameters(sortModel, accessIds, accessIdLike, workbasketKeyLike)
-        )}`
+        `${environment.taskanaRestUrl}/v1/workbasket-access-items/${asUrlQueryString({
+          ...filterParameter,
+          ...sortParameter,
+          ...pagingParameter
+        })}`
       )
     );
   }
@@ -52,23 +54,5 @@ export class AccessIdsService {
     return this.httpClient.delete<WorkbasketAccessItemsRepresentation>(
       `${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`
     );
-  }
-
-  private static accessIdsParameters(
-    sortModel: Sorting,
-    accessIds: AccessIdDefinition[],
-    accessIdLike?: string,
-    workbasketKeyLike?: string
-  ): QueryParameters {
-    // TODO extend this query for support of multiple sortbys
-    const parameters = new QueryParameters();
-    parameters.SORTBY = sortModel.sortBy;
-    parameters.SORTDIRECTION = sortModel.sortDirection;
-    parameters.ACCESSIDS = accessIds.map((values: AccessIdDefinition) => values.accessId).join('|');
-    parameters.ACCESSIDLIKE = accessIdLike;
-    parameters.WORKBASKETKEYLIKE = workbasketKeyLike;
-    delete TaskanaQueryParameters.page;
-    delete TaskanaQueryParameters.pageSize;
-    return parameters;
   }
 }
