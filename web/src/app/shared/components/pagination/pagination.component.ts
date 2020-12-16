@@ -42,12 +42,11 @@ export class PaginationComponent implements OnInit, OnChanges {
   pageSelected = 1;
   pageNumbers: number[];
   filteredPages: string[] = [];
-  value: number;
 
   ngOnInit() {
     this.changeLabel();
-    this.value = 1;
   }
+  
   ngOnChanges(changes: SimpleChanges): void {
     const rangeLabel = this.paginationWrapper?.nativeElement?.querySelector('.mat-paginator-range-label');
     const container = this.paginationWrapper?.nativeElement?.querySelector('.mat-paginator-container');
@@ -85,6 +84,7 @@ export class PaginationComponent implements OnInit, OnChanges {
         return `${start} - ${end} of ${length}`;
       }
     };
+    this.pageSelected = 1;
   }
 
   changeToPage(event) {
