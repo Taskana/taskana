@@ -46,7 +46,7 @@ export class PaginationComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.changeLabel();
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     const rangeLabel = this.paginationWrapper?.nativeElement?.querySelector('.mat-paginator-range-label');
     const container = this.paginationWrapper?.nativeElement?.querySelector('.mat-paginator-container');
