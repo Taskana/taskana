@@ -9,7 +9,7 @@ import { SavingInformation, SavingWorkbasketService } from 'app/administration/s
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -102,30 +102,25 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
       .pipe(takeUntil(this.destroy$))
       .pipe(filter((buttonAction) => typeof buttonAction !== 'undefined'))
       .subscribe((button) => {
-        this.selectedComponent$
-          .pipe(take(1))
-          .pipe(filter((component) => component === WorkbasketComponent.INFORMATION))
-          .subscribe((component) => {
-            switch (button) {
-              case ButtonAction.SAVE:
-                this.onSave();
-                break;
-              case ButtonAction.UNDO:
-                this.onUndo();
-                break;
-              case ButtonAction.COPY:
-                this.copyWorkbasket();
-                break;
-              case ButtonAction.REMOVE_AS_DISTRIBUTION_TARGETS:
-                this.removeDistributionTargets();
-                break;
-              case ButtonAction.DELETE:
-                this.removeWorkbasket();
-                break;
-              default:
-                break;
-            }
-          });
+        switch (button) {
+          case ButtonAction.SAVE:
+            this.onSave();
+            break;
+          case ButtonAction.UNDO:
+            this.onUndo();
+            break;
+          case ButtonAction.COPY:
+            this.copyWorkbasket();
+            break;
+          case ButtonAction.REMOVE_AS_DISTRIBUTION_TARGETS:
+            this.removeDistributionTargets();
+            break;
+          case ButtonAction.DELETE:
+            this.removeWorkbasket();
+            break;
+          default:
+            break;
+        }
       });
   }
 

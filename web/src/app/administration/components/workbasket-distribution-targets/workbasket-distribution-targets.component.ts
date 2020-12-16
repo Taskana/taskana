@@ -9,14 +9,15 @@ import { ACTION } from 'app/shared/models/action';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
 import { Page } from 'app/shared/models/page';
-import { Select, Store } from '@ngxs/store';
+import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
 import { filter, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
   GetAvailableDistributionTargets,
   GetWorkbasketDistributionTargets,
-  UpdateWorkbasketDistributionTargets
+  UpdateWorkbasketDistributionTargets,
+  UpdateWorkbasketAccessItems
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
@@ -82,7 +83,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     private workbasketService: WorkbasketService,
     private savingWorkbaskets: SavingWorkbasketService,
     private notificationsService: NotificationService,
-    private store: Store
+    private store: Store,
+    public matDialog: MatDialog,
+    private ngxsActions$: Actions
   ) {}
 
   /**
@@ -126,14 +129,16 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
         this.getWorkbaskets();
       }
     });
+
+    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasketAccessItems), takeUntil(this.destroy$)).subscribe(() => {
+      this.onSave();
+    });
+
     this.buttonAction$
       .pipe(takeUntil(this.destroy$))
       .pipe(filter((buttonAction) => typeof buttonAction !== 'undefined'))
       .subscribe((button) => {
         switch (button) {
-          case ButtonAction.SAVE:
-            this.onSave();
-            break;
           case ButtonAction.UNDO:
             this.onClear();
             break;
