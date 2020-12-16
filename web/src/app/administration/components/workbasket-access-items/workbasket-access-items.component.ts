@@ -10,7 +10,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Select, Store } from '@ngxs/store';
+import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 
 import { Workbasket } from 'app/shared/models/workbasket';
@@ -19,20 +19,20 @@ import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbaske
 import { ACTION } from 'app/shared/models/action';
 
 import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
-import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import {
   GetWorkbasketAccessItems,
   OnButtonPressed,
-  UpdateWorkbasketAccessItems
+  UpdateWorkbasketAccessItems,
+  UpdateWorkbasket
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketComponent } from '../../models/workbasket-component';
@@ -88,7 +88,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     private formBuilder: FormBuilder,
     public formsValidatorService: FormsValidatorService,
     private notificationsService: NotificationService,
-    private store: Store
+    private store: Store,
+    private ngxsActions$: Actions
   ) {}
 
   get accessItemsGroups(): FormArray {
@@ -107,25 +108,21 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       }
     });
 
+    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
+      this.onSubmit();
+    });
+
     this.buttonAction$
       .pipe(takeUntil(this.destroy$))
       .pipe(filter((buttonAction) => typeof buttonAction !== 'undefined'))
       .subscribe((button) => {
-        this.selectedComponent$
-          .pipe(take(1))
-          .pipe(filter((component) => component === WorkbasketComponent.ACCESS_ITEMS))
-          .subscribe((component) => {
-            switch (button) {
-              case ButtonAction.SAVE:
-                this.onSubmit();
-                break;
-              case ButtonAction.UNDO:
-                this.clear();
-                break;
-              default:
-                break;
-            }
-          });
+        switch (button) {
+          case ButtonAction.UNDO:
+            this.clear();
+            break;
+          default:
+            break;
+        }
       });
   }
 
