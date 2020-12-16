@@ -9,7 +9,7 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { ClassificationQuerySortParameter, Sorting } from 'app/shared/models/sorting';
 import { StartupService } from '../startup/startup.service';
 import { asUrlQueryString } from '../../util/query-parameters-v2';
-import { ClassificationQueryFilterParameters } from '../../models/classification-query-filter-parameters';
+import { ClassificationQueryFilterParameter } from '../../models/classification-query-filter-parameter';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class ClassificationsService {
 
   // GET
   getClassifications(
-    filterParameter?: ClassificationQueryFilterParameters,
+    filterParameter?: ClassificationQueryFilterParameter,
     sortParameter?: Sorting<ClassificationQuerySortParameter>,
     pagingParameter?: QueryPagingParameter
   ): Observable<ClassificationPagingList> {

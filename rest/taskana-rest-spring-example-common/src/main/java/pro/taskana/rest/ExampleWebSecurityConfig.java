@@ -1,5 +1,8 @@
 package pro.taskana.rest;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -17,10 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 @Configuration
 public class ExampleWebSecurityConfig {

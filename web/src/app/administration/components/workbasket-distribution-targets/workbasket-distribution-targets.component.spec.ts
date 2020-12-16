@@ -19,7 +19,7 @@ import {
   selectedWorkbasketMock,
   workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { Pair } from '../../../shared/models/pair';
 
 const routeParamsMock = { id: 'workbasket' };

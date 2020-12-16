@@ -11,7 +11,7 @@
     <mat-menu #sortDirection="matMenu">
       <!-- ASCENDING ORDER BUTTON -->
       <button mat-menu-item (click)="changeOrder(sortDirectionEnum.ASC)">
-        <span *ngIf="sort.order === 'asc'; else coloredAsc">
+        <span *ngIf="sort.order === sortDirectionEnum.ASC; else coloredAsc">
           <mat-icon class="sort__selected-value"> arrow_upward </mat-icon>
           <span class="sort__selected-value"> Ascending </span>
         </span>
@@ -23,7 +23,7 @@
 
       <!-- DESCENDING ORDER BUTTON -->
       <button mat-menu-item (click)="changeOrder(sortDirectionEnum.DESC)">
-        <span *ngIf="sort.order === 'desc'; else coloredDesc">
+        <span *ngIf="sort.order === sortDirectionEnum.DESC; else coloredDesc">
           <mat-icon class="sort__selected-value"> arrow_downward </mat-icon>
           <span class="sort__selected-value"> Descending </span>
         </span>

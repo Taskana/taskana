@@ -21,7 +21,7 @@ import { Workbasket } from '../../../shared/models/workbasket';
 import { MatSelectionList } from '@angular/material/list';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 
 @Component({

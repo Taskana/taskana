@@ -23,7 +23,7 @@ import { ClassificationsService } from '../../services/classifications/classific
 import { DomainService } from '../../services/domain/domain.service';
 import { Classification } from '../../models/classification';
 import { ClassificationSummary } from '../../models/classification-summary';
-import { ClassificationQueryFilterParameters } from '../../models/classification-query-filter-parameters';
+import { ClassificationQueryFilterParameter } from '../../models/classification-query-filter-parameter';
 import { ClassificationQuerySortParameter, Direction, Sorting } from '../../models/sorting';
 
 class InitializeStore {
@@ -98,7 +98,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
     const { selectedClassificationType } = ctx.getState();
     return this.domainService.getSelectedDomain().pipe(
       mergeMap((domain) => {
-        const filter: ClassificationQueryFilterParameters = {
+        const filter: ClassificationQueryFilterParameter = {
           domain: [domain],
           type: [selectedClassificationType]
         };

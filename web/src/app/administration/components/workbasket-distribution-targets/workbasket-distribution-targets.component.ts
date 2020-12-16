@@ -21,7 +21,7 @@ import {
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
 import { Pair } from '../../../shared/models/pair';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 
 export enum Side {

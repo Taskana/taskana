@@ -22,8 +22,8 @@
                 <span class="icon-space">
                   {{getHeaderFieldDescription(taskHeader.key)}}
                 </span>
-                <span *ngIf="orderBy['sort-by'] === taskHeader.key"
-                      [ngClass]="{'flip': orderBy.sortDirection === 'desc'}"
+                <span *ngIf="sortParameter['sort-by'] === taskHeader.key"
+                      [ngClass]="{'flip': sortParameter.order === sortDirection.DESC}"
                       class="material-icons md-20 blue pull-right">sort</span>
               </div>
               <div (click)="toggleExpand = !toggleExpand" *ngIf="taskHeader.key === 'custom1'"
@@ -39,8 +39,8 @@
                   {{getHeaderFieldDescription(taskHeader.key)}}
                 </span>
                 <span
-                    *ngIf="orderBy.sortBy === taskHeader.key && filterFieldsToAllowQuerying(taskHeader.key)"
-                    [ngClass]="{'flip': orderBy.sortDirection === 'desc'}"
+                    *ngIf="sortParameter['sort-by'] === taskHeader.key && filterFieldsToAllowQuerying(taskHeader.key)"
+                    [ngClass]="{'flip': sortParameter.order === sortDirection.DESC}"
                     class="material-icons md-20 blue pull-right">sort</span>
               </div>
             </ng-container>
@@ -107,8 +107,8 @@
         </div>
       </form>
     </div>
-    <div *ngIf="taskQueryResource" class="divTablePagination">
-      <taskana-shared-pagination (changePage)="changePage($event)" [(page)]="taskQueryResource.page"
+    <div *ngIf="taskQueryResource?.page" class="divTablePagination">
+      <taskana-shared-pagination (changePage)="changePage($event)" [page]="taskQueryResource.page"
                                  [numberOfItems]="taskQuery.length"
                                  type="Entries"></taskana-shared-pagination>
     </div>
