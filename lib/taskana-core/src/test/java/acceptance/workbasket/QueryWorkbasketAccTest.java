@@ -162,7 +162,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .ownerLike("%an%", "%te%")
+            .ownerLike("%1-2%")
             .orderByOwner(ASCENDING)
             .list();
     assertThat(results).hasSize(1);
@@ -344,14 +344,14 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .ownerIn("owner0815")
+            .ownerIn("teamlead-1")
             .orderByDomain(DESCENDING)
             .list();
 
     assertThat(results)
         .extracting(WorkbasketSummary::getId)
         .containsExactly(
-            "WBI:100000000000000000000000000000000015", "WBI:100000000000000000000000000000000001");
+            "WBI:100000000000000000000000000000000001");
   }
 
   @WithAccessId(user = "teamlead-1")
