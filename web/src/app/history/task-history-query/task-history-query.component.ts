@@ -19,7 +19,7 @@ export class TaskHistoryQueryComponent implements OnInit {
   taskQueryResource: TaskHistoryEventResourceData;
   taskQuery: Array<TaskHistoryEventData>;
   taskQueryHeader = new TaskHistoryEventData();
-  orderBy: Sorting<TaskHistoryQuerySortParameter> = {
+  sortParameter: Sorting<TaskHistoryQuerySortParameter> = {
     'sort-by': TaskHistoryQuerySortParameter.CREATED,
     order: Direction.ASC
   };
@@ -27,6 +27,9 @@ export class TaskHistoryQueryComponent implements OnInit {
   taskQuerySubscription: Subscription;
 
   taskQueryForm = new FormGroup({});
+
+  // to make this enum available for html
+  sortDirection = Direction;
 
   constructor(
     private taskQueryService: TaskHistoryQueryService,
@@ -147,7 +150,6 @@ export class TaskHistoryQueryComponent implements OnInit {
   }
 
   changeOrderBy(key: string) {
-    console.log(key);
     if (this.filterFieldsToAllowQuerying(key)) {
       // if (this.orderBy.sortBy === key) {
       //   this.orderBy.sortDirection = this.toggleSortDirection(this.orderBy.sortDirection);
@@ -203,6 +205,7 @@ export class TaskHistoryQueryComponent implements OnInit {
       ()
       .subscribe((taskQueryResource) => {
         this.requestInProgressService.setRequestInProgress(false);
+        console.log(taskQueryResource);
         this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;
         this.taskQuery = taskQueryResource.taskHistoryEvents ? taskQueryResource.taskHistoryEvents : null;
       });

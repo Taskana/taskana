@@ -107,6 +107,7 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
     this.requestInProgress = true;
     this.classificationService
       .getClassifications({ domain: [this.task.workbasketSummary.domain] })
+      .pipe(takeUntil(this.destroy$))
       .subscribe((classificationPagingList) => {
         this.classifications = classificationPagingList.classifications;
         this.requestInProgress = false;

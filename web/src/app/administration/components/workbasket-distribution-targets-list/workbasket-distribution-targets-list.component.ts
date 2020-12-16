@@ -13,7 +13,7 @@ import { expandDown } from 'app/shared/animations/expand.animation';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 import { MatSelectionList } from '@angular/material/list';
 import { Pair } from '../../../shared/models/pair';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets-list',

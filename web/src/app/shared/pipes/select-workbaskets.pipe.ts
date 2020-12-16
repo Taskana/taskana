@@ -15,7 +15,8 @@ export class SelectWorkBasketPipe implements PipeTransform {
     if (side === Side.SELECTED) {
       return selectedWorkbaskets;
     }
-    const isNotSelectedWorkbasket = (wb) => !selectedWorkbaskets.some((sWb) => sWb.workbasketId === wb.workbasketId);
-    return allWorkbaskets.filter(isNotSelectedWorkbasket);
+    const selectedWorkbasketIds: string[] = selectedWorkbaskets.map((wb) => wb.workbasketId);
+    const isNotASelectedWorkbasket = (wb: WorkbasketSummary) => !selectedWorkbasketIds.includes(wb.workbasketId);
+    return allWorkbaskets.filter(isNotASelectedWorkbasket);
   }
 }

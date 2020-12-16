@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ALL_TYPES, WorkbasketType } from '../../models/workbasket-type';
-import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
 import { Pair } from '../../models/pair';
 
 @Component({

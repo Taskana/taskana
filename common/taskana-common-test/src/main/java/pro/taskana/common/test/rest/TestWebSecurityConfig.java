@@ -23,7 +23,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /** Default basic configuration for taskana web example. */
 @Configuration
-public class WebSecurityConfig {
+public class TestWebSecurityConfig {
 
   private final String ldapServerUrl;
   private final String ldapBaseDn;
@@ -31,7 +31,7 @@ public class WebSecurityConfig {
   private final String ldapGroupSearchFilter;
 
   @Autowired
-  public WebSecurityConfig(
+  public TestWebSecurityConfig(
       @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}") String ldapServerUrl,
       @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}") String ldapBaseDn,
       @Value("${taskana.ldap.groupSearchBase:cn=groups}") String ldapGroupSearchBase,

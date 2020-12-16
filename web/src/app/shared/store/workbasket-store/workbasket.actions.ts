@@ -5,7 +5,7 @@ import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
 import { ButtonAction } from '../../../administration/models/button-action';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
-import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
 
 // Workbasket List
 export class GetWorkbasketsSummary {

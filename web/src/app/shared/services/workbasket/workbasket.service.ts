@@ -12,7 +12,7 @@ import { Sorting, WorkbasketQuerySortParameter } from 'app/shared/models/sorting
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { mergeMap, tap, catchError } from 'rxjs/operators';
 import { WorkbasketRepresentation } from '../../models/workbasket-representation';
-import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
 import { asUrlQueryString } from '../../util/query-parameters-v2';
 

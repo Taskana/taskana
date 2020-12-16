@@ -10,7 +10,7 @@ import { ACTION } from '../../../shared/models/action';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { Pair } from '../../../shared/models/pair';
 
 @Component({

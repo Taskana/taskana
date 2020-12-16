@@ -18,7 +18,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { Pair } from '../../../shared/models/pair';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
@@ -123,14 +123,14 @@ describe('WorkbasketListToolbarComponent', () => {
     expect(sort).toMatchObject(mockSort);
   });
 
-  it('should NOT emit value when filtering is called with wrong component', async((done) => {
+  it('should NOT emit value when filtering is called with wrong component', () => {
     const mockFilter: Pair<string, WorkbasketQueryFilterParameter> = { left: 'foo', right: { domain: ['DOMAIN_A'] } };
     const performFilterSpy = jest.spyOn(component.performFilter, 'emit');
     component.filtering(mockFilter);
     expect(performFilterSpy).toBeCalledTimes(0);
-  }));
+  });
 
-  it('should emit value when filtering is called with correct component', async((done) => {
+  it('should emit value when filtering is called with correct component', () => {
     const mockFilter: Pair<string, WorkbasketQueryFilterParameter> = {
       left: 'workbasket-list',
       right: { domain: ['DOMAIN_A'] }
@@ -139,7 +139,7 @@ describe('WorkbasketListToolbarComponent', () => {
     component.filtering(mockFilter);
     expect(performFilterSpy).toBeCalledTimes(1);
     expect(performFilterSpy).toBeCalledWith(mockFilter.right);
-  }));
+  });
 
   /* HTML */
 

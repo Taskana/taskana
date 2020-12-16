@@ -10,7 +10,7 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-parameters';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 
 @Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {

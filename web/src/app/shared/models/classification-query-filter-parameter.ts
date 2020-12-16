@@ -1,4 +1,4 @@
-export interface ClassificationQueryFilterParameters {
+export interface ClassificationQueryFilterParameter {
   name?: string[];
   'name-like'?: string[];
   key?: string[];
