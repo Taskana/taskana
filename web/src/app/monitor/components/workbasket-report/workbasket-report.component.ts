@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MetaInfoData } from '../../models/meta-info-data';
 import { QueryType } from '../../models/query-type';
+enum WorkbasketReports {
+  DUE_DATE,
+  PLANNED_DATE
+}
 
 @Component({
   selector: 'taskana-monitor-workbasket-report',
@@ -9,8 +13,7 @@ import { QueryType } from '../../models/query-type';
 })
 export class WorkbasketReportComponent implements OnInit {
   metaInformation: MetaInfoData;
-  showMonitorQueryPlannedDate: Boolean;
-  showMonitorQueryDueDate: Boolean;
+  selectedComponent: WorkbasketReports;
 
   ngOnInit() {}
 
@@ -18,23 +21,12 @@ export class WorkbasketReportComponent implements OnInit {
     this.metaInformation = metaInformation;
   }
 
-  queryChanged(monitorQueryType: QueryType) {
-    this.switchGraphicShowed(monitorQueryType);
+  selectComponent(component) {
+    this.selectedComponent = component;
   }
-
   getTitle(): string {
-    return this.showMonitorQueryPlannedDate
+    return this.selectedComponent
       ? 'Tasks grouped by workbasket, querying by planned date'
       : 'Tasks grouped by workbasket, querying by due date';
-  }
-
-  private switchGraphicShowed(monitorQueryType: QueryType) {
-    if (monitorQueryType === QueryType.PlannedDate) {
-      this.showMonitorQueryPlannedDate = true;
-      this.showMonitorQueryDueDate = false;
-    } else if (monitorQueryType === QueryType.DueDate) {
-      this.showMonitorQueryPlannedDate = false;
-      this.showMonitorQueryDueDate = true;
-    }
   }
 }
