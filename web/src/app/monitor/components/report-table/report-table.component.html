@@ -36,6 +36,7 @@
                 </div>
             </div>
         </ng-container>
+        <button mat-flat-button color="accent" (click)="addRows()">Add more rows</button>
     </div>
     <div class="table-footer">
         <ng-container *ngFor="let row of reportData.sumRow; let i = index">
@@ -61,4 +62,5 @@
             </div>
         </ng-container>
     </div>
+
 </div>
