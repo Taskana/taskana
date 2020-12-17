@@ -22,7 +22,7 @@ import { MonitorService } from './services/monitor.service';
 import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
 import { WorkbasketReportPlannedDateComponent } from './components/workbasket-report-planned-date/workbasket-report-planned-date.component';
 import { WorkbasketReportDueDateComponent } from './components/workbasket-report-due-date/workbasket-report-due-date.component';
-import { WorkbasketReportQuerySwitcherComponent } from './components/workbasket-report-query-switcher/workbasket-report-query-switcher.component';
+import { MatButtonModule } from '@angular/material/button';
 
 const MODULES = [
   CommonModule,
@@ -43,14 +43,13 @@ const DECLARATIONS = [
   WorkbasketReportComponent,
   WorkbasketReportPlannedDateComponent,
   WorkbasketReportDueDateComponent,
-  WorkbasketReportQuerySwitcherComponent,
   TaskReportComponent,
   ClassificationReportComponent
 ];
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
+  imports: [MODULES, MatButtonModule],
   providers: [MonitorService, MapToIterable]
 })
 export class MonitorModule {}
