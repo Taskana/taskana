@@ -7,7 +7,8 @@ import {
   OnInit,
   QueryList,
   SimpleChanges,
-  ViewChildren
+  ViewChildren,
+  HostListener
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
@@ -55,8 +56,11 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   inputs: QueryList<ElementRef>;
 
   badgeMessage = '';
+  selectedRows: number[] = [];
+  workbasketClone: Workbasket;
 
   customFields$: Observable<CustomField[]>;
+  customFields: CustomField[];
 
   accessItemsRepresentation: WorkbasketAccessItemsRepresentation;
   accessItemsClone: Array<WorkbasketAccessItems>;
@@ -99,6 +103,9 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   ngOnInit() {
     this.init();
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
+    this.customFields$.subscribe((v) => {
+      this.customFields = v;
+    });
     this.accessItemsRepresentation$.subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
         this.accessItemsRepresentation = accessItemsRepresentation;
@@ -134,10 +141,40 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     });
   }
 
+  ngAfterViewChecked() {
+    let elementIndex = 0;
+    let isTrue = true;
+    if (this.accessItemsGroups.controls) {
+      this.accessItemsGroups.controls.forEach((element) => {
+        for (let i in element.value) {
+          if (i.startsWith('perm')) {
+            if (this.accessItemsGroups.controls[elementIndex].value[i] === false) {
+              isTrue = false;
+              break;
+            }
+          }
+        }
+        if (isTrue) {
+          const checkbox = document.getElementById(`checkbox-${elementIndex}-00`) as HTMLInputElement;
+          if (checkbox) {
+            checkbox.checked = true;
+            elementIndex++;
+          }
+        }
+      });
+    }
+  }
+
   ngOnChanges(changes?: SimpleChanges) {
     if (changes.action) {
       this.setBadge();
     }
+    if (this.workbasketClone) {
+      if (this.workbasketClone.workbasketId != this.workbasket.workbasketId) {
+        this.init();
+      }
+    }
+    this.workbasketClone = this.workbasket;
   }
 
   init() {
@@ -205,8 +242,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     workbasketAccessItems.permRead = true;
     const newForm = this.formBuilder.group(workbasketAccessItems);
     newForm.controls.accessId.setValidators(Validators.required);
-    this.accessItemsGroups.push(newForm);
-    this.accessItemsClone.push(workbasketAccessItems);
+    this.accessItemsGroups.insert(0, newForm);
+    this.accessItemsClone.unshift(workbasketAccessItems);
     this.added = true;
   }
 
@@ -217,11 +254,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     this.setAccessItemsGroups(this.accessItemsResetClone);
     this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
     this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
-  }
-
-  remove(index: number) {
-    this.accessItemsGroups.removeAt(index);
-    this.accessItemsClone.splice(index, 1);
   }
 
   isFieldValid(field: string, index: number): boolean {
@@ -255,7 +287,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   accessItemSelected(accessItem: AccessIdDefinition, row: number) {
-    this.accessItemsGroups.controls[row].get('accessId').setValue(accessItem.accessId);
+    this.accessItemsGroups.controls[row].get('accessId').setValue(accessItem?.accessId);
     this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem.name);
   }
 
@@ -271,6 +303,40 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       .subscribe(() => {
         this.requestInProgressService.setRequestInProgress(false);
       });
+  }
+
+  checkboxClicked(index: number, value: any) {
+    if (value.currentTarget.checked) {
+      let isTrue = true;
+      let numbers = [];
+      const notVisibleFields = this.customFields.filter((v) => v.visible === false);
+      notVisibleFields.forEach((element) => {
+        const num = element.field.match(/\d/g).toString().replace(/,/g, '');
+        numbers.push(num);
+      });
+      for (let i in this.accessItemsGroups.controls[index].value) {
+        if (i.startsWith('perm')) {
+          const num = i.match(/\d/g);
+          if (num) {
+            const result = num.toString().replace(/,/g, '');
+            if (numbers.includes(result)) {
+              this.accessItemsGroups.controls[index].value[i] = true;
+            }
+          }
+          if (this.accessItemsGroups.controls[index].value[i] === false) {
+            isTrue = false;
+            break;
+          }
+        }
+      }
+      if (isTrue) {
+        const checkbox = document.getElementById(`checkbox-${index}-00`) as HTMLInputElement;
+        checkbox.checked = true;
+      }
+    } else {
+      const checkbox = document.getElementById(`checkbox-${index}-00`) as HTMLInputElement;
+      checkbox.checked = false;
+    }
   }
 
   setBadge() {
@@ -296,10 +362,25 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     return `permCustom${customNumber}`;
   }
 
-  focusNewInput(input: ElementRef) {
-    if (this.added) {
-      input.nativeElement.focus();
+  selectRow(value: any, index: number) {
+    if (value.target.checked) {
+      this.selectedRows.push(index);
+    } else {
+      this.selectedRows = this.selectedRows.filter(function (number) {
+        return number != index;
+      });
     }
+  }
+
+  deleteAccessItems() {
+    this.selectedRows.sort(function (a, b) {
+      return b - a;
+    });
+    this.selectedRows.forEach((element) => {
+      this.accessItemsGroups.removeAt(element);
+      this.accessItemsClone.splice(element, 1);
+    });
+    this.selectedRows = [];
   }
 
   ngOnDestroy() {

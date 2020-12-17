@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketAccessItemsComponent } from './workbasket-access-items.component';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -32,11 +32,20 @@ import {
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ACTION } from '../../../shared/models/action';
+import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+
+@Component({ selector: 'taskana-shared-spinner', template: '' })
+class SpinnerStub {
+  @Input() isRunning: boolean;
+  @Input() positionClass: string;
+}
 
 const savingWorkbasketServiceSpy = jest.fn().mockImplementation(
   (): Partial<SavingWorkbasketService> => ({
@@ -91,9 +100,11 @@ describe('WorkbasketAccessItemsComponent', () => {
         MatInputModule,
         MatSelectModule,
         MatAutocompleteModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatCheckboxModule,
+        MatIconModule
       ],
-      declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent],
+      declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
         { provide: SavingWorkbasketService, useClass: savingWorkbasketServiceSpy },
         { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
@@ -152,7 +163,9 @@ describe('WorkbasketAccessItemsComponent', () => {
 
   it('should add accessItems when add access item button is clicked', () => {
     fixture.detectChanges();
-    const addAccessItemButton = debugElement.nativeElement.querySelector('button.workbasket-access-items__add-access');
+    const addAccessItemButton = debugElement.nativeElement.querySelector(
+      'button.workbasket-access-items__buttons-add-access'
+    );
     const clearSpy = jest.spyOn(component, 'addAccessItem');
     expect(addAccessItemButton.title).toMatch('Add new access');
 
@@ -172,7 +185,6 @@ describe('WorkbasketAccessItemsComponent', () => {
     const checkAllSpy = jest.spyOn(component, 'checkAll');
     const checkAllButton = debugElement.nativeElement.querySelector('#checkbox-0-00');
     expect(checkAllButton).toBeTruthy();
-
     checkAllButton.click();
     expect(checkAllSpy).toHaveBeenCalled();
   });
