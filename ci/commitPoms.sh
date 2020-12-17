@@ -2,11 +2,11 @@
 set -e # fail fast
 
 #H Usage:
-#H commitPoms.sh -h | commitPoms.sh --help
+#H %FILE% -h | %FILE% --help
 #H
 #H prints this help and exits
 #H
-#H commitPoms.sh [additional files...]
+#H %FILE% [additional files...]
 #H
 #H   commits and pushes all *.pom files (+ additional files)
 #H
@@ -21,7 +21,7 @@ set -e # fail fast
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
-  cat "$0" | grep "^#H" | cut -c4-
+  cat "$0" | grep "^#H" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
   exit "$1"
 }
 

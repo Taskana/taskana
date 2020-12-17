@@ -2,11 +2,11 @@
 set -e #fail fast
 
 #H Usage:
-#H change_version.sh -h | change_version.sh --help
+#H %FILE% -h | %FILE% --help
 #H
 #H prints this help and exits
 #H
-#H change_version.sh <-m modules...> [-i]
+#H %FILE% <-m modules...> [-i]
 #H
 #H   if a release version exists (extracted from TRAVIS_TAG)
 #H   the maven versions of all modules will be changed to the given release version.
@@ -23,7 +23,7 @@ set -e #fail fast
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
-  cat "$0" | grep "^#H" | cut -c4-
+  cat "$0" | grep "^#H" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
   exit "$1"
 }
 

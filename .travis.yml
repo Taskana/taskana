@@ -81,7 +81,10 @@ jobs:
     - stage: Test
       install: skip
       env: DB=POSTGRES_10
-      script: ci/test.sh "$DB" && export JAVA_HOME=/usr/local/lib/jvm/openjdk8 && ci/test.sh WILDFLY
+      script: ci/test.sh "$DB"
+        && ./mvnw -q install -f history -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -Dasciidoctor.skip
+        && export JAVA_HOME=/usr/local/lib/jvm/openjdk8
+        && ci/test.sh WILDFLY
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
 
     - stage: Test
@@ -123,7 +126,9 @@ jobs:
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
       # travis_terminate is necessary since after_success is a job phase which can change the build result.
       # it is not documented, so this is a little hack. see: https://docs.travis-ci.com/user/job-lifecycle/#breaking-the-build
-      after_success: ci/change_version.sh -i -m . && ci/commitPoms.sh || travis_terminate 1
+      after_success: ci/change_version.sh -i -m .
+        && ci/update_taskana_dependency_for_wildfly.sh
+        && ci/commitPoms.sh || travis_terminate 1
       deploy:
         provider: cloudfoundry
         username: $BLUEMIX_ACCOUNT
