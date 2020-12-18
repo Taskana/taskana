@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Direction, Sorting, TaskHistoryQuerySortParameter } from 'app/shared/models/sorting';
-import { OrientationService } from 'app/shared/services/orientation/orientation.service';
-import { Subscription } from 'rxjs';
-import { Orientation } from 'app/shared/models/orientation';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { FormControl, FormGroup } from '@angular/forms';
-import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
-import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskHistoryEventData } from '../../shared/models/task-history-event';
 import { TaskHistoryQueryService } from '../services/task-history-query/task-history-query.service';
+import { Page } from '../../shared/models/page';
+import { MatSort, Sort } from '@angular/material/sort';
+import { QueryPagingParameter } from '../../shared/models/query-paging-parameter';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { merge } from 'rxjs';
+import { startWith, switchMap, tap } from 'rxjs/operators';
+import { RequestInProgressService } from '../../shared/services/request-in-progress/request-in-progress.service';
+import { Pair } from '../../shared/models/pair';
 
 @Component({
   selector: 'taskana-task-query',
@@ -16,214 +17,110 @@ import { TaskHistoryQueryService } from '../services/task-history-query/task-his
   styleUrls: ['./task-history-query.component.scss']
 })
 export class TaskHistoryQueryComponent implements OnInit {
-  taskQueryResource: TaskHistoryEventResourceData;
-  taskQuery: Array<TaskHistoryEventData>;
-  taskQueryHeader = new TaskHistoryEventData();
+  data: TaskHistoryEventData[] = [];
+  displayedColumns: Pair<string, TaskHistoryQuerySortParameter>[] = [
+    { left: 'parentBusinessProcessId', right: TaskHistoryQuerySortParameter.PARENT_BUSINESS_PROCESS_ID },
+    { left: 'businessProcessId', right: TaskHistoryQuerySortParameter.BUSINESS_PROCESS_ID },
+    { left: 'created', right: TaskHistoryQuerySortParameter.CREATED },
+    { left: 'userId', right: TaskHistoryQuerySortParameter.USER_ID },
+    { left: 'eventType', right: TaskHistoryQuerySortParameter.EVENT_TYPE },
+    { left: 'workbasketKey', right: TaskHistoryQuerySortParameter.WORKBASKET_KEY },
+    { left: 'porType', right: TaskHistoryQuerySortParameter.POR_TYPE },
+    { left: 'porValue', right: TaskHistoryQuerySortParameter.POR_VALUE },
+    { left: 'domain', right: TaskHistoryQuerySortParameter.DOMAIN },
+    { left: 'taskId', right: TaskHistoryQuerySortParameter.TASK_ID },
+    { left: 'porCompany', right: TaskHistoryQuerySortParameter.POR_COMPANY },
+    { left: 'porSystem', right: TaskHistoryQuerySortParameter.POR_SYSTEM },
+    { left: 'porInstance', right: TaskHistoryQuerySortParameter.POR_INSTANCE },
+    { left: 'taskClassificationKey', right: TaskHistoryQuerySortParameter.TASK_CLASSIFICATION_KEY },
+    { left: 'taskClassificationCategory', right: TaskHistoryQuerySortParameter.TASK_CLASSIFICATION_CATEGORY },
+    { left: 'attachmentClassificationKey', right: TaskHistoryQuerySortParameter.ATTACHMENT_CLASSIFICATION_KEY },
+    { left: 'custom1', right: TaskHistoryQuerySortParameter.CUSTOM_1 },
+    { left: 'custom2', right: TaskHistoryQuerySortParameter.CUSTOM_2 },
+    { left: 'custom3', right: TaskHistoryQuerySortParameter.CUSTOM_3 },
+    { left: 'custom4', right: TaskHistoryQuerySortParameter.CUSTOM_4 },
+    { left: 'comment', right: undefined },
+    { left: 'oldValue', right: undefined },
+    { left: 'newValue', right: undefined },
+    { left: 'oldData', right: undefined },
+    { left: 'newData', right: undefined }
+  ];
+  pageInformation: Page;
+
+  pageParameter: QueryPagingParameter = {
+    page: 1,
+    'page-size': 9
+  };
+
+  // IMPORTANT: Please make sure that material table default matches with this entity.
   sortParameter: Sorting<TaskHistoryQuerySortParameter> = {
     'sort-by': TaskHistoryQuerySortParameter.CREATED,
     order: Direction.ASC
   };
-  orientationSubscription: Subscription;
-  taskQuerySubscription: Subscription;
 
-  taskQueryForm = new FormGroup({});
-
-  // to make this enum available for html
-  sortDirection = Direction;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(PaginationComponent) pagination: PaginationComponent;
 
   constructor(
-    private taskQueryService: TaskHistoryQueryService,
-    private orientationService: OrientationService,
+    private taskHistoryQueryService: TaskHistoryQueryService,
     private requestInProgressService: RequestInProgressService
   ) {}
 
-  ngOnInit() {
-    this.orientationSubscription = this.orientationService.getOrientation().subscribe((orientation: Orientation) => {
-      this.performRequest();
-    });
-    this.initTaskQueryForm();
-  }
+  ngOnInit() {}
 
-  getHeaderFieldDescription(property: string): string {
-    switch (property) {
-      case 'parentBusinessProcessId':
-        return 'Parent BPI';
-      case 'businessProcessId':
-        return 'BPI';
-      case 'taskId':
-        return 'Task id';
-      case 'eventType':
-        return 'Event type';
-      case 'created':
-        return 'Created';
-      case 'userId':
-        return 'User id';
-      case 'domain':
-        return 'Domain';
-      case 'workbasketKey':
-        return 'Workbasket key';
-      case 'porCompany':
-        return 'Obj company';
-      case 'porSystem':
-        return 'Obj system';
-      case 'porInstance':
-        return 'Obj instance';
-      case 'porType':
-        return 'Obj type';
-      case 'porValue':
-        return 'Obj value';
-      case 'taskClassificationKey':
-        return 'Classification key';
-      case 'taskClassificationCategory':
-        return 'Classification category';
-      case 'attachmentClassificationKey':
-        return 'Attachment Classification';
-      case 'custom1':
-        return 'Custom 1';
-      case 'custom2':
-        return 'Custom 2';
-      case 'custom3':
-        return 'Custom 3';
-      case 'custom4':
-        return 'Custom 4';
-      case 'oldData':
-        return 'Old data';
-      case 'newData':
-        return 'New data';
-      case 'comment':
-        return 'Comment';
-      case 'oldValue':
-        return 'Old value';
-      case 'newValue':
-        return 'New value';
-      default:
-        return property;
-    }
-  }
+  ngAfterViewInit() {
+    const sortChange$ = this.sort.sortChange.pipe(
+      tap((sort) => this.updateSortParameter(sort)),
+      tap(() => (this.pageParameter.page = 1))
+    );
 
-  isDate(fieldName: string): boolean {
-    return fieldName === 'created';
-  }
+    const pageChange$ = this.pagination.changePage.pipe(tap((newPage) => (this.pageParameter.page = newPage)));
 
-  filterFieldsToAllowQuerying(fieldName: string): boolean {
-    if (
-      !fieldName ||
-      fieldName === 'oldData' ||
-      fieldName === 'newData' ||
-      fieldName === 'comment' ||
-      fieldName === 'oldValue' ||
-      fieldName === 'newValue'
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  filterFieldsToShow(fieldName: string): boolean {
-    if (fieldName === 'taskHistoryId' || fieldName === 'page' || fieldName === '_links') {
-      return false;
-    }
-    return true;
-  }
-
-  filterExpandGroup(fieldName: string): boolean {
-    if (
-      fieldName === 'custom1' ||
-      fieldName === 'custom2' ||
-      fieldName === 'custom3' ||
-      fieldName === 'custom4' ||
-      fieldName === 'oldData' ||
-      fieldName === 'newData' ||
-      fieldName === 'comment' ||
-      fieldName === 'oldValue' ||
-      fieldName === 'newValue'
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  // TODO: but why?
-  search() {
-    this.performRequest();
-  }
-
-  changeOrderBy(key: string) {
-    if (this.filterFieldsToAllowQuerying(key)) {
-      // if (this.orderBy.sortBy === key) {
-      //   this.orderBy.sortDirection = this.toggleSortDirection(this.orderBy.sortDirection);
-      // }
-      // this.orderBy.sortBy = key;
-    }
-  }
-
-  getTaskValue(key: string, task: TaskHistoryEventData): string {
-    return task[key];
-  }
-
-  clear() {
-    this.taskQueryForm.reset();
-    this.performRequest();
-  }
-
-  changePage(page) {
-    TaskanaQueryParameters.page = page;
-    this.performRequest();
-  }
-
-  updateDate($event: string) {
-    this.taskQueryForm.get('created').setValue($event.substring(0, 10));
-    this.performRequest();
-  }
-
-  ngOnDestroy() {
-    if (this.orientationSubscription) {
-      this.orientationSubscription.unsubscribe();
-    }
-    if (this.taskQuerySubscription) {
-      this.taskQuerySubscription.unsubscribe();
-    }
-  }
-
-  private toggleSortDirection(sortDirection: string): Direction {
-    if (sortDirection === Direction.ASC) {
-      return Direction.DESC;
-    }
-    return Direction.ASC;
-  }
-
-  private performRequest() {
-    this.requestInProgressService.setRequestInProgress(true);
-    this.calculateQueryPages();
-    this.taskQuerySubscription = this.taskQueryService
-      .getTaskHistoryEvents
-      // this.orderBy.sortBy.replace(/([A-Z])|([0-9])/g, (g) => `-${g[0].toLowerCase()}`),
-      // this.orderBy.sortDirection,
-      // new TaskHistoryEventData(this.taskQueryForm.value),
-      // false
-      ()
-      .subscribe((taskQueryResource) => {
+    merge(sortChange$, pageChange$)
+      .pipe(
+        startWith({}),
+        tap(() => this.calculateQueryPages()),
+        switchMap(() => {
+          this.requestInProgressService.setRequestInProgress(true);
+          return this.taskHistoryQueryService.getTaskHistoryEvents(undefined, this.sortParameter, this.pageParameter);
+        })
+      )
+      .subscribe((data) => {
+        this.data = data.taskHistoryEvents;
+        this.pageInformation = data.page;
         this.requestInProgressService.setRequestInProgress(false);
-        console.log(taskQueryResource);
-        this.taskQueryResource = taskQueryResource.taskHistoryEvents ? taskQueryResource : null;
-        this.taskQuery = taskQueryResource.taskHistoryEvents ? taskQueryResource.taskHistoryEvents : null;
       });
   }
 
-  private initTaskQueryForm() {
-    Object.keys(new TaskHistoryEventData()).forEach((key) => {
-      this.taskQueryForm.addControl(key, new FormControl());
-    });
-    this.performRequest();
+  updateSortParameter(sort: Sort): void {
+    if (sort) {
+      const pair: Pair<string, TaskHistoryQuerySortParameter> = this.displayedColumns.find(
+        (pair) => pair.left === sort.active
+      );
+      if (pair) {
+        this.sortParameter = {
+          'sort-by': pair.right,
+          order: sort.direction === 'asc' ? Direction.ASC : Direction.DESC
+        };
+      }
+    }
+  }
+
+  // this is a workaround so that the variables inside the html will be resolved correctly.
+  // more details: https://stackoverflow.com/a/64448113/6501286
+  convertToTaskHistoryEventData(data: TaskHistoryEventData): TaskHistoryEventData {
+    return data;
+  }
+
+  getDisplayColumns(): string[] {
+    return this.displayedColumns.map((pair) => pair.left);
   }
 
   private calculateQueryPages() {
-    const rowHeight = 34;
+    const rowHeight = 48;
     const unusedHeight = 300;
     const totalHeight = window.innerHeight;
     const cards = Math.round((totalHeight - unusedHeight) / rowHeight);
-    TaskanaQueryParameters.page = TaskanaQueryParameters.page ? TaskanaQueryParameters.page : 1;
-    TaskanaQueryParameters.pageSize = cards > 0 ? cards : 1;
+    this.pageParameter['page-size'] = cards > 0 ? cards : 1;
   }
 }
