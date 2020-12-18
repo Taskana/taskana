@@ -321,10 +321,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       });
       for (let i in this.accessItemsGroups.controls[index].value) {
         if (i.startsWith('perm')) {
-          if (numbers.includes(i)) {
-            this.accessItemsGroups.controls[index].value[i] = true;
-          }
-          if (this.accessItemsGroups.controls[index].value[i] === false) {
+          if (this.accessItemsGroups.controls[index].value[i] === false && !numbers.includes(i)) {
             isTrue = false;
             break;
           }
