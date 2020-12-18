@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { Workbasket } from 'app/shared/models/workbasket';
@@ -44,6 +44,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
   selectedWorkbasketAndAction$: Observable<WorkbasketAndAction>;
 
   destroy$ = new Subject<void>();
+
+  @Input() expanded: boolean;
 
   constructor(
     private location: Location,

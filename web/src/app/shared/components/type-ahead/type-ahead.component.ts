@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, forwardRef, Output, EventEmitter } from '@
 import { Observable } from 'rxjs';
 
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { mergeMap } from 'rxjs/operators';
 import { AccessIdDefinition } from 'app/shared/models/access-id';

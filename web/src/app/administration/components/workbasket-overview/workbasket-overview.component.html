@@ -12,7 +12,7 @@
   </div>
 
   <div class="workbasket-overview__details" *ngIf="showDetail; else showEmptyPage">
-    <taskana-administration-workbasket-details></taskana-administration-workbasket-details>
+    <taskana-administration-workbasket-details [expanded]="expanded"></taskana-administration-workbasket-details>
   </div>
 
   <ng-template #showEmptyPage>

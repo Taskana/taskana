@@ -1,8 +1,9 @@
 <div *ngIf="workbasket" id="wb-information">
 
 	<!-- ACCESS ITEMS -->
-	<div class="workbasket-access-items">
-		<div class="workbasket-access-items__buttons">
+	<div class="workbasket-access-items"
+		[ngStyle]="{'width': expanded ? 'calc(' + 100 + 'vw - 500px)' : 'calc(' + 100 + 'vw - 250px)'}">
+		<div class=" workbasket-access-items__buttons">
 			<button mat-stroked-button matTooltip="Add new access" type="button"
 				class="workbasket-access-items__buttons-add-access" (click)="addAccessItem()" data-toggle="tooltip"
 				title="Add new access">

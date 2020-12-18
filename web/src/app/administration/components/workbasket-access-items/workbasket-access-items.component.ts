@@ -52,6 +52,9 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   @Input()
   action: ACTION;
 
+  @Input()
+  expanded: boolean;
+
   @ViewChildren('htmlInputElement')
   inputs: QueryList<ElementRef>;
 
@@ -166,6 +169,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes?: SimpleChanges) {
+    console.log('change');
     if (changes.action) {
       this.setBadge();
     }
@@ -175,6 +179,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       }
     }
     this.workbasketClone = this.workbasket;
+    //var offsetWidth = document.getElementById('container').offsetWidth;
   }
 
   init() {
@@ -311,17 +316,13 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       let numbers = [];
       const notVisibleFields = this.customFields.filter((v) => v.visible === false);
       notVisibleFields.forEach((element) => {
-        const num = element.field.match(/\d/g).toString().replace(/,/g, '');
+        const num = element.field.toString().replace('Custom ', 'permCustom');
         numbers.push(num);
       });
       for (let i in this.accessItemsGroups.controls[index].value) {
         if (i.startsWith('perm')) {
-          const num = i.match(/\d/g);
-          if (num) {
-            const result = num.toString().replace(/,/g, '');
-            if (numbers.includes(result)) {
-              this.accessItemsGroups.controls[index].value[i] = true;
-            }
+          if (numbers.includes(i)) {
+            this.accessItemsGroups.controls[index].value[i] = true;
           }
           if (this.accessItemsGroups.controls[index].value[i] === false) {
             isTrue = false;

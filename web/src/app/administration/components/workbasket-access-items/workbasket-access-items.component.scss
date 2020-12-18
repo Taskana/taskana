@@ -3,15 +3,14 @@
 
 .workbasket-access-items {
   height: calc(100vh - 213px);
-  width: calc(100vw - 500px);
   overflow-y: auto;
   overflow-x: auto;
+  display: inline-block;
 
   &__typeahead {
     text-align: left;
     min-width: 180px;
     width: calc(100% + 20px);
-    //width: 100%;
     line-height: 20px;
     padding-bottom: 0% !important;
     margin-top: 5px;
@@ -21,7 +20,7 @@
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
-    width: 99%;
+    width: 98%;
     text-align: center;
 
     & th {
