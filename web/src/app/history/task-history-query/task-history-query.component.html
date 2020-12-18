@@ -1,116 +1,140 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <div class="pull-right btn-group">
-      <button class="btn btn-default" data-toggle="tooltip" title="Search" type="button">
-        <span (click)="search()" class="material-icons md-20 blue">search</span>
-      </button>
-      <button class="btn btn-default" data-toggle="tooltip" title="Clear" type="button">
-        <span (click)="clear()" class="material-icons md-20 blue">clear</span>
-      </button>
-    </div>
-    <h4 class="panel-header">Taskana history query</h4>
-  </div>
-  <div class="panel-body">
-    <div *ngIf="taskQuery" class="table table-striped">
-      <form [formGroup]="taskQueryForm">
-        <div class="table-header">
-          <div class="table-row">
-            <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
-              <div (click)="changeOrderBy(taskHeader.key); search();"
-                   *ngIf="filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)"
-                   class="table-cell table-cell--bold table-cell--justify">
-                <span class="icon-space">
-                  {{getHeaderFieldDescription(taskHeader.key)}}
-                </span>
-                <span *ngIf="sortParameter['sort-by'] === taskHeader.key"
-                      [ngClass]="{'flip': sortParameter.order === sortDirection.DESC}"
-                      class="material-icons md-20 blue pull-right">sort</span>
-              </div>
-              <div (click)="toggleExpand = !toggleExpand" *ngIf="taskHeader.key === 'custom1'"
-                   [ngClass]="{'zoom-in': !toggleExpand, 'zoom-out': toggleExpand}"
-                   class="table-cell table-cell--bold table-cell--separator">
-                <span class="material-icons md-24 blue pull-right">{{toggleExpand ? 'chevron_left'
-                    : 'chevron_right'}}</span>
-              </div>
-              <div (click)="changeOrderBy(taskHeader.key); search();"
-                   *ngIf="filterFieldsToShow(taskHeader.key) && filterExpandGroup(taskHeader.key) && toggleExpand"
-                   class="table-cell table-cell--bold table-cell--justify">
-                <span class="icon-space">
-                  {{getHeaderFieldDescription(taskHeader.key)}}
-                </span>
-                <span
-                    *ngIf="sortParameter['sort-by'] === taskHeader.key && filterFieldsToAllowQuerying(taskHeader.key)"
-                    [ngClass]="{'flip': sortParameter.order === sortDirection.DESC}"
-                    class="material-icons md-20 blue pull-right">sort</span>
-              </div>
-            </ng-container>
-          </div>
-          <div class="table-row">
-            <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
-              <div *ngIf="isDate(taskHeader.key)"
-                   class="table-cell table-cell--bold table-cell--justify divDate">
-                <taskana-shared-date-picker (dateOutput)="updateDate($event)" [id]="'created'"
-                                            [name]="'this.created'" formControlName="{{taskHeader.key}}"
-                                            placeholder="{{getHeaderFieldDescription(taskHeader.key)}}"
-                                            type="text"></taskana-shared-date-picker>
-              </div>
-              <div
-                  *ngIf="!isDate(taskHeader.key) && filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)"
-                  class="table-cell table-cell--bold table-cell--justify">
-                <input (keyup.enter)="search()" class="form-control input-sm"
-                       formControlName="{{taskHeader.key}}"
-                       placeholder="{{getHeaderFieldDescription(taskHeader.key)}}"
-                       type="text">
-              </div>
-              <div (click)="toggleExpand = !toggleExpand" *ngIf="taskHeader.key === 'custom1'"
-                   [ngClass]="{'zoom-in': !toggleExpand, 'zoom-out': toggleExpand}"
-                   class="table-cell table-cell--bold table-cell--separator">
-              </div>
-              <div
-                  *ngIf="filterFieldsToShow(taskHeader.key) && filterExpandGroup(taskHeader.key) && toggleExpand"
-                  class="table-cell table-cell--bold table-cell--justify">
-                <input (keyup.enter)="search()" *ngIf="filterFieldsToAllowQuerying(taskHeader.key)"
-                       class="form-control input-sm"
-                       formControlName="{{taskHeader.key}}"
-                       placeholder="{{getHeaderFieldDescription(taskHeader.key)}}" type="text">
-              </div>
-            </ng-container>
-          </div>
-        </div>
-        <div class="table-body">
-          <div *ngFor="let task of taskQuery" class="table-row">
-            <ng-container *ngFor="let taskHeader of taskQueryHeader | mapToIterable">
-              <div *ngIf="isDate(taskHeader.key)" class="table-cell table-cell--justify">
-                {{task[taskHeader.key] | dateTimeZone:'yyyy-MM-dd'}}
-              </div>
-              <div
-                  *ngIf="!isDate(taskHeader.key) && filterFieldsToShow(taskHeader.key) && !filterExpandGroup(taskHeader.key)"
-                  class="table-cell table-cell--justify">
-                {{task[taskHeader.key]}}
-              </div>
-              <div (click)="toggleExpand = !toggleExpand" *ngIf="taskHeader.key === 'custom1'"
-                   [ngClass]="{'zoom-in': !toggleExpand, 'zoom-out': toggleExpand}"
-                   class="table-cell table-cell--separator">
-              </div>
-              <div
-                  *ngIf="filterFieldsToShow(taskHeader.key) && filterExpandGroup(taskHeader.key) && filterFieldsToAllowQuerying(taskHeader.key) && toggleExpand"
-                  class="table-cell table-cell--justify">
-                {{task[taskHeader.key]}}
-              </div>
-              <div *ngIf="!filterFieldsToAllowQuerying(taskHeader.key) && toggleExpand"
-                   class="table-cell table-cell--justify">
-                <div *ngIf="task[taskHeader.key]">{{task[taskHeader.key]}}
-                </div>
-              </div>
-            </ng-container>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div *ngIf="taskQueryResource?.page" class="divTablePagination">
-      <taskana-shared-pagination (changePage)="changePage($event)" [page]="taskQueryResource.page"
-                                 [numberOfItems]="taskQuery.length"
-                                 type="Entries"></taskana-shared-pagination>
-    </div>
+<div class="example-container mat-elevation-z8">
+  <div class="example-table-container">
+    <table mat-table [dataSource]="data" class="example-table"
+           matSort matSortActive="created" matSortDisableClear matSortDirection="asc">
+
+      <ng-container matColumnDef="parentBusinessProcessId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Parent BPI</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).parentBusinessProcessId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="businessProcessId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>BPI</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).businessProcessId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="taskId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Id</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).taskId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="eventType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Event type</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).eventType}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="created">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Created</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).created}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>User Id</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).userId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="domain">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Domain</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).domain}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="workbasketKey">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Workbasket key</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).workbasketKey}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="porCompany">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj company</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porCompany}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="porSystem">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj system</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porSystem}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="porInstance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj instance</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porInstance}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="porType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj type</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porType}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="porValue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj value</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porValue}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="taskClassificationKey">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Classification key</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).taskClassificationKey}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="taskClassificationCategory">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Classification category</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).taskClassificationCategory}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="attachmentClassificationKey">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Attachment Classification Key</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).attachmentClassificationKey}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="custom1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 1</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom1}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="custom2">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 2</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom2}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="custom3">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 3</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom3}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="custom4">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 4</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom4}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="oldData">
+        <th mat-header-cell *matHeaderCellDef>Old data</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).oldData}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="newData">
+        <th mat-header-cell *matHeaderCellDef>New data</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).newData}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="comment">
+        <th mat-header-cell *matHeaderCellDef>Comment</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).comment}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="oldValue">
+        <th mat-header-cell *matHeaderCellDef>Old value</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).oldValue}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="newValue">
+        <th mat-header-cell *matHeaderCellDef>New value</th>
+        <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).newValue}}</td>
+      </ng-container>
+
+
+
+      <tr mat-header-row *matHeaderRowDef="getDisplayColumns()"></tr>
+      <tr mat-row *matRowDef="let row; columns: getDisplayColumns()"></tr>
+    </table>
+
+    <taskana-shared-pagination [numberOfItems]="data.length"
+                               [page]="pageInformation"></taskana-shared-pagination>
   </div>
 </div>
