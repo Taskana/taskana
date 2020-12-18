@@ -84,7 +84,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     private savingWorkbaskets: SavingWorkbasketService,
     private notificationsService: NotificationService,
     private store: Store,
-    public matDialog: MatDialog,
     private ngxsActions$: Actions
   ) {}
 
