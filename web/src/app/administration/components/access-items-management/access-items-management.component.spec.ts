@@ -60,6 +60,11 @@ describe('AccessItemsManagementComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
+  @Component({ selector: 'taskana-shared-spinner', template: '' })
+  class TaskanaSharedSpinnerStub {
+    @Input() isRunning: boolean;
+  }
+
   @Component({ selector: 'taskana-shared-sort', template: '' })
   class TaskanaSharedSortStub {
     @Input() sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string>;
@@ -91,7 +96,12 @@ describe('AccessItemsManagementComponent', () => {
         MatListModule,
         MatExpansionModule
       ],
-      declarations: [AccessItemsManagementComponent, TypeAheadComponent, TaskanaSharedSortStub],
+      declarations: [
+        AccessItemsManagementComponent,
+        TypeAheadComponent,
+        TaskanaSharedSortStub,
+        TaskanaSharedSpinnerStub
+      ],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
@@ -148,10 +158,8 @@ describe('AccessItemsManagementComponent', () => {
     const groups = store.selectSnapshot((state) => state.accessItemsManagement);
     expect(selectedAccessId).not.toBeNull();
     expect(groups).not.toBeNull();
-    expect(app.accessItemsForm).not.toBeNull();
-
     app.onSelectAccessId(null);
-    expect(app.accessItemsForm).toBeNull();
+    expect(groups).toMatchObject({});
   });
 
   it('should dispatch GetAccessItems action in searchForAccessItemsWorkbaskets', async((done) => {

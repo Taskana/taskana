@@ -53,8 +53,9 @@ class WorkbasketListStub {
 }
 
 @Component({ selector: 'taskana-administration-workbasket-details', template: '' })
-class WorkbasketDetailsStub {}
-
+class WorkbasketDetailsStub {
+  @Input() expanded: boolean;
+}
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {}
 

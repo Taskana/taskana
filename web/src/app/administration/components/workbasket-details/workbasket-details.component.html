@@ -4,49 +4,59 @@
       <span class="workbasket-details__title-badge" *ngIf="!workbasket.workbasketId"> {{ badgeMessage }}</span>
     </h4>
     <span class="workbasket-details__spacer"></span>
-    <button mat-button class="workbasket-details__button workbasket-details__save-button" matTooltip="Save changes in current workbasket" (click)="onSubmit()">
+    <button mat-button class="workbasket-details__button workbasket-details__save-button"
+      matTooltip="Save changes in current workbasket" (click)="onSubmit()">
       Save
       <mat-icon class="md-20">save</mat-icon>
     </button>
 
-    <button mat-stroked-button class="workbasket-details__button" matTooltip="Revert changes to previous saved state" (click)="onRestore()">
+    <button mat-stroked-button class="workbasket-details__button" matTooltip="Revert changes to previous saved state"
+      (click)="onRestore()">
       Undo Changes
       <mat-icon class="button__green-blue md-20">restore</mat-icon>
     </button>
 
-    <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button" id="action-toolbar__more-buttons">
+    <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button"
+      id="action-toolbar__more-buttons">
       <mat-icon>more_vert</mat-icon>
     </button>
 
     <mat-menu #buttonMenu="matMenu">
-      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Copy current values to create new workbasket" (click)="onCopy()">
+      <button mat-menu-item class="workbasket-details__dropdown"
+        matTooltip="Copy current values to create new workbasket" (click)="onCopy()">
         <mat-icon class="button__green-blue">content_copy</mat-icon>
         <span>Copy</span>
       </button>
-      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Remove this workbasket as distribution target" (click)="onRemoveAsDistributionTarget()">
+      <button mat-menu-item class="workbasket-details__dropdown"
+        matTooltip="Remove this workbasket as distribution target" (click)="onRemoveAsDistributionTarget()">
         <mat-icon class="button__red">remove_circle_outline</mat-icon>
         <span>Remove as distribution target</span>
       </button>
-      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Delete this workbasket" (click)="onRemoveWorkbasket()">
+      <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Delete this workbasket"
+        (click)="onRemoveWorkbasket()">
         <mat-icon class="button__red">delete</mat-icon>
         <span>Delete</span>
       </button>
-      <button mat-menu-item class="workbasket-details__dropdown" style="border-bottom-style: none;"  matTooltip="Close this workbasket and discard all changes" (click)="onClose()">
+      <button mat-menu-item class="workbasket-details__dropdown" style="border-bottom-style: none;"
+        matTooltip="Close this workbasket and discard all changes" (click)="onClose()">
         <mat-icon>close</mat-icon>
         <span>Close</span>
       </button>
     </mat-menu>
   </mat-toolbar>
-  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" [selectedIndex]="selectedTab$ | async">
+  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="selectComponent($event)"
+    [selectedIndex]="selectedTab$ | async">
     <mat-tab label="Information">
-      <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-information>
+      <taskana-administration-workbasket-information [workbasket]="workbasket" [action]="action">
+      </taskana-administration-workbasket-information>
     </mat-tab>
     <mat-tab label="Access">
-      <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-access-items>
+      <taskana-administration-workbasket-access-items [workbasket]="workbasket" [action]="action" [expanded]="expanded">
+      </taskana-administration-workbasket-access-items>
     </mat-tab>
     <mat-tab label="Distribution Targets">
-      <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action"></taskana-administration-workbasket-distribution-targets>
+      <taskana-administration-workbasket-distribution-targets [workbasket]="workbasket" [action]="action">
+      </taskana-administration-workbasket-distribution-targets>
     </mat-tab>
   </mat-tab-group>
 </div>
-

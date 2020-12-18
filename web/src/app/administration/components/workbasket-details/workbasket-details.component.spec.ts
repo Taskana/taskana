@@ -39,6 +39,7 @@ class WorkbasketAccessItemsStub {
   @Input() workbasket: Workbasket;
   @Input() action: ACTION;
   @Input() active: string;
+  @Input() expanded: boolean;
 }
 
 @Component({ selector: 'taskana-administration-workbasket-distribution-targets', template: '' })
