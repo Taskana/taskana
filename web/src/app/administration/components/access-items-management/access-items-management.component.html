@@ -1,4 +1,6 @@
 <div class="access-items">
+
+  <!-- SEARCH -->
   <div class="access-items__typeahead">
     <taskana-shared-type-ahead name="accessIdSelected" [(ngModel)]="accessIdSelected"
       placeHolderMessage="Search for access id..." (selectedItem)="onSelectAccessId($event)" displayError=true
@@ -9,27 +11,29 @@
     <h3>Select an access id</h3>
     <svg-icon class="empty-icon" src="./assets/icons/users.svg"></svg-icon>
   </div>
+
+  <!-- EXPANSION PANEL GROUPS -->
   <mat-expansion-panel *ngIf="accessItemsForm" class="access-items__groups-expansion-panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Groups of {{accessId.accessId}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-list class="access-items__expansion-panel__list" *ngIf="groups && groups.length > 0; else no">
+    <mat-list class="access-items__expansion-panel__list" *ngIf="groups && groups.length > 0; else noGroups">
       <mat-list-item *ngFor="let group of groups">
         {{group.name}}
         <mat-divider></mat-divider>
       </mat-list-item>
     </mat-list>
-    <ng-template #no>The user is not associated to
-      any groups
-    </ng-template>
+    <ng-template #noGroups>The user is not associated to any groups </ng-template>
   </mat-expansion-panel>
+
+  <!-- EXPANSION PANEL AUTHORIZATION -->
   <mat-expansion-panel *ngIf="accessItemsForm" [expanded]="true" class="access-items__authorization-expansion-panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Authorizations of {{accessId.accessId}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <div *ngIf="accessItemsForm">
+    <div *ngIf="accessItemsForm" class="access-items__table">
       <ng-form [formGroup]="accessItemsForm">
         <table>
           <thead>
@@ -55,28 +59,27 @@
                 </taskana-shared-sort>
               </th>
               <th>
-                <mat-form-field class="access-items__authorization-expansion-panel__filter" appearance="outline">
+                <mat-form-field class="access-items__authorization-expansion-panel-filter" appearance="outline">
                   <mat-label>Workbasket filter</mat-label>
                   <input matInput formControlName="workbasketKeyFilter"
                     (keyup.enter)="searchForAccessItemsWorkbaskets()" type="text">
                 </mat-form-field>
               </th>
               <th>
-                <mat-form-field class="access-items__authorization-expansion-panel__filter" appearance="outline">
+                <mat-form-field class="access-items__authorization-expansion-panel-filter" appearance="outline">
                   <mat-label>Access id filter</mat-label>
                   <input matInput formControlName="accessIdFilter" (keyup.enter)="searchForAccessItemsWorkbaskets()"
                     type="text">
                 </mat-form-field>
               </th>
               <th>
-                <button mat-icon-button matTooltip="Clear filter" color="warn" (click)="clearFilter()"
-                  title="clearFilter">
+                <button mat-stroked-button matTooltip="Clear filter" color="warn" (click)="clearFilter()">
                   <mat-icon>close</mat-icon>
                 </button>
               </th>
               <th>
-                <button mat-icon-button color="basic" matTooltip="Apply filter"
-                  (click)="searchForAccessItemsWorkbaskets()" title="applyFilter">
+                <button mat-stroked-button color="basic" matTooltip="Apply filter"
+                  (click)="searchForAccessItemsWorkbaskets()">
                   <mat-icon>search</mat-icon>
                 </button>
               </th>
@@ -116,11 +119,14 @@
             </tr>
           </tbody>
         </table>
-        <button mat-mini-fab class="access-items__authorization-expansion-panel__revoke-button"
-          matTooltip="Revoke access" color="warn" *ngIf="accessItemsForm" (click)="revokeAccess()" title="Revoke access"
+
+        <!-- Revoke Access button -->
+        <button mat-mini-fab class="access-items__revoke-button"
+          matTooltip="Revoke access" color="warn" *ngIf="accessItemsForm" (click)="revokeAccess()"
           [disabled]=isGroup>
           <mat-icon>clear</mat-icon>
         </button>
+
       </ng-form>
     </div>
   </mat-expansion-panel>
