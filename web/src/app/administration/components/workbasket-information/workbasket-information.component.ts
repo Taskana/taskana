@@ -217,7 +217,9 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   }
 
   onSelectedOwner(owner: AccessIdDefinition) {
-    this.workbasket.owner = owner.accessId;
+    if (owner?.accessId) {
+      this.workbasket.owner = owner.accessId;
+    }
   }
 
   getWorkbasketCustomProperty(custom: number) {
