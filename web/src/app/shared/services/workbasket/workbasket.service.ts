@@ -95,7 +95,10 @@ export class WorkbasketService {
   }
 
   // PUT
-  updateWorkBasketAccessItem(url: string, workbasketAccessItem: Array<WorkbasketAccessItems>): Observable<string> {
+  updateWorkBasketAccessItem(
+    url: string,
+    workbasketAccessItem: WorkbasketAccessItemsRepresentation
+  ): Observable<string> {
     return this.httpClient.put<string>(url, workbasketAccessItem);
   }
 
