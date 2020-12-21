@@ -169,7 +169,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes?: SimpleChanges) {
-    console.log('change');
     if (changes.action) {
       this.setBadge();
     }
