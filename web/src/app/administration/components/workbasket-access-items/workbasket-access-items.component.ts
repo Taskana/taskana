@@ -7,8 +7,7 @@ import {
   OnInit,
   QueryList,
   SimpleChanges,
-  ViewChildren,
-  HostListener
+  ViewChildren
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
@@ -182,7 +181,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   init() {
-    if (!this.workbasket._links.accessItems) {
+    if (!this.workbasket._links?.accessItems) {
       return;
     }
     this.requestInProgressService.setRequestInProgress(true);

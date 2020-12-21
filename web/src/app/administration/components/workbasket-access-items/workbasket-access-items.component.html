@@ -51,7 +51,7 @@
                 							'has-error': !accessItem.value.accessId }">
 
 							<taskana-shared-type-ahead formControlName="accessId"
-								placeHolderMessage="* Access id is required"
+								placeHolderMessage="Access id *"
 								[validationValue]="toggleValidationAccessIdMap.get(index)"
 								[displayError]="!isFieldValid('accessItem.value.accessId', index)"
 								(selectedItem)="accessItemSelected($event, index)">
