@@ -30,64 +30,55 @@ tr:nth-child(odd) > td {
 tr:first-child > td {
   border-top: 2px solid $grey;
 }
-
-.access-items__typeahead {
-  width: 50%;
-  margin-left: 25%;
-  margin-right: 25%;
-  margin-top: 20px;
-}
-
 .access-items {
   overflow-y: scroll;
-  height: 90vh;
-}
-.access-items__icon {
-  text-align: center;
-  color: grey;
-}
+  height: calc(100vh - 104px);
 
-.access-items__groups-expansion-panel {
-  width: 98%;
-  left: 1%;
-}
-
-.access-items__authorization-expansion-panel {
-  width: 98%;
-  left: 1%;
-  margin-bottom: 5px;
-}
-
-.access-items__authorization-expansion-panel__list {
-  max-height: 100px;
-  overflow: auto;
-}
-
-.access-items__authorization-expansion-panel__filter {
-  width: 130px;
-  margin-bottom: -31px;
-  margin-top: -10px;
-  margin-left: -35px;
-  text-align: left;
-  @media only screen and (max-width: 1600px) {
-    margin-left: -5px;
+  &__table {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
-}
 
-.access-items__authorization-expansion-panel__search-button {
-  margin-left: 20px;
-  margin-bottom: -5px;
-}
+  &__typeahead {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 20px;
+  }
 
-.access-items__authorization-expansion-panel__groups-button {
-  margin-bottom: 80px;
-  margin-left: 20px;
-}
+  &__icon {
+    text-align: center;
+    color: grey;
+  }
 
-.access-items__authorization-expansion-panel__revoke-button {
-  float: right;
-  margin-right: 30px;
-  outline: none;
+  &__groups-expansion-panel {
+    width: 98%;
+    left: 1%;
+  }
+
+  &__authorization-expansion-panel {
+    width: 98%;
+    left: 1%;
+    margin-bottom: 5px;
+  }
+
+  &__authorization-expansion-panel-filter {
+    width: 130px;
+    margin-bottom: -31px;
+    margin-top: -10px;
+    margin-left: -35px;
+    text-align: left;
+    @media only screen and (max-width: 1600px) {
+      margin-left: -5px;
+    }
+  }
+
+  &__revoke-button {
+    float: right;
+    margin-right: 30px;
+    margin-bottom: 8px;
+    outline: none;
+  }
 }
 
 .mat-mini-fab {
@@ -96,7 +87,7 @@ tr:first-child > td {
   box-shadow: none !important;
 }
 
-.mat-icon-button {
+.mat-stroked-button {
   outline: none;
 }
 
