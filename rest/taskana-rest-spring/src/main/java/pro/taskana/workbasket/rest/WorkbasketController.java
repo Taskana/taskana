@@ -1,9 +1,9 @@
 package pro.taskana.workbasket.rest;
 
 import java.beans.ConstructorProperties;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -320,13 +320,9 @@ public class WorkbasketController {
       throw new InvalidArgumentException("Can´t create something with NULL body-value.");
     }
 
-    List<WorkbasketAccessItem> wbAccessItems = new ArrayList<>();
-    workbasketAccessItemRepModels
-        .getContent()
-        .forEach(
-            item ->
-                wbAccessItems.add(
-                    workbasketAccessItemRepresentationModelAssembler.toEntityModel(item)));
+    List<WorkbasketAccessItem> wbAccessItems = workbasketAccessItemRepModels.getContent().stream()
+        .map(workbasketAccessItemRepresentationModelAssembler::toEntityModel)
+        .collect(Collectors.toList());
     workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
     List<WorkbasketAccessItem> updatedWbAccessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);

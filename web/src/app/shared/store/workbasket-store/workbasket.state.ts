@@ -309,23 +309,25 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     action: UpdateWorkbasketAccessItems
   ): Observable<any> {
     ctx.dispatch(new OnButtonPressed(undefined));
-    return this.workbasketService.updateWorkBasketAccessItem(action.url, action.workbasketAccessItems).pipe(
-      take(1),
-      tap(
-        (workbasketAccessItems) => {
-          ctx.patchState({
-            workbasketAccessItems
-          });
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_7,
-            new Map<string, string>([['workbasketKey', ctx.getState().selectedWorkbasket.key]])
-          );
-        },
-        (error) => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_2, error);
-        }
-      )
-    );
+    return this.workbasketService
+      .updateWorkBasketAccessItem(action.url, { accessItems: action.workbasketAccessItems })
+      .pipe(
+        take(1),
+        tap(
+          (workbasketAccessItems) => {
+            ctx.patchState({
+              workbasketAccessItems
+            });
+            this.notificationService.showToast(
+              NOTIFICATION_TYPES.SUCCESS_ALERT_7,
+              new Map<string, string>([['workbasketKey', ctx.getState().selectedWorkbasket.key]])
+            );
+          },
+          (error) => {
+            this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_2, error);
+          }
+        )
+      );
   }
 
   @Action(GetWorkbasketDistributionTargets)
