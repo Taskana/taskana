@@ -3,7 +3,7 @@ import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-eve
 import { QueryParameters } from 'app/shared/models/query-parameters';
 import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
 import { Sorting, TaskHistoryQuerySortParameter } from 'app/shared/models/sorting';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskHistoryQueryFilterParameter } from '../../../shared/models/task-history-query-filter-parameter';

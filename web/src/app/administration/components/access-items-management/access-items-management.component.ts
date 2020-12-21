@@ -127,12 +127,12 @@ export class AccessItemsManagementComponent implements OnInit {
   filterAccessItems() {
     if (this.accessItemsForm.value.accessIdFilter) {
       this.accessItems = this.accessItems.filter((value) =>
-        value.accessName.toLowerCase().includes(this.accessItemsForm.value.accessIdFilter)
+        value.accessName.toLowerCase().includes(this.accessItemsForm.value.accessIdFilter.toLowerCase())
       );
     }
     if (this.accessItemsForm.value.workbasketKeyFilter) {
       this.accessItems = this.accessItems.filter((value) =>
-        value.workbasketKey.toLowerCase().includes(this.accessItemsForm.value.workbasketKeyFilter)
+        value.workbasketKey.toLowerCase().includes(this.accessItemsForm.value.workbasketKeyFilter.toLowerCase())
       );
     }
   }
