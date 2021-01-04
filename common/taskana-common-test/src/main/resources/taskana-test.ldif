@@ -174,6 +174,110 @@ ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn:: VGltIFNjaGzDpGZyaWc=
 userPassword: user-2-1
 
+dn: uid=user-2-3,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Thomas
+description: desc
+uid: user-2-3
+sn: Bach
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Thomas Bach
+userPassword: user-2-3
+
+dn: uid=user-2-4,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Rolf
+description: desc
+uid: user-2-4
+sn: Wieland
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Rolf Wieland
+userPassword: user-2-4
+
+dn: uid=user-2-5,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Heike
+description: desc
+uid: user-2-5
+sn: Schmidt
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Heike Schmidt
+userPassword: user-2-5
+
+dn: uid=user-2-6,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Kurt
+description: desc
+uid: user-2-6
+sn: Maier
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Kurt Maier
+userPassword: user-2-6
+
+dn: uid=user-2-7,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Wiebke
+description: desc
+uid: user-2-7
+sn: Meyer
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Wiebke Meyer
+userPassword: user-2-7
+
+dn: uid=user-2-8,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Jana
+description: desc
+uid: user-2-8
+sn: Heeg
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Jana Heeg
+userPassword: user-2-8
+
+dn: uid=user-2-9,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Nathalie
+description: desc
+uid: user-2-9
+sn: Fuchs
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Nathalie Fuchs
+userPassword: user-2-9
+
+dn: uid=user-2-10,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Johannes
+description: desc
+uid: user-2-10
+sn: Renz
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Johannes Renz
+userPassword: user-2-10
+
 ########################
 # Users Domäne B
 ########################
@@ -260,6 +364,14 @@ dn: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU
 uniquemember: uid=teamlead-2,cn=users,OU=Test,O=TASKANA
 uniquemember: uid=user-2-1,cn=users,OU=Test,O=TASKANA
 uniquemember: uid=user-2-2,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-3,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-4,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-5,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-6,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-7,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-8,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-9,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-10,cn=users,OU=Test,O=TASKANA
 cn: Organisationseinheit KSC 2
 objectclass: groupofuniquenames
 objectclass: top

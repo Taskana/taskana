@@ -169,9 +169,9 @@ objectclass: top
 givenName: Tim
 description: desc
 uid: user-2-2
-sn: Schläfrig
+sn:: U2NobMOkZnJpZw==
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
-cn: Tim Schläfrig
+cn:: VGltIFNjaGzDpGZyaWc=
 userPassword: user-2-1
 
 dn: uid=user-2-3,cn=users,OU=Test,O=TASKANA
@@ -347,6 +347,8 @@ objectclass: top
 ######################
 dn: cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 cn: Organisationseinheit KSC
+uniquemember: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+uniquemember: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 objectclass: groupofuniquenames
 objectclass: top
 
