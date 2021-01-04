@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import helper.AbstractAccTest;
+import helper.TaskTestMapper;
 import helper.TaskanaEngineProxy;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -166,6 +168,71 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable call = () -> taskService.createTask(newTask2);
     assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void testCreateSimpleTaskWithCustomAttributes() throws Exception {
+
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    Map<String, String> customAttributesForCreate = createSimpleCustomPropertyMap(13);
+    newTask.setCustomAttributeMap(customAttributesForCreate);
+    Task createdTask = taskService.createTask(newTask);
+    Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
+
+    assertThat(createdTask).isNotNull();
+    assertThat(createdTask.getName()).isEqualTo("T-Vertragstermin VERA");
+    assertThat(createdTask.getPrimaryObjRef().getValue()).isEqualTo("1234567");
+    assertThat(createdTask.getCreated()).isNotNull();
+    assertThat(createdTask.getModified()).isNotNull();
+    assertThat(createdTask.getBusinessProcessId()).isNotNull();
+    assertThat(createdTask.getClaimed()).isNull();
+    assertThat(createdTask.getCompleted()).isNull();
+    assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
+    assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
+    assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(createdTask.getParentBusinessProcessId()).isNull();
+    assertThat(createdTask.getPriority()).isEqualTo(2);
+    assertThat(createdTask.isRead()).isFalse();
+    assertThat(createdTask.isTransferred()).isFalse();
+    // verify that the database content is as expected
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
+    try {
+      SqlSession session = engineProxy.getSqlSession();
+      Configuration config = session.getConfiguration();
+      if (!config.hasMapper(TaskTestMapper.class)) {
+        config.addMapper(TaskTestMapper.class);
+      }
+      TaskTestMapper mapper = session.getMapper(TaskTestMapper.class);
+
+      engineProxy.openConnection();
+      String customProperties = mapper.getCustomAttributesAsString(createdTask.getId());
+      assertThat(customProperties)
+          .contains(
+              "\"Property_13\":\"Property Value of Property_13\"",
+              "\"Property_12\":\"Property Value of Property_12\"",
+              "\"Property_11\":\"Property Value of Property_11\"",
+              "\"Property_10\":\"Property Value of Property_10\"",
+              "\"Property_9\":\"Property Value of Property_9\"",
+              "\"Property_8\":\"Property Value of Property_8\"",
+              "\"Property_7\":\"Property Value of Property_7\"",
+              "\"Property_6\":\"Property Value of Property_6\"",
+              "\"Property_5\":\"Property Value of Property_5\"",
+              "\"Property_4\":\"Property Value of Property_4\"",
+              "\"Property_3\":\"Property Value of Property_3\"",
+              "\"Property_2\":\"Property Value of Property_2\"",
+              "\"Property_1\":\"Property Value of Property_1\"");
+    } finally {
+      engineProxy.returnConnection();
+    }
+    // verify that the map is correctly retrieved from the database
+    Task retrievedTask = taskService.getTask(createdTask.getId());
+    Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributeMap();
+    assertThat(customAttributesFromDb).isNotNull();
+    assertThat(customAttributesForCreate).isEqualTo(customAttributesFromDb);
   }
 
   @WithAccessId(user = "user-1-1")

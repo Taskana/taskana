@@ -1,4 +1,4 @@
-package pro.taskana.workbasket.internal;
+package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -38,6 +38,10 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistExc
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
+import pro.taskana.workbasket.internal.DistributionTargetMapper;
+import pro.taskana.workbasket.internal.WorkbasketAccessMapper;
+import pro.taskana.workbasket.internal.WorkbasketMapper;
+import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 

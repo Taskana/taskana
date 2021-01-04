@@ -17,12 +17,17 @@ import static pro.taskana.task.api.TaskQueryColumnName.OWNER;
 import static pro.taskana.task.api.TaskQueryColumnName.STATE;
 
 import helper.AbstractAccTest;
+import helper.TaskTestMapper;
+import helper.TaskanaEngineProxy;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
@@ -49,7 +54,6 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskServiceImpl;
-import pro.taskana.task.internal.TaskTestMapper;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -341,6 +345,47 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> result2 =
         TASK_SERVICE.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
     assertThat(result2).hasSize(2);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void testQueryTaskByCustomAttributes() throws Exception {
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setClassificationKey("T2100");
+    Map<String, String> customAttributesForCreate =
+        createSimpleCustomPropertyMap(20000); // about 1 Meg
+    newTask.setCustomAttributeMap(customAttributesForCreate);
+    Task createdTask = taskService.createTask(newTask);
+
+    assertThat(createdTask).isNotNull();
+    // query the task by custom attributes
+    TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
+    try {
+      SqlSession session = engineProxy.getSqlSession();
+      Configuration config = session.getConfiguration();
+      if (!config.hasMapper(TaskTestMapper.class)) {
+        config.addMapper(TaskTestMapper.class);
+      }
+
+      TaskTestMapper mapper = session.getMapper(TaskTestMapper.class);
+      engineProxy.openConnection();
+      List<TaskImpl> queryResult =
+          mapper.selectTasksByCustomAttributeLike("%Property Value of Property_1339%");
+
+      assertThat(queryResult).hasSize(1);
+      Task retrievedTask = queryResult.get(0);
+
+      assertThat(retrievedTask.getId()).isEqualTo(createdTask.getId());
+
+      // verify that the map is correctly retrieved from the database
+      Map<String, String> customAttributesFromDb = retrievedTask.getCustomAttributeMap();
+      assertThat(customAttributesFromDb).isEqualTo(customAttributesForCreate);
+
+    } finally {
+      engineProxy.returnConnection();
+    }
   }
 
   @WithAccessId(user = "admin")

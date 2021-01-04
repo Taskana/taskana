@@ -28,18 +28,23 @@ class QueryTaskWithAttachmentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ReturnTaskSummaryIncludingAttachmentsIfPresent_When_UsingTaskQuery() {
+  void should_ReturnTaskSummaryIncludingAttachments_When_QueryingTaskWithAttachments() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<TaskSummary> tasks = taskService.createTaskQuery().classificationKeyIn("L110102").list();
     assertThat(tasks).hasSize(1);
 
     List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
     assertThat(attachmentSummaries).hasSize(2);
+  }
 
-    tasks = taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000066").list();
-    assertThat(tasks).hasSize(1);
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_ReturnTaskSummaryWithEmptyAttachments_When_QueryingTaskWithoutAttachments() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> tasks = taskService.createTaskQuery().list();
+    assertThat(tasks).hasSize(30);
 
-    attachmentSummaries = tasks.get(0).getAttachmentSummaries();
+    List<AttachmentSummary> attachmentSummaries = tasks.get(0).getAttachmentSummaries();
     assertThat(attachmentSummaries).isEmpty();
   }
 
