@@ -180,7 +180,7 @@
         <executions>
           <execution>
             <id>generate-javadoc-json</id>
-            <phase>compile</phase>
+            <phase>validate</phase>
             <goals>
               <goal>javadoc-no-fork</goal>
             </goals>

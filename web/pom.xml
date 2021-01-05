@@ -13,6 +13,11 @@
     <version>4.3.1-SNAPSHOT</version>
     <relativePath>../rest/pom.xml</relativePath>
   </parent>
+
+  <properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
