@@ -8,7 +8,7 @@ set -e #fail fast
 #H
 #H %FILE% <-m modules...> [-i]
 #H
-#H   if a release version exists (extracted from TRAVIS_TAG)
+#H   if a release version exists (extracted from GITHUB_REF)
 #H   the maven versions of all modules will be changed to the given release version.
 #H
 #H module:
@@ -17,9 +17,9 @@ set -e #fail fast
 #H   increments version
 #H
 #H Environment variables:
-#H   - TRAVIS_TAG
-#H       if this is a tagged build then TRAVIS_TAG contains the version number.
-#H       pattern: v[DIGIT].[DIGIT].[DIGIT]
+#H   - GITHUB_REF
+#H       if this is a tagged build then GITHUB_REF contains the version number.
+#H       pattern: refs/tags/v[DIGIT].[DIGIT].[DIGIT]
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -81,8 +81,8 @@ function main() {
     helpAndExit 1
   fi
 
-  if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    version=$([[ -n "$INCREMENT" ]] && echo $(increment_version "${TRAVIS_TAG##v}")-SNAPSHOT || echo "${TRAVIS_TAG##v}")
+  if [[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    version=$([[ -n "$INCREMENT" ]] && echo $(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT || echo "${GITHUB_REF##refs/tags/v}")
     for dir in ${MODULES[@]}; do
       change_version "$dir" "$version"
     done

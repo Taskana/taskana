@@ -8,7 +8,7 @@ set -e #fail fast
 #H
 #H %FILE%
 #H
-#H   if a release version exists (extracted from TRAVIS_TAG environment variable)
+#H   if a release version exists (extracted from GITHUB_REF environment variable)
 #H   the taskana dependency in our wildfly example project will be incremented to the new version snapshot.
 #H
 # Arguments:
@@ -34,14 +34,16 @@ function increment_version() {
 
 function main() {
   [[ "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
-  if [[ "$TRAVIS_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  if [[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     REL=$(dirname "$0")
     FILES=(
       $REL/../rest/taskana-rest-spring-example-wildfly/pom.xml
     )
     for file in ${FILES[@]}; do
-      sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+-SNAPSHOT/$(increment_version "${TRAVIS_TAG##v}")-SNAPSHOT/g" $file
+      sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+-SNAPSHOT/$(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT/g" $file
     done
+  else
+    echo "skipped version change for wildfly because this is not a release build"
   fi
 }
 

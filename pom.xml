@@ -17,6 +17,7 @@
     <module>rest</module>
     <!-- History is an optional module. -->
     <module>history</module>
+    <module>ci/taskana-sonar-test-coverage</module>
   </modules>
 
   <properties>
@@ -41,6 +42,7 @@
     <version.maven.asciidoctor>2.1.0</version.maven.asciidoctor>
     <version.maven.clean>3.1.0</version.maven.clean>
     <version.maven.dependency>3.1.2</version.maven.dependency>
+    <version.maven.sonar>3.7.0.1746</version.maven.sonar>
 
     <!-- release dependencies -->
     <version.maven.gpg>1.6</version.maven.gpg>
@@ -73,8 +75,19 @@
 
     <!-- database driver versions -->
     <version.db2>11.1.1.1</version.db2>
-    <!-- used by jacoco to collect coverage -->
-    <argLine></argLine>
+
+    <!-- sonar settings -->
+    <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
+    <sonar.organization>${env.SONAR_ORGANIZATION}</sonar.organization>
+    <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.coverage.jacoco.xmlReportPaths>
+      ${project.basedir}/ci/coverage/target/site/jacoco-aggregate/jacoco.xml,
+      ${project.basedir}/ci/../coverage/target/site/jacoco-aggregate/jacoco.xml,
+      ${project.basedir}/ci/../../coverage/target/site/jacoco-aggregate/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.sources>src/main/java</sonar.sources>
   </properties>
 
   <dependencyManagement>
@@ -139,6 +152,13 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <!-- The pinentry-mode loopback is necessary to specify and use a passphrase with a gpg key -->
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
           </plugin>
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
@@ -177,6 +197,13 @@
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <!-- The pinentry-mode loopback is necessary to specify and use a passphrase with a gpg key -->
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
           </plugin>
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
@@ -198,63 +225,32 @@
         </repository>
       </distributionManagement>
     </profile>
-    <profile>
-      <id>eclipse</id>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.eclipse.m2e</groupId>
-              <artifactId>lifecycle-mapping</artifactId>
-              <version>1.0.0</version>
-              <configuration>
-                <lifecycleMappingMetadata>
-                  <pluginExecutions>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <versionRange>[1.0.0,)</versionRange>
-                        <goals>
-                          <goal>check</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore/>
-                      </action>
-                    </pluginExecution>
-                  </pluginExecutions>
-                </lifecycleMappingMetadata>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <id>coverage</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${version.jacoco}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>prepare-agent</goal>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${version.maven.sonar}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- This plugin appends version information into the jar, so
           that it can be extracted from the jar. See TSK-837 for more information -->
       <plugin>
@@ -313,9 +309,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${version.maven.surefire}</version>
-        <configuration>
-          <argLine>${argLine}</argLine>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
