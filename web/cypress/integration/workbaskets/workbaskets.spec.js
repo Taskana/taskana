@@ -15,7 +15,7 @@ context('TASKANA Workbaskets', () => {
     );
 
     cy.get('[placeholder="Filter owner"]')
-      .type('owner0815')
+      .type('user-1-2')
       .type('{enter}')
       .then(() => {
         // Length equal to 2 because the empty starting element of the list, only one ListEntry with values added
@@ -94,7 +94,7 @@ context('TASKANA Workbaskets', () => {
     cy.saveWorkbaskets();
   });
 
-  it.skip('should be possible to add new access', () => {
+  it('should be possible to add new access', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
 
@@ -128,7 +128,7 @@ context('TASKANA Workbaskets', () => {
     cy.wait('@workbasketsDistributionTargets');
     cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group').should('have.length', 1);
     cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group')
-      .contains('owner0815')
+      .contains('user-1-3')
       .should('exist');
   });
 });
