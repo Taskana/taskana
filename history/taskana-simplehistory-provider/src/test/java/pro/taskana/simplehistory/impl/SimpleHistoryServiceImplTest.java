@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
@@ -54,7 +55,7 @@ class SimpleHistoryServiceImplTest {
   @Mock private SqlSession sqlSessionMock;
 
   @Test
-  void testInitializeSimpleHistoryService() {
+  void testInitializeSimpleHistoryService() throws SQLException {
     when(sqlSessionManagerMock.getMapper(TaskHistoryEventMapper.class))
         .thenReturn(taskHistoryEventMapperMock);
     when(sqlSessionManagerMock.getMapper(WorkbasketHistoryEventMapper.class))

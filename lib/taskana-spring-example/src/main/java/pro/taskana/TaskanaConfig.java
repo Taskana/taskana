@@ -47,13 +47,13 @@ public class TaskanaConfig {
   }
 
   @Bean
-  public SpringTaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource)
-      throws SQLException {
+  public SpringTaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) {
     return new SpringTaskanaEngineConfiguration(dataSource, true, false, schemaName);
   }
 
   @Bean
-  public TaskanaEngine taskanaEngine(SpringTaskanaEngineConfiguration taskanaEngineConfiguration) {
+  public TaskanaEngine taskanaEngine(SpringTaskanaEngineConfiguration taskanaEngineConfiguration)
+      throws SQLException {
     return taskanaEngineConfiguration.buildTaskanaEngine();
   }
 

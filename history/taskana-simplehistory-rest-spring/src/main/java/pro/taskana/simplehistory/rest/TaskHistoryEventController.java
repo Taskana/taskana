@@ -1,5 +1,6 @@
 package pro.taskana.simplehistory.rest;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -90,7 +91,8 @@ public class TaskHistoryEventController extends AbstractPagingController {
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
-      TaskHistoryEventRepresentationModelAssembler taskHistoryEventRepresentationModelAssembler) {
+      TaskHistoryEventRepresentationModelAssembler taskHistoryEventRepresentationModelAssembler)
+      throws SQLException {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
     this.simpleHistoryService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());

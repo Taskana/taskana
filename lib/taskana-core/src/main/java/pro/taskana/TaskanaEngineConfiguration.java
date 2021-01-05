@@ -39,8 +39,6 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
-import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.common.internal.configuration.SecurityVerifier;
 import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.Pair;
 
@@ -53,8 +51,6 @@ public class TaskanaEngineConfiguration {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
 
-  // must match the VERSION value in table
-  private static final String TASKANA_SCHEMA_VERSION = "4.0.0";
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_PROPERTY_SEPARATOR = "|";
   private static final String TASKANA_JOB_BATCH_SIZE = "taskana.jobs.batchSize";
@@ -84,7 +80,6 @@ public class TaskanaEngineConfiguration {
   protected String propertiesFileName = TASKANA_PROPERTIES;
   // Taskana datasource configuration
   protected DataSource dataSource;
-  protected DbSchemaCreator dbSchemaCreator;
   protected String schemaName;
   // Taskana role configuration
   protected String propertiesSeparator = TASKANA_PROPERTY_SEPARATOR;
@@ -92,7 +87,6 @@ public class TaskanaEngineConfiguration {
   // global switch to enable JAAS based authentication and Taskana
   // authorizations
   protected boolean securityEnabled;
-  protected SecurityVerifier securityVerifier;
   protected boolean useManagedTransactions;
   // List of configured domain names
   protected List<String> domains = new ArrayList<>();
@@ -113,8 +107,7 @@ public class TaskanaEngineConfiguration {
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
   public TaskanaEngineConfiguration(
-      DataSource dataSource, boolean useManagedTransactions, String schemaName)
-      throws SQLException {
+      DataSource dataSource, boolean useManagedTransactions, String schemaName) {
     this(dataSource, useManagedTransactions, true, schemaName);
   }
 
@@ -122,8 +115,7 @@ public class TaskanaEngineConfiguration {
       DataSource dataSource,
       boolean useManagedTransactions,
       boolean securityEnabled,
-      String schemaName)
-      throws SQLException {
+      String schemaName) {
     this(dataSource, useManagedTransactions, securityEnabled, null, null, schemaName);
   }
 
@@ -133,8 +125,7 @@ public class TaskanaEngineConfiguration {
       boolean securityEnabled,
       String propertiesFileName,
       String propertySeparator,
-      String schemaName)
-      throws SQLException {
+      String schemaName) {
     this.useManagedTransactions = useManagedTransactions;
     this.securityEnabled = securityEnabled;
 
@@ -155,18 +146,6 @@ public class TaskanaEngineConfiguration {
 
     initSchemaName(schemaName);
     initTaskanaProperties(this.propertiesFileName, this.propertiesSeparator);
-
-    dbSchemaCreator = new DbSchemaCreator(this.dataSource, this.getSchemaName());
-    dbSchemaCreator.run();
-
-    if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
-      throw new SystemException(
-          "The Database Schema Version doesn't match the expected minimal version "
-              + TASKANA_SCHEMA_VERSION);
-    }
-
-    securityVerifier = new SecurityVerifier(this.dataSource, this.getSchemaName());
-    securityVerifier.checkSecureAccess(securityEnabled);
   }
 
   public void initTaskanaProperties(String propertiesFile, String separator) {
@@ -210,8 +189,9 @@ public class TaskanaEngineConfiguration {
    * This method creates the TaskanaEngine without an sqlSessionFactory.
    *
    * @return the TaskanaEngine
+   * @throws SQLException if a database access error occurs
    */
-  public TaskanaEngine buildTaskanaEngine() {
+  public TaskanaEngine buildTaskanaEngine() throws SQLException {
     return TaskanaEngineImpl.createTaskanaEngine(this);
   }
 
@@ -491,8 +471,9 @@ public class TaskanaEngineConfiguration {
     }
 
     try (Connection connection = dataSource.getConnection()) {
-      String databaseProductName = connection.getMetaData().getDatabaseProductName();
-      if (DB.isPostgreSql(databaseProductName)) {
+      String databaseProductId =
+          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
+      if (DB.isPostgres(databaseProductId)) {
         this.schemaName = this.schemaName.toLowerCase();
       } else {
         this.schemaName = this.schemaName.toUpperCase();

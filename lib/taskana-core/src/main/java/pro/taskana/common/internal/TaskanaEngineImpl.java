@@ -44,6 +44,8 @@ import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.GroupPrincipal;
 import pro.taskana.common.internal.configuration.DB;
+import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.configuration.SecurityVerifier;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
@@ -70,7 +72,8 @@ import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 /** This is the implementation of TaskanaEngine. */
 public class TaskanaEngineImpl implements TaskanaEngine {
 
-  private static final String DEFAULT = "default";
+  // must match the VERSION value in table
+  private static final String TASKANA_SCHEMA_VERSION = "4.0.0";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
   private final TaskRoutingManager taskRoutingManager;
@@ -85,10 +88,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
   protected Connection connection = null;
 
-  protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+  protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration)
+      throws SQLException {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
     this.sessionManager = createSqlSessionManager();
+    initializeDbSchema(taskanaEngineConfiguration);
+
     historyEventManager = HistoryEventManager.getInstance(this);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
     createTaskPreprocessorManager = CreateTaskPreprocessorManager.getInstance();
@@ -103,7 +109,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public static TaskanaEngine createTaskanaEngine(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) {
+      TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
     return new TaskanaEngineImpl(taskanaEngineConfiguration);
   }
 
@@ -253,13 +259,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
         new Environment(
-            DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+            "default", this.transactionFactory, taskanaEngineConfiguration.getDatasource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
-    String databaseProductName;
     try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
-      databaseProductName = con.getMetaData().getDatabaseProductName();
+      String databaseProductName = con.getMetaData().getDatabaseProductName();
       String databaseProductId = DB.getDatabaseProductId(databaseProductName);
       configuration.setDatabaseId(databaseProductId);
 
@@ -290,6 +295,23 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(JobMapper.class);
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
+  }
+
+  private void initializeDbSchema(TaskanaEngineConfiguration taskanaEngineConfiguration)
+      throws SQLException {
+    DbSchemaCreator dbSchemaCreator =
+        new DbSchemaCreator(
+            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
+    dbSchemaCreator.run();
+
+    if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
+      throw new SystemException(
+          "The Database Schema Version doesn't match the expected minimal version "
+              + TASKANA_SCHEMA_VERSION);
+    }
+    new SecurityVerifier(
+            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName())
+        .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
   }
 
   /**
