@@ -1,0 +1,17 @@
+@import '../../../../theme/colors';
+
+.nav-bar {
+  background-color: $light-grey;
+  position: relative;
+  border: none;
+}
+
+.mat-tab-link {
+  color: #1a202c !important;
+}
+
+.mat-tab-label-active {
+  font-weight: bolder !important;
+  color: unset;
+  opacity: 1;
+}

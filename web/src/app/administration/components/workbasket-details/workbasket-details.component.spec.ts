@@ -15,16 +15,18 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { selectedWorkbasketMock } from '../../../shared/store/mock-data/mock-store';
-import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
+import { selectedWorkbasketMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
-}
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { take } from 'rxjs/operators';
 
 @Component({ selector: 'taskana-administration-workbasket-information', template: '<div>i</div>' })
 class WorkbasketInformationStub {
@@ -37,6 +39,7 @@ class WorkbasketAccessItemsStub {
   @Input() workbasket: Workbasket;
   @Input() action: ACTION;
   @Input() active: string;
+  @Input() expanded: boolean;
 }
 
 @Component({ selector: 'taskana-administration-workbasket-distribution-targets', template: '' })
@@ -74,11 +77,16 @@ describe('WorkbasketDetailsComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([]),
         MatSnackBarModule,
-        MatDialogModule
+        MatDialogModule,
+        MatIconModule,
+        MatProgressBarModule,
+        MatTabsModule,
+        MatMenuModule,
+        MatToolbarModule,
+        BrowserAnimationsModule
       ],
       declarations: [
         WorkbasketDetailsComponent,
-        SpinnerStub,
         WorkbasketAccessItemsStub,
         WorkbasketDistributionTargetsStub,
         WorkbasketInformationStub
@@ -100,6 +108,10 @@ describe('WorkbasketDetailsComponent', () => {
     component = fixture.debugElement.componentInstance;
     store = TestBed.inject(Store);
     actions$ = TestBed.inject(Actions);
+    store.reset({
+      ...store.snapshot(),
+      workbasket: workbasketReadStateMock
+    });
     fixture.detectChanges();
   }));
 
@@ -107,34 +119,11 @@ describe('WorkbasketDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display loading spinner while content loads', () => {
-    component.requestInProgress = true;
-    fixture.detectChanges();
-    const spinner = debugElement.nativeElement.querySelector('taskana-shared-spinner');
-    expect(spinner).toBeTruthy();
-    expect(spinner.style.display).toContain('');
-  });
-
-  it('should render workbasket-details when workbasket exists and request is not in progress', () => {
+  it('should render information component when workbasket details is opened', () => {
     component.workbasket = { workbasketId: '1' };
-    component.requestInProgress = false;
-    fixture.detectChanges();
-    const workbasketDetails = debugElement.nativeElement.querySelector('#workbasket-details');
-    expect(workbasketDetails).toBeTruthy();
-  });
-
-  it('should render information, access items and distribution targets components', () => {
-    component.workbasket = { workbasketId: '1' };
-    component.requestInProgress = false;
     fixture.detectChanges();
     const information = debugElement.nativeElement.querySelector('taskana-administration-workbasket-information');
-    const accessItems = debugElement.nativeElement.querySelector('taskana-administration-workbasket-access-items');
-    const distributionTargets = debugElement.nativeElement.querySelector(
-      'taskana-administration-workbasket-distribution-targets'
-    );
     expect(information).toBeTruthy();
-    expect(accessItems).toBeTruthy();
-    expect(distributionTargets).toBeTruthy();
   });
 
   it('should render new workbasket when action is CREATE', () => {
@@ -143,7 +132,6 @@ describe('WorkbasketDetailsComponent', () => {
       workbasket: workbasketCreateState
     });
     fixture.detectChanges();
-    expect(component.tabSelected).toMatch('information');
     expect(component.selectedId).toBeUndefined();
   });
 
@@ -168,9 +156,13 @@ describe('WorkbasketDetailsComponent', () => {
     expect(component.workbasket).toEqual(selectedWorkbasketMock);
   });
 
-  it('should select information tab when action is CREATE', () => {
-    component.action = ACTION.CREATE;
-    component.selectTab('workbasket');
-    expect(component.tabSelected).toEqual('information');
+  it('should select information tab when action is CREATE', (done) => {
+    component.selectComponent(1);
+    store.dispatch(new CreateWorkbasket());
+    fixture.detectChanges();
+    component.selectedTab$.pipe(take(1)).subscribe((tab) => {
+      expect(tab).toEqual(0);
+      done();
+    });
   });
 });

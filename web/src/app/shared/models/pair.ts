@@ -1,3 +1,4 @@
-export class Pair {
-  constructor(public name?: string, public text?: string) {}
+export interface Pair<L, R> {
+  left: L;
+  right: R;
 }

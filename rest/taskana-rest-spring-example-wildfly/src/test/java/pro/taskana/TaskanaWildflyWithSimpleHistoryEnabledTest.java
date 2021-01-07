@@ -24,7 +24,7 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import pro.taskana.simplehistory.rest.models.TaskHistoryEventListResource;
+import pro.taskana.simplehistory.rest.models.TaskHistoryEventPagedRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /**
@@ -83,7 +83,7 @@ public class TaskanaWildflyWithSimpleHistoryEnabledTest extends AbstractAccTest 
   @RunAsClient
   public void should_WriteHistoryEventIntoDatabase() {
 
-    ResponseEntity<TaskHistoryEventListResource> getHistoryEventsResponse =
+    ResponseEntity<TaskHistoryEventPagedRepresentationModel> getHistoryEventsResponse =
         performGetHistoryEventsRestCall();
     assertThat(getHistoryEventsResponse.getBody()).isNotNull();
     assertThat(getHistoryEventsResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();

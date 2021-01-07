@@ -80,6 +80,28 @@
       <groupId>org.springframework.restdocs</groupId>
       <artifactId>spring-restdocs-mockmvc</artifactId>
     </dependency>
+    <dependency>
+      <groupId>capital.scalable</groupId>
+      <artifactId>spring-auto-restdocs-core</artifactId>
+      <version>${version.auto-restdocs}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${version.hibernate}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-ldap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
 
 
     <!-- TEST DEPENDENCIES -->

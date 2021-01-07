@@ -1,20 +1,37 @@
-<li id="wb-action-toolbar" class="list-group-item tab-align">
-  <div class="row">
-    <div class="col-xs-7 btn-group">
-      <button type="button" (click)="addWorkbasket()" data-toggle="tooltip" title="Add" class="btn btn-default">
-        <span class="material-icons md-20 green-blue">add_circle_outline</span>
-      </button>
-      <taskana-administration-import-export class="btn-group" [currentSelection]="selectionToImport"></taskana-administration-import-export>
-    </div>
-    <div class="margin-right pull-right btn-group">
-      <taskana-shared-sort [sortingFields]="sortingFields" (performSorting)="sorting($event)" class="btn-group" [defaultSortBy]="workbasketDefaultSortBy"></taskana-shared-sort>
-      <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState"
-        data-toggle="tooltip" title="Filter">
-        <span class="material-icons md-20 blue">{{!toolbarState? 'search' : 'expand_less'}}</span>
-      </button>
+<div class="workbasket-list-toolbar">
+
+  <div class="workbasket-list-toolbar__action-toolbar">
+
+    <!-- ACTION BUTTONS -->
+    <button mat-flat-button class="workbasket-list-toolbar__add-button mr-1" matTooltip="Create new workbasket"
+            (click)="addWorkbasket()">
+      Add
+      <mat-icon class="md-20">add</mat-icon>
+    </button>
+
+    <!-- IMPORT EXPORT -->
+    <taskana-administration-import-export *ngIf="workbasketListExpanded" [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
+
+    <span class="workbasket-details__spacer" style="flex: 1 1 auto"> </span>
+
+    <!-- SORTING -->
+    <taskana-shared-sort
+      style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy">
+    </taskana-shared-sort>
+
+  </div>
+
+  <!-- FILTER -->
+  <div class="workbasket-list-toolbar__filter">
+    <button mat-stroked-button class="filter__filter-button" matTooltip="Display more filter options" (click)="onClickFilter()">
+      <mat-icon *ngIf="!isExpanded">keyboard_arrow_down</mat-icon>
+      <mat-icon *ngIf="isExpanded">keyboard_arrow_up</mat-icon>
+    </button>
+
+    <div class="filter__filter-component-wrapper">
+      <taskana-shared-workbasket-filter [isExpanded]="isExpanded"
+                                        (performFilter)="filtering($event)"
+                                        component="workbasket-list"></taskana-shared-workbasket-filter>
     </div>
   </div>
-  <div [@toggleDown]="toolbarState" class="row no-overflow">
-    <taskana-shared-filter (performFilter)="filtering($event)"></taskana-shared-filter>
-  </div>
-</li>
+</div>

@@ -31,17 +31,20 @@ public class TaskRepresentationModelAssembler
   private final ClassificationSummaryRepresentationModelAssembler classificationAssembler;
   private final WorkbasketSummaryRepresentationModelAssembler workbasketAssembler;
   private final AttachmentRepresentationModelAssembler attachmentAssembler;
+  private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
 
   @Autowired
   public TaskRepresentationModelAssembler(
       TaskService taskService,
       ClassificationSummaryRepresentationModelAssembler classificationAssembler,
       WorkbasketSummaryRepresentationModelAssembler workbasketAssembler,
-      AttachmentRepresentationModelAssembler attachmentAssembler) {
+      AttachmentRepresentationModelAssembler attachmentAssembler,
+      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler) {
     this.taskService = taskService;
     this.classificationAssembler = classificationAssembler;
     this.workbasketAssembler = workbasketAssembler;
     this.attachmentAssembler = attachmentAssembler;
+    this.objectReferenceAssembler = objectReferenceAssembler;
   }
 
   @NonNull
@@ -68,7 +71,7 @@ public class TaskRepresentationModelAssembler
     repModel.setBusinessProcessId(task.getBusinessProcessId());
     repModel.setParentBusinessProcessId(task.getParentBusinessProcessId());
     repModel.setOwner(task.getOwner());
-    repModel.setPrimaryObjRef(task.getPrimaryObjRef());
+    repModel.setPrimaryObjRef(objectReferenceAssembler.toModel(task.getPrimaryObjRef()));
     repModel.setRead(task.isRead());
     repModel.setTransferred(task.isTransferred());
     repModel.setAttachments(
@@ -131,7 +134,7 @@ public class TaskRepresentationModelAssembler
     task.setBusinessProcessId(repModel.getBusinessProcessId());
     task.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     task.setOwner(repModel.getOwner());
-    task.setPrimaryObjRef(repModel.getPrimaryObjRef());
+    task.setPrimaryObjRef(objectReferenceAssembler.toEntity(repModel.getPrimaryObjRef()));
     task.setRead(repModel.isRead());
     task.setTransferred(repModel.isTransferred());
     task.setCustomAttribute(TaskCustomField.CUSTOM_1, repModel.getCustom1());

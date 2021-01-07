@@ -9,6 +9,7 @@ import { Customisation } from '../../models/customisation';
 const customisationUrl = 'environments/data-sources/taskana-customization.json';
 
 export const missingIcon = 'assets/icons/categories/missing-icon.svg';
+export const asteriskIcon = './assets/icons/asterisk.svg';
 
 export interface CategoriesResponse {
   [key: string]: string[];
@@ -29,11 +30,12 @@ export class ClassificationCategoriesService {
         Object.keys(customisation).forEach((lang) => {
           if (customisation[lang]?.classifications?.categories) {
             customisation[lang].classifications.categories.missing = missingIcon;
+            customisation[lang].classifications.categories.all = asteriskIcon;
           } else {
             if (customisation[lang]?.classifications) {
-              customisation[lang].classifications.categories = { missing: missingIcon };
+              customisation[lang].classifications.categories = { missing: missingIcon, all: asteriskIcon };
             } else {
-              customisation[lang].classifications = { categories: { missing: missingIcon } };
+              customisation[lang].classifications = { categories: { missing: missingIcon, all: asteriskIcon } };
             }
           }
         });

@@ -1,0 +1,27 @@
+@import 'src/theme/_colors.scss';
+
+.administration-overview__navbar {
+  position: relative;
+}
+
+.administration-overview__navbar {
+  background-color: $light-grey;
+}
+
+.administration-overview__domain {
+  max-height: 48px;
+  position: absolute;
+  top: 46px;
+  right: 24px;
+  z-index: 11;
+}
+
+.mat-tab-link {
+  color: #1a202c !important;
+}
+
+.mat-tab-label-active {
+  font-weight: bolder !important;
+  color: unset;
+  opacity: 1;
+}

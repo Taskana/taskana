@@ -31,6 +31,8 @@ import { NoAccessComponent } from 'app/shared/components/no-access/no-access.com
 import { FormsValidatorService } from './shared/services/forms-validator/forms-validator.service';
 import { UploadService } from './shared/services/upload/upload.service';
 import { NotificationService } from './shared/services/notifications/notification.service';
+import { SidenavService } from './shared/services/sidenav/sidenav.service';
+import { SidenavListComponent } from 'app/shared/components/sidenav-list/sidenav-list.component';
 /**
  * Components
  */
@@ -49,6 +51,16 @@ import { UserGuard } from './shared/guards/user.guard';
 import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
 import { STATES } from './shared/store';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -62,11 +74,18 @@ const MODULES = [
   ReactiveFormsModule,
   TreeModule,
   SharedModule,
+  MatSidenavModule,
+  MatCheckboxModule,
+  MatGridListModule,
+  MatListModule,
+  MatButtonModule,
+  MatIconModule,
+  MatSelectModule,
   NgxsModule.forRoot(STATES, { developmentMode: !environment.production }),
   NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
 ];
 
-const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent];
+const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent, SidenavListComponent];
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
   return (): Promise<any> => startupService.load();
@@ -74,7 +93,7 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
+  imports: [MODULES, MatSidenavModule, MatIconModule, MatToolbarModule, MatProgressBarModule, MatProgressSpinnerModule],
   providers: [
     WindowRefService,
     DomainService,
@@ -97,7 +116,8 @@ export function startupServiceFactory(startupService: StartupService): () => Pro
     FormsValidatorService,
     UploadService,
     NotificationService,
-    ClassificationCategoriesService
+    ClassificationCategoriesService,
+    SidenavService
   ],
   bootstrap: [AppComponent]
 })

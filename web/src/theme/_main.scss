@@ -1,9 +1,8 @@
-@import 'bootstrap';
-@import 'ngxbootstrap';
-@import 'bootstrap-3-backward-compatibility';
-@import 'variables';
-@import '../../node_modules/angular-tree-component/dist/angular-tree-component.css';
 @import '../../node_modules/ngx-bootstrap/datepicker/bs-datepicker';
+@import '../../node_modules/angular-tree-component/dist/angular-tree-component.css';
+@import 'bootstrap-3-backward-compatibility';
+
+@import 'variables';
 @import 'material_styles';
 @import 'site';
 @import 'forms';
@@ -14,7 +13,6 @@
 @import 'buttons';
 @import 'tabs';
 @import 'table';
-@import 'bootstrap-3-backward-compatibility';
 @import 'mixin/colors';
 @import 'progress-bar';
 @import 'shameful';

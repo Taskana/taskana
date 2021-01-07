@@ -1,144 +1,37 @@
 @import '../../../../theme/variables';
 
-.navbar.main:before {
-  @include degraded-bar(right, 100%, 3px);
-}
-
-.navbar-inverse {
-  border: none;
+.navbar {
   background-color: $dark-green;
-  box-shadow: 0px 1px 5px -1px black;
+  max-height: 52px;
+  overflow-x: hidden;
+  padding-right: 50px;
 }
 
-.navbar-toggle {
-  margin: 3px 0px;
-  font-size: 20px;
-  &.logout {
-    font-size: 20px;
-  }
-}
-button.navbar-toggle:hover > span {
-  color: $aquamarine;
-}
-ul.nav > p {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding-right: 0px;
+.navbar__logo {
+  margin: auto;
 }
 
-.navbar-inverse .navbar-toggle,
-.navbar-toggle:hover,
-.navbar-inverse .navbar-toggle:focus {
-  border: none;
-  background-color: transparent;
-}
-
-svg-icon.logo {
+svg-icon.navbar__logo-icon {
   float: left;
   width: 150px;
   height: 50px;
-  padding: 5px;
+  padding: 4px 10px 0 0;
   position: initial;
 }
 
-h2.navbar-brand {
-  vertical-align: middle;
-  text-decoration: none;
+.navbar__title {
+  padding-top: 9px;
   color: white;
-  padding: 15px 0px 0px 0px;
-  font-size: 20px;
-}
-
-.domain-form {
-  margin: 13px;
-  color: white;
-  font-size: 18px;
-  > div {
-    cursor: pointer;
-    > button {
-      color: white;
-      background-color: $dark-green;
-      border: none;
-      font-size: 16px;
-      border-bottom: 1px solid $dark-green;
-      margin-left: 5px;
-    }
+  font-size: 1.25rem;
+  @media only screen and (max-width: 700px) {
+    display: none;
   }
 }
 
-.nav-content {
-  margin-top: 5px;
-}
-
-.nav-version {
-  color: $grey;
-  position: absolute;
-  bottom: 5px;
-  font-size: 12px;
-}
-
-/*
- * All side bar links styling.
-*/
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
-.menu > span:hover,
-.submenu > span:hover {
-  color: white;
-  cursor: pointer;
-}
-
-.sidenav {
-  position: fixed;
-  z-index: 999;
-  box-shadow: none;
-  height: 100%;
-  background-color: $dark-green;
-  box-shadow: 3px 0px 10px -1px $dark-green;
-}
-
-.navbar {
-  height: 52px;
-  margin-bottom: 0px;
-}
-
-.menu,
-.submenu > span {
-  margin-top: 15px;
-  font-size: 20px;
-  width: 100%;
-  font-family: inherit;
-  font-weight: 500;
-  line-height: 1.1;
-}
-
-.menu,
-.submenu > span {
-  padding-left: 12px;
-  color: $grey;
+.mat-icon-button {
   outline: none;
 }
-.menu.selected,
-.submenu.selected {
-  background-color: transparent;
-  & > span {
-    padding-left: 10px;
-    border-left: $pallete-green 5px solid;
-    color: white;
-  }
-}
 
-.menu > .submenu {
-  margin-left: 30px;
-}
-
-a {
-  color: $grey;
-  &:hover {
-    color: white;
-  }
-  text-decoration: none;
+.mat-icon {
+  color: white;
 }

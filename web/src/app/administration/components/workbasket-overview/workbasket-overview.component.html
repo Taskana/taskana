@@ -1,17 +1,26 @@
-<div class="no-gutter">
-    <div class="col-xs-12 col-md-4 vertical-right-divider">
-        <taskana-administration-workbasket-list></taskana-administration-workbasket-list>
-    </div>
-    <div class="col-xs-12 col-md-8" *ngIf="showDetail; else showEmptyPage">
-        <taskana-administration-workbasket-details></taskana-administration-workbasket-details>
-    </div>
+<div class="workbasket-overview">
 
-    <ng-template #showEmptyPage>
-        <div class="hidden-xs hidden-sm col-md-8 container-no-items">
-            <div class="center-block no-detail">
-                <h3 class="grey">Select a workbasket</h3>
-                <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
-            </div>
-        </div>
-    </ng-template>
+  <div class="workbasket-overview__list" #workbasketList>
+    <taskana-administration-workbasket-list [expanded]="expanded"></taskana-administration-workbasket-list>
+  </div>
+
+  <div class="vertical-right-divider">
+    <span class="workbasket-overview__toggle-view-button" (click)="toggleWidth()" #toggleButton>
+      <mat-icon class="md-36" *ngIf="expanded">chevron_left</mat-icon>
+      <mat-icon class="md-36" *ngIf="!expanded">chevron_right</mat-icon>
+    </span>
+  </div>
+
+  <div class="workbasket-overview__details" *ngIf="showDetail; else showEmptyPage">
+    <taskana-administration-workbasket-details [expanded]="expanded"></taskana-administration-workbasket-details>
+  </div>
+
+  <ng-template #showEmptyPage>
+    <div class="workbasket-overview__empty-page">
+      <div class="center-block no-detail">
+        <h3 class="grey">Select a workbasket</h3>
+        <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+      </div>
+    </div>
+  </ng-template>
 </div>

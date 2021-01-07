@@ -306,7 +306,7 @@ public interface WorkbasketHistoryQuery
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
-   * @throws InvalidArgumentException when the number of the custom is incorrect.
+   * @throws InvalidArgumentException if the number of the custom is incorrect.
    */
   WorkbasketHistoryQuery orderByCustomAttribute(int num, SortDirection sortDirection)
       throws InvalidArgumentException;
@@ -318,7 +318,7 @@ public interface WorkbasketHistoryQuery
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
-   * @throws InvalidArgumentException when the number of the orgLevel is incorrect.
+   * @throws InvalidArgumentException if the number of the orgLevel is incorrect.
    */
   WorkbasketHistoryQuery orderByOrgLevel(int num, SortDirection sortDirection)
       throws InvalidArgumentException;

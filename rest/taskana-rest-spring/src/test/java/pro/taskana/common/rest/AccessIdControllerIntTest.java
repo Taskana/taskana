@@ -121,7 +121,7 @@ class AccessIdControllerIntTest {
   }
 
   @Test
-  void testBadRequestWhenSearchForIsTooShort() {
+  void should_ThrowException_When_SearchForIsTooShort() {
     ThrowingCallable httpCall =
         () ->
             TEMPLATE.exchange(
@@ -131,7 +131,7 @@ class AccessIdControllerIntTest {
                 ParameterizedTypeReference.forType(List.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("Minimum searchFor length =")
+        .hasMessageContaining("Minimum Length is")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }

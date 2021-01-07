@@ -13,8 +13,13 @@ import pro.taskana.task.api.models.Task;
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   // All objects have to be serializable
+  /** Additional information of the task. */
   private List<CustomAttribute> customAttributes = Collections.emptyList();
+
+  /** Callback Information of the task. */
   private List<CustomAttribute> callbackInfo = Collections.emptyList();
+
+  /** Attachments of the task. */
   private List<AttachmentRepresentationModel> attachments = new ArrayList<>();
 
   public List<CustomAttribute> getCustomAttributes() {
@@ -47,7 +52,9 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
    */
   public static class CustomAttribute {
 
+    /** the key of the custom attribute. */
     private String key;
+    /** the value of the custom attribute. */
     private String value;
 
     public static CustomAttribute of(Entry<String, String> entry) {

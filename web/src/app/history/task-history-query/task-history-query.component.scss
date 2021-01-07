@@ -1,0 +1,13 @@
+.task-history-query {
+  height: calc(100vh - 56px);
+  width: auto;
+  overflow-x: scroll;
+  overflow-y: auto;
+
+  &__pagination-wrapper {
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
+  }
+}
+

@@ -1,0 +1,91 @@
+= TASKANA RESTful API Documentation
+
+== Overview
+This is the REST documentation for http://taskana.pro)[TASKANA] - the world's first open source solution for Enterprise Task Management.
+
+*For all Query Parameters:* whenever a parameter is an array type, several values can be passed by declaring that parameter multiple times.
+
+=== Hypermedia Support
+NOTE: HATEOAS support is still in development. Please have a look at example responses for each resource to determine the available links.
+
+TASKANA uses the https://restfulapi.net/hateoas/)[HATEOAS] (Hypermedia as the Engine of Application State) REST constraint.
+Most of our resources contain a `_links` section which contains navigation links.
+Besides, helping to navigate through our REST API, the navigation links also encapsulate the API.
+Using HATEOAS allows us to change some endpoints without modifying your frontend.
+
+== Task Resource
+
+include::{snippets}/TaskControllerRestDocTest/createTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/getSpecificTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/getAllTasksDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/updateTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/claimTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/selectAndClaimTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/cancelClaimTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/completeTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/transferTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/deleteTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/deleteTasksDocTest/auto-section.adoc[]
+
+== Task Comment Resource
+
+include::{snippets}/TaskCommentControllerRestDocTest/createTaskCommentDocTest/auto-section.adoc[]
+include::{snippets}/TaskCommentControllerRestDocTest/getSpecificTaskCommentDocTest/auto-section.adoc[]
+include::{snippets}/TaskCommentControllerRestDocTest/getAllTaskCommentsForSpecificTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskCommentControllerRestDocTest/updateTaskCommentDocTest/auto-section.adoc[]
+include::{snippets}/TaskCommentControllerRestDocTest/deleteTaskCommentDocTest/auto-section.adoc[]
+
+== Classification Resource
+
+include::{snippets}/ClassificationControllerRestDocTest/createClassificationDocTest/auto-section.adoc[]
+include::{snippets}/ClassificationControllerRestDocTest/getClassificationDocTest/auto-section.adoc[]
+include::{snippets}/ClassificationControllerRestDocTest/getAllClassificationsDocTest/auto-section.adoc[]
+include::{snippets}/ClassificationControllerRestDocTest/updateClassificationDocTest/auto-section.adoc[]
+include::{snippets}/ClassificationControllerRestDocTest/deleteClassificationDocTest/auto-section.adoc[]
+
+== Workbasket Resource
+
+include::{snippets}/WorkbasketControllerRestDocTest/createWorkbasketDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/getSpecificWorkbasketDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/getAllWorkbasketsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/getAllWorkbasketAccessItemsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/getAllWorkbasketDistributionTargetsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/updateWorkbasketDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/removeWorkbasketAsDistributionTargetDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/setAllWorkbasketAccessItemsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/setAllDistributionTargetsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketControllerRestDocTest/deleteWorkbasketDocTest/auto-section.adoc[]
+
+== Workbasket Access Item Resource
+
+include::{snippets}/WorkbasketAccessItemControllerRestDocTest/getWorkbasketAccessItemsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketAccessItemControllerRestDocTest/removeWorkbasketAccessItemsDocTest/auto-section.adoc[]
+
+== Monitoring Resources
+
+include::{snippets}/MonitorControllerRestDocTest/getTaskStatusReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/getWorkbasketReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/getClassificationReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/getTimestampReportDocTest/auto-section.adoc[]
+
+== Access Id Resource
+
+include::{snippets}/AccessIdControllerRestDocTest/searchForAccessIdDocTest/auto-section.adoc[]
+include::{snippets}/AccessIdControllerRestDocTest/getGroupsForAccessIdDocTest/auto-section.adoc[]
+
+== Configuration Resources
+
+include::{snippets}/TaskanaEngineControllerRestDocTest/getAllDomainsDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getClassificationCategoriesDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getClassificationTypesDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getClassificationCategoriesByTypeMapDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getCurrentUserInfoDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getHistoryProviderIsEnabledDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getCurrentVersionDocTest/auto-section.adoc[]
+
+== Import / Export
+
+include::{snippets}/ClassificationDefinitionControllerRestDocTest/exportClassificationDefinitionsDocTest/auto-section.adoc[]
+include::{snippets}/ClassificationDefinitionControllerRestDocTest/importClassificationDefinitionsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketDefinitionControllerRestDocTest/exportWorkbasketDefinitionsDocTest/auto-section.adoc[]
+include::{snippets}/WorkbasketDefinitionControllerRestDocTest/importWorkbasketDefinitionDocTest/auto-section.adoc[]

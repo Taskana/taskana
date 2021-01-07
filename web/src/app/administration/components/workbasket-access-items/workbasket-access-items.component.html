@@ -1,30 +1,29 @@
-<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
-
-	<!-- ACTION TOOLBAR -->
-	<div class="panel-heading">
-		<div class="pull-right btn-group">
-			<button type="button" (click)="onSubmit()" [disabled]="action === 'COPY'" data-toggle="tooltip" title="Save" class="btn btn-default btn-primary">
-				<span class="material-icons md-20">save</span>
-			</button>
-			<button type="button" (click)="clear()" data-toggle="tooltip" title="Undo Changes" class="btn btn-default undo-button">
-				<span class="material-icons md-20 blue">undo</span>
-			</button>
-		</div>
-		<h4 class="panel-header">{{workbasket.name}}
-			<span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
-		</h4>
-	</div>
+<div *ngIf="workbasket" id="wb-information">
 
 	<!-- ACCESS ITEMS -->
-	<div class="panel-body">
-		<form [formGroup]="AccessItemsForm">
-			<table formArrayName="accessItemsGroups" id="table-access-items" class="table table-striped table-center">
-
+	<div class="workbasket-access-items"
+		[ngStyle]="{'width': expanded ? 'calc(' + 100 + 'vw - 500px)' : 'calc(' + 100 + 'vw - 250px)'}">
+		<div class=" workbasket-access-items__buttons">
+			<button mat-stroked-button matTooltip="Add new access" type="button"
+				class="workbasket-access-items__buttons-add-access" (click)="addAccessItem()" data-toggle="tooltip"
+				title="Add new access">
+				Add new access
+				<mat-icon color="green-blue" aria-label="add new access">add</mat-icon>
+			</button>
+			<button mat-stroked-button matTooltip="Delete selected access" type="button"
+				class="workbasket-access-items__buttons-delete-access" (click)="deleteAccessItems()"
+				data-toggle="tooltip" title="delete selected access">
+				Delete selected access
+				<mat-icon color="green-blue" aria-label="delete access">delete</mat-icon>
+			</button>
+		</div>
+		<form [formGroup]="AccessItemsForm" class="workbasket-access-items__form">
+			<table formArrayName="accessItemsGroups" id="table-access-items" class="workbasket-access-items__table">
 				<!-- TITLE ROW -->
 				<thead>
 					<tr>
 						<th></th>
-						<th class="text-align required-header">AccessID</th>
+						<th class="required-header">AccessID</th>
 						<th>Select all</th>
 						<th>Read</th>
 						<th>Open</th>
@@ -37,88 +36,98 @@
 					</tr>
 				</thead>
 
-
 				<tbody>
-					<tr *ngFor="let accessItem of accessItemsGroups.controls; let index = index;" [formGroupName]="index">
+					<tr *ngFor="let accessItem of accessItemsGroups?.controls; let index = index;"
+						[formGroupName]="index">
 						<!-- REMOVE BUTTON -->
 						<td>
-							<button type="button" style="padding: 3px;" (click)="remove(index)" data-toggle="tooltip" title="Remove" class="btn btn-default">
-								<span class="material-icons md-24 red">clear</span>
-							</button>
+							<input class="workbasket-access-items__select-row" type="checkbox" aria-label="selectRow"
+								aria-labelledby="selectRow" (change)="selectRow($event, index)">
 						</td>
 
 						<!-- ACCESS ID -->
-						<td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput" class="input-group text-align text-width taskana-type-ahead"
-						 [ngClass]="{
-							'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
-							'has-error': !accessItem.value.accessId }">
-							<taskana-shared-type-ahead formControlName="accessId" placeHolderMessage="* Access id is required" [validationValue]="toggleValidationAccessIdMap.get(index)"
-													   [displayError]="!isFieldValid('accessItem.value.accessId', index)" (selectedItem)="accessItemSelected($event, index)" (inputField)="focusNewInput($event)"></taskana-shared-type-ahead>
-            </td>
+						<td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput"
+							class="workbasket-access-items__typeahead" [ngClass]="{	'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
+                							'has-error': !accessItem.value.accessId }">
+
+							<taskana-shared-type-ahead formControlName="accessId"
+								placeHolderMessage="Access id *"
+								[validationValue]="toggleValidationAccessIdMap.get(index)"
+								[displayError]="!isFieldValid('accessItem.value.accessId', index)"
+								(selectedItem)="accessItemSelected($event, index)">
+							</taskana-shared-type-ahead>
+						</td>
+
 						<ng-template #accessIdInput>
-							<td class="input-group text-align text-width">
-								<div [ngClass]="{ 'has-warning': (accessItemsClone[index].accessId !==accessItem.value.accessId), 'has-error':
-							 !accessItem.value.accessId && formsValidatorService.formSubmitAttempt}">
-									<input type="text" class="form-control" formControlName="accessId" placeholder="{{accessItem.invalid?
-							 '* Access id is required': ''}}"
-									 [@validation]="toggleValidationAccessIdMap.get(index)" #htmlInputElement>
+							<td>
+								<div [ngClass]="{ 'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
+																  'has-error': !accessItem.value.accessId && formsValidatorService.formSubmitAttempt}">
+									<input matInput type="text" formControlName="accessId"
+										placeholder="{{accessItem.invalid ? '* Access id is required': ''}}"
+										[@validation]="toggleValidationAccessIdMap.get(index)" #htmlInputElement>
 								</div>
 							</td>
 						</ng-template>
 
 						<!-- SELECT ALL -->
 						<td>
-							<input id="checkbox-{{index}}-00" type="checkbox" (change)="checkAll(index, $event)">
-							<label for="checkbox-{{index}}-00"></label>
+							<input class="workbasket-access-items__check-all" type="checkbox" id="checkbox-{{index}}-00"
+								(change)="checkAll(index, $event)" aria-label="checkAll" aria-labelledby="checkAll">
 						</td>
 
 						<!-- READ -->
-						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permRead !== accessItem.value.permRead)}">
-							<input id="checkbox-{{index}}-0" type="checkbox" formControlName="permRead" class="regular-checkbox">
-							<label for="checkbox-{{index}}-0"></label>
+						<td
+							[ngClass]="{ 'has-changes': (accessItemsClone[index].permRead !== accessItem.value.permRead)}">
+							<input class="workbasket-access-items__permission-checkbox" type="checkbox"
+								id="checkbox-{{index}}-0" formControlName="permRead" aria-label="permRead"
+								aria-labelledby="permRead" (change)="checkboxClicked(this.index, $event)">
 						</td>
 
 						<!-- OPEN -->
-						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permOpen !== accessItem.value.permOpen)}">
-							<input id="checkbox-{{index}}-1" type="checkbox" formControlName="permOpen">
-							<label for="checkbox-{{index}}-1"></label>
+						<td
+							[ngClass]="{ 'has-changes': (accessItemsClone[index].permOpen !== accessItem.value.permOpen)}">
+							<input class="workbasket-access-items__permission-checkbox" type="checkbox"
+								id="checkbox-{{index}}-1" formControlName="permOpen" aria-label="permOpen"
+								aria-labelledby="permOpen" (change)="checkboxClicked(this.index, $event)">
 						</td>
 
 						<!-- APPEND -->
-						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permAppend !== accessItem.value.permAppend)}">
-							<input id="checkbox-{{index}}-2" type="checkbox" formControlName="permAppend">
-							<label for="checkbox-{{index}}-2"></label>
+						<td
+							[ngClass]="{ 'has-changes': (accessItemsClone[index].permAppend !== accessItem.value.permAppend)}">
+							<input class="workbasket-access-items__permission-checkbox" type="checkbox"
+								id="checkbox-{{index}}-2" formControlName="permAppend" aria-label="permAppend"
+								aria-labelledby="permAppend" (change)="checkboxClicked(this.index, $event)">
 						</td>
 
 						<!-- TRANSFER -->
-						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permTransfer !== accessItem.value.permTransfer)}">
-							<input id="checkbox-{{index}}-3" type="checkbox" formControlName="permTransfer">
-							<label for="checkbox-{{index}}-3"></label>
+						<td
+							[ngClass]="{ 'has-changes': (accessItemsClone[index].permTransfer !== accessItem.value.permTransfer)}">
+							<input class="workbasket-access-items__permission-checkbox" type="checkbox"
+								id="checkbox-{{index}}-3" formControlName="permTransfer" aria-label="permTransfer"
+								aria-labelledby="permTransfer" (change)="checkboxClicked(this.index, $event)">
 						</td>
 
 						<!-- DISTRIBUTE -->
-						<td [ngClass]="{ 'has-changes': (accessItemsClone[index].permDistribute !== accessItem.value.permDistribute)}">
-							<input id="checkbox-{{index}}-4" type="checkbox" formControlName="permDistribute">
-							<label for="checkbox-{{index}}-4"></label>
+						<td
+							[ngClass]="{ 'has-changes': (accessItemsClone[index].permDistribute !== accessItem.value.permDistribute)}">
+							<input class="workbasket-access-items__permission-checkbox" type="checkbox"
+								id="checkbox-{{index}}-4" formControlName="permDistribute" aria-label="permDistribute"
+								aria-labelledby="permDistribute" (change)="checkboxClicked(this.index, $event)">
 						</td>
 
 						<!-- CUSTOM FIELDS -->
 						<ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
-							<td *ngIf="customField.visible" [ngClass]="{ 'has-changes': accessItemsClone[index][getAccessItemCustomProperty(customIndex + 1)] !== accessItem.value[getAccessItemCustomProperty(customIndex+1)] }">
-								<input id="checkbox-{{index}}-{{customIndex + 5}}" type="checkbox" formControlName="permCustom{{customIndex+1}}">
-								<label for="checkbox-{{index}}-{{customIndex + 5}}"></label>
+							<td *ngIf="customField.visible"
+								[ngClass]="{ 'has-changes': accessItemsClone[index][getAccessItemCustomProperty(customIndex + 1)] !== accessItem.value[getAccessItemCustomProperty(customIndex+1)] }">
+								<input class="workbasket-access-items__permission-checkbox" type="checkbox"
+									id="checkbox-{{index}}-{{customIndex + 5}}"
+									formControlName="permCustom{{customIndex+1}}" aria-label="customField"
+									aria-labelledby="customField" (change)="checkboxClicked(this.index, $event)">
 							</td>
 						</ng-container>
 					</tr>
 				</tbody>
 			</table>
 		</form>
-
-		<!-- ADD ACCESS ITEM -->
-		<button type="button" (click)="addAccessItem()" data-toggle="tooltip" title="Add new access" class="btn btn-default add-access-item">
-			<span class="material-icons md-20 green-blue">add</span>
-			<span>Add new access</span>
-		</button>
-		<taskana-shared-spinner [isRunning]="requestInProgress" [positionClass]=""></taskana-shared-spinner>
 	</div>
 </div>

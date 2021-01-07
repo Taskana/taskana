@@ -1,47 +1,35 @@
-$blue: #66afe9;
 .pagination {
-  margin: 15px 0 0 0;
-}
-a.pagination {
-  width: 35px;
-  height: 35px;
-  margin: 0 10px;
-  padding: 0;
-  background-color: aliceblue;
-  > input {
-    margin: 1px;
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    background-color: aliceblue;
-    border: none;
-    outline: none;
-    &:focus {
-      border-color: $blue;
-      outline: 0;
-      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  display: flex;
+  max-width: 100%;
+  background-color: #fafafa;
+  &__mat-paginator {
+    background-color: #fafafa;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+    &--expanded {
+      width: 70%;
+    }
+    &--collapsed {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  &__go-to {
+    margin-right: 12px;
+    display: flex;
+    align-items: baseline;
+    mat-form-field {
+      width: 56px;
+      margin: 6px 4px 0 4px;
+      font-size: 12px;
+    }
+    .pagination__go-to-label {
+      margin: 0 4px;
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.54);
     }
   }
 }
-
-ul.pagination {
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.footer {
-  margin: 0px 5px 0 0;
-  color: $blue;
-}
-
-// small "hack" to remove the arrows in the input fields of type numbers
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type='number'] {
-  -moz-appearance: textfield;
+.hidden {
+  display: none;
 }

@@ -3,11 +3,11 @@ package pro.taskana.task.rest.models;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
@@ -15,44 +15,92 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 public class TaskSummaryRepresentationModel
     extends RepresentationModel<TaskSummaryRepresentationModel> {
 
+  /** Unique Id. */
   protected String taskId;
+  /**
+   * External Id. Can be used to enforce idempotence at task creation. Can identify an external
+   * task.
+   */
   protected String externalId;
+  /** The creation timestamp in the system. */
   protected Instant created;
+  /** The timestamp of the last claim-operation. */
   protected Instant claimed;
+  /** The timestamp of the completion. */
   protected Instant completed;
+  /** The timestamp of the last modification. */
   protected Instant modified;
+  /**
+   * Planned start of the task. The actual completion of the task should be between PLANNED and DUE.
+   */
   protected Instant planned;
+  /**
+   * Timestamp when the task is due. The actual completion of the task should be between PLANNED and
+   * DUE.
+   */
   protected Instant due;
+  /** The name of the task. */
   protected String name;
+  /** the creator of the task. */
   protected String creator;
+  /** note. */
   protected String note;
+  /** The description of the task. */
   protected String description;
+  /** The priority of the task. */
   protected int priority;
+  /** The current task state. */
   protected TaskState state;
-  protected ClassificationSummaryRepresentationModel classificationSummary;
-  protected WorkbasketSummaryRepresentationModel workbasketSummary;
+  /** The classification of this task. */
+  @NotNull protected ClassificationSummaryRepresentationModel classificationSummary;
+  /** The workbasket this task resides in. */
+  @NotNull protected WorkbasketSummaryRepresentationModel workbasketSummary;
+  /** The business process id. */
   protected String businessProcessId;
+  /** the parent business process id. */
   protected String parentBusinessProcessId;
+  /** The owner of the task. The owner is set upon claiming of the task. */
   protected String owner;
-  protected ObjectReference primaryObjRef;
+  /** The Objects primary ObjectReference. */
+  @NotNull protected ObjectReferenceRepresentationModel primaryObjRef;
+  /** Indicator if the task has been read. */
   protected boolean isRead;
+  /** Indicator if the task has been transferred. */
   protected boolean isTransferred;
+  /** A custom property with name "1". */
   protected String custom1;
+  /** A custom property with name "2". */
   protected String custom2;
+  /** A custom property with name "3". */
   protected String custom3;
+  /** A custom property with name "4". */
   protected String custom4;
+  /** A custom property with name "5". */
   protected String custom5;
+  /** A custom property with name "6". */
   protected String custom6;
+  /** A custom property with name "7". */
   protected String custom7;
+  /** A custom property with name "8". */
   protected String custom8;
+  /** A custom property with name "9". */
   protected String custom9;
+  /** A custom property with name "10". */
   protected String custom10;
+  /** A custom property with name "11". */
   protected String custom11;
+  /** A custom property with name "12". */
   protected String custom12;
+  /** A custom property with name "13". */
   protected String custom13;
+  /** A custom property with name "14". */
   protected String custom14;
+  /** A custom property with name "15". */
   protected String custom15;
+  /** A custom property with name "16". */
   protected String custom16;
+
+  /** The attachment summaries of this task. */
   private List<AttachmentSummaryRepresentationModel> attachmentSummaries = new ArrayList<>();
 
   public String getTaskId() {
@@ -208,11 +256,11 @@ public class TaskSummaryRepresentationModel
     this.owner = owner;
   }
 
-  public ObjectReference getPrimaryObjRef() {
+  public ObjectReferenceRepresentationModel getPrimaryObjRef() {
     return primaryObjRef;
   }
 
-  public void setPrimaryObjRef(ObjectReference primaryObjRef) {
+  public void setPrimaryObjRef(ObjectReferenceRepresentationModel primaryObjRef) {
     this.primaryObjRef = primaryObjRef;
   }
 

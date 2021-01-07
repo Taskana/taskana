@@ -11,5 +11,6 @@
   "[html]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "vscode.html-language-features"
-  }
+  },
+  "eslint.enable": false
 }

@@ -1,17 +1,14 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
+import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
+import { DomainService } from 'app/shared/services/domain/domain.service';
+import { TaskanaType } from 'app/shared/models/taskana-type';
+import { environment } from 'environments/environment';
+import { UploadService } from 'app/shared/services/upload/upload.service';
+import { ImportExportService } from 'app/administration/services/import-export.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { TaskanaType } from '../../../shared/models/taskana-type';
-import { DomainService } from '../../../shared/services/domain/domain.service';
-import { WorkbasketDefinitionService } from '../../services/workbasket-definition.service';
-import { ClassificationDefinitionService } from '../../services/classification-definition.service';
-import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { UploadService } from '../../../shared/services/upload/upload.service';
-import { ImportExportService } from '../../services/import-export.service';
-import { WorkbasketDefinition } from '../../../shared/models/workbasket-definition';
-import { Classification } from '../../../shared/models/classification';
-import { environment } from '../../../../environments/environment';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
+import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'taskana-administration-import-export',
@@ -20,6 +17,7 @@ import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 })
 export class ImportExportComponent implements OnInit {
   @Input() currentSelection: TaskanaType;
+  @Input() parentComponent: string;
 
   @ViewChild('selectedFile', { static: true })
   selectedFileInput;
@@ -43,33 +41,33 @@ export class ImportExportComponent implements OnInit {
     });
   }
 
-  export(domain = ''): Observable<WorkbasketDefinition[] | Classification[]> {
+  export(domain = '') {
     if (this.currentSelection === TaskanaType.WORKBASKETS) {
-      return this.workbasketDefinitionService.exportWorkbaskets(domain);
+      this.workbasketDefinitionService.exportWorkbaskets(domain);
     } else {
-      return this.classificationDefinitionService.exportClassifications(domain);
+      this.classificationDefinitionService.exportClassifications(domain);
     }
   }
 
   uploadFile() {
     const file = this.selectedFileInput.nativeElement.files[0];
-    const formData = new FormData();
-    const xhr = new XMLHttpRequest();
+    const formdata = new FormData();
+    const ajax = new XMLHttpRequest();
     if (this.checkFormatFile(file)) {
-      formData.append('file', file);
-      xhr.upload.addEventListener('progress', this.progressHandler.bind(this), false);
-      xhr.addEventListener('load', this.resetProgress.bind(this), false);
-      xhr.addEventListener('error', this.onFailedResponse.bind(this, xhr), false);
-      xhr.onreadystatechange = this.onReadyStateChangeHandler.bind(this, xhr);
+      formdata.append('file', file);
+      ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
+      ajax.addEventListener('load', this.resetProgress.bind(this), false);
+      ajax.addEventListener('error', this.onFailedResponse.bind(this, ajax), false);
+      ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
       if (this.currentSelection === TaskanaType.WORKBASKETS) {
-        xhr.open('POST', `${environment.taskanaRestUrl}/v1/workbasket-definitions`);
+        ajax.open('POST', `${environment.taskanaRestUrl}/v1/workbasket-definitions`);
       } else {
-        xhr.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
+        ajax.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
       }
       if (!environment.production) {
-        xhr.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
+        ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
       }
-      xhr.send(formData);
+      ajax.send(formdata);
       this.uploadService.isInUse = true;
       this.uploadService.setCurrentProgressValue(1);
     }
@@ -81,13 +79,15 @@ export class ImportExportComponent implements OnInit {
   }
 
   private checkFormatFile(file): boolean {
-    if (file.name.endsWith('json')) {
-      return true;
+    const ending = file.name.match(/\.([^.]+)$/)[1];
+    let check = false;
+    if (ending === 'json') {
+      check = true;
     } else {
       file.value = '';
       this.errorsService.triggerError(NOTIFICATION_TYPES.FILE_ERR);
-      return false;
     }
+    return check;
   }
 
   private resetProgress() {
@@ -98,9 +98,11 @@ export class ImportExportComponent implements OnInit {
 
   private onReadyStateChangeHandler(event) {
     if (event.readyState === 4 && event.status >= 400) {
+      let title;
       let key: NOTIFICATION_TYPES;
       if (event.status === 401) {
         key = NOTIFICATION_TYPES.IMPORT_ERR_1;
+        title = 'Import was not successful, you have no access to apply this operation.';
       } else if (event.status === 404) {
         key = NOTIFICATION_TYPES.IMPORT_ERR_2;
       } else if (event.status === 409) {

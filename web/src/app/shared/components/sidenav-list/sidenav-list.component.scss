@@ -1,0 +1,22 @@
+@import '../../../../theme/variables';
+
+.navlist__admin-item {
+  margin-left: 30px;
+}
+
+.navlist__item {
+  color: #ddd;
+}
+
+.active {
+  color: $aquamarine;
+  border-left: 5px solid $aquamarine;
+}
+
+.active__sub {
+  color: $aquamarine;
+}
+
+::ng-deep .mat-drawer-container {
+  background-color: white;
+}

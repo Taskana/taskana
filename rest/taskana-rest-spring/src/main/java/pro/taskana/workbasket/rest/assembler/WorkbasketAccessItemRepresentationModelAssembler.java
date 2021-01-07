@@ -2,24 +2,25 @@ package pro.taskana.workbasket.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.ACCESS_ITEMS;
 
+import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
+import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
+import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.rest.WorkbasketController;
+import pro.taskana.workbasket.rest.models.WorkbasketAccessItemCollectionRepresentationModel;
+import pro.taskana.workbasket.rest.models.WorkbasketAccessItemPagedRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
 
 /**
@@ -28,8 +29,14 @@ import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationMode
  */
 @Component
 public class WorkbasketAccessItemRepresentationModelAssembler
-    implements TaskanaPagingAssembler<
-        WorkbasketAccessItem, WorkbasketAccessItemRepresentationModel> {
+    implements CollectionRepresentationModelAssembler<
+            WorkbasketAccessItem,
+            WorkbasketAccessItemRepresentationModel,
+            WorkbasketAccessItemCollectionRepresentationModel>,
+        PagedRepresentationModelAssembler<
+            WorkbasketAccessItem,
+            WorkbasketAccessItemRepresentationModel,
+            WorkbasketAccessItemPagedRepresentationModel> {
 
   private final WorkbasketService workbasketService;
 
@@ -96,27 +103,27 @@ public class WorkbasketAccessItemRepresentationModelAssembler
     return wbAccItemModel;
   }
 
-  public TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> toPageModelForSingleWorkbasket(
-      String workbasketId,
-      List<WorkbasketAccessItem> workbasketAccessItems,
-      PageMetadata pageMetadata)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
-    TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> pageModel =
-        toPageModel(workbasketAccessItems, pageMetadata);
+  public WorkbasketAccessItemCollectionRepresentationModel
+      toTaskanaCollectionModelForSingleWorkbasket(
+          String workbasketId, List<WorkbasketAccessItem> workbasketAccessItems)
+          throws NotAuthorizedException, WorkbasketNotFoundException {
+    WorkbasketAccessItemCollectionRepresentationModel pageModel =
+        toTaskanaCollectionModel(workbasketAccessItems);
     pageModel.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasket(workbasketId))
             .withRel("workbasket"));
     return pageModel;
   }
 
-  public TaskanaPagedModel<WorkbasketAccessItemRepresentationModel> toPageModel(
-      List<WorkbasketAccessItem> workbasketAccessItems, PageMetadata pageMetadata) {
-    return addLinksToPagedResource(
-        TaskanaPagingAssembler.super.toPageModel(workbasketAccessItems, pageMetadata));
+  @Override
+  public WorkbasketAccessItemCollectionRepresentationModel buildCollectionEntity(
+      List<WorkbasketAccessItemRepresentationModel> content) {
+    return new WorkbasketAccessItemCollectionRepresentationModel(content);
   }
 
   @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return ACCESS_ITEMS;
+  public WorkbasketAccessItemPagedRepresentationModel buildPageableEntity(
+      Collection<WorkbasketAccessItemRepresentationModel> content, PageMetadata pageMetadata) {
+    return new WorkbasketAccessItemPagedRepresentationModel(content, pageMetadata);
   }
 }

@@ -4,7 +4,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ICONTYPES } from '../../../shared/models/icon-types';
+import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from '../../../shared/pipes/remove-empty-type.pipe';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
@@ -25,12 +25,7 @@ import { ACTION } from '../../../shared/models/action';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  MarkWorkbasketForDeletion,
-  SaveNewWorkbasket,
-  SelectWorkbasket,
-  UpdateWorkbasket
-} from '../../../shared/store/workbasket-store/workbasket.actions';
+import { MarkWorkbasketForDeletion, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import {
   selectedWorkbasketMock,
   engineConfigurationMock,
@@ -39,11 +34,12 @@ import {
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
-}
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
@@ -54,11 +50,10 @@ class FieldErrorDisplayStub {
 
 @Component({ selector: 'taskana-administration-icon-type', template: '' })
 class IconTypeStub {
-  @Input() type: ICONTYPES = ICONTYPES.ALL;
+  @Input() type: WorkbasketType;
   @Input() text: string;
 }
 
-const workbasketMock = { workbasketId: 'ID', key: 'KEY' };
 const triggerWorkbasketSavedFn = jest.fn().mockReturnValue(true);
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
@@ -66,7 +61,9 @@ const workbasketServiceMock = jest.fn().mockImplementation(
     updateWorkbasket: jest.fn().mockReturnValue(of(true)),
     markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
     createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
-    getWorkBasket: jest.fn().mockReturnValue(of(workbasketMock))
+    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+    getWorkBasketAccessItems: jest.fn().mockReturnValue(of()),
+    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
   })
 );
 
@@ -110,11 +107,16 @@ describe('WorkbasketInformationComponent', () => {
         TypeaheadModule.forRoot(),
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([]),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatProgressBarModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatAutocompleteModule
       ],
       declarations: [
         WorkbasketInformationComponent,
-        SpinnerStub,
         FieldErrorDisplayStub,
         IconTypeStub,
         TypeAheadComponent,
@@ -156,7 +158,7 @@ describe('WorkbasketInformationComponent', () => {
   });
 
   it('should display custom fields correctly', () => {
-    const customFields = debugElement.nativeElement.getElementsByClassName('custom-fields');
+    const customFields = debugElement.nativeElement.getElementsByClassName('custom-fields__form-field');
     expect(customFields.length).toBe(3); //mock data has custom1->4 but engineConfig disables custom3 -> [1,2,4]
   });
 
@@ -178,12 +180,6 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.badgeMessage).toContain(`Copying workbasket: ${component.workbasket.key}`);
   });
 
-  it('should set type variable in selectType', () => {
-    const type = ICONTYPES.GROUP;
-    component.selectType(type);
-    expect(component.workbasket.type).toMatch(type);
-  });
-
   it('should submit when validatorService is true', () => {
     const formsValidatorService = TestBed.inject(FormsValidatorService);
     component.onSubmit();
@@ -199,7 +195,7 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 
-  it('should save workbasket when workbasketId exists', async(() => {
+  it('should save workbasket when workbasketId there', async(() => {
     component.workbasket = { ...selectedWorkbasketMock };
     component.workbasket.workbasketId = '1';
     component.action = ACTION.COPY;
@@ -210,25 +206,12 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasketClone).toMatchObject(component.workbasket);
   }));
 
-  it('should select the newly created workbasket when the new workbasket is saved', async () => {
-    let saveActionDispatched = false;
-    let selectActionDispatched = false;
-    actions$.pipe(ofActionDispatched(SaveNewWorkbasket)).subscribe(() => (saveActionDispatched = true));
-    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (selectActionDispatched = true));
-    const workbasketServiceSpy = TestBed.inject(WorkbasketService);
-    const getWorkbasketSpy = jest.spyOn(workbasketServiceSpy, 'getWorkBasket');
-
-    component.postNewWorkbasket();
-
-    expect(saveActionDispatched).toBe(true);
-    expect(selectActionDispatched).toBe(true);
-    expect(getWorkbasketSpy).toHaveBeenCalled();
-
-    const selectedWorkbasket = store.selectSnapshot((state) => state.workbasket.selectedWorkbasket);
-    const action = store.selectSnapshot((state) => state.workbasket.action);
-    expect(selectedWorkbasket).toBe(workbasketMock);
-    expect(action).toBe(ACTION.READ);
-  });
+  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', async(() => {
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
+    component.onRemoveConfirmed();
+    expect(actionDispatched).toBe(true);
+  }));
 
   it('should create new workbasket when workbasketId is undefined', () => {
     component.workbasket.workbasketId = undefined;
@@ -236,11 +219,4 @@ describe('WorkbasketInformationComponent', () => {
     component.onSave();
     expect(postNewWorkbasketSpy).toHaveBeenCalled();
   });
-
-  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', async(() => {
-    let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
-    component.onRemoveConfirmed();
-    expect(actionDispatched).toBe(true);
-  }));
 });

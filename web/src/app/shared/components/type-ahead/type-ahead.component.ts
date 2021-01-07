@@ -1,15 +1,5 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  forwardRef,
-  Output,
-  EventEmitter,
-  ElementRef,
-  AfterViewInit
-} from '@angular/core';
+import { Component, Input, ViewChild, forwardRef, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -30,9 +20,11 @@ import { AccessIdDefinition } from 'app/shared/models/access-id';
     }
   ]
 })
-export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
+export class TypeAheadComponent implements ControlValueAccessor {
   dataSource: any;
   typing = false;
+  isFirst = false;
+  items = [];
 
   @Input()
   placeHolderMessage;
@@ -50,17 +42,12 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   disable;
 
   @Input()
-  isRequired = true;
+  isRequired;
 
   @Output()
   selectedItem = new EventEmitter<AccessIdDefinition>();
 
-  @Output()
-  inputField = new EventEmitter<ElementRef>();
-
   @ViewChild('inputTypeAhead')
-  private inputTypeAhead;
-
   typeaheadLoading = false;
   typeaheadMinLength = 3;
   typeaheadWaitMs = 500;
@@ -83,7 +70,6 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   set value(v: any) {
     if (v !== this.innerValue) {
       this.innerValue = v;
-      this.onChangeCallback(v);
     }
   }
 
@@ -91,6 +77,9 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
   writeValue(value: any) {
     if (value !== this.innerValue) {
       this.innerValue = value;
+      if (this.value) {
+        this.isFirst = true;
+      }
       this.initializeDataSource();
     }
   }
@@ -107,17 +96,15 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
 
   constructor(private accessIdsService: AccessIdsService) {}
 
-  ngAfterViewInit() {
-    this.inputField.emit(this.inputTypeAhead);
-  }
-
   initializeDataSource() {
     this.dataSource = new Observable((observer: any) => {
       observer.next(this.value);
     }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
     this.accessIdsService.searchForAccessId(this.value).subscribe((items) => {
-      if (items.length > 0) {
-        this.dataSource.selected = items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
+      this.items = items;
+      if (this.isFirst) {
+        this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
+        this.selectedItem.emit(this.dataSource.selected);
       }
     });
   }
@@ -126,32 +113,15 @@ export class TypeAheadComponent implements AfterViewInit, ControlValueAccessor {
     return this.accessIdsService.searchForAccessId(accessId);
   }
 
-  typeaheadOnSelect(event: TypeaheadMatch): void {
-    if (event && event.item) {
-      this.value = event.item.accessId;
-      this.dataSource.selected = event.item;
+  typeaheadOnSelect(event): void {
+    if (event) {
+      if (this.items.length > 0) {
+        this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
+      }
       this.selectedItem.emit(this.dataSource.selected);
     }
-    this.setTyping(false);
-  }
-
-  setTyping(value) {
-    if (this.disable) {
-      return;
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
-    if (value) {
-      setTimeout(() => {
-        this.inputTypeAhead.nativeElement.focus();
-      }, 1);
-    }
-    this.typing = value;
-  }
-
-  changeTypeaheadLoading(e: boolean): void {
-    this.typeaheadLoading = e;
-  }
-
-  join(text: string, str: string) {
-    return text.toLocaleLowerCase().split(str).join(`<strong>${str}</strong>`);
   }
 }

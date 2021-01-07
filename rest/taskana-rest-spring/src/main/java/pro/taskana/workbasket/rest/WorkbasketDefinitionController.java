@@ -6,11 +6,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -31,7 +33,6 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
@@ -46,6 +47,7 @@ import pro.taskana.workbasket.rest.assembler.WorkbasketAccessItemRepresentationM
 import pro.taskana.workbasket.rest.assembler.WorkbasketDefinitionRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.assembler.WorkbasketRepresentationModelAssembler;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationModel;
+import pro.taskana.workbasket.rest.models.WorkbasketDefinitionCollectionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketDefinitionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 
@@ -77,24 +79,35 @@ public class WorkbasketDefinitionController {
     this.mapper = mapper;
   }
 
+  /**
+   * This endpoint exports all Workbaskets with the corresponding Workbasket Access Items and
+   * Distribution Targets. We call this data structure Workbasket Definition.
+   *
+   * @title Export Workbaskets
+   * @param domain Filter the export for a specific domain.
+   * @return all workbaskets.
+   */
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>
-      exportWorkbaskets(@RequestParam(required = false) String domain) {
-    LOGGER.debug("Entry to exportWorkbaskets(domain= {})", domain);
-    WorkbasketQuery workbasketQuery = workbasketService.createWorkbasketQuery();
-    List<WorkbasketSummary> workbasketSummaryList =
-        domain != null ? workbasketQuery.domainIn(domain).list() : workbasketQuery.list();
+  public ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> exportWorkbaskets(
+      @RequestParam(required = false) String[] domain) {
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Entry to exportWorkbaskets(domain= {})", Arrays.toString(domain));
+    }
+    WorkbasketQuery query = workbasketService.createWorkbasketQuery();
+    Optional.ofNullable(domain).ifPresent(query::domainIn);
 
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> pageModel =
+    List<WorkbasketSummary> workbasketSummaryList = query.list();
+
+    WorkbasketDefinitionCollectionRepresentationModel pageModel =
         workbasketSummaryList.stream()
             .map(WorkbasketSummary::getId)
             .map(wrap(workbasketService::getWorkbasket))
             .collect(
                 Collectors.collectingAndThen(
-                    Collectors.toList(), workbasketDefinitionAssembler::toPageModel));
+                    Collectors.toList(), workbasketDefinitionAssembler::toTaskanaCollectionModel));
 
-    ResponseEntity<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>> response =
+    ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> response =
         ResponseEntity.ok(pageModel);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from exportWorkbaskets(), returning {}", response);
@@ -104,20 +117,21 @@ public class WorkbasketDefinitionController {
   }
 
   /**
-   * This method imports a <b>list of {@link WorkbasketDefinitionRepresentationModel}</b>. This does
-   * not exactly match the REST norm, but we want to have an option to import all settings at once.
-   * When a logical equal (key and domain are equal) workbasket already exists an update will be
-   * executed. Otherwise a new workbasket will be created.
+   * This endpoint imports a list of Workbasket Definitions.
    *
-   * @param file the list of workbasket definitions which will be imported to the current system.
-   * @return Return answer is determined by the status code: 200 - all good 400 - list state error
-   *     (referring to non existing id's) 401 - not authorized
+   * <p>This does not exactly match the REST norm, but we want to have an option to import all
+   * settings at once. When a logical equal (key and domain are equal) Workbasket already exists an
+   * update will be executed. Otherwise a new Workbasket will be created.
+   *
+   * @title Import Workbaskets
+   * @param file the list of Workbasket Definitions which will be imported to the current system.
+   * @return no content
    * @throws IOException if multipart file cannot be parsed.
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws DomainNotFoundException if domain information is incorrect.
-   * @throws InvalidWorkbasketException if workbasket has invalid information.
-   * @throws WorkbasketAlreadyExistException if workbasket already exists when trying to create a
-   *     new one.
+   * @throws InvalidWorkbasketException if any Workbasket has invalid information.
+   * @throws WorkbasketAlreadyExistException if any Workbasket already exists when trying to create
+   *     a new one.
    * @throws WorkbasketNotFoundException if do not exists a workbasket in the system with the used
    *     id.
    * @throws InvalidArgumentException if authorization information in workbaskets definitions is
@@ -134,10 +148,10 @@ public class WorkbasketDefinitionController {
           InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
           ConcurrencyException {
     LOGGER.debug("Entry to importWorkbaskets()");
-    TaskanaPagedModel<WorkbasketDefinitionRepresentationModel> definitions =
+    WorkbasketDefinitionCollectionRepresentationModel definitions =
         mapper.readValue(
             file.getInputStream(),
-            new TypeReference<TaskanaPagedModel<WorkbasketDefinitionRepresentationModel>>() {});
+            new TypeReference<WorkbasketDefinitionCollectionRepresentationModel>() {});
 
     // key: logical ID
     // value: system ID (in database)

@@ -18,7 +18,7 @@ import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-// TODO: this has to be moved to taskana-common but this is currently not possible due to the the
+// TODO: this has to be moved to taskana-common but this is currently not possible due to the
 // workbasket and task imports
 class ObjectAttributeChangeDetectorTest {
 

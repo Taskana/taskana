@@ -1,5 +1,6 @@
 package acceptance.query;
 
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
@@ -107,6 +108,32 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
     count =
         getHistoryService().createTaskHistoryQuery().userIdIn("klaus", "arnold", "benni").count();
     assertThat(count).isZero();
+  }
+
+  @Test
+  void should_SortQueryByIdAsc_When_Requested() {
+    List<TaskHistoryEvent> events =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .orderByTaskHistoryEventId(SortDirection.ASCENDING)
+            .list();
+
+    assertThat(events)
+        .extracting(TaskHistoryEvent::getId)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+  }
+
+  @Test
+  void should_SortQueryByIdDesc_When_Requested() {
+    List<TaskHistoryEvent> events =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .orderByTaskHistoryEventId(SortDirection.DESCENDING)
+            .list();
+
+    assertThat(events)
+        .extracting(TaskHistoryEvent::getId)
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
   }
 
   @Test

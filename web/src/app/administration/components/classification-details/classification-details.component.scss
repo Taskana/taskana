@@ -1,20 +1,143 @@
 @import 'src/theme/_colors.scss';
 
-.custom-field-row {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  height: 40vh;
-  width: 100%;
-  margin: 0;
+.classification-details {
+  height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
-.custom-field-wrapper {
-  height: 70px;
-  padding: 0 15px;
+.classification-details-wrapper {
+  position: relative;
 }
-.dropdown-menu > li {
-  cursor: pointer;
+
+.action-toolbar {
+  padding: 8px 30px 12px 24px;
+  height: 68px;
+  background-color: #fff;
+  display: flex;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  justify-content: space-between;
+  flex-wrap: wrap;
+  z-index: 10;
+
+  &__headline {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    max-width: calc(100% - 350px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__badge-message {
+    font-size: 13px;
+    background-color: $transparent-grey;
+  }
+
+  &__button {
+    margin-top: 0.25rem;
+    margin-right: 6px;
+    background-color: #fff;
+  }
+
+  &__dropdown {
+    border-color: $transparent-grey;
+    border-bottom-style: solid;
+    border-width: 1px;
+  }
+
+  &__save-button {
+    background-color: $aquamarine;
+    color: white;
+  }
+
+  &__aquamarine-button {
+    color: $aquamarine;
+  }
+
+  &__red-button {
+    color: $invalid;
+  }
+}
+
+.detailed-fields {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+
+  &__subheading {
+    font-weight: bold;
+    line-height: 1.5;
+    padding-left: 15px;
+    margin-bottom: 0;
+    margin-top: 24px;
+  }
+
+  &__horizontal-line {
+    margin: 5px 5px 25px 5px;
+    border-top-color: #555;
+    border-top-width: 1.35px;
+  }
+
+  &__general {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  &__general-right-column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  &__spacer {
+    display: block;
+    width: 20px;
+  }
+
+  &__general-left-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 50%;
+  }
+
+  &__domain-checkbox {
+    position: absolute;
+    top: 172px;
+    right: 12px;
+    font-size: 12px;
+    color: #555;
+  }
+
+  &__domain-checkbox-icon {
+    cursor: pointer;
+    margin-top: 2px;
+    font-size: 18px;
+  }
+
+  &__service-and-priority {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__category-icon {
+    fill: #555;
+    margin-right: 5px;
+    top: -2px;
+  }
+
+  &__custom-fields {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &__input-custom-field {
+    flex: 0 49%;
+  }
 }
 
 input:invalid.dirty {

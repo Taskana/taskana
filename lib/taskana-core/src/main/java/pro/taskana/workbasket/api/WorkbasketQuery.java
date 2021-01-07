@@ -146,7 +146,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * @param permission which should be used for results.
    * @param accessIds Users which sould be checked for given permissions on workbaskets.
    * @return the current query object.
-   * @throws InvalidArgumentException when permission OR the accessIds are NULL.
+   * @throws InvalidArgumentException if permission OR the accessIds are NULL.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    */

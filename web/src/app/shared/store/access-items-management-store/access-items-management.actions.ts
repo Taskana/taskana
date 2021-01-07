@@ -1,5 +1,7 @@
 import { AccessIdDefinition } from '../../models/access-id';
-import { Sorting } from '../../models/sorting';
+import { Sorting, WorkbasketAccessItemQuerySortParameter } from '../../models/sorting';
+import { WorkbasketAccessItemQueryFilterParameter } from '../../models/workbasket-access-item-query-filter-parameter';
+import { QueryPagingParameter } from '../../models/query-paging-parameter';
 
 export class SelectAccessId {
   static readonly type = '[Access Items Management] Select access ID';
@@ -14,10 +16,9 @@ export class GetGroupsByAccessId {
 export class GetAccessItems {
   static readonly type = '[Access Items Management] Get access items';
   constructor(
-    public accessIds: AccessIdDefinition[],
-    public accessIdLike?: string,
-    public workbasketKeyLike?: string,
-    public sortModel: Sorting = new Sorting('workbasket-key')
+    public filterParameter?: WorkbasketAccessItemQueryFilterParameter,
+    public sortParameter?: Sorting<WorkbasketAccessItemQuerySortParameter>,
+    public pagingParameter?: QueryPagingParameter
   ) {}
 }
 

@@ -5,69 +5,77 @@ import { DomainGuard } from 'app/shared/guards/domain.guard';
 import { AccessItemsManagementComponent } from './components/access-items-management/access-items-management.component';
 import { ClassificationOverviewComponent } from './components/classification-overview/classification-overview.component';
 import { WorkbasketOverviewComponent } from './components/workbasket-overview/workbasket-overview.component';
+import { AdministrationOverviewComponent } from './components/administration-overview/administration-overview.component';
 
 const routes: Routes = [
   {
-    path: 'workbaskets',
-    component: WorkbasketOverviewComponent,
+    path: '',
+    component: AdministrationOverviewComponent,
     canActivate: [DomainGuard],
     children: [
       {
-        path: '',
+        path: 'workbaskets',
         component: WorkbasketOverviewComponent,
-        outlet: 'master'
+        canActivate: [DomainGuard],
+        children: [
+          {
+            path: '',
+            component: WorkbasketOverviewComponent,
+            outlet: 'master'
+          },
+          {
+            path: ':id',
+            component: WorkbasketOverviewComponent,
+            outlet: 'detail'
+          },
+          {
+            path: '**',
+            redirectTo: ''
+          }
+        ]
       },
       {
-        path: ':id',
-        component: WorkbasketOverviewComponent,
-        outlet: 'detail'
-      },
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ]
-  },
-  {
-    path: 'classifications',
-    component: ClassificationOverviewComponent,
-    canActivate: [DomainGuard],
-    children: [
-      {
-        path: '',
+        path: 'classifications',
         component: ClassificationOverviewComponent,
-        outlet: 'master'
+        canActivate: [DomainGuard],
+        children: [
+          {
+            path: '',
+            component: ClassificationOverviewComponent,
+            outlet: 'master'
+          },
+          {
+            path: ':id',
+            component: ClassificationOverviewComponent,
+            outlet: 'detail'
+          },
+          {
+            path: '**',
+            redirectTo: ''
+          }
+        ]
       },
       {
-        path: ':id',
-        component: ClassificationOverviewComponent,
-        outlet: 'detail'
-      },
-      {
-        path: '**',
-        redirectTo: ''
-      }
-    ]
-  },
-  {
-    path: 'access-items-management',
-    component: AccessItemsManagementComponent,
-    canActivate: [DomainGuard],
-    children: [
-      {
-        path: '**',
-        redirectTo: ''
+        path: 'access-items-management',
+        component: AccessItemsManagementComponent,
+        canActivate: [DomainGuard],
+        children: [
+          {
+            path: '**',
+            redirectTo: ''
+          }
+        ]
       }
     ]
   },
   {
     path: '',
-    redirectTo: 'workbaskets',
+    redirectTo: '',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: 'workbaskets'
+    redirectTo: ''
   }
 ];
 

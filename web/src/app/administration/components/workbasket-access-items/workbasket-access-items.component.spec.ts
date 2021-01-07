@@ -33,6 +33,13 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ACTION } from '../../../shared/models/action';
 import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -88,7 +95,14 @@ describe('WorkbasketAccessItemsComponent', () => {
         NgxsModule.forRoot([WorkbasketState, EngineConfigurationState]),
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([]),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatAutocompleteModule,
+        MatProgressBarModule,
+        MatCheckboxModule,
+        MatIconModule
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
@@ -120,7 +134,6 @@ describe('WorkbasketAccessItemsComponent', () => {
         workbasketAccessItems: workbasketAccessItemsMock
       }
     });
-    fixture.detectChanges();
   }));
 
   afterEach(async(() => {
@@ -149,7 +162,10 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should add accessItems when add access item button is clicked', () => {
-    const addAccessItemButton = debugElement.nativeElement.querySelector('button.add-access-item');
+    fixture.detectChanges();
+    const addAccessItemButton = debugElement.nativeElement.querySelector(
+      'button.workbasket-access-items__buttons-add-access'
+    );
     const clearSpy = jest.spyOn(component, 'addAccessItem');
     expect(addAccessItemButton.title).toMatch('Add new access');
 
@@ -158,19 +174,17 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should undo changes when undo button is clicked', () => {
-    const undoButton = debugElement.nativeElement.querySelector('button.undo-button');
+    fixture.detectChanges();
     const clearSpy = jest.spyOn(component, 'clear');
-    expect(undoButton.title).toMatch('Undo Changes');
-
-    undoButton.click();
+    component.clear();
     expect(clearSpy).toHaveBeenCalled();
   });
 
   it('should check all permissions when check all box is checked', () => {
+    fixture.detectChanges();
     const checkAllSpy = jest.spyOn(component, 'checkAll');
     const checkAllButton = debugElement.nativeElement.querySelector('#checkbox-0-00');
     expect(checkAllButton).toBeTruthy();
-
     checkAllButton.click();
     expect(checkAllSpy).toHaveBeenCalled();
   });

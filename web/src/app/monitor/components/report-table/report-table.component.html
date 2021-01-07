@@ -8,7 +8,7 @@
             </ng-container>
             <div *ngFor="let header of reportData.meta.header"
                  class="table-cell table-cell--bold">{{header}}</div>
-            <div class="table-cell table-cell--bold table-cell--border-left">{{reportData.meta.totalDesc}}</div>
+            <div class="table-cell table-cell--bold table-cell--border-left">{{reportData.meta.sumRowDesc}}</div>
         </div>
     </div>
     <div class="table-body">
@@ -36,6 +36,7 @@
                 </div>
             </div>
         </ng-container>
+        <button mat-flat-button color="accent" (click)="addRows()">Add more rows</button>
     </div>
     <div class="table-footer">
         <ng-container *ngFor="let row of reportData.sumRow; let i = index">
@@ -61,4 +62,5 @@
             </div>
         </ng-container>
     </div>
+
 </div>

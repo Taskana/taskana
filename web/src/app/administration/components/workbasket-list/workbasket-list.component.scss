@@ -1,38 +1,38 @@
-.row.list-group {
-  margin-left: 2px;
+@import 'src/theme/_colors.scss';
+
+.workbasket-list {
+  height: calc(100vh - 156px);
+  overflow-y: hidden;
+}
+.workbasket-list__workbaskets {
+  overflow-y: hidden;
 }
 
-.list-group > li {
-  border-left: none;
-  border-right: none;
+.workbasket-list__workbaskets-item {
 }
-
-a > label {
-  height: 2em;
-  width: 100%;
-}
-dd,
-dt {
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.mat-list-item {
+  height: 90px !important;
   overflow: hidden;
 }
-
-dt > i {
-  font-weight: normal;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.mat-list-single-selected-option {
+  background-color: $green !important;
+  color: white;
+}
+.workbaskets-item__wrapper {
+  display: flex;
+}
+.workbaskets-item__icon {
+  padding: 32px 32px 32px 16px;
+}
+.workbaskets-item__info {
+  display: block;
   overflow: hidden;
+  padding: 8px 0;
 }
-
-li > div.row > dl {
-  margin-bottom: 0px;
+p {
+  margin: 0;
 }
-li > div.row > dl:first-child {
-  margin-left: 15px;
-}
-
-.no-space {
-  border-top: none;
-  padding: 0px;
+.workbasket-list__no-items {
+  text-align: center;
+  padding-top: 150px;
 }

@@ -1,33 +1,37 @@
 package pro.taskana.task.rest.assembler;
 
-import static pro.taskana.common.rest.models.TaskanaPagedModelKeys.TASKS;
-
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
-import pro.taskana.common.rest.assembler.TaskanaPagingAssembler;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
+import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
+import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
+import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
+import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
+import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
 import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationModelAssembler;
 
 /** EntityModel assembler for {@link TaskSummaryRepresentationModel}. */
 @Component
 public class TaskSummaryRepresentationModelAssembler
-    implements TaskanaPagingAssembler<TaskSummary, TaskSummaryRepresentationModel> {
+    implements PagedRepresentationModelAssembler<
+            TaskSummary, TaskSummaryRepresentationModel, TaskSummaryPagedRepresentationModel>,
+        CollectionRepresentationModelAssembler<
+            TaskSummary, TaskSummaryRepresentationModel, TaskSummaryCollectionRepresentationModel> {
 
   private final ClassificationSummaryRepresentationModelAssembler classificationAssembler;
   private final WorkbasketSummaryRepresentationModelAssembler workbasketAssembler;
   private final AttachmentSummaryRepresentationModelAssembler attachmentAssembler;
+  private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
   private final TaskService taskService;
 
   @Autowired
@@ -35,10 +39,12 @@ public class TaskSummaryRepresentationModelAssembler
       ClassificationSummaryRepresentationModelAssembler classificationAssembler,
       WorkbasketSummaryRepresentationModelAssembler workbasketAssembler,
       AttachmentSummaryRepresentationModelAssembler attachmentAssembler,
+      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler,
       TaskService taskService) {
     this.classificationAssembler = classificationAssembler;
     this.workbasketAssembler = workbasketAssembler;
     this.attachmentAssembler = attachmentAssembler;
+    this.objectReferenceAssembler = objectReferenceAssembler;
     this.taskService = taskService;
   }
 
@@ -66,7 +72,7 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setBusinessProcessId(taskSummary.getBusinessProcessId());
     repModel.setParentBusinessProcessId(taskSummary.getParentBusinessProcessId());
     repModel.setOwner(taskSummary.getOwner());
-    repModel.setPrimaryObjRef(taskSummary.getPrimaryObjRef());
+    repModel.setPrimaryObjRef(objectReferenceAssembler.toModel(taskSummary.getPrimaryObjRef()));
     repModel.setRead(taskSummary.isRead());
     repModel.setTransferred(taskSummary.isTransferred());
     repModel.setAttachmentSummaries(
@@ -115,7 +121,7 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setBusinessProcessId(repModel.getBusinessProcessId());
     taskSummary.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     taskSummary.setOwner(repModel.getOwner());
-    taskSummary.setPrimaryObjRef(repModel.getPrimaryObjRef());
+    taskSummary.setPrimaryObjRef(objectReferenceAssembler.toEntity(repModel.getPrimaryObjRef()));
     taskSummary.setRead(repModel.isRead());
     taskSummary.setTransferred(repModel.isTransferred());
     taskSummary.setAttachmentSummaries(
@@ -141,14 +147,15 @@ public class TaskSummaryRepresentationModelAssembler
     return taskSummary;
   }
 
-  public TaskanaPagedModel<TaskSummaryRepresentationModel> toPageModel(
-      List<TaskSummary> taskSummaries, PageMetadata pageMetadata) {
-    return addLinksToPagedResource(
-        TaskanaPagingAssembler.super.toPageModel(taskSummaries, pageMetadata));
+  @Override
+  public TaskSummaryPagedRepresentationModel buildPageableEntity(
+      Collection<TaskSummaryRepresentationModel> content, PageMetadata pageMetadata) {
+    return new TaskSummaryPagedRepresentationModel(content, pageMetadata);
   }
 
   @Override
-  public TaskanaPagedModelKeys getProperty() {
-    return TASKS;
+  public TaskSummaryCollectionRepresentationModel buildCollectionEntity(
+      List<TaskSummaryRepresentationModel> content) {
+    return new TaskSummaryCollectionRepresentationModel(content);
   }
 }

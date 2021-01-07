@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ImportExportService } from '../../services/import-export.service';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { ClassificationState } from '../../../shared/store/classification-store/classification.state';
 import { EngineConfigurationState } from '../../../shared/store/engine-configuration-store/engine-configuration.state';
@@ -13,9 +13,6 @@ import { ClassificationDetailsComponent } from './classification-details.compone
 import { FormsModule } from '@angular/forms';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
-import { NumberPickerComponent } from '../../../shared/components/number-picker/number-picker.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
   CopyClassification,
@@ -24,11 +21,17 @@ import {
   SaveCreatedClassification,
   SaveModifiedClassification
 } from '../../../shared/store/classification-store/classification.actions';
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning;
-}
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { By } from '@angular/platform-browser';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
@@ -80,7 +83,8 @@ const importExportServiceSpy = jest.fn().mockImplementation(
 
 const requestInProgressServiceSpy = jest.fn().mockImplementation(
   (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn().mockReturnValue(of())
+    setRequestInProgress: jest.fn().mockReturnValue(of()),
+    getRequestInProgress: jest.fn().mockReturnValue(of(false))
   })
 );
 
@@ -116,18 +120,18 @@ describe('ClassificationDetailsComponent', () => {
       imports: [
         NgxsModule.forRoot([ClassificationState, EngineConfigurationState]),
         FormsModule,
-        MatSnackBarModule,
-        MatDialogModule
+        MatIconModule,
+        MatToolbarModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatProgressBarModule,
+        MatMenuModule,
+        BrowserAnimationsModule
       ],
-      declarations: [
-        ClassificationDetailsComponent,
-        SpinnerStub,
-        InputStub,
-        FieldErrorDisplayStub,
-        NumberPickerComponent,
-        SvgIconStub,
-        TextareaStub
-      ],
+      declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
       providers: [
         { provide: ClassificationsService, useClass: classificationServiceSpy },
         { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
@@ -181,8 +185,8 @@ describe('ClassificationDetailsComponent', () => {
   it('should return icon for category when getCategoryIcon() is called and category exists', (done) => {
     const categoryIcon = component.getCategoryIcon('AUTOMATIC');
     categoryIcon.subscribe((iconPair) => {
-      expect(iconPair.name).toBe('assets/icons/categories/automatic.svg');
-      expect(iconPair.text).toBe('AUTOMATIC');
+      expect(iconPair.left).toBe('assets/icons/categories/automatic.svg');
+      expect(iconPair.right).toBe('AUTOMATIC');
       done();
     });
   });
@@ -190,7 +194,7 @@ describe('ClassificationDetailsComponent', () => {
   it('should return icon when getCategoryIcon() is called and category does not exist', (done) => {
     const categoryIcon = component.getCategoryIcon('WATER');
     categoryIcon.subscribe((iconPair) => {
-      expect(iconPair.name).toBe('assets/icons/categories/missing-icon.svg');
+      expect(iconPair.left).toBe('assets/icons/categories/missing-icon.svg');
       done();
     });
   });
@@ -239,29 +243,26 @@ describe('ClassificationDetailsComponent', () => {
   });
 
   /* HTML */
-  it('should show spinner component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-spinner')).toBeTruthy();
-  });
 
   it('should not show details when spinner is running', () => {
-    component.spinnerIsRunning = true;
+    component.requestInProgress = true;
     component.classification = {};
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('.classification__menu-bar')).toBeFalsy();
-    expect(debugElement.nativeElement.querySelector('.classification__detailed-fields')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.action-toolbar')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.detailed-fields')).toBeFalsy();
   });
 
   it('should not show details when classification does not exist', () => {
-    component.spinnerIsRunning = false;
+    component.requestInProgress = false;
     component.classification = null;
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('.classification__menu-bar')).toBeFalsy();
-    expect(debugElement.nativeElement.querySelector('.classification__detailed-fields')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.action-toolbar')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('.detailed-fields')).toBeFalsy();
   });
 
   it('should show details when classification exists and spinner is not running', () => {
-    expect(debugElement.nativeElement.querySelector('.classification__menu-bar')).toBeTruthy();
-    expect(debugElement.nativeElement.querySelector('.classification__detailed-fields')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('.action-toolbar')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('.detailed-fields')).toBeTruthy();
   });
 
   /* HTML: TITLE + ACTION BUTTONS */
@@ -269,7 +270,7 @@ describe('ClassificationDetailsComponent', () => {
     component.classification = { name: 'Recommendation', type: 'DOCUMENT' };
     component.isCreatingNewClassification = true;
     fixture.detectChanges();
-    const headline = debugElement.nativeElement.querySelector('.classification__headline');
+    const headline = debugElement.nativeElement.querySelector('.action-toolbar__headline');
     expect(headline).toBeTruthy();
     expect(headline.textContent).toContain('Recommendation');
     expect(headline.textContent).toContain('DOCUMENT');
@@ -278,19 +279,21 @@ describe('ClassificationDetailsComponent', () => {
     expect(badgeMessage.textContent.trim()).toBe('Creating new classification');
   });
 
-  it('should call onSubmit() when button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.classification__menu-bar').children[0];
+  it('should call onSubmit() when button is clicked', async () => {
+    const button = debugElement.nativeElement.querySelector('.action-toolbar__save-button');
     expect(button).toBeTruthy();
-    expect(button.title).toBe('Save');
+    expect(button.textContent).toContain('Save');
+    expect(button.textContent).toContain('save');
     component.onSubmit = jest.fn().mockImplementation();
     button.click();
     expect(component.onSubmit).toHaveBeenCalled();
   });
 
   it('should restore selected classification when button is clicked', async () => {
-    const button = debugElement.nativeElement.querySelector('.classification__menu-bar').children[1];
+    const button = debugElement.nativeElement.querySelector('.action-toolbar').children[1].children[1];
     expect(button).toBeTruthy();
-    expect(button.title).toBe('Restore Previous Version');
+    expect(button.textContent).toContain('Undo Changes');
+    expect(button.textContent).toContain('restore');
 
     let isActionDispatched = false;
     actions$.pipe(ofActionDispatched(RestoreSelectedClassification)).subscribe(() => (isActionDispatched = true));
@@ -298,22 +301,39 @@ describe('ClassificationDetailsComponent', () => {
     expect(isActionDispatched).toBe(true);
   });
 
-  it('should call onCopy() when button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.classification__menu-bar').children[2];
+  it('should display button to show more actions', () => {
+    const button = debugElement.nativeElement.querySelector('#action-toolbar__more-buttons');
     expect(button).toBeTruthy();
-    expect(button.title).toBe('Copy');
-    component.onCopy = jest.fn().mockImplementation();
     button.click();
+    fixture.detectChanges();
+    const buttonsInDropdown = debugElement.queryAll(By.css('.action-toolbar__dropdown'));
+    expect(buttonsInDropdown.length).toEqual(3);
+  });
+
+  it('should call onCopy() when button is clicked', () => {
+    const button = debugElement.nativeElement.querySelector('#action-toolbar__more-buttons');
+    expect(button).toBeTruthy();
+    button.click();
+    fixture.detectChanges();
+    const copyButton = debugElement.queryAll(By.css('.action-toolbar__dropdown'))[0];
+    expect(copyButton.nativeElement.textContent).toContain('content_copy');
+    expect(copyButton.nativeElement.textContent).toContain('Copy');
+    component.onCopy = jest.fn().mockImplementation();
+    copyButton.nativeElement.click();
     expect(component.onCopy).toHaveBeenCalled();
   });
 
   it('should call onRemoveClassification() when button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.classification__menu-bar').children[3];
+    const button = debugElement.nativeElement.querySelector('#action-toolbar__more-buttons');
     expect(button).toBeTruthy();
-    expect(button.title).toBe('Delete');
+    button.click();
+    fixture.detectChanges();
+    const deleteButton = debugElement.queryAll(By.css('.action-toolbar__dropdown'))[1];
+    expect(deleteButton.nativeElement.textContent).toContain('delete');
+    expect(deleteButton.nativeElement.textContent).toContain('Delete');
 
     const onRemoveClassificationSpy = jest.spyOn(component, 'onRemoveClassification');
-    button.click();
+    deleteButton.nativeElement.click();
     expect(onRemoveClassificationSpy).toHaveBeenCalled();
     onRemoveClassificationSpy.mockReset();
 
@@ -323,27 +343,54 @@ describe('ClassificationDetailsComponent', () => {
     expect(showDialogSpy).toHaveBeenCalled();
   });
 
+  it('should call onClose() when button is clicked', () => {
+    const button = debugElement.nativeElement.querySelector('#action-toolbar__more-buttons');
+    expect(button).toBeTruthy();
+    button.click();
+    fixture.detectChanges();
+    const closeButton = debugElement.queryAll(By.css('.action-toolbar__dropdown'))[2];
+    expect(closeButton.nativeElement.textContent).toContain('close');
+    expect(closeButton.nativeElement.textContent).toContain('close');
+    component.onCloseClassification = jest.fn().mockImplementation();
+    closeButton.nativeElement.click();
+    expect(component.onCloseClassification).toHaveBeenCalled();
+  });
+
   /* DETAILED FIELDS */
   it('should display field-error-display component', () => {
     expect(debugElement.nativeElement.querySelector('taskana-shared-field-error-display')).toBeTruthy();
   });
 
-  it('should display number-picker component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-number-picker')).toBeTruthy();
+  it('should display form field for key', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-key')).toBeTruthy();
   });
 
-  it('should select category when button is clicked', () => {
-    component.classification.category = 'A';
-    component.getAvailableCategories = jest.fn().mockImplementation((type) => of(['B', 'C']));
-    fixture.detectChanges();
-    const button = debugElement.nativeElement.querySelector('.detailed-fields__categories');
-    expect(button).toBeTruthy();
-    button.click();
-    expect(component.classification.category).toBe('B');
+  it('should display form field for name', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-name')).toBeTruthy();
+  });
+
+  it('should display form field for service level', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-service-level')).toBeTruthy();
+  });
+
+  it('should display form field for priority', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-priority')).toBeTruthy();
+  });
+
+  it('should display form field for domain', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-domain')).toBeTruthy();
+  });
+
+  it('should display form field for application entry point', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-application-entry-point')).toBeTruthy();
+  });
+
+  it('should display form field for description', () => {
+    expect(debugElement.nativeElement.querySelector('#classification-description')).toBeTruthy();
   });
 
   it('should change isValidInDomain when button is clicked', () => {
-    const button = debugElement.nativeElement.querySelector('.detailed-fields__domain').children[2];
+    const button = debugElement.nativeElement.querySelector('.detailed-fields__domain-checkbox-icon').parentNode;
     expect(button).toBeTruthy();
     component.classification.isValidInDomain = false;
     button.click();

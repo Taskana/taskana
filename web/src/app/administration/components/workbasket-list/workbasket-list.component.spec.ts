@@ -10,21 +10,32 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { OrientationService } from '../../../shared/services/orientation/orientation.service';
 import { ImportExportService } from '../../services/import-export.service';
 import { DeselectWorkbasket, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
-import { TaskanaQueryParameters } from '../../../shared/util/query-parameters';
 import { WorkbasketSummary } from '../../../shared/models/workbasket-summary';
-import { Sorting } from '../../../shared/models/sorting';
-import { Filter } from '../../../shared/models/filter';
-import { ICONTYPES } from '../../../shared/models/icon-types';
+import { Direction, Sorting, WorkbasketQuerySortParameter } from '../../../shared/models/sorting';
+import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { Page } from '../../../shared/models/page';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatListModule } from '@angular/material/list';
+import { DomainService } from '../../../shared/services/domain/domain.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
+import { selectedWorkbasketMock } from '../../../shared/store/mock-data/mock-store';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 
 const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
-const getWorkbasketFn = jest.fn().mockReturnValue(of({ workbasketId: '1' }));
+const getWorkbasketFn = jest.fn().mockReturnValue(of(selectedWorkbasketMock));
+const getWorkbasketActionToolbarExpansionFn = jest.fn().mockReturnValue(of(false));
 const workbasketServiceMock = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
     workbasketSavedTriggered: workbasketSavedTriggeredFn,
     getWorkBasketsSummary: workbasketSummaryFn,
-    getWorkBasket: getWorkbasketFn
+    getWorkBasket: getWorkbasketFn,
+    getWorkbasketActionToolbarExpansion: getWorkbasketActionToolbarExpansionFn,
+    getWorkBasketAccessItems: jest.fn().mockReturnValue(of({})),
+    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of({}))
   })
 );
 
@@ -43,29 +54,40 @@ const importExportServiceMock = jest.fn().mockImplementation(
   })
 );
 
+const domainServiceSpy = jest.fn().mockImplementation(
+  (): Partial<DomainService> => ({
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of())
+  })
+);
+
+const requestInProgressServiceSpy = jest.fn().mockImplementation(
+  (): Partial<RequestInProgressService> => ({
+    setRequestInProgress: jest.fn().mockReturnValue(of()),
+    getRequestInProgress: jest.fn().mockReturnValue(of(false))
+  })
+);
+
 @Component({ selector: 'taskana-administration-workbasket-list-toolbar', template: '' })
 class WorkbasketListToolbarStub {
   @Input() workbaskets: Array<WorkbasketSummary>;
   @Input() workbasketDefaultSortBy: string;
-  @Output() performSorting = new EventEmitter<Sorting>();
-  @Output() performFilter = new EventEmitter<Filter>();
+  @Input() workbasketListExpanded: boolean;
+  @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
+  @Output() performFilter = new EventEmitter<WorkbasketQueryFilterParameter>();
 }
 
 @Component({ selector: 'taskana-administration-icon-type', template: '' })
 class IconTypeStub {
-  @Input() type: ICONTYPES = ICONTYPES.ALL;
+  @Input() type: WorkbasketType;
   @Input() selected = false;
-}
-
-@Component({ selector: 'taskana-shared-spinner', template: '' })
-class SpinnerStub {
-  @Input() isRunning: boolean;
 }
 
 @Component({ selector: 'taskana-shared-pagination', template: '' })
 class PaginationStub {
   @Input() page: Page;
   @Input() type: String;
+  @Input() expanded: boolean;
   @Output() changePage = new EventEmitter<number>();
   @Input() numberOfItems: number;
 }
@@ -82,19 +104,23 @@ describe('WorkbasketListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([WorkbasketState]), MatSnackBarModule, MatDialogModule],
-      declarations: [
-        WorkbasketListComponent,
-        WorkbasketListToolbarStub,
-        IconTypeStub,
-        SpinnerStub,
-        PaginationStub,
-        SvgIconStub
+      imports: [
+        NgxsModule.forRoot([WorkbasketState]),
+        RouterTestingModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        FormsModule,
+        MatProgressBarModule,
+        MatSelectModule,
+        MatListModule
       ],
+      declarations: [WorkbasketListComponent, WorkbasketListToolbarStub, IconTypeStub, PaginationStub, SvgIconStub],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceMock },
         { provide: OrientationService, useClass: orientationServiceMock },
-        { provide: ImportExportService, useClass: importExportServiceMock }
+        { provide: ImportExportService, useClass: importExportServiceMock },
+        { provide: DomainService, useClass: domainServiceSpy },
+        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
       ]
     }).compileComponents();
 
@@ -115,7 +141,7 @@ describe('WorkbasketListComponent', () => {
     fixture.detectChanges();
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
-    component.selectWorkbasket('1');
+    component.selectWorkbasket('WBI:000000000000000000000000000000000902');
     expect(actionDispatched).toBe(true);
   }));
 
@@ -131,13 +157,16 @@ describe('WorkbasketListComponent', () => {
   }));
 
   it('should set sort value when performSorting is called', () => {
-    const sort = { sortBy: '1', sortDirection: 'asc' };
+    const sort: Sorting<WorkbasketQuerySortParameter> = {
+      'sort-by': WorkbasketQuerySortParameter.TYPE,
+      order: Direction.ASC
+    };
     component.performSorting(sort);
     expect(component.sort).toMatchObject(sort);
   });
 
   it('should set filter value when performFilter is called', () => {
-    const filter = { filterParams: '123' };
+    const filter: WorkbasketQueryFilterParameter = { domain: ['123'] };
     component.performFilter(filter);
     expect(component.filterBy).toMatchObject(filter);
   });
@@ -145,6 +174,6 @@ describe('WorkbasketListComponent', () => {
   it('should change page value when change page function is called ', () => {
     const page = 2;
     component.changePage(page);
-    expect(TaskanaQueryParameters.page).toBe(page);
+    expect(component.pageParameter.page).toBe(page);
   });
 });

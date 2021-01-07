@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccessItemsManagementComponent } from './access-items-management.component';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
@@ -14,15 +14,26 @@ import { AccessItemsManagementState } from '../../../shared/store/access-items-m
 import { Observable } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Direction, Sorting } from '../../../shared/models/sorting';
+import { Direction, Sorting, WorkbasketAccessItemQuerySortParameter } from '../../../shared/models/sorting';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -38,6 +49,10 @@ const notificationServiceSpy = jest.fn().mockImplementation(
   })
 );
 
+const mockDialogRef = {
+  close: jasmine.createSpy('close')
+};
+
 describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
   let debugElement: DebugElement;
@@ -52,8 +67,9 @@ describe('AccessItemsManagementComponent', () => {
 
   @Component({ selector: 'taskana-shared-sort', template: '' })
   class TaskanaSharedSortStub {
-    @Input() sortingFields: Map<string, string>;
-    @Output() performSorting = new EventEmitter<Sorting>();
+    @Input() sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string>;
+    @Input() defaultSortBy: WorkbasketAccessItemQuerySortParameter;
+    @Output() performSorting = new EventEmitter<Sorting<WorkbasketAccessItemQuerySortParameter>>();
   }
 
   beforeEach(async(() => {
@@ -67,7 +83,18 @@ describe('AccessItemsManagementComponent', () => {
         MatSnackBarModule,
         MatDialogModule,
         TypeaheadModule.forRoot(),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatAutocompleteModule,
+        MatInputModule,
+        MatProgressBarModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatDividerModule,
+        MatListModule,
+        MatExpansionModule
       ],
       declarations: [
         AccessItemsManagementComponent,
@@ -78,6 +105,7 @@ describe('AccessItemsManagementComponent', () => {
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
+        { provide: MatDialogRef, useValue: { mockDialogRef } },
         RequestInProgressService,
         ClassificationCategoriesService,
         StartupService,
@@ -101,11 +129,6 @@ describe('AccessItemsManagementComponent', () => {
 
   it('should create the app', () => {
     expect(app).toBeTruthy();
-  });
-
-  it('should display header correctly as Access items management', () => {
-    const panelHeader = () => debugElement.nativeElement.querySelector('h4.panel-header').textContent;
-    expect(panelHeader()).toBe('Access items management');
   });
 
   it('should render search type ahead', () => {
@@ -135,10 +158,8 @@ describe('AccessItemsManagementComponent', () => {
     const groups = store.selectSnapshot((state) => state.accessItemsManagement);
     expect(selectedAccessId).not.toBeNull();
     expect(groups).not.toBeNull();
-    expect(app.accessItemsForm).not.toBeNull();
-
     app.onSelectAccessId(null);
-    expect(app.accessItemsForm).toBeNull();
+    expect(groups).toMatchObject({});
   });
 
   it('should dispatch GetAccessItems action in searchForAccessItemsWorkbaskets', async((done) => {
@@ -147,7 +168,7 @@ describe('AccessItemsManagementComponent', () => {
       { accessId: '1', name: 'users' },
       { accessId: '2', name: 'users' }
     ];
-    app.sortModel = { sortBy: 'access-id', sortDirection: 'desc' };
+    app.sortModel = { 'sort-by': WorkbasketAccessItemQuerySortParameter.ACCESS_ID, order: Direction.DESC };
     app.searchForAccessItemsWorkbaskets();
     fixture.detectChanges();
     let actionDispatched = false;
@@ -160,7 +181,8 @@ describe('AccessItemsManagementComponent', () => {
   }));
 
   it('should display a dialog when access is revoked', async(() => {
-    app.accessIdSelected = '';
+    app.accessIdSelected = 'xyz';
+    app.accessId = { accessId: 'xyz', name: 'xyz' };
     const notificationService = TestBed.inject(NotificationService);
     const showDialogSpy = jest.spyOn(notificationService, 'showDialog').mockImplementation();
     app.revokeAccess();
@@ -175,7 +197,10 @@ describe('AccessItemsManagementComponent', () => {
   });
 
   it('should invoke sorting function correctly', () => {
-    const newSort = new Sorting('access-id', Direction.DESC);
+    const newSort: Sorting<WorkbasketAccessItemQuerySortParameter> = {
+      'sort-by': WorkbasketAccessItemQuerySortParameter.ACCESS_ID,
+      order: Direction.DESC
+    };
     app.accessId = { accessId: '1', name: 'max' };
     app.groups = [{ accessId: '1', name: 'users' }];
     app.sorting(newSort);

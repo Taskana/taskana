@@ -1,9 +1,36 @@
-<taskana-shared-nav-bar></taskana-shared-nav-bar>
-<div (window:resize)="onResize()" class="container-fluid container-main">
-    <div class="row ">
-        <router-outlet></router-outlet>
-        <taskana-shared-spinner [isRunning]="requestInProgress" isModal=true></taskana-shared-spinner>
-        <taskana-shared-progress-bar [ngClass]="{hidden: currentProgressValue === 0}" currentValue={{currentProgressValue}}></taskana-shared-progress-bar>
+<mat-sidenav-container class="sidenav">
+  <mat-sidenav #sidenav mode="over" class="sidenav__drawer" [autoFocus]="false">
+    <div class="sidenav__drawer__container">
+      <div class="sidenav__drawer__container-menu">
+        <button mat-icon-button class="navbar_button-toggle" (click)="toggleSidenav()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <div class="sidenav__drawer__container-logout">
+        <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
+          aria-controls="logout">
+          <mat-icon>exit_to_app</mat-icon>
+        </button>
+      </div>
     </div>
-  <taskana-shared-type-ahead></taskana-shared-type-ahead>
-</div>
+    <taskana-shared-user-information class="sidenav__drawer-user-info"></taskana-shared-user-information>
+    <taskana-sidenav-list></taskana-sidenav-list>
+    <div class="sidenav__drawer-version">
+      <p> Taskana version: {{version}} </p>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <taskana-shared-nav-bar></taskana-shared-nav-bar>
+    <div (window:resize)="onResize()">
+      <div class="taskana-main">
+        <div class="taskana-main__progress-bar">
+          <mat-progress-bar [hidden]="!requestInProgress" mode="indeterminate"></mat-progress-bar>
+        </div>
+        <router-outlet></router-outlet>
+        <taskana-shared-progress-spinner
+          [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
+        </taskana-shared-progress-spinner>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

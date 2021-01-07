@@ -7,7 +7,6 @@ import { highlight } from 'app/shared/animations/validation.animation';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { Pair } from 'app/shared/models/pair';
 import { NgForm } from '@angular/forms';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
@@ -20,7 +19,6 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { Classification } from '../../../shared/models/classification';
 import { customFieldCount } from '../../../shared/models/classification-summary';
-import { CategoriesResponse } from '../../../shared/services/classification-categories/classification-categories.service';
 
 import {
   SaveCreatedClassification,
@@ -28,8 +26,10 @@ import {
   RestoreSelectedClassification,
   SaveModifiedClassification,
   SelectClassification,
-  CopyClassification
+  CopyClassification,
+  DeselectClassification
 } from '../../../shared/store/classification-store/classification.actions';
+import { Pair } from '../../../shared/models/pair';
 
 @Component({
   selector: 'taskana-administration-classification-details',
@@ -39,20 +39,18 @@ import {
 })
 export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   classification: Classification;
-  requestInProgress = false;
   @Select(ClassificationSelectors.selectCategories) categories$: Observable<string[]>;
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationType) selectedClassificationType$: Observable<string>;
-  @Select(ClassificationSelectors.selectClassificationTypesObject) classificationTypes$: Observable<CategoriesResponse>;
   @Select(ClassificationSelectors.selectedClassification) selectedClassification$: Observable<Classification>;
   @Select(ClassificationSelectors.getBadgeMessage) badgeMessage$: Observable<string>;
 
-  spinnerIsRunning = false;
   customFields$: Observable<CustomField[]>;
   isCreatingNewClassification: boolean = false;
   readonly lengthError = 'You have reached the maximum length for this field';
   inputOverflowMap = new Map<string, boolean>();
   validateInputOverflow: Function;
+  requestInProgress: boolean;
 
   @ViewChild('ClassificationForm') classificationForm: NgForm;
   toggleValidationMap = new Map<string, boolean>();
@@ -71,7 +69,8 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.customFields$ = this.store.select(EngineConfigurationSelectors.classificationsCustomisation).pipe(
       map((customisation) => customisation.information),
-      getCustomFields(customFieldCount)
+      getCustomFields(customFieldCount),
+      map((customisationFields) => customisationFields.filter((customisation) => customisation.visible))
     );
 
     this.selectedClassification$.pipe(takeUntil(this.destroy$)).subscribe((classification) => {
@@ -84,6 +83,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.store.dispatch(new SelectClassification(this.classification.classificationId));
+      });
+
+    this.requestInProgressService
+      .getRequestInProgress()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.requestInProgress = value;
       });
 
     this.formsValidatorService.inputOverflowObservable.pipe(takeUntil(this.destroy$)).subscribe((inputOverflowMap) => {
@@ -127,22 +133,18 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectCategory(category: string) {
-    this.classification.category = category;
+  onCloseClassification() {
+    this.store.dispatch(new DeselectClassification());
   }
 
-  getCategoryIcon(category: string): Observable<Pair> {
+  getCategoryIcon(category: string): Observable<Pair<string, string>> {
     return this.categoryIcons$.pipe(
       map((iconMap) =>
         iconMap[category]
-          ? new Pair(iconMap[category], category)
-          : new Pair(iconMap.missing, 'Category does not match with the configuration')
+          ? { left: iconMap[category], right: category }
+          : { left: iconMap.missing, right: 'Category does not match with the configuration' }
       )
     );
-  }
-
-  spinnerRunning(value) {
-    this.spinnerIsRunning = value;
   }
 
   validChanged(): void {
@@ -155,13 +157,6 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   getClassificationCustom(customNumber: number): string {
     return `custom${customNumber}`;
-  }
-
-  getAvailableCategories(type: string): Observable<string[]> {
-    return this.classificationTypes$.pipe(
-      take(1),
-      map((classTypes) => classTypes[type])
-    );
   }
 
   async onSave() {

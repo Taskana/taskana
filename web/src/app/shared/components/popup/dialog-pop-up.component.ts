@@ -29,9 +29,9 @@ export class DialogPopUpComponent implements OnInit {
   }
 
   initError() {
-    this.title = notifications.get(this.data.key).name || '';
+    this.title = notifications.get(this.data.key).left || '';
     this.message =
-      notifications.get(this.data.key).text || (this.data && this.data.passedError && this.data.passedError.error)
+      notifications.get(this.data.key).right || (this.data && this.data.passedError && this.data.passedError.error)
         ? this.data.passedError.error.message
         : '';
     if (this.data.additions) {

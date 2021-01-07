@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -13,10 +13,11 @@ import { SelectedRouteService } from '../../../shared/services/selected-route/se
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { CreateWorkbasket, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
-import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
+import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
+import { MatIconModule } from '@angular/material/icon';
 
 const showDialogFn = jest.fn().mockReturnValue(true);
 const NotificationServiceSpy = jest.fn().mockImplementation(
@@ -42,14 +43,19 @@ const mockActivatedRouteAlternative = {
   }
 };
 
-const mockActivatedRouteNoParams = {};
+const mockActivatedRouteNoParams = {
+  url: of([{ path: 'workbaskets' }])
+};
 
 @Component({ selector: 'taskana-administration-workbasket-list', template: '' })
-class WorkbasketListStub {}
+class WorkbasketListStub {
+  @Input() expanded: boolean;
+}
 
 @Component({ selector: 'taskana-administration-workbasket-details', template: '' })
-class WorkbasketDetailsStub {}
-
+class WorkbasketDetailsStub {
+  @Input() expanded: boolean;
+}
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {}
 
@@ -62,7 +68,12 @@ describe('WorkbasketOverviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        NgxsModule.forRoot([WorkbasketState])
+      ],
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
@@ -103,7 +114,7 @@ describe('WorkbasketOverviewComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   });
 
-  it('should display details when params id exists', async((done) => {
+  it('should display details when params id exists', async(() => {
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => (actionDispatched = true));
     component.ngOnInit();
@@ -122,7 +133,12 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        NgxsModule.forRoot([WorkbasketState])
+      ],
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
@@ -143,7 +159,7 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
     fixture.detectChanges();
   }));
 
-  it('should display details when params id exists', async((done) => {
+  it('should display details when params id exists', async(() => {
     expect(component.routerParams.id).toBeTruthy();
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
@@ -155,10 +171,17 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
 describe('WorkbasketOverviewComponent No Params', () => {
   let fixture: ComponentFixture<WorkbasketOverviewComponent>;
   let component: WorkbasketOverviewComponent;
+  let store: Store;
+  let actions$: Observable<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), NgxsModule.forRoot([WorkbasketState])],
+      imports: [
+        MatIconModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        NgxsModule.forRoot([WorkbasketState])
+      ],
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
@@ -175,9 +198,23 @@ describe('WorkbasketOverviewComponent No Params', () => {
     fixture = TestBed.createComponent(WorkbasketOverviewComponent);
     component = fixture.debugElement.componentInstance;
     fixture.detectChanges();
+    store = TestBed.inject(Store);
+    actions$ = TestBed.inject(Actions);
+
+    store.reset({
+      ...store.snapshot(),
+      workbasket: workbasketReadStateMock
+    });
   }));
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dispatch SelectWorkbasket action when route contains workbasket', async () => {
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(SelectWorkbasket)).subscribe(() => (actionDispatched = true));
+    component.ngOnInit();
+    expect(actionDispatched).toBe(true);
   });
 });

@@ -45,12 +45,25 @@ public class MonitorController {
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
   }
 
+  /**
+   * This endpoint generates a Task Status Report.
+   *
+   * <p>A Task Status Report contains the total number of tasks, clustered in their Task States and
+   * grouped by Workbaskets. Each row represents a Workbasket while each column represents a Task
+   * State.
+   *
+   * @param domains Filter the report values by domains.
+   * @param states Filter the report values by task states.
+   * @return the computed TaskStatusReport
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
+   * @title Get a Task Status Report
+   */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportRepresentationModel> getTasksStatusReport(
+  public ResponseEntity<ReportRepresentationModel> getTaskStatusReport(
       @RequestParam(required = false) List<String> domains,
       @RequestParam(required = false) List<TaskState> states)
-      throws NotAuthorizedException, InvalidArgumentException {
+      throws NotAuthorizedException {
     LOGGER.debug("Entry to getTasksStatusReport(), states to include {}", states);
     ResponseEntity<ReportRepresentationModel> response =
         ResponseEntity.ok(
@@ -69,12 +82,30 @@ public class MonitorController {
     return response;
   }
 
+  /**
+   * This endpoint generates a Workbasket Report.
+   *
+   * <p>A WorkbasketReport contains the total numbers of tasks, clustered by the a Task Timestamp
+   * date range and grouped by Workbaskets. Each row represents a Workbasket while each column
+   * represents a date range.
+   *
+   * @param states Filter the report by task states
+   * @param taskTimestamp determine which task timestamp should be used for comparison
+   * @return the computed report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
+   * @throws InvalidArgumentException TODO: this is never thrown ...
+   * @title Get a Workbasket Report
+   */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketReport(
-      @RequestParam(value = "states") List<TaskState> states)
+  public ResponseEntity<ReportRepresentationModel> getWorkbasketReport(
+      @RequestParam List<TaskState> states,
+      @RequestParam(required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
     LOGGER.debug("Entry to getTasksWorkbasketReport(), states to include {}", states);
+    if (taskTimestamp == null) {
+      taskTimestamp = TaskTimestamp.DUE;
+    }
 
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
@@ -82,8 +113,9 @@ public class MonitorController {
                 .createWorkbasketReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
                 .stateIn(states)
-                .buildReport(),
-            states);
+                .buildReport(taskTimestamp),
+            states,
+            taskTimestamp);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", report);
@@ -94,6 +126,7 @@ public class MonitorController {
 
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_PLANNED_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
+  // TODO: remove this endpoint and replace with general endpoint.
   public ResponseEntity<ReportRepresentationModel> getTasksWorkbasketPlannedDateReport(
       @RequestParam(value = "daysInPast") int daysInPast,
       @RequestParam(value = "states") List<TaskState> states)
@@ -120,29 +153,59 @@ public class MonitorController {
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
+  /**
+   * This endpoint generates a Classification Report.
+   *
+   * <p>A Classification Report contains the total numbers of tasks, clustered by the Task Timestamp
+   * date range and grouped by Classifications. Each row represents a Classification while each
+   * column represents a date range.
+   *
+   * @title Get a Classification Report
+   * @return the computed report
+   * @param taskTimestamp determine which Task Timestamp should be used for comparison
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
+   * @throws InvalidArgumentException TODO: this is never thrown
+   */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportRepresentationModel> getTasksClassificationReport()
+  public ResponseEntity<ReportRepresentationModel> getClassificationReport(
+      @RequestParam(required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to getTasksClassificationReport()");
+    LOGGER.debug("Entry to getClassificationReport()");
+    if (taskTimestamp == null) {
+      taskTimestamp = TaskTimestamp.DUE;
+    }
 
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
             monitorService
                 .createClassificationReportBuilder()
                 .withColumnHeaders(getRangeTimeInterval())
-                .buildReport());
+                .buildReport(taskTimestamp),
+            taskTimestamp);
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTasksClassificationReport(), returning {}", report);
+      LOGGER.debug("Exit from getClassificationReport(), returning {}", report);
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
+  /**
+   * This endpoint generates a Timestamp Report.
+   *
+   * <p>A Timestamp Report contains the total number of tasks, clustered by date range and grouped
+   * by its Task Status. Each row represents a Task Status while each column represents a date
+   * range. Each row can be expanded to further group the tasks by their Org Level (1-4)
+   *
+   * @title Get a Timestamp Report
+   * @return the computed report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
+   * @throws InvalidArgumentException TODO: this is never thrown
+   */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<ReportRepresentationModel> getDailyEntryExitReport()
+  public ResponseEntity<ReportRepresentationModel> getTimestampReport()
       throws NotAuthorizedException, InvalidArgumentException {
     List<TimeIntervalColumnHeader> columnHeaders =
         IntStream.range(-14, 0)

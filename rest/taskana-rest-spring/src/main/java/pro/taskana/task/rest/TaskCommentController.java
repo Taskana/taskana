@@ -2,6 +2,7 @@ package pro.taskana.task.rest;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,14 +24,14 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.rest.QueryHelper;
+import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.rest.assembler.TaskCommentRepresentationModelAssembler;
+import pro.taskana.task.rest.models.TaskCommentCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
 /** Controller for all {@link TaskComment} related endpoints. */
@@ -40,9 +40,6 @@ import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 public class TaskCommentController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentController.class);
-
-  private static final String CREATED = "created";
-  private static final String MODIFIED = "modified";
 
   private final TaskService taskService;
   private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
@@ -55,6 +52,17 @@ public class TaskCommentController {
     this.taskCommentRepresentationModelAssembler = taskCommentRepresentationModelAssembler;
   }
 
+  /**
+   * This endpoint retrieves a Task Comment.
+   *
+   * @title Get a single Task Comment
+   * @param taskCommentId the Id of the Task Comment
+   * @return the Task Comment
+   * @throws NotAuthorizedException if the user is not authorized for the requested Task Comment
+   * @throws TaskNotFoundException TODO: this is never thrown
+   * @throws TaskCommentNotFoundException if the requested Task Comment is not found
+   * @throws InvalidArgumentException if the requested Id is null or empty
+   */
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
@@ -80,26 +88,44 @@ public class TaskCommentController {
     return response;
   }
 
+  /**
+   * This endpoint retrieves all Task Comments for a specific Task. Further filters can be applied.
+   *
+   * @param taskId the Id of the Task whose comments are requested
+   * @param sortBy Sort the result by a given field. Multiple sort values can be declared. When the
+   *     primary sort value is the same, the second one will be used.
+   * @param order The order direction for each sort value. This value requires the use of 'sort-by'.
+   *     The amount of sort-by and order declarations have to match. Alternatively the value can be
+   *     omitted. In this case the default sort order (ASCENDING) will be applied to every sort-by
+   *     value.
+   * @return a list of Task Comments
+   * @throws NotAuthorizedException If the current user has no authorization to retrieve a Task
+   *     Comment from a certain Task or is not authorized to access the Task.
+   * @throws TaskNotFoundException If the given Task Id in the Task Comment does not refer to an
+   *     existing Task
+   * @throws InvalidArgumentException if some parameters were not supplied correctly
+   * @title Get a list of all Task Comments for a specific Task
+   */
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> getTaskComments(
+  public ResponseEntity<TaskCommentCollectionRepresentationModel> getTaskComments(
       @PathVariable String taskId,
-      @RequestParam(required = false) MultiValueMap<String, String> params)
+      @RequestParam(name = "sort-by", required = false) List<TaskCommentsSortBy> sortBy,
+      @RequestParam(required = false) List<SortDirection> order)
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Entry to getTaskComments(taskId= {})", taskId);
     }
 
+    Optional<Comparator<TaskComment>> comparator = getTaskCommentComparator(sortBy, order);
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
+    comparator.ifPresent(taskComments::sort);
 
-    // TODO Maybe introduce a query for task comments
-    applySortingParams(taskComments, params);
+    TaskCommentCollectionRepresentationModel taskCommentListResource =
+        taskCommentRepresentationModelAssembler.toTaskanaCollectionModel(taskComments);
 
-    TaskanaPagedModel<TaskCommentRepresentationModel> taskCommentListResource =
-        taskCommentRepresentationModelAssembler.toPageModel(taskComments, null);
-
-    ResponseEntity<TaskanaPagedModel<TaskCommentRepresentationModel>> response =
+    ResponseEntity<TaskCommentCollectionRepresentationModel> response =
         ResponseEntity.ok(taskCommentListResource);
 
     if (LOGGER.isDebugEnabled()) {
@@ -109,6 +135,18 @@ public class TaskCommentController {
     return response;
   }
 
+  /**
+   * This endpoint deletes a given Task Comment.
+   *
+   * @title Delete a Task Comment
+   * @param taskCommentId the Id of the Task Comment which should be deleted
+   * @return no content, if everything went well.
+   * @throws NotAuthorizedException if the current user is not authorized to delete a Task Comment
+   * @throws TaskNotFoundException If the given Task Id in the Task Comment does not refer to an
+   *     existing task.
+   * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
+   * @throws InvalidArgumentException if the requested Task Comment Id is null or empty
+   */
   @DeleteMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
@@ -130,6 +168,20 @@ public class TaskCommentController {
     return result;
   }
 
+  /**
+   * This endpoint updates a given Task Comment.
+   *
+   * @title Update a Task Comment
+   * @param taskCommentId the Task Comment which should be updated.
+   * @param taskCommentRepresentationModel the new comment for the requested id.
+   * @return the updated Task Comment
+   * @throws NotAuthorizedException if the current user does not have access to the Task Comment
+   * @throws TaskNotFoundException if the referenced Task within the Task Comment does not exist
+   * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
+   * @throws InvalidArgumentException if the Id in the path and in the request body does not match
+   * @throws ConcurrencyException if the requested Task Comment has been updated in the meantime by
+   *     a different process.
+   */
   @PutMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
@@ -143,23 +195,20 @@ public class TaskCommentController {
           taskCommentId,
           taskCommentRepresentationModel);
     }
-
-    ResponseEntity<TaskCommentRepresentationModel> result = null;
-
-    if ((taskCommentId.equals(taskCommentRepresentationModel.getTaskCommentId()))) {
-
-      TaskComment taskComment =
-          taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
-
-      taskComment = taskService.updateTaskComment(taskComment);
-      result = ResponseEntity.ok(taskCommentRepresentationModelAssembler.toModel(taskComment));
-    } else {
+    if (!taskCommentId.equals(taskCommentRepresentationModel.getTaskCommentId())) {
       throw new InvalidArgumentException(
           String.format(
               "TaskCommentId ('%s') is not identical with the id"
                   + " of the object in the payload which should be updated",
               taskCommentId));
     }
+
+    TaskComment taskComment =
+        taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
+
+    taskComment = taskService.updateTaskComment(taskComment);
+    ResponseEntity<TaskCommentRepresentationModel> result =
+        ResponseEntity.ok(taskCommentRepresentationModelAssembler.toModel(taskComment));
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from updateTaskComment(), returning {}", result);
@@ -168,6 +217,17 @@ public class TaskCommentController {
     return result;
   }
 
+  /**
+   * This endpoint creates a Task Comment.
+   *
+   * @title Create a new Task Comment
+   * @param taskId the Id of the Task where a Task Comment should be created.
+   * @param taskCommentRepresentationModel the Task Comment to create.
+   * @return the created Task Comment
+   * @throws NotAuthorizedException if the current user is not authorized to create a Task Comment
+   * @throws InvalidArgumentException if the Task Comment Id is null or empty
+   * @throws TaskNotFoundException if the requested task does not exist
+   */
   @PostMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> createTaskComment(
@@ -201,35 +261,36 @@ public class TaskCommentController {
     return result;
   }
 
-  private void applySortingParams(
-      List<TaskComment> taskComments, MultiValueMap<String, String> params)
-      throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to applySortingParams(taskComments= {}, params= {})", taskComments, params);
+  private Optional<Comparator<TaskComment>> getTaskCommentComparator(
+      List<TaskCommentsSortBy> sortBy, List<SortDirection> order) throws InvalidArgumentException {
+    QuerySortParameter.verifyNotOnlyOrderByExists(sortBy, order);
+    QuerySortParameter.verifyAmountOfSortByAndOrderByMatches(sortBy, order);
+    Comparator<TaskComment> comparator = null;
+    if (sortBy != null) {
+      for (int i = 0; i < sortBy.size(); i++) {
+        SortDirection sortDirection = order == null ? SortDirection.ASCENDING : order.get(i);
+        Comparator<TaskComment> temp = sortBy.get(i).getComparator();
+        if (sortDirection == SortDirection.DESCENDING) {
+          temp = temp.reversed();
+        }
+        comparator = comparator == null ? temp : comparator.thenComparing(temp);
+      }
     }
-    QueryHelper.applyAndRemoveSortingParams(
-        params,
-        (sortBy, sortDirection) -> {
-          Comparator<TaskComment> comparator;
-          switch (sortBy) {
-            case (CREATED):
-              comparator = Comparator.comparing(TaskComment::getCreated);
-              break;
-            case (MODIFIED):
-              comparator = Comparator.comparing(TaskComment::getModified);
-              break;
-            default:
-              throw new InvalidArgumentException("Unknown sort attribute: " + sortBy);
-          }
-          if (sortDirection == SortDirection.DESCENDING) {
-            comparator = comparator.reversed();
-          }
-          taskComments.sort(comparator);
-        });
+    return Optional.ofNullable(comparator);
+  }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from applySortingParams(), returning {}", taskComments);
+  enum TaskCommentsSortBy {
+    CREATED(Comparator.comparing(TaskComment::getCreated)),
+    MODIFIED(Comparator.comparing(TaskComment::getModified));
+
+    private final Comparator<TaskComment> comparator;
+
+    TaskCommentsSortBy(Comparator<TaskComment> comparing) {
+      comparator = comparing;
+    }
+
+    public Comparator<TaskComment> getComparator() {
+      return comparator;
     }
   }
 }

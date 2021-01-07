@@ -4,7 +4,7 @@ import pro.taskana.classification.api.ClassificationCustomField;
 
 /**
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres
- * the most important informations. Specific ones can be load afterwards via ID.
+ * the most important information. Specific ones can be load afterwards via ID.
  */
 public interface ClassificationSummary {
 

@@ -1,19 +1,19 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { mergeMap, take, tap } from 'rxjs/operators';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
 import {
   CategoriesResponse,
   ClassificationCategoriesService
 } from '../../services/classification-categories/classification-categories.service';
 import {
-  SaveCreatedClassification,
-  DeselectClassification,
-  GetClassifications,
   CopyClassification,
   CreateClassification,
+  DeselectClassification,
+  GetClassifications,
   RemoveSelectedClassification,
   RestoreSelectedClassification,
+  SaveCreatedClassification,
   SaveModifiedClassification,
   SelectClassification,
   SetSelectedClassificationType,
@@ -23,6 +23,8 @@ import { ClassificationsService } from '../../services/classifications/classific
 import { DomainService } from '../../services/domain/domain.service';
 import { Classification } from '../../models/classification';
 import { ClassificationSummary } from '../../models/classification-summary';
+import { ClassificationQueryFilterParameter } from '../../models/classification-query-filter-parameter';
+import { ClassificationQuerySortParameter, Direction, Sorting } from '../../models/sorting';
 
 class InitializeStore {
   static readonly type = '[ClassificationState] Initializing state';
@@ -94,13 +96,22 @@ export class ClassificationState implements NgxsAfterBootstrap {
   @Action(GetClassifications)
   getClassifications(ctx: StateContext<ClassificationStateModel>): Observable<any> {
     const { selectedClassificationType } = ctx.getState();
-    return this.classificationsService.getClassifications(selectedClassificationType).pipe(
-      take(1),
-      tap((list) =>
-        ctx.patchState({
-          classifications: list.classifications
-        })
-      )
+    return this.domainService.getSelectedDomain().pipe(
+      mergeMap((domain) => {
+        const filter: ClassificationQueryFilterParameter = {
+          domain: [domain],
+          type: [selectedClassificationType]
+        };
+        const sort: Sorting<ClassificationQuerySortParameter> = {
+          'sort-by': ClassificationQuerySortParameter.KEY,
+          order: Direction.ASC
+        };
+        return this.classificationsService.getClassifications(filter, sort).pipe(
+          take(1),
+          tap((list) => ctx.patchState({ classifications: list.classifications }))
+        );
+      }),
+      tap(() => this.domainService.domainChangedComplete())
     );
   }
 

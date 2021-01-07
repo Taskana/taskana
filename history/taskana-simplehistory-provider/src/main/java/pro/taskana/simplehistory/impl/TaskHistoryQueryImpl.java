@@ -523,6 +523,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   }
 
   @Override
+  public TaskHistoryQuery orderByTaskHistoryEventId(SortDirection sortDirection) {
+    return addOrderCriteria("ID", sortDirection);
+  }
+
+  @Override
   public TaskHistoryQuery orderByBusinessProcessId(SortDirection sortDirection) {
     return addOrderCriteria("BUSINESS_PROCESS_ID", sortDirection);
   }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AlertModule } from 'ngx-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MapToIterable } from 'app/shared/pipes/map-to-iterable.pipe';
@@ -16,12 +17,12 @@ import { TaskReportComponent } from './components/task-report/task-report.compon
 import { ClassificationReportComponent } from './components/classification-report/classification-report.component';
 import { TimestampReportComponent } from './components/timestamp-report/timestamp-report.component';
 
-import { RestConnectorService } from './services/rest-connector.service';
+import { MonitorService } from './services/monitor.service';
 
 import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
 import { WorkbasketReportPlannedDateComponent } from './components/workbasket-report-planned-date/workbasket-report-planned-date.component';
 import { WorkbasketReportDueDateComponent } from './components/workbasket-report-due-date/workbasket-report-due-date.component';
-import { WorkbasketReportQuerySwitcherComponent } from './components/workbasket-report-query-switcher/workbasket-report-query-switcher.component';
+import { MatButtonModule } from '@angular/material/button';
 
 const MODULES = [
   CommonModule,
@@ -32,7 +33,8 @@ const MODULES = [
   TabsModule.forRoot(),
   HttpClientModule,
   AngularSvgIconModule,
-  SharedModule
+  SharedModule,
+  MatTabsModule
 ];
 const DECLARATIONS = [
   ReportTableComponent,
@@ -41,14 +43,13 @@ const DECLARATIONS = [
   WorkbasketReportComponent,
   WorkbasketReportPlannedDateComponent,
   WorkbasketReportDueDateComponent,
-  WorkbasketReportQuerySwitcherComponent,
   TaskReportComponent,
   ClassificationReportComponent
 ];
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
-  providers: [RestConnectorService, MapToIterable]
+  imports: [MODULES, MatButtonModule],
+  providers: [MonitorService, MapToIterable]
 })
 export class MonitorModule {}

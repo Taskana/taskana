@@ -1,13 +1,17 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h4 *ngIf="metaInformation">{{getTitle()}} ({{metaInformation?.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
-    <taskana-monitor-workbasket-report-query-switcher
-      (queryChanged)="queryChanged($event)"></taskana-monitor-workbasket-report-query-switcher>
   </div>
-  <div class="panel-body">
-    <taskana-monitor-workbasket-report-due-date [ngClass]="showMonitorQueryDueDate ? '' : 'hidden'"
-                                                (metaInformation)="getMetaInformation($event)"></taskana-monitor-workbasket-report-due-date>
-    <taskana-monitor-workbasket-report-planned-date [ngClass]="showMonitorQueryPlannedDate ? '' : 'hidden'"
-                                                    (metaInformation)="getMetaInformation($event)"></taskana-monitor-workbasket-report-planned-date>
-  </div>
+  <mat-tab-group class="panel-body" animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" >
+    <mat-tab label="Due Date">
+      <taskana-monitor-workbasket-report-due-date
+        (metaInformation)="getMetaInformation($event)">
+      </taskana-monitor-workbasket-report-due-date>
+    </mat-tab>
+    <mat-tab label="Planned Date">
+      <taskana-monitor-workbasket-report-planned-date
+        (metaInformation)="getMetaInformation($event)">
+      </taskana-monitor-workbasket-report-planned-date>
+    </mat-tab>
+  </mat-tab-group>
 </div>

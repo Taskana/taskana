@@ -1,38 +1,67 @@
-.classification-list-full-height {
-  height: calc(100vh - 55px);
-}
+@import 'src/theme/_colors.scss';
 
-.list-group-item {
-  padding: 5px 0px 2px 1px;
-  border: none;
-}
+.classification-list {
+  height: 100%;
 
-.tab-align {
-  margin-bottom: 0px;
-  border-bottom: 1px dotted #ddd;
-  padding: 8px 12px 8px 4px;
-  & > div {
-    margin: 6px 0px;
+  &__no-items {
+    text-align: center;
+    padding-top: 150px;
   }
-}
 
-input.filter-input {
-  border: solid 1px grey;
-  margin: 10px 2px;
-  height: 32px;
-  width: 100%;
-  padding-left: 10px;
-}
+  &__action-toolbar {
+    padding: 16px 16px 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
 
-.category-filter {
-  margin: 7px 2px;
-}
+  &__action-buttons {
+    display: flex;
+    border: none;
+    margin-bottom: 0;
+    padding: 0 4px;
+  }
 
-.dropdown-menu-classification {
-  margin-left: 15px;
-  min-width: 0px;
-}
+  &__add-button {
+    background-color: $aquamarine;
+    color: white;
+  }
 
-div.category-filter svg-icon {
-  position: initial;
+  &__import-export {
+    display: flex;
+  }
+
+  &__filter {
+    display: flex;
+    padding: 7px 4px 0;
+  }
+
+  &__category-filter {
+    padding-top: 7px;
+  }
+
+  &__icons {
+    height: 33px;
+    width: 16px;
+    fill: #555;
+  }
+
+  &__categories {
+    fill: #555;
+    margin: 0;
+    top: -2px;
+  }
+
+  &__filter-button {
+    color: #555;
+    top: 3px;
+    margin-right: 12px;
+  }
+
+  &__input {
+    width: 100%;
+    margin-right: 12px;
+  }
+
+  &__input-field {
+    width: 100% !important;
+  }
 }

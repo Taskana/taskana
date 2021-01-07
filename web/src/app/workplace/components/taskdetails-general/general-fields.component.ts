@@ -102,14 +102,16 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
     });
   }
 
+  // TODO: this is currently called for every selected task and is only necessary when we switch the workbasket -> can be optimized.
   private getClassificationByDomain() {
     this.requestInProgress = true;
     this.classificationService
-      .getClassificationsByDomain(this.domainService.getSelectedDomainValue())
-      .then((classificationPagingList) => {
+      .getClassifications({ domain: [this.task.workbasketSummary.domain] })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((classificationPagingList) => {
         this.classifications = classificationPagingList.classifications;
+        this.requestInProgress = false;
       });
-    this.requestInProgress = false;
   }
 
   ngOnDestroy() {

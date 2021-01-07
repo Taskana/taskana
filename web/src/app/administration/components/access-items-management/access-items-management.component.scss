@@ -1,43 +1,101 @@
 @import '../../../../theme/colors';
 
-.margin {
-  margin-top: 10px;
-  margin-bottom: 20px;
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.required-header:after {
-  content: ' *';
-  color: $invalid;
+td,
+th {
+  padding: 8px;
+  height: 70px;
+  text-align: center;
 }
 
 td {
-  &.has-changes {
-    border-bottom: 1px solid $brown;
-  }
-}
-.table > thead > tr > th {
-  max-width: 150px;
-  border-bottom: none;
+  border-top: 1px solid #dddddd;
 }
 
-.table > thead > tr:last-child > th {
-  max-width: 150px;
-  border-bottom: 2px solid $grey;
+tr:first-child > th {
+  border-bottom: 2px solid #dddddd;
+  height: 40px;
+}
+
+tr:nth-child(odd) > td {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+tr:first-child > td {
+  border-top: 2px solid $grey;
+}
+.access-items {
+  overflow-y: scroll;
+  height: calc(100vh - 104px);
+
+  &__table {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  &__typeahead {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 20px;
+  }
+
+  &__icon {
+    text-align: center;
+    color: grey;
+  }
+
+  &__groups-expansion-panel {
+    width: 98%;
+    left: 1%;
+  }
+
+  &__authorization-expansion-panel {
+    width: 98%;
+    left: 1%;
+    margin-bottom: 5px;
+  }
+
+  &__authorization-expansion-panel-filter {
+    width: 130px;
+    margin-bottom: -31px;
+    margin-top: -10px;
+    margin-left: -35px;
+    text-align: left;
+    @media only screen and (max-width: 1600px) {
+      margin-left: -5px;
+    }
+  }
+
+  &__revoke-button {
+    float: right;
+    margin-right: 30px;
+    margin-bottom: 8px;
+    outline: none;
+  }
+}
+
+.mat-mini-fab {
+  outline-color: none;
+  border: none;
+  box-shadow: none !important;
+}
+
+.mat-stroked-button {
+  outline: none;
+}
+
+.align-left {
+  text-align: left;
 }
 
 .wrap {
   max-width: 150px;
   word-wrap: break-word;
 }
-.min-width {
-  min-width: 135px;
-}
-
-.modal-title {
-  font-weight: bold;
-  display: inline;
-}
-.table__access-item-groups {
-  height: 80px;
-}
-

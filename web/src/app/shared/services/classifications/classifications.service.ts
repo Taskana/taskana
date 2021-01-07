@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
 
 import { Classification } from 'app/shared/models/classification';
 
 import { ClassificationPagingList } from 'app/shared/models/classification-paging-list';
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { Direction } from 'app/shared/models/sorting';
-import { QueryParameters } from 'app/shared/models/query-parameters';
+import { ClassificationQuerySortParameter, Sorting } from 'app/shared/models/sorting';
 import { StartupService } from '../startup/startup.service';
+import { asUrlQueryString } from '../../util/query-parameters-v2';
+import { ClassificationQueryFilterParameter } from '../../models/classification-query-filter-parameter';
+import { QueryPagingParameter } from '../../models/query-paging-parameter';
 
 @Injectable()
 export class ClassificationsService {
-  private classificationResourcePromise: Promise<ClassificationPagingList>;
-  private lastDomain: string;
-
   constructor(
     private httpClient: HttpClient,
     private domainService: DomainService,
@@ -27,45 +24,15 @@ export class ClassificationsService {
     return this.startupService.getTaskanaRestUrl() + '/v1/classifications/';
   }
 
-  private static classificationParameters(domain: string, type?: string): QueryParameters {
-    const parameters = new QueryParameters();
-    parameters.SORTBY = TaskanaQueryParameters.parameters.KEY;
-    parameters.SORTDIRECTION = Direction.ASC;
-    parameters.DOMAIN = domain;
-    parameters.TYPE = type;
-    delete TaskanaQueryParameters.page;
-    delete TaskanaQueryParameters.pageSize;
-
-    return parameters;
-  }
-
   // GET
-  getClassifications(classificationType?: string): Observable<ClassificationPagingList> {
-    return this.domainService.getSelectedDomain().pipe(
-      mergeMap((domain) =>
-        this.httpClient.get<ClassificationPagingList>(
-          `${this.url}${TaskanaQueryParameters.getQueryParameters(
-            ClassificationsService.classificationParameters(domain, classificationType)
-          )}`
-        )
-      ),
-      tap(() => this.domainService.domainChangedComplete())
+  getClassifications(
+    filterParameter?: ClassificationQueryFilterParameter,
+    sortParameter?: Sorting<ClassificationQuerySortParameter>,
+    pagingParameter?: QueryPagingParameter
+  ): Observable<ClassificationPagingList> {
+    return this.httpClient.get<ClassificationPagingList>(
+      `${this.url}${asUrlQueryString({ ...filterParameter, ...sortParameter, ...pagingParameter })}`
     );
-  }
-
-  // GET
-  getClassificationsByDomain(domain: string, forceRefresh = false): Promise<ClassificationPagingList> {
-    if (this.lastDomain !== domain || !this.classificationResourcePromise || forceRefresh) {
-      this.lastDomain = domain;
-      this.classificationResourcePromise = this.httpClient
-        .get<ClassificationPagingList>(
-          `${this.url}${TaskanaQueryParameters.getQueryParameters(
-            ClassificationsService.classificationParameters(domain)
-          )}`
-        )
-        .toPromise();
-    }
-    return this.classificationResourcePromise;
   }
 
   // GET

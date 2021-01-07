@@ -1,0 +1,73 @@
+@import '../theme/variables';
+@import 'src/theme/_colors.scss';
+
+.sidenav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-top: 0;
+}
+
+.sidenav__drawer {
+  position: absolute;
+  z-index: 999;
+  box-shadow: none;
+  width: 350px;
+  background-color: $dark-green;
+}
+.mat-drawer-content {
+  overflow: hidden !important;
+}
+.sidenav__drawer-list-item {
+  margin-left: 30px;
+}
+
+.sidenav__drawer__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: white;
+  margin-top: 5px;
+}
+
+.sidenav__drawer__container-menu {
+  margin-left: 15px;
+}
+
+.sidenav__drawer__container-logout {
+  text-align: end;
+  margin-right: 15px;
+}
+
+.sidenav__drawer-version {
+  color: white;
+  position: absolute;
+  bottom: 5px;
+  left: 16px;
+  font-size: 12px;
+}
+
+.sidenav__drawer-user-info {
+  margin-top: 30px;
+  margin-bottom: 50px;
+  margin-left: -16px;
+}
+
+.mat-icon-button {
+  outline: none;
+}
+
+.taskana-main__progress-bar {
+  height: 4px;
+  background-color: $light-grey;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow: visible !important;
+}
+
+::ng-deep .mat-drawer {
+  overflow-y: visible !important;
+}

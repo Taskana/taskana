@@ -3,10 +3,11 @@ import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TaskResource } from 'app/workplace/models/task-resource';
-import { Direction } from 'app/shared/models/sorting';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
-import { QueryParameters } from 'app/shared/models/query-parameters';
+import { Sorting, TaskQuerySortParameter } from 'app/shared/models/sorting';
 import { StartupService } from '../../shared/services/startup/startup.service';
+import { asUrlQueryString } from '../../shared/util/query-parameters-v2';
+import { TaskQueryFilterParameter } from '../../shared/models/task-query-filter-parameter';
+import { QueryPagingParameter } from '../../shared/models/query-paging-parameter';
 
 @Injectable()
 export class TaskService {
@@ -40,31 +41,11 @@ export class TaskService {
   }
 
   findTasksWithWorkbasket(
-    basketId: string,
-    sortBy: string,
-    sortDirection: string,
-    nameLike: string,
-    ownerLike: string,
-    priority: string,
-    state: string,
-    objRefTypeLike: string,
-    objRefValueLike: string,
-    allPages: boolean = false
+    filterParameter: TaskQueryFilterParameter,
+    sortParameter: Sorting<TaskQuerySortParameter>,
+    pagingParameter: QueryPagingParameter
   ): Observable<TaskResource> {
-    const url = `${this.url}${TaskanaQueryParameters.getQueryParameters(
-      TaskService.accessIdsParameters(
-        basketId,
-        sortBy,
-        sortDirection,
-        nameLike,
-        ownerLike,
-        priority,
-        state,
-        objRefTypeLike,
-        objRefValueLike,
-        allPages
-      )
-    )}`;
+    const url = `${this.url}${asUrlQueryString({ ...filterParameter, ...sortParameter, ...pagingParameter })}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
@@ -109,35 +90,5 @@ export class TaskService {
       }
     });
     return task;
-  }
-
-  private static accessIdsParameters(
-    basketId: string,
-    sortBy = 'priority',
-    sortDirection: string = Direction.ASC,
-    nameLike: string,
-    ownerLike: string,
-    priority: string,
-    state: string,
-    objRefTypeLike: string,
-    objRefValueLike: string,
-    allPages: boolean = false
-  ): QueryParameters {
-    const parameters = new QueryParameters();
-    parameters.WORKBASKET_ID = basketId;
-    parameters.SORTBY = sortBy;
-    parameters.SORTDIRECTION = sortDirection;
-    parameters.NAMELIKE = nameLike;
-    parameters.OWNERLIKE = ownerLike;
-    parameters.PRIORITY = priority;
-    parameters.STATE = state;
-    parameters.TASK_PRIMARY_OBJ_REF_TYPE_LIKE = objRefTypeLike;
-    parameters.TASK_PRIMARY_OBJ_REF_VALUE_LIKE = objRefValueLike;
-    if (allPages) {
-      delete TaskanaQueryParameters.page;
-      delete TaskanaQueryParameters.pageSize;
-    }
-
-    return parameters;
   }
 }

@@ -1,5 +1,3 @@
-import { QueryParameters } from 'app/shared/models/query-parameters';
-
 export class TaskanaQueryParameters {
   static parameters = {
     // Sorting
@@ -56,26 +54,4 @@ export class TaskanaQueryParameters {
 
   static page = 1;
   static pageSize = 9;
-
-  public static getQueryParameters(queryParametersModel: QueryParameters): string {
-    let query = '?';
-
-    Object.keys(queryParametersModel).forEach((key) => {
-      const value = queryParametersModel[key];
-      query += value ? `${TaskanaQueryParameters.parameters[key]}=${value}&` : '';
-    });
-
-    query += this.page ? `${TaskanaQueryParameters.parameters.PAGE}=${this.page}&` : '';
-    query += this.pageSize ? `${TaskanaQueryParameters.parameters.PAGESIZE}=${this.pageSize}&` : '';
-
-    query = TaskanaQueryParameters.removeLastChar(query);
-    return query;
-  }
-
-  private static removeLastChar(query: string): string {
-    if (query.lastIndexOf('&') === query.length - 1) {
-      return query.slice(0, query.lastIndexOf('&'));
-    }
-    return query;
-  }
 }

@@ -1,5 +1,5 @@
-<taskana-shared-spinner [isRunning]="requestInProgress" class="floating"></taskana-shared-spinner>
-<div *ngIf="workbasket" id="wb-information" class="panel panel-default">
+<div *ngIf="workbasket" id="wb-information">
+  <!--
   <div class="panel-heading">
     <div class="pull-right btn-group">
       <button type="button" (click)="onSubmit()" data-toggle="tooltip" title="Save"
@@ -28,147 +28,176 @@
       <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
     </h4>
   </div>
+  -->
 
-  <div class="panel-body">
+
+  <div class="workbasket-information-wrapper">
     <ng-form #WorkbasketForm="ngForm">
-      <div class="col-md-6">
-        <!-- KEY -->
-        <div class="form-group required">
-          <label for="wb-key" class="control-label">Key</label>
-          <input type="text" required maxlength="64" #key="ngModel" class="form-control" id="wb-key"
-                 placeholder="Key"
-                 [(ngModel)]="workbasket.key" name="workbasket.key" (input)="validateInputOverflow(key, 64, $event)">
-          <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
-          <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')"
-                                              [validationTrigger]="this.toggleValidationMap.get('workbasket.key')"
-                                              errorMessage="* Key is required">
-          </taskana-shared-field-error-display>
-        </div>
+      <div class="form">
 
-        <!-- NAME -->
-        <div class="form-group required">
-          <label for="wb-name" class="control-label">Name</label>
-          <input type="text" required maxlength="255" #name="ngModel" class="form-control" id="wb-name"
-                 placeholder="Name"
-                 [(ngModel)]="workbasket.name" name="workbasket.name" (input)="validateInputOverflow(name, 255)">
-          <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
-          <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
-                                              [validationTrigger]="this.toggleValidationMap.get('workbasket.name')"
-                                              errorMessage="* Name is required">
-          </taskana-shared-field-error-display>
-        </div>
+        <!-- GENERAL FIELDS -->
+        <h6 class="subheading"> General </h6>
+        <mat-divider class="horizontal-line"> </mat-divider>
 
-        <!-- OWNER -->
-        <div class="input-group form-group col-xs-12 required">
-          <label for="wb-owner" class="control-label ">Owner</label>
-          <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" required maxlength="128" #owner="ngModel"
-                                     name="workbasket.owner"
-                                     [(ngModel)]="workbasket.owner"
-                                     placeHolderMessage="* Owner is required"
-                                     [validationValue]="this.toggleValidationMap.get('workbasket.owner')"
-                                     [displayError]="!isFieldValid('workbasket.owner')"
-                                     width="100%" (input)="validateInputOverflow(owner, 128)">
-            <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
-          </taskana-shared-type-ahead>
-          <ng-template #ownerInput>
-            <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
-                   placeholder="Owner"
-                   [(ngModel)]="workbasket.owner" name="workbasket.owner" (input)="validateInputOverflow(owner, 128)">
-            <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
-            <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
-                                                [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')"
-                                                errorMessage="* Owner is required">
+        <!-- GENERAL -->
+        <div class="general">
+
+          <!-- GENERAL LEFT COLUMN -->
+          <div class="general__left-column">
+
+            <!-- KEY -->
+            <mat-form-field appearance="outline">
+              <mat-label>Key</mat-label>
+              <label for="workbasket-key"></label>
+              <input matInput required type="text" #key="ngModel" maxlength="64" [disabled]="action == 0 || action == 3"
+                     id="workbasket-key" placeholder="Key" [(ngModel)]="workbasket.key" name="workbasket.key"
+                     (input)="validateInputOverflow(key, 64, $event)">
+            </mat-form-field>
+            <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
+            <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')"
+                                                [validationTrigger]="this.toggleValidationMap.get('workbasket.key')" errorMessage="* Key is required">
             </taskana-shared-field-error-display>
-          </ng-template>
-        </div>
 
-        <!-- DOMAIN -->
-        <div class="form-group ">
-          <label for="wb-domain" class="control-label">Domain</label>
-          <input type="text" #domain="ngModel" class="form-control" disabled id="wb-domain"
-                 placeholder="Domain"
-                 [(ngModel)]="workbasket.domain" name="workbasket.domain">
-        </div>
+            <!-- NAME -->
+            <mat-form-field appearance="outline">
+              <mat-label>Name</mat-label>
+              <label for="workbasket-name"></label>
+              <input matInput type="text" required maxlength="255" #name="ngModel" id="workbasket-name" placeholder="Name"
+                     [(ngModel)]="workbasket.name" name="workbasket.name" (input)="validateInputOverflow(name, 255)">
+            </mat-form-field>
+            <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
+            <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
+                                                [validationTrigger]="this.toggleValidationMap.get('workbasket.name')" errorMessage="* Name is required">
+            </taskana-shared-field-error-display>
 
-        <!-- TYPE & DESCRIPTION-->
-        <div class="row">
-          <div class="form-group col-xs-4">
-            <label class="control-label">Type</label>
-            <div class="dropdown">
-              <button class="btn btn-default" type="button" id="dropdownMenu24"
-                      data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="true">
-                <taskana-administration-icon-type
-                  [type]='workbasket.type'></taskana-administration-icon-type>
-                {{allTypes.get(workbasket.type)}}
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-                <li>
-                  <a *ngFor="let type of allTypes | mapValues | removeEmptyType"
-                     (click)="selectType(type.key)">
-                    <taskana-administration-icon-type [type]='type.key'
-                                                      [text]="type.value"></taskana-administration-icon-type>
-                  </a>
-                </li>
-              </ul>
+            <!-- OWNER -->
+            <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" isRequired="true" maxlength="128"
+                                       #owner="ngModel" name="workbasket.owner" [(ngModel)]="workbasket.owner" placeHolderMessage="Owner"
+                                       [validationValue]="this.toggleValidationMap.get('workbasket.owner') "
+                                       [displayError]="!isFieldValid('workbasket.owner')"
+                                       (input)="validateInputOverflow(owner, 128)"
+            (selectedItem)="onSelectedOwner($event)">
+              <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
+            </taskana-shared-type-ahead>
+
+            <ng-template #ownerInput>
+              <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
+                     placeholder="Owner" [(ngModel)]="workbasket.owner" name="workbasket.owner"
+                     (input)="validateInputOverflow(owner, 128)">
+              <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
+              <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
+                                                  [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
+              </taskana-shared-field-error-display>
+            </ng-template>
+
+            <!-- DESCRIPTION AND TYPE -->
+            <div class="general__description-and-type">
+
+              <!-- TYPE -->
+              <mat-form-field appearance="outline" style="width: 28%">
+                <mat-label>Type</mat-label>
+                <mat-select [(value)]="this.workbasket.type">
+                  <mat-select-trigger>
+                    <taskana-administration-icon-type [type]='workbasket.type'></taskana-administration-icon-type>
+                    {{allTypes.get(workbasket.type)}}
+                  </mat-select-trigger>
+                  <mat-option *ngFor="let type of allTypes | mapValues | removeEmptyType" value="{{type.key}}">
+                    <taskana-administration-icon-type [type]='type.key' [text]="type.value">
+                    </taskana-administration-icon-type>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- DESCRIPTION -->
+              <div style="display: block; width: 68%">
+                <mat-form-field appearance="outline" style="width: 100%">
+                  <mat-label>Description</mat-label>
+                  <label for="workbasket-description"></label>
+                  <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="5" cdkAutosizeMaxRows="10" maxlength="255"
+                            id="workbasket-description" placeholder="Description" [(ngModel)]="workbasket.description"
+                            name="workbasket.description" #description="ngModel"
+                            (input)="validateInputOverflow(description, 255)"></textarea>
+                </mat-form-field>
+                <mat-error *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}} </mat-error>
+              </div>
             </div>
           </div>
-          <div class="form-group col-xs-8">
-            <label for="wb-description" class="control-label">Description</label>
-            <textarea #description="ngModel" maxlength="255" class="form-control" rows="7" id="wb-description"
-                      placeholder="Description"
-                      [(ngModel)]="workbasket.description" name="workbasket.description"
-                      (input)="validateInputOverflow(description, 255)"></textarea>
-            <div *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</div>
+
+          <!-- GENERAL SPACER -->
+          <div class="general__spacer"> </div>
+
+          <!-- GENERAL RIGHT COLUMN -->
+          <div class="general__right-column">
+
+            <!-- DOMAIN -->
+            <mat-form-field appearance="outline">
+              <mat-label>Domain</mat-label>
+              <label for="workbasket-domain"></label>
+              <input matInput type="text" disabled id="workbasket-domain" placeholder="Domain"
+                     [(ngModel)]="workbasket.domain" name="classification.domain">
+            </mat-form-field>
+
+            <!-- ORGANISATIONAL LEVEL 1 -->
+            <mat-form-field appearance="outline">
+              <mat-label>OrgLevel 1</mat-label>
+              <input matInput type="text" #orgLevel1="ngModel" maxlength="255" placeholder="OrgLevel 1"
+                     [(ngModel)]="workbasket.orgLevel1" name="workbasket.orgLevel1"
+                     (input)="validateInputOverflow(orgLevel1, 255)">
+            </mat-form-field>
+            <div *ngIf="inputOverflowMap.get(orgLevel1.name)" class="error">{{lengthError}}</div>
+
+            <!-- ORGANISATIONAL LEVEL 2 -->
+            <mat-form-field appearance="outline">
+              <mat-label>OrgLevel 2</mat-label>
+              <input matInput type="text" #orgLevel2="ngModel" maxlength="255" placeholder="OrgLevel 2"
+                     [(ngModel)]="workbasket.orgLevel2" name="workbasket.orgLevel2"
+                     (input)="validateInputOverflow(orgLevel2, 255)">
+            </mat-form-field>
+            <div *ngIf="inputOverflowMap.get(orgLevel2.name)" class="error">{{lengthError}}</div>
+
+            <!-- ORGANISATIONAL LEVEL 3 -->
+            <mat-form-field appearance="outline">
+              <mat-label>OrgLevel 3</mat-label>
+              <input matInput type="text" #orgLevel3="ngModel" maxlength="255" placeholder="OrgLevel 3"
+                     [(ngModel)]="workbasket.orgLevel3" name="workbasket.orgLevel3"
+                     (input)="validateInputOverflow(orgLevel3, 255)">
+            </mat-form-field>
+            <div *ngIf="inputOverflowMap.get(orgLevel3.name)" class="error">{{lengthError}}</div>
+
+            <!-- ORGANISATIONAL LEVEL 4 -->
+            <mat-form-field appearance="outline">
+              <mat-label>OrgLevel 4</mat-label>
+              <input matInput type="text" #orgLevel4="ngModel" maxlength="255" placeholder="OrgLevel 4"
+                     [(ngModel)]="workbasket.orgLevel4" name="workbasket.orgLevel4"
+                     (input)="validateInputOverflow(orgLevel4, 255)">
+            </mat-form-field>
+            <div *ngIf="inputOverflowMap.get(orgLevel4.name)" class="error">{{lengthError}}</div>
+
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="wb-org-level-1" class="control-label">OrgLevel 1</label>
-          <input type="text" class="form-control" id="wb-org-level-1" placeholder="OrgLevel 1"
-                 [(ngModel)]="workbasket.orgLevel1"
-                 name="workbasket.orgLevel1" maxlength="255" #orgLevel1="ngModel"
-                 (input)="validateInputOverflow(orgLevel1, 255)">
-          <div *ngIf="inputOverflowMap.get(orgLevel1.name)" class="error">{{lengthError}}</div>
-        </div>
-        <div class="form-group">
-          <label for="wb-org-level-2" class="control-label">OrgLevel 2</label>
-          <input type="text" class="form-control" id="wb-org-level-2" placeholder="OrgLevel 2"
-                 [(ngModel)]="workbasket.orgLevel2"
-                 name="workbasket.orgLevel2" maxlength="255" #orgLevel2="ngModel"
-                 (input)="validateInputOverflow(orgLevel2, 255)">
-          <div *ngIf="inputOverflowMap.get(orgLevel2.name)" class="error">{{lengthError}}</div>
-        </div>
-        <div class="form-group" style="padding-top: 18px;">
-          <label for="wb-org-level-3" class="control-label">OrgLevel 3</label>
-          <input type="text" class="form-control" id="wb-org-level-3" placeholder="OrgLevel 3"
-                 [(ngModel)]="workbasket.orgLevel3"
-                 name="workbasket.orgLevel3" maxlength="255" #orgLevel3="ngModel"
-                 (input)="validateInputOverflow(orgLevel3, 255)">
-          <div *ngIf="inputOverflowMap.get(orgLevel3.name)" class="error">{{lengthError}}</div>
-        </div>
-        <div class="form-group">
-          <label for="wb-org-level-4" class="control-label">OrgLevel 4</label>
-          <input type="text" class="form-control" id="wb-org-level-4" placeholder="OrgLevel 4"
-                 [(ngModel)]="workbasket.orgLevel4"
-                 name="workbasket.orgLevel4" maxlength="255" #orgLevel4="ngModel"
-                 (input)="validateInputOverflow(orgLevel4, 255)">
-          <div *ngIf="inputOverflowMap.get(orgLevel4.name)" class="error">{{lengthError}}</div>
-        </div>
-        <ng-container *ngFor="let customField of customFields$ | async; let index = index">
-          <div *ngIf="customField.visible" class="custom-fields form-group">
-            <label for='wb-custom-{{index+1}}' class="control-label">{{customField.field}}</label>
-            <input type="text" class="form-control" id="wb-custom-{{index+1}}"
-                   [placeholder]="customField.field"
-                   [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]"
-                   name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]" maxlength="255" #custom="ngModel"
-                   (input)="validateInputOverflow(custom, 255)">
-            <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
+
+
+
+        <!-- CUSTOM FIELDS -->
+        <h6 class="subheading"> Custom Fields </h6>
+        <mat-divider class="horizontal-line"> </mat-divider>
+
+        <div class="custom-fields">
+          <div *ngFor="let customField of customFields$ | async; let index = index" class="custom-fields__input">
+              <mat-form-field appearance="outline" class="custom-fields__form-field">
+                <mat-label>{{customField.field}}</mat-label>
+                <label for='wb-custom-{{index+1}}'></label>
+                <input matInput type="text" [placeholder]="customField.field"
+                       [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]" id="wb-custom-{{index+1}}"
+                       name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]" maxlength="255" #custom="ngModel"
+                       (input)="validateInputOverflow(custom, 255)">
+              </mat-form-field>
+              <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
           </div>
-        </ng-container>
+        </div>
+
       </div>
+
     </ng-form>
   </div>
 </div>

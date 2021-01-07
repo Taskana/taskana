@@ -1,13 +1,44 @@
-.list-group-item {
-  padding: 5px 0px 2px 1px;
-  border: none;
+@import 'src/theme/_colors.scss';
+
+.workbasket-list-toolbar {
+  padding: 16px 16px 20px;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 }
 
-.tab-align {
-  padding: 8px 12px 8px 4px;
-  margin-bottom: 0px;
+.workbasket-list-toolbar__action-toolbar {
+  padding: 0 4px;
+  display: flex;
+  border: none;
+  margin-bottom: 0;
+}
 
-  & > div {
-    margin: 6px 0px;
-  }
+.workbasket-list-toolbar__filter-and-sorting {
+  display: flex;
+  border: none;
+  margin-bottom: 0;
+  padding: 16px 4px 8px 4px;
+}
+
+.workbasket-list-toolbar__add-button {
+  background-color: $aquamarine;
+  color: white;
+  height: 36px;
+}
+
+.workbasket-list-toolbar__filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 8px 0 4px;
+}
+
+.filter__filter-button {
+  padding: 0 5px;
+  color: #555;
+  height: 36px;
+}
+
+.filter__filter-component-wrapper {
+  width: 380px;
 }

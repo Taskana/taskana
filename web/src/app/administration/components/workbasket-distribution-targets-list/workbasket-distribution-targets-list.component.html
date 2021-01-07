@@ -1,0 +1,65 @@
+<div id="dual-list-Left" class="distribution-targets-list">
+  <mat-toolbar>
+    <span class="distribution-targets-list__header">{{header}}</span>
+
+    <button mat-flat-button class="distribution-targets-list__action-button" (click)="changeToolbarState(!toolbarState)"
+    >
+      <span *ngIf="!toolbarState">
+        Display filter
+        <mat-icon class="button-icon">filter_list</mat-icon>
+      </span>
+      <span *ngIf="toolbarState">
+        Hide filter
+        <mat-icon class="button-icon">keyboard_arrow_up</mat-icon>
+      </span>
+    </button>
+
+    <span style="flex: 1 1 auto"> </span>
+
+    <button mat-flat-button class="distribution-targets-list__action-button" (click)="selectAll(allSelected);">
+      <mat-icon class="button-icon" *ngIf="!allSelected" matTooltip="Deselect all items">check_box</mat-icon>
+      <mat-icon class="button-icon" *ngIf="allSelected" matTooltip="Select all items">check_box_outline_blank</mat-icon>
+    </button>
+  </mat-toolbar>
+  <taskana-shared-workbasket-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"
+                                    isExpanded="true" component="distribution-target"></taskana-shared-workbasket-filter>
+
+  <!-- WORKBASKET LIST -->
+  <div class="distribution-targets-list__list" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" (scrolled)="onScroll()"
+       [scrollWindow]="false" *ngIf="distributionTargets?.length > 0">
+    <mat-selection-list #workbasket [multiple]="true">
+      <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
+                       *ngFor="let workbasket of distributionTargets | selectWorkbaskets: distributionTargetsSelected: side"
+                       [selected]="workbasket.selected"
+                       (click)="workbasket.selected = !workbasket.selected"
+                       [value]="workbasket.workbasketId">
+        <div class="distribution-targets-list__item-wrapper">
+
+          <div class="distribution-targets-list__item-icon">
+            <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"></taskana-administration-icon-type>
+          </div>
+
+          <div class="distribution-targets-list__item-info">
+            <p>
+              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
+            </p>
+            <p>{{workbasket.description}} &nbsp;</p>
+            <p>{{workbasket.owner}} &nbsp;</p>
+          </div>
+
+          <div class="workbaskets-item__marked" *ngIf="workbasket.markedForDeletion">
+            <span title="Marked for deletion" matTooltip="Marked for deletion"
+                  class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+
+  <div class="distribution-targets-list__empty-list"  *ngIf="distributionTargets?.length == 0">
+    There is currently no distributed workbasket
+  </div>
+</div>

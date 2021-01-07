@@ -62,8 +62,8 @@ public interface TaskService {
    * @param taskId id of the task which should be unclaimed.
    * @return updated unclaimed task
    * @throws TaskNotFoundException if the task can´t be found or does not exist
-   * @throws InvalidStateException when the task is already completed.
-   * @throws InvalidOwnerException when the task is claimed by another user.
+   * @throws InvalidStateException if the task is already in an end state.
+   * @throws InvalidOwnerException if the task is claimed by another user.
    * @throws NotAuthorizedException if the current user has no read permission for the workbasket
    *     the task is in
    */
@@ -77,9 +77,8 @@ public interface TaskService {
    * @param taskId id of the task which should be unclaimed.
    * @return updated unclaimed task
    * @throws TaskNotFoundException if the task can´t be found or does not exist
-   * @throws InvalidStateException when the task is already completed.
-   * @throws InvalidOwnerException when forceCancel is false and the task is claimed by another
-   *     user.
+   * @throws InvalidStateException if the task is already in an end state.
+   * @throws InvalidOwnerException if forceCancel is false and the task is claimed by another user.
    * @throws NotAuthorizedException if the current user has no read permission for the workbasket
    *     the task is in
    */
@@ -93,7 +92,7 @@ public interface TaskService {
    *
    * @param taskId - Id of the Task which should be completed.
    * @return Task - updated task after completion.
-   * @throws InvalidStateException when Task wasn´t claimed before.
+   * @throws InvalidStateException if Task wasn´t claimed before.
    * @throws TaskNotFoundException if the given Task can´t be found in DB.
    * @throws InvalidOwnerException if current user is not the task-owner or administrator.
    * @throws NotAuthorizedException if the current user has no read permission for the workbasket
@@ -109,7 +108,7 @@ public interface TaskService {
    *
    * @param taskId - Id of the Task which should be completed.
    * @return Task - updated task after completion.
-   * @throws InvalidStateException when Task wasn´t claimed before.
+   * @throws InvalidStateException if Task wasn´t claimed before.
    * @throws TaskNotFoundException if the given Task can´t be found in DB.
    * @throws InvalidOwnerException if current user is not the task-owner or administrator.
    * @throws NotAuthorizedException if the current user has no read permission for the workbasket
@@ -124,9 +123,9 @@ public interface TaskService {
    *
    * @param taskToCreate the transient task object to be persisted
    * @return the created and persisted task
-   * @throws TaskAlreadyExistException when the Task does already exist.
+   * @throws TaskAlreadyExistException if the Task does already exist.
    * @throws NotAuthorizedException thrown if the current user is not authorized to create that task
-   * @throws WorkbasketNotFoundException thrown if the work basket referenced by the task is not
+   * @throws WorkbasketNotFoundException thrown if the workbasket referenced by the task is not
    *     found
    * @throws ClassificationNotFoundException thrown if the {@link Classification} referenced by the
    *     task is not found
@@ -307,7 +306,7 @@ public interface TaskService {
    *
    * @param taskId The Id of the task to delete.
    * @throws TaskNotFoundException If the given Id does not refer to an existing task.
-   * @throws InvalidStateException If the state of the referenced task is not Completed.
+   * @throws InvalidStateException If the state of the referenced task is not an end state.
    * @throws NotAuthorizedException if the current user is not member of role ADMIN
    */
   void deleteTask(String taskId)
@@ -318,8 +317,8 @@ public interface TaskService {
    *
    * @param taskId The Id of the task to delete.
    * @throws TaskNotFoundException If the given Id does not refer to an existing task.
-   * @throws InvalidStateException If the state of the referenced task is not Completed and
-   *     forceDelet is false.
+   * @throws InvalidStateException If the state of the referenced task is not an end state and
+   *     forceDelete is false.
    * @throws NotAuthorizedException if the current user is not member of role ADMIN
    */
   void forceDeleteTask(String taskId)

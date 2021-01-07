@@ -1,3 +1,72 @@
-.dropdown-menu {
-  min-width: auto;
+.workbasket-information-wrapper {
+  height: calc(100vh - 213px);
+  overflow-y: auto;
+}
+
+.form {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.subheading {
+  font-weight: bold;
+  padding-left: 15px;
+  margin-bottom: 0;
+}
+
+.horizontal-line {
+  margin: 5px 5px 25px 5px;
+  border-top-color: #555;
+  border-top-width: 1.35px;
+}
+
+.general {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-bottom: 15px;
+
+  &__left-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 50%;
+  }
+
+  &__right-column {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
+
+  &__spacer {
+    display: block;
+    width: 20px;
+  }
+
+  &__description-and-type {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__description {
+    width: 100%;
+  }
+}
+
+.custom-fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  &__input {
+    flex: 0 49%;
+  }
+
+  &__form-field {
+    width: 100%;
+  }
 }

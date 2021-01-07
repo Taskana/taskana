@@ -11,7 +11,7 @@ import { take, tap } from 'rxjs/operators';
 import { AccessIdDefinition } from '../../models/access-id';
 import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
-import { AccessItemWorkbasketResource } from '../../models/access-item-workbasket-resource';
+import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
 
 class InitializeStore {
@@ -60,11 +60,11 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
   getAccessItems(ctx: StateContext<AccessItemsManagementStateModel>, action: GetAccessItems): Observable<any> {
     this.requestInProgressService.setRequestInProgress(true);
     return this.accessIdsService
-      .getAccessItems(action.accessIds, action.accessIdLike, action.workbasketKeyLike, action.sortModel)
+      .getAccessItems(action.filterParameter, action.sortParameter, action.pagingParameter)
       .pipe(
         take(1),
         tap(
-          (accessItemsResource: AccessItemWorkbasketResource) => {
+          (accessItemsResource: WorkbasketAccessItemsRepresentation) => {
             this.requestInProgressService.setRequestInProgress(false);
             ctx.patchState({
               accessItemsResource
@@ -108,7 +108,7 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
 }
 
 export interface AccessItemsManagementStateModel {
-  accessItemsResource: AccessItemWorkbasketResource;
+  accessItemsResource: WorkbasketAccessItemsRepresentation;
   selectedAccessId: AccessIdDefinition;
   groups: AccessIdDefinition[];
 }

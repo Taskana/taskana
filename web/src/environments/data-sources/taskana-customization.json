@@ -19,7 +19,7 @@
           "lookupField": true
         },
         "custom3": {
-          "field": "",
+          "field": "Custom 3",
           "visible": false
         },
         "custom9": {
@@ -27,15 +27,15 @@
           "visible": true
         },
         "custom10": {
-          "field": "",
+          "field": "Custom 10",
           "visible": false
         },
         "custom11": {
-          "field": "",
+          "field": "Custom 11",
           "visible": false
         },
         "custom12": {
-          "field": "",
+          "field": "Custom 12",
           "visible": false
         }
       }

@@ -1,35 +1,28 @@
-import { Page } from './page';
-
-export class TaskHistoryEventData {
-  taskHistoryId = 0;
-  parentBusinessProcessId = '';
-  businessProcessId = '';
-  created = '';
-  userId = '';
-  eventType = '';
-  workbasketKey = '';
-  porType = '';
-  porValue = '';
-  domain = '';
-  taskId = '';
-  porCompany = '';
-  porSystem = '';
-  porInstance = '';
-  taskClassificationKey = '';
-  taskClassificationCategory = '';
-  attachmentClassificationKey = '';
-  custom1 = '';
-  custom2 = '';
-  custom3 = '';
-  custom4 = '';
-  comment = '';
-  oldValue = '';
-  newValue = '';
-  oldData = '';
-  newData = '';
-  page = new Page();
-
-  public constructor(init?: Partial<TaskHistoryEventData>) {
-    Object.assign(this, init);
-  }
+export interface TaskHistoryEventData {
+  taskHistoryId: string;
+  parentBusinessProcessId: string;
+  businessProcessId: string;
+  created: string;
+  userId: string;
+  eventType: string;
+  workbasketKey: string;
+  porType: string;
+  porValue: string;
+  domain: string;
+  taskId: string;
+  porCompany: string;
+  porSystem: string;
+  porInstance: string;
+  taskClassificationKey: string;
+  taskClassificationCategory: string;
+  attachmentClassificationKey: string;
+  custom1: string;
+  custom2: string;
+  custom3: string;
+  custom4: string;
+  comment: string;
+  oldValue: string;
+  newValue: string;
+  oldData: string;
+  newData: string;
 }

@@ -1,0 +1,19 @@
+<mat-nav-list class="navlist">
+    <a mat-list-item class="navlist__item navlist__admin" [routerLink]=[administrationsUrl]
+        [routerLinkActive]="['active']" *ngIf="administrationAccess" (click)="toggleSidenav()">Administration</a>
+    <div class="navlist__admin-item">
+        <a mat-list-item class="navlist__item  navlist__admin-workbaskets" [routerLink]=[workbasketsUrl]
+            [routerLinkActive]="['active__sub']" *ngIf="administrationAccess" (click)="toggleSidenav()">Workbaskets</a>
+        <a mat-list-item class="navlist__item  navlist__admin-classifications" [routerLink]=[classificationUrl]
+            [routerLinkActive]="['active__sub']" *ngIf="administrationAccess"
+            (click)="toggleSidenav()">Classifications</a>
+        <a mat-list-item class="navlist__item  navlist__admin-access-items" [routerLink]=[accessUrl]
+            [routerLinkActive]="['active__sub']" (click)="toggleSidenav()" *ngIf="administrationAccess">Access Items</a>
+    </div>
+    <a mat-list-item class="navlist__item navlist__monitor" [routerLink]=[monitorUrl] [routerLinkActive]="['active']"
+        *ngIf="monitorAccess" (click)="toggleSidenav()">Monitor</a>
+    <a mat-list-item class="navlist__item navlist__workplace" [routerLink]=[workplaceUrl]
+        [routerLinkActive]="['active']" *ngIf="workplaceAccess" (click)="toggleSidenav()">Workplace</a>
+    <a mat-list-item class="navlist__item navlist__history" [routerLink]=[historyUrl] [routerLinkActive]="['active']"
+        *ngIf="historyAccess" (click)="toggleSidenav()">History</a>
+</mat-nav-list>

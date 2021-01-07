@@ -16,10 +16,6 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 class TaskQueryAccTest extends AbstractAccTest {
 
-  TaskQueryAccTest() {
-    super();
-  }
-
   @Test
   void testTaskQueryUnauthenticated() {
     TaskService taskService = taskanaEngine.getTaskService();

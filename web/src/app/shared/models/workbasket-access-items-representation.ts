@@ -3,5 +3,5 @@ import { WorkbasketAccessItems } from './workbasket-access-items';
 
 export interface WorkbasketAccessItemsRepresentation {
   accessItems: WorkbasketAccessItems[];
-  _links: Links;
+  _links?: Links;
 }

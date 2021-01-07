@@ -1,16 +1,96 @@
 @import '../../../../theme/colors';
+@import '~@angular/material/theming';
 
-td > input[type='checkbox'] {
-  margin-top: 0;
-}
-.panel-body {
+.workbasket-access-items {
+  height: calc(100vh - 213px);
+  overflow-y: auto;
   overflow-x: auto;
-  padding-top: 0;
+  display: inline-block;
+
+  &__typeahead {
+    text-align: left;
+    min-width: 180px;
+    width: calc(100% + 20px);
+    line-height: 20px;
+    padding-bottom: 0% !important;
+    margin-top: 5px;
+  }
+
+  &__table {
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 98%;
+    text-align: center;
+
+    & th {
+      padding: 0.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: white;
+    }
+
+    & td {
+      padding-left: 0.5rem;
+      vertical-align: initial;
+      border-top: 1px solid #dee2e6;
+    }
+
+    & tr:first-child > td {
+      border-top: 2px solid #dddddd;
+    }
+
+    & td > input[type='checkbox'] {
+      margin-top: 0;
+      display: block;
+    }
+
+    & tr:nth-child(odd) > td {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    & input[type='checkbox']:checked {
+      filter: hue-rotate(320deg) brightness(1);
+    }
+  }
+
+  &__buttons-add-access {
+    color: white;
+    border: none;
+    background: $aquamarine;
+    margin: 10px 3px 0px 6px;
+    outline: none;
+  }
+
+  &__buttons-delete-access {
+    color: red;
+    margin: 2px 0px 0px 3px;
+    outline: none;
+  }
+
+  &__permission-checkbox,
+  &__check-all,
+  &__select-row {
+    display: inline-block;
+    height: 1rem;
+    line-height: 0;
+    margin: auto;
+    order: 0;
+    position: relative;
+    white-space: nowrap;
+    width: 1rem;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    @supports (-moz-appearance: none) {
+      //bigger checkboxes for firefox because firefox renders differently
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
 }
-.text-width {
-  width: 100%;
-  min-width: 180px;
-}
+
 .required-header {
   width: 200px;
 }
@@ -19,23 +99,17 @@ td > input[type='checkbox'] {
   color: red;
 }
 
-th {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background: white;
+::ng-deep .workbasket-access-items__form .mat-form-field-wrapper {
+  padding-bottom: 0em;
+  height: 58px;
 }
 
-td {
-  vertical-align: bottom !important;
-  &.has-changes {
-    border-bottom: 1px solid #f0ad4e;
-  }
+::ng-deep .workbasket-access-items__typeahead .typeahead__form .mat-form-field-infix {
+  padding: 0 0 0 0;
+  position: initial;
+  font-size: medium;
 }
-.table > thead > tr > th {
-  max-width: 150px;
-  border-bottom: none;
-}
-taskana-shared-type-ahead {
-  top: 0;
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+  margin-top: 0.7em;
 }

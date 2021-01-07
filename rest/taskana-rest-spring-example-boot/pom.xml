@@ -50,6 +50,36 @@
           <version>${project.version}</version>
         </dependency>
       </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${version.maven.resources}</version>
+            <executions>
+              <execution>
+                <id>copy-history-rest-documentation-to-static-folder</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>
+                    ${project.build.outputDirectory}/static/docs/rest
+                  </outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>
+                        ../../history/taskana-simplehistory-rest-spring/target/generated-docs
+                      </directory>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>historyLogging.plugin</id>

@@ -1,6 +1,7 @@
 package pro.taskana.classification.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,12 +35,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.rest.assembler.ClassificationDefinitionCollectionRepresentationModel;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
+import pro.taskana.classification.rest.models.ClassificationCollectionRepresentationModel;
+import pro.taskana.classification.rest.models.ClassificationDefinitionRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
-import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.rest.models.TaskanaPagedModel;
-import pro.taskana.common.rest.models.TaskanaPagedModelKeys;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
@@ -46,10 +50,6 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 @TestMethodOrder(OrderAnnotation.class)
 class ClassificationDefinitionControllerIntTest {
 
-  private static final ParameterizedTypeReference<
-          TaskanaPagedModel<ClassificationRepresentationModel>>
-      CLASSIFICATION_PAGE_MODEL_TYPE =
-          new ParameterizedTypeReference<TaskanaPagedModel<ClassificationRepresentationModel>>() {};
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
   private final RestHelper restHelper;
@@ -71,16 +71,18 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   @Order(1) // since the import tests adds Classifications this has to be tested first.
-  void testExportClassifications() {
-    ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
+  void should_ExportAllClassifications_When_ExportIsRequested() {
+    ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            CLASSIFICATION_PAGE_MODEL_TYPE);
+            ParameterizedTypeReference
+                .forType(ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
+        .extracting(ClassificationDefinitionRepresentationModel::getClassification)
         .extracting(ClassificationRepresentationModel::getClassificationId)
         .containsExactlyInAnyOrder(
             "CLI:200000000000000000000000000000000015",
@@ -91,27 +93,52 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testExportClassificationsFromWrongDomain() {
-    ResponseEntity<TaskanaPagedModel<ClassificationRepresentationModel>> response =
+  void should_NotContainAnyLinks_When_ExportIsRequested() {
+    ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
+        TEMPLATE.exchange(
+            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ParameterizedTypeReference.forType(
+                ClassificationDefinitionCollectionRepresentationModel.class));
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isPresent();
+    assertThat(response.getBody().getContent())
+        .extracting(ClassificationDefinitionRepresentationModel::getClassification)
+        .extracting(ClassificationRepresentationModel::getLinks)
+        .extracting(Links::isEmpty)
+        .containsOnly(true);
+  }
+
+  @Test
+  void should_ExportNothing_When_DomainIsUnknown() {
+    ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            CLASSIFICATION_PAGE_MODEL_TYPE);
+            ParameterizedTypeReference
+                .forType(ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).isEmpty();
   }
 
   @Test
-  void testImportFilledClassification() throws Exception {
+  void should_CreateNewClassification_When_ImportContainsUnknownClassification() throws Exception {
+    String key = "key drelf";
+    String domain = "DOMAIN_A";
+    assertThatThrownBy(() -> classificationService.getClassification(key, domain))
+        .isInstanceOf(ClassificationNotFoundException.class);
+
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setClassificationId("classificationId_");
-    classification.setKey("key drelf");
+    classification.setKey(key);
+    classification.setDomain(domain);
     classification.setParentId("CLI:100000000000000000000000000000000016");
     classification.setParentKey("T2000");
     classification.setCategory("MANUAL");
     classification.setType("TASK");
-    classification.setDomain("DOMAIN_A");
     classification.setIsValidInDomain(true);
     classification.setCreated(Instant.parse("2016-05-12T10:12:12.12Z"));
     classification.setModified(Instant.parse("2018-05-12T10:12:12.12Z"));
@@ -129,48 +156,51 @@ class ClassificationDefinitionControllerIntTest {
     classification.setCustom7("custom");
     classification.setCustom8("custom");
 
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(classification));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    assertThatCode(() -> classificationService.getClassification(key, domain))
+        .doesNotThrowAnyException();
   }
 
   @Test
-  void testFailureWhenKeyIsMissing() throws Exception {
+  void should_ThrowError_When_KeyIsMissingForNewClassification() {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setDomain("DOMAIN_A");
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(classification));
 
-    try {
-      importRequest(clList);
-    } catch (HttpClientErrorException e) {
-      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
+    assertThatThrownBy(() -> importRequest(clList))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(e -> (HttpClientErrorException) e)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
-  void testFailureWhenDomainIsMissing() throws Exception {
+  void should_ThrowError_When_DomainIsMissingForNewClassification() {
     ClassificationRepresentationModel classification = new ClassificationRepresentationModel();
     classification.setKey("one");
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(classification));
 
-    try {
-      importRequest(clList);
-    } catch (HttpClientErrorException e) {
-      assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
+    assertThatThrownBy(() -> importRequest(clList))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(e -> (HttpClientErrorException) e)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
-  void testFailureWhenUpdatingTypeOfExistingClassification() throws Exception {
+  void should_ThrowError_When_ImportModifiesTypeOfExistingClassification() throws Exception {
     ClassificationRepresentationModel classification =
         getClassificationWithKeyAndDomain("T6310", "");
     classification.setType("DOCUMENT");
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(classification));
 
     assertThatThrownBy(() -> importRequest(clList))
         .isInstanceOf(HttpClientErrorException.class)
@@ -180,7 +210,34 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportMultipleClassifications() throws Exception {
+  void should_ThrowError_When_ImportContainsDuplicateClassification() {
+    ClassificationRepresentationModel classification1 = new ClassificationRepresentationModel();
+    classification1.setClassificationId("id1");
+    classification1.setKey("ImportKey3");
+    classification1.setDomain("DOMAIN_A");
+
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(classification1, classification1));
+
+    assertThatThrownBy(() -> importRequest(clList))
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(e -> (HttpClientErrorException) e)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.CONFLICT);
+  }
+
+  @Test
+  void should_CreateMultipleClassifications_When_ImportContainsMultipleClassifications()
+      throws Exception {
+    String key1 = "ImportKey1";
+    String key2 = "ImportKey2";
+    String domain = "DOMAIN_A";
+
+    assertThatThrownBy(() -> classificationService.getClassification(key1, domain))
+        .isInstanceOf(ClassificationNotFoundException.class);
+    assertThatThrownBy(() -> classificationService.getClassification(key2, domain))
+        .isInstanceOf(ClassificationNotFoundException.class);
+
     ClassificationRepresentationModel classification1 =
         this.createClassification("id1", "ImportKey1", "DOMAIN_A", null, null);
 
@@ -198,50 +255,36 @@ class ClassificationDefinitionControllerIntTest {
     classification2.setServiceLevel("P2D");
     classification2.setApplicationEntryPoint("entry1");
 
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification1, classification2));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(classification1, classification2));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    assertThatCode(() -> classificationService.getClassification(key1, domain))
+        .doesNotThrowAnyException();
+    assertThatCode(() -> classificationService.getClassification(key2, domain))
+        .doesNotThrowAnyException();
   }
 
   @Test
-  void testImportDuplicateClassification() {
-    ClassificationRepresentationModel classification1 = new ClassificationRepresentationModel();
-    classification1.setClassificationId("id1");
-    classification1.setKey("ImportKey3");
-    classification1.setDomain("DOMAIN_A");
-
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification1, classification1));
-
-    assertThatThrownBy(() -> importRequest(clList))
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(e -> (HttpClientErrorException) e)
-        .extracting(HttpStatusCodeException::getStatusCode)
-        .isEqualTo(HttpStatus.CONFLICT);
-  }
-
-  @Test
-  void testInsertExistingClassificationWithOlderTimestamp() throws Exception {
+  void should_IgnoreModifiedTimestamp_When_ImportingClassification() throws Exception {
     ClassificationRepresentationModel existingClassification =
         getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
     existingClassification.setName("first new Name");
 
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(existingClassification));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(existingClassification));
 
+    // first request. Everything normal here
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     existingClassification.setName("second new Name");
-    clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(existingClassification));
+    clList = new ClassificationCollectionRepresentationModel(List.of(existingClassification));
 
+    // second request. NOTE: we did not update the modified timestamp of the classification
+    // we want to import -> import should still work
     response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
@@ -251,59 +294,27 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testHookExistingChildToNewParent() throws Exception {
-    final ClassificationRepresentationModel newClassification =
-        createClassification("new Classification", "newClass", "DOMAIN_A", null, "L11010");
-    ClassificationRepresentationModel existingClassification =
-        getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
-    existingClassification.setParentId("new Classification");
-    existingClassification.setParentKey("newClass");
-
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS,
-            List.of(existingClassification, newClassification));
-
-    ResponseEntity<Void> response = importRequest(clList);
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-    ClassificationSummaryRepresentationModel parentCl =
-        getClassificationWithKeyAndDomain("L11010", "DOMAIN_A");
-    ClassificationSummaryRepresentationModel testNewCl =
-        getClassificationWithKeyAndDomain("newClass", "DOMAIN_A");
-    ClassificationSummaryRepresentationModel testExistingCl =
-        getClassificationWithKeyAndDomain("L110102", "DOMAIN_A");
-
-    assertThat(parentCl).isNotNull();
-    assertThat(testNewCl).isNotNull();
-    assertThat(testExistingCl).isNotNull();
-    assertThat(testExistingCl.getParentId()).isEqualTo(testNewCl.getClassificationId());
-    assertThat(testNewCl.getParentId()).isEqualTo(parentCl.getClassificationId());
-  }
-
-  @Test
-  void testImportParentAndChildClassification() throws Exception {
-    ClassificationRepresentationModel classification1 =
+  void should_KeepParentLink_When_ImportingClassificationsWhichWereLinked() throws Exception {
+    ClassificationRepresentationModel parent =
         this.createClassification("parentId", "ImportKey6", "DOMAIN_A", null, null);
-    ClassificationRepresentationModel classification2 =
+    ClassificationRepresentationModel child1 =
         this.createClassification("childId1", "ImportKey7", "DOMAIN_A", null, "ImportKey6");
-    ClassificationRepresentationModel classification3 =
+    ClassificationRepresentationModel child2 =
         this.createClassification("childId2", "ImportKey8", "DOMAIN_A", "parentId", null);
-    ClassificationRepresentationModel classification4 =
+    ClassificationRepresentationModel grandChild1 =
         this.createClassification(
             "grandchildId1", "ImportKey9", "DOMAIN_A", "childId1", "ImportKey7");
-    ClassificationRepresentationModel classification5 =
+    ClassificationRepresentationModel grandChild2 =
         this.createClassification("grandchild2", "ImportKey10", "DOMAIN_A", null, "ImportKey7");
 
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS,
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(
             List.of(
-                classification1,
-                classification2,
-                classification3,
-                classification4,
-                classification5));
+                parent,
+                child1,
+                child2,
+                grandChild1,
+                grandChild2));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -323,7 +334,7 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testImportParentAndChildClassificationWithKey() throws Exception {
+  void should_LinkParentClassification_When_OnlyParentKeyIsDefinedInImport() throws Exception {
     ClassificationRepresentationModel parent =
         createClassification("parent", "ImportKey11", "DOMAIN_A", null, null);
     parent.setCustom1("parent is correct");
@@ -332,9 +343,8 @@ class ClassificationDefinitionControllerIntTest {
     ClassificationRepresentationModel child =
         createClassification("child", "ImportKey13", "DOMAIN_A", null, "ImportKey11");
 
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(parent, wrongParent, child));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(parent, wrongParent, child));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -354,7 +364,8 @@ class ClassificationDefinitionControllerIntTest {
   }
 
   @Test
-  void testChangeParentByImportingExistingClassification() throws Exception {
+  void should_OverrideExistingParentLinks_When_ImportLinksExistingClassificationsDifferently()
+      throws Exception {
     ClassificationRepresentationModel child1 =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
     assertThat(child1.getParentKey()).isEqualTo("L11010");
@@ -367,8 +378,8 @@ class ClassificationDefinitionControllerIntTest {
     child2.setParentId("");
     child2.setParentKey("");
 
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(child1, child2));
+    ClassificationCollectionRepresentationModel clList =
+        new ClassificationCollectionRepresentationModel(List.of(child1, child2));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -383,21 +394,6 @@ class ClassificationDefinitionControllerIntTest {
         this.getClassificationWithKeyAndDomain("L110107", "DOMAIN_A");
     assertThat(childWithoutParent.getParentId()).isEqualTo(child2.getParentId());
     assertThat(childWithoutParent.getParentKey()).isEqualTo(child2.getParentKey());
-  }
-
-  @Test
-  void testFailOnImportDuplicates() throws Exception {
-    ClassificationRepresentationModel classification =
-        this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
-
-    TaskanaPagedModel<ClassificationRepresentationModel> clList =
-        new TaskanaPagedModel<>(
-            TaskanaPagedModelKeys.CLASSIFICATIONS, List.of(classification, classification));
-
-    assertThatThrownBy(() -> importRequest(clList))
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.CONFLICT);
   }
 
   private ClassificationRepresentationModel createClassification(
@@ -418,21 +414,21 @@ class ClassificationDefinitionControllerIntTest {
     return classificationAssembler.toModel(classificationService.getClassification(key, domain));
   }
 
-  private ResponseEntity<Void> importRequest(
-      TaskanaPagedModel<ClassificationRepresentationModel> clList) throws Exception {
+  private ResponseEntity<Void> importRequest(ClassificationCollectionRepresentationModel clList)
+      throws Exception {
     LOGGER.debug("Start Import");
     File tmpFile = File.createTempFile("test", ".tmp");
-    OutputStreamWriter writer =
-        new OutputStreamWriter(new FileOutputStream(tmpFile), StandardCharsets.UTF_8);
-    mapper.writeValue(writer, clList);
-
-    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    try (FileOutputStream out = new FileOutputStream(tmpFile);
+        OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);) {
+      mapper.writeValue(writer, clList);
+    }
+    MultiValueMap<String, FileSystemResource> body = new LinkedMultiValueMap<>();
+    body.add("file", new FileSystemResource(tmpFile));
 
     HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-    body.add("file", new FileSystemResource(tmpFile));
 
-    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+    HttpEntity<?> requestEntity = new HttpEntity<>(body, headers);
     String serverUrl = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS);
 
     return TEMPLATE.postForEntity(serverUrl, requestEntity, Void.class);

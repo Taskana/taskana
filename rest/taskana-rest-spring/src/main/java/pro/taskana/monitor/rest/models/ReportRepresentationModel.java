@@ -1,5 +1,6 @@
 package pro.taskana.monitor.rest.models;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
@@ -10,14 +11,19 @@ import pro.taskana.monitor.api.reports.row.SingleRow;
 /** EntityModel class for {@link Report}. */
 public class ReportRepresentationModel extends RepresentationModel<ReportRepresentationModel> {
 
+  /** Object holding meta info on the report. */
   private final MetaInformation meta;
 
-  private final List<RowResource> rows;
+  /** Array holding the rows of the report. */
+  private final List<RowRepresentationModel> rows;
 
-  private final List<RowResource> sumRow;
+  /** Array holding the sums in the columns over all rows. */
+  private final List<RowRepresentationModel> sumRow;
 
   public ReportRepresentationModel(
-      MetaInformation meta, List<RowResource> rows, List<RowResource> sumRow) {
+      MetaInformation meta,
+      List<RowRepresentationModel> rows,
+      List<RowRepresentationModel> sumRow) {
     this.meta = meta;
     this.rows = rows;
     this.sumRow = sumRow;
@@ -27,24 +33,30 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     return meta;
   }
 
-  public List<RowResource> getRows() {
+  public List<RowRepresentationModel> getRows() {
     return rows;
   }
 
-  public List<RowResource> getSumRow() {
+  public List<RowRepresentationModel> getSumRow() {
     return sumRow;
   }
 
   /** EntityModel class for {@link SingleRow}. */
-  public static class RowResource {
+  public static class RowRepresentationModel {
 
+    /** Array holding all the cell values of the given row. */
     private final int[] cells;
+    /** Sum of all values of the given row. */
     private final int total;
+    /** Depth of the row. If the depth is > 0, then this row is a sub-row of a prior row */
     private final int depth;
+    /** Array containing description of the row. */
     private final String[] desc;
+    /** Boolean identifying if the given row should be initially displayed or not. */
     private final boolean display;
 
-    public RowResource(int[] cells, int total, int depth, String[] desc, boolean display) {
+    public RowRepresentationModel(
+        int[] cells, int total, int depth, String[] desc, boolean display) {
       this.cells = cells;
       this.total = total;
       this.depth = depth;
@@ -52,66 +64,74 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
       this.display = display;
     }
 
-    @SuppressWarnings("unused")
     public int[] getCells() {
       return cells;
     }
 
-    @SuppressWarnings("unused")
     public int getTotal() {
       return total;
     }
 
-    @SuppressWarnings("unused")
     public int getDepth() {
       return depth;
     }
 
-    @SuppressWarnings("unused")
     public String[] getDesc() {
       return desc;
     }
 
-    @SuppressWarnings("unused")
     public boolean isDisplay() {
       return display;
     }
 
     @Override
     public String toString() {
-      return String.format(
-          "RowResourde [cells=%s, total=%d, depth=%d, desc=%s",
-          Arrays.toString(cells), total, depth, Arrays.toString(desc));
+      return "RowResource [cells="
+          + Arrays.toString(cells)
+          + ", total="
+          + total
+          + ", depth="
+          + depth
+          + ", desc="
+          + Arrays.toString(desc)
+          + ", display="
+          + display
+          + "]";
     }
   }
 
   /** Meta Information about this ReportResource. */
   public static class MetaInformation {
 
+    /** Name of the report. */
     private final String name;
-    private final String date;
+    /** Date of the report creation. */
+    private final Instant date;
+    /** Column headers of the report. */
     private final String[] header;
+    /** Descriptions for the rows of the report. */
     private final String[] rowDesc;
-    private final String totalDesc;
+    /** Description for the sum column. */
+    private final String sumRowDesc;
 
     public MetaInformation(
-        String name, String date, String[] header, String[] rowDesc, String totalDesc) {
+        String name, Instant date, String[] header, String[] rowDesc, String sumRowDesc) {
       this.name = name;
       this.date = date;
       this.header = header;
       this.rowDesc = rowDesc;
-      this.totalDesc = totalDesc;
+      this.sumRowDesc = sumRowDesc;
     }
 
-    public String getTotalDesc() {
-      return totalDesc;
+    public String getSumRowDesc() {
+      return sumRowDesc;
     }
 
     public String getName() {
       return name;
     }
 
-    public String getDate() {
+    public Instant getDate() {
       return date;
     }
 
@@ -125,9 +145,17 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
 
     @Override
     public String toString() {
-      return String.format(
-          "MetaInformation [name= %s, date= %s, header= %s, rowDesc= %s]",
-          name, date, Arrays.toString(header), Arrays.toString(rowDesc));
+      return "MetaInformation [name="
+          + name
+          + ", date="
+          + date
+          + ", header="
+          + Arrays.toString(header)
+          + ", rowDesc="
+          + Arrays.toString(rowDesc)
+          + ", totalDesc="
+          + sumRowDesc
+          + "]";
     }
   }
 }

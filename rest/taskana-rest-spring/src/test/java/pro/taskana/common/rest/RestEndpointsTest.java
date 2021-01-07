@@ -5,7 +5,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import pro.taskana.task.rest.TaskController;
@@ -14,11 +13,10 @@ import pro.taskana.task.rest.TaskController;
 class RestEndpointsTest {
 
   @Test
-  void testMapping() throws Exception {
+  void testMapping() {
 
-    String mapUrl = RestEndpoints.URL_TASKS;
-    String buildUrl =
-        linkTo(methodOn(TaskController.class).getTasks(new LinkedMultiValueMap<>())).toString();
+    String mapUrl = RestEndpoints.URL_DOMAIN;
+    String buildUrl = linkTo(methodOn(TaskanaEngineController.class).getDomains()).toString();
     assertThat(buildUrl).isEqualTo(mapUrl);
   }
 
