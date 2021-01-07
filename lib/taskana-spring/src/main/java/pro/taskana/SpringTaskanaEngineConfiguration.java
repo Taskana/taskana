@@ -13,8 +13,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
       DataSource dataSource,
       boolean useManagedTransactions,
       boolean securityEnabled,
-      String schemaName)
-      throws SQLException {
+      String schemaName) {
     super(dataSource, useManagedTransactions, securityEnabled, schemaName);
   }
 
@@ -24,8 +23,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
       boolean securityEnabled,
       String propertiesFileName,
       String propertiesSeparator,
-      String schemaName)
-      throws SQLException {
+      String schemaName) {
     super(
         dataSource,
         useManagedTransactions,
@@ -41,7 +39,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
    * @return the TaskanaEngine
    */
   @Override
-  public TaskanaEngine buildTaskanaEngine() {
+  public TaskanaEngine buildTaskanaEngine() throws SQLException {
     this.useManagedTransactions = true;
     return new SpringTaskanaEngineImpl(this);
   }

@@ -1068,7 +1068,7 @@ public class TaskServiceImpl implements TaskService {
 
     Map<String, TaskSummaryImpl> taskSummaryMap =
         getTasksToChange(taskIds).stream()
-            .collect(Collectors.toMap(TaskSummary::getId, e -> (TaskSummaryImpl) e));
+            .collect(Collectors.toMap(TaskSummary::getId, TaskSummaryImpl.class::cast));
     return taskIds.stream()
         .map(id -> Pair.of(id, taskSummaryMap.get(id)))
         .filter(

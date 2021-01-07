@@ -42,7 +42,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getName()).isEqualTo("PPK User 2 KSC 1");
     assertThat(workbasket.getKey()).isEqualTo("USER-1-2");
     assertThat(workbasket.getType()).isEqualTo(WorkbasketType.PERSONAL);
-    assertThat(workbasket.getOwner()).isEqualTo("Peter Maier");
+    assertThat(workbasket.getOwner()).isEqualTo("user-1-2");
     assertThat(workbasket.getOrgLevel1()).isEqualTo("versicherung");
     assertThat(workbasket.getOrgLevel2()).isEqualTo("abteilung");
     assertThat(workbasket.getOrgLevel3()).isEqualTo("projekt");
@@ -64,7 +64,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
         WORKBASKET_SERVICE.getWorkbasket("WBI:100000000000000000000000000000000007");
 
     assertThat(retrievedWorkbasket).isNotNull();
-    assertThat(retrievedWorkbasket.getOwner()).isEqualTo("Peter Maier");
+    assertThat(retrievedWorkbasket.getOwner()).isEqualTo("user-1-2");
   }
 
   @WithAccessId(user = "admin")
@@ -75,7 +75,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
       throws Exception {
 
     Workbasket retrievedWorkbasket = WORKBASKET_SERVICE.getWorkbasket("USER-1-2", "DOMAIN_A");
-    assertThat(retrievedWorkbasket.getOwner()).isEqualTo("Peter Maier");
+    assertThat(retrievedWorkbasket.getOwner()).isEqualTo("user-1-2");
 
     assertThat(retrievedWorkbasket).isNotNull();
   }
@@ -90,7 +90,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getDescription()).isEqualTo("PPK User 2 KSC 1");
     assertThat(workbasket.getName()).isEqualTo("PPK User 2 KSC 1");
     assertThat(workbasket.getType()).isEqualTo(WorkbasketType.PERSONAL);
-    assertThat(workbasket.getOwner()).isEqualTo("Peter Maier");
+    assertThat(workbasket.getOwner()).isEqualTo("user-1-2");
     assertThat(workbasket.getOrgLevel1()).isEqualTo("versicherung");
     assertThat(workbasket.getOrgLevel2()).isEqualTo("abteilung");
     assertThat(workbasket.getOrgLevel3()).isEqualTo("projekt");
@@ -135,7 +135,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasketSummary.getName()).isEqualTo("PPK User 2 KSC 1");
     assertThat(workbasketSummary.getKey()).isEqualTo("USER-1-2");
     assertThat(workbasketSummary.getType()).isEqualTo(WorkbasketType.PERSONAL);
-    assertThat(workbasketSummary.getOwner()).isEqualTo("Peter Maier");
+    assertThat(workbasketSummary.getOwner()).isEqualTo("user-1-2");
     assertThat(workbasketSummary.getOrgLevel1()).isEqualTo("versicherung");
     assertThat(workbasketSummary.getOrgLevel2()).isEqualTo("abteilung");
     assertThat(workbasketSummary.getOrgLevel3()).isEqualTo("projekt");

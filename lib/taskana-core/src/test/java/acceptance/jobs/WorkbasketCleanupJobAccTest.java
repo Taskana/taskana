@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,15 +106,16 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(jobsToRun).hasSize(30);
 
+    List<ScheduledJob> workbasketCleanupJobs =
+        jobsToRun.stream()
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.WORKBASKETCLEANUPJOB))
+            .collect(Collectors.toList());
+
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
 
     jobsToRun = getJobMapper().findJobsToRun();
 
-    assertThat(jobsToRun).hasSize(20);
-
-    assertThat(jobsToRun)
-        .extracting(ScheduledJob::getType)
-        .containsOnly(Type.CLASSIFICATIONCHANGEDJOB, Type.UPDATETASKSJOB);
+    assertThat(jobsToRun).doesNotContainAnyElementsOf(workbasketCleanupJobs);
   }
 
   private long getNumberTaskNotCompleted(String workbasketId) {

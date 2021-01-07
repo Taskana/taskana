@@ -32,7 +32,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   private ClassificationService classificationService;
 
   @BeforeAll
-  static void beforeAll() throws Exception {
+  static void beforeAll() {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
@@ -41,7 +41,7 @@ class ClassificationServiceImplIntAutoCommitTest {
   }
 
   @BeforeEach
-  void setup() {
+  void setup() throws Exception {
     TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     classificationService = taskanaEngine.getClassificationService();
     TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;

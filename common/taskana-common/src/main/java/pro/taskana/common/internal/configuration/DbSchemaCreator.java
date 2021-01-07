@@ -18,6 +18,8 @@ import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.internal.util.ComparableVersion;
+
 /** This class create the schema for taskana. */
 public class DbSchemaCreator {
 
@@ -59,10 +61,11 @@ public class DbSchemaCreator {
           connection.getMetaData().getDatabaseProductName(),
           connection.getMetaData().getURL());
       ScriptRunner runner = getScriptRunnerInstance(connection);
+      String dbProductId =
+          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
 
-      if (!isSchemaPreexisting(connection)) {
-        String scriptPath =
-            selectDbScriptFileName(connection.getMetaData().getDatabaseProductName());
+      if (!isSchemaPreexisting(connection, dbProductId)) {
+        String scriptPath = selectDbScriptFileName(dbProductId);
         InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
         BufferedReader reader =
             new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
@@ -75,7 +78,7 @@ public class DbSchemaCreator {
     }
   }
 
-  public boolean isValidSchemaVersion(String expectedVersion) {
+  public boolean isValidSchemaVersion(String expectedMinVersion) {
     try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(this.schemaName);
       SqlRunner runner = new SqlRunner(connection);
@@ -83,15 +86,18 @@ public class DbSchemaCreator {
 
       String query =
           "select VERSION from TASKANA_SCHEMA_VERSION where "
-              + "VERSION = (select max(VERSION) from TASKANA_SCHEMA_VERSION) "
-              + "AND VERSION = ?";
+              + "VERSION = (select max(VERSION) from TASKANA_SCHEMA_VERSION) ";
 
-      Map<String, Object> queryResult = runner.selectOne(query, expectedVersion);
-      if (queryResult == null || queryResult.isEmpty()) {
+      Map<String, Object> queryResult = runner.selectOne(query);
+
+      ComparableVersion actualVersion = new ComparableVersion((String) queryResult.get("VERSION"));
+      ComparableVersion minVersion = new ComparableVersion(expectedMinVersion);
+
+      if (actualVersion.compareTo(minVersion) < 0) {
         LOGGER.error(
             "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
-                + "has not the expected value {}",
-            expectedVersion);
+                + "has not the expected min value {}",
+            expectedMinVersion);
         return false;
       } else {
         LOGGER.debug("Schema version is valid.");
@@ -101,8 +107,8 @@ public class DbSchemaCreator {
     } catch (RuntimeSqlException | SQLException e) {
       LOGGER.error(
           "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
-              + "has not the expected value {}",
-          expectedVersion);
+              + "has not the expected min value {}",
+          expectedMinVersion);
       return false;
     }
   }
@@ -115,18 +121,28 @@ public class DbSchemaCreator {
     this.dataSource = dataSource;
   }
 
-  private static String selectDbScriptFileName(String dbProductName) {
-    return DB.isPostgreSql(dbProductName)
-        ? DB_SCHEMA_POSTGRES
-        : DB.isH2(dbProductName) ? DB_SCHEMA_H2 : DB_SCHEMA_DB2;
+  private static String selectDbScriptFileName(String dbProductId) {
+
+    switch (DB.getDbForId(dbProductId)) {
+      case DB2:
+        return DB_SCHEMA_DB2;
+      case POSTGRES:
+        return DB_SCHEMA_POSTGRES;
+      default:
+        return DB_SCHEMA_H2;
+    }
   }
 
-  private static String selectDbSchemaDetectionScript(String dbProductName) {
+  private static String selectDbSchemaDetectionScript(String dbProductId) {
 
-    if (DB.isPostgreSql(dbProductName)) {
-      return DB_SCHEMA_DETECTION_POSTGRES;
+    switch (DB.getDbForId(dbProductId)) {
+      case DB2:
+        return DB_SCHEMA_DETECTION_DB2;
+      case POSTGRES:
+        return DB_SCHEMA_DETECTION_POSTGRES;
+      default:
+        return DB_SCHEMA_DETECTION_H2;
     }
-    return DB.isH2(dbProductName) ? DB_SCHEMA_DETECTION_H2 : DB_SCHEMA_DETECTION_DB2;
   }
 
   private ScriptRunner getScriptRunnerInstance(Connection connection) {
@@ -137,18 +153,17 @@ public class DbSchemaCreator {
     return runner;
   }
 
-  private boolean isSchemaPreexisting(Connection connection) {
+  private boolean isSchemaPreexisting(Connection connection, String dbProductId) {
     ScriptRunner runner = getScriptRunnerInstance(connection);
     StringWriter errorWriter = new StringWriter();
     runner.setErrorLogWriter(new PrintWriter(errorWriter));
-    try {
-      String scriptPath =
-          selectDbSchemaDetectionScript(connection.getMetaData().getDatabaseProductName());
-      InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
-      BufferedReader reader =
-          new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
+
+    String scriptPath = selectDbSchemaDetectionScript(dbProductId);
+    try (InputStream resource = DbSchemaCreator.class.getResourceAsStream(scriptPath);
+        InputStreamReader inputReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(inputReader)) {
       runner.runScript(getSqlSchemaNameParsed(reader));
-    } catch (RuntimeSqlException | SQLException e) {
+    } catch (RuntimeSqlException | IOException e) {
       LOGGER.debug("Schema does not exist.");
       if (!errorWriter.toString().trim().isEmpty()) {
         LOGGER.debug(errorWriter.toString());

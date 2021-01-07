@@ -125,7 +125,12 @@ class PojoTest {
                 javaClass ->
                     !javaClass.getSimpleName().equals("TaskHistoryEvent")
                         && !javaClass.getSimpleName().equals("WorkbasketHistoryEvent")
-                        && !javaClass.getSimpleName().equals("ClassificationHistoryEvent"))
+                        && !javaClass.getSimpleName().equals("ClassificationHistoryEvent")
+                        && !javaClass.getSimpleName().equals("ComparableVersion")
+                        && !javaClass.getSimpleName().equals("StringItem")
+                        && !javaClass.getSimpleName().equals("BigIntegerItem")
+                        && !javaClass.getSimpleName().equals("IntItem")
+                        && !javaClass.getSimpleName().equals("LongItem"))
             .map(JavaClass::reflect)
             .collect(Collectors.toList());
   }

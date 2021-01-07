@@ -126,7 +126,9 @@ jobs:
       before_cache: rm -rf "$HOME/.m2/repository/pro/taskana"
       # travis_terminate is necessary since after_success is a job phase which can change the build result.
       # it is not documented, so this is a little hack. see: https://docs.travis-ci.com/user/job-lifecycle/#breaking-the-build
-      after_success: ci/change_version.sh -i -m . && ci/commitPoms.sh || travis_terminate 1
+      after_success: ci/change_version.sh -i -m .
+        && ci/update_taskana_dependency_for_wildfly.sh
+        && ci/commitPoms.sh || travis_terminate 1
       deploy:
         provider: cloudfoundry
         username: $BLUEMIX_ACCOUNT

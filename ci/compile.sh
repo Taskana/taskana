@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e # fail fast
 #H Usage:
-#H compile.sh -h | compile.sh --help
+#H %FILE% -h | %FILE% --help
 #H
 #H prints this help and exits
 #H
-#H compile.sh <module>
+#H %FILE% <module>
 #H
 #H   compiles the taskana application. Does not package and install artifacts.
 #H
@@ -18,7 +18,7 @@ set -e # fail fast
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
-  cat "$0" | grep "^#H" | cut -c4-
+  cat "$0" | grep "^#H" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
   exit "$1"
 }
 

@@ -54,7 +54,7 @@ class TaskServiceImplIntAutocommitTest {
   private WorkbasketService workbasketService;
 
   @BeforeAll
-  static void beforeAll() throws Exception {
+  static void beforeAll() {
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
     sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
@@ -63,7 +63,7 @@ class TaskServiceImplIntAutocommitTest {
   }
 
   @BeforeEach
-  void setup() {
+  void setup() throws Exception {
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);

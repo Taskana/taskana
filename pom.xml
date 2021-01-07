@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>pro.taskana</groupId>
   <artifactId>taskana-parent</artifactId>
-  <version>4.2.1-SNAPSHOT</version>
+  <version>4.3.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
@@ -30,7 +30,7 @@
     <version.json>20201115</version.json>
 
     <!-- build dependencies -->
-    <version.checkstyle>8.38</version.checkstyle>
+    <version.checkstyle>8.39</version.checkstyle>
     <version.maven.checkstyle>3.1.1</version.maven.checkstyle>
     <version.maven.jar>3.2.0</version.maven.jar>
     <version.maven.compiler>3.8.1</version.maven.compiler>
@@ -63,8 +63,8 @@
     <version.arquillian.managed.wildfly>3.0.1.Final</version.arquillian.managed.wildfly>
 
     <!-- test dependencies -->
-    <version.archunit>0.14.1</version.archunit>
-    <version.equalsverifier>3.5</version.equalsverifier>
+    <version.archunit>0.15.0</version.archunit>
+    <version.equalsverifier>3.5.1</version.equalsverifier>
     <version.openpojo>0.8.13</version.openpojo>
     <version.jacoco>0.8.6</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>

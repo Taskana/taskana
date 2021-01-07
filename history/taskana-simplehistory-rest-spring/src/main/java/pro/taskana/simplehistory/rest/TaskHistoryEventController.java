@@ -1,6 +1,7 @@
 package pro.taskana.simplehistory.rest;
 
 import java.beans.ConstructorProperties;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class TaskHistoryEventController {
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
-      TaskHistoryEventRepresentationModelAssembler assembler) {
+      TaskHistoryEventRepresentationModelAssembler assembler) throws SQLException {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
     this.simpleHistoryService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());

@@ -1,43 +1,58 @@
 package pro.taskana.common.internal.configuration;
 
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
 
 /** Supported versions of databases. */
 public enum DB {
   H2("H2", "h2"),
   DB2("DB2", "db2"),
-  POSTGRESS("PostgreSQL", "postgres");
+  POSTGRES("PostgreSQL", "postgres");
 
-  public final String dbProductname;
+  public final String dbProductName;
   public final String dbProductId;
 
-  DB(String dbProductname, String dbProductId) {
-    this.dbProductname = dbProductname;
+  DB(String dbProductName, String dbProductId) {
+    this.dbProductName = dbProductName;
     this.dbProductId = dbProductId;
   }
 
-  public static boolean isDb2(String dbProductName) {
-    return dbProductName != null && dbProductName.contains(DB2.dbProductname);
+  public static boolean isH2(String dbProductId) {
+    return H2.dbProductId.equals(dbProductId);
   }
 
-  public static boolean isH2(String dbProductName) {
-    return dbProductName != null && dbProductName.contains(H2.dbProductname);
+  public static boolean isDb2(String dbProductId) {
+    return DB2.dbProductId.equals(dbProductId);
   }
 
-  public static boolean isPostgreSql(String dbProductName) {
-    return POSTGRESS.dbProductname.equals(dbProductName);
+  public static boolean isPostgres(String dbProductId) {
+    return POSTGRES.dbProductId.equals(dbProductId);
+  }
+
+  public static DB getDbForId(String databaseId) {
+    if (isH2(databaseId)) {
+      return H2;
+    } else if (isDb2(databaseId)) {
+      return DB2;
+    } else if (isPostgres(databaseId)) {
+      return POSTGRES;
+    }
+    throw new SystemException("Unknown database id: " + databaseId);
   }
 
   public static String getDatabaseProductId(String dbProductName) {
-
-    if (isDb2(dbProductName)) {
-      return DB2.dbProductId;
-    } else if (isH2(dbProductName)) {
+    if (dbProductName.contains(H2.dbProductName)) {
       return H2.dbProductId;
-    } else if (isPostgreSql(dbProductName)) {
-      return POSTGRESS.dbProductId;
+    } else if (dbProductName.contains(DB2.dbProductName)) {
+      return DB2.dbProductId;
+    } else if (POSTGRES.dbProductName.equals(dbProductName)) {
+      return POSTGRES.dbProductId;
     } else {
       throw new UnsupportedDatabaseException(dbProductName);
     }
+  }
+
+  public String getProductId() {
+    return this.dbProductId;
   }
 }

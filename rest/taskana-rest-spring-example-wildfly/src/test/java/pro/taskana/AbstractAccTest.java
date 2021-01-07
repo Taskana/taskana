@@ -21,7 +21,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "4.2.1-SNAPSHOT";
 
   protected RestHelper restHelper = new RestHelper(8080);
 
