@@ -119,6 +119,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
       List<String> taskIdsNotAllCompletedSameParentBusiness =
           numberParentTasksShouldHave.entrySet().stream()
+              .filter(entry -> !(entry.getKey() == null || entry.getKey().isEmpty()))
               .filter(entry -> !entry.getValue().equals(countParentTask.get(entry.getKey())))
               .map(Map.Entry::getKey)
               .collect(Collectors.toList());

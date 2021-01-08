@@ -3,6 +3,7 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,9 +36,11 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void shouldCleanCompletedTasksUntilDate() throws Exception {
+  void should_CleanCompletedTasksUntilDate() throws Exception {
+    String id = createAndInsertTask(null);
+    taskService.claim(id);
+    taskService.completeTask(id);
 
-    createAndCompleteTask();
     long totalTasksCount = taskService.createTaskQuery().count();
     assertThat(totalTasksCount).isEqualTo(88);
 
@@ -79,12 +82,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
-    Task createdTask = createAndCompleteTask();
+    String id = createAndInsertTask(null);
+    taskService.claim(id);
+    taskService.completeTask(id);
 
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    Task completedCreatedTask = taskService.getTask(createdTask.getId());
+    Task completedCreatedTask = taskService.getTask(id);
     assertThat(completedCreatedTask).isNotNull();
   }
 
@@ -118,14 +123,61 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
   }
 
-  private Task createAndCompleteTask() throws Exception {
+  @WithAccessId(user = "admin")
+  @Test
+  void should_DeleteCompletedTaskWithParentBusinessNull_When_RunningCleanupJob() throws Exception {
+    String taskId1 = createAndInsertTask(null);
+    taskService.claim(taskId1);
+    taskService.completeTask(taskId1);
+    String taskId2 = createAndInsertTask(null);
+    taskService.claim(taskId2);
+
+    long totalTasksCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
+    assertThat(totalTasksCount).isEqualTo(2);
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    job.run();
+
+    List<TaskSummary> search = taskService.createTaskQuery().idIn(taskId1, taskId2).list();
+    List<String> ids = search.stream().map(TaskSummary::getId).collect(Collectors.toList());
+    assertThat(search).hasSize(1);
+    assertThat(ids).doesNotContain(taskId1);
+    assertThat(ids).contains(taskId2);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_DeleteCompletedTaskWithParentBusinessEmpty_When_RunningCleanupJob() throws Exception {
+    String taskId1 = createAndInsertTask("");
+    taskService.claim(taskId1);
+    taskService.completeTask(taskId1);
+    String taskId2 = createAndInsertTask("");
+    taskService.claim(taskId2);
+
+    long totalTasksCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
+    assertThat(totalTasksCount).isEqualTo(2);
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    job.run();
+
+    List<TaskSummary> search = taskService.createTaskQuery().idIn(taskId1, taskId2).list();
+    List<String> ids = search.stream().map(TaskSummary::getId).collect(Collectors.toList());
+    assertThat(search).hasSize(1);
+    assertThat(ids).doesNotContain(taskId1);
+    assertThat(ids).contains(taskId2);
+  }
+
+  private String createAndInsertTask(String parentBusinessProcessId) throws Exception {
     Task newTask = taskService.newTask("user-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    Task createdTask = taskService.createTask(newTask);
-    taskService.claim(createdTask.getId());
-    taskService.completeTask(createdTask.getId());
-    return createdTask;
+    newTask.setParentBusinessProcessId(parentBusinessProcessId);
+    String id = taskService.createTask(newTask).getId();
+    return id;
   }
 }
