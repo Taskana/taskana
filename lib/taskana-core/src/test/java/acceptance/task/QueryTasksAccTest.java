@@ -200,17 +200,17 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForClassificationKey() {
 
     List<TaskSummary> results = TASK_SERVICE.createTaskQuery().classificationKeyLike("L10%").list();
-    assertThat(results).hasSize(77);
+    assertThat(results).hasSize(78);
 
     String[] ids =
         results.stream().map(t -> t.getClassificationSummary().getKey()).toArray(String[]::new);
 
     List<TaskSummary> result2 = TASK_SERVICE.createTaskQuery().classificationKeyIn(ids).list();
-    assertThat(result2).hasSize(77);
+    assertThat(result2).hasSize(78);
 
     List<TaskSummary> result3 =
         TASK_SERVICE.createTaskQuery().classificationKeyNotIn("T2100", "T2000").list();
-    assertThat(result3).hasSize(82);
+    assertThat(result3).hasSize(83);
 
     List<TaskSummary> result4 =
         TASK_SERVICE.createTaskQuery().classificationKeyNotIn("L1050", "L1060", "T2100").list();
@@ -290,7 +290,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             new Triplet<>(TaskCustomField.CUSTOM_11, new String[] {"%"}, 3),
             new Triplet<>(TaskCustomField.CUSTOM_12, new String[] {"%"}, 3),
             new Triplet<>(TaskCustomField.CUSTOM_13, new String[] {"%"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_14, new String[] {"%"}, 87),
+            new Triplet<>(TaskCustomField.CUSTOM_14, new String[] {"%"}, 88),
             new Triplet<>(TaskCustomField.CUSTOM_15, new String[] {"%"}, 3),
             new Triplet<>(TaskCustomField.CUSTOM_16, new String[] {"%"}, 3));
     assertThat(list).hasSameSizeAs(TaskCustomField.values());
@@ -402,9 +402,9 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryAllPaged() {
     TaskQuery taskQuery = TASK_SERVICE.createTaskQuery();
     long numberOfTasks = taskQuery.count();
-    assertThat(numberOfTasks).isEqualTo(87);
+    assertThat(numberOfTasks).isEqualTo(88);
     List<TaskSummary> tasks = taskQuery.orderByDue(DESCENDING).list();
-    assertThat(tasks).hasSize(87);
+    assertThat(tasks).hasSize(88);
     List<TaskSummary> tasksp = taskQuery.orderByDue(DESCENDING).listPage(4, 5);
     assertThat(tasksp).hasSize(5);
     tasksp = taskQuery.orderByDue(DESCENDING).listPage(5, 5);

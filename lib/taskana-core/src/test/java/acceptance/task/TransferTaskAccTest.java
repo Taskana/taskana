@@ -139,7 +139,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable call =
         () -> {
-          taskService.transfer("Invalid", "WBI:100000000000000000000000000000000006");
+          taskService.transfer("Invalid", "WBI:100000000000000000000000000000000005");
         };
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
@@ -242,22 +242,21 @@ class TransferTaskAccTest extends AbstractAccTest {
     ArrayList<String> taskIdList = new ArrayList<>();
     taskIdList.add("TKI:000000000000000000000000000000000006"); // working
     taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
-    taskIdList.add("TKI:200000000000000000000000000000000006"); // NotAuthorized TRANSFER
+    taskIdList.add("TKI:200000000000000000000000000000000008"); // NotAuthorized TRANSFER
     taskIdList.add(""); // InvalidArgument
-    taskIdList.add(null); // InvalidArgument (added with ""), duplicate
-    taskIdList.add("TKI:000000000000000000000000000000000099"); // TaskNotFound
+    taskIdList.add(null); // InvalidArgument
+    taskIdList.add("TKI:000000000000000000000000000000000099"); // not existing
     taskIdList.add("TKI:100000000000000000000000000000000006"); // already completed
 
     BulkOperationResults<String, TaskanaException> results =
         taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
     // check for exceptions in bulk
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorMap().values()).hasSize(5);
+    assertThat(results.getErrorMap().values()).hasSize(4);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000041").getClass())
         .isEqualTo(NotAuthorizedException.class);
-    assertThat(results.getErrorForId("TKI:200000000000000000000000000000000006").getClass())
-        .isEqualTo(InvalidStateException.class);
-    assertThat(InvalidArgumentException.class).isEqualTo(results.getErrorForId("").getClass());
+    assertThat(results.getErrorForId("TKI:200000000000000000000000000000000008").getClass())
+        .isEqualTo(NotAuthorizedException.class);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000099").getClass())
         .isEqualTo(TaskNotFoundException.class);
     assertThat(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass())
@@ -274,15 +273,10 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
 
-    transferredTask = taskService.getTask("TKI:000000000000000000000000000000000002");
+    transferredTask = taskService.getTask("TKI:200000000000000000000000000000000008");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
-    assertThat(transferredTask.getWorkbasketKey()).isEqualTo("USER-1-1");
-
-    transferredTask = taskService.getTask("TKI:200000000000000000000000000000000006");
-    assertThat(transferredTask).isNotNull();
-    assertThat(transferredTask.isTransferred()).isFalse();
-    assertThat(transferredTask.getWorkbasketKey()).isEqualTo("TEAMLEAD-2");
+    assertThat(transferredTask.getWorkbasketKey()).isEqualTo("TPK_VIP");
 
     transferredTask = taskService.getTask("TKI:100000000000000000000000000000000006");
     assertThat(transferredTask).isNotNull();
@@ -331,24 +325,21 @@ class TransferTaskAccTest extends AbstractAccTest {
         () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
-        .hasMessage("TaskIds must not be null.");
+        .hasMessage("TaskIds must not be null or empty.");
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void should_ThrowException_When_TransferringTasksWithOnlyInvalidTasksIds() {
+  void should_ThrowException_When_TransferringTasksWithOnlyInvalidTasksIds() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
 
     // test with list containing only invalid arguments
-    ThrowingCallable call =
-        () ->
-            taskService.transferTasks(
-                "WBI:100000000000000000000000000000000006",
-                /* we can't use List.of because of the null value we insert */
-                Arrays.asList("", "", "", null));
-    assertThatThrownBy(call)
-        .isInstanceOf(InvalidArgumentException.class)
-        .hasMessage("TaskIds must not contain only invalid arguments.");
+    BulkOperationResults<String, TaskanaException> bulklog =
+        taskService.transferTasks(
+            "WBI:100000000000000000000000000000000006",
+            /* we can't use List.of because of the null value we insert */
+            Arrays.asList("", "", "", null));
+    assertThat(bulklog.getFailedIds()).isEmpty();
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
