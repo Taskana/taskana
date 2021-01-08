@@ -452,7 +452,7 @@ public class TaskServiceImpl implements TaskService {
   public BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-    return taskTransferrer.transferTasks(destinationWorkbasketId, taskIds, setTransferFlag);
+    return taskTransferrer.transfer(taskIds, destinationWorkbasketId, setTransferFlag);
   }
 
   @Override
@@ -462,8 +462,8 @@ public class TaskServiceImpl implements TaskService {
       List<String> taskIds,
       boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-    return taskTransferrer.transferTasks(
-        destinationWorkbasketKey, destinationWorkbasketDomain, taskIds, setTransferFlag);
+    return taskTransferrer.transfer(
+        taskIds, destinationWorkbasketKey, destinationWorkbasketDomain, setTransferFlag);
   }
 
   @Override
@@ -969,27 +969,6 @@ public class TaskServiceImpl implements TaskService {
         taskId ->
             bulkLog.addError(taskId, new TaskNotFoundException(taskId, "Task was not found")));
     return bulkLog;
-  }
-
-  void removeNonExistingTasksFromTaskIdList(
-      List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to removeNonExistingTasksFromTaskIdList(targetWbId = {}, taskIds = {})",
-          taskIds,
-          bulkLog);
-    }
-
-    Iterator<String> taskIdIterator = taskIds.iterator();
-    while (taskIdIterator.hasNext()) {
-      String currentTaskId = taskIdIterator.next();
-      if (currentTaskId == null || currentTaskId.equals("")) {
-        bulkLog.addError(
-            "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
-        taskIdIterator.remove();
-      }
-    }
-    LOGGER.debug("exit from removeNonExistingTasksFromTaskIdList()");
   }
 
   List<TaskSummary> augmentTaskSummariesByContainedSummariesWithPartitioning(

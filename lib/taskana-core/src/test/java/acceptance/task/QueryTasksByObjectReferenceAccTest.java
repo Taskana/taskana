@@ -44,7 +44,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     objectReference.setType("SDNR");
     List<TaskSummary> results =
         TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
-    assertThat(results).hasSize(45);
+    assertThat(results).hasSize(46);
   }
 
   @WithAccessId(user = "admin")
@@ -89,7 +89,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
             .createTaskQuery()
             .primaryObjectReferenceIn(objectReference, objectReference1)
             .list();
-    assertThat(results).hasSize(56);
+    assertThat(results).hasSize(57);
   }
 
   @WithAccessId(user = "admin")
