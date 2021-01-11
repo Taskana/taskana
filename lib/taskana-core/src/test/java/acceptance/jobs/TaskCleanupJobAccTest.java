@@ -132,19 +132,18 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     String taskId2 = createAndInsertTask(null);
     taskService.claim(taskId2);
 
-    long totalTasksCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
-    assertThat(totalTasksCount).isEqualTo(2);
+    long taskCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
+    assertThat(taskCount).isEqualTo(2);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
     taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    List<TaskSummary> search = taskService.createTaskQuery().idIn(taskId1, taskId2).list();
-    List<String> ids = search.stream().map(TaskSummary::getId).collect(Collectors.toList());
-    assertThat(search).hasSize(1);
-    assertThat(ids).doesNotContain(taskId1);
-    assertThat(ids).contains(taskId2);
+    List<TaskSummary> tasksAfterCleaning =
+        taskService.createTaskQuery().idIn(taskId1, taskId2).list();
+    assertThat(tasksAfterCleaning).hasSize(1);
+    assertThat(tasksAfterCleaning.get(0).getId()).isEqualTo(taskId2);
   }
 
   @WithAccessId(user = "admin")
@@ -156,19 +155,18 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     String taskId2 = createAndInsertTask("");
     taskService.claim(taskId2);
 
-    long totalTasksCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
-    assertThat(totalTasksCount).isEqualTo(2);
+    long taskCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
+    assertThat(taskCount).isEqualTo(2);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
     taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    List<TaskSummary> search = taskService.createTaskQuery().idIn(taskId1, taskId2).list();
-    List<String> ids = search.stream().map(TaskSummary::getId).collect(Collectors.toList());
-    assertThat(search).hasSize(1);
-    assertThat(ids).doesNotContain(taskId1);
-    assertThat(ids).contains(taskId2);
+    List<TaskSummary> tasksAfterCleaning =
+        taskService.createTaskQuery().idIn(taskId1, taskId2).list();
+    assertThat(tasksAfterCleaning).hasSize(1);
+    assertThat(tasksAfterCleaning.get(0).getId()).isEqualTo(taskId2);
   }
 
   private String createAndInsertTask(String parentBusinessProcessId) throws Exception {

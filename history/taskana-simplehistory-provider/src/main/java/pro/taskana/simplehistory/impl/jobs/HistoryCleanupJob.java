@@ -82,7 +82,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     LOGGER.info("Running job to delete all history events created before ({})", createdBefore);
 
     try {
-
       SimpleHistoryServiceImpl simpleHistoryService =
           (SimpleHistoryServiceImpl) taskanaHistoryEngine.getTaskanaHistoryService();
 
@@ -97,8 +96,15 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
               .list();
 
       List<String> taskIdsToDeleteHistoryEventsFor;
-
       if (allCompletedSameParentBusiness) {
+        taskIdsToDeleteHistoryEventsFor =
+            historyEventCandidatesToClean.stream()
+                .filter(
+                    events ->
+                        events.getParentBusinessProcessId() == null
+                            || events.getParentBusinessProcessId().isEmpty())
+                .map(TaskHistoryEvent::getTaskId)
+                .collect(toList());
 
         String[] parentBusinessProcessIds =
             historyEventCandidatesToClean.stream()
@@ -113,8 +119,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
                 .eventTypeIn(TaskHistoryEventType.CREATED.getName())
                 .list());
 
-        taskIdsToDeleteHistoryEventsFor =
-            filterSameParentBusinessHistoryEventsQualifiedToClean(historyEventCandidatesToClean);
+        taskIdsToDeleteHistoryEventsFor.addAll(
+            filterSameParentBusinessHistoryEventsQualifiedToClean(historyEventCandidatesToClean));
       } else {
         taskIdsToDeleteHistoryEventsFor =
             historyEventCandidatesToClean.stream()

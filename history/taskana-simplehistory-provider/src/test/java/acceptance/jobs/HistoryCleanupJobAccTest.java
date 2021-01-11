@@ -394,4 +394,106 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(jobsToRun).doesNotContainAnyElementsOf(historyCleanupJobs);
   }
+
+  @Test
+  @WithAccessId(user = "admin")
+  void should_CleanTaskHistoryEventsWithParentProcessIdNull_When_TaskCompleted() throws Exception {
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+
+    TaskHistoryEvent eventToBeCleaned =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId1",
+            TaskHistoryEventType.CREATED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    eventToBeCleaned.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    eventToBeCleaned.setParentBusinessProcessId("");
+
+    TaskHistoryEvent eventToBeCleaned2 =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId1",
+            TaskHistoryEventType.COMPLETED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    eventToBeCleaned2.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    eventToBeCleaned2.setParentBusinessProcessId("");
+
+    TaskHistoryEvent eventToBeCleaned3 =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId3",
+            TaskHistoryEventType.CREATED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    eventToBeCleaned3.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    eventToBeCleaned3.setParentBusinessProcessId("");
+
+    getHistoryService().create(eventToBeCleaned);
+    getHistoryService().create(eventToBeCleaned2);
+    getHistoryService().create(eventToBeCleaned3);
+
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    job.run();
+
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
+  }
+
+  @Test
+  @WithAccessId(user = "admin")
+  void should_CleanTaskHistoryEventsWithParentProcessIdEmpty_When_TaskCompleted() throws Exception {
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+
+    TaskHistoryEvent eventToBeCleaned =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId1",
+            TaskHistoryEventType.CREATED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    eventToBeCleaned.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    eventToBeCleaned.setParentBusinessProcessId("");
+
+    TaskHistoryEvent eventToBeCleaned2 =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId1",
+            TaskHistoryEventType.COMPLETED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    eventToBeCleaned2.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    eventToBeCleaned2.setParentBusinessProcessId("");
+
+    TaskHistoryEvent eventNotToBeCleaned =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId3",
+            TaskHistoryEventType.CREATED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    eventNotToBeCleaned.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    eventNotToBeCleaned.setParentBusinessProcessId("");
+
+    getHistoryService().create(eventToBeCleaned);
+    getHistoryService().create(eventToBeCleaned2);
+    getHistoryService().create(eventNotToBeCleaned);
+
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    job.run();
+
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
+  }
 }
