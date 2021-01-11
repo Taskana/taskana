@@ -5,14 +5,12 @@
 		[ngStyle]="{'width': expanded ? 'calc(' + 100 + 'vw - 500px)' : 'calc(' + 100 + 'vw - 250px)'}">
 		<div class=" workbasket-access-items__buttons">
 			<button mat-stroked-button matTooltip="Add new access" type="button"
-				class="workbasket-access-items__buttons-add-access" (click)="addAccessItem()" data-toggle="tooltip"
-				title="Add new access">
+				class="workbasket-access-items__buttons-add-access" (click)="addAccessItem()">
 				Add new access
 				<mat-icon color="green-blue" aria-label="add new access">add</mat-icon>
 			</button>
 			<button mat-stroked-button matTooltip="Delete selected access" type="button"
-				class="workbasket-access-items__buttons-delete-access" (click)="deleteAccessItems()"
-				data-toggle="tooltip" title="delete selected access">
+				class="workbasket-access-items__buttons-delete-access" (click)="deleteAccessItems()">
 				Delete selected access
 				<mat-icon color="green-blue" aria-label="delete access">delete</mat-icon>
 			</button>

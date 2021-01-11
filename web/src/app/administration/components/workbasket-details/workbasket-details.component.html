@@ -1,6 +1,7 @@
 <div class="workbasket-details">
   <mat-toolbar class="workbasket-details__toolbar">
-    <h4 class="workbasket-details__title">{{workbasket.name}}&nbsp;
+    <h4 class="workbasket-details__title">
+      <span class="workbasket-details__title-name">{{workbasket.name}}</span>
       <span class="workbasket-details__title-badge" *ngIf="!workbasket.workbasketId"> {{ badgeMessage }}</span>
     </h4>
     <span class="workbasket-details__spacer"></span>
@@ -13,7 +14,7 @@
     <button mat-stroked-button class="workbasket-details__button" matTooltip="Revert changes to previous saved state"
       (click)="onRestore()">
       Undo Changes
-      <mat-icon class="button__green-blue md-20">restore</mat-icon>
+      <mat-icon class="workbasket-details__button-aquamarine md-20">restore</mat-icon>
     </button>
 
     <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" matTooltip="More actions" class="action-toolbar__button"
@@ -24,17 +25,17 @@
     <mat-menu #buttonMenu="matMenu">
       <button mat-menu-item class="workbasket-details__dropdown"
         matTooltip="Copy current values to create new workbasket" (click)="onCopy()">
-        <mat-icon class="button__green-blue">content_copy</mat-icon>
+        <mat-icon class="workbasket-details__button-aquamarine">content_copy</mat-icon>
         <span>Copy</span>
       </button>
       <button mat-menu-item class="workbasket-details__dropdown"
         matTooltip="Remove this workbasket as distribution target" (click)="onRemoveAsDistributionTarget()">
-        <mat-icon class="button__red">remove_circle_outline</mat-icon>
+        <mat-icon class="workbasket-details__button-red">remove_circle_outline</mat-icon>
         <span>Remove as distribution target</span>
       </button>
       <button mat-menu-item class="workbasket-details__dropdown" matTooltip="Delete this workbasket"
         (click)="onRemoveWorkbasket()">
-        <mat-icon class="button__red">delete</mat-icon>
+        <mat-icon class="workbasket-details__button-red">delete</mat-icon>
         <span>Delete</span>
       </button>
       <button mat-menu-item class="workbasket-details__dropdown" style="border-bottom-style: none;"

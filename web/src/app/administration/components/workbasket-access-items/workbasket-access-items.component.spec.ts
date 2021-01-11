@@ -167,7 +167,6 @@ describe('WorkbasketAccessItemsComponent', () => {
       'button.workbasket-access-items__buttons-add-access'
     );
     const clearSpy = jest.spyOn(component, 'addAccessItem');
-    expect(addAccessItemButton.title).toMatch('Add new access');
 
     addAccessItemButton.click();
     expect(clearSpy).toHaveBeenCalled();
