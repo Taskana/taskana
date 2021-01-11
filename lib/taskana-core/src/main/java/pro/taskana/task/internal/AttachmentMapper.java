@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
@@ -33,27 +32,24 @@ public interface AttachmentMapper {
           + "WHERE TASK_ID = #{taskId} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
-        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
-        @Result(property = "objectReference.company", column = "REF_COMPANY"),
-        @Result(property = "objectReference.system", column = "REF_SYSTEM"),
-        @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE"),
-        @Result(property = "objectReference.type", column = "REF_TYPE"),
-        @Result(property = "objectReference.value", column = "REF_VALUE"),
-        @Result(property = "channel", column = "CHANNEL"),
-        @Result(property = "received", column = "RECEIVED"),
-        @Result(
-            property = "customAttributes",
-            column = "CUSTOM_ATTRIBUTES",
-            javaType = Map.class,
-            typeHandler = MapTypeHandler.class)
-      })
+  @Result(property = "id", column = "ID")
+  @Result(property = "taskId", column = "TASK_ID")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "modified", column = "MODIFIED")
+  @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY")
+  @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID")
+  @Result(property = "objectReference.company", column = "REF_COMPANY")
+  @Result(property = "objectReference.system", column = "REF_SYSTEM")
+  @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE")
+  @Result(property = "objectReference.type", column = "REF_TYPE")
+  @Result(property = "objectReference.value", column = "REF_VALUE")
+  @Result(property = "channel", column = "CHANNEL")
+  @Result(property = "received", column = "RECEIVED")
+  @Result(
+      property = "customAttributes",
+      column = "CUSTOM_ATTRIBUTES",
+      javaType = Map.class,
+      typeHandler = MapTypeHandler.class)
   List<AttachmentImpl> findAttachmentsByTaskId(@Param("taskId") String taskId);
 
   @Select(
@@ -71,22 +67,19 @@ public interface AttachmentMapper {
           + "</where>"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
-        @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY"),
-        @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID"),
-        @Result(property = "objectReference.company", column = "REF_COMPANY"),
-        @Result(property = "objectReference.system", column = "REF_SYSTEM"),
-        @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE"),
-        @Result(property = "objectReference.type", column = "REF_TYPE"),
-        @Result(property = "objectReference.value", column = "REF_VALUE"),
-        @Result(property = "channel", column = "CHANNEL"),
-        @Result(property = "received", column = "RECEIVED")
-      })
+  @Result(property = "id", column = "ID")
+  @Result(property = "taskId", column = "TASK_ID")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "modified", column = "MODIFIED")
+  @Result(property = "classificationSummaryImpl.key", column = "CLASSIFICATION_KEY")
+  @Result(property = "classificationSummaryImpl.id", column = "CLASSIFICATION_ID")
+  @Result(property = "objectReference.company", column = "REF_COMPANY")
+  @Result(property = "objectReference.system", column = "REF_SYSTEM")
+  @Result(property = "objectReference.systemInstance", column = "REF_INSTANCE")
+  @Result(property = "objectReference.type", column = "REF_TYPE")
+  @Result(property = "objectReference.value", column = "REF_VALUE")
+  @Result(property = "channel", column = "CHANNEL")
+  @Result(property = "received", column = "RECEIVED")
   List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(
       @Param("taskIds") List<String> taskIds);
 
@@ -109,14 +102,11 @@ public interface AttachmentMapper {
       "<script> select CUSTOM_ATTRIBUTES from ATTACHMENT where id = #{attachmentId}"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(
-            property = "customAttributes",
-            column = "CUSTOM_ATTRIBUTES",
-            javaType = String.class,
-            typeHandler = ClobTypeHandler.class)
-      })
+  @Result(
+      property = "customAttributes",
+      column = "CUSTOM_ATTRIBUTES",
+      javaType = String.class,
+      typeHandler = ClobTypeHandler.class)
   String getCustomAttributesAsString(@Param("attachmentId") String attachmentId);
 
   @Select(
@@ -125,13 +115,8 @@ public interface AttachmentMapper {
           + " WHERE a.CLASSIFICATION_ID = #{classificationId} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "left", column = "ID"),
-        @Result(property = "right", column = "PLANNED")
-        //          ,  javaType = Instant.class,
-        //            typeHandler = InstantTypeHandler.class)
-      })
+  @Result(property = "left", column = "ID")
+  @Result(property = "right", column = "PLANNED")
   List<Pair<String, Instant>> findTaskIdsAndPlannedAffectedByClassificationChange(
       @Param("classificationId") String classificationId);
 }

@@ -100,11 +100,11 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("L30000").getTotalValue()).isEqualTo(7);
     assertThat(report.getRow("L40000").getTotalValue()).isEqualTo(10);
     assertThat(report.getRow("L50000").getTotalValue()).isEqualTo(13);
-    assertThat(report.getRow("L10000").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("L20000").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("L30000").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("L40000").getCells().length).isEqualTo(0);
-    assertThat(report.getRow("L50000").getCells().length).isEqualTo(0);
+    assertThat(report.getRow("L10000").getCells().length).isZero();
+    assertThat(report.getRow("L20000").getCells().length).isZero();
+    assertThat(report.getRow("L30000").getCells().length).isZero();
+    assertThat(report.getRow("L40000").getCells().length).isZero();
+    assertThat(report.getRow("L50000").getCells().length).isZero();
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
   }
 

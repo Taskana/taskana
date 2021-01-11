@@ -89,6 +89,7 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
     return result;
   }
 
+  @Override
   protected boolean canEqual(Object other) {
     return (other instanceof WorkbasketImpl);
   }

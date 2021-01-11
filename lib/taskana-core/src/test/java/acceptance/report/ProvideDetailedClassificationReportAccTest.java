@@ -135,14 +135,14 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row1.getTotalValue()).isEqualTo(10);
     assertThat(row1.getFoldableRow("L11000").getTotalValue()).isEqualTo(3);
     assertThat(row1.getFoldableRow("N/A").getTotalValue()).isEqualTo(7);
-    assertThat(row1.getCells().length).isEqualTo(0);
+    assertThat(row1.getCells().length).isZero();
     assertThat(row1.getFoldableRowCount()).isEqualTo(2);
 
     FoldableRow<DetailedMonitorQueryItem> row2 = report.getRow("L20000");
     assertThat(row2.getTotalValue()).isEqualTo(10);
     assertThat(row2.getFoldableRow("L22000").getTotalValue()).isEqualTo(4);
     assertThat(row2.getFoldableRow("N/A").getTotalValue()).isEqualTo(6);
-    assertThat(row2.getCells().length).isEqualTo(0);
+    assertThat(row2.getCells().length).isZero();
     assertThat(row2.getFoldableRowCount()).isEqualTo(2);
 
     FoldableRow<DetailedMonitorQueryItem> row3 = report.getRow("L30000");
@@ -150,19 +150,19 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row3.getFoldableRow("L33000").getTotalValue()).isEqualTo(3);
     assertThat(row3.getFoldableRow("L99000").getTotalValue()).isEqualTo(1);
     assertThat(row3.getFoldableRow("N/A").getTotalValue()).isEqualTo(3);
-    assertThat(row3.getCells().length).isEqualTo(0);
+    assertThat(row3.getCells().length).isZero();
     assertThat(row3.getFoldableRowCount()).isEqualTo(3);
 
     FoldableRow<DetailedMonitorQueryItem> row4 = report.getRow("L40000");
     assertThat(row4.getTotalValue()).isEqualTo(10);
     assertThat(row4.getFoldableRow("N/A").getTotalValue()).isEqualTo(10);
-    assertThat(row4.getCells().length).isEqualTo(0);
+    assertThat(row4.getCells().length).isZero();
     assertThat(row4.getFoldableRowCount()).isEqualTo(1);
 
     FoldableRow<DetailedMonitorQueryItem> row5 = report.getRow("L50000");
     assertThat(row5.getTotalValue()).isEqualTo(13);
     assertThat(row5.getFoldableRow("N/A").getTotalValue()).isEqualTo(13);
-    assertThat(row5.getCells().length).isEqualTo(0);
+    assertThat(row5.getCells().length).isZero();
     assertThat(row5.getFoldableRowCount()).isEqualTo(1);
 
     assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);

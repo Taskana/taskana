@@ -95,15 +95,15 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
     ASCENDING("ASC"),
     DESCENDING("DESC");
 
-    private final String sortDirection;
+    private final String direction;
 
     SortDirection(String sortDirection) {
-      this.sortDirection = sortDirection;
+      this.direction = sortDirection;
     }
 
     @Override
     public String toString() {
-      return sortDirection;
+      return direction;
     }
   }
 }

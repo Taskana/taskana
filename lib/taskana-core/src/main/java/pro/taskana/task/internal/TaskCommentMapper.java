@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -34,15 +33,12 @@ public interface TaskCommentMapper {
           + " ORDER BY CREATED ASC "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "textField", column = "TEXT_FIELD"),
-        @Result(property = "creator", column = "CREATOR"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
-      })
+  @Result(property = "id", column = "ID")
+  @Result(property = "taskId", column = "TASK_ID")
+  @Result(property = "textField", column = "TEXT_FIELD")
+  @Result(property = "creator", column = "CREATOR")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "modified", column = "MODIFIED")
   List<TaskCommentImpl> findByTaskId(@Param("taskId") String taskId);
 
   @Select(
@@ -51,14 +47,11 @@ public interface TaskCommentMapper {
           + "WHERE ID = #{taskCommentId} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "textField", column = "TEXT_FIELD"),
-        @Result(property = "creator", column = "CREATOR"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "modified", column = "MODIFIED"),
-      })
+  @Result(property = "id", column = "ID")
+  @Result(property = "taskId", column = "TASK_ID")
+  @Result(property = "textField", column = "TEXT_FIELD")
+  @Result(property = "creator", column = "CREATOR")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "modified", column = "MODIFIED")
   TaskCommentImpl findById(@Param("taskCommentId") String taskCommentId);
 }
