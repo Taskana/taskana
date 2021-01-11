@@ -1,35 +1,4 @@
 <div *ngIf="workbasket" id="wb-information">
-  <!--
-  <div class="panel-heading">
-    <div class="pull-right btn-group">
-      <button type="button" (click)="onSubmit()" data-toggle="tooltip" title="Save"
-              class="btn btn-default btn-primary">
-        <span class="material-icons md-20">save</span>
-      </button>
-      <button type="button" (click)="onUndo()" data-toggle="tooltip" title="Undo Changes"
-              class="btn btn-default">
-        <span class="material-icons md-20 blue">undo</span>
-      </button>
-      <button type="button" (click)="removeDistributionTargets()" data-toggle="tooltip"
-              title="Remove workbasket as distribution target"
-              class="btn btn-default">
-        <span class="material-icons md-20 red">remove_circle_outline</span>
-      </button>
-      <button type="button" (click)="copyWorkbasket()" data-toggle="tooltip" title="Copy"
-              class="btn btn-default">
-        <span class="material-icons md-20 green-blue">content_copy</span>
-      </button>
-      <button type="button" (click)="removeWorkbasket()" data-toggle="tooltip" title="Remove"
-              class="btn btn-default">
-        <span class="material-icons md-20 red">delete</span>
-      </button>
-    </div>
-    <h4 class="panel-header">{{workbasket.name}}&nbsp;
-      <span *ngIf="!workbasket.workbasketId" class="badge warning"> {{badgeMessage}}</span>
-    </h4>
-  </div>
-  -->
-
 
   <div class="workbasket-information-wrapper">
     <ng-form #WorkbasketForm="ngForm">
@@ -54,7 +23,7 @@
                      (input)="validateInputOverflow(key, 64, $event)">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
-            <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.key')"
+            <taskana-shared-field-error-display *ngIf="action != 3" [displayError]="!isFieldValid('workbasket.key')"
                                                 [validationTrigger]="this.toggleValidationMap.get('workbasket.key')" errorMessage="* Key is required">
             </taskana-shared-field-error-display>
 
@@ -113,7 +82,7 @@
                 <mat-form-field appearance="outline" style="width: 100%">
                   <mat-label>Description</mat-label>
                   <label for="workbasket-description"></label>
-                  <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="5" cdkAutosizeMaxRows="10" maxlength="255"
+                  <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="7" cdkAutosizeMaxRows="7" maxlength="255"
                             id="workbasket-description" placeholder="Description" [(ngModel)]="workbasket.description"
                             name="workbasket.description" #description="ngModel"
                             (input)="validateInputOverflow(description, 255)"></textarea>
