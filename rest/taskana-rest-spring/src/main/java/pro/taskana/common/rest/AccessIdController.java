@@ -80,7 +80,7 @@ public class AccessIdController {
 
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
-    if (!validateAccessId(accessId)) {
+    if (!ldapClient.validateAccessId(accessId)) {
       throw new InvalidArgumentException("The accessId is invalid");
     }
 
@@ -92,9 +92,5 @@ public class AccessIdController {
       LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
     }
     return response;
-  }
-
-  private boolean validateAccessId(String accessId) throws InvalidArgumentException {
-    return ldapClient.searchUsersAndGroups(accessId).size() == 1;
   }
 }
