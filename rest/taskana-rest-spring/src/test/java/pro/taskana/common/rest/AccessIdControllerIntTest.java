@@ -158,6 +158,25 @@ class AccessIdControllerIntTest {
   }
 
   @Test
+  void should_ValidateAccessIdWithEqualsFilterAndReturnAccessIdsOfGroupsTheAccessIdIsMemberOf() {
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
+        TEMPLATE.exchange(
+            restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=user-2-1",
+            HttpMethod.GET,
+            restHelper.defaultRequest(),
+            ACCESS_ID_LIST_TYPE);
+
+    assertThat(response.getBody())
+        .isNotNull()
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+        .containsExactlyInAnyOrder(
+            "cn=ksc-users,cn=groups,ou=Test,O=TASKANA",
+            "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,"
+                + "cn=organisation,ou=Test,O=TASKANA");
+  }
+
+  @Test
   void should_ReturnBadRequest_ifAccessIdOfUserContainsInvalidCharacter() {
     ThrowingCallable call =
         () ->

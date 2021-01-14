@@ -214,6 +214,46 @@ public class LdapClient {
     return accessIds;
   }
 
+  /**
+   * Validates a given AccessId / name.
+   *
+   * @param name lookup string for names or groups
+   * @return whether the given name is valid or not
+   */
+  public boolean validateAccessId(final String name) {
+
+    LOGGER.debug("entry to validateAccessId(name = {})", name);
+
+    isInitOrFail();
+
+    if (nameIsDn(name)) {
+
+      AccessIdRepresentationModel groupByDn = searchAccessIdByDn(name);
+
+      return groupByDn != null;
+
+    } else {
+
+      final AndFilter andFilter = new AndFilter();
+      andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
+
+      final OrFilter orFilter = new OrFilter();
+      orFilter.or(new EqualsFilter(getUserIdAttribute(), name));
+
+      andFilter.and(orFilter);
+
+      final List<AccessIdRepresentationModel> accessIds =
+          ldapTemplate.search(
+              getUserSearchBase(),
+              andFilter.encode(),
+              SearchControls.SUBTREE_SCOPE,
+              getLookUpUserAttributesToReturn(),
+              new UserContextMapper());
+
+      return !accessIds.isEmpty();
+    }
+  }
+
   public String getUserSearchBase() {
     return LdapSettings.TASKANA_LDAP_USER_SEARCH_BASE.getValueFromEnv(env);
   }
