@@ -47,12 +47,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
   private static final String TASKANA_JOB_HISTORY_BATCH_SIZE = "taskana.jobs.history.batchSize";
 
-  private static final String TASKANA_JOB_HISTORY_CLEANUP_RUN_EVERY =
-      "taskana.jobs.history.cleanup.runEvery";
-
-  private static final String TASKANA_JOB_HISTORY_CLEANUP_FIRST_RUN =
-      "taskana.jobs.history.cleanup.firstRunAt";
-
   private static final String TASKANA_JOB_HISTORY_CLEANUP_MINIMUM_AGE =
       "taskana.jobs.history.cleanup.minimumAge";
 
@@ -61,8 +55,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   TaskanaHistoryEngineImpl taskanaHistoryEngine =
       TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl);
 
-  private Instant firstRun = Instant.parse("2018-01-01T00:00:00Z");
-  private Duration runEvery = Duration.parse("P1D");
   private Duration minimumAge = Duration.parse("P14D");
   private int batchSize = 100;
 
@@ -268,18 +260,9 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     LOGGER.debug("Entry to scheduleNextCleanupJob.");
     ScheduledJob job = new ScheduledJob();
     job.setType(Type.HISTORYCLEANUPJOB);
-    job.setDue(getNextDueForHistoryCleanupJob());
+    job.setDue(getNextDueForCleanupJob());
     taskanaEngineImpl.getJobService().createJob(job);
     LOGGER.debug("Exit from scheduleNextCleanupJob.");
-  }
-
-  private Instant getNextDueForHistoryCleanupJob() {
-    Instant nextRunAt = firstRun;
-    while (nextRunAt.isBefore(Instant.now())) {
-      nextRunAt = nextRunAt.plus(runEvery);
-    }
-    LOGGER.info("Scheduling next run of the HistoryCleanupJob for {}", nextRunAt);
-    return nextRunAt;
   }
 
   private void initJobParameters(Properties props) {
@@ -292,33 +275,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
         LOGGER.warn(
             "Could not parse jobBatchSizeProperty ({}). Using default. Exception: {} ",
             jobBatchSizeProperty,
-            e.getMessage());
-      }
-    }
-
-    String historyCleanupJobFirstRunProperty =
-        props.getProperty(TASKANA_JOB_HISTORY_CLEANUP_FIRST_RUN);
-    if (historyCleanupJobFirstRunProperty != null && !historyCleanupJobFirstRunProperty.isEmpty()) {
-      try {
-        firstRun = Instant.parse(historyCleanupJobFirstRunProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse historyCleanupJobFirstRunProperty ({}). Using default."
-                + " Exception: {} ",
-            historyCleanupJobFirstRunProperty,
-            e.getMessage());
-      }
-    }
-
-    String historyCleanupJobRunEveryProperty =
-        props.getProperty(TASKANA_JOB_HISTORY_CLEANUP_RUN_EVERY);
-    if (historyCleanupJobRunEveryProperty != null && !historyCleanupJobRunEveryProperty.isEmpty()) {
-      try {
-        runEvery = Duration.parse(historyCleanupJobRunEveryProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse historyCleanupJobRunEveryProperty ({}). Using default. Exception: {} ",
-            historyCleanupJobRunEveryProperty,
             e.getMessage());
       }
     }
@@ -339,7 +295,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     }
 
     LOGGER.debug("Configured number of history events per transaction: {}", batchSize);
-    LOGGER.debug("HistoryCleanupJob configuration: first run at {}", firstRun);
     LOGGER.debug("HistoryCleanupJob configuration: runs every {}", runEvery);
     LOGGER.debug(
         "HistoryCleanupJob configuration: minimum age of history events to be cleanup up is {}",

@@ -386,7 +386,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
       taskanaEngine.getJobService().createJob(job);
     }
 
-    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun();
+    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
     assertThat(jobsToRun).hasSize(30);
 
@@ -397,7 +397,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     HistoryCleanupJob.initializeSchedule(taskanaEngine);
 
-    jobsToRun = getJobMapper().findJobsToRun();
+    jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
     assertThat(jobsToRun).doesNotContainAnyElementsOf(historyCleanupJobs);
   }

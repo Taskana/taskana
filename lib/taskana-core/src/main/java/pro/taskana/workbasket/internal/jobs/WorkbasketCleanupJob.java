@@ -1,7 +1,5 @@
 package pro.taskana.workbasket.internal.jobs;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +27,6 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketCleanupJob.class);
 
   // Parameter
-  private final Instant firstRun;
-  private final Duration runEvery;
   private final int batchSize;
 
   public WorkbasketCleanupJob(
@@ -38,8 +34,6 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
       TaskanaTransactionProvider<Object> txProvider,
       ScheduledJob job) {
     super(taskanaEngine, txProvider, job);
-    firstRun = taskanaEngine.getConfiguration().getCleanupJobFirstRun();
-    runEvery = taskanaEngine.getConfiguration().getCleanupJobRunEvery();
     batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
   }
 
@@ -128,17 +122,8 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     LOGGER.debug("Entry to scheduleNextCleanupJob.");
     ScheduledJob job = new ScheduledJob();
     job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
-    job.setDue(getNextDueForWorkbasketCleanupJob());
+    job.setDue(getNextDueForCleanupJob());
     taskanaEngineImpl.getJobService().createJob(job);
     LOGGER.debug("Exit from scheduleNextCleanupJob.");
-  }
-
-  private Instant getNextDueForWorkbasketCleanupJob() {
-    Instant nextRunAt = firstRun;
-    while (nextRunAt.isBefore(Instant.now())) {
-      nextRunAt = nextRunAt.plus(runEvery);
-    }
-    LOGGER.info("Scheduling next run of the WorkbasketCleanupJob for {}", nextRunAt);
-    return nextRunAt;
   }
 }

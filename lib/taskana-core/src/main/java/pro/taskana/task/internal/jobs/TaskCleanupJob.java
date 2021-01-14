@@ -33,8 +33,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   private static final SortDirection ASCENDING = SortDirection.ASCENDING;
 
   // Parameter
-  private final Instant firstRun;
-  private final Duration runEvery;
   private final Duration minimumAge;
   private final int batchSize;
   private final boolean allCompletedSameParentBusiness;
@@ -44,8 +42,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
       TaskanaTransactionProvider<Object> txProvider,
       ScheduledJob scheduledJob) {
     super(taskanaEngine, txProvider, scheduledJob);
-    firstRun = taskanaEngine.getConfiguration().getCleanupJobFirstRun();
-    runEvery = taskanaEngine.getConfiguration().getCleanupJobRunEvery();
     minimumAge = taskanaEngine.getConfiguration().getCleanupJobMinimumAge();
     batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
     allCompletedSameParentBusiness =
@@ -198,17 +194,8 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     LOGGER.debug("Entry to scheduleNextCleanupJob.");
     ScheduledJob job = new ScheduledJob();
     job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
-    job.setDue(getNextDueForTaskCleanupJob());
+    job.setDue(getNextDueForCleanupJob());
     taskanaEngineImpl.getJobService().createJob(job);
     LOGGER.debug("Exit from scheduleNextCleanupJob.");
-  }
-
-  private Instant getNextDueForTaskCleanupJob() {
-    Instant nextRunAt = firstRun;
-    while (nextRunAt.isBefore(Instant.now())) {
-      nextRunAt = nextRunAt.plus(runEvery);
-    }
-    LOGGER.info("Scheduling next run of the TaskCleanupJob for {}", nextRunAt);
-    return nextRunAt;
   }
 }

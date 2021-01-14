@@ -3,6 +3,7 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
@@ -102,7 +103,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
       taskanaEngine.getJobService().createJob(job);
     }
 
-    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun();
+    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
     assertThat(jobsToRun).hasSize(30);
 
@@ -113,7 +114,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
 
-    jobsToRun = getJobMapper().findJobsToRun();
+    jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
     assertThat(jobsToRun).doesNotContainAnyElementsOf(workbasketCleanupJobs);
   }
