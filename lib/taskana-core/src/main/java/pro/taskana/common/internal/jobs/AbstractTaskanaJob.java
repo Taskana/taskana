@@ -1,6 +1,8 @@
 package pro.taskana.common.internal.jobs;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +15,7 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 /** Abstract base for all background jobs of TASKANA. */
 public abstract class AbstractTaskanaJob implements TaskanaJob {
 
+  protected final Duration runEvery;
   protected TaskanaEngineImpl taskanaEngineImpl;
   protected TaskanaTransactionProvider<Object> txProvider;
   protected ScheduledJob scheduledJob;
@@ -24,6 +27,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     this.txProvider = txProvider;
     this.scheduledJob = job;
+    this.runEvery = taskanaEngineImpl.getConfiguration().getCleanupJobRunEvery();
   }
 
   public static TaskanaJob createFromScheduledJob(
@@ -53,5 +57,18 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
       result.add(internal);
     }
     return result;
+  }
+
+  protected Instant getNextDueForCleanupJob() {
+    Instant nextRun = Instant.now();
+    if (scheduledJob != null && scheduledJob.getDue() != null) {
+      nextRun = scheduledJob.getDue();
+    }
+
+    while (nextRun.isBefore(Instant.now())) {
+      nextRun = nextRun.plus(runEvery);
+    }
+
+    return nextRun;
   }
 }

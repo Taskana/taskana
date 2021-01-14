@@ -73,7 +73,7 @@ public class JobServiceImpl implements JobService {
     List<ScheduledJob> availableJobs;
     try {
       taskanaEngineImpl.openConnection();
-      availableJobs = jobMapper.findJobsToRun();
+      availableJobs = jobMapper.findJobsToRun(Instant.now());
       LOGGER.debug("Found available jobs: {}", availableJobs);
     } finally {
       taskanaEngineImpl.returnConnection();

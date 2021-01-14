@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -19,6 +21,9 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.ScheduledJob.Type;
+import pro.taskana.common.internal.JobMapper;
+import pro.taskana.common.internal.JobServiceImpl;
+import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -43,9 +48,9 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_CleanCompletedTasksUntilDate() throws Exception {
-    String id = createAndInsertTask(null);
-    taskService.claim(id);
-    taskService.completeTask(id);
+    String taskId = createAndInsertTask(null);
+    taskService.claim(taskId);
+    taskService.completeTask(taskId);
 
     long totalTasksCount = taskService.createTaskQuery().count();
     assertThat(totalTasksCount).isEqualTo(88);
@@ -88,14 +93,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
-    String id = createAndInsertTask(null);
-    taskService.claim(id);
-    taskService.completeTask(id);
+    String taskId = createAndInsertTask(null);
+    taskService.claim(taskId);
+    taskService.completeTask(taskId);
 
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    Task completedCreatedTask = taskService.getTask(id);
+    Task completedCreatedTask = taskService.getTask(taskId);
     assertThat(completedCreatedTask).isNotNull();
   }
 
@@ -113,7 +118,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
       taskanaEngine.getJobService().createJob(job);
     }
 
-    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun();
+    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
     assertThat(jobsToRun).hasSize(30);
 
@@ -124,7 +129,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     TaskCleanupJob.initializeSchedule(taskanaEngine);
 
-    jobsToRun = getJobMapper().findJobsToRun();
+    jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
     assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
   }
@@ -155,6 +160,35 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         };
 
     return DynamicTest.stream(iterator, c -> "for parentBusinessProcessId = '" + c + "'", test);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetNextScheduledJobBasedOnDueDateOfPredecessor_When_RunningTaskCleanupJob()
+      throws Exception {
+    JobMapper jobMapper = getJobMapper();
+    List<ScheduledJob> jobsToRun = jobMapper.findJobsToRun(Instant.now());
+    assertThat(jobsToRun).isEmpty();
+
+    Instant firstDue = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    ScheduledJob scheduledJob = new ScheduledJob();
+    scheduledJob.setType(ScheduledJob.Type.TASKCLEANUPJOB);
+    scheduledJob.setDue(firstDue);
+
+    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
+    jobService.createJob(scheduledJob);
+    jobsToRun = jobMapper.findJobsToRun(Instant.now());
+
+    assertThat(jobsToRun).hasSize(1);
+    assertThat(jobsToRun.get(0).getDue()).isEqualTo(firstDue);
+
+    JobRunner runner = new JobRunner(taskanaEngine);
+    runner.runJobs();
+    Duration runEvery = taskanaEngineConfiguration.getCleanupJobRunEvery();
+    jobsToRun = jobMapper.findJobsToRun(Instant.now().plus(runEvery));
+
+    assertThat(jobsToRun).hasSize(1);
+    assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue.plus(runEvery));
   }
 
   private String createAndInsertTask(String parentBusinessProcessId) throws Exception {
