@@ -192,7 +192,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getOwner()).isEqualTo("other_user");
 
-    Instant beforeForceClaim = Instant.now();
+    Instant beforeForceClaim = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     Task taskAfterClaim = TASK_SERVICE.forceClaim(createdTask.getId());
 
     assertThat(taskAfterClaim.getOwner())
