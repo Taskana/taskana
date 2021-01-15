@@ -30,7 +30,7 @@
     "@angular/router": "9.1.12",
     "@ngxs/devtools-plugin": "3.6.2",
     "@ngxs/store": "3.6.2",
-    "angular-svg-icon": "7.2.1",
+    "angular-svg-icon": "9.2.0",
     "angular-tree-component": "8.5.2",
     "bootstrap": "4.4.1",
     "core-js": "3.6.5",
