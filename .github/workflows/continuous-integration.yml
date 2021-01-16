@@ -138,7 +138,7 @@ jobs:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Compile
-        run: ./mvnw -B test-compile -f rest/taskana-rest-spring-example-wildfly -DskipTests
+        run: ./mvnw -B test-compile -f rest/taskana-rest-spring-example-wildfly -DskipTests -Djacoco.skip
       - name: Cancel workflow
         if: failure()
         uses: andymckay/cancel-action@0.2
@@ -253,7 +253,7 @@ jobs:
         if: matrix.module == 'taskana-simplehistory-rest-spring'
         run: ./mvnw -B validate -pl :taskana-rest-spring
       - name: Test
-        run: ./mvnw -B verify -pl :${{matrix.module}}
+        run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip
       - name: Upload JaCoCo Report
         if: matrix.database == 'H2'
         uses: actions/upload-artifact@v2
@@ -335,7 +335,7 @@ jobs:
       - name: Release artifacts to OSS Sonatype
         run: |
           ./mvnw -B deploy -P $([[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot") \
-          --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip \
+          --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Djacoco.skip \
           -pl :taskana-parent,\
           :taskana-common-parent,:taskana-common,:taskana-common-data,:taskana-common-test,\
           :taskana-lib-parent,:taskana-core,:taskana-cdi,:taskana-spring,\
@@ -391,9 +391,9 @@ jobs:
       - name: Generate Javadoc
         run: ./mvnw -B clean javadoc:jar -pl :taskana-core,:taskana-cdi,:taskana-spring
       - name: Generate Rest Documentation
-        run: ./mvnw -B test asciidoctor:process-asciidoc -Dtest=*DocTest -pl :taskana-rest-spring,:taskana-simplehistory-rest-spring
+        run: ./mvnw -B test asciidoctor:process-asciidoc -Dtest=*DocTest -pl :taskana-rest-spring,:taskana-simplehistory-rest-spring -Dcheckstyle.skip -Dmaven.javadoc.skip -Djacoco.skip
       - name: Build Example Application
-        run: ./mvnw -B install -P history.plugin -pl :taskana-rest-spring-example-boot -DskipTests -Dcheckstyle.skip
+        run: ./mvnw -B install -P history.plugin -pl :taskana-rest-spring-example-boot -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Djacoco.skip
       - name: Verify Example Application contains documentation
         run: ci/verify_docs_jar.sh
       - name: Deploy to IBM Cloud Foundry
@@ -440,7 +440,7 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}
       - name: Install taskana
-        run: ./mvnw -B install -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip
+        run: ./mvnw -B install -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Dmaven.javadoc.skip
       - name: Upload SonarQube analysis
         run: ./mvnw -B sonar:sonar
         env:
