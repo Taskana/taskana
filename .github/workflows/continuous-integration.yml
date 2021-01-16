@@ -23,7 +23,9 @@ env:
   ARTIFACTS_JACOCO_REPORTS_PATH: '**/jacoco.exec'
 
   CACHE_WEB_NAME: web
-  CACHE_MAVEN_FOR_WEB_NAME: maven-for-web
+  # IMPORTANT: this cannot start with CACHE_MAVEN_NAME's value
+  # because the 'compile_backend' job would otherwise use this as a fallback cache.
+  CACHE_MAVEN_FOR_WEB_NAME: mvn-for-web
   CACHE_MAVEN_NAME: maven
   CACHE_SONAR_NAME: sonar
 
