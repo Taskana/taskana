@@ -1,12 +1,11 @@
 name: CI
 on:
   workflow_dispatch:
-  create:
-    tags:
-      - v*
   push:
     branches-ignore:
       - dependabot/**
+    tags:
+      - v*
   pull_request:
     branches:
       - master
@@ -413,6 +412,7 @@ jobs:
   upload_to_sonar:
     runs-on: ubuntu-20.04
     name: Upload SonarQube analysis to sonarcloud
+    if: github.head_ref == '' # no pull request
     needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
     steps:
       - name: Git checkout
