@@ -83,9 +83,9 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     <sonar.coverage.jacoco.xmlReportPaths>
-      ${project.basedir}/ci/coverage/target/site/jacoco-aggregate/jacoco.xml,
-      ${project.basedir}/ci/../coverage/target/site/jacoco-aggregate/jacoco.xml,
-      ${project.basedir}/ci/../../coverage/target/site/jacoco-aggregate/jacoco.xml
+      ${project.basedir}/ci/taskana-sonar-test-coverage/target/site/jacoco-aggregate/jacoco.xml,
+      ${project.basedir}/ci/../taskana-sonar-test-coverage/target/site/jacoco-aggregate/jacoco.xml,
+      ${project.basedir}/ci/../../taskana-sonar-test-coverage/target/site/jacoco-aggregate/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.sources>src/main/java</sonar.sources>
   </properties>
