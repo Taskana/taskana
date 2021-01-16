@@ -84,6 +84,10 @@ jobs:
     name: Compile all maven modules
     runs-on: ubuntu-20.04
     steps:
+      - name: Cleanup old CI runs on same branch
+        uses: rokroskar/workflow-run-cleanup-action@v0.3.0
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Git checkout
         uses: actions/checkout@v2
       - name: Set up JDK ${{ env.JAVA_VERSION }}
