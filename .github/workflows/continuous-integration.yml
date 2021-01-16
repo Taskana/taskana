@@ -30,6 +30,47 @@ env:
   CACHE_SONAR_NAME: sonar
 
 jobs:
+  compile_backend:
+    name: Compile all maven modules
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Cleanup old CI runs on same branch
+        uses: rokroskar/workflow-run-cleanup-action@v0.3.0
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Cache maven dependencies
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
+      - name: Compile & build
+        run: ./mvnw -B install -DskipTests -Dasciidoctor.skip -Djacoco.skip
+      - name: Populate cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          ./mvnw -B dependency:go-offline
+          ./mvnw -B dependency:go-offline -f rest/taskana-rest-spring-example-wildfly
+          ./mvnw -B test -Dtest=GibtEsNet -DfailIfNoTests=false
+      - name: Upload taskana artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
+          path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
+          if-no-files-found: error
+      - name: Remove taskana artifacts from cache
+        run: rm -rf ~/.m2/repository/pro/taskana
+      - name: Cancel workflow
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
   compile_frontend:
     name: Compile taskana-web
     runs-on: ubuntu-20.04
@@ -73,47 +114,6 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_WEB_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_WEB_PATH }}
-          if-no-files-found: error
-      - name: Remove taskana artifacts from cache
-        run: rm -rf ~/.m2/repository/pro/taskana
-      - name: Cancel workflow
-        if: failure()
-        uses: andymckay/cancel-action@0.2
-
-  compile_backend:
-    name: Compile all maven modules
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Cleanup old CI runs on same branch
-        uses: rokroskar/workflow-run-cleanup-action@v0.3.0
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Git checkout
-        uses: actions/checkout@v2
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-      - name: Cache maven dependencies
-        id: cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
-      - name: Compile & build
-        run: ./mvnw -B install -DskipTests -Dasciidoctor.skip -Djacoco.skip
-      - name: Populate cache
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          ./mvnw -B dependency:go-offline
-          ./mvnw -B dependency:go-offline -f rest/taskana-rest-spring-example-wildfly
-          ./mvnw -B test -Dtest=GibtEsNet -DfailIfNoTests=false
-      - name: Upload taskana artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
           if-no-files-found: error
       - name: Remove taskana artifacts from cache
         run: rm -rf ~/.m2/repository/pro/taskana
