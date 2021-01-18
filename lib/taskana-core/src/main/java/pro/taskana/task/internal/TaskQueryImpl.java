@@ -161,7 +161,7 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
   private boolean addWorkbasketNameToSelectClauseForOrdering = false;
 
-  TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
+  public TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
     this.orderBy = new ArrayList<>();

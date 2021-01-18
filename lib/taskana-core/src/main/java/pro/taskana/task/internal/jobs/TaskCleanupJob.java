@@ -89,7 +89,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   }
 
   private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
-
     LOGGER.debug("entry to getTasksCompletedBefore(untilDate = {})", untilDate);
 
     List<TaskSummary> tasksToDelete =

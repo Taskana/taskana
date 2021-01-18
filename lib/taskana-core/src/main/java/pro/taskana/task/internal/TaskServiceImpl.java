@@ -3,6 +3,7 @@ package pro.taskana.task.internal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.internal.util.ListUtil;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.spi.history.api.events.task.TaskCancelledEvent;
@@ -992,18 +994,26 @@ public class TaskServiceImpl implements TaskService {
       LOGGER.debug(
           "entry to augmentTaskSummariesByContainedSummaries(taskSummaries= {})", taskSummaries);
     }
+    // splitting Augmentation into steps of maximal 32000 tasks
+    // reason: DB2 has a maximum for parameters in a query
+    List<TaskSummary> result =
+        ListUtil.partitionBasedOnSize(taskSummaries, 32000).stream()
+            .map(this::augmentTaskSublist)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
 
-    List<TaskSummary> result = new ArrayList<>();
-    if (taskSummaries == null || taskSummaries.isEmpty()) {
-      return result;
-    }
+    LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
+    return result;
+  }
 
+  private List<TaskSummaryImpl> augmentTaskSublist(List<TaskSummaryImpl> taskSummaries) {
     List<String> taskIds =
         taskSummaries.stream().map(TaskSummaryImpl::getId).distinct().collect(Collectors.toList());
 
     if (taskIds.isEmpty()) {
       taskIds = null;
     }
+
     LOGGER.debug(
         "augmentTaskSummariesByContainedSummaries() about to query for attachmentSummaries ");
     List<AttachmentSummaryImpl> attachmentSummaries =
@@ -1015,9 +1025,8 @@ public class TaskServiceImpl implements TaskService {
     addClassificationSummariesToTaskSummaries(taskSummaries, classifications);
     addWorkbasketSummariesToTaskSummaries(taskSummaries);
     addAttachmentSummariesToTaskSummaries(taskSummaries, attachmentSummaries, classifications);
-    result.addAll(taskSummaries);
-    LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
-    return result;
+
+    return taskSummaries;
   }
 
   private BulkOperationResults<String, TaskanaException> completeTasks(
