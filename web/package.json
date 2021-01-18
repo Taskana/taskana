@@ -41,7 +41,7 @@
     "ngx-infinite-scroll": "9.0.0",
     "popper.js": "1.16.1",
     "rxjs": "6.5.4",
-    "tslib": "1.10.0",
+    "tslib": "1.14.1",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
