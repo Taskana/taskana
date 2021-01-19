@@ -90,7 +90,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: web/node_modules
-          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package.json', '**/package-lock.json') }}
+          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}
       - name: Cache maven dependencies (for web)
         uses: actions/cache@v2
@@ -102,6 +102,10 @@ jobs:
         if: steps.web-cache.outputs.cache-hit != 'true'
         working-directory: web
         run: npm ci
+      # currently this is not working because the angular-tree-component needs core-js ^2.4.1 and we have 3.X.X
+      #- name: Verify Dependencies
+      #working-directory: web
+      #run: npm ls
       - name: Compile & build
         working-directory: web
         run: |
