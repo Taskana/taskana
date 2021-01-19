@@ -58,8 +58,9 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
   }
 
   /**
-   * This method will return a single object of {@link T}. In case of a TaskQuery, this method can
-   * throw a NotAuthorizedToQueryWorkbasketException.
+   * This method will return a single object of {@link T}. This method can throw a
+   * TooManyResultsException. In case of a TaskQuery, this method can throw a
+   * NotAuthorizedToQueryWorkbasketException.
    *
    * @return T a single object of given Type.
    */
