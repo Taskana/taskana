@@ -63,7 +63,7 @@
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-prettier": "3.3.1",
     "jest": "26.1.0",
-    "jest-preset-angular": "8.2.1",
+    "jest-preset-angular": "8.3.2",
     "node-sass": "4.14.1",
     "prettier": "2.2.1",
     "ts-jest": "26.4.4",
