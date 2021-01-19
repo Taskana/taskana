@@ -90,7 +90,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: web/node_modules
-          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package.json', '**/package-lock.json') }}
           restore-keys: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}
       - name: Cache maven dependencies (for web)
         uses: actions/cache@v2
