@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -197,7 +198,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_BulkTransferTasks_When_WorkbasketIdIsProvided() throws Exception {
-    final Instant before = Instant.now();
+    final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     TaskService taskService = taskanaEngine.getTaskService();
     ArrayList<String> taskIdList = new ArrayList<>();
     taskIdList.add("TKI:000000000000000000000000000000000004");
@@ -236,7 +237,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
     final Workbasket wb =
         taskanaEngine.getWorkbasketService().getWorkbasket("USER-1-1", "DOMAIN_A");
-    final Instant before = Instant.now();
+    final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     ArrayList<String> taskIdList = new ArrayList<>();
     taskIdList.add("TKI:000000000000000000000000000000000006"); // working
     taskIdList.add("TKI:000000000000000000000000000000000041"); // NotAuthorized READ
@@ -358,7 +359,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_BulkTransferTasks_When_WorkbasketKeyAndDomainIsProvided() throws Exception {
-    final Instant before = Instant.now();
+    final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIdList = new ArrayList<>();
 

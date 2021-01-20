@@ -8,12 +8,10 @@ public class WorkbasketAlreadyExistException extends TaskanaException {
 
   public WorkbasketAlreadyExistException(Workbasket workbasket) {
     super(
-        "ID='"
-            + workbasket.getId()
-            + "', KEY=' "
+        "A workbasket with key '"
             + workbasket.getKey()
-            + "', DOMAIN='"
+            + "' already exists in domain '"
             + workbasket.getDomain()
-            + "';");
+            + "'.");
   }
 }
