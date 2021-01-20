@@ -71,7 +71,7 @@
     <version.jacoco>0.8.6</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>
     <version.auto-restdocs>2.0.9</version.auto-restdocs>
-    <version.hibernate>6.1.6.Final</version.hibernate>
+    <version.hibernate>7.0.0.Final</version.hibernate>
 
     <!-- database driver versions -->
     <version.db2>11.1.1.1</version.db2>
