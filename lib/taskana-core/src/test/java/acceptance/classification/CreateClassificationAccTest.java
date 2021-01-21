@@ -167,6 +167,17 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
+  void should_ThrowException_When_TryingToCreateClassificationWithNegativeServiceLevel() {
+    Classification classification =
+        CLASSIFICATION_SERVICE.newClassification("someKey234", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P-1D");
+
+    assertThatThrownBy(() -> CLASSIFICATION_SERVICE.createClassification(classification))
+        .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
   void testCreateClassificationWithInvalidValues() {
     CLASSIFICATION_SERVICE.createClassificationQuery().count();
 
