@@ -12,8 +12,6 @@ import { SidenavService } from '../../services/sidenav/sidenav.service';
 })
 export class NavBarComponent implements OnInit {
   selectedRoute = '';
-  title = '';
-
   titleWorkbaskets = 'Workbaskets';
   titleClassifications = 'Classifications';
   titleAccessItems = 'Access items';
@@ -21,6 +19,7 @@ export class NavBarComponent implements OnInit {
   titleWorkplace = 'Workplace';
   titleHistory = 'History';
   toggle: boolean = false;
+  title = this.titleWorkplace;
 
   selectedRouteSubscription: Subscription;
 
@@ -38,7 +37,7 @@ export class NavBarComponent implements OnInit {
     this.sidenavService.toggleSidenav();
   }
 
-  setTitle(value: string = 'workbaskets') {
+  setTitle(value: string = '') {
     if (value.indexOf('workbaskets') === 0) {
       this.title = this.titleWorkbaskets;
     } else if (value.indexOf('classifications') === 0) {

@@ -19,7 +19,7 @@ export class SidenavListComponent implements OnInit {
   accessUrl = 'taskana/administration/access-items-management';
   classificationUrl = 'taskana/administration/classifications';
   workbasketsUrl = 'taskana/administration/workbaskets';
-  administrationsUrl = 'taskana/administration';
+  administrationsUrl = 'taskana/administration/workbaskets';
 
   administrationAccess = false;
   monitorAccess = false;
