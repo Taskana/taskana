@@ -31,6 +31,7 @@ export class TaskListToolbarComponent implements OnInit {
 
   tasks: Task[] = [];
   workbasketNames: string[] = [];
+  filteredWorkbasketNames: string[] = this.workbasketNames;
   resultName = '';
   resultId = '';
   workbaskets: Workbasket[];
@@ -75,6 +76,12 @@ export class TaskListToolbarComponent implements OnInit {
     if (this.router.url.includes('taskdetail')) {
       this.searched = true;
     }
+  }
+
+  filterWorkbasketNames() {
+    this.filteredWorkbasketNames = this.workbasketNames.filter((value) =>
+      value.toLowerCase().includes(this.resultName.toLowerCase())
+    );
   }
 
   searchBasket() {

@@ -5,10 +5,26 @@
         <span class="material-icons md-20 green-blue">add_circle_outline</span>
       </button>
     </div>
+
+    <!-- SEARCH INPUT -->
     <div [ngClass]="{'col-xs-8': !searched, 'col-xs-5': searched}">
-      <input [(ngModel)]="resultName" *ngIf="searchSelected === search.byWorkbasket" [typeahead]="workbasketNames"
-        class="form-control" (typeaheadOnSelect)="searchBasket()" (typeaheadNoResults)="workbasketSelected = false"
-        placeholder="Search for Workbasket ..." />
+
+      <!-- SEARCH FOR WORKBASKET -->
+      <mat-form-field *ngIf="searchSelected === search.byWorkbasket" class="task-list-toolbar__search-workbasket">
+        <input matInput
+               type="text"
+               placeholder="Search for workbasket ..."
+               [(ngModel)]="resultName"
+               (ngModelChange)="filterWorkbasketNames()"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="searchBasket()">
+          <mat-option *ngFor="let workbasketName of filteredWorkbasketNames" [value]="workbasketName">
+            {{workbasketName}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- SEARCH FOR TYPE AND VALUE-->
       <div class="input-group" *ngIf="searchSelected === search.byTypeAndValue">
         <input [(ngModel)]="resultType" class="form-control" (keyup.enter)="searchBasket()" placeholder="Search by type ..." />
         <span _ngcontent-c10="" class="input-group-btn">
@@ -20,6 +36,8 @@
       <input [(ngModel)]="resultValue" *ngIf="searchSelected === search.byTypeAndValue" class="form-control" (keyup.enter)="searchBasket()"
         placeholder="Search by value ..." />
     </div>
+
+
     <div *ngIf="searched" class="pull-right margin-right btn-group">
       <taskana-shared-sort class="btn-group" [sortingFields]="sortingFields" [defaultSortBy]="taskDefaultSortBy"
                            (performSorting)="sorting($event)"> </taskana-shared-sort>
