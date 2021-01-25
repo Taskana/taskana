@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketDetailsComponent } from './workbasket-details.component';
 import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Workbasket } from '../../../shared/models/workbasket';
 import { ACTION } from '../../../shared/models/action';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -25,7 +25,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
+import { CopyWorkbasket, CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { take } from 'rxjs/operators';
 
 @Component({ selector: 'taskana-administration-workbasket-information', template: '<div>i</div>' })
@@ -48,6 +48,14 @@ class WorkbasketDistributionTargetsStub {
   @Input() action: ACTION;
   @Input() active: string;
 }
+
+const domainServiceSpy = jest.fn().mockImplementation(
+  (): Partial<DomainService> => ({
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+    getDomains: jest.fn().mockReturnValue(of())
+  })
+);
 
 export const workbasketCopyState = {
   selectedWorkbasket: selectedWorkbasketMock,
@@ -92,7 +100,7 @@ describe('WorkbasketDetailsComponent', () => {
         WorkbasketInformationStub
       ],
       providers: [
-        DomainService,
+        { provide: DomainService, useClass: domainServiceSpy },
         ImportExportService,
         WorkbasketService,
         RequestInProgressService,
@@ -126,23 +134,32 @@ describe('WorkbasketDetailsComponent', () => {
     expect(information).toBeTruthy();
   });
 
-  it('should render new workbasket when action is CREATE', () => {
-    store.reset({
-      ...store.snapshot(),
-      workbasket: workbasketCreateState
-    });
-    fixture.detectChanges();
-    expect(component.selectedId).toBeUndefined();
+  it('should render new workbasket when action is CREATE', async (done) => {
+    store
+      .dispatch(new CreateWorkbasket())
+      .pipe(take(1))
+      .subscribe(() => {
+        component.selectedWorkbasketAndComponentAndAction$.pipe(take(1)).subscribe((state) => {
+          expect(state.selectedWorkbasket.workbasketId).toBeUndefined();
+          done();
+        });
+      });
   });
 
-  it('should render copied workbasket when action is COPY', () => {
-    store.reset({
-      ...store.snapshot(),
-      workbasket: workbasketCopyState
-    });
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.workbasketCopy).toEqual(component.workbasket);
+  it('should render copied workbasket when action is COPY', (done) => {
+    const workbasket = component.workbasket;
+    store
+      .dispatch(new CopyWorkbasket(component.workbasket))
+      .pipe(take(1))
+      .subscribe(() => {
+        component.selectedWorkbasketAndComponentAndAction$.pipe(take(1)).subscribe((state) => {
+          const workbasketCopy = state.selectedWorkbasket;
+          expect(workbasketCopy.workbasketId).toBeUndefined();
+          expect(workbasketCopy.key).toEqual(workbasket.key);
+          expect(workbasketCopy.owner).toEqual(workbasket.owner);
+          done();
+        });
+      });
   });
 
   it('should render workbasket when action is READ', () => {
@@ -158,11 +175,14 @@ describe('WorkbasketDetailsComponent', () => {
 
   it('should select information tab when action is CREATE', (done) => {
     component.selectComponent(1);
-    store.dispatch(new CreateWorkbasket());
-    fixture.detectChanges();
-    component.selectedTab$.pipe(take(1)).subscribe((tab) => {
-      expect(tab).toEqual(0);
-      done();
-    });
+    store
+      .dispatch(new CreateWorkbasket())
+      .pipe(take(1))
+      .subscribe(() => {
+        component.selectedTab$.pipe(take(1)).subscribe((tab) => {
+          expect(tab).toEqual(0);
+          done();
+        });
+      });
   });
 });

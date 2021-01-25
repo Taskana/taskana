@@ -9,7 +9,6 @@ import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from '../../../shared/pipes/remove-empty-type.pipe';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -127,7 +126,6 @@ describe('WorkbasketInformationComponent', () => {
         { provide: WorkbasketService, useClass: workbasketServiceMock },
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
-        SavingWorkbasketService,
         RequestInProgressService,
         DomainService,
         SelectedRouteService,
@@ -166,18 +164,6 @@ describe('WorkbasketInformationComponent', () => {
     component.action = ACTION.READ;
     component.ngOnChanges();
     expect(component.workbasketClone).toMatchObject(component.workbasket);
-  });
-
-  it('should display create badge message when action is CREATE', () => {
-    component.action = ACTION.CREATE;
-    component.ngOnChanges();
-    expect(component.badgeMessage).toMatch('Creating new workbasket');
-  });
-
-  it('should display copy badge message when action is COPY', () => {
-    component.action = ACTION.COPY;
-    component.ngOnChanges();
-    expect(component.badgeMessage).toContain(`Copying workbasket: ${component.workbasket.key}`);
   });
 
   it('should submit when validatorService is true', () => {

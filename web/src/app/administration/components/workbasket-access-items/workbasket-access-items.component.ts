@@ -16,23 +16,21 @@ import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { customFieldCount, WorkbasketAccessItems } from 'app/shared/models/workbasket-access-items';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
-import { ACTION } from 'app/shared/models/action';
-
-import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import {
   GetWorkbasketAccessItems,
   OnButtonPressed,
-  UpdateWorkbasketAccessItems,
-  UpdateWorkbasket
+  SaveNewWorkbasket,
+  UpdateWorkbasket,
+  UpdateWorkbasketAccessItems
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { WorkbasketComponent } from '../../models/workbasket-component';
@@ -49,15 +47,11 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   workbasket: Workbasket;
 
   @Input()
-  action: ACTION;
-
-  @Input()
   expanded: boolean;
 
   @ViewChildren('htmlInputElement')
   inputs: QueryList<ElementRef>;
 
-  badgeMessage = '';
   selectedRows: number[] = [];
   workbasketClone: Workbasket;
 
@@ -65,8 +59,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   customFields: CustomField[];
 
   accessItemsRepresentation: WorkbasketAccessItemsRepresentation;
-  accessItemsClone: Array<WorkbasketAccessItems>;
-  accessItemsResetClone: Array<WorkbasketAccessItems>;
+  accessItemsClone: WorkbasketAccessItems[];
+  accessItemsResetClone: WorkbasketAccessItems[];
   AccessItemsForm = this.formBuilder.group({
     accessItemsGroups: this.formBuilder.array([])
   });
@@ -75,6 +69,9 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   initialized = false;
   added = false;
   destroy$ = new Subject<void>();
+
+  @Select(WorkbasketSelectors.selectedWorkbasket)
+  selectedWorkbasket$: Observable<Workbasket>;
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation)
   accessItemsCustomization$: Observable<AccessItemsCustomisation>;
@@ -89,7 +86,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   selectedComponent$: Observable<WorkbasketComponent>;
 
   constructor(
-    private savingWorkbaskets: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formBuilder: FormBuilder,
     public formsValidatorService: FormsValidatorService,
@@ -110,15 +106,25 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     });
     this.accessItemsRepresentation$.subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
-        this.accessItemsRepresentation = accessItemsRepresentation;
+        this.accessItemsRepresentation = { ...accessItemsRepresentation };
         this.setAccessItemsGroups(accessItemsRepresentation.accessItems);
         this.accessItemsClone = this.cloneAccessItems(accessItemsRepresentation.accessItems);
         this.accessItemsResetClone = this.cloneAccessItems(accessItemsRepresentation.accessItems);
       }
     });
 
+    // saving workbasket access items when workbasket already exists
     this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
       this.onSubmit();
+    });
+
+    // saving workbasket access items when workbasket was copied or created
+    this.ngxsActions$.pipe(ofActionCompleted(SaveNewWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
+      this.selectedWorkbasket$.pipe(take(1)).subscribe((workbasket) => {
+        this.accessItemsRepresentation._links = { self: { href: workbasket._links.accessItems.href } };
+        this.setWorkbasketIdForCopy(workbasket.workbasketId);
+        this.onSave();
+      });
     });
 
     this.buttonAction$
@@ -168,9 +174,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes?: SimpleChanges) {
-    if (changes.action) {
-      this.setBadge();
-    }
     if (this.workbasketClone) {
       if (this.workbasketClone.workbasketId != this.workbasket.workbasketId) {
         this.init();
@@ -189,16 +192,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       this.requestInProgressService.setRequestInProgress(false);
     });
 
-    this.savingWorkbaskets
-      .triggeredAccessItemsSaving()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((savingInformation: SavingInformation) => {
-        if (this.action === ACTION.COPY) {
-          this.accessItemsRepresentation._links.self.href = savingInformation.url;
-          this.setWorkbasketIdForCopy(savingInformation.workbasketId);
-          this.onSave();
-        }
-      });
     this.initialized = true;
   }
 
@@ -291,7 +284,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
 
   accessItemSelected(accessItem: AccessIdDefinition, row: number) {
     this.accessItemsGroups.controls[row].get('accessId').setValue(accessItem?.accessId);
-    this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem.name);
+    this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem?.name);
   }
 
   onSave() {
@@ -332,12 +325,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     } else {
       const checkbox = document.getElementById(`checkbox-${index}-00`) as HTMLInputElement;
       checkbox.checked = false;
-    }
-  }
-
-  setBadge() {
-    if (this.action === ACTION.COPY) {
-      this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
     }
   }
 

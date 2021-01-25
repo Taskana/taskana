@@ -5,19 +5,18 @@ import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-distribution-targets';
-import { ACTION } from 'app/shared/models/action';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
 import { Page } from 'app/shared/models/page';
 import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
   GetAvailableDistributionTargets,
   GetWorkbasketDistributionTargets,
-  UpdateWorkbasketDistributionTargets,
-  UpdateWorkbasketAccessItems
+  SaveNewWorkbasket,
+  UpdateWorkbasket,
+  UpdateWorkbasketDistributionTargets
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
@@ -38,20 +37,17 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   @Input()
   workbasket: Workbasket;
 
-  @Input()
-  action: ACTION;
-
   toolbarState = false;
   sideBySide = true;
   displayingDistributionTargetsPicker = true;
 
   distributionTargetsSelectedResource: WorkbasketDistributionTargets;
-  availableDistributionTargets: Array<WorkbasketSummary> = [];
-  distributionTargetsClone: Array<WorkbasketSummary>;
+  availableDistributionTargets: WorkbasketSummary[] = [];
+  distributionTargetsClone: WorkbasketSummary[];
 
-  distributionTargetsLeft: Array<WorkbasketSummary> = [];
-  distributionTargetsSelected: Array<WorkbasketSummary>;
-  distributionTargetsSelectedClone: Array<WorkbasketSummary>;
+  distributionTargetsLeft: WorkbasketSummary[] = [];
+  distributionTargetsSelected: WorkbasketSummary[];
+  distributionTargetsSelectedClone: WorkbasketSummary[];
 
   loadingItems = false;
   side = Side;
@@ -81,7 +77,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   constructor(
     private workbasketService: WorkbasketService,
-    private savingWorkbaskets: SavingWorkbasketService,
     private notificationsService: NotificationService,
     private store: Store,
     private ngxsActions$: Actions
@@ -97,7 +92,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       .subscribe((selectedWorkbasket) => {
         this.workbasket = selectedWorkbasket;
       });
-    if (Object.keys(this.workbasket).length !== 0) {
+
+    if (this.workbasket?.workbasketId) {
       this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
       this.store.dispatch(new GetAvailableDistributionTargets());
     }
@@ -107,16 +103,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       .pipe(filter((availableDistributionTargets) => typeof availableDistributionTargets !== 'undefined'))
       .subscribe((availableDistributionTargets) => {
         this.availableDistributionTargets = availableDistributionTargets.map((wb) => ({ ...wb }));
-      });
-
-    this.savingWorkbaskets
-      .triggeredDistributionTargetsSaving()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((savingInformation: SavingInformation) => {
-        if (this.action === ACTION.COPY) {
-          this.distributionTargetsSelectedResource._links.self.href = savingInformation.url;
-          this.onSave();
-        }
       });
 
     this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
@@ -129,8 +115,19 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       }
     });
 
-    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasketAccessItems), takeUntil(this.destroy$)).subscribe(() => {
+    // saving workbasket distributions targets when existing workbasket was modified
+    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
       this.onSave();
+    });
+
+    // saving workbasket distributions targets when workbasket was copied or created
+    this.ngxsActions$.pipe(ofActionCompleted(SaveNewWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
+      this.selectedWorkbasket$.pipe(take(1)).subscribe((workbasket) => {
+        this.distributionTargetsSelectedResource._links = {
+          self: { href: workbasket._links.distributionTargets.href }
+        };
+        this.onSave();
+      });
     });
 
     this.buttonAction$
@@ -261,11 +258,11 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.distributionTargetsLeft = side === Side.SELECTED ? workbaskets : this.distributionTargetsLeft;
   }
 
-  getSelectedItems(originList: any): Array<any> {
+  getSelectedItems(originList: any): any[] {
     return originList.filter((item: any) => item.selected === true);
   }
 
-  unselectItems(originList: Array<any>): Array<any> {
+  unselectItems(originList: any[]): any[] {
     return originList
       .filter((item) => item.selected)
       .map((item) => {
@@ -283,7 +280,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     return copyList;
   }
 
-  getSelectedIds(): Array<string> {
+  getSelectedIds(): string[] {
     return this.distributionTargetsSelected.map((distributionTarget) => distributionTarget.workbasketId);
   }
 

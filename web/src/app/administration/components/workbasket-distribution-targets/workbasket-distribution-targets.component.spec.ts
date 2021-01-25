@@ -7,7 +7,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable, of } from 'rxjs';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
-import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { Actions, NgxsModule, Store } from '@ngxs/store';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -21,6 +20,7 @@ import {
 } from '../../../shared/store/mock-data/mock-store';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { Pair } from '../../../shared/models/pair';
+import { DomainService } from '../../../shared/services/domain/domain.service';
 
 const routeParamsMock = { id: 'workbasket' };
 const activatedRouteMock = {
@@ -42,6 +42,14 @@ class WorkbasketDistributionTargetsListStub {
   @Output() allSelectedChange = new EventEmitter<boolean>();
 }
 
+const domainServiceSpy = jest.fn().mockImplementation(
+  (): Partial<DomainService> => ({
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+    getDomains: jest.fn().mockReturnValue(of())
+  })
+);
+
 const workbasketServiceSpy = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
     getWorkBasketsSummary: jest.fn().mockReturnValue(of()),
@@ -49,11 +57,6 @@ const workbasketServiceSpy = jest.fn().mockImplementation(
   })
 );
 
-const savingWorkbasketServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SavingWorkbasketService> => ({
-    triggeredDistributionTargetsSaving: jest.fn().mockReturnValue(of())
-  })
-);
 const notificationsServiceSpy = jest.fn().mockImplementation(
   (): Partial<NotificationService> => ({
     showToast: jest.fn().mockReturnValue(true)
@@ -84,10 +87,10 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceSpy },
-        { provide: SavingWorkbasketService, useClass: savingWorkbasketServiceSpy },
         { provide: NotificationService, useClass: notificationsServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
+        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
+        { provide: DomainService, useClass: domainServiceSpy }
       ]
     }).compileComponents();
 

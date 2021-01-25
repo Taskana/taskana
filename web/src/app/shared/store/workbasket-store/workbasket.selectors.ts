@@ -40,6 +40,15 @@ export class WorkbasketSelectors {
   }
 
   @Selector([WorkbasketState])
+  static selectedWorkbasketAndComponentAndAction(state: WorkbasketStateModel): WorkbasketAndComponentAndAction {
+    return {
+      selectedWorkbasket: state.selectedWorkbasket,
+      action: state.action,
+      selectedComponent: state.selectedComponent
+    };
+  }
+
+  @Selector([WorkbasketState])
   static selectedComponent(state: WorkbasketStateModel): WorkbasketComponent {
     return state.selectedComponent;
   }
@@ -65,9 +74,20 @@ export class WorkbasketSelectors {
   static availableDistributionTargets(state: WorkbasketStateModel): WorkbasketSummary[] {
     return state.workbasketAvailableDistributionTargets;
   }
+
+  @Selector([WorkbasketState])
+  static badgeMessage(state: WorkbasketStateModel): string {
+    return state.badgeMessage;
+  }
 }
 
 export interface WorkbasketAndAction {
   selectedWorkbasket: Workbasket;
   action: ACTION;
+}
+
+export interface WorkbasketAndComponentAndAction {
+  selectedWorkbasket: Workbasket;
+  action: ACTION;
+  selectedComponent: WorkbasketComponent;
 }
