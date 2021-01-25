@@ -155,11 +155,11 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   performFilter(filterBy: WorkbasketQueryFilterParameter) {
     this.filterBy = filterBy;
     this.domainService
-    .getSelectedDomain()
-    .pipe(take(1))
-    .subscribe((domain) => {
-      this.filterBy.domain = [domain];
-    });
+      .getSelectedDomain()
+      .pipe(take(1))
+      .subscribe((domain) => {
+        this.filterBy.domain = [domain];
+      });
     this.performRequest();
   }
 
