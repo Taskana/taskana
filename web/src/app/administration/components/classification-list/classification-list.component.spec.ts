@@ -180,7 +180,7 @@ describe('ClassificationListComponent', () => {
     filterButton.click();
     fixture.detectChanges();
     const matMenu = debugElement.queryAll(By.css('.classification-list__categories'));
-    expect(matMenu.length).toBe(4);
+    expect(matMenu.length).toBe(3);
   });
 
   /* HTML: CLASSIFICATION TREE */

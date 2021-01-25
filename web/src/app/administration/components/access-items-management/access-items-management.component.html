@@ -18,12 +18,20 @@
       <mat-panel-title>
         Groups of {{accessId.accessId}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-list class="access-items__expansion-panel__list" *ngIf="groups && groups.length > 0; else noGroups">
-      <mat-list-item *ngFor="let group of groups">
-        {{group.name}}
-        <mat-divider></mat-divider>
-      </mat-list-item>
-    </mat-list>
+    <!-- TABLE WITH GROUP NAMES AND ACCESS IDs -->
+    <table *ngIf="groups && groups.length > 0; else noGroups" mat-table [dataSource]="groups">
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell class="access-items__group-table-cell" *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Access Id">
+        <th mat-header-cell *matHeaderCellDef> Access Id </th>
+        <td mat-cell class="access-items__group-table-cell" *matCellDef="let element"> {{element.accessId}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['Name', 'Access Id']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['Name', 'Access Id'];"></tr>
+    </table>
+
     <ng-template #noGroups>The user is not associated to any groups </ng-template>
   </mat-expansion-panel>
 
@@ -73,15 +81,6 @@
                 </mat-form-field>
               </th>
               <th>
-                <button mat-stroked-button matTooltip="Clear filter" color="warn" (click)="clearFilter()">
-                  <mat-icon>close</mat-icon>
-                </button>
-              </th>
-              <th>
-                <button mat-stroked-button color="basic" matTooltip="Apply filter"
-                  (click)="searchForAccessItemsWorkbaskets()">
-                  <mat-icon>search</mat-icon>
-                </button>
               </th>
             </tr>
           </thead>
@@ -121,9 +120,9 @@
         </table>
 
         <!-- Revoke Access button -->
-        <button mat-mini-fab class="access-items__revoke-button"
-          matTooltip="Revoke access" color="warn" *ngIf="accessItemsForm" (click)="revokeAccess()"
+        <button mat-raised-button class="access-items__revoke-button" color="warn" *ngIf="accessItemsForm" (click)="revokeAccess()"
           [disabled]=isGroup>
+          Revoke access
           <mat-icon>clear</mat-icon>
         </button>
 
