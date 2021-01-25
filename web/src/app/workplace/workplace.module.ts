@@ -23,6 +23,9 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 import { TaskService } from './services/task.service';
 import { TokenInterceptor } from './services/token-interceptor.service';
 import { WorkplaceService } from './services/workplace.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
 
 const MODULES = [
   TypeaheadModule.forRoot(),
@@ -34,7 +37,10 @@ const MODULES = [
   AngularSvgIconModule,
   WorkplaceRoutingModule,
   AlertModule,
-  SharedModule
+  SharedModule,
+  MatFormFieldModule,
+  MatAutocompleteModule,
+  MatInputModule
 ];
 
 const DECLARATIONS = [
@@ -51,7 +57,7 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: MODULES,
+  imports: [MODULES],
   providers: [
     TaskService,
     ClassificationCategoriesService,
