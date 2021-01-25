@@ -74,9 +74,12 @@ export class AccessItemsManagementComponent implements OnInit {
       if (this.accessIdPrevious !== selected.accessId) {
         this.accessIdPrevious = selected.accessId;
         this.accessIdName = selected.name;
-        this.store.dispatch(new GetGroupsByAccessId(selected.accessId)).subscribe(() => {
-          this.searchForAccessItemsWorkbaskets();
-        });
+        this.store
+          .dispatch(new GetGroupsByAccessId(selected.accessId))
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.searchForAccessItemsWorkbaskets();
+          });
       }
     } else {
       this.accessItemsForm = null;
@@ -89,13 +92,16 @@ export class AccessItemsManagementComponent implements OnInit {
     const filterParameter: WorkbasketAccessItemQueryFilterParameter = {
       'access-id': [this.accessId, ...this.groups].map((a) => a.accessId)
     };
-    this.store.dispatch(new GetAccessItems(filterParameter, this.sortModel)).subscribe((state) => {
-      this.setAccessItemsGroups(
-        state['accessItemsManagement'].accessItemsResource
-          ? state['accessItemsManagement'].accessItemsResource.accessItems
-          : []
-      );
-    });
+    this.store
+      .dispatch(new GetAccessItems(filterParameter, this.sortModel))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((state) => {
+        this.setAccessItemsGroups(
+          state['accessItemsManagement'].accessItemsResource
+            ? state['accessItemsManagement'].accessItemsResource.accessItems
+            : []
+        );
+      });
   }
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
@@ -141,9 +147,12 @@ export class AccessItemsManagementComponent implements OnInit {
     this.notificationService.showDialog(
       `You are going to delete all access related: ${this.accessId.accessId}. Can you confirm this action?`,
       () => {
-        this.store.dispatch(new RemoveAccessItemsPermissions(this.accessId.accessId)).subscribe(() => {
-          this.searchForAccessItemsWorkbaskets();
-        });
+        this.store
+          .dispatch(new RemoveAccessItemsPermissions(this.accessId.accessId))
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.searchForAccessItemsWorkbaskets();
+          });
       }
     );
   }

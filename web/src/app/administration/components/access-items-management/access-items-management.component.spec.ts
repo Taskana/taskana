@@ -34,6 +34,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTableModule } from '@angular/material/table';
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const formValidatorServiceSpy = jest.fn().mockImplementation(
@@ -94,7 +95,8 @@ describe('AccessItemsManagementComponent', () => {
         MatTooltipModule,
         MatDividerModule,
         MatListModule,
-        MatExpansionModule
+        MatExpansionModule,
+        MatTableModule
       ],
       declarations: [
         AccessItemsManagementComponent,
