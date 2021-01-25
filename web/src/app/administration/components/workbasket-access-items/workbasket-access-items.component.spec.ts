@@ -6,7 +6,6 @@ import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
-import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -31,8 +30,6 @@ import {
   UpdateWorkbasketAccessItems
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ACTION } from '../../../shared/models/action';
-import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,12 +43,6 @@ class SpinnerStub {
   @Input() isRunning: boolean;
   @Input() positionClass: string;
 }
-
-const savingWorkbasketServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SavingWorkbasketService> => ({
-    triggeredAccessItemsSaving: jest.fn().mockReturnValue(of(true))
-  })
-);
 
 const requestInProgressServiceSpy = jest.fn().mockImplementation(
   (): Partial<RequestInProgressService> => ({
@@ -106,7 +97,6 @@ describe('WorkbasketAccessItemsComponent', () => {
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
-        { provide: SavingWorkbasketService, useClass: savingWorkbasketServiceSpy },
         { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
@@ -145,14 +135,11 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should initialize when accessItems exist', async(() => {
-    component.action = ACTION.COPY;
     let actionDispatched = false;
-    component.onSave = jest.fn().mockImplementation();
     actions$.pipe(ofActionDispatched(GetWorkbasketAccessItems)).subscribe(() => (actionDispatched = true));
     component.init();
     expect(component.initialized).toBe(true);
     expect(actionDispatched).toBe(true);
-    expect(component.onSave).toHaveBeenCalled();
   }));
 
   it("should discard initializing when accessItems don't exist", () => {
@@ -196,15 +183,5 @@ describe('WorkbasketAccessItemsComponent', () => {
     component.onSave();
     expect(onSaveSpy).toHaveBeenCalled();
     expect(actionDispatched).toBe(true);
-  });
-
-  it('should set badge correctly', () => {
-    component.action = ACTION.READ;
-    component.setBadge();
-    expect(component.badgeMessage).toMatch('');
-
-    component.action = ACTION.COPY;
-    component.setBadge();
-    expect(component.badgeMessage).toMatch(`Copying workbasket: ${component.workbasket.key}`);
   });
 });

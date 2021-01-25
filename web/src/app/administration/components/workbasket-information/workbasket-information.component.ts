@@ -5,7 +5,6 @@ import { Select, Store } from '@ngxs/store';
 import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
-import { SavingInformation, SavingWorkbasketService } from 'app/administration/services/saving-workbaskets.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
@@ -15,7 +14,6 @@ import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../shared/models/customisation';
 import {
-  CopyWorkbasket,
   MarkWorkbasketForDeletion,
   RemoveDistributionTarget,
   SaveNewWorkbasket,
@@ -43,7 +41,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   workbasketClone: Workbasket;
   allTypes: Map<string, string>;
-  badgeMessage = '';
   toggleValidationMap = new Map<string, boolean>();
   lookupField = false;
 
@@ -65,7 +62,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   constructor(
     private workbasketService: WorkbasketService,
-    private savingWorkbasket: SavingWorkbasketService,
     private requestInProgressService: RequestInProgressService,
     private formsValidatorService: FormsValidatorService,
     private notificationService: NotificationService,
@@ -109,9 +105,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
           case ButtonAction.UNDO:
             this.onUndo();
             break;
-          case ButtonAction.COPY:
-            this.copyWorkbasket();
-            break;
           case ButtonAction.REMOVE_AS_DISTRIBUTION_TARGETS:
             this.removeDistributionTargets();
             break;
@@ -126,11 +119,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   ngOnChanges(changes?: SimpleChanges) {
     this.workbasketClone = { ...this.workbasket };
-    if (this.action === ACTION.CREATE) {
-      this.badgeMessage = 'Creating new workbasket';
-    } else if (this.action === ACTION.COPY) {
-      this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
-    }
   }
 
   onSubmit() {
@@ -159,10 +147,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     );
   }
 
-  copyWorkbasket() {
-    this.store.dispatch(new CopyWorkbasket(this.workbasket));
-  }
-
   removeDistributionTargets() {
     this.store.dispatch(new RemoveDistributionTarget(this.workbasket._links.removeDistributionTargets.href));
   }
@@ -171,12 +155,12 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     this.beforeRequest();
     if (!this.workbasket.workbasketId) {
       this.postNewWorkbasket();
-      return;
+    } else {
+      this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe(() => {
+        this.requestInProgressService.setRequestInProgress(false);
+        this.workbasketClone = { ...this.workbasket };
+      });
     }
-    this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe(() => {
-      this.requestInProgressService.setRequestInProgress(false);
-      this.workbasketClone = { ...this.workbasket };
-    });
   }
 
   beforeRequest() {
@@ -192,14 +176,6 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     this.addDateToWorkbasket();
     this.store.dispatch(new SaveNewWorkbasket(this.workbasket)).subscribe(() => {
       this.afterRequest();
-      if (this.action === ACTION.COPY) {
-        this.savingWorkbasket.triggerDistributionTargetSaving(
-          new SavingInformation(this.workbasket._links.distributionTargets.href, this.workbasket.workbasketId)
-        );
-        this.savingWorkbasket.triggerAccessItemsSaving(
-          new SavingInformation(this.workbasket._links.accessItems.href, this.workbasket.workbasketId)
-        );
-      }
     });
   }
 

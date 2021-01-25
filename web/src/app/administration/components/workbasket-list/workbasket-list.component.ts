@@ -139,10 +139,15 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   selectWorkbasket(id: string) {
+    this.requestInProgressService.setRequestInProgress(true);
     if (this.selectedId === id) {
-      this.store.dispatch(new DeselectWorkbasket());
+      this.store
+        .dispatch(new DeselectWorkbasket())
+        .subscribe(() => this.requestInProgressService.setRequestInProgress(false));
     } else {
-      this.store.dispatch(new SelectWorkbasket(id));
+      this.store
+        .dispatch(new SelectWorkbasket(id))
+        .subscribe(() => this.requestInProgressService.setRequestInProgress(false));
     }
   }
 
