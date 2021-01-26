@@ -4,8 +4,16 @@
 
     <!-- TITLE + ACTION BUTTONS -->
     <mat-toolbar class="action-toolbar">
-      <h4 class="action-toolbar__headline">{{classification.name}}&nbsp; [{{classification.type}}]
-        <span *ngIf="isCreatingNewClassification" class="action-toolbar__badge-message"> {{badgeMessage$ | async}}</span>
+      <h4 class="action-toolbar__headline">
+        <span
+          class="{{isCreatingNewClassification? 'action-toolbar__title-badge' : 'action-toolbar__title'}}"
+          matTooltip="{{classification.name}}&nbsp; [{{classification.type}}]">
+          {{classification.name}}&nbsp; [{{classification.type}}]
+        </span>
+        <span
+          *ngIf="isCreatingNewClassification" class="action-toolbar__badge-message" matTooltip="{{badgeMessage$ | async}}">
+          {{badgeMessage$ | async}}
+        </span>
       </h4>
 
       <div>

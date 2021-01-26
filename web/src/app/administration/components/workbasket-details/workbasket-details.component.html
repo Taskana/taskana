@@ -1,8 +1,8 @@
 <div class="workbasket-details">
   <mat-toolbar class="workbasket-details__toolbar">
     <h4 class="workbasket-details__title">
-      <span class="workbasket-details__title-name">{{workbasket.name}}</span>
-      <span class="workbasket-details__title-badge"> {{ badgeMessage$ | async }}</span>
+      <span class="workbasket-details__title-name" matTooltip="{{workbasket.name}}">{{workbasket.name}}</span>
+      <span class="workbasket-details__title-badge" matTooltip="{{ badgeMessage$ | async }}"> {{ badgeMessage$ | async }}</span>
     </h4>
     <span class="workbasket-details__spacer"></span>
     <button mat-button class="workbasket-details__button workbasket-details__save-button"

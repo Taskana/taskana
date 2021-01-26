@@ -27,6 +27,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CopyWorkbasket, CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { take } from 'rxjs/operators';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({ selector: 'taskana-administration-workbasket-information', template: '<div>i</div>' })
 class WorkbasketInformationStub {
@@ -91,6 +92,7 @@ describe('WorkbasketDetailsComponent', () => {
         MatTabsModule,
         MatMenuModule,
         MatToolbarModule,
+        MatTooltipModule,
         BrowserAnimationsModule
       ],
       declarations: [
