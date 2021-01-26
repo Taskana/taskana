@@ -8,12 +8,10 @@ public class ClassificationAlreadyExistException extends TaskanaException {
 
   public ClassificationAlreadyExistException(Classification classification) {
     super(
-        "ID='"
-            + classification.getId()
-            + "', KEY='"
+        "A classification with key '"
             + classification.getKey()
-            + "', DOMAIN='"
+            + "' already exists in domain '"
             + classification.getDomain()
-            + "';");
+            + "'.");
   }
 }
