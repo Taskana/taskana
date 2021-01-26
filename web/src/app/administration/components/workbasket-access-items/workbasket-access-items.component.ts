@@ -101,10 +101,10 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   ngOnInit() {
     this.init();
     this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
-    this.customFields$.subscribe((v) => {
+    this.customFields$.pipe(takeUntil(this.destroy$)).subscribe((v) => {
       this.customFields = v;
     });
-    this.accessItemsRepresentation$.subscribe((accessItemsRepresentation) => {
+    this.accessItemsRepresentation$.pipe(takeUntil(this.destroy$)).subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
         this.accessItemsRepresentation = { ...accessItemsRepresentation };
         this.setAccessItemsGroups(accessItemsRepresentation.accessItems);
@@ -142,7 +142,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   }
 
   ngAfterViewInit() {
-    this.inputs.changes.subscribe((next) => {
+    this.inputs.changes.pipe(takeUntil(this.destroy$)).subscribe((next) => {
       if (typeof next.last !== 'undefined') {
         if (this.added) next.last.nativeElement.focus();
       }

@@ -37,6 +37,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
@@ -93,7 +94,8 @@ describe('WorkbasketAccessItemsComponent', () => {
         MatAutocompleteModule,
         MatProgressBarModule,
         MatCheckboxModule,
-        MatIconModule
+        MatIconModule,
+        MatTooltipModule
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
