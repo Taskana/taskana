@@ -13,8 +13,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { compileComponentFromMetadata, componentFactoryName } from '@angular/compiler';
-import { AccessIdDefinition } from 'app/shared/models/access-id';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const AccessIdsServiceSpy = jest.fn().mockImplementation(
   (): Partial<AccessIdsService> => ({
@@ -40,6 +39,7 @@ describe('TypeAheadComponent', () => {
         MatAutocompleteModule,
         MatFormFieldModule,
         MatInputModule,
+        MatTooltipModule,
         FormsModule,
         BrowserAnimationsModule
       ],

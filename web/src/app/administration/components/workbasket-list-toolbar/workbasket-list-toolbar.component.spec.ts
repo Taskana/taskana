@@ -23,7 +23,8 @@ import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbaske
 const getDomainFn = jest.fn().mockReturnValue(true);
 const domainServiceMock = jest.fn().mockImplementation(
   (): Partial<DomainService> => ({
-    getDomains: getDomainFn
+    getDomains: getDomainFn,
+    getSelectedDomain: jest.fn().mockReturnValue(of('A'))
   })
 );
 
