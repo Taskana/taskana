@@ -9,18 +9,24 @@
   &__title {
     font-size: 1.5rem;
     padding: 4px;
+    max-width: 392px;
   }
 
   &__title-name {
     display: block;
-    max-width: 392px;
+
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &__title-badge {
-    background-color: $brown;
+    font-size: 1.1rem;
+    background-color: $transparent-grey;
     border-radius: 4px;
+
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__spacer {

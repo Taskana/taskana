@@ -32,6 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
@@ -129,6 +130,7 @@ describe('ClassificationDetailsComponent', () => {
         MatSelectModule,
         MatProgressBarModule,
         MatMenuModule,
+        MatTooltipModule,
         BrowserAnimationsModule
       ],
       declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
@@ -274,7 +276,7 @@ describe('ClassificationDetailsComponent', () => {
     expect(headline).toBeTruthy();
     expect(headline.textContent).toContain('Recommendation');
     expect(headline.textContent).toContain('DOCUMENT');
-    const badgeMessage = headline.children[0];
+    const badgeMessage = headline.children[1];
     expect(badgeMessage).toBeTruthy();
     expect(badgeMessage.textContent.trim()).toBe('Creating new classification');
   });
