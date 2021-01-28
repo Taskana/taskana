@@ -989,24 +989,27 @@ public class TaskServiceImpl implements TaskService {
     LOGGER.debug("exit from removeNonExistingTasksFromTaskIdList()");
   }
 
-  List<TaskSummary> augmentTaskSummariesByContainedSummaries(List<TaskSummaryImpl> taskSummaries) {
+  List<TaskSummary> augmentTaskSummariesByContainedSummariesWithPartitioning(
+      List<TaskSummaryImpl> taskSummaries) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "entry to augmentTaskSummariesByContainedSummaries(taskSummaries= {})", taskSummaries);
+          "entry to augmentTaskSummariesByContainedSummariesWithPartitioning(taskSummaries= {})",
+          taskSummaries);
     }
     // splitting Augmentation into steps of maximal 32000 tasks
     // reason: DB2 has a maximum for parameters in a query
     List<TaskSummary> result =
         ListUtil.partitionBasedOnSize(taskSummaries, 32000).stream()
-            .map(this::augmentTaskSublist)
+            .map(this::augmentTaskSummariesByContainedSummariesWithoutPartitioning)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
-    LOGGER.debug("exit from to augmentTaskSummariesByContainedSummaries()");
+    LOGGER.debug("exit from to augmentTaskSummariesByContainedSummariesWithPartitioning()");
     return result;
   }
 
-  private List<TaskSummaryImpl> augmentTaskSublist(List<TaskSummaryImpl> taskSummaries) {
+  private List<TaskSummaryImpl> augmentTaskSummariesByContainedSummariesWithoutPartitioning(
+      List<TaskSummaryImpl> taskSummaries) {
     List<String> taskIds =
         taskSummaries.stream().map(TaskSummaryImpl::getId).distinct().collect(Collectors.toList());
 
@@ -1014,8 +1017,12 @@ public class TaskServiceImpl implements TaskService {
       taskIds = null;
     }
 
-    LOGGER.debug(
-        "augmentTaskSummariesByContainedSummaries() about to query for attachmentSummaries ");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "augmentTaskSummariesByContainedSummariesWithoutPartitioning() with sublist {} "
+              + "about to query for attachmentSummaries ",
+          taskSummaries);
+    }
     List<AttachmentSummaryImpl> attachmentSummaries =
         attachmentMapper.findAttachmentSummariesByTaskIds(taskIds);
 

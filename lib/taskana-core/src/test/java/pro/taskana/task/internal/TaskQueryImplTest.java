@@ -54,7 +54,8 @@ class TaskQueryImplTest {
     when(sqlSession.selectList(any(), any())).thenReturn(new ArrayList<>());
     List<TaskSummary> intermediate = new ArrayList<>();
     intermediate.add(new TaskSummaryImpl());
-    when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+    when(taskServiceMock.augmentTaskSummariesByContainedSummariesWithPartitioning(any()))
+        .thenReturn(intermediate);
 
     List<TaskSummary> result =
         taskQueryImpl
@@ -70,7 +71,8 @@ class TaskQueryImplTest {
     when(sqlSession.selectList(any(), any(), any())).thenReturn(new ArrayList<>());
     List<TaskSummary> intermediate = new ArrayList<>();
     intermediate.add(new TaskSummaryImpl());
-    when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+    when(taskServiceMock.augmentTaskSummariesByContainedSummariesWithPartitioning(any()))
+        .thenReturn(intermediate);
 
     List<TaskSummary> result =
         taskQueryImpl
@@ -87,7 +89,8 @@ class TaskQueryImplTest {
     List<TaskSummary> intermediate = new ArrayList<>();
     intermediate.add(new TaskSummaryImpl());
 
-    when(taskServiceMock.augmentTaskSummariesByContainedSummaries(any())).thenReturn(intermediate);
+    when(taskServiceMock.augmentTaskSummariesByContainedSummariesWithPartitioning(any()))
+        .thenReturn(intermediate);
 
     TaskSummary result =
         taskQueryImpl

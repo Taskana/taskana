@@ -19,7 +19,7 @@ public class ListUtil {
    * @param size maximal number of elements inside chunk
    * @return list containing the chunks
    */
-  public static <T> Collection<List<T>> partitionBasedOnSize(List<T> inputList, int size) {
+  public static <T> Collection<List<T>> partitionBasedOnSize(Collection<T> inputList, int size) {
     final AtomicInteger counter = new AtomicInteger(0);
     return inputList.stream()
         .collect(Collectors.groupingBy(s -> counter.getAndIncrement() / size))
