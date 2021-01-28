@@ -40,7 +40,7 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.TaskanaEngineProxy;
-import pro.taskana.common.internal.util.ListUtil;
+import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -136,12 +136,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_SplitTaskListIntoChunksOf32000_When_AugmentingTasksAfterTaskQuery() {
-    MockedStatic<ListUtil> listUtilMock = Mockito.mockStatic(ListUtil.class);
-    listUtilMock.when(() -> ListUtil.partitionBasedOnSize(any(), anyInt())).thenCallRealMethod();
+    MockedStatic<CollectionUtil> listUtilMock = Mockito.mockStatic(CollectionUtil.class);
+    listUtilMock
+        .when(() -> CollectionUtil.partitionBasedOnSize(any(), anyInt()))
+        .thenCallRealMethod();
 
     TASK_SERVICE.createTaskQuery().list();
 
-    listUtilMock.verify(() -> ListUtil.partitionBasedOnSize(any(), eq(32000)));
+    listUtilMock.verify(() -> CollectionUtil.partitionBasedOnSize(any(), eq(32000)));
   }
 
   @WithAccessId(user = "admin")

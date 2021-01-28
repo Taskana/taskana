@@ -17,6 +17,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
 
 /**
@@ -47,16 +48,12 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     LOGGER.info("Running job to delete all workbaskets marked for deletion");
     try {
       List<String> workbasketsMarkedForDeletion = getWorkbasketsMarkedForDeletion();
-      int totalNumberOfWorkbasketDeleted = 0;
-      while (workbasketsMarkedForDeletion.size() > 0) {
-        int upperLimit = batchSize;
-        if (upperLimit > workbasketsMarkedForDeletion.size()) {
-          upperLimit = workbasketsMarkedForDeletion.size();
-        }
-        totalNumberOfWorkbasketDeleted +=
-            deleteWorkbasketsTransactionally(workbasketsMarkedForDeletion.subList(0, upperLimit));
-        workbasketsMarkedForDeletion.subList(0, upperLimit).clear();
-      }
+
+      int totalNumberOfWorkbasketDeleted =
+          CollectionUtil.partitionBasedOnSize(workbasketsMarkedForDeletion, batchSize).stream()
+              .mapToInt(this::deleteWorkbasketsTransactionally)
+              .sum();
+
       LOGGER.info(
           "Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
     } catch (Exception e) {

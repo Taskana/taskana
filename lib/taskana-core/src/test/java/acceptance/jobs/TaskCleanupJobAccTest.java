@@ -5,11 +5,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.ScheduledJob.Type;
@@ -124,49 +130,31 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "admin")
-  @Test
-  void should_DeleteCompletedTaskWithParentBusinessNull_When_RunningCleanupJob() throws Exception {
-    String taskId1 = createAndInsertTask(null);
-    taskService.claim(taskId1);
-    taskService.completeTask(taskId1);
-    String taskId2 = createAndInsertTask(null);
-    taskService.claim(taskId2);
-
-    long taskCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
-    assertThat(taskCount).isEqualTo(2);
+  @TestFactory
+  Stream<DynamicTest>
+      should_DeleteCompletedTaskWithParentBusinessEmptyOrNull_When_RunningCleanupJob() {
+    Iterator<String> iterator = Arrays.asList("", null).iterator();
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
     taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    job.run();
 
-    List<TaskSummary> tasksAfterCleaning =
-        taskService.createTaskQuery().idIn(taskId1, taskId2).list();
-    assertThat(tasksAfterCleaning).hasSize(1);
-    assertThat(tasksAfterCleaning.get(0).getId()).isEqualTo(taskId2);
-  }
+    ThrowingConsumer<String> test =
+        parentBusinessId -> {
+          String taskId1 = createAndInsertTask(parentBusinessId);
+          taskService.claim(taskId1);
+          taskService.completeTask(taskId1);
+          String taskId2 = createAndInsertTask(parentBusinessId);
+          taskService.claim(taskId2);
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_DeleteCompletedTaskWithParentBusinessEmpty_When_RunningCleanupJob() throws Exception {
-    String taskId1 = createAndInsertTask("");
-    taskService.claim(taskId1);
-    taskService.completeTask(taskId1);
-    String taskId2 = createAndInsertTask("");
-    taskService.claim(taskId2);
+          job.run();
+          List<TaskSummary> tasksAfterCleaning =
+              taskService.createTaskQuery().idIn(taskId1, taskId2).list();
 
-    long taskCount = taskService.createTaskQuery().idIn(taskId1, taskId2).count();
-    assertThat(taskCount).isEqualTo(2);
+          assertThat(tasksAfterCleaning).extracting(TaskSummary::getId).containsExactly(taskId2);
+        };
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
-    taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    job.run();
-
-    List<TaskSummary> tasksAfterCleaning =
-        taskService.createTaskQuery().idIn(taskId1, taskId2).list();
-    assertThat(tasksAfterCleaning).hasSize(1);
-    assertThat(tasksAfterCleaning.get(0).getId()).isEqualTo(taskId2);
+    return DynamicTest.stream(iterator, c -> "for parentBusinessProcessId = '" + c + "'", test);
   }
 
   private String createAndInsertTask(String parentBusinessProcessId) throws Exception {
@@ -175,7 +163,6 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setParentBusinessProcessId(parentBusinessProcessId);
-    String id = taskService.createTask(newTask).getId();
-    return id;
+    return taskService.createTask(newTask).getId();
   }
 }

@@ -33,8 +33,8 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.CheckedConsumer;
+import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.IdGenerator;
-import pro.taskana.common.internal.util.ListUtil;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.spi.history.api.events.task.TaskCancelledEvent;
@@ -999,7 +999,7 @@ public class TaskServiceImpl implements TaskService {
     // splitting Augmentation into steps of maximal 32000 tasks
     // reason: DB2 has a maximum for parameters in a query
     List<TaskSummary> result =
-        ListUtil.partitionBasedOnSize(taskSummaries, 32000).stream()
+        CollectionUtil.partitionBasedOnSize(taskSummaries, 32000).stream()
             .map(this::augmentTaskSummariesByContainedSummariesWithoutPartitioning)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
