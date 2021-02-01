@@ -106,10 +106,13 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     });
     this.accessItemsRepresentation$.pipe(takeUntil(this.destroy$)).subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
-        this.accessItemsRepresentation = { ...accessItemsRepresentation };
-        this.setAccessItemsGroups(accessItemsRepresentation.accessItems);
-        this.accessItemsClone = this.cloneAccessItems(accessItemsRepresentation.accessItems);
-        this.accessItemsResetClone = this.cloneAccessItems(accessItemsRepresentation.accessItems);
+        let accessItems = [...accessItemsRepresentation.accessItems];
+        accessItems = this.sortAccessItems(accessItems, 'accessId');
+
+        this.accessItemsRepresentation = { accessItems: accessItems, _links: accessItemsRepresentation._links };
+        this.setAccessItemsGroups(accessItems);
+        this.accessItemsClone = this.cloneAccessItems(accessItems);
+        this.accessItemsResetClone = this.cloneAccessItems(accessItems);
       }
     });
 
@@ -195,7 +198,20 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     this.initialized = true;
   }
 
-  setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
+  sortAccessItems(accessItems: WorkbasketAccessItems[], sortBy: string): WorkbasketAccessItems[] {
+    return accessItems.sort((a, b) => {
+      if (a[sortBy] < b[sortBy]) {
+        return -1;
+      }
+      if (a[sortBy] > b[sortBy]) {
+        return 1;
+      }
+
+      return 0;
+    });
+  }
+
+  setAccessItemsGroups(accessItems: WorkbasketAccessItems[]) {
     const AccessItemsFormGroups = accessItems.map((accessItem) => this.formBuilder.group(accessItem));
     AccessItemsFormGroups.forEach((accessItemGroup) => {
       accessItemGroup.controls.accessId.setValidators(Validators.required);
