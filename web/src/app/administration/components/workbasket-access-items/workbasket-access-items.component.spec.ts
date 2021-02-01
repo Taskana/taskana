@@ -150,6 +150,21 @@ describe('WorkbasketAccessItemsComponent', () => {
     expect(component.initialized).toBe(false);
   });
 
+  it('should call access items sorting when access items are obtained from store', () => {
+    const sortSpy = jest.spyOn(component, 'sortAccessItems');
+    component.ngOnInit();
+    expect(sortSpy).toHaveBeenCalled();
+  });
+
+  it('should sort access items by given value', () => {
+    const accessItems = component.accessItemsRepresentation.accessItems;
+    expect(accessItems[0].accessId).toBe('user-b-1');
+    expect(accessItems[1].accessId).toBe('user-b-0');
+    component.sortAccessItems(accessItems, 'accessId');
+    expect(accessItems[0].accessId).toBe('user-b-0');
+    expect(accessItems[1].accessId).toBe('user-b-1');
+  });
+
   it('should add accessItems when add access item button is clicked', () => {
     fixture.detectChanges();
     const addAccessItemButton = debugElement.nativeElement.querySelector(

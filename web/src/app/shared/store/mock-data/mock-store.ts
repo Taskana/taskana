@@ -154,6 +154,30 @@ export const workbasketAccessItemsMock: WorkbasketAccessItemsRepresentation = {
       permCustom10: true,
       permCustom11: true,
       permCustom12: true
+    },
+    {
+      accessItemId: 'WBI:000000000000000000000000000000000901',
+      workbasketId: 'WBI:000000000000000000000000000000000901',
+      workbasketKey: 'Sort002',
+      accessId: 'user-b-0',
+      accessName: 'Braun, Oliver',
+      permRead: true,
+      permOpen: true,
+      permAppend: true,
+      permTransfer: true,
+      permDistribute: false,
+      permCustom1: true,
+      permCustom2: true,
+      permCustom3: true,
+      permCustom4: true,
+      permCustom5: true,
+      permCustom6: true,
+      permCustom7: true,
+      permCustom8: true,
+      permCustom9: true,
+      permCustom10: true,
+      permCustom11: true,
+      permCustom12: true
     }
   ],
   _links: {
