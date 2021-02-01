@@ -42,11 +42,11 @@ class ClassificationServiceImplIntAutoCommitTest {
 
   @BeforeEach
   void setup() throws Exception {
+    sampleDataGenerator.clearDb();
     TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     classificationService = taskanaEngine.getClassificationService();
     TaskanaEngineImpl taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-    sampleDataGenerator.clearDb();
   }
 
   @Test

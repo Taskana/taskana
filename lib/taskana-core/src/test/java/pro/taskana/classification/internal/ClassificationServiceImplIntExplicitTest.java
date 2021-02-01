@@ -42,13 +42,13 @@ class ClassificationServiceImplIntExplicitTest {
   void setup() throws Exception {
     dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    sampleDataGenerator.clearDb();
     TaskanaEngineConfiguration taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(dataSource, false, false, schemaName);
     taskanaEngine = (TaskanaEngineImpl) taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.EXPLICIT);
     classificationService = taskanaEngine.getClassificationService();
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-    sampleDataGenerator.clearDb();
   }
 
   @AfterEach
