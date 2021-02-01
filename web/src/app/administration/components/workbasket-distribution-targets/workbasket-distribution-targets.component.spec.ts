@@ -127,37 +127,62 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   });
 
   it('should get available and selected distribution targets', () => {
-    component.getWorkbaskets();
-    expect(component.availableDistributionTargets).toHaveLength(8); //mock-data has 8 entries
-    expect(component.distributionTargetsSelected).toHaveLength(3); //mock-data has 3 entries
-  });
+    // mock-data has 8 entries, array should be filtered by selected distribution targets
+    expect(component.availableDistributionTargets).toHaveLength(5);
+    expect(component.availableDistributionTargetsUndoClone).toHaveLength(5);
+    expect(component.availableDistributionTargetsFilterClone).toHaveLength(5);
 
-  // TODO: was ist das für ein test?
-  it('should emit filter model and side when performing filter', () => {
-    const performDualListFilterSpy = jest.spyOn(component, 'performFilter');
-    const filterModelMock: WorkbasketQueryFilterParameter = { domain: ['DOMAIN_A'] };
-
-    component.performFilter({ left: Side.AVAILABLE, right: filterModelMock });
-
-    expect(performDualListFilterSpy).toHaveBeenCalledWith({ right: filterModelMock, left: Side.AVAILABLE });
+    // mock-data has 3 entries
+    expect(component.selectedDistributionTargets).toHaveLength(3);
+    expect(component.selectedDistributionTargetsUndoClone).toHaveLength(3);
+    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
   });
 
   it('should move distribution targets to selected list', () => {
     component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    component.distributionTargetsLeft = component.distributionTargetsSelected;
+    const removeSelectedItems = jest.spyOn(component, 'removeSelectedItems');
     component.moveDistributionTargets(Side.AVAILABLE);
-    expect(component.distributionTargetsSelected).toHaveLength(4); // mock-data only has 3
+
+    expect(component.selectedDistributionTargets).toHaveLength(4); // mock-data only has 3
+    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(4);
+    expect(removeSelectedItems).toHaveBeenCalled();
+  });
+
+  it('should move distribution targets to available list', () => {
+    component.selectedDistributionTargets[0]['selected'] = true; // select first item in available array
+    const removeSelectedItems = jest.spyOn(component, 'removeSelectedItems');
+    component.moveDistributionTargets(Side.SELECTED);
+
+    expect(component.availableDistributionTargets).toHaveLength(6); // mock-data has 5
+    expect(component.availableDistributionTargetsFilterClone).toHaveLength(6);
+    expect(removeSelectedItems).toHaveBeenCalled();
+  });
+
+  it('should set selectAll checkboxes to true when moving a workbasket', () => {
+    [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
+      component.moveDistributionTargets(side);
+      expect(component.selectAllLeft).toBeTruthy();
+      expect(component.selectAllRight).toBeTruthy();
+    });
+  });
+
+  it('should call unselectItems() when moving a workbasket', () => {
+    const unselectItems = jest.spyOn(component, 'unselectItems');
+
+    [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
+      component.moveDistributionTargets(side);
+      expect(unselectItems).toHaveBeenCalled();
+    });
   });
 
   it('should reset distribution targets to last state when undo is called', () => {
-    component.distributionTargetsClone = component.availableDistributionTargets;
-    component.distributionTargetsSelectedClone = component.distributionTargetsSelected;
     component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    component.distributionTargetsLeft = component.distributionTargetsSelected;
+
     component.moveDistributionTargets(Side.AVAILABLE);
-    expect(component.distributionTargetsSelected).toHaveLength(4); // mock-data only has 3
+    expect(component.selectedDistributionTargets).toHaveLength(4); // mock-data only has 3
 
     component.onClear();
-    expect(component.distributionTargetsSelected).toHaveLength(3);
+    expect(component.selectedDistributionTargets).toHaveLength(3);
+    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
   });
 });

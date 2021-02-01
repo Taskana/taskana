@@ -3,7 +3,6 @@ import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/c
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
-import { SelectWorkBasketPipe } from '../../../shared/pipes/select-workbaskets.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
@@ -11,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {
@@ -35,14 +35,15 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MatIconModule, MatToolbarModule, MatListModule, InfiniteScrollModule, BrowserAnimationsModule],
-      declarations: [
-        WorkbasketDistributionTargetsListComponent,
-        FilterStub,
-        SpinnerStub,
-        IconTypeStub,
-        SelectWorkBasketPipe
+      imports: [
+        MatIconModule,
+        MatToolbarModule,
+        MatListModule,
+        MatTooltipModule,
+        InfiniteScrollModule,
+        BrowserAnimationsModule
       ],
+      declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub],
       providers: []
     }).compileComponents();
 
@@ -50,7 +51,6 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     debugElement = fixture.debugElement;
     component = fixture.componentInstance;
     component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
-    component.distributionTargetsSelected = [];
     component.side = Side.AVAILABLE;
   }));
 
@@ -68,12 +68,6 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     component.distributionTargets.forEach((element) => {
       expect(element['selected']).toBe(true);
     });
-  });
-
-  it('should emit side when scrolling', () => {
-    const scrollingEmitSpy = jest.spyOn(component.scrolling, 'emit');
-    component.onScroll();
-    expect(scrollingEmitSpy).toHaveBeenCalledWith(component.side);
   });
 
   it('should change toolbar state', () => {

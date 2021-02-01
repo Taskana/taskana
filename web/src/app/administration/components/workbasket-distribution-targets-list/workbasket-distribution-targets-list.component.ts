@@ -23,15 +23,10 @@ import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbaske
 })
 export class WorkbasketDistributionTargetsListComponent implements OnInit, AfterContentChecked {
   @Input() distributionTargets: WorkbasketSummary[];
-  @Input() distributionTargetsSelected: WorkbasketSummary[];
-  @Output() performDualListFilter = new EventEmitter<Pair<Side, WorkbasketQueryFilterParameter>>();
-  @Input() requestInProgress = false;
-  @Input() loadingItems? = false;
   @Input() side: Side;
   @Input() header: string;
-  @Output() scrolling = new EventEmitter<Side>();
   @Input() allSelected;
-  @Output() allSelectedChange = new EventEmitter<boolean>();
+  @Output() performDualListFilter = new EventEmitter<Pair<Side, WorkbasketQueryFilterParameter>>();
 
   toolbarState = false;
   @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
@@ -52,11 +47,6 @@ export class WorkbasketDistributionTargetsListComponent implements OnInit, After
       this.distributionTargetsList.options.map((item) => (item['selected'] = selected));
     }
     this.distributionTargets.map((item) => (item['selected'] = selected));
-    this.allSelectedChange.emit(this.allSelected);
-  }
-
-  onScroll() {
-    this.scrolling.emit(this.side);
   }
 
   performAvailableFilter(pair: Pair<string, WorkbasketQueryFilterParameter>) {

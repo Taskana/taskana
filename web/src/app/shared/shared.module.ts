@@ -37,7 +37,6 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
  */
 import { MapValuesPipe } from './pipes/map-values.pipe';
 import { RemoveNoneTypePipe } from './pipes/remove-empty-type.pipe';
-import { SelectWorkBasketPipe } from './pipes/select-workbaskets.pipe';
 import { SpreadNumberPipe } from './pipes/spread-number.pipe';
 import { OrderBy } from './pipes/order-by.pipe';
 import { MapToIterable } from './pipes/map-to-iterable.pipe';
@@ -87,7 +86,6 @@ const DECLARATIONS = [
   TypeAheadComponent,
   MapValuesPipe,
   RemoveNoneTypePipe,
-  SelectWorkBasketPipe,
   SpreadNumberPipe,
   DateTimeZonePipe,
   NumberToArray,
