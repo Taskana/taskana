@@ -930,7 +930,7 @@ public class TaskQueryImpl implements TaskQuery {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("mapper returned {} resulting Objects: {} ", tasks.size(), tasks);
       }
-      result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+      result = taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
       return result;
     } finally {
       taskanaEngine.returnConnection();
@@ -954,7 +954,7 @@ public class TaskQueryImpl implements TaskQuery {
       RowBounds rowBounds = new RowBounds(offset, limit);
       List<TaskSummaryImpl> tasks =
           taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this, rowBounds);
-      result = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+      result = taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
       return result;
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
@@ -1029,7 +1029,8 @@ public class TaskQueryImpl implements TaskQuery {
       }
       List<TaskSummaryImpl> tasks = new ArrayList<>();
       tasks.add(taskSummaryImpl);
-      List<TaskSummary> augmentedList = taskService.augmentTaskSummariesByContainedSummaries(tasks);
+      List<TaskSummary> augmentedList =
+          taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
       result = augmentedList.get(0);
 
       return result;
