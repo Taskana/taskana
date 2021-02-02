@@ -1,7 +1,5 @@
 package pro.taskana.common.internal.security;
 
-import static pro.taskana.common.internal.util.CheckedFunction.wrap;
-
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
@@ -87,12 +85,22 @@ public class CurrentUserContextImpl implements CurrentUserContext {
         LOGGER.debug("Public credentials of caller: {}", publicCredentials);
         return publicCredentials.stream()
             .map(
-                wrap(
-                    credential ->
-                        credential
-                            .getClass()
-                            .getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null)
-                            .invoke(credential, (Object[]) null)))
+                // we could use CheckedFunction#wrap here, but this either requires a dependency
+                // to taskana-common or an inclusion of the class CheckedFunction in this module.
+                // The first is not possible due to a cyclic dependency.
+                // The second is not desired, since this module is a very slim security module and
+                // the inclusion of CheckedFunction and its transitive dependencies would increase
+                // the module scope and introduce inconsistency.
+                credential -> {
+                  try {
+                    return credential
+                        .getClass()
+                        .getMethod(GET_UNIQUE_SECURITY_NAME_METHOD, (Class<?>[]) null)
+                        .invoke(credential, (Object[]) null);
+                  } catch (Exception e) {
+                    throw new SecurityException("Could not retrieve principal", e);
+                  }
+                })
             .peek(
                 o ->
                     LOGGER.debug(

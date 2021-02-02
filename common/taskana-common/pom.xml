@@ -16,6 +16,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-security</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>${version.json}</version>

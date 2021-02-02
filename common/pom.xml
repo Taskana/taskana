@@ -18,6 +18,7 @@
 
   <modules>
     <module>taskana-common</module>
+    <module>taskana-common-security</module>
     <module>taskana-common-data</module>
     <module>taskana-common-test</module>
   </modules>
