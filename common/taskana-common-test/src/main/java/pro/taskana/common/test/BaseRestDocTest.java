@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurerAdapter;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -39,6 +40,7 @@ public class BaseRestDocTest {
   protected MockMvc mockMvc;
   @Autowired protected ObjectMapper objectMapper;
   @Autowired protected RestHelper restHelper;
+  @Autowired private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
   @BeforeEach
   public void setUp(
@@ -64,11 +66,14 @@ public class BaseRestDocTest {
                         AutoDocumentation.requestParameters().failOnUndocumentedParams(true),
                         AutoDocumentation.description(),
                         AutoDocumentation.methodAndPath(),
+                        AutoDocumentation.modelAttribute(
+                            requestMappingHandlerAdapter.getArgumentResolvers()),
                         AutoDocumentation.sectionBuilder()
                             .snippetNames(
                                 SnippetRegistry.AUTO_AUTHORIZATION,
                                 SnippetRegistry.AUTO_PATH_PARAMETERS,
                                 SnippetRegistry.AUTO_REQUEST_PARAMETERS,
+                                SnippetRegistry.AUTO_MODELATTRIBUTE,
                                 SnippetRegistry.AUTO_REQUEST_FIELDS,
                                 SnippetRegistry.AUTO_RESPONSE_FIELDS,
                                 SnippetRegistry.AUTO_LINKS,
