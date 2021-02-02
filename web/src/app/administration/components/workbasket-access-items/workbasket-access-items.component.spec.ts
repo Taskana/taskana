@@ -140,14 +140,15 @@ describe('WorkbasketAccessItemsComponent', () => {
     let actionDispatched = false;
     actions$.pipe(ofActionDispatched(GetWorkbasketAccessItems)).subscribe(() => (actionDispatched = true));
     component.init();
-    expect(component.initialized).toBe(true);
     expect(actionDispatched).toBe(true);
   }));
 
   it("should discard initializing when accessItems don't exist", () => {
     component.workbasket._links.accessItems = null;
+    let actionDispatched = false;
+    actions$.pipe(ofActionDispatched(GetWorkbasketAccessItems)).subscribe(() => (actionDispatched = true));
     component.init();
-    expect(component.initialized).toBe(false);
+    expect(actionDispatched).toBe(false);
   });
 
   it('should call access items sorting when access items are obtained from store', () => {
