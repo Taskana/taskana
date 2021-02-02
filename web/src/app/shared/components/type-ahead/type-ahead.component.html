@@ -6,10 +6,10 @@
       </mat-label>
       <input #inputTypeAhead [required]="isRequired" class="typeahead__form-input align" matInput type="text"
         [matAutocomplete]="auto" placeholder="{{placeHolderMessage}}" [(ngModel)]="value" name="accessId"
-        (ngModelChange)="initializeDataSource()" />
+        (ngModelChange)="initializeDataSource()" matTooltip="{{value}}"/>
       <mat-autocomplete #autoComplete autoActiveFirstOption (optionSelected)="typeaheadOnSelect($event)"
         #auto="matAutocomplete">
-        <mat-option class="typeahead__form-options" *ngFor="let item of items" [value]="item.accessId">
+        <mat-option class="typeahead__form-options" *ngFor="let item of items" [value]="item.accessId" matTooltip="{{item.accessId}} {{item.name}}">
           <small>{{item.accessId}}&nbsp;&nbsp;{{item.name}}</small>
         </mat-option>
       </mat-autocomplete>

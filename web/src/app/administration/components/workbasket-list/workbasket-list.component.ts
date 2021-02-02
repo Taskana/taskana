@@ -44,6 +44,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   };
   requestInProgress: boolean;
   requestInProgressLocal = false;
+  domain: string; 
 
   @Input() expanded: boolean;
 
@@ -117,6 +118,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .getSelectedDomain()
       .pipe(takeUntil(this.destroy$))
       .subscribe((domain) => {
+        this.domain = domain; 
         this.filterBy.domain = [domain];
         this.performRequest();
       });
@@ -140,10 +142,15 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   selectWorkbasket(id: string) {
+    this.requestInProgressService.setRequestInProgress(true);
     if (this.selectedId === id) {
-      this.store.dispatch(new DeselectWorkbasket());
+      this.store
+        .dispatch(new DeselectWorkbasket())
+        .subscribe(() => this.requestInProgressService.setRequestInProgress(false));
     } else {
-      this.store.dispatch(new SelectWorkbasket(id));
+      this.store
+        .dispatch(new SelectWorkbasket(id))
+        .subscribe(() => this.requestInProgressService.setRequestInProgress(false));
     }
   }
 
@@ -154,12 +161,13 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   performFilter(filterBy: WorkbasketQueryFilterParameter) {
     this.filterBy = filterBy;
-    this.domainService
+    this.filterBy.domain = [this.domain]
+    /*this.domainService
       .getSelectedDomain()
       .pipe(take(1))
       .subscribe((domain) => {
         this.filterBy.domain = [domain];
-      });
+      });*/
     this.performRequest();
   }
 

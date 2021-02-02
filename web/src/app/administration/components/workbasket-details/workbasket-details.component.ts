@@ -1,47 +1,44 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ACTION } from 'app/shared/models/action';
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Select, Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
-import { WorkbasketAndAction, WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
-import { TaskanaDate } from '../../../shared/util/taskana.date';
-import { Location } from '@angular/common';
-import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import {
+  WorkbasketAndComponentAndAction,
+  WorkbasketSelectors
+} from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { Location } from '@angular/common';
+import {
+  CopyWorkbasket,
   DeselectWorkbasket,
   OnButtonPressed,
   SelectComponent
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { ButtonAction } from '../../models/button-action';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
+import { WorkbasketComponent } from '../../models/workbasket-component';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
   templateUrl: './workbasket-details.component.html',
   styleUrls: ['./workbasket-details.component.scss']
 })
-export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges {
+export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   workbasket: Workbasket;
-  workbasketCopy: Workbasket;
-  selectedId: string;
   action: ACTION;
-  badgeMessage = '';
-
-  @Select(WorkbasketSelectors.selectedWorkbasket)
-  selectedWorkbasket$: Observable<Workbasket>;
+  selectedComponent: WorkbasketComponent;
 
   @Select(WorkbasketSelectors.selectedComponent)
   selectedTab$: Observable<number>;
 
-  @Select(WorkbasketSelectors.workbasketActiveAction)
-  activeAction$: Observable<ACTION>;
+  @Select(WorkbasketSelectors.badgeMessage)
+  badgeMessage$: Observable<string>;
 
-  @Select(WorkbasketSelectors.selectedWorkbasketAndAction)
-  selectedWorkbasketAndAction$: Observable<WorkbasketAndAction>;
+  @Select(WorkbasketSelectors.selectedWorkbasketAndComponentAndAction)
+  selectedWorkbasketAndComponentAndAction$: Observable<WorkbasketAndComponentAndAction>;
 
   destroy$ = new Subject<void>();
 
@@ -52,97 +49,38 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
     private route: ActivatedRoute,
     private router: Router,
     private domainService: DomainService,
-    private importExportService: ImportExportService,
     private requestInProgressService: RequestInProgressService,
     private store: Store
   ) {}
 
   ngOnInit() {
-    this.selectedWorkbasketAndAction$.pipe(takeUntil(this.destroy$)).subscribe((selectedWorkbasketAndAction) => {
-      this.action = selectedWorkbasketAndAction.action;
-      if (this.action === ACTION.CREATE) {
-        this.selectedId = undefined;
-        this.badgeMessage = 'Creating new workbasket';
-        this.initWorkbasket();
-      } else if (this.action === ACTION.COPY) {
-        // delete this.workbasket.key;
-        this.workbasketCopy = this.workbasket;
-        this.getWorkbasketInformation();
-        this.badgeMessage = `Copying workbasket: ${this.workbasket.key}`;
-      } else if (typeof selectedWorkbasketAndAction.selectedWorkbasket !== 'undefined') {
-        this.workbasket = { ...selectedWorkbasketAndAction.selectedWorkbasket };
-        this.getWorkbasketInformation(this.workbasket);
+    this.getWorkbasketFromStore();
+  }
+
+  getWorkbasketFromStore() {
+    // this is necessary since we receive workbaskets from store even when there is no update
+    // this would unintentionally discard changes
+
+    this.selectedWorkbasketAndComponentAndAction$.pipe(takeUntil(this.destroy$)).subscribe((object) => {
+      const workbasket = object.selectedWorkbasket;
+      const action = object.action;
+      const component = object.selectedComponent;
+
+      // get workbasket from store when:
+      // a) workbasket with another ID is selected (includes copying)
+      // b) empty workbasket is created
+      // c) saving the workbasket
+
+      const isAnotherId = this.workbasket?.workbasketId !== workbasket?.workbasketId;
+      const isCreation = action !== this.action && action === ACTION.CREATE;
+      const isSameComponent = component === this.selectedComponent;
+      if (isAnotherId || isCreation || isSameComponent) {
+        this.workbasket = { ...workbasket };
       }
+
+      this.action = action;
+      this.selectedComponent = component;
     });
-
-    this.importExportService
-      .getImportingFinished()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.workbasket) {
-          this.getWorkbasketInformation(this.workbasket);
-        }
-      });
-  }
-
-  ngOnChanges(changes?: SimpleChanges) {}
-
-  addDateToWorkbasket(workbasket: Workbasket) {
-    const date = TaskanaDate.getDate();
-    workbasket.created = date;
-    workbasket.modified = date;
-  }
-
-  initWorkbasket() {
-    const emptyWorkbasket: Workbasket = {};
-    emptyWorkbasket.domain = this.domainService.getSelectedDomainValue();
-    emptyWorkbasket.type = WorkbasketType.PERSONAL;
-    this.addDateToWorkbasket(emptyWorkbasket);
-    this.workbasket = emptyWorkbasket;
-  }
-
-  backClicked(): void {
-    this.router.navigate(['./'], { relativeTo: this.route.parent });
-  }
-
-  getWorkbasketInformation(selectedWorkbasket?: Workbasket) {
-    let workbasketIdSelected: string;
-    if (selectedWorkbasket) {
-      workbasketIdSelected = selectedWorkbasket.workbasketId;
-    }
-    this.requestInProgressService.setRequestInProgress(true);
-    if (!workbasketIdSelected && this.action === ACTION.CREATE) {
-      // CREATE
-      this.workbasket = {};
-      this.domainService
-        .getSelectedDomain()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((domain) => {
-          this.workbasket.domain = domain;
-        });
-      this.requestInProgressService.setRequestInProgress(false);
-    } else if (!workbasketIdSelected && this.action === ACTION.COPY) {
-      // COPY
-      this.workbasket = { ...this.workbasketCopy };
-      delete this.workbasket.workbasketId;
-      this.requestInProgressService.setRequestInProgress(false);
-    }
-    if (workbasketIdSelected) {
-      this.workbasket = selectedWorkbasket;
-      this.requestInProgressService.setRequestInProgress(false);
-      this.checkDomainAndRedirect();
-    }
-  }
-
-  checkDomainAndRedirect() {
-    this.domainService
-      .getSelectedDomain()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((domain) => {
-        if (domain !== '' && this.workbasket && this.workbasket.domain !== domain) {
-          this.backClicked();
-        }
-      });
   }
 
   selectComponent(index) {
@@ -159,6 +97,7 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy, OnChanges 
 
   onCopy() {
     this.store.dispatch(new OnButtonPressed(ButtonAction.COPY));
+    this.store.dispatch(new CopyWorkbasket(this.workbasket));
   }
 
   onRemoveAsDistributionTarget() {

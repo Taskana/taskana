@@ -1,5 +1,5 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
-import { take, tap } from 'rxjs/operators';
+import { concatMap, take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { WorkbasketService } from '../../services/workbasket/workbasket.service';
@@ -34,6 +34,9 @@ import { WorkbasketComponent } from '../../../administration/models/workbasket-c
 import { ButtonAction } from '../../../administration/models/button-action';
 import { ActivatedRoute } from '@angular/router';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
+import { WorkbasketType } from '../../models/workbasket-type';
+import { TaskanaDate } from '../../util/taskana.date';
+import { DomainService } from '../../services/domain/domain.service';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -45,6 +48,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     private workbasketService: WorkbasketService,
     private location: Location,
     private notificationService: NotificationService,
+    private domainService: DomainService,
     private route: ActivatedRoute,
     private requestInProgressService: RequestInProgressService
   ) {}
@@ -69,6 +73,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         default:
           tab = WorkbasketComponent.INFORMATION;
       }
+
+      ctx.patchState({
+        badgeMessage: ''
+      });
 
       ctx.dispatch(new SelectComponent(tab));
     });
@@ -105,12 +113,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         break;
     }
 
-    this.location.go(
-      this.location
-        .path()
-        .replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})?tab=${selectedComponent}`)
-    );
-
     const id = action.workbasketId;
     if (typeof id !== 'undefined') {
       return this.workbasketService.getWorkBasket(id).pipe(
@@ -118,11 +120,19 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         tap((selectedWorkbasket) => {
           ctx.patchState({
             selectedWorkbasket,
-            action: ACTION.READ
+            action: ACTION.READ,
+            badgeMessage: ``
           });
+
           ctx.dispatch(new GetWorkbasketAccessItems(ctx.getState().selectedWorkbasket._links.accessItems.href));
           ctx.dispatch(
             new GetWorkbasketDistributionTargets(ctx.getState().selectedWorkbasket._links.distributionTargets.href)
+          );
+
+          this.location.go(
+            this.location
+              .path()
+              .replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})?tab=${selectedComponent}`)
           );
         })
       );
@@ -136,17 +146,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ctx.patchState({
       selectedWorkbasket: undefined,
       action: ACTION.READ
-    });
-    return of(null);
-  }
-
-  @Action(CreateWorkbasket)
-  createWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
-    this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
-    ctx.patchState({
-      selectedWorkbasket: undefined,
-      selectedComponent: WorkbasketComponent.INFORMATION,
-      action: ACTION.CREATE
     });
     return of(null);
   }
@@ -197,13 +196,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
           );
 
-          ctx.dispatch(new SelectWorkbasket(workbasketUpdated.workbasketId));
           this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
         },
         (error) => {
           this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
         }
-      )
+      ),
+      concatMap((workbasketUpdated) => ctx.dispatch(new SelectWorkbasket(workbasketUpdated.workbasketId)))
     );
   }
 
@@ -211,10 +210,53 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   copyWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CopyWorkbasket): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.dispatch(new OnButtonPressed(undefined));
+
+    const workbasket = { ...ctx.getState().selectedWorkbasket };
+    delete workbasket.workbasketId;
+
     ctx.patchState({
-      action: ACTION.COPY
+      action: ACTION.COPY,
+      selectedWorkbasket: workbasket,
+      badgeMessage: `Copying workbasket: ${workbasket.key}`
     });
+
     return of(null);
+  }
+
+  @Action(CreateWorkbasket)
+  createWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
+    return this.domainService.getSelectedDomain().pipe(
+      take(1),
+      tap((domain) => {
+        this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
+
+        if (!ctx.getState().workbasketAvailableDistributionTargets) {
+          ctx.dispatch(new GetAvailableDistributionTargets());
+        }
+
+        const emptyWorkbasket: Workbasket = {};
+        emptyWorkbasket.domain = domain;
+        emptyWorkbasket.type = WorkbasketType.PERSONAL;
+
+        const date = TaskanaDate.getDate();
+        emptyWorkbasket.created = date;
+        emptyWorkbasket.modified = date;
+
+        const accessItems = { accessItems: [], _links: {} };
+        const distributionTargets = { distributionTargets: [], _links: {} };
+
+        ctx.patchState({
+          action: ACTION.CREATE,
+          selectedWorkbasket: emptyWorkbasket,
+          selectedComponent: WorkbasketComponent.INFORMATION,
+          badgeMessage: `Creating new workbasket`,
+          workbasketAccessItems: accessItems,
+          workbasketDistributionTargets: distributionTargets
+        });
+
+        return of(null);
+      })
+    );
   }
 
   @Action(UpdateWorkbasket)
@@ -286,6 +328,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             NOTIFICATION_TYPES.SUCCESS_ALERT_12,
             new Map<string, string>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
           );
+
+          ctx.dispatch(new DeselectWorkbasket());
         }
       })
     );
@@ -322,6 +366,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
               NOTIFICATION_TYPES.SUCCESS_ALERT_7,
               new Map<string, string>([['workbasketKey', ctx.getState().selectedWorkbasket.key]])
             );
+            return of(null);
           },
           (error) => {
             this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_2, error);
@@ -385,6 +430,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             NOTIFICATION_TYPES.SUCCESS_ALERT_8,
             new Map<string, string>([['workbasketName', ctx.getState().selectedWorkbasket.name]])
           );
+
+          return of(null);
         },
         (error) => {
           this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_3, error);
@@ -420,5 +467,6 @@ export interface WorkbasketStateModel {
   workbasketDistributionTargets: WorkbasketDistributionTargets;
   workbasketAvailableDistributionTargets: WorkbasketSummary[];
   selectedComponent: WorkbasketComponent;
+  badgeMessage: string;
   button: ButtonAction | undefined;
 }

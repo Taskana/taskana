@@ -6,7 +6,6 @@ import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
-import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -31,8 +30,6 @@ import {
   UpdateWorkbasketAccessItems
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ACTION } from '../../../shared/models/action';
-import { WorkbasketAccessItems } from '../../../shared/models/workbasket-access-items';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -40,18 +37,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })
 class SpinnerStub {
   @Input() isRunning: boolean;
   @Input() positionClass: string;
 }
-
-const savingWorkbasketServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SavingWorkbasketService> => ({
-    triggeredAccessItemsSaving: jest.fn().mockReturnValue(of(true))
-  })
-);
 
 const requestInProgressServiceSpy = jest.fn().mockImplementation(
   (): Partial<RequestInProgressService> => ({
@@ -102,11 +94,11 @@ describe('WorkbasketAccessItemsComponent', () => {
         MatAutocompleteModule,
         MatProgressBarModule,
         MatCheckboxModule,
-        MatIconModule
+        MatIconModule,
+        MatTooltipModule
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
-        { provide: SavingWorkbasketService, useClass: savingWorkbasketServiceSpy },
         { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
@@ -145,20 +137,32 @@ describe('WorkbasketAccessItemsComponent', () => {
   });
 
   it('should initialize when accessItems exist', async(() => {
-    component.action = ACTION.COPY;
     let actionDispatched = false;
-    component.onSave = jest.fn().mockImplementation();
     actions$.pipe(ofActionDispatched(GetWorkbasketAccessItems)).subscribe(() => (actionDispatched = true));
     component.init();
     expect(component.initialized).toBe(true);
     expect(actionDispatched).toBe(true);
-    expect(component.onSave).toHaveBeenCalled();
   }));
 
   it("should discard initializing when accessItems don't exist", () => {
     component.workbasket._links.accessItems = null;
     component.init();
     expect(component.initialized).toBe(false);
+  });
+
+  it('should call access items sorting when access items are obtained from store', () => {
+    const sortSpy = jest.spyOn(component, 'sortAccessItems');
+    component.ngOnInit();
+    expect(sortSpy).toHaveBeenCalled();
+  });
+
+  it('should sort access items by given value', () => {
+    const accessItems = component.accessItemsRepresentation.accessItems;
+    expect(accessItems[0].accessId).toBe('user-b-1');
+    expect(accessItems[1].accessId).toBe('user-b-0');
+    component.sortAccessItems(accessItems, 'accessId');
+    expect(accessItems[0].accessId).toBe('user-b-0');
+    expect(accessItems[1].accessId).toBe('user-b-1');
   });
 
   it('should add accessItems when add access item button is clicked', () => {
@@ -196,15 +200,5 @@ describe('WorkbasketAccessItemsComponent', () => {
     component.onSave();
     expect(onSaveSpy).toHaveBeenCalled();
     expect(actionDispatched).toBe(true);
-  });
-
-  it('should set badge correctly', () => {
-    component.action = ACTION.READ;
-    component.setBadge();
-    expect(component.badgeMessage).toMatch('');
-
-    component.action = ACTION.COPY;
-    component.setBadge();
-    expect(component.badgeMessage).toMatch(`Copying workbasket: ${component.workbasket.key}`);
   });
 });

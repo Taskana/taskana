@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkbasketOverviewComponent } from './workbasket-overview.component';
 import { Component, DebugElement, Input } from '@angular/core';
-import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
+import { Actions, NgxsModule, ofActionCompleted, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
@@ -18,12 +18,21 @@ import { TaskanaEngineService } from '../../../shared/services/taskana-engine/ta
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { MatIconModule } from '@angular/material/icon';
+import { take } from 'rxjs/operators';
 
 const showDialogFn = jest.fn().mockReturnValue(true);
 const NotificationServiceSpy = jest.fn().mockImplementation(
   (): Partial<NotificationService> => ({
     triggerError: showDialogFn,
     showToast: showDialogFn
+  })
+);
+
+const domainServiceSpy = jest.fn().mockImplementation(
+  (): Partial<DomainService> => ({
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+    getDomains: jest.fn().mockReturnValue(of())
   })
 );
 
@@ -79,6 +88,7 @@ describe('WorkbasketOverviewComponent', () => {
         WorkbasketService,
         { provide: NotificationService, useClass: NotificationServiceSpy },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        { provide: DomainService, useValue: domainServiceSpy },
         DomainService,
         RequestInProgressService,
         SelectedRouteService,
@@ -114,14 +124,14 @@ describe('WorkbasketOverviewComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   });
 
-  it('should display details when params id exists', async(() => {
-    let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(CreateWorkbasket)).subscribe(() => (actionDispatched = true));
+  it('should display details when params id exists', async((done) => {
+    actions$.pipe(ofActionCompleted(CreateWorkbasket), take(1)).subscribe(() => {
+      expect(component.routerParams.id).toMatch('new-workbasket');
+      expect(component.showDetail).toBeTruthy();
+      expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
+      done();
+    });
     component.ngOnInit();
-    expect(actionDispatched).toBe(true);
-    expect(component.routerParams.id).toMatch('new-workbasket');
-    expect(component.showDetail).toBeTruthy();
-    expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
   }));
 });
 

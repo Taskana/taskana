@@ -218,6 +218,7 @@ jobs:
       matrix:
         module:
           - taskana-common
+          - taskana-common-security
           - taskana-common-data
           - taskana-common-test
           - taskana-core
@@ -347,7 +348,7 @@ jobs:
           ./mvnw -B deploy -P $([[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot") \
           --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Djacoco.skip \
           -pl :taskana-parent,\
-          :taskana-common-parent,:taskana-common,:taskana-common-data,:taskana-common-test,\
+          :taskana-common-parent,:taskana-common,:taskana-common-security,:taskana-common-data,:taskana-common-test,\
           :taskana-lib-parent,:taskana-core,:taskana-cdi,:taskana-spring,\
           :taskana-rest-parent,:taskana-web,:taskana-rest-spring,\
           :taskana-history-parent,:taskana-simplehistory-provider,:taskana-simplehistory-rest-spring,:taskana-loghistory-provider

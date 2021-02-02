@@ -7,7 +7,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable, of } from 'rxjs';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
-import { SavingWorkbasketService } from '../../services/saving-workbaskets.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { Actions, NgxsModule, Store } from '@ngxs/store';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -21,6 +20,7 @@ import {
 } from '../../../shared/store/mock-data/mock-store';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { Pair } from '../../../shared/models/pair';
+import { DomainService } from '../../../shared/services/domain/domain.service';
 
 const routeParamsMock = { id: 'workbasket' };
 const activatedRouteMock = {
@@ -42,6 +42,14 @@ class WorkbasketDistributionTargetsListStub {
   @Output() allSelectedChange = new EventEmitter<boolean>();
 }
 
+const domainServiceSpy = jest.fn().mockImplementation(
+  (): Partial<DomainService> => ({
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+    getDomains: jest.fn().mockReturnValue(of())
+  })
+);
+
 const workbasketServiceSpy = jest.fn().mockImplementation(
   (): Partial<WorkbasketService> => ({
     getWorkBasketsSummary: jest.fn().mockReturnValue(of()),
@@ -49,11 +57,6 @@ const workbasketServiceSpy = jest.fn().mockImplementation(
   })
 );
 
-const savingWorkbasketServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SavingWorkbasketService> => ({
-    triggeredDistributionTargetsSaving: jest.fn().mockReturnValue(of())
-  })
-);
 const notificationsServiceSpy = jest.fn().mockImplementation(
   (): Partial<NotificationService> => ({
     showToast: jest.fn().mockReturnValue(true)
@@ -84,10 +87,10 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
       providers: [
         { provide: WorkbasketService, useClass: workbasketServiceSpy },
-        { provide: SavingWorkbasketService, useClass: savingWorkbasketServiceSpy },
         { provide: NotificationService, useClass: notificationsServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
+        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
+        { provide: DomainService, useClass: domainServiceSpy }
       ]
     }).compileComponents();
 
@@ -124,37 +127,62 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   });
 
   it('should get available and selected distribution targets', () => {
-    component.getWorkbaskets();
-    expect(component.availableDistributionTargets).toHaveLength(8); //mock-data has 8 entries
-    expect(component.distributionTargetsSelected).toHaveLength(3); //mock-data has 3 entries
-  });
+    // mock-data has 8 entries, array should be filtered by selected distribution targets
+    expect(component.availableDistributionTargets).toHaveLength(5);
+    expect(component.availableDistributionTargetsUndoClone).toHaveLength(5);
+    expect(component.availableDistributionTargetsFilterClone).toHaveLength(5);
 
-  // TODO: was ist das für ein test?
-  it('should emit filter model and side when performing filter', () => {
-    const performDualListFilterSpy = jest.spyOn(component, 'performFilter');
-    const filterModelMock: WorkbasketQueryFilterParameter = { domain: ['DOMAIN_A'] };
-
-    component.performFilter({ left: Side.AVAILABLE, right: filterModelMock });
-
-    expect(performDualListFilterSpy).toHaveBeenCalledWith({ right: filterModelMock, left: Side.AVAILABLE });
+    // mock-data has 3 entries
+    expect(component.selectedDistributionTargets).toHaveLength(3);
+    expect(component.selectedDistributionTargetsUndoClone).toHaveLength(3);
+    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
   });
 
   it('should move distribution targets to selected list', () => {
     component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    component.distributionTargetsLeft = component.distributionTargetsSelected;
+    const removeSelectedItems = jest.spyOn(component, 'removeSelectedItems');
     component.moveDistributionTargets(Side.AVAILABLE);
-    expect(component.distributionTargetsSelected).toHaveLength(4); // mock-data only has 3
+
+    expect(component.selectedDistributionTargets).toHaveLength(4); // mock-data only has 3
+    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(4);
+    expect(removeSelectedItems).toHaveBeenCalled();
+  });
+
+  it('should move distribution targets to available list', () => {
+    component.selectedDistributionTargets[0]['selected'] = true; // select first item in available array
+    const removeSelectedItems = jest.spyOn(component, 'removeSelectedItems');
+    component.moveDistributionTargets(Side.SELECTED);
+
+    expect(component.availableDistributionTargets).toHaveLength(6); // mock-data has 5
+    expect(component.availableDistributionTargetsFilterClone).toHaveLength(6);
+    expect(removeSelectedItems).toHaveBeenCalled();
+  });
+
+  it('should set selectAll checkboxes to true when moving a workbasket', () => {
+    [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
+      component.moveDistributionTargets(side);
+      expect(component.selectAllLeft).toBeTruthy();
+      expect(component.selectAllRight).toBeTruthy();
+    });
+  });
+
+  it('should call unselectItems() when moving a workbasket', () => {
+    const unselectItems = jest.spyOn(component, 'unselectItems');
+
+    [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
+      component.moveDistributionTargets(side);
+      expect(unselectItems).toHaveBeenCalled();
+    });
   });
 
   it('should reset distribution targets to last state when undo is called', () => {
-    component.distributionTargetsClone = component.availableDistributionTargets;
-    component.distributionTargetsSelectedClone = component.distributionTargetsSelected;
     component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    component.distributionTargetsLeft = component.distributionTargetsSelected;
+
     component.moveDistributionTargets(Side.AVAILABLE);
-    expect(component.distributionTargetsSelected).toHaveLength(4); // mock-data only has 3
+    expect(component.selectedDistributionTargets).toHaveLength(4); // mock-data only has 3
 
     component.onClear();
-    expect(component.distributionTargetsSelected).toHaveLength(3);
+    expect(component.selectedDistributionTargets).toHaveLength(3);
+    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
   });
 });

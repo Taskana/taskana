@@ -39,7 +39,8 @@ const classificationServiceSpy = jest.fn().mockImplementation(
 );
 const domainServiceSpy = jest.fn().mockImplementation(
   (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of())
+    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+    getSelectedDomain: jest.fn().mockReturnValue(of('A'))
   })
 );
 

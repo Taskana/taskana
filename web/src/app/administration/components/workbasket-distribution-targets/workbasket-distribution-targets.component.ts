@@ -1,29 +1,26 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-distribution-targets';
-import { ACTION } from 'app/shared/models/action';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { SavingWorkbasketService, SavingInformation } from 'app/administration/services/saving-workbaskets.service';
-import { Page } from 'app/shared/models/page';
 import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
   GetAvailableDistributionTargets,
   GetWorkbasketDistributionTargets,
-  UpdateWorkbasketDistributionTargets,
-  UpdateWorkbasketAccessItems
+  SaveNewWorkbasket,
+  UpdateWorkbasket,
+  UpdateWorkbasketDistributionTargets
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
 import { Pair } from '../../../shared/models/pair';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
-import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 
 export enum Side {
   AVAILABLE,
@@ -38,32 +35,22 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   @Input()
   workbasket: Workbasket;
 
-  @Input()
-  action: ACTION;
-
   toolbarState = false;
   sideBySide = true;
   displayingDistributionTargetsPicker = true;
 
-  distributionTargetsSelectedResource: WorkbasketDistributionTargets;
-  availableDistributionTargets: Array<WorkbasketSummary> = [];
-  distributionTargetsClone: Array<WorkbasketSummary>;
-
-  distributionTargetsLeft: Array<WorkbasketSummary> = [];
-  distributionTargetsSelected: Array<WorkbasketSummary>;
-  distributionTargetsSelectedClone: Array<WorkbasketSummary>;
-
-  loadingItems = false;
   side = Side;
-  private initialized = false;
-  currentPage: Page;
-  pageParameter: QueryPagingParameter = {
-    page: 1,
-    'page-size': 9
-  };
-  cards: number;
   selectAllLeft = false;
   selectAllRight = false;
+
+  availableDistributionTargets: WorkbasketSummary[] = [];
+  availableDistributionTargetsUndoClone: WorkbasketSummary[];
+  availableDistributionTargetsFilterClone: WorkbasketSummary[];
+
+  selectedDistributionTargets: WorkbasketSummary[];
+  selectedDistributionTargetsUndoClone: WorkbasketSummary[];
+  selectedDistributionTargetsFilterClone: WorkbasketSummary[];
+  selectedDistributionTargetsResource: WorkbasketDistributionTargets;
 
   @Select(WorkbasketSelectors.workbasketDistributionTargets)
   workbasketDistributionTargets$: Observable<WorkbasketDistributionTargets>;
@@ -81,7 +68,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   constructor(
     private workbasketService: WorkbasketService,
-    private savingWorkbaskets: SavingWorkbasketService,
     private notificationsService: NotificationService,
     private store: Store,
     private ngxsActions$: Actions
@@ -93,44 +79,52 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
    */
   ngOnInit() {
     this.selectedWorkbasket$
-      .pipe(filter((selectedWorkbasket) => typeof selectedWorkbasket !== 'undefined'))
+      .pipe(
+        filter((selectedWorkbasket) => typeof selectedWorkbasket !== 'undefined'),
+        takeUntil(this.destroy$)
+      )
       .subscribe((selectedWorkbasket) => {
         this.workbasket = selectedWorkbasket;
       });
-    if (Object.keys(this.workbasket).length !== 0) {
+
+    if (this.workbasket?.workbasketId) {
       this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
       this.store.dispatch(new GetAvailableDistributionTargets());
     }
 
-    this.availableDistributionTargets$
-      .pipe(takeUntil(this.destroy$))
-      .pipe(filter((availableDistributionTargets) => typeof availableDistributionTargets !== 'undefined'))
-      .subscribe((availableDistributionTargets) => {
-        this.availableDistributionTargets = availableDistributionTargets.map((wb) => ({ ...wb }));
-      });
-
-    this.savingWorkbaskets
-      .triggeredDistributionTargetsSaving()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((savingInformation: SavingInformation) => {
-        if (this.action === ACTION.COPY) {
-          this.distributionTargetsSelectedResource._links.self.href = savingInformation.url;
-          this.onSave();
-        }
-      });
-
-    this.workbasketDistributionTargets$.subscribe((workbasketDistributionTargets) => {
+    this.workbasketDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((workbasketDistributionTargets) => {
       if (typeof workbasketDistributionTargets !== 'undefined') {
-        this.distributionTargetsSelectedResource = { ...workbasketDistributionTargets };
-        this.distributionTargetsSelected = this.distributionTargetsSelectedResource.distributionTargets;
-        this.distributionTargetsSelectedClone = { ...this.distributionTargetsSelected };
-        this.pageParameter.page = 1;
-        this.getWorkbaskets();
+        this.selectedDistributionTargetsResource = { ...workbasketDistributionTargets };
+
+        this.selectedDistributionTargets = [];
+        workbasketDistributionTargets.distributionTargets.forEach((distributionTarget) => {
+          const target = {};
+          Object.keys(distributionTarget).forEach((key) => {
+            target[key] = distributionTarget[key];
+          });
+          this.selectedDistributionTargets.push(target);
+        });
+
+        this.selectedDistributionTargetsFilterClone = [...this.selectedDistributionTargets];
+        this.selectedDistributionTargetsUndoClone = [...this.selectedDistributionTargets];
+
+        this.getAvailableDistributionTargets();
       }
     });
 
-    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasketAccessItems), takeUntil(this.destroy$)).subscribe(() => {
+    // saving workbasket distributions targets when existing workbasket was modified
+    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
       this.onSave();
+    });
+
+    // saving workbasket distributions targets when workbasket was copied or created
+    this.ngxsActions$.pipe(ofActionCompleted(SaveNewWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
+      this.selectedWorkbasket$.pipe(take(1)).subscribe((workbasket) => {
+        this.selectedDistributionTargetsResource._links = {
+          self: { href: workbasket._links.distributionTargets.href }
+        };
+        this.onSave();
+      });
     });
 
     this.buttonAction$
@@ -147,11 +141,36 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       });
   }
 
-  onScroll() {
-    if (this.currentPage && this.currentPage.totalPages > this.pageParameter.page) {
-      this.loadingItems = true;
-      this.getNextPage();
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.workbasket.currentValue !== changes.workbasket.previousValue) {
+      this.getAvailableDistributionTargets();
     }
+  }
+
+  filterWorkbasketsByWorkbasketIDs(workbaskets: WorkbasketSummary[], IDs: WorkbasketSummary[]): WorkbasketSummary[] {
+    const workbasketIds: string[] = IDs.map((workbasket) => workbasket.workbasketId);
+    return workbaskets.filter((workbasket) => !workbasketIds.includes(workbasket.workbasketId));
+  }
+
+  getAvailableDistributionTargets() {
+    this.availableDistributionTargets$
+      .pipe(
+        take(1),
+        filter((availableDistributionTargets) => typeof availableDistributionTargets !== 'undefined')
+      )
+      .subscribe((availableDistributionTargets) => {
+        this.availableDistributionTargets = availableDistributionTargets.map((wb) => ({ ...wb }));
+
+        if (this.selectedDistributionTargets && this.selectedDistributionTargets.length !== 0) {
+          this.availableDistributionTargets = this.filterWorkbasketsByWorkbasketIDs(
+            this.availableDistributionTargets,
+            this.selectedDistributionTargets
+          );
+        }
+
+        this.availableDistributionTargetsUndoClone = [...this.availableDistributionTargets];
+        this.availableDistributionTargetsFilterClone = [...this.availableDistributionTargets];
+      });
   }
 
   changeToolbarState(state: boolean) {
@@ -162,56 +181,42 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.displayingDistributionTargetsPicker = !this.displayingDistributionTargetsPicker;
   }
 
-  getWorkbaskets(side?: Side) {
-    if (this.distributionTargetsSelected && !this.initialized) {
-      this.initialized = true;
-      this.pageParameter['page-size'] = this.cards + this.distributionTargetsSelected.length;
-    }
-
-    this.workbasketService
-      .getWorkBasketsSummary(true, undefined, undefined, this.pageParameter)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
-        if (this.pageParameter === 1) {
-          this.availableDistributionTargets = [];
-          this.currentPage = distributionTargetsAvailable.page;
-        }
-        if (side === Side.AVAILABLE) {
-          this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-        } else if (side === Side.SELECTED) {
-          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
-        } else {
-          this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
-          this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
-        }
-      });
-  }
-
-  getNextPage(side?: Side) {
-    this.pageParameter.page += 1;
-    this.getWorkbaskets(side);
-  }
-
+  // TODO:
+  //  an own filter would save a lot of work here because the workbasketService filter
+  //  returns all available distribution targets and must be filtered again
   performFilter({ left: side, right: filter }: Pair<Side, WorkbasketQueryFilterParameter>) {
     this.workbasketService
       .getWorkBasketsSummary(true, filter)
       .pipe(takeUntil(this.destroy$))
       .subscribe((distributionTargetsAvailable: WorkbasketSummaryRepresentation) => {
-        this.fillDistributionTargets(side, []);
+        const isFilterEmpty =
+          filter['name-like'].length === 0 &&
+          filter['key-like'].length === 0 &&
+          filter['description-like'].length === 0 &&
+          filter['owner-like'].length === 0 &&
+          filter['type'].length === 0;
 
-        if (this.pageParameter === 1) {
-          this.availableDistributionTargets = [];
-          this.currentPage = distributionTargetsAvailable.page;
-        }
+        // filter available side
         if (side === Side.AVAILABLE) {
-          this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-        } else if (side === Side.SELECTED) {
-          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
-        } else {
-          this.availableDistributionTargets.push(...distributionTargetsAvailable.workbaskets);
-          this.distributionTargetsLeft = Object.assign([], distributionTargetsAvailable.workbaskets);
-          this.distributionTargetsClone = Object.assign([], distributionTargetsAvailable.workbaskets);
+          if (isFilterEmpty) {
+            this.availableDistributionTargets = this.availableDistributionTargetsFilterClone;
+          } else {
+            this.availableDistributionTargets = this.filterWorkbasketsByWorkbasketIDs(
+              distributionTargetsAvailable.workbaskets,
+              this.selectedDistributionTargetsFilterClone
+            );
+          }
+        }
+        // filter selected side
+        else if (side === Side.SELECTED) {
+          if (isFilterEmpty) {
+            this.selectedDistributionTargets = this.selectedDistributionTargetsFilterClone;
+          } else {
+            const ids = distributionTargetsAvailable.workbaskets.map((workbasket) => workbasket.workbasketId);
+            this.selectedDistributionTargets = this.selectedDistributionTargetsFilterClone.filter((workbasket) =>
+              ids.includes(workbasket.workbasketId)
+            );
+          }
         }
       });
   }
@@ -219,7 +224,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   onSave() {
     this.store.dispatch(
       new UpdateWorkbasketDistributionTargets(
-        this.distributionTargetsSelectedResource._links.self.href,
+        this.selectedDistributionTargetsResource._links.self.href,
         this.getSelectedIds()
       )
     );
@@ -227,45 +232,56 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   moveDistributionTargets(side: number) {
+    // get all workbaskets without applied filter and without overwriting the selected property
+    this.selectedDistributionTargets = this.selectedDistributionTargets.concat(
+      this.filterWorkbasketsByWorkbasketIDs(
+        this.selectedDistributionTargetsFilterClone,
+        this.selectedDistributionTargets
+      )
+    );
+    this.availableDistributionTargets = this.availableDistributionTargets.concat(
+      this.filterWorkbasketsByWorkbasketIDs(
+        this.availableDistributionTargetsFilterClone,
+        this.availableDistributionTargets
+      )
+    );
+
     if (side === Side.AVAILABLE) {
-      const itemsLeft = this.availableDistributionTargets.length;
-      const itemsRight = this.distributionTargetsLeft.length;
+      // moving available items to selected side
       const itemsSelected = this.getSelectedItems(this.availableDistributionTargets);
-      this.distributionTargetsSelected = [...this.distributionTargetsSelected, ...itemsSelected];
-      this.distributionTargetsLeft = this.distributionTargetsLeft.concat(itemsSelected);
-      if (
-        itemsLeft - itemsSelected.length <= this.pageParameter['page-size'] &&
-        itemsLeft + itemsRight < this.currentPage.totalElements
-      ) {
-        this.getNextPage(side);
-      }
-      this.unselectItems(this.distributionTargetsSelected);
+      this.selectedDistributionTargets = this.selectedDistributionTargets.concat(itemsSelected);
+      this.availableDistributionTargets = this.removeSelectedItems(this.availableDistributionTargets, itemsSelected);
+      this.unselectItems(itemsSelected);
     } else {
-      const itemsSelected = this.getSelectedItems(this.distributionTargetsLeft);
-      this.distributionTargetsSelected = this.removeSelectedItems(this.distributionTargetsSelected, itemsSelected);
-      this.distributionTargetsLeft = this.removeSelectedItems(this.distributionTargetsLeft, itemsSelected);
+      // moving selected items to available side
+      const itemsSelected = this.getSelectedItems(this.selectedDistributionTargets);
+      this.selectedDistributionTargets = this.removeSelectedItems(this.selectedDistributionTargets, itemsSelected);
       this.availableDistributionTargets = this.availableDistributionTargets.concat(itemsSelected);
       this.unselectItems(itemsSelected);
     }
+    this.selectedDistributionTargetsFilterClone = this.selectedDistributionTargets;
+    this.availableDistributionTargetsFilterClone = this.availableDistributionTargets;
+    this.selectAllRight = true;
+    this.selectAllLeft = true;
   }
 
   onClear() {
     this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
-    this.availableDistributionTargets = Object.assign([], this.distributionTargetsClone);
-    this.distributionTargetsLeft = Object.assign([], this.distributionTargetsSelectedClone);
-    this.distributionTargetsSelected = Object.assign([], this.distributionTargetsSelectedClone);
+    this.availableDistributionTargets = Object.assign([], this.availableDistributionTargetsUndoClone);
+    this.availableDistributionTargetsFilterClone = Object.assign([], this.availableDistributionTargetsUndoClone);
+    this.selectedDistributionTargets = Object.assign([], this.selectedDistributionTargetsUndoClone);
+    this.selectedDistributionTargetsFilterClone = Object.assign([], this.selectedDistributionTargetsUndoClone);
   }
 
-  fillDistributionTargets(side: Side, workbaskets: WorkbasketSummary[]) {
-    this.availableDistributionTargets = side === Side.AVAILABLE ? workbaskets : this.availableDistributionTargets;
-    this.distributionTargetsLeft = side === Side.SELECTED ? workbaskets : this.distributionTargetsLeft;
-  }
-
-  getSelectedItems(originList: any): Array<any> {
+  getSelectedItems(originList: any): any[] {
     return originList.filter((item: any) => item.selected === true);
   }
 
-  unselectItems(originList: Array<any>): Array<any> {
+  getSelectedIds(): string[] {
+    return this.selectedDistributionTargets.map((distributionTarget) => distributionTarget.workbasketId);
+  }
+
+  unselectItems(originList: any[]): any[] {
     return originList
       .filter((item) => item.selected)
       .map((item) => {
@@ -281,10 +297,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       }
     }
     return copyList;
-  }
-
-  getSelectedIds(): Array<string> {
-    return this.distributionTargetsSelected.map((distributionTarget) => distributionTarget.workbasketId);
   }
 
   toggleSideBySideView() {

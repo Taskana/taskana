@@ -31,7 +31,6 @@ import { WorkbasketOverviewComponent } from './components/workbasket-overview/wo
 /**
  * Services
  */
-import { SavingWorkbasketService } from './services/saving-workbaskets.service';
 import { ClassificationDefinitionService } from './services/classification-definition.service';
 import { WorkbasketDefinitionService } from './services/workbasket-definition.service';
 import { ImportExportService } from './services/import-export.service';
@@ -113,7 +112,6 @@ const DECLARATIONS = [
   providers: [
     ClassificationDefinitionService,
     WorkbasketDefinitionService,
-    SavingWorkbasketService,
     ClassificationCategoriesService,
     ImportExportService
   ],

@@ -35,7 +35,6 @@
         <mat-menu #menu="matMenu">
           <button class="classification-list__all-button" mat-menu-item (click)="selectCategory('')">
             <span> <mat-icon style="color: #555" class="classification-list__filter-all-icon">filter_list</mat-icon> All </span>
-            <span> All </span>
           </button>
           <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
             <svg-icon class="classification-list__categories" [src]="(getCategoryIcon(category) | async)?.left"

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,17 +63,13 @@ class TaskServiceImplIntAutocommitTest {
 
   @BeforeEach
   void setup() throws Exception {
+    sampleDataGenerator.clearDb();
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     taskanaEngineImpl.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     taskServiceImpl = (TaskServiceImpl) taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
     workbasketService = taskanaEngine.getWorkbasketService();
-  }
-
-  @AfterEach
-  void tearDown() {
-    sampleDataGenerator.clearDb();
   }
 
   @Test
