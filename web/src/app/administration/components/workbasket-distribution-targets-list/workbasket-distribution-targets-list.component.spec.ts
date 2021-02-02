@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output, Pipe, PipeTransform } from '@angular/core';
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { OrderBy } from '../../../shared/pipes/order-by.pipe';
 
 @Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {
@@ -28,6 +29,13 @@ class IconTypeStub {
   @Input() text: string;
 }
 
+@Pipe({ name: 'orderBy' })
+class OrderByMock implements PipeTransform {
+  transform(list, sortBy): any {
+    return list;
+  }
+}
+
 describe('WorkbasketDistributionTargetsListComponent', () => {
   let fixture: ComponentFixture<WorkbasketDistributionTargetsListComponent>;
   let debugElement: DebugElement;
@@ -43,7 +51,7 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
         InfiniteScrollModule,
         BrowserAnimationsModule
       ],
-      declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub],
+      declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],
       providers: []
     }).compileComponents();
 
@@ -76,11 +84,23 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     expect(component.toolbarState).toBe(true);
   });
 
+  it('should display filter when toolbarState is true', () => {
+    component.toolbarState = true;
+    fixture.detectChanges();
+    expect(debugElement.nativeElement.querySelector('taskana-shared-workbasket-filter')).toBeTruthy();
+  });
+
   it('should display all available workbaskets', () => {
     fixture.detectChanges();
     const distributionTargetList = debugElement.nativeElement.getElementsByClassName(
       'workbasket-distribution-targets__workbaskets-item'
     );
     expect(distributionTargetList).toHaveLength(5);
+  });
+
+  it('should call orderBy pipe', () => {
+    const orderBySpy = jest.spyOn(OrderByMock.prototype, 'transform');
+    fixture.detectChanges();
+    expect(orderBySpy).toHaveBeenCalledWith(component.distributionTargets, ['type', 'description']);
   });
 });
