@@ -1,20 +1,15 @@
 package pro.taskana.common.api.security;
 
 import java.security.Principal;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 
-/** Represents a group with a name and a set of members. */
+/** Represents a group with a name. */
 public class GroupPrincipal implements Principal {
 
   private final String name;
-  private final Set<Principal> members;
 
   public GroupPrincipal(String name) {
     this.name = name;
-    members = new HashSet<>();
   }
 
   @Override
@@ -22,24 +17,25 @@ public class GroupPrincipal implements Principal {
     return name;
   }
 
-  public boolean addMember(Principal user) {
-    return members.add(user);
+  @Override
+  public int hashCode() {
+    return Objects.hash(name);
   }
 
-  public boolean removeMember(Principal user) {
-    return members.remove(user);
-  }
-
-  public boolean isMember(Principal member) {
-    return members.contains(member);
-  }
-
-  public Enumeration<Principal> members() {
-    return Collections.enumeration(members);
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof GroupPrincipal)) {
+      return false;
+    }
+    GroupPrincipal other = (GroupPrincipal) obj;
+    return Objects.equals(name, other.name);
   }
 
   @Override
   public String toString() {
-    return "GroupPrincipal [name=" + name + ", members=" + members + "]";
+    return "GroupPrincipal [name=" + name + "]";
   }
 }
