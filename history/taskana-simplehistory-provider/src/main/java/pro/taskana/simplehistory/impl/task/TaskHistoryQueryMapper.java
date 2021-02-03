@@ -2,7 +2,6 @@ package pro.taskana.simplehistory.impl.task;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.simplehistory.impl.TaskHistoryQueryImpl;
@@ -68,32 +67,29 @@ public interface TaskHistoryQueryMapper {
           + "</where>"
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID"),
-        @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID"),
-        @Result(property = "taskId", column = "TASK_ID"),
-        @Result(property = "eventType", column = "EVENT_TYPE"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "userId", column = "USER_ID"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "workbasketKey", column = "WORKBASKET_KEY"),
-        @Result(property = "porCompany", column = "POR_COMPANY"),
-        @Result(property = "porSystem", column = "POR_SYSTEM"),
-        @Result(property = "porInstance", column = "POR_INSTANCE"),
-        @Result(property = "porType", column = "POR_TYPE"),
-        @Result(property = "porValue", column = "POR_VALUE"),
-        @Result(property = "taskClassificationKey", column = "TASK_CLASSIFICATION_KEY"),
-        @Result(property = "taskClassificationCategory", column = "TASK_CLASSIFICATION_CATEGORY"),
-        @Result(property = "attachmentClassificationKey", column = "ATTACHMENT_CLASSIFICATION_KEY"),
-        @Result(property = "oldValue", column = "OLD_VALUE"),
-        @Result(property = "newValue", column = "NEW_VALUE"),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4")
-      })
+  @Result(property = "id", column = "ID")
+  @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID")
+  @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID")
+  @Result(property = "taskId", column = "TASK_ID")
+  @Result(property = "eventType", column = "EVENT_TYPE")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "userId", column = "USER_ID")
+  @Result(property = "domain", column = "DOMAIN")
+  @Result(property = "workbasketKey", column = "WORKBASKET_KEY")
+  @Result(property = "porCompany", column = "POR_COMPANY")
+  @Result(property = "porSystem", column = "POR_SYSTEM")
+  @Result(property = "porInstance", column = "POR_INSTANCE")
+  @Result(property = "porType", column = "POR_TYPE")
+  @Result(property = "porValue", column = "POR_VALUE")
+  @Result(property = "taskClassificationKey", column = "TASK_CLASSIFICATION_KEY")
+  @Result(property = "taskClassificationCategory", column = "TASK_CLASSIFICATION_CATEGORY")
+  @Result(property = "attachmentClassificationKey", column = "ATTACHMENT_CLASSIFICATION_KEY")
+  @Result(property = "oldValue", column = "OLD_VALUE")
+  @Result(property = "newValue", column = "NEW_VALUE")
+  @Result(property = "custom1", column = "CUSTOM_1")
+  @Result(property = "custom2", column = "CUSTOM_2")
+  @Result(property = "custom3", column = "CUSTOM_3")
+  @Result(property = "custom4", column = "CUSTOM_4")
   List<TaskHistoryEvent> queryHistoryEvents(TaskHistoryQueryImpl historyEventQuery);
 
   @Select(

@@ -42,12 +42,10 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     LOGGER.info("Running job to delete all workbaskets marked for deletion");
     try {
       List<String> workbasketsMarkedForDeletion = getWorkbasketsMarkedForDeletion();
-
       int totalNumberOfWorkbasketDeleted =
           CollectionUtil.partitionBasedOnSize(workbasketsMarkedForDeletion, batchSize).stream()
               .mapToInt(this::deleteWorkbasketsTransactionally)
               .sum();
-
       LOGGER.info(
           "Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
     } catch (Exception e) {

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.monitor.api.CombinedClassificationFilter;
@@ -112,11 +111,9 @@ public interface MonitorMapper {
           + ") AS B "
           + "GROUP BY B.CLASSIFICATION_CATEGORY, B.AGE_IN_DAYS "
           + "</script>")
-  @Results({
-    @Result(column = "CLASSIFICATION_CATEGORY", property = "key"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
-  })
+  @Result(column = "CLASSIFICATION_CATEGORY", property = "key")
+  @Result(column = "AGE_IN_DAYS", property = "ageInDays")
+  @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfCategories(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
@@ -161,11 +158,9 @@ public interface MonitorMapper {
           + ") AS B "
           + "GROUP BY B.CLASSIFICATION_KEY, B.AGE_IN_DAYS "
           + "</script>")
-  @Results({
-    @Result(column = "CLASSIFICATION_KEY", property = "key"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
-  })
+  @Result(column = "CLASSIFICATION_KEY", property = "key")
+  @Result(column = "AGE_IN_DAYS", property = "ageInDays")
+  @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfClassifications(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
@@ -210,12 +205,10 @@ public interface MonitorMapper {
           + ") AS B "
           + "GROUP BY B.TASK_CLASSIFICATION_KEY, B.ATTACHMENT_CLASSIFICATION_KEY, B.AGE_IN_DAYS "
           + "</script>")
-  @Results({
-    @Result(column = "TASK_CLASSIFICATION_KEY", property = "key"),
-    @Result(column = "ATTACHMENT_CLASSIFICATION_KEY", property = "attachmentKey"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
-  })
+  @Result(column = "TASK_CLASSIFICATION_KEY", property = "key")
+  @Result(column = "ATTACHMENT_CLASSIFICATION_KEY", property = "attachmentKey")
+  @Result(column = "AGE_IN_DAYS", property = "ageInDays")
+  @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassifications(
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
@@ -260,11 +253,9 @@ public interface MonitorMapper {
           + ") AS B "
           + "GROUP BY B.CUSTOM_FIELD, B.AGE_IN_DAYS "
           + "</script>")
-  @Results({
-    @Result(column = "CUSTOM_FIELD", property = "key"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
-  })
+  @Result(column = "CUSTOM_FIELD", property = "key")
+  @Result(column = "AGE_IN_DAYS", property = "ageInDays")
+  @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfTaskCustomFieldValues(
       @Param("customField") TaskCustomField taskCustomField,
       @Param("workbasketIds") List<String> workbasketIds,
@@ -368,11 +359,9 @@ public interface MonitorMapper {
           + "</where>"
           + "GROUP BY WORKBASKET_KEY, STATE"
           + "</script>")
-  @Results({
-    @Result(column = "WORKBASKET_KEY", property = "workbasketKey"),
-    @Result(column = "STATE", property = "state"),
-    @Result(column = "COUNT", property = "count"),
-  })
+  @Result(column = "WORKBASKET_KEY", property = "workbasketKey")
+  @Result(column = "STATE", property = "state")
+  @Result(column = "COUNT", property = "count")
   List<TaskQueryItem> getTasksCountByState(
       @Param("domains") List<String> domains,
       @Param("states") List<TaskState> states,
@@ -468,15 +457,13 @@ public interface MonitorMapper {
           + ") AS A "
           + "GROUP BY A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4 "
           + "</script>")
-  @Results({
-    @Result(column = "STATUS", property = "status"),
-    @Result(column = "AGE_IN_DAYS", property = "ageInDays"),
-    @Result(column = "COUNT", property = "count"),
-    @Result(column = "ORG_LEVEL_1", property = "orgLevel1"),
-    @Result(column = "ORG_LEVEL_2", property = "orgLevel2"),
-    @Result(column = "ORG_LEVEL_3", property = "orgLevel3"),
-    @Result(column = "ORG_LEVEL_4", property = "orgLevel4")
-  })
+  @Result(column = "STATUS", property = "status")
+  @Result(column = "AGE_IN_DAYS", property = "ageInDays")
+  @Result(column = "COUNT", property = "count")
+  @Result(column = "ORG_LEVEL_1", property = "orgLevel1")
+  @Result(column = "ORG_LEVEL_2", property = "orgLevel2")
+  @Result(column = "ORG_LEVEL_3", property = "orgLevel3")
+  @Result(column = "ORG_LEVEL_4", property = "orgLevel4")
   List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(
       @Param("status") TaskTimestamp status,
       @Param("classificationCategories") List<String> classificationCategories,

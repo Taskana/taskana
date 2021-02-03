@@ -2,7 +2,6 @@ package pro.taskana.workbasket.internal;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
@@ -97,24 +96,22 @@ public interface WorkbasketQueryMapper {
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results({
-    @Result(property = "id", column = "ID"),
-    @Result(property = "key", column = "KEY"),
-    @Result(property = "name", column = "NAME"),
-    @Result(property = "description", column = "DESCRIPTION"),
-    @Result(property = "owner", column = "OWNER"),
-    @Result(property = "domain", column = "DOMAIN"),
-    @Result(property = "type", column = "TYPE"),
-    @Result(property = "custom1", column = "CUSTOM_1"),
-    @Result(property = "custom2", column = "CUSTOM_2"),
-    @Result(property = "custom3", column = "CUSTOM_3"),
-    @Result(property = "custom4", column = "CUSTOM_4"),
-    @Result(property = "orgLevel1", column = "ORG_LEVEL_1"),
-    @Result(property = "orgLevel2", column = "ORG_LEVEL_2"),
-    @Result(property = "orgLevel3", column = "ORG_LEVEL_3"),
-    @Result(property = "orgLevel4", column = "ORG_LEVEL_4"),
-    @Result(property = "markedForDeletion", column = "MARKED_FOR_DELETION")
-  })
+  @Result(property = "id", column = "ID")
+  @Result(property = "key", column = "KEY")
+  @Result(property = "name", column = "NAME")
+  @Result(property = "description", column = "DESCRIPTION")
+  @Result(property = "owner", column = "OWNER")
+  @Result(property = "domain", column = "DOMAIN")
+  @Result(property = "type", column = "TYPE")
+  @Result(property = "custom1", column = "CUSTOM_1")
+  @Result(property = "custom2", column = "CUSTOM_2")
+  @Result(property = "custom3", column = "CUSTOM_3")
+  @Result(property = "custom4", column = "CUSTOM_4")
+  @Result(property = "orgLevel1", column = "ORG_LEVEL_1")
+  @Result(property = "orgLevel2", column = "ORG_LEVEL_2")
+  @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
+  @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
+  @Result(property = "markedForDeletion", column = "MARKED_FOR_DELETION")
   List<WorkbasketSummaryImpl> queryWorkbasketSummaries(WorkbasketQueryImpl workbasketQuery);
 
   @Select(
@@ -133,30 +130,28 @@ public interface WorkbasketQueryMapper {
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='orderItem' collection='orderBy' separator=',' >${orderItem}</foreach></if> "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results({
-    @Result(property = "id", column = "ID"),
-    @Result(property = "workbasketId", column = "WORKBASKET_ID"),
-    @Result(property = "workbasketKey", column = "KEY"),
-    @Result(property = "accessId", column = "ACCESS_ID"),
-    @Result(property = "accessName", column = "ACCESS_NAME"),
-    @Result(property = "permRead", column = "PERM_READ"),
-    @Result(property = "permOpen", column = "PERM_OPEN"),
-    @Result(property = "permAppend", column = "PERM_APPEND"),
-    @Result(property = "permTransfer", column = "PERM_TRANSFER"),
-    @Result(property = "permDistribute", column = "PERM_DISTRIBUTE"),
-    @Result(property = "permCustom1", column = "PERM_CUSTOM_1"),
-    @Result(property = "permCustom2", column = "PERM_CUSTOM_2"),
-    @Result(property = "permCustom3", column = "PERM_CUSTOM_3"),
-    @Result(property = "permCustom4", column = "PERM_CUSTOM_4"),
-    @Result(property = "permCustom5", column = "PERM_CUSTOM_5"),
-    @Result(property = "permCustom6", column = "PERM_CUSTOM_6"),
-    @Result(property = "permCustom7", column = "PERM_CUSTOM_7"),
-    @Result(property = "permCustom8", column = "PERM_CUSTOM_8"),
-    @Result(property = "permCustom9", column = "PERM_CUSTOM_9"),
-    @Result(property = "permCustom10", column = "PERM_CUSTOM_10"),
-    @Result(property = "permCustom11", column = "PERM_CUSTOM_11"),
-    @Result(property = "permCustom12", column = "PERM_CUSTOM_12")
-  })
+  @Result(property = "id", column = "ID")
+  @Result(property = "workbasketId", column = "WORKBASKET_ID")
+  @Result(property = "workbasketKey", column = "KEY")
+  @Result(property = "accessId", column = "ACCESS_ID")
+  @Result(property = "accessName", column = "ACCESS_NAME")
+  @Result(property = "permRead", column = "PERM_READ")
+  @Result(property = "permOpen", column = "PERM_OPEN")
+  @Result(property = "permAppend", column = "PERM_APPEND")
+  @Result(property = "permTransfer", column = "PERM_TRANSFER")
+  @Result(property = "permDistribute", column = "PERM_DISTRIBUTE")
+  @Result(property = "permCustom1", column = "PERM_CUSTOM_1")
+  @Result(property = "permCustom2", column = "PERM_CUSTOM_2")
+  @Result(property = "permCustom3", column = "PERM_CUSTOM_3")
+  @Result(property = "permCustom4", column = "PERM_CUSTOM_4")
+  @Result(property = "permCustom5", column = "PERM_CUSTOM_5")
+  @Result(property = "permCustom6", column = "PERM_CUSTOM_6")
+  @Result(property = "permCustom7", column = "PERM_CUSTOM_7")
+  @Result(property = "permCustom8", column = "PERM_CUSTOM_8")
+  @Result(property = "permCustom9", column = "PERM_CUSTOM_9")
+  @Result(property = "permCustom10", column = "PERM_CUSTOM_10")
+  @Result(property = "permCustom11", column = "PERM_CUSTOM_11")
+  @Result(property = "permCustom12", column = "PERM_CUSTOM_12")
   List<WorkbasketAccessItemImpl> queryWorkbasketAccessItems(
       WorkbasketAccessItemQuery accessItemQuery);
 

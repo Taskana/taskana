@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -33,7 +32,7 @@ public interface JobMapper {
           + "</choose>"
           + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler} )"
           + "</script>")
-  @Results(value = {@Result(property = "jobId", column = "JOB_ID")})
+  @Result(property = "jobId", column = "JOB_ID")
   Integer insertJob(@Param("job") ScheduledJob job);
 
   @Select(
@@ -43,23 +42,20 @@ public interface JobMapper {
           + "ORDER BY PRIORITY DESC "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "jobId", column = "JOB_ID"),
-        @Result(property = "priority", column = "PRIORITY"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "due", column = "DUE"),
-        @Result(property = "state", column = "STATE"),
-        @Result(property = "lockedBy", column = "LOCKED_BY"),
-        @Result(property = "lockExpires", column = "LOCK_EXPIRES"),
-        @Result(property = "type", column = "TYPE"),
-        @Result(property = "retryCount", column = "RETRY_COUNT"),
-        @Result(
-            property = "arguments",
-            column = "ARGUMENTS",
-            javaType = Map.class,
-            typeHandler = MapTypeHandler.class)
-      })
+  @Result(property = "jobId", column = "JOB_ID")
+  @Result(property = "priority", column = "PRIORITY")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "due", column = "DUE")
+  @Result(property = "state", column = "STATE")
+  @Result(property = "lockedBy", column = "LOCKED_BY")
+  @Result(property = "lockExpires", column = "LOCK_EXPIRES")
+  @Result(property = "type", column = "TYPE")
+  @Result(property = "retryCount", column = "RETRY_COUNT")
+  @Result(
+      property = "arguments",
+      column = "ARGUMENTS",
+      javaType = Map.class,
+      typeHandler = MapTypeHandler.class)
   List<ScheduledJob> findJobsToRun(Instant now);
 
   @Update(

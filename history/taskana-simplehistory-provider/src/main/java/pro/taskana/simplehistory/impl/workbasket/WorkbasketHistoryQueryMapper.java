@@ -2,7 +2,6 @@ package pro.taskana.simplehistory.impl.workbasket;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import pro.taskana.simplehistory.impl.WorkbasketHistoryQueryImpl;
@@ -55,26 +54,23 @@ public interface WorkbasketHistoryQueryMapper {
           + "</where>"
           + "<if test='!orderBy.isEmpty()'>ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach></if> "
           + "</script>")
-  @Results(
-      value = {
-        @Result(property = "id", column = "ID"),
-        @Result(property = "workbasketId", column = "WORKBASKET_ID"),
-        @Result(property = "eventType", column = "EVENT_TYPE"),
-        @Result(property = "created", column = "CREATED"),
-        @Result(property = "userId", column = "USER_ID"),
-        @Result(property = "domain", column = "DOMAIN"),
-        @Result(property = "key", column = "KEY"),
-        @Result(property = "type", column = "TYPE"),
-        @Result(property = "owner", column = "OWNER"),
-        @Result(property = "custom1", column = "CUSTOM_1"),
-        @Result(property = "custom2", column = "CUSTOM_2"),
-        @Result(property = "custom3", column = "CUSTOM_3"),
-        @Result(property = "custom4", column = "CUSTOM_4"),
-        @Result(property = "orgLevel1", column = "ORGLEVEL_1"),
-        @Result(property = "orgLevel2", column = "ORGLEVEL_2"),
-        @Result(property = "orgLevel3", column = "ORGLEVEL_3"),
-        @Result(property = "orgLevel4", column = "ORGLEVEL_4")
-      })
+  @Result(property = "id", column = "ID")
+  @Result(property = "workbasketId", column = "WORKBASKET_ID")
+  @Result(property = "eventType", column = "EVENT_TYPE")
+  @Result(property = "created", column = "CREATED")
+  @Result(property = "userId", column = "USER_ID")
+  @Result(property = "domain", column = "DOMAIN")
+  @Result(property = "key", column = "KEY")
+  @Result(property = "type", column = "TYPE")
+  @Result(property = "owner", column = "OWNER")
+  @Result(property = "custom1", column = "CUSTOM_1")
+  @Result(property = "custom2", column = "CUSTOM_2")
+  @Result(property = "custom3", column = "CUSTOM_3")
+  @Result(property = "custom4", column = "CUSTOM_4")
+  @Result(property = "orgLevel1", column = "ORGLEVEL_1")
+  @Result(property = "orgLevel2", column = "ORGLEVEL_2")
+  @Result(property = "orgLevel3", column = "ORGLEVEL_3")
+  @Result(property = "orgLevel4", column = "ORGLEVEL_4")
   List<WorkbasketHistoryEvent> queryHistoryEvents(WorkbasketHistoryQueryImpl historyEventQuery);
 
   @Select(

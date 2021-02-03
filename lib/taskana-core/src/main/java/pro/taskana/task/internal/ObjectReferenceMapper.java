@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -20,14 +19,12 @@ public interface ObjectReferenceMapper {
           + "WHERE ID = #{id}"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results({
-    @Result(property = "id", column = "ID"),
-    @Result(property = "company", column = "COMPANY"),
-    @Result(property = "system", column = "SYSTEM"),
-    @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
-    @Result(property = "type", column = "TYPE"),
-    @Result(property = "value", column = "VALUE")
-  })
+  @Result(property = "id", column = "ID")
+  @Result(property = "company", column = "COMPANY")
+  @Result(property = "system", column = "SYSTEM")
+  @Result(property = "systemInstance", column = "SYSTEM_INSTANCE")
+  @Result(property = "type", column = "TYPE")
+  @Result(property = "value", column = "VALUE")
   ObjectReference findById(@Param("id") String id);
 
   @Select(
@@ -40,14 +37,12 @@ public interface ObjectReferenceMapper {
           + "AND VALUE = #{objectReference.value} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
-  @Results({
-    @Result(property = "id", column = "ID"),
-    @Result(property = "company", column = "COMPANY"),
-    @Result(property = "system", column = "SYSTEM"),
-    @Result(property = "systemInstance", column = "SYSTEM_INSTANCE"),
-    @Result(property = "type", column = "TYPE"),
-    @Result(property = "value", column = "VALUE")
-  })
+  @Result(property = "id", column = "ID")
+  @Result(property = "company", column = "COMPANY")
+  @Result(property = "system", column = "SYSTEM")
+  @Result(property = "systemInstance", column = "SYSTEM_INSTANCE")
+  @Result(property = "type", column = "TYPE")
+  @Result(property = "value", column = "VALUE")
   ObjectReference findByObjectReference(@Param("objectReference") ObjectReference objectReference);
 
   @Insert(
