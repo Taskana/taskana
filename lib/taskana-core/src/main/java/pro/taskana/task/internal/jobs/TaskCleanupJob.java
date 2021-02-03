@@ -21,6 +21,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 
@@ -57,17 +58,13 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore);
     try {
       List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
-      int totalNumberOfTasksCompleted = 0;
-      while (!tasksCompletedBefore.isEmpty()) {
-        int upperLimit = batchSize;
-        if (upperLimit > tasksCompletedBefore.size()) {
-          upperLimit = tasksCompletedBefore.size();
-        }
-        totalNumberOfTasksCompleted +=
-            deleteTasksTransactionally(tasksCompletedBefore.subList(0, upperLimit));
-        tasksCompletedBefore.subList(0, upperLimit).clear();
-      }
-      LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksCompleted);
+
+      int totalNumberOfTasksDeleted =
+          CollectionUtil.partitionBasedOnSize(tasksCompletedBefore, batchSize).stream()
+              .mapToInt(this::deleteTasksTransactionally)
+              .sum();
+
+      LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
     } catch (Exception e) {
       throw new TaskanaException("Error while processing TaskCleanupJob.", e);
     } finally {
@@ -119,6 +116,8 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
       List<String> taskIdsNotAllCompletedSameParentBusiness =
           numberParentTasksShouldHave.entrySet().stream()
+              .filter(entry -> entry.getKey() != null)
+              .filter(entry -> !entry.getKey().isEmpty())
               .filter(entry -> !entry.getValue().equals(countParentTask.get(entry.getKey())))
               .map(Map.Entry::getKey)
               .collect(Collectors.toList());

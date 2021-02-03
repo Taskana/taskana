@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
@@ -82,7 +85,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     LOGGER.info("Running job to delete all history events created before ({})", createdBefore);
 
     try {
-
       SimpleHistoryServiceImpl simpleHistoryService =
           (SimpleHistoryServiceImpl) taskanaHistoryEngine.getTaskanaHistoryService();
 
@@ -96,43 +98,48 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
                   TaskHistoryEventType.TERMINATED.getName())
               .list();
 
-      List<String> taskIdsToDeleteHistoryEventsFor;
-
+      Set<String> taskIdsToDeleteHistoryEventsFor;
       if (allCompletedSameParentBusiness) {
-
-        String[] parentBusinessProcessIds =
-            historyEventCandidatesToClean.stream()
-                .map(TaskHistoryEvent::getParentBusinessProcessId)
-                .distinct()
-                .toArray(String[]::new);
-
-        historyEventCandidatesToClean.addAll(
-            simpleHistoryService
-                .createTaskHistoryQuery()
-                .parentBusinessProcessIdIn(parentBusinessProcessIds)
-                .eventTypeIn(TaskHistoryEventType.CREATED.getName())
-                .list());
-
         taskIdsToDeleteHistoryEventsFor =
-            filterSameParentBusinessHistoryEventsQualifiedToClean(historyEventCandidatesToClean);
+            historyEventCandidatesToClean.stream()
+                .filter(
+                    event ->
+                        event.getParentBusinessProcessId() == null
+                            || event.getParentBusinessProcessId().isEmpty())
+                .map(TaskHistoryEvent::getTaskId)
+                .collect(Collectors.toSet());
+        historyEventCandidatesToClean.removeIf(
+            event -> taskIdsToDeleteHistoryEventsFor.contains(event.getTaskId()));
+
+        if (!historyEventCandidatesToClean.isEmpty()) {
+          String[] parentBusinessProcessIds =
+              historyEventCandidatesToClean.stream()
+                  .map(TaskHistoryEvent::getParentBusinessProcessId)
+                  .distinct()
+                  .toArray(String[]::new);
+
+          historyEventCandidatesToClean.addAll(
+              simpleHistoryService
+                  .createTaskHistoryQuery()
+                  .parentBusinessProcessIdIn(parentBusinessProcessIds)
+                  .eventTypeIn(TaskHistoryEventType.CREATED.getName())
+                  .list());
+
+          taskIdsToDeleteHistoryEventsFor.addAll(
+              filterSameParentBusinessHistoryEventsQualifiedToClean(historyEventCandidatesToClean));
+        }
       } else {
         taskIdsToDeleteHistoryEventsFor =
             historyEventCandidatesToClean.stream()
                 .map(TaskHistoryEvent::getTaskId)
-                .collect(toList());
+                .collect(Collectors.toSet());
       }
 
-      int totalNumberOfHistoryEventsDeleted = 0;
-      while (!taskIdsToDeleteHistoryEventsFor.isEmpty()) {
-        int upperLimit = batchSize;
-        if (upperLimit > taskIdsToDeleteHistoryEventsFor.size()) {
-          upperLimit = taskIdsToDeleteHistoryEventsFor.size();
-        }
-        totalNumberOfHistoryEventsDeleted +=
-            deleteHistoryEventsTransactionally(
-                taskIdsToDeleteHistoryEventsFor.subList(0, upperLimit));
-        taskIdsToDeleteHistoryEventsFor.subList(0, upperLimit).clear();
-      }
+      int totalNumberOfHistoryEventsDeleted =
+          CollectionUtil.partitionBasedOnSize(taskIdsToDeleteHistoryEventsFor, batchSize).stream()
+              .mapToInt(this::deleteHistoryEventsTransactionally)
+              .sum();
+
       LOGGER.info(
           "Job ended successfully. {} history events deleted.", totalNumberOfHistoryEventsDeleted);
     } catch (Exception e) {

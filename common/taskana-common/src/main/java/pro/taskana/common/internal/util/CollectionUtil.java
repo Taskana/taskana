@@ -5,23 +5,24 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class ListUtil {
+public class CollectionUtil {
 
-  private ListUtil() {
+  private CollectionUtil() {
     throw new IllegalStateException("Utility class");
   }
 
   /**
-   * Splits a list with objects of type T into chunks of a certain size.
+   * Splits a collection with objects of type T into chunks of a certain size.
    *
-   * @param <T> type of elements inside list
-   * @param inputList list to be divided
+   * @param <T> type of elements inside collection
+   * @param inputCollection collection to be divided
    * @param size maximal number of elements inside chunk
    * @return list containing the chunks
    */
-  public static <T> Collection<List<T>> partitionBasedOnSize(Collection<T> inputList, int size) {
+  public static <T> Collection<List<T>> partitionBasedOnSize(
+      Collection<T> inputCollection, int size) {
     final AtomicInteger counter = new AtomicInteger(0);
-    return inputList.stream()
+    return inputCollection.stream()
         .collect(Collectors.groupingBy(s -> counter.getAndIncrement() / size))
         .values();
   }

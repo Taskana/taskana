@@ -5,14 +5,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.ScheduledJob.Type;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob;
@@ -393,5 +400,51 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     jobsToRun = getJobMapper().findJobsToRun();
 
     assertThat(jobsToRun).doesNotContainAnyElementsOf(historyCleanupJobs);
+  }
+
+  @WithAccessId(user = "admin")
+  @TestFactory
+  Stream<DynamicTest>
+      should_CleanTaskHistoryEventsWithParentProcessIdEmptyOrNull_When_TaskCompleted() {
+    Iterator<String> iterator = Arrays.asList("", null).iterator();
+    String taskId1 = "taskId1";
+    String taskId2 = "taskId2";
+    List<TaskHistoryEvent> events =
+        List.of(
+                Pair.of(taskId1, TaskHistoryEventType.CREATED),
+                Pair.of(taskId1, TaskHistoryEventType.COMPLETED),
+                Pair.of(taskId2, TaskHistoryEventType.CREATED))
+            .stream()
+            .map(
+                pair ->
+                    createTaskHistoryEvent(
+                        "wbKey1",
+                        pair.getLeft(),
+                        pair.getRight().getName(),
+                        "wbKey2",
+                        "someUserId",
+                        "someDetails"))
+            .collect(Collectors.toList());
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+
+    ThrowingConsumer<String> test =
+        parentBusinessId -> {
+          getHistoryService().deleteHistoryEventsByTaskIds(List.of(taskId1, taskId2));
+          events.forEach(x -> x.setCreated(Instant.now().minus(20, ChronoUnit.DAYS)));
+          events.forEach(x -> x.setParentBusinessProcessId(parentBusinessId));
+          events.forEach(x -> getHistoryService().create(x));
+
+          job.run();
+          List<TaskHistoryEvent> eventsAfterCleanup =
+              getHistoryService().createTaskHistoryQuery().taskIdIn(taskId1, taskId2).list();
+
+          assertThat(eventsAfterCleanup)
+              .extracting(TaskHistoryEvent::getTaskId)
+              .containsExactly(taskId2);
+        };
+
+    return DynamicTest.stream(iterator, c -> "for parentBusinessProcessId = '" + c + "'", test);
   }
 }

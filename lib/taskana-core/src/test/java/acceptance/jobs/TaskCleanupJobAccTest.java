@@ -3,12 +3,19 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.ScheduledJob.Type;
@@ -35,9 +42,11 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void shouldCleanCompletedTasksUntilDate() throws Exception {
+  void should_CleanCompletedTasksUntilDate() throws Exception {
+    String id = createAndInsertTask(null);
+    taskService.claim(id);
+    taskService.completeTask(id);
 
-    createAndCompleteTask();
     long totalTasksCount = taskService.createTaskQuery().count();
     assertThat(totalTasksCount).isEqualTo(88);
 
@@ -79,12 +88,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void shouldNotCleanCompleteTasksAfterDefinedDay() throws Exception {
-    Task createdTask = createAndCompleteTask();
+    String id = createAndInsertTask(null);
+    taskService.claim(id);
+    taskService.completeTask(id);
 
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    Task completedCreatedTask = taskService.getTask(createdTask.getId());
+    Task completedCreatedTask = taskService.getTask(id);
     assertThat(completedCreatedTask).isNotNull();
   }
 
@@ -118,14 +129,40 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
   }
 
-  private Task createAndCompleteTask() throws Exception {
+  @WithAccessId(user = "admin")
+  @TestFactory
+  Stream<DynamicTest>
+      should_DeleteCompletedTaskWithParentBusinessEmptyOrNull_When_RunningCleanupJob() {
+    Iterator<String> iterator = Arrays.asList("", null).iterator();
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+
+    ThrowingConsumer<String> test =
+        parentBusinessId -> {
+          String taskId1 = createAndInsertTask(parentBusinessId);
+          taskService.claim(taskId1);
+          taskService.completeTask(taskId1);
+          String taskId2 = createAndInsertTask(parentBusinessId);
+          taskService.claim(taskId2);
+
+          job.run();
+          List<TaskSummary> tasksAfterCleaning =
+              taskService.createTaskQuery().idIn(taskId1, taskId2).list();
+
+          assertThat(tasksAfterCleaning).extracting(TaskSummary::getId).containsExactly(taskId2);
+        };
+
+    return DynamicTest.stream(iterator, c -> "for parentBusinessProcessId = '" + c + "'", test);
+  }
+
+  private String createAndInsertTask(String parentBusinessProcessId) throws Exception {
     Task newTask = taskService.newTask("user-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    Task createdTask = taskService.createTask(newTask);
-    taskService.claim(createdTask.getId());
-    taskService.completeTask(createdTask.getId());
-    return createdTask;
+    newTask.setParentBusinessProcessId(parentBusinessProcessId);
+    return taskService.createTask(newTask).getId();
   }
 }
