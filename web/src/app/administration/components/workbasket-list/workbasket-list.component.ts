@@ -10,7 +10,7 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 import {
   DeselectWorkbasket,
   GetWorkbasketsSummary,
@@ -44,6 +44,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   };
   requestInProgress: boolean;
   requestInProgressLocal = false;
+
   @Input() expanded: boolean;
 
   @ViewChild('wbToolbar', { static: true })
@@ -83,7 +84,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.requestInProgressService.setRequestInProgress(true);
-
     this.selectedWorkbasket$.pipe(takeUntil(this.destroy$)).subscribe((selectedWorkbasket) => {
       if (typeof selectedWorkbasket !== 'undefined') {
         this.selectedId = selectedWorkbasket.workbasketId;
@@ -117,6 +117,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .getSelectedDomain()
       .pipe(takeUntil(this.destroy$))
       .subscribe((domain) => {
+        this.filterBy.domain = [domain];
         this.performRequest();
       });
 
@@ -157,7 +158,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   performFilter(filterBy: WorkbasketQueryFilterParameter) {
+    const domain = this.filterBy.domain;
     this.filterBy = filterBy;
+    this.filterBy.domain = domain;
     this.performRequest();
   }
 
