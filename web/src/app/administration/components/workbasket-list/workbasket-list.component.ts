@@ -44,7 +44,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   };
   requestInProgress: boolean;
   requestInProgressLocal = false;
-  domain: string;
 
   @Input() expanded: boolean;
 
@@ -118,7 +117,6 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .getSelectedDomain()
       .pipe(takeUntil(this.destroy$))
       .subscribe((domain) => {
-        this.domain = domain;
         this.filterBy.domain = [domain];
         this.performRequest();
       });
@@ -160,8 +158,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   }
 
   performFilter(filterBy: WorkbasketQueryFilterParameter) {
+    const domain = this.filterBy.domain;
     this.filterBy = filterBy;
-    this.filterBy.domain = [this.domain];
+    this.filterBy.domain = domain;
     this.performRequest();
   }
 
