@@ -752,6 +752,36 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_CancelTask_when_CallingCancelEndpoint() {
+
+    final String claimed_task_id = "TKI:000000000000000000000000000000000026";
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> responseGet =
+        TEMPLATE.exchange(
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID, claimed_task_id),
+            HttpMethod.GET,
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+            TASK_MODEL_TYPE);
+
+    assertThat(responseGet.getBody()).isNotNull();
+    TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
+    assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+
+    // cancel the task
+    responseGet =
+        template.exchange(
+            restHelper.toUrl(RestEndpoints.URL_TASKS_ID_CANCEL, claimed_task_id),
+            HttpMethod.POST,
+            new HttpEntity<>(restHelper.getHeadersUser_1_2()),
+            TASK_MODEL_TYPE);
+
+    assertThat(responseGet.getBody()).isNotNull();
+    theTaskRepresentationModel = responseGet.getBody();
+    assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CANCELLED);
+  }
+
+  @Test
   void testCancelClaimTask() {
 
     final String claimed_task_id = "TKI:000000000000000000000000000000000027";

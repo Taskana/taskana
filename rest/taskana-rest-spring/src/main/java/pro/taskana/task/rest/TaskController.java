@@ -317,6 +317,34 @@ public class TaskController {
   }
 
   /**
+   * This endpoint cancels a Task. Cancellation marks a Task as obsolete. The actual work the Task
+   * was referring to is no longer required
+   *
+   * @param taskId Id of the requested Task to cancel.
+   * @return the cancelled Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the task is not in state READY or CLAIMED
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Cancel a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_CANCEL)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> cancelTask(@PathVariable String taskId)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException {
+    LOGGER.debug("Entry to cancelTask(taskId= {})", taskId);
+
+    Task cancelledTask = taskService.cancelTask(taskId);
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(cancelledTask));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from cancelTask(), returning {}", result);
+    }
+
+    return result;
+  }
+
+  /**
    * This endpoint creates a persistent Task.
    *
    * @param taskRepresentationModel the Task which should be created.
