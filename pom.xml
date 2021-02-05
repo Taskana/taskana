@@ -65,7 +65,7 @@
     <version.arquillian.managed.wildfly>3.0.1.Final</version.arquillian.managed.wildfly>
 
     <!-- test dependencies -->
-    <version.archunit>0.15.0</version.archunit>
+    <version.archunit>0.16.0</version.archunit>
     <version.equalsverifier>3.5.3</version.equalsverifier>
     <version.openpojo>0.8.13</version.openpojo>
     <version.jacoco>0.8.6</version.jacoco>
