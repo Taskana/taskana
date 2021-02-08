@@ -336,7 +336,6 @@ public class ClassificationServiceImpl implements ClassificationService {
               "Invalid service level %s. Taskana does not support a negative service level.",
               serviceLevel));
     }
-
     // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
     if (!serviceLevel.toLowerCase().startsWith("p") || !serviceLevel.toLowerCase().endsWith("d")) {
       throw new InvalidArgumentException(
@@ -450,9 +449,9 @@ public class ClassificationServiceImpl implements ClassificationService {
       classification.setIsValidInDomain(true);
     }
 
-    if (classification.getServiceLevel() == null) {
-      throw new InvalidArgumentException("Classification Service Level must not be null!");
-    } else if (!classification.getServiceLevel().isEmpty()) {
+    if (classification.getServiceLevel() == null || classification.getServiceLevel().isEmpty()) {
+      classification.setServiceLevel("P0D");
+    } else {
       validateServiceLevel(classification.getServiceLevel());
     }
 

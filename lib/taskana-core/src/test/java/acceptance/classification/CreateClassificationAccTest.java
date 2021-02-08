@@ -140,33 +140,6 @@ class CreateClassificationAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_When_TryingToCreateClassificationWithMissingServiceLevel() {
-
-    Classification classification =
-        CLASSIFICATION_SERVICE.newClassification("someKey", "DOMAIN_A", "TASK");
-    assertThatThrownBy(() -> CLASSIFICATION_SERVICE.createClassification(classification))
-        .isInstanceOf(InvalidArgumentException.class);
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
-  void should_ThrowException_When_TryingToUpdateClassificationWithMissingServiceLevel()
-      throws Exception {
-
-    Classification classification =
-        CLASSIFICATION_SERVICE.newClassification("someKey2", "DOMAIN_A", "TASK");
-    classification.setServiceLevel("P1D");
-
-    Classification createdClassification =
-        CLASSIFICATION_SERVICE.createClassification(classification);
-
-    createdClassification.setServiceLevel(null);
-    assertThatThrownBy(() -> CLASSIFICATION_SERVICE.updateClassification(createdClassification))
-        .isInstanceOf(InvalidArgumentException.class);
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
   void should_ThrowException_When_TryingToCreateClassificationWithNegativeServiceLevel() {
     Classification classification =
         CLASSIFICATION_SERVICE.newClassification("someKey234", "DOMAIN_A", "TASK");
@@ -289,5 +262,35 @@ class CreateClassificationAccTest extends AbstractAccTest {
         };
 
     assertThatThrownBy(createClassificationCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetDefaultServiceLevel_When_TryingToCreateClassificationWithMissingServiceLevel()
+      throws Exception {
+    Classification classification =
+        CLASSIFICATION_SERVICE.newClassification("newKey718", "", "TASK");
+    classification = CLASSIFICATION_SERVICE.createClassification(classification);
+    assertThat(classification.getServiceLevel()).isEqualTo("P0D");
+
+    classification = CLASSIFICATION_SERVICE.newClassification("newKey71", "", "TASK");
+    classification.setServiceLevel("");
+    classification = CLASSIFICATION_SERVICE.createClassification(classification);
+    assertThat(classification.getServiceLevel()).isEqualTo("P0D");
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetDefaultServiceLevel_When_TryingToUpdateClassificationWithMissingServiceLevel()
+      throws Exception {
+    Classification classification =
+        CLASSIFICATION_SERVICE.getClassification("CLI:000000000000000000000000000000000001");
+    classification.setServiceLevel(null);
+    classification = CLASSIFICATION_SERVICE.updateClassification(classification);
+    assertThat(classification.getServiceLevel()).isEqualTo("P0D");
+
+    classification.setServiceLevel("");
+    classification = CLASSIFICATION_SERVICE.updateClassification(classification);
+    assertThat(classification.getServiceLevel()).isEqualTo("P0D");
   }
 }
