@@ -127,7 +127,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   private calculateHeightCard() {
     if (this.toolbarElement) {
       const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
-      const cardHeight = 53;
+      const cardHeight = 90;
       const unusedHeight = 150;
       const totalHeight = window.innerHeight;
       const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);

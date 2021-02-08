@@ -8,6 +8,9 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskListComponent } from './task-list.component';
 import { DateTimeZonePipe } from '../../../shared/pipes/date-time-zone.pipe';
+import { MatSelectModule } from '@angular/material/select';
+import { MatListModule } from '@angular/material/list';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -29,7 +32,14 @@ describe('TaskListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
+      imports: [
+        FormsModule,
+        RouterTestingModule.withRoutes(routes),
+        HttpClientModule,
+        MatSelectModule,
+        MatListModule,
+        MatBadgeModule
+      ],
       declarations: [TaskListComponent, DummyDetailComponent, MockSvgIconComponent, DateTimeZonePipe],
       providers: [WorkplaceService, ChangeDetectorRef]
     }).compileComponents();

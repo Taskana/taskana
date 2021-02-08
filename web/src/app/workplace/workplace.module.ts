@@ -26,6 +26,9 @@ import { WorkplaceService } from './services/workplace.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const MODULES = [
   TypeaheadModule.forRoot(),
@@ -57,7 +60,7 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES],
+  imports: [MODULES, MatListModule, MatBadgeModule, MatTooltipModule],
   providers: [
     TaskService,
     ClassificationCategoriesService,

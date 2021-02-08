@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
-import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -10,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class TaskListComponent implements OnInit {
   @Input()
-  tasks: Array<Task>;
+  tasks: Task[];
 
   @Input()
   selectedId: string;
@@ -18,7 +17,7 @@ export class TaskListComponent implements OnInit {
   @Output()
   selectedIdChange = new EventEmitter<string>();
 
-  constructor(private router: Router, private route: ActivatedRoute, private workplaceService: WorkplaceService) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {}
 
