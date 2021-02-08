@@ -1,35 +1,38 @@
+<!-- TASK LIST -->
 <div *ngIf="(tasks && tasks.length > 0); else empty_list">
-  <ul #taskList id="task-list-container" class="list-group">
-    <li class="list-group-item" *ngFor="let task of tasks" [class.active]="task.taskId == selectedId" type="text"
-      (click)="selectTask(task.taskId)">
-      <div class="row">
-        <dl class="col-xs-2">
-          <span data-toggle="tooltip" class="badge" [ngClass]="{
-                'badge-red': task.priority <=5,
-                'badge-orange': (task.priority > 5 && task.priority <=15),
-                'badge-green': task.priority > 15}" title="{{task.priority}}">{{task.priority}}</span>
-        </dl>
-        <dl class="col-xs-8">
-          <dt>
-            <span data-toggle="tooltip" title="{{task.name}}">{{task.name}}</span>
-            <i *ngIf="task.owner" data-toggle="tooltip" title="{{task.owner}}">, {{task.owner}}</i>
-          </dt>
-        </dl>
-      </div>
-      <div class="row">
-        <dl class="col-xs-3 col-xs-offset-2">
-          <dd data-toggle="tooltip" title="{{task.state}}">{{task.state}}</dd>
-        </dl>
-        <dl class="pull-right padding-right">
-          <i data-toggle="tooltip" title="{{task.due}}">Due: {{task.due | dateTimeZone}}</i>
-        </dl>
+  <mat-selection-list [multiple]="false">
+    <mat-list-option *ngFor="let task of tasks"
+                     (click)="selectTask(task.taskId)"
+                     [selected]="task.taskId == selectedId"
+                     [value]="task.taskId">
 
-      </div>
-    </li>
-  </ul>
+        <div class="task-list__task">
+
+          <!-- TASK PRIORITY -->
+          <div class="task-list__task-priority-badge"
+             matTooltip="Priority"
+             matBadge="{{task.priority}}" matBadgePosition="{{task.taskId == selectedId? 'above' : 'below'}}">
+          </div>
+
+          <!-- TASK INFORMATION -->
+          <div class="task-list__task-info">
+            <p> <b>{{task.name}}</b>, <i *ngIf="task.owner">{{task.owner}} </i> </p>
+            <p> State: {{task.state}} </p>
+            <p> Due: {{task.due | dateTimeZone }} </p>
+          </div>
+
+        </div>
+
+      <mat-divider></mat-divider>
+
+    </mat-list-option>
+  </mat-selection-list>
 </div>
+
+
+<!-- EMPTY TASK-LIST -->
 <ng-template #empty_list>
-  <div class="col-xs-12 container-no-items center-block">
+  <div class="container-no-items center-block">
     <h3 class="grey">Select a workbasket</h3>
     <svg-icon class="img-responsive empty-icon workbasket-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
   </div>
