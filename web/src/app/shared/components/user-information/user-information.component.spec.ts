@@ -1,15 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { UserInformationComponent } from './user-information.component';
 import { BrowserModule, By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-engine.mock.service';
 import { of } from 'rxjs/internal/observable/of';
-import { expandDown } from '../../animations/expand.animation';
-import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { fromEventPattern } from 'rxjs';
 
 const TaskanaEngingeServiceSpy = jest.fn().mockImplementation(
   (): Partial<TaskanaEngineServiceMock> => ({
@@ -18,6 +15,9 @@ const TaskanaEngingeServiceSpy = jest.fn().mockImplementation(
   })
 );
 
+@Component({ selector: 'svg-icon', template: '' })
+class SvgIconStub {}
+
 describe('UserInformationComponent', () => {
   let component: UserInformationComponent;
   let fixture: ComponentFixture<UserInformationComponent>;
@@ -25,8 +25,8 @@ describe('UserInformationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserInformationComponent],
-      imports: [BrowserModule, AngularSvgIconModule, HttpClientTestingModule, BrowserAnimationsModule],
+      declarations: [UserInformationComponent, SvgIconStub],
+      imports: [BrowserModule, HttpClientTestingModule, BrowserAnimationsModule],
       providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngingeServiceSpy }]
     }).compileComponents();
   }));

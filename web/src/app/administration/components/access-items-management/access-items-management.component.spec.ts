@@ -4,7 +4,6 @@ import { FormsValidatorService } from '../../../shared/services/forms-validator/
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -54,6 +53,9 @@ const mockDialogRef = {
   close: jasmine.createSpy('close')
 };
 
+@Component({ selector: 'svg-icon', template: '' })
+class SvgIconStub {}
+
 describe('AccessItemsManagementComponent', () => {
   let fixture: ComponentFixture<AccessItemsManagementComponent>;
   let debugElement: DebugElement;
@@ -80,7 +82,6 @@ describe('AccessItemsManagementComponent', () => {
         NgxsModule.forRoot([EngineConfigurationState, AccessItemsManagementState]),
         FormsModule,
         ReactiveFormsModule,
-        AngularSvgIconModule,
         MatSnackBarModule,
         MatDialogModule,
         TypeaheadModule.forRoot(),
@@ -102,7 +103,8 @@ describe('AccessItemsManagementComponent', () => {
         AccessItemsManagementComponent,
         TypeAheadComponent,
         TaskanaSharedSortStub,
-        TaskanaSharedSpinnerStub
+        TaskanaSharedSpinnerStub,
+        SvgIconStub
       ],
       providers: [
         { provide: FormsValidatorService, useClass: formValidatorServiceSpy },

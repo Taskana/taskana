@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { NavBarComponent } from './nav-bar.component';
 import { SelectedRouteService } from '../../services/selected-route/selected-route';
 import { SidenavService } from '../../services/sidenav/sidenav.service';
-import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/internal/observable/of';
@@ -22,6 +21,9 @@ const SelectedRouteServiceSpy = jest.fn().mockImplementation(
   })
 );
 
+@Component({ selector: 'svg-icon', template: '' })
+class SvgIconStub {}
+
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
@@ -30,8 +32,8 @@ describe('NavBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NavBarComponent],
-      imports: [MatIconModule, HttpClientTestingModule, AngularSvgIconModule, MatToolbarModule],
+      declarations: [NavBarComponent, SvgIconStub],
+      imports: [MatIconModule, HttpClientTestingModule, MatToolbarModule],
       providers: [
         { provide: SidenavService, useClass: SidenavServiceSpy },
         { provide: SelectedRouteService, useClass: SelectedRouteServiceSpy }

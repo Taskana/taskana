@@ -40,6 +40,7 @@ class TreeStub {
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {
   @Input() src;
+  @Input() matTooltip;
 }
 
 @Component({ selector: 'input', template: '' })

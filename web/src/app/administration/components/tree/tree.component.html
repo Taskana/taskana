@@ -2,8 +2,12 @@
            (moveNode)="onMoveNode($event)" (treeDrop)="onDrop($event)">
     <ng-template #treeNodeTemplate let-node let-index="index">
         <span class="text-top">
-            <svg-icon *ngIf="node.data.category" class="fa-fw pr-1" [src]="(getCategoryIcon(node.data.category) | async)?.left" data-toggle="tooltip"
-                [title]="(getCategoryIcon(node.data.category) | async)?.right"></svg-icon>
+            <svg-icon
+              *ngIf="node.data.category"
+              class="fa-fw pr-1"
+              [src]="(getCategoryIcon(node.data.category) | async)?.left"
+              matTooltip="{{(getCategoryIcon(node.data.category) | async)?.right}}">
+            </svg-icon>
         </span>
         <span>
             <strong>{{ node.data.key }}</strong>

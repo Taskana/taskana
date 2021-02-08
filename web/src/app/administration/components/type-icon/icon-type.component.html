@@ -1,3 +1,6 @@
-<svg-icon class="{{selected? 'white': 'gray' }} {{size}}" src="./assets/icons/{{getIconPath(type)}}"
-    [title]="!type? 'All' : type"></svg-icon>
+<svg-icon
+  [svgStyle]="{'width.px': iconSize, 'fill': iconColor, 'position': 'relative', 'top.px': '3' }"
+  src="./assets/icons/{{getIconPath(type)}}"
+  matTooltip="{{tooltip? type : ''}}">
+</svg-icon>
 {{text}}
