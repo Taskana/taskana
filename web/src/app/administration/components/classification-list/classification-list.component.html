@@ -27,7 +27,6 @@
 
           <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
           <svg-icon class="classification-list__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.left"
-                    [title]="(getCategoryIcon(selectedCategory) | async)?.right"
                     *ngIf="selectedCategory != ''">
           </svg-icon>
         </button>
@@ -38,7 +37,7 @@
           </button>
           <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
             <svg-icon class="classification-list__categories" [src]="(getCategoryIcon(category) | async)?.left"
-                      [title]="(getCategoryIcon(category) | async)?.right"></svg-icon>
+                      matTooltip="{{(getCategoryIcon(category) | async)?.right}}"></svg-icon>
             <span> {{category}} </span>
           </button>
         </mat-menu>

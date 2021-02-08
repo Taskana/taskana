@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { WorkbasketType } from 'app/shared/models/workbasket-type';
 
 @Component({
@@ -6,7 +6,7 @@ import { WorkbasketType } from 'app/shared/models/workbasket-type';
   templateUrl: './icon-type.component.html',
   styleUrls: ['./icon-type.component.scss']
 })
-export class IconTypeComponent {
+export class IconTypeComponent implements OnInit, OnChanges {
   @Input()
   type: WorkbasketType;
 
@@ -21,6 +21,17 @@ export class IconTypeComponent {
 
   @Input()
   size = 'small';
+
+  iconSize: string;
+  iconColor: string;
+
+  ngOnInit() {
+    this.iconSize = this.size === 'large' ? '24' : '16';
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.iconColor = changes['selected']?.currentValue ? 'white' : '#555';
+  }
 
   getIconPath(type: WorkbasketType) {
     switch (type) {

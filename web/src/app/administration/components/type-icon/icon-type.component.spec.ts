@@ -1,12 +1,13 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IconTypeComponent } from './icon-type.component';
-import { SvgIconComponent, SvgIconRegistryService } from 'angular-svg-icon';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
 
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {
   @Input() src;
+  @Input() svgStyle;
+  @Input() matTooltip;
 }
 
 describe('IconTypeComponent', () => {
