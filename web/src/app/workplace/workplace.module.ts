@@ -29,6 +29,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
 
 const MODULES = [
   TypeaheadModule.forRoot(),
@@ -60,7 +64,16 @@ const DECLARATIONS = [
 
 @NgModule({
   declarations: DECLARATIONS,
-  imports: [MODULES, MatListModule, MatBadgeModule, MatTooltipModule],
+  imports: [
+    MODULES,
+    MatListModule,
+    MatBadgeModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatButtonModule,
+    MatRadioModule,
+    MatMenuModule
+  ],
   providers: [
     TaskService,
     ClassificationCategoriesService,

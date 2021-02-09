@@ -1,19 +1,23 @@
-<li id="task-list-action-toolbar" class="list-group-item tab-align">
-  <div class="row">
-    <div *ngIf="searched" class="col-xs-2">
-      <button (click)="createTask()" type="button" class="btn btn-default pull-left green-blue"  data-toggle="tooltip" title="Add Task to current Workbasket">
-        <span class="material-icons md-20 green-blue">add_circle_outline</span>
-      </button>
-    </div>
+<div class="task-list-toolbar">
 
-    <!-- SEARCH INPUT -->
-    <div [ngClass]="{'col-xs-8': !searched, 'col-xs-5': searched}">
+  <!-- SEARCH INPUT -->
+  <div class="task-list-toolbar__search">
+
+    <div class="task-list-toolbar__filter">
+
+      <!-- BUTTON TO FURTHER FILTER OPTIONS -->
+      <button mat-stroked-button style="margin-right: 8px; min-width: 1%" class="task-list-toolbar__button--secondary" matTooltip="Display more filter options" (click)="toolbarState=!toolbarState">
+        <mat-icon *ngIf="!toolbarState">keyboard_arrow_down</mat-icon>
+        <mat-icon *ngIf="toolbarState">keyboard_arrow_up</mat-icon>
+      </button>
+
 
       <!-- SEARCH FOR WORKBASKET -->
-      <mat-form-field *ngIf="searchSelected === search.byWorkbasket" class="task-list-toolbar__search-workbasket">
+      <mat-form-field *ngIf="searchSelected === search.byWorkbasket" class="task-list-toolbar__filter--workbasket">
+        <mat-label>Search for Workbasket</mat-label>
         <input matInput
                type="text"
-               placeholder="Search for workbasket ..."
+               placeholder="Workbasket"
                [(ngModel)]="resultName"
                (ngModelChange)="filterWorkbasketNames()"
                [matAutocomplete]="auto">
@@ -24,62 +28,85 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <!-- SEARCH FOR TYPE AND VALUE-->
-      <div class="input-group" *ngIf="searchSelected === search.byTypeAndValue">
-        <input [(ngModel)]="resultType" class="form-control" (keyup.enter)="searchBasket()" placeholder="Search by type ..." />
-        <span _ngcontent-c10="" class="input-group-btn">
-          <button _ngcontent-c10="" class="btn btn-primary" type="button" (click)="searchBasket()">
-            <span class="material-icons md-20 white">search</span>
-          </button>
-        </span>
-      </div>
-      <input [(ngModel)]="resultValue" *ngIf="searchSelected === search.byTypeAndValue" class="form-control" (keyup.enter)="searchBasket()"
-        placeholder="Search by value ..." />
-    </div>
 
 
-    <div *ngIf="searched" class="pull-right margin-right btn-group">
-      <taskana-shared-sort class="btn-group" [sortingFields]="sortingFields" [defaultSortBy]="taskDefaultSortBy"
-                           (performSorting)="sorting($event)"> </taskana-shared-sort>
-      <button class="btn btn-default collapsed" type="button" id="collapsedMenufilterWb" aria-expanded="false" (click)="toolbarState=!toolbarState">
-        <span class="material-icons md-20 blue">search</span>
-      </button>
-    </div>
-      <div class="dropdown clearfix pull-right margin-right">
-        <button type="button" class="btn btn-default dropdown-button" [ngClass]="{'reduced-width': searched}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="{{searchSelected == search.byTypeAndValue ? 'Type and value' : 'Workbasket'}}">
-          <svg-icon *ngIf="searchSelected == search.byWorkbasket" class="blue small" src="./assets/icons/wb-empty.svg"></svg-icon>
-          <span *ngIf="searchSelected == search.byTypeAndValue" class="material-icons md-20 blue">title</span>
-          <span class="caret"></span>
+      <!-- SEARCH BY TYPE AND VALUE-->
+      <div class="task-list-toolbar__filter--type-value" *ngIf="searchSelected === search.byTypeAndValue">
+
+        <!-- SEARCH BY TYPE -->
+        <mat-form-field style="padding-right: 8px">
+          <mat-label>Type</mat-label>
+          <input matInput type="text" placeholder="Type" [(ngModel)]="resultType" (keyup.enter)="searchBasket()">
+        </mat-form-field>
+
+        <!-- SEARCH BY VALUE-->
+        <mat-form-field style="padding-right: 8px">
+          <mat-label>Value</mat-label>
+          <input matInput type="text" placeholder="Value" [(ngModel)]="resultValue" (keyup.enter)="searchBasket()">
+        </mat-form-field>
+
+        <!-- SEARCH BUTTON -->
+        <button class="task-list-toolbar__button--primary" style="top: 11px; min-width: 1%"
+                mat-flat-button matTooltip="Search by given type and value" (click)="searchBasket()">
+          <mat-icon class="md-20">search</mat-icon>
         </button>
-        <div class="dropdown-menu dropdown-menu" aria-labelledby="dropdownMenu">
-          <div class="dropdown">
-            <h5 class="bold-blue align-center">Search by</h5>
-          </div>
-          <div role="separator" class="divider"></div>
-          <ul>
-            <li data-toggle="tooltip" title="Workbasket">
-              <a class="dropdown-item" (click)="selectSearch(search.byWorkbasket)">
-                <label>
-                  <span class="material-icons md-20 blue margin-right" aria-hidden="true">{{ searchSelected === search.byWorkbasket ? 'check_box': 'check_box_outline_blank' }}</span>
-                  <svg-icon class="margin-right small" src="./assets/icons/wb-empty.svg"></svg-icon>
-                  <small class="margin-right blue-font">Workbasket</small>
-                </label>
-              </a>
-            </li>
-          <li data-toggle="tooltip" title="Type and value">
-            <a class="dropdown-item" (click)="selectSearch(search.byTypeAndValue)">
-              <label>
-                <span class="material-icons md-20 blue" aria-hidden="true">{{ searchSelected === search.byTypeAndValue ? 'check_box': 'check_box_outline_blank' }}</span>
-                <span class="material-icons md-20 blue">title</span>
-                <small class="blue-font">Type and value</small>
-              </label>
-            </a>
-          </li>
-        </ul>
       </div>
+    </div>
+
+
+
+    <!-- SELECT WHETHER TO SEARCH BY WORKBASKET OR BY TYPE / VALUE -->
+    <div class="task-list-toolbar__select-search">
+      <button mat-stroked-button class="task-list-toolbar__button--secondary" [matMenuTriggerFor]="menu" matTooltip="Select search">
+        Search by
+        <svg-icon *ngIf="searchSelected==='workbasket'" style="top: -10px; margin: 0 4px" class="task-list-toolbar__workbasket-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+        <mat-icon *ngIf="searchSelected==='type-and-value'" style="fill: #555" class="">title</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="selectSearch(search.byWorkbasket)">
+          <span>
+            <svg-icon style="left: 4px; margin-right: 20px" class="task-list-toolbar__workbasket-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
+            Workbasket
+          </span>
+        </button>
+        <button mat-menu-item (click)="selectSearch(search.byTypeAndValue)">
+          <span>
+            <mat-icon style="color: #555" class="">title</mat-icon>
+            Type and Value
+          </span>
+        </button>
+      </mat-menu>
     </div>
   </div>
-  <div [@toggleDown]="toolbarState" class="row no-overflow">
+
+
+
+
+  <!-- FURTHER FILTER OPTIONS -->
+  <div *ngIf="toolbarState">
     <taskana-shared-task-filter (performFilter)="filtering($event)"></taskana-shared-task-filter>
   </div>
-</li>
+
+
+
+  <!-- ADDITIONAL MENU WHEN TASK LIST IS DISPLAYED -->
+  <div *ngIf="searched" class="task-list-toolbar__additional-toolbar">
+
+    <!-- ADD TASK BUTTON -->
+    <button class="task-list-toolbar__button--primary"
+            mat-flat-button matTooltip="Add Task" (click)="createTask()">
+      Add
+      <mat-icon class="md-20">add</mat-icon>
+    </button>
+
+
+    <!-- SORT TASKS BUTTON -->
+      <taskana-shared-sort
+        [sortingFields]="sortingFields" [defaultSortBy]="taskDefaultSortBy" (performSorting)="sorting($event)">
+      </taskana-shared-sort>
+
+  </div>
+
+</div>
+
