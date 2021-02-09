@@ -1,68 +1,50 @@
-@import '../../../../theme/colors';
+@import 'src/theme/_colors.scss';
 
-.task-list-toolbar__search-workbasket {
-  margin-left: 16px;
-}
+.task-list-toolbar {
+  padding: 4px 16px 16px 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 
-.list-group-item {
-  padding: 5px 0px 2px 1px;
-  border: none;
-}
-
-.tab-align {
-  padding: 8px 12px 8px 0px;
-  margin-bottom: 0px;
-
-  & > div {
-    margin: 6px 0px;
+  &__search {
+    display: flex;
+    justify-content: space-between;
+    height: 54px;
   }
-}
 
-ul {
-  list-style-type: none;
-}
-
-.blue-font {
-  color: $blue;
-}
-
-.bold-blue {
-  font-weight: bold;
-  color: $blue;
-}
-
-svg-icon {
-  fill: $blue;
-}
-
-svg-icon.blue {
-  fill: $blue;
-}
-
-@media screen and (min-width: 991px) and (max-width: 1115px) {
-  .reduced-width {
-    width: 37px;
-    padding-left: 5px;
-    padding-right: 5px;
+  &__filter {
+    display: flex;
   }
+
+  &__filter--type-value {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__button--primary {
+    background-color: $aquamarine;
+    color: white;
+    height: 36px;
+    margin-right: 4px;
+  }
+
+  &__button--secondary {
+    height: 36px;
+    top: 12px;
+    color: #555;
+  }
+
+  &__workbasket-icon {
+    width: 16px;
+    height: 16px;
+    fill: #555;
+  }
+
+  &__additional-toolbar {
+    display: flex;
+    margin-top: 12px;
+  }
+
 }
 
-small.margin-right.blue-font {
-  margin-left: 4px;
-}
-
-div.dropdown-menu ul {
-  padding: 15px;
-}
-
-div.input-group {
-  margin-bottom: 1px;
-}
-
-button.btn.btn-primary {
-  height: 34px;
-}
-
-#task-list-action-toolbar svg-icon.blue {
-  position: initial;
+::ng-deep .task-list-toolbar__filter--type-value .mat-form-field-wrapper {
+  width: 100px;
 }

@@ -128,7 +128,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     if (this.toolbarElement) {
       const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
       const cardHeight = 90;
-      const unusedHeight = 150;
+      const unusedHeight = 180;
       const totalHeight = window.innerHeight;
       const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
       this.paging['page-size'] = cards > 0 ? cards : 1;
