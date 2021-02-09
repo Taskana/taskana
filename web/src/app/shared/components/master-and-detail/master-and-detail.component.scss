@@ -1,6 +1,23 @@
-.master-detail {
-  min-width: 100vw;
-}
-.center-block.no-detail {
-  text-align: center;
+@import 'src/theme/_colors.scss';
+
+.workplace-overview {
+  display: flex;
+
+  &__task-list {
+    width: 500px;
+  }
+
+  &__task-details {
+    flex-grow: 1;
+  }
+
+  &__empty-page {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: $grey;
+  }
 }

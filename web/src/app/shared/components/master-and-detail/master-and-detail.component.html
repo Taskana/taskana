@@ -1,23 +1,22 @@
-<div class="master-detail row row-no-gutters">
-    <div class="{{showDetail? 'col-md-4 hidden-xs hidden-sm':'col-xs-12 col-md-4'}} vertical-right-divider">
-        <router-outlet name="master"></router-outlet>
-    </div>
-    <div class="{{showDetail? 'col-xs-12 col-md-8': 'hidden'}}">
-        <router-outlet name="detail">
-        </router-outlet>
-    </div>
-    <div class="{{showDetail? 'hidden': 'hidden-xs hidden-sm col-md-8 container-no-items'}}">
-        <div *ngIf="currentRoute === 'workbaskets'" class="center-block no-detail">
-            <h3 class="grey">Select a workbasket</h3>
-            <svg-icon class="img-responsive empty-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
-        </div>
-        <div *ngIf="currentRoute === 'classifications'" class="center-block no-detail">
-            <h3 class="grey">Select a classification</h3>
-            <svg-icon class="img-responsive empty-icon" src="./assets/icons/classification-empty.svg"></svg-icon>
-        </div>
-        <div *ngIf="currentRoute === 'tasks'" class="center-block no-detail">
-            <h3 class="grey">Select a Task</h3>
-            <span class="material-icons empty-icon md-20">done_all</span>
-        </div>
-    </div>
+<div class="workplace-overview">
+
+  <!-- TASK TOOLBAR AND TASK LIST-->
+  <div class="workplace-overview__task-list">
+      <router-outlet name="master"> </router-outlet>
+  </div>
+
+  <div class="vertical-right-divider"></div>
+
+  <!-- TASK DETAILS-->
+  <div *ngIf="showDetail" class="workplace-overview__task-details">
+      <router-outlet name="detail"> </router-outlet>
+  </div>
+
+  <!-- TASK DETAILS WITHOUT SELECTED -->
+  <div *ngIf="!showDetail && currentRoute === 'tasks'" class="workplace-overview__empty-page">
+    <h2> Select a Task </h2>
+    <br>
+    <div style="transform: scale(4)"> <mat-icon>done_all</mat-icon> </div>
+  </div>
+
 </div>
