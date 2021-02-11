@@ -18,12 +18,11 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
-import pro.taskana.task.internal.TaskServiceImpl;
 
 /** This is the runner for Tasks jobs. */
 public class JobRunner {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(JobRunner.class);
   private final TaskanaEngine taskanaEngine;
   private final JobServiceImpl jobService;
   private TaskanaTransactionProvider<Object> txProvider;
