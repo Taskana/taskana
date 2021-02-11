@@ -62,6 +62,8 @@ class ArchitectureTest {
     ArchRule myRule =
         classes()
             .that()
+            .haveNameNotMatching(".*ScheduledJob.Type")
+            .and()
             .resideInAPackage("..api..")
             .should()
             .onlyDependOnClassesThat()
@@ -167,6 +169,8 @@ class ArchitectureTest {
                 .and()
                 .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
                 .and()
+                .haveNameNotMatching(".*ScheduledJob.Type")
+                .and()
                 .resideInAPackage("..common..")
                 .and()
                 .resideOutsideOfPackage("..common.test..")
@@ -208,6 +212,8 @@ class ArchitectureTest {
   void classesShouldNotUseJunit5Assertions() {
     ArchRule rule =
         noClasses()
+            .that()
+            .haveSimpleNameNotEndingWith("ArchitectureTest")
             .should()
             .dependOnClassesThat()
             .haveFullyQualifiedName(org.junit.jupiter.api.Assertions.class.getName())
