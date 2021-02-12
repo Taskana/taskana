@@ -108,10 +108,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       }
     });
 
-    this.customFields$ = this.accessItemsCustomization$.pipe(
-      getCustomFields(customFieldCount),
-      map((customFields) => customFields.filter((customisation) => customisation.visible))
-    );
+    this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
 
     this.accessItemsRepresentation$.pipe(takeUntil(this.destroy$)).subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {

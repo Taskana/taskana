@@ -115,7 +115,7 @@
 
 						<!-- CUSTOM FIELDS -->
 						<ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
-							<td
+							<td *ngIf="customField.visible"
 								[ngClass]="{ 'has-changes': accessItemsClone[index][getAccessItemCustomProperty(customIndex + 1)] !== accessItem.value[getAccessItemCustomProperty(customIndex+1)] }">
 								<input class="workbasket-access-items__permission-checkbox" type="checkbox"
 									id="checkbox-{{index}}-{{customIndex + 5}}"
