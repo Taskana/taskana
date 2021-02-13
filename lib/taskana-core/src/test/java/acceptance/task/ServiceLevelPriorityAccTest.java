@@ -3,10 +3,12 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,11 +148,17 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_VerifyThatCreateAndPlannedAreClose() throws Exception {
+    Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    Instant inTwoHours = now.plus(2, ChronoUnit.HOURS);
+
+    assumeThat(now.atZone(ZoneId.systemDefault()).getDayOfYear())
+        .describedAs(
+            "Today (%s) and in two hours (%s) should be the same day",
+            now.atZone(ZoneId.systemDefault()), inTwoHours.atZone(ZoneId.systemDefault()))
+        .isEqualTo(inTwoHours.atZone(ZoneId.systemDefault()).getDayOfYear());
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
-    Instant planned =
-        moveForwardToWorkingDay(
-            Instant.now().truncatedTo(ChronoUnit.MILLIS).plus(2, ChronoUnit.HOURS));
+    Instant planned = moveForwardToWorkingDay(inTwoHours);
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));

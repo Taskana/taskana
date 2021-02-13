@@ -1,7 +1,7 @@
 package pro.taskana.common.test.security;
 
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
-import static pro.taskana.common.internal.util.CheckedFunction.wrap;
+import static pro.taskana.common.internal.util.CheckedFunction.wrapExceptFor;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -34,6 +34,7 @@ import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
 import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.support.AnnotationSupport;
+import org.opentest4j.TestAbortedException;
 
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.GroupPrincipal;
@@ -243,7 +244,8 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     Subject subject = new Subject();
     subject.getPrincipals().addAll(getPrincipals(withAccessId));
 
-    Function<Invocation<T>, T> proceedInvocation = wrap(Invocation::proceed);
+    Function<Invocation<T>, T> proceedInvocation =
+        wrapExceptFor(Invocation::proceed, TestAbortedException.class);
     PrivilegedAction<T> performInvocation = () -> proceedInvocation.apply(invocation);
     return Subject.doAs(subject, performInvocation);
   }
