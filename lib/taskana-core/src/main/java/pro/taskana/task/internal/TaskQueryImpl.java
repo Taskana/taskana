@@ -726,7 +726,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery wildcardSearchValueLike(String wildcardSearchValue) {
-    this.wildcardSearchValueLike = wildcardSearchValue;
+    this.wildcardSearchValueLike = wildcardSearchValue.toUpperCase();
     return this;
   }
 
