@@ -83,10 +83,10 @@
       [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
       header="Selected distribution targets"
       [distributionTargets]="selectedDistributionTargets"
-      (performDualListFilter)="performFilter($event)"
       [side]="side.SELECTED"
       [allSelected]="selectAllLeft"
       [hidden]="displayingDistributionTargetsPicker && !sideBySide"
+      [component]="'selectedDistributionTargets'"
     >
 
     </taskana-administration-workbasket-distribution-targets-list>
@@ -95,9 +95,9 @@
       header="Available distribution targets"
       [distributionTargets]="availableDistributionTargets"
       [side]="side.AVAILABLE"
-      (performDualListFilter)="performFilter($event)"
       [allSelected]="selectAllRight"
       *ngIf="displayingDistributionTargetsPicker"
+      [component]="'availableDistributionTargets'"
     >
 
     </taskana-administration-workbasket-distribution-targets-list>

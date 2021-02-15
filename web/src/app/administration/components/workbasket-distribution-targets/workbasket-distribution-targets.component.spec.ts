@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, Input } from '@angular/core';
 import { Side, WorkbasketDistributionTargetsComponent } from './workbasket-distribution-targets.component';
 import { WorkbasketSummary } from '../../../shared/models/workbasket-summary';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,8 +18,6 @@ import {
   selectedWorkbasketMock,
   workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
-import { Pair } from '../../../shared/models/pair';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 
 const routeParamsMock = { id: 'workbasket' };
@@ -31,15 +29,10 @@ const activatedRouteMock = {
 @Component({ selector: 'taskana-administration-workbasket-distribution-targets-list', template: '' })
 class WorkbasketDistributionTargetsListStub {
   @Input() distributionTargets: WorkbasketSummary[];
-  @Input() distributionTargetsSelected: WorkbasketSummary[];
-  @Output() performDualListFilter = new EventEmitter<Pair<Side, WorkbasketQueryFilterParameter>>();
-  @Input() requestInProgress = false;
-  @Input() loadingItems? = false;
   @Input() side: Side;
   @Input() header: string;
-  @Output() scrolling = new EventEmitter<Side>();
+  @Input() component: 'availableDistributionTargets';
   @Input() allSelected;
-  @Output() allSelectedChange = new EventEmitter<boolean>();
 }
 
 const domainServiceSpy = jest.fn().mockImplementation(
@@ -184,5 +177,11 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     component.onClear();
     expect(component.selectedDistributionTargets).toHaveLength(3);
     expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
+  });
+
+  it('should call performFilter when filter value from store is obtained', () => {
+    const performFilter = jest.spyOn(component, 'performFilter');
+    component.ngOnInit();
+    expect(performFilter).toHaveBeenCalledTimes(2);
   });
 });

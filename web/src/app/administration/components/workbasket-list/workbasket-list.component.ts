@@ -10,7 +10,7 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@ngxs/store';
-import { takeUntil, take } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import {
   DeselectWorkbasket,
   GetWorkbasketsSummary,
@@ -23,6 +23,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
+import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
 
 @Component({
   selector: 'taskana-administration-workbasket-list',
@@ -58,6 +59,9 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
+
+  @Select(FilterSelectors.getWorkbasketListFilter)
+  getWorkbasketListFilter$: Observable<WorkbasketQueryFilterParameter>;
 
   destroy$ = new Subject<void>();
 
@@ -137,6 +141,10 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
       .subscribe((value) => {
         this.requestInProgress = value;
       });
+
+    this.getWorkbasketListFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+      this.performFilter(filter);
+    });
   }
 
   selectWorkbasket(id: string) {
@@ -159,7 +167,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
 
   performFilter(filterBy: WorkbasketQueryFilterParameter) {
     const domain = this.filterBy.domain;
-    this.filterBy = filterBy;
+    this.filterBy = { ...filterBy };
     this.filterBy.domain = domain;
     this.performRequest();
   }

@@ -21,6 +21,8 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 import { ButtonAction } from '../../models/button-action';
 import { Pair } from '../../../shared/models/pair';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
+import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
+import { SetFilter } from '../../../shared/store/filter-store/filter.actions';
 
 export enum Side {
   AVAILABLE,
@@ -45,12 +47,14 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   availableDistributionTargets: WorkbasketSummary[] = [];
   availableDistributionTargetsUndoClone: WorkbasketSummary[];
-  availableDistributionTargetsFilterClone: WorkbasketSummary[];
+  availableDistributionTargetsFilterClone: WorkbasketSummary[] = [];
+  availableDistributionTargetsFilter: WorkbasketQueryFilterParameter;
 
   selectedDistributionTargets: WorkbasketSummary[];
   selectedDistributionTargetsUndoClone: WorkbasketSummary[];
-  selectedDistributionTargetsFilterClone: WorkbasketSummary[];
+  selectedDistributionTargetsFilterClone: WorkbasketSummary[] = [];
   selectedDistributionTargetsResource: WorkbasketDistributionTargets;
+  selectedDistributionTargetsFilter: WorkbasketQueryFilterParameter;
 
   @Select(WorkbasketSelectors.workbasketDistributionTargets)
   workbasketDistributionTargets$: Observable<WorkbasketDistributionTargets>;
@@ -63,6 +67,12 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
+
+  @Select(FilterSelectors.getAvailableDistributionTargetsFilter)
+  availableDistributionTargetsFilter$: Observable<WorkbasketQueryFilterParameter>;
+
+  @Select(FilterSelectors.getSelectedDistributionTargetsFilter)
+  selectedDistributionTargetsFilter$: Observable<WorkbasketQueryFilterParameter>;
 
   destroy$ = new Subject<void>();
 
@@ -110,6 +120,16 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
         this.getAvailableDistributionTargets();
       }
+    });
+
+    this.availableDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+      this.availableDistributionTargetsFilter = filter;
+      this.performFilter({ left: 0, right: filter });
+    });
+
+    this.selectedDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+      this.selectedDistributionTargetsFilter = filter;
+      this.performFilter({ left: 1, right: filter });
     });
 
     // saving workbasket distributions targets when existing workbasket was modified
@@ -263,6 +283,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.availableDistributionTargetsFilterClone = this.availableDistributionTargets;
     this.selectAllRight = true;
     this.selectAllLeft = true;
+    this.store.dispatch(new SetFilter(this.selectedDistributionTargetsFilter, 'selectedDistributionTargets'));
+    this.store.dispatch(new SetFilter(this.availableDistributionTargetsFilter, 'availableDistributionTargets'));
   }
 
   onClear() {

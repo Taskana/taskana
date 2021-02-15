@@ -74,7 +74,6 @@ class WorkbasketListToolbarStub {
   @Input() workbasketDefaultSortBy: string;
   @Input() workbasketListExpanded: boolean;
   @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
-  @Output() performFilter = new EventEmitter<WorkbasketQueryFilterParameter>();
 }
 
 @Component({ selector: 'taskana-administration-icon-type', template: '' })
@@ -165,10 +164,17 @@ describe('WorkbasketListComponent', () => {
     expect(component.sort).toMatchObject(sort);
   });
 
-  it('should set filter value when performFilter is called', () => {
-    const filter: WorkbasketQueryFilterParameter = { domain: ['123'] };
+  it('should set filter value without updating domain when performFilter is called', () => {
+    component.filterBy = { domain: ['123'] };
+    const filter: WorkbasketQueryFilterParameter = { 'name-like': ['workbasket'], domain: [''] };
     component.performFilter(filter);
-    expect(component.filterBy).toMatchObject(filter);
+    expect(component.filterBy).toMatchObject({ 'name-like': ['workbasket'], domain: ['123'] });
+  });
+
+  it('should call performFilter when filter value from store is obtained', () => {
+    const performFilter = jest.spyOn(component, 'performFilter');
+    component.ngOnInit();
+    expect(performFilter).toHaveBeenCalled();
   });
 
   it('should change page value when change page function is called ', () => {
