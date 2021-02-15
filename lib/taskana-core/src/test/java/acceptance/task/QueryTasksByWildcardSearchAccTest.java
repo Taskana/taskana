@@ -63,6 +63,32 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
+  void should_ReturnAllTasks_For_CaseInsensitiveValue() {
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
+
+    List<TaskSummary> foundTasksSensitive =
+        taskService
+            .createTaskQuery()
+            .wildcardSearchFieldsIn(wildcards)
+            .wildcardSearchValueLike("%Wid%")
+            .list();
+
+    List<TaskSummary> foundTasksInSensitive =
+        taskService
+            .createTaskQuery()
+            .wildcardSearchFieldsIn(wildcards)
+            .wildcardSearchValueLike("%wid%")
+            .list();
+
+    assertThat(foundTasksSensitive).hasSize(80);
+    assertThat(foundTasksInSensitive).hasSize(80);
+    assertThat(foundTasksInSensitive).containsExactlyElementsOf(foundTasksSensitive);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
   void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {
 
     TaskService taskService = taskanaEngine.getTaskService();
