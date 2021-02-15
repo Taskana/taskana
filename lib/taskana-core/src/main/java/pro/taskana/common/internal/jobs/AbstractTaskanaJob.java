@@ -15,6 +15,7 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 /** Abstract base for all background jobs of TASKANA. */
 public abstract class AbstractTaskanaJob implements TaskanaJob {
 
+  protected final Instant firstRun;
   protected final Duration runEvery;
   protected TaskanaEngineImpl taskanaEngineImpl;
   protected TaskanaTransactionProvider<Object> txProvider;
@@ -27,6 +28,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     this.txProvider = txProvider;
     this.scheduledJob = job;
+    firstRun = taskanaEngine.getConfiguration().getCleanupJobFirstRun();
     this.runEvery = taskanaEngineImpl.getConfiguration().getCleanupJobRunEvery();
   }
 
@@ -60,7 +62,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
   }
 
   protected Instant getNextDueForCleanupJob() {
-    Instant nextRun = Instant.now();
+    Instant nextRun = firstRun;
     if (scheduledJob != null && scheduledJob.getDue() != null) {
       nextRun = scheduledJob.getDue();
     }
