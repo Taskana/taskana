@@ -25,8 +25,7 @@
   </mat-toolbar>
 
   <!-- FILTER COMPONENT -->
-  <taskana-shared-workbasket-filter *ngIf="toolbarState" (performFilter)="performAvailableFilter($event)"
-                                    isExpanded="true" component="distribution-target"></taskana-shared-workbasket-filter>
+  <taskana-shared-workbasket-filter *ngIf="toolbarState" isExpanded="true" [component]="component"></taskana-shared-workbasket-filter>
 
   <!-- WORKBASKET LIST -->
   <div class="{{toolbarState?  'distribution-targets-list__list--with-filter' : 'distribution-targets-list__list--no-filter'}}"

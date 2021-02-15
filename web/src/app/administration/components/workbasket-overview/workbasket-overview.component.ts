@@ -28,7 +28,7 @@ export class WorkbasketOverviewComponent implements OnInit {
 
   ngOnInit() {
     if (this.route.url) {
-      this.route.url.subscribe((params) => {
+      this.route.url.pipe(takeUntil(this.destroy$)).subscribe((params) => {
         if (params[0].path === 'workbaskets') {
           this.selectedWorkbasket$.pipe(take(1)).subscribe((workbasket) => {
             if (typeof workbasket.workbasketId !== 'undefined') {
@@ -39,7 +39,7 @@ export class WorkbasketOverviewComponent implements OnInit {
       });
     }
     if (this.route.firstChild) {
-      this.route.firstChild.params.subscribe((params) => {
+      this.route.firstChild.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
         this.routerParams = params;
         if (this.routerParams.id) {
           this.showDetail = true;

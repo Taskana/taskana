@@ -9,7 +9,7 @@
     </mat-form-field>
 
     <!-- CLEAR BUTTON -->
-    <button mat-stroked-button (click)="clear(); search()" matTooltip="Clear workbasket filter"
+    <button mat-stroked-button (click)="clear()" matTooltip="Clear Workbasket filter"
             class="filter__undo-button">
       <mat-icon style="color: #555">undo</mat-icon>
     </button>
@@ -43,7 +43,7 @@
       <div class="filter__name-and-key-input">
         <mat-form-field appearance="legacy" floatLabel="auto" class="filter__input-field">
           <mat-label>Filter by description</mat-label>
-          <input matInput [(ngModel)]="filter['description-like']" matTooltip="Type to filter by description"
+          <input matInput [(ngModel)]="filter['description-like'][0]" matTooltip="Type to filter by description"
                  (keyup.enter)="search()">
         </mat-form-field>
 
@@ -60,7 +60,7 @@
     <div class="filter__action-buttons">
 
       <!-- TYPE FILTER -->
-      <button mat-stroked-button [matMenuTriggerFor]="menu" matTooltip="Filter workbaskets by type">
+      <button mat-stroked-button [matMenuTriggerFor]="menu" matTooltip="Filter Workbaskets by type">
         Filter by type
         <mat-icon *ngIf="filter.type.length == 0" style="color: #555">filter_list</mat-icon>
         <taskana-administration-icon-type *ngIf="filter.type[0]"
@@ -68,14 +68,14 @@
       </button>
 
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngFor="let type of allTypes | mapValues" (click)="selectType(type.key); search()">
+        <button mat-menu-item *ngFor="let type of allTypes | mapValues" (click)="selectType(type.key)">
           <span *ngIf="type.value === 'All'"> <mat-icon style="color: #555" class="filter__all-icon">filter_list</mat-icon> All </span>
           <taskana-administration-icon-type *ngIf="type.value !== 'All'" [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
         </button>
       </mat-menu>
 
       <!-- CLEAR BUTTON -->
-      <button mat-stroked-button (click)="clear(); search()" matTooltip="Clear workbasket filter">
+      <button mat-stroked-button (click)="clear()" matTooltip="Clear Workbasket filter">
         Reset
         <mat-icon style="color: #555">undo</mat-icon>
       </button>

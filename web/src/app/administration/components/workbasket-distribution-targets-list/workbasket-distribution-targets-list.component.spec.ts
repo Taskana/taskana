@@ -9,13 +9,11 @@ import { Side } from '../workbasket-distribution-targets/workbasket-distribution
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
-import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { OrderBy } from '../../../shared/pipes/order-by.pipe';
 
 @Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {
-  @Output() performFilter = new EventEmitter<WorkbasketQueryFilterParameter>();
+  @Input() component = 'availableDistributionTargetList';
 }
 
 @Component({ selector: 'taskana-shared-spinner', template: '' })

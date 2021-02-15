@@ -37,6 +37,7 @@ import { RequestInProgressService } from '../../services/request-in-progress/req
 import { WorkbasketType } from '../../models/workbasket-type';
 import { TaskanaDate } from '../../util/taskana.date';
 import { DomainService } from '../../services/domain/domain.service';
+import { ClearFilter } from '../filter-store/filter.actions';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -134,6 +135,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
               .path()
               .replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})?tab=${selectedComponent}`)
           );
+
+          ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
+          ctx.dispatch(new ClearFilter('availableDistributionTargets'));
         })
       );
     }
@@ -220,6 +224,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       badgeMessage: `Copying workbasket: ${workbasket.key}`
     });
 
+    ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
+    ctx.dispatch(new ClearFilter('availableDistributionTargets'));
+
     return of(null);
   }
 
@@ -253,6 +260,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           workbasketAccessItems: accessItems,
           workbasketDistributionTargets: distributionTargets
         });
+
+        ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
+        ctx.dispatch(new ClearFilter('availableDistributionTargets'));
 
         return of(null);
       })
