@@ -11,8 +11,8 @@ export class OrderBy implements PipeTransform {
           direction = -1;
           sortKey = sortKey.substr(1);
         }
-        const objectA = a[sortKey].toLowerCase();
-        const objectB = b[sortKey].toLowerCase();
+        const objectA = a[sortKey] ? a[sortKey].toLowerCase() : '';
+        const objectB = b[sortKey] ? b[sortKey].toLowerCase() : '';
         if (objectA < objectB) {
           return -1 * direction;
         }
