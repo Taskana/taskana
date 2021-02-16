@@ -21,7 +21,7 @@ import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
@@ -56,6 +56,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   workbasketClone: Workbasket;
 
   customFields$: Observable<CustomField[]>;
+  keysOfVisibleFields: string[];
 
   accessItemsRepresentation: WorkbasketAccessItemsRepresentation;
   accessItemsClone: WorkbasketAccessItems[];
@@ -108,7 +109,18 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       }
     });
 
-    this.customFields$ = this.accessItemsCustomization$.pipe(getCustomFields(customFieldCount));
+    this.customFields$ = this.accessItemsCustomization$.pipe(
+      getCustomFields(customFieldCount),
+      tap((customFields) => {
+        const accessItem = this.createWorkbasketAccessItems();
+        this.keysOfVisibleFields = ['permRead', 'permOpen', 'permAppend', 'permTransfer', 'permDistribute'];
+        for (let i = 0; i < customFieldCount; i++) {
+          if (customFields[i].visible) {
+            this.keysOfVisibleFields.push(Object.keys(accessItem)[i + 10]);
+          }
+        }
+      })
+    );
 
     this.accessItemsRepresentation$.pipe(takeUntil(this.destroy$)).subscribe((accessItemsRepresentation) => {
       if (typeof accessItemsRepresentation !== 'undefined') {
@@ -300,10 +312,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   checkAll(row: number, value: any) {
     const checkAll = value.target.checked;
     const accessItem = this.accessItemsGroups.controls[row];
-    Object.keys(accessItem.value).forEach((key) => {
-      if (key.startsWith('perm')) {
-        accessItem.get(key).setValue(checkAll);
-      }
+    this.keysOfVisibleFields.forEach((key) => {
+      accessItem.get(key).setValue(checkAll);
     });
   }
 
@@ -314,8 +324,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       areAllCheckboxesSelected = true;
       const accessItem = this.accessItemsGroups.controls[row].value;
 
-      Object.keys(accessItem).forEach((key) => {
-        if (key.startsWith('perm') && accessItem[key] === false) {
+      this.keysOfVisibleFields.forEach((key) => {
+        if (accessItem[key] === false) {
           areAllCheckboxesSelected = false;
         }
       });
