@@ -26,6 +26,7 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -396,5 +397,47 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_NotSetTheTransferFlag_When_SetTransferFlagDisabled() throws Exception {
+    TaskService taskService = taskanaEngine.getTaskService();
+    taskService.transfer(
+        "TKI:000000000000000000000000000000000003",
+        "WBI:100000000000000000000000000000000006",
+        false);
+
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
+    assertThat(transferredTask).isNotNull();
+    assertThat(transferredTask.isTransferred()).isFalse();
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_NotSetTheTransferFlagWithinBulkTransfer_When_SetTransferFlagDisabled()
+      throws Exception {
+    TaskService taskService = taskanaEngine.getTaskService();
+    taskService.transferTasks(
+        "WBI:100000000000000000000000000000000006",
+        List.of(
+            "TKI:000000000000000000000000000000000003",
+            "TKI:000000000000000000000000000000000004",
+            "TKI:000000000000000000000000000000000005"),
+        false);
+
+    List<TaskSummary> transferredTasks =
+        taskService
+            .createTaskQuery()
+            .idIn(
+                "TKI:000000000000000000000000000000000004",
+                "TKI:000000000000000000000000000000000005",
+                "TKI:000000000000000000000000000000000003")
+            .list();
+
+    assertThat(transferredTasks)
+        .extracting(TaskSummary::isTransferred)
+        .contains(false)
+        .doesNotContain(true);
   }
 }

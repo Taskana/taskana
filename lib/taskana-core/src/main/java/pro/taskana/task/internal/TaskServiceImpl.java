@@ -330,17 +330,17 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task transfer(String taskId, String destinationWorkbasketId)
+  public Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
-    return taskTransferrer.transfer(taskId, destinationWorkbasketId);
+    return taskTransferrer.transfer(taskId, destinationWorkbasketId, setTransferFlag);
   }
 
   @Override
-  public Task transfer(String taskId, String workbasketKey, String domain)
+  public Task transfer(String taskId, String workbasketKey, String domain, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
-    return taskTransferrer.transfer(taskId, workbasketKey, domain);
+    return taskTransferrer.transfer(taskId, workbasketKey, domain, setTransferFlag);
   }
 
   @Override
@@ -450,17 +450,20 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketId, List<String> taskIds)
+      String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-    return taskTransferrer.transferTasks(destinationWorkbasketId, taskIds);
+    return taskTransferrer.transferTasks(destinationWorkbasketId, taskIds, setTransferFlag);
   }
 
   @Override
   public BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
     return taskTransferrer.transferTasks(
-        destinationWorkbasketKey, destinationWorkbasketDomain, taskIds);
+        destinationWorkbasketKey, destinationWorkbasketDomain, taskIds, setTransferFlag);
   }
 
   @Override

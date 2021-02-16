@@ -396,6 +396,7 @@ public class TaskController {
    * @title Transfer a Task to another Workbasket
    * @param taskId the Id of the Task which should be transferred
    * @param workbasketId the Id of the destination Workbasket
+   * @param setTransferFlag sets the tansfer flag of the task (default: true)
    * @return the successfully transferred Task.
    * @throws TaskNotFoundException if the requested Task does not exist
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist
@@ -405,11 +406,15 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> transferTask(
-      @PathVariable String taskId, @PathVariable String workbasketId)
+      @PathVariable String taskId,
+      @PathVariable String workbasketId,
+      @RequestBody(required = false) Boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
     LOGGER.debug("Entry to transferTask(taskId= {}, workbasketId= {})", taskId, workbasketId);
-    Task updatedTask = taskService.transfer(taskId, workbasketId);
+
+    Task updatedTask =
+        taskService.transfer(taskId, workbasketId, setTransferFlag == null || setTransferFlag);
     ResponseEntity<TaskRepresentationModel> result =
         ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
     if (LOGGER.isDebugEnabled()) {
