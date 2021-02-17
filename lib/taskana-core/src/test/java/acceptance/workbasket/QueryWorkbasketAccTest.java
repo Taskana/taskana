@@ -350,8 +350,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
     assertThat(results)
         .extracting(WorkbasketSummary::getId)
-        .containsExactly(
-            "WBI:100000000000000000000000000000000001");
+        .containsExactly("WBI:100000000000000000000000000000000001");
   }
 
   @WithAccessId(user = "teamlead-1")

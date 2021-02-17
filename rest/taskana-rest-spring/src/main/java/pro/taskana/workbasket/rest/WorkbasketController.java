@@ -320,9 +320,10 @@ public class WorkbasketController {
       throw new InvalidArgumentException("Can´t create something with NULL body-value.");
     }
 
-    List<WorkbasketAccessItem> wbAccessItems = workbasketAccessItemRepModels.getContent().stream()
-        .map(workbasketAccessItemRepresentationModelAssembler::toEntityModel)
-        .collect(Collectors.toList());
+    List<WorkbasketAccessItem> wbAccessItems =
+        workbasketAccessItemRepModels.getContent().stream()
+            .map(workbasketAccessItemRepresentationModelAssembler::toEntityModel)
+            .collect(Collectors.toList());
     workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
     List<WorkbasketAccessItem> updatedWbAccessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);

@@ -45,7 +45,8 @@ public class TaskHistoryEventController {
   public TaskHistoryEventController(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
-      TaskHistoryEventRepresentationModelAssembler assembler) throws SQLException {
+      TaskHistoryEventRepresentationModelAssembler assembler)
+      throws SQLException {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
     this.simpleHistoryService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());

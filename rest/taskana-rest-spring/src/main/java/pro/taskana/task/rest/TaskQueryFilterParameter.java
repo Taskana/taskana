@@ -112,7 +112,6 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   private final Instant[] due;
 
-
   /**
    * Filter since a given due timestamp.
    *

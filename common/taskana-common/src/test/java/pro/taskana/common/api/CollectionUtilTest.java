@@ -17,8 +17,8 @@ class CollectionUtilTest {
     List<Integer> listWith1000Entries =
         IntStream.rangeClosed(1, 1000).boxed().collect(Collectors.toList());
     assertThat(listWith1000Entries).hasSize(1000);
-    Collection<List<Integer>> partitions = CollectionUtil
-                                               .partitionBasedOnSize(listWith1000Entries, 100);
+    Collection<List<Integer>> partitions =
+        CollectionUtil.partitionBasedOnSize(listWith1000Entries, 100);
     assertThat(partitions).hasSize(10);
   }
 }
