@@ -1,134 +1,119 @@
 context('TASKANA Workbaskets', () => {
   beforeEach(() => cy.loginAs('admin'));
 
-  it('should be able to see all Workbaskets', () => {
+  it('should be able to see all workbaskets', () => {
     cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
-    cy.location().should((location) => {
-      expect(location.href).to.eq(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
-    });
-    // should contain #wb-list-container
+    cy.verifyPageLoad('/workbaskets');
   });
 
-  it.skip('should be able to filter workbaskets via owner', () => {
-    cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets').then(() =>
-      cy.get('#collapsedMenufilterWb').click()
-    );
 
-    cy.get('[placeholder="Filter owner"]')
-      .type('user-1-2')
+  it('should be able to filter workbaskets by name', () => {
+    cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
+    cy.verifyPageLoad('/workbaskets');
+
+    cy.get('input[mattooltip="Type to filter by name"]')
+      .type(Cypress.env('testValueWorkbasketSelectionName'))
       .type('{enter}')
       .then(() => {
-        // Length equal to 2 because the empty starting element of the list, only one ListEntry with values added
-        cy.get('#wb-list-container').find('.list-group-item').should('have.length', 2);
+        cy.get('mat-selection-list[role="listbox"]').should('have.length', 1);
       });
   });
 
-  it('should be possible to edit workbasket information custom 1 to 4', () => {
+
+  it('should be possible to edit workbasket custom information', () => {
     cy.visitTestWorkbasket();
 
-    cy.wrap([1, 2, 4]).each((index) => {
-      cy.get('#wb-custom-' + index)
-        .clear()
-        .type(Cypress.env('testValueWorkbaskets'));
+    cy.get('#wb-custom-1')
+      .clear()
+      .type(Cypress.env('testValueWorkbaskets'));
 
-      cy.saveWorkbaskets();
-      cy.reloadPageWithWait();
-
-      cy.get('#wb-custom-' + index).should('have.value', Cypress.env('testValueWorkbaskets'));
-    });
+    cy.saveWorkbaskets();
+    cy.get('#wb-custom-1').should('have.value', Cypress.env('testValueWorkbaskets'));
   });
 
-  it('should be possible to edit workbasket information OrgLevel 1 to 4', () => {
+
+  it('should be possible to edit workbasket information orgLevel', () => {
     cy.visitTestWorkbasket();
 
-    cy.wrap([1, 2, 3, 4]).each((index) => {
-      cy.get('#wb-org-level-' + index)
-        .clear()
-        .type(Cypress.env('testValueWorkbaskets'));
+    cy.get('input[name="workbasket.orgLevel1"]')
+      .clear()
+      .type(Cypress.env('testValueWorkbaskets'));
 
-      cy.saveWorkbaskets();
-      cy.reloadPageWithWait();
-
-      cy.get('#wb-org-level-' + index).should('have.value', Cypress.env('testValueWorkbaskets'));
-    });
+    cy.saveWorkbaskets();
+    cy.get('input[name="workbasket.orgLevel1"]').should('have.value', Cypress.env('testValueWorkbaskets'));
   });
+
 
   it('should be possible to edit workbasket description', () => {
     cy.visitTestWorkbasket();
 
-    cy.get('#wb-description')
+    cy.get('#workbasket-description')
       .clear()
       .type(Cypress.env('testValueWorkbaskets'))
       .then(() => {
         cy.saveWorkbaskets();
-        cy.reloadPageWithWait();
-        cy.get('#wb-description').should('have.value', Cypress.env('testValueWorkbaskets'));
+        cy.get('#workbasket-description').should('have.value', Cypress.env('testValueWorkbaskets'));
       });
   });
 
-  it('should be possible to edit the Type of a workbasket', () => {
+
+  it('should be possible to edit the type of a workbasket', () => {
     cy.visitTestWorkbasket();
 
-    cy.get('#dropdownMenu24').click();
-
+    cy.get('mat-form-field').contains('mat-form-field', 'Type').find('mat-select').click();
     cy.wait(Cypress.env('dropdownWait'));
-
-    cy.get('.col-xs-4 > .dropdown > .dropdown-menu > li > ').contains('Clearance').click();
-
+    cy.get('mat-option').contains('Clearance').click();
     cy.saveWorkbaskets();
 
-    cy.reloadPageWithWait();
+    // assure that its Clearance now
+    cy.get('mat-form-field').contains('mat-form-field', 'Type').contains('Clearance').should('be.visible');
 
-    // assure that its process now
-
-    cy.get('#dropdownMenu24').contains('Clearance').should('be.visible');
-
-    // change back to external
-
-    cy.get('#dropdownMenu24').click();
-
+    // change back to Group
+    cy.get('mat-form-field').contains('mat-form-field', 'Type').find('mat-select').click();
     cy.wait(Cypress.env('dropdownWait'));
-
-    cy.get('.col-xs-4 > .dropdown > .dropdown-menu > li > ').contains('Group').should('be.visible').click();
+    cy.get('mat-option').contains('Group').should('be.visible').click();
 
     cy.saveWorkbaskets();
   });
+
 
   it('should be possible to add new access', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
 
-    cy.get('[title="Add new access"]')
+    cy.get('button[mattooltip="Add new access"')
       .click()
       .then(() => {
-        cy.get('[data-cy=typeahead_input].ng-pristine.ng-invalid')
-          // .contains("Access id is required")
+        cy.get('mat-form-field').contains('mat-form-field', "Access id").find('input')
           .type('teamlead-2');
-        cy.get('.input-group > .dropdown > .dropdown-menu >').click();
+        cy.get('input[aria-label="checkAll"]:first').click();
         cy.saveWorkbaskets();
       });
-    cy.reloadPageWithWait();
+
     cy.visitWorkbasketsAccessPage();
     cy.get('table#table-access-items > tbody > tr').should('have.length', 2);
   });
 
-  it.skip('should be possible to add a distribution target', () => {
-    cy.server();
-    cy.route(
-      'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
-    ).as('workbasketsDistributionTargets');
 
+  it('should be possible to add a distribution target', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsDistributionTargetsPage();
-    cy.get('#dual-list-Left > .dual-list.list-left > .infinite-scroll > .list-group > :nth-child(1)').click();
-    cy.get('.list-arrows > .move-right').contains('chevron_right').click();
+
+    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Available distribution targets"]').find('mat-list-option:first')
+      .find('mat-pseudo-checkbox').click()
+    cy.get('button').contains('Add selected distribution targets').click()
+
     cy.saveWorkbaskets();
-    cy.reloadPageWithWait();
+
     cy.visitWorkbasketsDistributionTargetsPage();
-    cy.wait('@workbasketsDistributionTargets');
-    cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group').should('have.length', 1);
-    cy.get('#dual-list-right > .dual-list.list-left > .infinite-scroll > .list-group')
-      .contains('user-1-3')
-      .should('exist');
+    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]').find('mat-selection-list').should('not.be.empty');
+
+    // undo changes
+    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]').find('mat-list-option:first')
+      .find('mat-pseudo-checkbox').click()
+    cy.get('button').contains('Remove selected distribution target').click()
+
+    cy.saveWorkbaskets();
   });
+
 });

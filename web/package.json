@@ -14,8 +14,9 @@
     "lint:fix": "eslint --ext .ts src --fix",
     "format": "prettier --write \"**/*.{js,ts,css,scss,md,json,yml}\"",
     "format:html": "prettier --write \"**/*.{html,}\"",
-    "e2e": "cypress install && cypress run",
-    "e2e:open": "cypress install && cypress open"
+    "e2e-dev": "cypress install && cypress run",
+    "e2e-dev:open": "cypress install && cypress open",
+    "e2e-standalone": "cypress install && cypress run --config-file cypress-standalone.json"
   },
   "private": true,
   "dependencies": {

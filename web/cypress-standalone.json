@@ -1,14 +1,15 @@
 { 
   "retries": 2,
   "env": {
-    "appUrl": "http://localhost:4200/#/taskana",
+    "loginUrl": "http://localhost:8080/taskana",
+    "appUrl": "http://localhost:8080/taskana/#/taskana",
     "adminUrl": "/administration",
-    "dropdownWait": 80,
+    "dropdownWait": 100,
     "testValueClassificationSelectionName": "L10303",
     "testValueClassifications": "CY-TEST-CLASSIFICATIONS",
     "testValueWorkbasketSelectionName": "basxet0",
     "testValueWorkbaskets": "CY-TEST-WORKBASKETS",
-    "isLocal": true,
-    "isHistoryEnabled": false
+    "isLocal": false,
+    "isHistoryEnabled": true
   }
 }
