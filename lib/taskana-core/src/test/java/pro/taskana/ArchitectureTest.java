@@ -7,17 +7,26 @@ import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -109,22 +118,7 @@ class ArchitectureTest {
                 )
             .map(Pattern::compile)
             .collect(Collectors.toList());
-    ArchCondition<JavaClass> condition =
-        new ArchCondition<JavaClass>("all be defined in TASKANA_SUB_PACKAGES") {
-          @Override
-          public void check(JavaClass item, ConditionEvents events) {
-            if (TASKANA_SUB_PACKAGES.stream().noneMatch(p -> item.getPackageName().startsWith(p))
-                && excludePackages.stream()
-                    .noneMatch(p -> p.matcher(item.getPackageName()).matches())) {
-              String message =
-                  String.format(
-                      "Package '%s' was not declared in TASKANA_SUB_PACKAGES",
-                      item.getPackageName());
-              events.add(SimpleConditionEvent.violated(item, message));
-            }
-          }
-        };
-    ArchRule myRule = classes().should(condition);
+    ArchRule myRule = classes().should(beDefinedInTaskanaSubPackages(excludePackages));
     myRule.check(importedClasses);
   }
 
@@ -219,5 +213,84 @@ class ArchitectureTest {
             .haveFullyQualifiedName(org.junit.jupiter.api.Assertions.class.getName())
             .because("we consistently want to use assertj in our tests");
     rule.check(importedClasses);
+  }
+
+  @Test
+  void mapperClassesShouldNotUseCurrentTimestampSqlFunction() {
+    ArchRule rule =
+        classes()
+            .that()
+            .haveSimpleNameEndingWith("Mapper")
+            .should(notUseCurrentTimestampSqlFunction());
+
+    rule.check(importedClasses);
+  }
+
+  private static ArchCondition<JavaClass> beDefinedInTaskanaSubPackages(
+      List<Pattern> excludePackages) {
+    return new ArchCondition<>("all be defined in TASKANA_SUB_PACKAGES") {
+      @Override
+      public void check(JavaClass javaClass, ConditionEvents events) {
+        if (TASKANA_SUB_PACKAGES.stream().noneMatch(p -> javaClass.getPackageName().startsWith(p))
+            && excludePackages.stream()
+                .noneMatch(p -> p.matcher(javaClass.getPackageName()).matches())) {
+          String message =
+              String.format(
+                  "Package '%s' was not declared in TASKANA_SUB_PACKAGES",
+                  javaClass.getPackageName());
+          events.add(SimpleConditionEvent.violated(javaClass, message));
+        }
+      }
+    };
+  }
+
+  private static ArchCondition<JavaClass> notUseCurrentTimestampSqlFunction() {
+    Function<JavaMethod, List<String>> getSqlStringsFromMethod =
+        (method) -> {
+          List<String> values = new ArrayList<>();
+          final Optional<Select> selectAnnotation = method.tryGetAnnotationOfType(Select.class);
+          final Optional<Update> updateAnnotation = method.tryGetAnnotationOfType(Update.class);
+          final Optional<Insert> insertAnnotation = method.tryGetAnnotationOfType(Insert.class);
+          final Optional<Delete> deleteAnnotation = method.tryGetAnnotationOfType(Delete.class);
+
+          if (selectAnnotation.isPresent()) {
+            values.addAll(Arrays.asList(selectAnnotation.get().value()));
+          }
+          if (updateAnnotation.isPresent()) {
+            values.addAll(Arrays.asList(updateAnnotation.get().value()));
+          }
+          if (insertAnnotation.isPresent()) {
+            values.addAll(Arrays.asList(insertAnnotation.get().value()));
+          }
+          if (deleteAnnotation.isPresent()) {
+            values.addAll(Arrays.asList(deleteAnnotation.get().value()));
+          }
+          return values;
+        };
+
+    return new ArchCondition<>("not use the SQL function 'CURRENT_TIMESTAMP'") {
+      @Override
+      public void check(JavaClass javaClass, ConditionEvents events) {
+        for (JavaMethod method : javaClass.getAllMethods()) {
+          List<String> sqlStrings = getSqlStringsFromMethod.apply(method);
+
+          if (sqlStrings.isEmpty()) {
+            String message =
+                String.format(
+                    "Method '%s#%s' does not contain any MyBatis SQL annotation",
+                    javaClass.getName(), method.getName());
+            events.add(SimpleConditionEvent.violated(javaClass, message));
+          }
+
+          if (sqlStrings.stream().anyMatch(s -> s.contains("CURRENT_TIMESTAMP"))) {
+            String message =
+                String.format(
+                    "Method '%s#%s' uses 'CURRENT_TIMESTAMP' SQL function",
+                    javaClass.getName(), method.getName());
+            events.add(SimpleConditionEvent.violated(javaClass, message));
+          }
+        }
+      }
+    };
   }
 }

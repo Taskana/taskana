@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -99,6 +100,7 @@ public class TimestampReportBuilderImpl
 
   private List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(TaskTimestamp s) {
     return monitorMapper.getTasksCountForStatusGroupedByOrgLevel(
+        Instant.now(),
         s,
         classificationCategory,
         classificationIds,

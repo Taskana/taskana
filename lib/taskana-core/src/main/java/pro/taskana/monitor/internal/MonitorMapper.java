@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
@@ -23,9 +24,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.WORKBASKET_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT T.WORKBASKET_KEY, (DAYS(T.${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.${timestamp}) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT T.WORKBASKET_KEY, (DAYS(T.${timestamp}) - DAYS(#{now})) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', #{now}, T.${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.${timestamp} - #{now}) as AGE_IN_DAYS </if> "
           + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -66,6 +67,7 @@ public interface MonitorMapper {
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
   @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfWorkbaskets(
+      @Param("now") Instant now,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
       @Param("classificationCategories") List<String> classificationCategories,
@@ -80,9 +82,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.CLASSIFICATION_CATEGORY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_CATEGORY, DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_CATEGORY, DATE_PART('DAY', ${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_CATEGORY, (DAYS(${timestamp}) - DAYS(#{now})) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_CATEGORY, DATEDIFF('DAY', #{now}, ${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_CATEGORY, DATE_PART('DAY', ${timestamp} - #{now}) as AGE_IN_DAYS </if> "
           + "FROM TASK "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -115,6 +117,7 @@ public interface MonitorMapper {
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
   @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfCategories(
+      @Param("now") Instant now,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
       @Param("classificationCategories") List<String> classificationCategories,
@@ -127,9 +130,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.CLASSIFICATION_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_KEY, DATE_PART('DAY', ${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT CLASSIFICATION_KEY, (DAYS(${timestamp}) - DAYS(#{now})) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT CLASSIFICATION_KEY, DATEDIFF('DAY', #{now}, ${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT CLASSIFICATION_KEY, DATE_PART('DAY', ${timestamp} - #{now}) as AGE_IN_DAYS </if> "
           + "FROM TASK "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -162,6 +165,7 @@ public interface MonitorMapper {
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
   @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfClassifications(
+      @Param("now") Instant now,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
       @Param("classificationCategories") List<String> classificationCategories,
@@ -174,9 +178,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.TASK_CLASSIFICATION_KEY, B.ATTACHMENT_CLASSIFICATION_KEY, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(T.${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATEDIFF('DAY', CURRENT_TIMESTAMP, T.${timestamp}) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATE_PART('DAY', T.${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, (DAYS(T.${timestamp}) - DAYS(#{now})) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATEDIFF('DAY', #{now}, T.${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT T.CLASSIFICATION_KEY as TASK_CLASSIFICATION_KEY, A.CLASSIFICATION_KEY as ATTACHMENT_CLASSIFICATION_KEY, DATE_PART('DAY', T.${timestamp} - #{now}) as AGE_IN_DAYS </if> "
           + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -210,6 +214,7 @@ public interface MonitorMapper {
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
   @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<DetailedMonitorQueryItem> getTaskCountOfDetailedClassifications(
+      @Param("now") Instant now,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
       @Param("classificationCategories") List<String> classificationCategories,
@@ -222,9 +227,9 @@ public interface MonitorMapper {
   @Select(
       "<script>"
           + "SELECT B.CUSTOM_FIELD, B.AGE_IN_DAYS, COUNT(B.AGE_IN_DAYS) AS NUMBER_OF_TASKS FROM ("
-          + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'h2'\">SELECT ${customField} as CUSTOM_FIELD, DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) as AGE_IN_DAYS </if> "
-          + "<if test=\"_databaseId == 'postgres'\">SELECT ${customField} as CUSTOM_FIELD, DATE_PART('DAY', ${timestamp} - CURRENT_TIMESTAMP) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'db2'\">SELECT ${customField} as CUSTOM_FIELD, (DAYS(${timestamp}) - DAYS(#{now})) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'h2'\">SELECT ${customField} as CUSTOM_FIELD, DATEDIFF('DAY', #{now}, ${timestamp}) as AGE_IN_DAYS </if> "
+          + "<if test=\"_databaseId == 'postgres'\">SELECT ${customField} as CUSTOM_FIELD, DATE_PART('DAY', ${timestamp} - #{now}) as AGE_IN_DAYS </if> "
           + "FROM TASK "
           + "<where>"
           + "<if test=\"workbasketIds != null\">"
@@ -257,6 +262,7 @@ public interface MonitorMapper {
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
   @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
   List<MonitorQueryItem> getTaskCountOfTaskCustomFieldValues(
+      @Param("now") Instant now,
       @Param("customField") TaskCustomField taskCustomField,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
@@ -312,22 +318,23 @@ public interface MonitorMapper {
           + "</if>"
           + "</if>"
           + "<if test=\"_databaseId == 'db2'\">"
-          + "#{selectedItem.upperAgeLimit} >= (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) AND "
-          + "#{selectedItem.lowerAgeLimit} &lt;= (DAYS(${timestamp}) - DAYS(CURRENT_TIMESTAMP)) "
+          + "#{selectedItem.upperAgeLimit} >= (DAYS(${timestamp}) - DAYS(#{now})) AND "
+          + "#{selectedItem.lowerAgeLimit} &lt;= (DAYS(${timestamp}) - DAYS(#{now})) "
           + "</if> "
           + "<if test=\"_databaseId == 'h2'\">"
-          + "#{selectedItem.upperAgeLimit} >= DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) AND "
-          + "#{selectedItem.lowerAgeLimit} &lt;= DATEDIFF('DAY', CURRENT_TIMESTAMP, ${timestamp}) "
+          + "#{selectedItem.upperAgeLimit} >= DATEDIFF('DAY', #{now}, ${timestamp}) AND "
+          + "#{selectedItem.lowerAgeLimit} &lt;= DATEDIFF('DAY', #{now}, ${timestamp}) "
           + "</if> "
           + "<if test=\"_databaseId == 'postgres'\">"
-          + "#{selectedItem.upperAgeLimit} >= DATE_PART('day', ${timestamp} - CURRENT_TIMESTAMP ) AND "
-          + "#{selectedItem.lowerAgeLimit} &lt;= DATE_PART('day', ${timestamp} - CURRENT_TIMESTAMP ) "
+          + "#{selectedItem.upperAgeLimit} >= DATE_PART('day', ${timestamp} - #{now} ) AND "
+          + "#{selectedItem.lowerAgeLimit} &lt;= DATE_PART('day', ${timestamp} - #{now} ) "
           + "</if> "
           + "</foreach>) "
           + "</where>"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   List<String> getTaskIdsForSelectedItems(
+      @Param("now") Instant now,
       @Param("workbasketIds") List<String> workbasketIds,
       @Param("states") List<TaskState> states,
       @Param("classificationCategories") List<String> classificationCategories,
@@ -429,9 +436,9 @@ public interface MonitorMapper {
           // overhead / complexity. It's worth the trade-off of not computing the AGE_IN_DAYS column
           // twice.
           + "SELECT W.ORG_LEVEL_1, W.ORG_LEVEL_2, W.ORG_LEVEL_3, W.ORG_LEVEL_4, "
-          + "<if test=\"_databaseId == 'db2'\">(DAYS(T.${status}) - DAYS(CURRENT_TIMESTAMP))</if>"
-          + "<if test=\"_databaseId == 'h2'\">DATEDIFF('DAY', CURRENT_TIMESTAMP, T.${status})</if>"
-          + "<if test=\"_databaseId == 'postgres'\">DATE_PART('DAY', T.${status} - CURRENT_TIMESTAMP)</if>"
+          + "<if test=\"_databaseId == 'db2'\">(DAYS(T.${status}) - DAYS(#{now}))</if>"
+          + "<if test=\"_databaseId == 'h2'\">DATEDIFF('DAY', #{now}, T.${status})</if>"
+          + "<if test=\"_databaseId == 'postgres'\">DATE_PART('DAY', T.${status} - #{now})</if>"
           + " as AGE_IN_DAYS "
           + "FROM TASK AS T INNER JOIN WORKBASKET AS W ON T.WORKBASKET_KEY=W.KEY "
           + "<where>"
@@ -465,6 +472,7 @@ public interface MonitorMapper {
   @Result(column = "ORG_LEVEL_3", property = "orgLevel3")
   @Result(column = "ORG_LEVEL_4", property = "orgLevel4")
   List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(
+      @Param("now") Instant now,
       @Param("status") TaskTimestamp status,
       @Param("classificationCategories") List<String> classificationCategories,
       @Param("classificationIds") List<String> classificationIds,

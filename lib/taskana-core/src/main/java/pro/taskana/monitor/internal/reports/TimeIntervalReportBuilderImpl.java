@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -146,6 +147,7 @@ abstract class TimeIntervalReportBuilderImpl<
         selectedItems = convertWorkingDaysToDays(selectedItems, this.columnHeaders);
       }
       return this.monitorMapper.getTaskIdsForSelectedItems(
+          Instant.now(),
           this.workbasketIds,
           this.states,
           this.classificationCategory,

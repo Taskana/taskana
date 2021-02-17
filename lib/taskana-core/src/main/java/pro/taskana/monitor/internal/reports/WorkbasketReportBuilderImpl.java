@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +52,7 @@ public class WorkbasketReportBuilderImpl
       WorkbasketReport report = new WorkbasketReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
           this.monitorMapper.getTaskCountOfWorkbaskets(
+              Instant.now(),
               this.workbasketIds,
               this.states,
               this.classificationCategory,
