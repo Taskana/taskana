@@ -1,59 +1,55 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('visitWorkbasketsInformationPage', () => {
+  cy.get('mat-tab-header').contains('Information').click();
+});
 
 Cypress.Commands.add('visitWorkbasketsAccessPage', () => {
-  cy.get('.nav a').contains('Access').click();
+  cy.get('mat-tab-header').contains('Access').click();
 });
 
 Cypress.Commands.add('visitWorkbasketsDistributionTargetsPage', () => {
-  cy.get('.nav a').contains('Distribution targets').click();
+  cy.get('mat-tab-header').contains('Distribution Targets').click();
 });
 
 Cypress.Commands.add('saveWorkbaskets', () => {
-  cy.get('.tab-pane.active > > .panel>.panel-heading>.pull-right > .btn-primary').click();
+  cy.get('button').contains('Save').click();
+});
+
+Cypress.Commands.add('verifyPageLoad', (path) => {
+  cy.location('hash', {timeout: 10000}).should('include', path);
 });
 
 Cypress.Commands.add('visitTestWorkbasket', () => {
   cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
-  cy.contains(Cypress.env('testValueWorkbasketSelectionName')).click();
+  cy.verifyPageLoad('/workbaskets');
+
+  // since the list is loaded dynamically, we need to explicitly wait 400ms for the results
+  // in order to avoid errors regarding detached DOM elements although it is a bad practice
+  cy.wait(400);
+  cy.get('mat-selection-list').contains(Cypress.env('testValueWorkbasketSelectionName'))
+    .should('exist').click();
+  cy.visitWorkbasketsInformationPage();
 });
 
-Cypress.Commands.add('reloadPageWithWait', () => {
-  cy.reload();
-  cy.wait(Cypress.env('pageReload'));
+Cypress.Commands.add('visitTestClassification', () => {
+  cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/classifications');
+  cy.verifyPageLoad('/classifications');
+
+  cy.get('taskana-administration-tree').contains(Cypress.env('testValueClassificationSelectionName'))
+    .should('exist').click();
 });
 
 Cypress.Commands.add('loginAs', (username) => {
-  return cy.request({
-    method: 'POST',
-    url: Cypress.env('baseUrl') + '/login',
-    form: true,
-    body: {
-      username,
-      password: username
+  if (Cypress.env('isLocal')) {
+      cy.log('Local development - No need for testing login functionality');
+  } else {
+      cy.visit(Cypress.env('loginUrl') + '/login');
+      // not calling verifyPageLoad as we cannot verify via hash in this case
+      cy.location('pathname', {timeout: 10000}).should('include', '/login');
+
+      cy.get('#username').type('admin').should('have.value', 'admin');
+      cy.get('#password').type('admin').should('have.value', 'admin');
+      cy.get('#login-submit').click();
+
+      cy.verifyPageLoad('/workplace/tasks');
     }
-  });
 });

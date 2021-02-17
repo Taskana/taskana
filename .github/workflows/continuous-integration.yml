@@ -191,15 +191,21 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
+      - name: Download taskana-web artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.ARTIFACTS_TASKANA_WEB_NAME }}
+          path: ${{ env.ARTIFACTS_TASKANA_WEB_PATH }}
+      - name: Build frontend
+        run: ./mvnw install -pl :taskana-web
       - name: Test
         working-directory: web
         run: npm run test -- --coverageReporters text-summary
-      #      TODO: new frontend breaks our cypress tests.
-      #      - name: Cypress tests
-      #        working-directory: web
-      #        run: |
-      #          ../mvnw -B spring-boot:run -P history.plugin -f .. -pl :taskana-rest-spring-example-boot &
-      #          npx wait-port -t 30000 localhost:8080 && npm run e2e -- --config-file ../ci/cypress.json
+      - name: Cypress tests
+        working-directory: web
+        run: |
+          ../mvnw -B spring-boot:run -P history.plugin -f .. -pl :taskana-rest-spring-example-boot &
+          npx wait-port -t 30000 localhost:8080 && npm run e2e-standalone
       - name: Upload Cypress tests
         if: failure()
         uses: actions/upload-artifact@v2
