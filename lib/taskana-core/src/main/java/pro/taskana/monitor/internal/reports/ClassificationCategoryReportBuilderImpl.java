@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ public class ClassificationCategoryReportBuilderImpl
       ClassificationCategoryReport report = new ClassificationCategoryReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
           this.monitorMapper.getTaskCountOfCategories(
+              Instant.now(),
               this.workbasketIds,
               this.states,
               this.classificationCategory,

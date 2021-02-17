@@ -80,14 +80,15 @@ class ClassificationReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfClassifications(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
 
     ClassificationQuery queryMock = mock(ClassificationQuery.class);
@@ -114,7 +115,8 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
-        .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfClassifications(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
 
     verifyNoMoreInteractions(queryMock);
@@ -147,14 +149,15 @@ class ClassificationReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfClassifications(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
     ClassificationQuery queryMock = mock(ClassificationQuery.class);
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
@@ -181,7 +184,8 @@ class ClassificationReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
 
     verify(monitorMapperMock)
-        .getTaskCountOfClassifications(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfClassifications(
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(queryMock);
     verifyNoMoreInteractions(mocks);
@@ -212,14 +216,15 @@ class ClassificationReportBuilderImplTest {
     detailedMonitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(detailedMonitorQueryItem);
     when(monitorMapperMock.getTaskCountOfDetailedClassifications(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
     ClassificationQuery queryMock = mock(ClassificationQuery.class);
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
@@ -246,7 +251,7 @@ class ClassificationReportBuilderImplTest {
 
     verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(
-            any(), any(), any(), any(), any(), any(), any(), any());
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(queryMock);
     verifyNoMoreInteractions(mocks);
@@ -281,14 +286,15 @@ class ClassificationReportBuilderImplTest {
     detailedMonitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(detailedMonitorQueryItem);
     when(monitorMapperMock.getTaskCountOfDetailedClassifications(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
     ClassificationQuery queryMock = mock(ClassificationQuery.class);
     when(classificationService.createClassificationQuery()).thenReturn(queryMock);
@@ -316,7 +322,7 @@ class ClassificationReportBuilderImplTest {
 
     verify(monitorMapperMock)
         .getTaskCountOfDetailedClassifications(
-            any(), any(), any(), any(), any(), any(), any(), any());
+            any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(queryMock);
     verifyNoMoreInteractions(mocks);
@@ -351,18 +357,19 @@ class ClassificationReportBuilderImplTest {
 
     final List<String> expectedResult = List.of("TKI:000000000000000000000000000000000001");
     when(monitorMapperMock.getTaskIdsForSelectedItems(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            null,
-            "CLASSIFICATION_KEY",
-            TaskTimestamp.DUE,
-            selectedItems,
-            false))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(null),
+            eq("CLASSIFICATION_KEY"),
+            eq(TaskTimestamp.DUE),
+            eq(selectedItems),
+            eq(false)))
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
@@ -384,6 +391,7 @@ class ClassificationReportBuilderImplTest {
 
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
+            any(),
             any(),
             any(),
             any(),

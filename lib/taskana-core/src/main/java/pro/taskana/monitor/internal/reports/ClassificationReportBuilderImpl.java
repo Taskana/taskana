@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ public class ClassificationReportBuilderImpl
       ClassificationReport report = new ClassificationReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
           this.monitorMapper.getTaskCountOfClassifications(
+              Instant.now(),
               this.workbasketIds,
               this.states,
               this.classificationCategory,
@@ -104,6 +106,7 @@ public class ClassificationReportBuilderImpl
       DetailedClassificationReport report = new DetailedClassificationReport(this.columnHeaders);
       List<DetailedMonitorQueryItem> detailedMonitorQueryItems =
           this.monitorMapper.getTaskCountOfDetailedClassifications(
+              Instant.now(),
               this.workbasketIds,
               this.states,
               this.classificationCategory,

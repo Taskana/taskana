@@ -73,15 +73,16 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfWorkbaskets(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            combinedClassificationFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(combinedClassificationFilter)))
         .thenReturn(expectedResult);
     when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
@@ -102,7 +103,8 @@ class WorkbasketReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfWorkbaskets(
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verify(internalTaskanaEngineMock).runAsAdmin(any());
     verify(taskanaEngineMock).getWorkbasketService();
@@ -139,15 +141,16 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfWorkbaskets(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            combinedClassificationFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(combinedClassificationFilter)))
         .thenReturn(expectedResult);
     when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
 
@@ -169,7 +172,8 @@ class WorkbasketReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
-        .getTaskCountOfWorkbaskets(any(), any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfWorkbaskets(
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);
@@ -199,18 +203,19 @@ class WorkbasketReportBuilderImplTest {
 
     List<String> expectedResult = List.of("TKI:000000000000000000000000000000000001");
     when(monitorMapperMock.getTaskIdsForSelectedItems(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            null,
-            "WORKBASKET_KEY",
-            TaskTimestamp.DUE,
-            selectedItems,
-            false))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(null),
+            eq("WORKBASKET_KEY"),
+            eq(TaskTimestamp.DUE),
+            eq(selectedItems),
+            eq(false)))
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
@@ -231,6 +236,7 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
+            any(),
             any(),
             any(),
             any(),
@@ -349,15 +355,16 @@ class WorkbasketReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfWorkbaskets(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.PLANNED,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            combinedClassificationFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.PLANNED),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(combinedClassificationFilter)))
         .thenReturn(expectedResult);
 
     when(internalTaskanaEngineMock.runAsAdmin(any())).thenReturn(Map.of());
@@ -380,15 +387,16 @@ class WorkbasketReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(3)).getEngine();
     verify(monitorMapperMock)
         .getTaskCountOfWorkbaskets(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.PLANNED,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            combinedClassificationFilter);
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.PLANNED),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(combinedClassificationFilter));
     verify(internalTaskanaEngineMock).returnConnection();
     verify(taskanaEngineMock).getWorkbasketService();
     verifyNoMoreInteractions(internalTaskanaEngineMock, taskanaEngineMock, monitorMapperMock);

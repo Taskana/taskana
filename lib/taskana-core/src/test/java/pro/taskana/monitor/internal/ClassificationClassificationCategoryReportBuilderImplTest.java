@@ -66,14 +66,15 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfCategories(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
 
     final ClassificationCategoryReport actualResult =
@@ -92,7 +93,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
-        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -125,14 +126,15 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfCategories(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
 
     final ClassificationCategoryReport actualResult =
@@ -152,7 +154,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     verify(taskanaEngineMock).checkRoleMembership(any());
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
-        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any(), any());
+        .getTaskCountOfCategories(any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -183,18 +185,19 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
 
     List<String> expectedResult = List.of("TKI:000000000000000000000000000000000001");
     when(monitorMapperMock.getTaskIdsForSelectedItems(
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter,
-            null,
-            "CLASSIFICATION_CATEGORY",
-            TaskTimestamp.DUE,
-            selectedItems,
-            false))
+            any(),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter),
+            eq(null),
+            eq("CLASSIFICATION_CATEGORY"),
+            eq(TaskTimestamp.DUE),
+            eq(selectedItems),
+            eq(false)))
         .thenReturn(expectedResult);
 
     final List<String> actualResult =
@@ -215,6 +218,7 @@ class ClassificationClassificationCategoryReportBuilderImplTest {
     verify(taskanaEngineMock).getWorkingDaysToDaysConverter();
     verify(monitorMapperMock)
         .getTaskIdsForSelectedItems(
+            any(),
             any(),
             any(),
             any(),

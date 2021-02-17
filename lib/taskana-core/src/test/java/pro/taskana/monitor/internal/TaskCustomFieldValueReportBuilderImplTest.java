@@ -2,6 +2,7 @@ package pro.taskana.monitor.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -64,15 +65,16 @@ class TaskCustomFieldValueReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfTaskCustomFieldValues(
-            TaskCustomField.CUSTOM_1,
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(TaskCustomField.CUSTOM_1),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
 
     final TaskCustomFieldValueReport actualResult =
@@ -92,7 +94,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
         .getTaskCountOfTaskCustomFieldValues(
-            any(), any(), any(), any(), any(), any(), any(), any(), any());
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
@@ -125,15 +127,16 @@ class TaskCustomFieldValueReportBuilderImplTest {
     monitorQueryItem.setNumberOfTasks(1);
     expectedResult.add(monitorQueryItem);
     when(monitorMapperMock.getTaskCountOfTaskCustomFieldValues(
-            TaskCustomField.CUSTOM_1,
-            workbasketIds,
-            states,
-            categories,
-            domains,
-            TaskTimestamp.DUE,
-            classificationIds,
-            excludedClassificationIds,
-            customAttributeFilter))
+            any(),
+            eq(TaskCustomField.CUSTOM_1),
+            eq(workbasketIds),
+            eq(states),
+            eq(categories),
+            eq(domains),
+            eq(TaskTimestamp.DUE),
+            eq(classificationIds),
+            eq(excludedClassificationIds),
+            eq(customAttributeFilter)))
         .thenReturn(expectedResult);
 
     final TaskCustomFieldValueReport actualResult =
@@ -154,7 +157,7 @@ class TaskCustomFieldValueReportBuilderImplTest {
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(monitorMapperMock)
         .getTaskCountOfTaskCustomFieldValues(
-            any(), any(), any(), any(), any(), any(), any(), any(), any());
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     verify(internalTaskanaEngineMock).returnConnection();
     verifyNoMoreInteractions(
         internalTaskanaEngineMock,
