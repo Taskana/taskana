@@ -4,12 +4,12 @@
     "monitorUrl": "/monitor",
     "adminUrl": "/administration",
     "appUrl": "http://localhost:8080/taskana/#/taskana",
-    "pageReload": 200,
+    "pageReload": 400,
     "dropdownWait": 50,
     "testValueClassificationSelectionName": "L10303",
     "testValueClassifications": "CY-TEST-CLASSIFICATIONS",
     "testValueWorkbasketSelectionName": "basxet0",
     "testValueWorkbaskets": "CY-TEST-WORKBASKETS",
-    "isLocal": true
+    "isLocal": false
   }
 }
