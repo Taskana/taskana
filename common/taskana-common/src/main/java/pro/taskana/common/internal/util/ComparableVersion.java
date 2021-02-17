@@ -170,7 +170,8 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
    * java -jar ${maven.repo.local}/org/apache/maven/maven-artifact/
    * ${maven.version}/maven-artifact-${maven.version}.jar "1.2.7" "1.2-SNAPSHOT"
    * </pre>
-   * command to command line. Result of given command will be something like this:
+   *
+   * <p>command to command line. Result of given command will be something like this:
    *
    * <pre>
    * Display parameters as parsed by Maven (in canonical form) and comparison result:

@@ -21,7 +21,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 public class AbstractAccTest {
 
-
   protected RestHelper restHelper = new RestHelper(8080);
 
   protected TaskRepresentationModel getTaskResourceSample() {

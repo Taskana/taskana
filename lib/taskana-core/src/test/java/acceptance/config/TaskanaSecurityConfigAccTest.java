@@ -48,7 +48,6 @@ class TaskanaSecurityConfigAccTest {
 
     setSecurityFlag(false);
 
-
     assertThatCode(() -> createTaskanaEngine(false)).doesNotThrowAnyException();
   }
 

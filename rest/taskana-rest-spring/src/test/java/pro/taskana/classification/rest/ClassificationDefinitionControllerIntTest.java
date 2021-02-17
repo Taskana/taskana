@@ -77,8 +77,8 @@ class ClassificationDefinitionControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference
-                .forType(ClassificationDefinitionCollectionRepresentationModel.class));
+            ParameterizedTypeReference.forType(
+                ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
@@ -118,8 +118,8 @@ class ClassificationDefinitionControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference
-                .forType(ClassificationDefinitionCollectionRepresentationModel.class));
+            ParameterizedTypeReference.forType(
+                ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).isEmpty();
   }
@@ -309,12 +309,7 @@ class ClassificationDefinitionControllerIntTest {
 
     ClassificationCollectionRepresentationModel clList =
         new ClassificationCollectionRepresentationModel(
-            List.of(
-                parent,
-                child1,
-                child2,
-                grandChild1,
-                grandChild2));
+            List.of(parent, child1, child2, grandChild1, grandChild2));
 
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -419,7 +414,7 @@ class ClassificationDefinitionControllerIntTest {
     LOGGER.debug("Start Import");
     File tmpFile = File.createTempFile("test", ".tmp");
     try (FileOutputStream out = new FileOutputStream(tmpFile);
-        OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);) {
+        OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); ) {
       mapper.writeValue(writer, clList);
     }
     MultiValueMap<String, FileSystemResource> body = new LinkedMultiValueMap<>();
