@@ -63,28 +63,28 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ReturnAllTasks_For_CaseInsensitiveValue() {
+  void should_ReturnAllTasksCaseInsensitive_When_PerformingWildcardQuery() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
 
-    List<TaskSummary> foundTasksSensitive =
+    List<TaskSummary> foundTasksCaseSensitive =
         taskService
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%Wid%")
             .list();
 
-    List<TaskSummary> foundTasksInSensitive =
+    List<TaskSummary> foundTasksCaseInsensitive =
         taskService
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%wid%")
             .list();
 
-    assertThat(foundTasksSensitive).hasSize(80);
-    assertThat(foundTasksInSensitive).hasSize(80);
-    assertThat(foundTasksInSensitive).containsExactlyElementsOf(foundTasksSensitive);
+    assertThat(foundTasksCaseSensitive).hasSize(80);
+    assertThat(foundTasksCaseInsensitive).hasSize(80);
+    assertThat(foundTasksCaseInsensitive).containsExactlyElementsOf(foundTasksCaseSensitive);
   }
 
   @WithAccessId(user = "admin")

@@ -632,10 +632,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery wildcardSearchValueLike(String wildcardSearchValue);
 
   /**
-   * Add the values of the wildcard search fields for exact matching to your query. Must be used in
-   * combination with the wildcardSearchValueLike parameter
+   * Add the task fields for which the wildcard search should be performed as an exact match to your
+   * query. Must be used in combination with the wildcardSearchValueLike parameter
    *
-   * @param wildcardSearchFields the values of your wildcard search fields
+   * @param wildcardSearchFields the task fields of your wildcard search
    * @return the query
    */
   TaskQuery wildcardSearchFieldsIn(WildcardSearchField... wildcardSearchFields);
