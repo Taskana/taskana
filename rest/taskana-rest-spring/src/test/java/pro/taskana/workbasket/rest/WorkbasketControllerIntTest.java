@@ -34,6 +34,22 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 class WorkbasketControllerIntTest {
 
+  private static final ParameterizedTypeReference<WorkbasketRepresentationModel>
+      WORKBASKET_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<WorkbasketRepresentationModel>() {};
+
+  private static final ParameterizedTypeReference<WorkbasketSummaryPagedRepresentationModel>
+      WORKBASKET_SUMMARY_PAGE_MODEL_TYPE =
+          new ParameterizedTypeReference<WorkbasketSummaryPagedRepresentationModel>() {};
+
+  private static final ParameterizedTypeReference<WorkbasketAccessItemCollectionRepresentationModel>
+      WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE =
+          new ParameterizedTypeReference<WorkbasketAccessItemCollectionRepresentationModel>() {};
+
+  private static final ParameterizedTypeReference<DistributionTargetsCollectionRepresentationModel>
+      DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<DistributionTargetsCollectionRepresentationModel>() {};
+
   private final RestHelper restHelper;
 
   @Autowired
@@ -48,10 +64,7 @@ class WorkbasketControllerIntTest {
             RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
     ResponseEntity<WorkbasketRepresentationModel> response =
         TEMPLATE.exchange(
-            url,
-            HttpMethod.GET,
-            restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
+            url, HttpMethod.GET, restHelper.defaultRequest(), WORKBASKET_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
@@ -66,7 +79,7 @@ class WorkbasketControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
+            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
@@ -78,7 +91,7 @@ class WorkbasketControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=OPEN",
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
+            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(6);
@@ -92,7 +105,7 @@ class WorkbasketControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
+            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
@@ -113,8 +126,7 @@ class WorkbasketControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?invalid=PERSONAL",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(
-                    WorkbasketSummaryPagedRepresentationModel.class));
+                WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
@@ -132,7 +144,7 @@ class WorkbasketControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
             HttpMethod.GET,
             new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
+            WORKBASKET_REPRESENTATION_MODEL_TYPE);
 
     WorkbasketRepresentationModel workbasketRepresentationModel =
         initialWorkbasketResourceRequestResponse.getBody();
@@ -151,7 +163,7 @@ class WorkbasketControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
                 HttpMethod.PUT,
                 new HttpEntity<>(workbasketRepresentationModel, restHelper.getHeadersTeamlead_1()),
-                ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
+                WORKBASKET_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.CONFLICT);
@@ -168,7 +180,7 @@ class WorkbasketControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
                 HttpMethod.GET,
                 new HttpEntity<String>(restHelper.getHeadersBusinessAdmin()),
-                ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
+                WORKBASKET_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -184,7 +196,7 @@ class WorkbasketControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
+            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER-1-1");
@@ -252,8 +264,7 @@ class WorkbasketControllerIntTest {
                 "WBI:100000000000000000000000000000000002"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(
-                DistributionTargetsCollectionRepresentationModel.class));
+            DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response2.getBody()).isNotNull();
     assertThat(response2.getBody().getContent())
@@ -270,8 +281,7 @@ class WorkbasketControllerIntTest {
                 "WBI:100000000000000000000000000000000005"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(
-                WorkbasketAccessItemCollectionRepresentationModel.class));
+            WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
@@ -287,11 +297,33 @@ class WorkbasketControllerIntTest {
                 "WBI:100000000000000000000000000000000001"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(
-                DistributionTargetsCollectionRepresentationModel.class));
+            DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
     assertThat(response.getBody().getContent()).hasSize(4);
+  }
+
+  @Test
+  void should_ThrowException_When_ProvidingInvalidFilterParams() {
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(RestEndpoints.URL_WORKBASKET)
+                    + "?type=PERSONAL"
+                    + "&illegalParam=illegal"
+                    + "&anotherIllegalParam=stillIllegal"
+                    + "&sort-by=KEY&order=DESCENDING&page-size=5&page=2",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining(
+            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 }

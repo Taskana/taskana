@@ -3,6 +3,7 @@ package pro.taskana.workbasket.rest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.ldap.LdapClient;
+import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -53,6 +55,7 @@ public class WorkbasketAccessItemController {
    * This endpoint retrieves a list of existing Workbasket Access Items. Filters can be applied.
    *
    * @title Get a list of all Workbasket Access Items
+   * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
@@ -61,10 +64,17 @@ public class WorkbasketAccessItemController {
    */
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> getWorkbasketAccessItems(
+      HttpServletRequest request,
       WorkbasketAccessItemQueryFilterParameter filterParameter,
       WorkbasketAccessItemQuerySortParameter sortParameter,
       QueryPagingParameter<WorkbasketAccessItem, WorkbasketAccessItemQuery> pagingParameter)
       throws NotAuthorizedException {
+
+    QueryParamsValidator.validateParams(
+        request,
+        WorkbasketAccessItemQueryFilterParameter.class,
+        QuerySortParameter.class,
+        QueryPagingParameter.class);
 
     WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
     filterParameter.applyToQuery(query);

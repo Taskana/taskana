@@ -96,7 +96,7 @@ public class WorkbasketRepresentationModelAssembler
         linkTo(methodOn(WorkbasketController.class).getWorkbasketAccessItems(wb.getId()))
             .withRel("accessItems"));
     resource.add(
-        linkTo(methodOn(WorkbasketController.class).getWorkbaskets(null, null, null))
+        linkTo(methodOn(WorkbasketController.class).getWorkbaskets(null, null, null, null))
             .withRel("allWorkbaskets"));
     resource.add(
         linkTo(

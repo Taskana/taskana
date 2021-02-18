@@ -29,7 +29,7 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
   @Test
   void getAllTasksDocTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_TASKS + "?por.type=VNR&por.value=22334455&sortBy=NAME"))
+        .perform(get(RestEndpoints.URL_TASKS + "?por.type=VNR&por.value=22334455&sort-by=NAME"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
