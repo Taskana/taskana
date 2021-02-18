@@ -94,9 +94,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
     this.sessionManager = createSqlSessionManager();
     initializeDbSchema(taskanaEngineConfiguration);
-
-    historyEventManager = HistoryEventManager.getInstance(this);
-    taskRoutingManager = TaskRoutingManager.getInstance(this);
     createTaskPreprocessorManager = CreateTaskPreprocessorManager.getInstance();
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =
@@ -106,6 +103,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaEngineConfiguration.getCustomHolidays());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds());
+
+    // IMPORTANT: SPI has to be initialized last (and in this order) in order
+    // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
+    historyEventManager = HistoryEventManager.getInstance(this);
+    taskRoutingManager = TaskRoutingManager.getInstance(this);
   }
 
   public static TaskanaEngine createTaskanaEngine(
