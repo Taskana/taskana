@@ -2,6 +2,7 @@ package pro.taskana.classification.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,15 @@ class ClassificationControllerIntTest {
   private static final ParameterizedTypeReference<ClassificationSummaryPagedRepresentationModel>
       CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE =
           new ParameterizedTypeReference<ClassificationSummaryPagedRepresentationModel>() {};
+
+  private static final ParameterizedTypeReference<ClassificationRepresentationModel>
+      CLASSIFICATION_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<ClassificationRepresentationModel>() {};
+
+  private static final ParameterizedTypeReference<ClassificationSummaryRepresentationModel>
+      CLASSIFICATION_SUMMARY_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<ClassificationSummaryRepresentationModel>() {};
+
   static RestTemplate template = RestHelper.TEMPLATE;
   @Autowired RestHelper restHelper;
 
@@ -42,7 +52,7 @@ class ClassificationControllerIntTest {
                 RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000002"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+            CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
@@ -128,7 +138,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+            CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThat(responseEntity).isNotNull();
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -143,7 +153,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+            CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
   }
@@ -162,7 +172,7 @@ class ClassificationControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
                 HttpMethod.POST,
                 new HttpEntity<>(newClassification, restHelper.getHeadersUser_1_1()),
-                ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+                CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -184,7 +194,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+            CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThat(responseEntity).isNotNull();
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -204,7 +214,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+            CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThat(responseEntity).isNotNull();
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -223,7 +233,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.POST,
             new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+            CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThat(responseEntity).isNotNull();
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -266,7 +276,7 @@ class ClassificationControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
                 HttpMethod.POST,
                 new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin()),
-                ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+                CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -287,7 +297,7 @@ class ClassificationControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
                 HttpMethod.POST,
                 new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin()),
-                ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+                CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -304,7 +314,7 @@ class ClassificationControllerIntTest {
                 RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009"),
             HttpMethod.GET,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
+            CLASSIFICATION_SUMMARY_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getName()).isEqualTo("Zustimmungserklärung");
   }
@@ -320,7 +330,7 @@ class ClassificationControllerIntTest {
                 RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004"),
             HttpMethod.DELETE,
             request,
-            ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
+            CLASSIFICATION_SUMMARY_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
     ThrowingCallable httpCall =
@@ -331,7 +341,30 @@ class ClassificationControllerIntTest {
                     "CLI:200000000000000000000000000000000004"),
                 HttpMethod.GET,
                 request,
-                ParameterizedTypeReference.forType(ClassificationSummaryRepresentationModel.class));
+                CLASSIFICATION_SUMMARY_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
+  }
+
+  @Test
+  void should_ThrowException_When_ProvidingInvalidFilterParams() {
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
+                    + "?domain=DOMAIN_A"
+                    + "&illegalParam=illegal"
+                    + "&anotherIllegalParam=stillIllegal"
+                    + "&sort-by=NAME&order=DESCENDING&page-size=5&page=2",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining(
+            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 }

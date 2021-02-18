@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
+import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
@@ -82,6 +84,7 @@ public class WorkbasketController {
    * This endpoint retrieves a list of existing Workbaskets. Filters can be applied.
    *
    * @title Get a list of all Workbaskets
+   * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
@@ -90,9 +93,16 @@ public class WorkbasketController {
   @GetMapping(path = RestEndpoints.URL_WORKBASKET)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketSummaryPagedRepresentationModel> getWorkbaskets(
+      HttpServletRequest request,
       WorkbasketQueryFilterParameter filterParameter,
       WorkbasketQuerySortParameter sortParameter,
       QueryPagingParameter<WorkbasketSummary, WorkbasketQuery> pagingParameter) {
+
+    QueryParamsValidator.validateParams(
+        request,
+        WorkbasketQueryFilterParameter.class,
+        QuerySortParameter.class,
+        QueryPagingParameter.class);
 
     WorkbasketQuery query = workbasketService.createWorkbasketQuery();
     filterParameter.applyToQuery(query);

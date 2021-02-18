@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
+import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -72,6 +74,7 @@ public class TaskController {
    * This endpoint retrieves a list of existing Tasks. Filters can be applied.
    *
    * @title Get a list of all Tasks
+   * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
@@ -80,9 +83,16 @@ public class TaskController {
   @GetMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskSummaryPagedRepresentationModel> getTasks(
+      HttpServletRequest request,
       TaskQueryFilterParameter filterParameter,
       TaskQuerySortParameter sortParameter,
       QueryPagingParameter<TaskSummary, TaskQuery> pagingParameter) {
+
+    QueryParamsValidator.validateParams(
+        request,
+        TaskQueryFilterParameter.class,
+        QuerySortParameter.class,
+        QueryPagingParameter.class);
 
     TaskQuery query = taskService.createTaskQuery();
 

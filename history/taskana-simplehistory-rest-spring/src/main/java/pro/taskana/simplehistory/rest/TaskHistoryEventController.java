@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.function.BiConsumer;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
+import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.rest.assembler.TaskHistoryEventRepresentationModelAssembler;
@@ -57,6 +59,7 @@ public class TaskHistoryEventController {
    * This endpoint retrieves a list of existing Task History Events. Filters can be applied.
    *
    * @title Get a list of all Task History Events
+   * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
@@ -65,9 +68,16 @@ public class TaskHistoryEventController {
   @GetMapping(path = HistoryRestEndpoints.URL_HISTORY_EVENTS, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskHistoryEventPagedRepresentationModel> getTaskHistoryEvents(
+      HttpServletRequest request,
       TaskHistoryQueryFilterParameter filterParameter,
       TaskHistoryQuerySortParameter sortParameter,
       QueryPagingParameter<TaskHistoryEvent, TaskHistoryQuery> pagingParameter) {
+
+    QueryParamsValidator.validateParams(
+        request,
+        TaskHistoryQueryFilterParameter.class,
+        QuerySortParameter.class,
+        QueryPagingParameter.class);
 
     TaskHistoryQuery query = simpleHistoryService.createTaskHistoryQuery();
     filterParameter.applyToQuery(query);

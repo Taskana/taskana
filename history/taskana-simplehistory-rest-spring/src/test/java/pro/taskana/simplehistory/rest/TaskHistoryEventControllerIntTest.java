@@ -31,6 +31,14 @@ import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel
 @TaskanaSpringBootTest
 class TaskHistoryEventControllerIntTest {
 
+  private static final ParameterizedTypeReference<TaskHistoryEventPagedRepresentationModel>
+      TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<TaskHistoryEventPagedRepresentationModel>() {};
+
+  private static final ParameterizedTypeReference<TaskHistoryEventRepresentationModel>
+      TASK_HISTORY_EVENT_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<TaskHistoryEventRepresentationModel>() {};
+
   private final RestHelper restHelper;
 
   @Autowired
@@ -47,7 +55,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(45);
   }
@@ -59,7 +67,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
         .isPresent()
@@ -77,7 +85,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
         .isPresent()
@@ -95,7 +103,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
         .extracting(TaskHistoryEventRepresentationModel::getBusinessProcessId)
@@ -110,7 +118,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
         .extracting(TaskHistoryEventRepresentationModel::getTaskHistoryId)
@@ -126,7 +134,7 @@ class TaskHistoryEventControllerIntTest {
                 restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + "?invalid=BPI:01"),
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+                TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
@@ -145,7 +153,7 @@ class TaskHistoryEventControllerIntTest {
                     HistoryRestEndpoints.URL_HISTORY_EVENTS + "?created=" + currentTime),
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+                TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining(currentTime)
@@ -162,7 +170,7 @@ class TaskHistoryEventControllerIntTest {
                 HistoryRestEndpoints.URL_HISTORY_EVENTS + "?created=" + now + "&created="),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(23);
@@ -182,7 +190,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
@@ -237,7 +245,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS_ID, id),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+            TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
         .isPresent()
@@ -256,10 +264,33 @@ class TaskHistoryEventControllerIntTest {
                 "THI:000000000000000000000000000000000000"),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(TaskHistoryEventRepresentationModel.class));
+            TASK_HISTORY_EVENT_REPRESENTATION_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getDetails()).isNotNull();
+  }
+
+  @Test
+  void should_ThrowException_When_ProvidingInvalidFilterParams() {
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS)
+                    + "?domain=DOMAIN_A"
+                    + "&illegalParam=illegal"
+                    + "&anotherIllegalParam=stillIllegal"
+                    + "&sort-by=TASK_ID&order=DESCENDING&page-size=5&page=2",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining(
+            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   // endregion

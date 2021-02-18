@@ -940,6 +940,29 @@ class TaskControllerIntTest {
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
+  @Test
+  void should_ThrowException_When_ProvidingInvalidFilterParams() {
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(RestEndpoints.URL_TASKS)
+                    + "?workbasket-id=WBI:100000000000000000000000000000000001"
+                    + "&illegalParam=illegal"
+                    + "&anotherIllegalParam=stillIllegal"
+                    + "&sort-by=NAME&order=DESCENDING&page-size=5&page=2",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining(
+            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
   private TaskRepresentationModel getTaskResourceSample() {
     ClassificationSummaryRepresentationModel classificationResource =
         new ClassificationSummaryRepresentationModel();

@@ -3,6 +3,7 @@ package pro.taskana.classification.rest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
+import pro.taskana.common.rest.util.QueryParamsValidator;
 
 /** Controller for all {@link Classification} related endpoints. */
 @RestController
@@ -66,6 +68,7 @@ public class ClassificationController {
    * This endpoint retrieves a list of existing Classifications. Filters can be applied.
    *
    * @title Get a list of all Classifications
+   * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
@@ -74,9 +77,16 @@ public class ClassificationController {
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationSummaryPagedRepresentationModel> getClassifications(
+      HttpServletRequest request,
       final ClassificationQueryFilterParameter filterParameter,
       final ClassificationQuerySortParameter sortParameter,
       final QueryPagingParameter<ClassificationSummary, ClassificationQuery> pagingParameter) {
+
+    QueryParamsValidator.validateParams(
+        request,
+        ClassificationQueryFilterParameter.class,
+        QuerySortParameter.class,
+        QueryPagingParameter.class);
 
     final ClassificationQuery query = classificationService.createClassificationQuery();
     filterParameter.applyToQuery(query);

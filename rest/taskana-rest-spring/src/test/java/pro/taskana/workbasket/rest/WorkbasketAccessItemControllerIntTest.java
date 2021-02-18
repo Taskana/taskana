@@ -32,6 +32,10 @@ import pro.taskana.workbasket.rest.models.WorkbasketAccessItemPagedRepresentatio
 @TaskanaSpringBootTest
 class WorkbasketAccessItemControllerIntTest {
 
+  private static final ParameterizedTypeReference<WorkbasketAccessItemPagedRepresentationModel>
+      WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE =
+          new ParameterizedTypeReference<WorkbasketAccessItemPagedRepresentationModel>() {};
+
   private final RestHelper restHelper;
 
   @Autowired
@@ -46,7 +50,7 @@ class WorkbasketAccessItemControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS),
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketAccessItemPagedRepresentationModel.class));
+            WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
@@ -60,7 +64,7 @@ class WorkbasketAccessItemControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketAccessItemPagedRepresentationModel.class));
+            WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
@@ -82,8 +86,7 @@ class WorkbasketAccessItemControllerIntTest {
                     + "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=1&page-size=9&invalid=user-1-1",
                 HttpMethod.GET,
                 restHelper.defaultRequest(),
-                ParameterizedTypeReference.forType(
-                    WorkbasketAccessItemPagedRepresentationModel.class));
+                WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("[invalid]")
@@ -100,7 +103,7 @@ class WorkbasketAccessItemControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
             restHelper.defaultRequest(),
-            ParameterizedTypeReference.forType(WorkbasketAccessItemPagedRepresentationModel.class));
+            WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent().iterator().next().getAccessId())
@@ -133,6 +136,29 @@ class WorkbasketAccessItemControllerIntTest {
             ParameterizedTypeReference.forType(Void.class));
     assertThat(response.getBody()).isNull();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+  }
+
+  @Test
+  void should_ThrowException_When_ProvidingInvalidFilterParams() {
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
+                    + "?access-id=teamlead-2"
+                    + "&illegalParam=illegal"
+                    + "&anotherIllegalParam=stillIllegal"
+                    + "&sort-by=WORKBASKET_KEY&order=DESCENDING&page-size=5&page=2",
+                HttpMethod.GET,
+                restHelper.defaultRequest(),
+                WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpClientErrorException.class)
+        .hasMessageContaining(
+            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @TestFactory
