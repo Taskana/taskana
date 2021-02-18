@@ -300,7 +300,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   getSelectedIds(): string[] {
-    return this.selectedDistributionTargets.map((distributionTarget) => distributionTarget.workbasketId);
+    return this.selectedDistributionTargetsFilterClone.map((distributionTarget) => distributionTarget.workbasketId);
   }
 
   unselectItems(originList: any[]): any[] {

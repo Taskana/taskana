@@ -433,6 +433,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
                 selectedWorkbasket,
                 action: ACTION.READ
               });
+              ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
+              ctx.dispatch(new ClearFilter('availableDistributionTargets'));
             });
           }
           this.requestInProgressService.setRequestInProgress(false);
