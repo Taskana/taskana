@@ -160,7 +160,7 @@ public interface TaskService {
   Task getTask(String taskId) throws TaskNotFoundException, NotAuthorizedException;
 
   /**
-   * Transfer a task to another work basket. The transfer sets the transferred flag and resets the
+   * Transfer a Task to another work basket. The transfer sets the transferred flag and resets the
    * read flag.
    *
    * @param taskId The id of the {@link Task} to be transferred

@@ -197,11 +197,23 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     taskanaEngineConfiguration.setCleanupJobRunEvery(runEvery);
     taskanaEngineConfiguration.setCleanupJobFirstRun(firstRun);
 
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    job.run();
+    TaskCleanupJob.initializeSchedule(taskanaEngine);
 
     List<ScheduledJob> nextJobs = getJobMapper().findJobsToRun(Instant.now().plus(runEvery));
     assertThat(nextJobs).extracting(ScheduledJob::getDue).containsExactly(firstRun.plus(runEvery));
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
+      throws Exception {
+    taskanaEngineConfiguration.setCleanupJobRunEvery(Duration.ZERO);
+    taskanaEngineConfiguration.setCleanupJobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
+
+    TaskCleanupJob.initializeSchedule(taskanaEngine);
+
+    List<ScheduledJob> nextJobs = getJobMapper().findJobsToRun(Instant.now());
+    assertThat(nextJobs).isEmpty();
   }
 
   private String createAndInsertTask(String parentBusinessProcessId) throws Exception {
