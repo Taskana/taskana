@@ -55,7 +55,7 @@ public interface WorkbasketService {
    * </ul>
    *
    * @param workbasket The Workbasket to create
-   * @return the created and persisted Workbasket
+   * @return the created and inserted Workbasket
    * @throws InvalidWorkbasketException If a required property of the Workbasket is not set.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
@@ -82,7 +82,7 @@ public interface WorkbasketService {
           ConcurrencyException;
 
   /**
-   * Returns a new WorkbasketAccessItem which is not persisted.
+   * Returns a new WorkbasketAccessItem which is not inserted.
    *
    * @param workbasketId the workbasket id used to identify the referenced workbasket
    * @param accessId the group id or user id for which access is controlled
@@ -91,7 +91,7 @@ public interface WorkbasketService {
   WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId);
 
   /**
-   * Create and persist a new {@link WorkbasketAccessItem} with a WorkbasketId, an accessId and
+   * Create and insert a new {@link WorkbasketAccessItem} with a WorkbasketId, an accessId and
    * permissions.
    *
    * @param workbasketAccessItem the new workbasketAccessItem
@@ -211,7 +211,7 @@ public interface WorkbasketService {
   WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException;
 
   /**
-   * Returns a new workbasket which is not persisted.
+   * Returns a new workbasket which is not inserted.
    *
    * @param key the workbasket key used to identify the workbasket
    * @param domain the domain of the new workbasket

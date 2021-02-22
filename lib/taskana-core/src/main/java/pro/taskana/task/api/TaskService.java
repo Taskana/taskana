@@ -118,7 +118,7 @@ public interface TaskService {
           NotAuthorizedException;
 
   /**
-   * Persists a not persisted Task which does not exist already. <br>
+   * Inserts a not existing Task. <br>
    * The default values of the created Task are:
    *
    * <ul>
@@ -134,8 +134,8 @@ public interface TaskService {
    *   <li><b>isTransferred</b> - {@code false}
    * </ul>
    *
-   * @param taskToCreate the transient task object to be persisted
-   * @return the created and persisted task
+   * @param taskToCreate the transient task object to be inserted
+   * @return the created and inserted task
    * @throws TaskAlreadyExistException if the Task does already exist.
    * @throws NotAuthorizedException thrown if the current user is not authorized to create that task
    * @throws WorkbasketNotFoundException thrown if the workbasket referenced by the task is not
@@ -217,18 +217,18 @@ public interface TaskService {
   TaskQuery createTaskQuery();
 
   /**
-   * Returns a not persisted instance of {@link Task}. The returned task has no workbasket Id set.
+   * Returns a not inserted instance of {@link Task}. The returned task has no workbasket Id set.
    * When createTask() is invoked for this task, TaskService will call the TaskRouting SPI to
    * determine a workbasket for the task. If the TaskRouting API is not active, e.g. because no
    * TaskRouter is registered, or the TaskRouter(s) don't find a workbasket, the task will not be
-   * persisted.
+   * inserted.
    *
    * @return an empty new Task
    */
   Task newTask();
 
   /**
-   * Returns a not persisted instance of {@link Task}.
+   * Returns a not inserted instance of {@link Task}.
    *
    * @param workbasketId the id of the workbasket to which the task belongs
    * @return an empty new Task
@@ -236,7 +236,7 @@ public interface TaskService {
   Task newTask(String workbasketId);
 
   /**
-   * Returns a not persisted instance of {@link Task}.
+   * Returns a not inserted instance of {@link Task}.
    *
    * @param workbasketKey the key of the workbasket to which the task belongs
    * @param domain the domain of the workbasket to which the task belongs
@@ -245,7 +245,7 @@ public interface TaskService {
   Task newTask(String workbasketKey, String domain);
 
   /**
-   * Returns a not persisted instance of {@link TaskComment}.
+   * Returns a not inserted instance of {@link TaskComment}.
    *
    * @param taskId The id of the task to which the task comment belongs
    * @return an empty new TaskComment
@@ -253,7 +253,7 @@ public interface TaskService {
   TaskComment newTaskComment(String taskId);
 
   /**
-   * Returns a not persisted instance of {@link Attachment}.
+   * Returns a not inserted instance of {@link Attachment}.
    *
    * @return an empty new Attachment
    */

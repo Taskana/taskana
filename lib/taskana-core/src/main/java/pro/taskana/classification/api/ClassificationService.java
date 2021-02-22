@@ -66,7 +66,7 @@ public interface ClassificationService {
       throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
 
   /**
-   * Persists a new Classification after adding default values. <br>
+   * Inserts  a new Classification after adding default values. <br>
    * The Classification will be added to master-domain, too - if not already existing. <br>
    * The default values are:
    *
@@ -81,7 +81,7 @@ public interface ClassificationService {
    * </ul>
    *
    * @param classification the Classification to insert
-   * @return Classification which is persisted with unique ID.
+   * @return Classification which is equipped with unique ID.
    * @throws ClassificationAlreadyExistException if the Classification does already exists at the
    *     given domain.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
@@ -119,7 +119,7 @@ public interface ClassificationService {
 
   /**
    * Creating a new {@link Classification} with unchangeable default values. It will be only
-   * generated and is not persisted until CREATE-call.
+   * generated and is not inserted until CREATE-call.
    *
    * @param key the key of the classification
    * @param domain the domain of the new classification

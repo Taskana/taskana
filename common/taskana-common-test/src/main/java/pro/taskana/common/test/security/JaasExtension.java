@@ -127,7 +127,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       // Currently a DynamicContainer has children from this type: Stream<DynamicNode>
       // Because of this the children can only be extracted once (Streams can only be operated
       // once). This is obviously not ok since we want to execute each node X times. So we have to
-      // manually persist all children recursively to extract them X times...
+      // manually insert all children recursively to extract them X times...
       Map<String, List<DynamicNode>> childrenMap = new HashMap<>();
       persistDynamicContainerChildren(newChildrenForDynamicContainer, childrenMap);
 

@@ -183,9 +183,9 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     // Try to set the Attachments to NULL and update it
     ((TaskImpl) task).setAttachments(null);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, not persisted
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, not inserted
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted values not changed
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // inserted values not changed
 
     // Test no NullPointer on NULL-Value and removing it on current data.
     // New loading can do this, but returned value should got this "function", too.
@@ -194,9 +194,9 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.getAttachments().add(null);
     task.getAttachments().add(null);
     task = taskService.updateTask(task);
-    assertThat(task.getAttachments()).hasSize(attachmentCount2); // locally, not persisted
+    assertThat(task.getAttachments()).hasSize(attachmentCount2); // locally, not inserted
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount2); // persisted values not changed
+    assertThat(task.getAttachments()).hasSize(attachmentCount2); // inserted values not changed
     assertThat(task.getPriority()).isEqualTo(1);
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
@@ -213,9 +213,9 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.removeAttachment(attachmentToRemove.getId());
     task = taskService.updateTask(task);
     assertThat(task.getAttachments())
-        .hasSize(attachmentCount - 1); // locally, removed and not persisted
+        .hasSize(attachmentCount - 1); // locally, removed and not inserted
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount - 1); // persisted, values removed
+    assertThat(task.getAttachments()).hasSize(attachmentCount - 1); // inserted, values removed
     assertThat(task.getPriority()).isEqualTo(1);
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
@@ -231,13 +231,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.updateTask(task);
     assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, nothing changed
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted, still same
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // inserted, still same
 
     task.removeAttachment("INVALID ID HERE");
     task = taskService.updateTask(task);
     assertThat(task.getAttachments()).hasSize(attachmentCount); // locally, nothing changed
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount); // persisted, still same
+    assertThat(task.getAttachments()).hasSize(attachmentCount); // inserted, still same
   }
 
   @WithAccessId(user = "user-1-1")
