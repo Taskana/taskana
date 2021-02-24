@@ -1,4 +1,4 @@
-package acceptance.security;
+package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
