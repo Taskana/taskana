@@ -126,23 +126,6 @@ class TaskHistoryEventControllerIntTest {
   }
 
   @Test
-  @Disabled("no solution for this")
-  void should_ReturnBadStatusErrorCode_When_InvalidQueryParameterIsUsed() {
-    ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + "?invalid=BPI:01"),
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("[invalid]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
-  }
-
-  @Test
   @Disabled("Jörg pls fix this")
   void should_ReturnBadStatusErrorCode_When_CreatedQueryParameterIsWrongFormatted() {
     String currentTime = "wrong format";

@@ -7,7 +7,6 @@ import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -74,24 +73,6 @@ class WorkbasketAccessItemControllerIntTest {
                 .getHref()
                 .endsWith(parameters))
         .isTrue();
-  }
-
-  @Test
-  @Disabled("currently no solution for this.")
-  void testThrowsExceptionIfInvalidFilterIsUsed() {
-    ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
-                    + "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=1&page-size=9&invalid=user-1-1",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("[invalid]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
