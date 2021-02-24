@@ -7,7 +7,6 @@ import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 import java.time.Instant;
 import java.util.Optional;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -115,23 +114,6 @@ class WorkbasketControllerIntTest {
                 .getHref()
                 .endsWith(parameters))
         .isTrue();
-  }
-
-  @Test
-  @Disabled("no solution for this yet")
-  void testThrowsExceptionIfInvalidFilterIsUsed() {
-    ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?invalid=PERSONAL",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("[invalid]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

@@ -16,7 +16,6 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -494,23 +493,6 @@ class TaskControllerIntTest {
         .endsWith(
             "/api/v1/tasks?por.type=VNR&por.value=22334455"
                 + "&sort-by=POR_VALUE&order=DESCENDING");
-  }
-
-  @Test
-  @Disabled("currently no solution for this")
-  void testThrowsExceptionIfInvalidFilterIsUsed() {
-    ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_TASKS) + "?invalid=VNR",
-                HttpMethod.GET,
-                restHelper.defaultRequest(),
-                TASK_SUMMARY_PAGE_MODEL_TYPE);
-    assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("[invalid]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
