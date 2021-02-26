@@ -35,7 +35,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     page: 1,
     'page-size': 9
   };
-  filterBy: TaskQueryFilterParameter = undefined;
+  filterBy: TaskQueryFilterParameter = {};
 
   requestInProgress = false;
   selectedSearchType: Search = Search.byWorkbasket;
@@ -136,6 +136,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
   }
 
   private getTasks(objectReference?: ObjectReference): void {
+    this.filterBy['workbasket-id'] = [this.currentBasket?.workbasketId];
     this.requestInProgress = true;
     if (!this.currentBasket && !objectReference) {
       this.requestInProgress = false;
