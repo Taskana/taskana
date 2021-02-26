@@ -17,7 +17,7 @@ import pro.taskana.task.api.models.TaskSummary;
 class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @Test
-  void testTaskQueryUnauthenticated() {
+  void should_ReturnNoResult_When_UserIsNotAuthenticated() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
@@ -27,7 +27,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void shouldReturnAllTasksForAdmin() {
+  void should_ReturnAllTasks_For_Admin() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
@@ -37,7 +37,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "taskadmin")
   @Test
-  void shouldReturnAllTasksForTaskAdmin() {
+  void should_ReturnAllTasks_For_TaskAdmin() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
@@ -47,7 +47,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void shouldReturnAllTasksForBusinessAdmin() {
+  void should_ReturnAllTasks_For_BusinessAdmin() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
@@ -57,7 +57,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void shouldReturnAllTasksForMonitor() {
+  void should_ReturnAllTasks_For_MonitorUser() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
@@ -67,7 +67,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1")
   @Test
-  void shouldReturnAllTasksForTeamLead_1() {
+  void should_ReturnAllTasks_For_TeamLead1() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
@@ -77,7 +77,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void shouldReturnAllTasksForUser_1_1() {
+  void should_ReturnAllTasks_For_User11() {
     TaskService taskService = taskanaEngine.getTaskService();
 
     List<TaskSummary> results = taskService.createTaskQuery().list();
