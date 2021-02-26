@@ -1,4 +1,4 @@
-package pro.taskana.workbasket.internal.models;
+package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 class WorkbasketModelsCloneTest {
 
@@ -36,8 +39,9 @@ class WorkbasketModelsCloneTest {
 
     assertThat(dummyWorkbasketSummaryCloned).isNotEqualTo(dummyWorkbasketSummary);
     dummyWorkbasketSummaryCloned.setId(dummyWorkbasketSummary.getId());
-    assertThat(dummyWorkbasketSummaryCloned).isEqualTo(dummyWorkbasketSummary);
-    assertThat(dummyWorkbasketSummaryCloned).isNotSameAs(dummyWorkbasketSummary);
+    assertThat(dummyWorkbasketSummaryCloned)
+        .isEqualTo(dummyWorkbasketSummary)
+        .isNotSameAs(dummyWorkbasketSummary);
   }
 
   @Test
@@ -61,8 +65,7 @@ class WorkbasketModelsCloneTest {
 
     assertThat(dummyWorkbasketCloned).isNotEqualTo(dummyWorkbasket);
     dummyWorkbasketCloned.setId(dummyWorkbasket.getId());
-    assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket);
-    assertThat(dummyWorkbasketCloned).isNotSameAs(dummyWorkbasket);
+    assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket).isNotSameAs(dummyWorkbasket);
   }
 
   @Test
@@ -92,7 +95,8 @@ class WorkbasketModelsCloneTest {
 
     assertThat(dummyWorkbasketAccessItemCloned).isNotEqualTo(dummyWorkbasketAccessItem);
     dummyWorkbasketAccessItemCloned.setId(dummyWorkbasketAccessItem.getId());
-    assertThat(dummyWorkbasketAccessItemCloned).isEqualTo(dummyWorkbasketAccessItem);
-    assertThat(dummyWorkbasketAccessItemCloned).isNotSameAs(dummyWorkbasketAccessItem);
+    assertThat(dummyWorkbasketAccessItemCloned)
+        .isEqualTo(dummyWorkbasketAccessItem)
+        .isNotSameAs(dummyWorkbasketAccessItem);
   }
 }

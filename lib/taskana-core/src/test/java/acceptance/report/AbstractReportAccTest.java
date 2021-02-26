@@ -1,11 +1,11 @@
 package acceptance.report;
 
+import acceptance.TaskanaEngineTestConfiguration;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Abstract test class for all report building tests. */

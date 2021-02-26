@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import acceptance.TaskanaEngineProxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;

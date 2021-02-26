@@ -1,4 +1,4 @@
-package pro.taskana;
+package acceptance;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
@@ -228,7 +228,7 @@ class ArchitectureTest {
 
   private static ArchCondition<JavaClass> beDefinedInTaskanaSubPackages(
       List<Pattern> excludePackages) {
-    return new ArchCondition<>("all be defined in TASKANA_SUB_PACKAGES") {
+    return new ArchCondition<JavaClass>("all be defined in TASKANA_SUB_PACKAGES") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
         if (TASKANA_SUB_PACKAGES.stream().noneMatch(p -> javaClass.getPackageName().startsWith(p))
@@ -268,7 +268,7 @@ class ArchitectureTest {
           return values;
         };
 
-    return new ArchCondition<>("not use the SQL function 'CURRENT_TIMESTAMP'") {
+    return new ArchCondition<JavaClass>("not use the SQL function 'CURRENT_TIMESTAMP'") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
         for (JavaMethod method : javaClass.getAllMethods()) {

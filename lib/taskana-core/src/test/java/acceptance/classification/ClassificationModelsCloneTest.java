@@ -1,4 +1,4 @@
-package pro.taskana.classification.internal.models;
+package acceptance.classification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_1;
@@ -13,6 +13,8 @@ import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 
 class ClassificationModelsCloneTest {
 
@@ -44,8 +46,9 @@ class ClassificationModelsCloneTest {
 
     assertThat(dummyClassificationSummaryCloned).isNotEqualTo(dummyClassificationSummary);
     dummyClassificationSummaryCloned.setId(dummyClassificationSummary.getId());
-    assertThat(dummyClassificationSummaryCloned).isEqualTo(dummyClassificationSummary);
-    assertThat(dummyClassificationSummaryCloned).isNotSameAs(dummyClassificationSummary);
+    assertThat(dummyClassificationSummaryCloned)
+        .isEqualTo(dummyClassificationSummary)
+        .isNotSameAs(dummyClassificationSummary);
   }
 
   @Test
@@ -75,7 +78,8 @@ class ClassificationModelsCloneTest {
 
     assertThat(dummyClassificationCloned).isNotEqualTo(dummyClassification);
     dummyClassificationCloned.setId(dummyClassification.getId());
-    assertThat(dummyClassificationCloned).isEqualTo(dummyClassification);
-    assertThat(dummyClassificationCloned).isNotSameAs(dummyClassification);
+    assertThat(dummyClassificationCloned)
+        .isEqualTo(dummyClassification)
+        .isNotSameAs(dummyClassification);
   }
 }

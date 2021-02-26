@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -26,63 +28,38 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "admin")
-  @Test
-  void should_ReturnAllTasks_For_Admin() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    List<TaskSummary> results = taskService.createTaskQuery().list();
-
-    assertThat(results).hasSize(87);
-  }
-
   @WithAccessId(user = "taskadmin")
-  @Test
-  void should_ReturnAllTasks_For_TaskAdmin() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    List<TaskSummary> results = taskService.createTaskQuery().list();
-
-    assertThat(results).hasSize(87);
-  }
-
   @WithAccessId(user = "businessadmin")
-  @Test
-  void should_ReturnAllTasks_For_BusinessAdmin() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    List<TaskSummary> results = taskService.createTaskQuery().list();
-
-    assertThat(results).isEmpty();
-  }
-
   @WithAccessId(user = "monitor")
-  @Test
-  void should_ReturnAllTasks_For_MonitorUser() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    List<TaskSummary> results = taskService.createTaskQuery().list();
-
-    assertThat(results).isEmpty();
-  }
-
   @WithAccessId(user = "teamlead-1")
-  @Test
-  void should_ReturnAllTasks_For_TeamLead1() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
-    List<TaskSummary> results = taskService.createTaskQuery().list();
-
-    assertThat(results).hasSize(25);
-  }
-
   @WithAccessId(user = "user-1-1")
-  @Test
-  void should_ReturnAllTasks_For_User11() {
+  @TestTemplate
+  void should_FindAllAccessibleTasksDependentOnTheUser_When_MakingTaskQuery() {
     TaskService taskService = taskanaEngine.getTaskService();
-
     List<TaskSummary> results = taskService.createTaskQuery().list();
 
-    assertThat(results).hasSize(7);
-  }
+    int expectedSize;
 
+    switch (taskanaEngine.getCurrentUserContext().getUserid()) {
+      case "admin":
+      case "taskadmin":
+        expectedSize = 87;
+        break;
+      case "businessadmin":
+      case "monitor":
+        expectedSize = 0;
+        break;
+      case "teamlead-1":
+        expectedSize = 25;
+        break;
+      case "user-1-1":
+        expectedSize = 7;
+        break;
+      default:
+        throw new SystemException(
+            String.format("Invalid User: '%s'", taskanaEngine.getCurrentUserContext().getUserid()));
+    }
+
+    assertThat(results).hasSize(expectedSize);
+  }
 }

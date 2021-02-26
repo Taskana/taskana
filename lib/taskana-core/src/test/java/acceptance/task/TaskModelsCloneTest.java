@@ -1,9 +1,9 @@
-package pro.taskana.task.internal.models;
+package acceptance.task;
 
+import static acceptance.CreateTaskModelHelper.createAttachment;
+import static acceptance.CreateTaskModelHelper.createDummyClassification;
+import static acceptance.CreateTaskModelHelper.createUnitTestTask;
 import static org.assertj.core.api.Assertions.assertThat;
-import static pro.taskana.task.internal.CreateTaskModelHelper.createAttachment;
-import static pro.taskana.task.internal.CreateTaskModelHelper.createDummyClassification;
-import static pro.taskana.task.internal.CreateTaskModelHelper.createUnitTestTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +14,11 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.AttachmentSummaryImpl;
+import pro.taskana.task.internal.models.TaskCommentImpl;
+import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 class TaskModelsCloneTest {
 
@@ -33,8 +38,7 @@ class TaskModelsCloneTest {
     assertThat(dummyTaskSummaryCloned).isNotEqualTo(dummyTaskSummary);
     dummyTaskSummaryCloned.setId(dummyTaskSummary.getId());
     dummyTaskSummaryCloned.setExternalId(dummyTaskSummary.getExternalId());
-    assertThat(dummyTaskSummaryCloned).isEqualTo(dummyTaskSummary);
-    assertThat(dummyTaskSummaryCloned).isNotSameAs(dummyTaskSummary);
+    assertThat(dummyTaskSummaryCloned).isEqualTo(dummyTaskSummary).isNotSameAs(dummyTaskSummary);
 
     Attachment dummyAttachmentForSummaryTestPostClone =
         createAttachment("differentIdForDeepTest", "differentTaskIdForDeepTest");
@@ -59,8 +63,7 @@ class TaskModelsCloneTest {
     assertThat(dummyTaskCloned).isNotEqualTo(dummyTask);
     dummyTaskCloned.setId(dummyTask.getId());
     dummyTaskCloned.setExternalId(dummyTask.getExternalId());
-    assertThat(dummyTaskCloned).isEqualTo(dummyTask);
-    assertThat(dummyTaskCloned).isNotSameAs(dummyTask);
+    assertThat(dummyTaskCloned).isEqualTo(dummyTask).isNotSameAs(dummyTask);
 
     dummyCustomAttributesPreClone.put("deepTestAttributeKey", "deepTestAttributeValue");
     dummyCallbackInfoPreClone.put("deepTestCallbackKey", "deepTestCallbackValue");
@@ -108,8 +111,7 @@ class TaskModelsCloneTest {
     TaskCommentImpl dummyCommentCloned = dummyComment.copy();
     assertThat(dummyCommentCloned).isNotEqualTo(dummyComment);
     dummyCommentCloned.setId(dummyComment.getId());
-    assertThat(dummyCommentCloned).isEqualTo(dummyComment);
-    assertThat(dummyCommentCloned).isNotSameAs(dummyComment);
+    assertThat(dummyCommentCloned).isEqualTo(dummyComment).isNotSameAs(dummyComment);
   }
 
   @Test
@@ -126,8 +128,7 @@ class TaskModelsCloneTest {
 
     assertThat(dummyReferenceCloned).isNotEqualTo(dummyReference);
     dummyReferenceCloned.setId(dummyReference.getId());
-    assertThat(dummyReferenceCloned).isEqualTo(dummyReference);
-    assertThat(dummyReferenceCloned).isNotSameAs(dummyReference);
+    assertThat(dummyReferenceCloned).isEqualTo(dummyReference).isNotSameAs(dummyReference);
   }
 
   @Test
@@ -141,8 +142,9 @@ class TaskModelsCloneTest {
 
     dummyAttachmentSummaryCloned.setId(dummyAttachmentSummary.getId());
     dummyAttachmentSummaryCloned.setTaskId(dummyAttachmentSummary.getTaskId());
-    assertThat(dummyAttachmentSummaryCloned).isEqualTo(dummyAttachmentSummary);
-    assertThat(dummyAttachmentSummaryCloned).isNotSameAs(dummyAttachmentSummary);
+    assertThat(dummyAttachmentSummaryCloned)
+        .isEqualTo(dummyAttachmentSummary)
+        .isNotSameAs(dummyAttachmentSummary);
   }
 
   @Test
@@ -157,8 +159,7 @@ class TaskModelsCloneTest {
     assertThat(dummyAttachmentCloned).isNotEqualTo(dummyAttachment);
     dummyAttachmentCloned.setId(dummyAttachment.getId());
     dummyAttachmentCloned.setTaskId(dummyAttachment.getTaskId());
-    assertThat(dummyAttachmentCloned).isEqualTo(dummyAttachment);
-    assertThat(dummyAttachmentCloned).isNotSameAs(dummyAttachment);
+    assertThat(dummyAttachmentCloned).isEqualTo(dummyAttachment).isNotSameAs(dummyAttachment);
 
     dummyMapPreClone.put("deepTestString1", "deepTestString2");
     assertThat(dummyAttachment).isNotEqualTo(dummyAttachmentCloned);

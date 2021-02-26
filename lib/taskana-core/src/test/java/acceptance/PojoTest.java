@@ -1,4 +1,4 @@
-package pro.taskana;
+package acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

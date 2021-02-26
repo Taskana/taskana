@@ -2,6 +2,7 @@ package acceptance.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import acceptance.TaskanaEngineTestConfiguration;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.TaskanaEngineImpl;
-import pro.taskana.common.internal.TaskanaEngineTestConfiguration;
 
 /** Test taskana's role configuration. */
 class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {

@@ -1,4 +1,4 @@
-package pro.taskana.monitor.internal;
+package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +48,7 @@ class ReportTest {
     assertThat(report.getRows()).isEmpty();
     Row<MonitorQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(0);
+    assertThat(sumRow.getTotalValue()).isZero();
   }
 
   @Test
@@ -207,7 +207,7 @@ class ReportTest {
     assertThat(report.getRows()).isEmpty();
     Row<MonitorQueryItem> sumRow = report.getSumRow();
     assertThat(sumRow.getCells()).isEqualTo(new int[] {0, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(0);
+    assertThat(sumRow.getTotalValue()).isZero();
   }
 
   @Test

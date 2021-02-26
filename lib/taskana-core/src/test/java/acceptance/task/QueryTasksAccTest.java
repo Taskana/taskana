@@ -17,6 +17,8 @@ import static pro.taskana.task.api.TaskQueryColumnName.OWNER;
 import static pro.taskana.task.api.TaskQueryColumnName.STATE;
 
 import acceptance.AbstractAccTest;
+import acceptance.TaskTestMapper;
+import acceptance.TaskanaEngineProxy;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -39,7 +41,6 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.TaskanaEngineProxy;
 import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;
@@ -53,7 +54,6 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskServiceImpl;
-import pro.taskana.task.internal.TaskTestMapper;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 

@@ -92,15 +92,15 @@ class TransferTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
-  void should_ChangeDomain_When_TransferingTaskToWorkbasketWithDifferentDomain() throws Exception {
+  void should_ChangeDomain_When_TransferringTaskToWorkbasketWithDifferentDomain() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     String domain1 = task.getDomain();
 
-    Task transferedTask = taskService.transfer(task.getId(), "GPK_B_KSC_1", "DOMAIN_B");
+    Task transferredTask = taskService.transfer(task.getId(), "GPK_B_KSC_1", "DOMAIN_B");
 
-    assertThat(transferedTask).isNotNull();
-    assertThat(transferedTask.getDomain()).isNotEqualTo(domain1);
+    assertThat(transferredTask).isNotNull();
+    assertThat(transferredTask.getDomain()).isNotEqualTo(domain1);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -308,7 +308,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void should_TransferTasks_When_TransferTasksWithListNotSupportingRemove() {
+  void should_TransferTasks_When_TransferringTasksWithListNotSupportingRemove() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIds = List.of("TKI:000000000000000000000000000000000006");
 
@@ -322,7 +322,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void should_ThrowException_When_TransferTasksWithInvalidTasksIdList() {
+  void should_ThrowException_When_TransferredTaskListIsNull() {
     TaskService taskService = taskanaEngine.getTaskService();
     // test with invalid list
 
@@ -331,9 +331,15 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not be null.");
+  }
+
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
+  @Test
+  void should_ThrowException_When_TransferringTasksWithOnlyInvalidTasksIds() {
+    TaskService taskService = taskanaEngine.getTaskService();
 
     // test with list containing only invalid arguments
-    call =
+    ThrowingCallable call =
         () ->
             taskService.transferTasks(
                 "WBI:100000000000000000000000000000000006",
@@ -346,7 +352,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void should_ThrowException_When_TransferEmptyTaskIdList() {
+  void should_ThrowException_When_TransferringEmptyTaskIdList() {
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> taskIds = new ArrayList<>();
     ThrowingCallable call =
