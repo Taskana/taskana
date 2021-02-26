@@ -17,7 +17,7 @@ import static pro.taskana.classification.api.ClassificationQueryColumnName.VALID
 import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.text.Collator;
 import java.time.Instant;
 import java.util.Arrays;

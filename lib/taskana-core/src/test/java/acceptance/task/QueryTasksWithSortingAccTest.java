@@ -3,7 +3,7 @@ package acceptance.task;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

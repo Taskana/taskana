@@ -2,7 +2,7 @@ package acceptance.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

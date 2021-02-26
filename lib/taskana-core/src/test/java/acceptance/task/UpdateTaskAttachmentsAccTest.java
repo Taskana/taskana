@@ -3,7 +3,7 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;

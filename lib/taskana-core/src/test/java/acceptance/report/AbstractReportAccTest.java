@@ -1,6 +1,6 @@
 package acceptance.report;
 
-import helper.TaskanaEngineTestConfiguration;
+import acceptance.TaskanaEngineTestConfiguration;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 

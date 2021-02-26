@@ -16,9 +16,9 @@ import static pro.taskana.task.api.TaskQueryColumnName.CLASSIFICATION_KEY;
 import static pro.taskana.task.api.TaskQueryColumnName.OWNER;
 import static pro.taskana.task.api.TaskQueryColumnName.STATE;
 
-import helper.AbstractAccTest;
-import helper.TaskTestMapper;
-import helper.TaskanaEngineProxy;
+import acceptance.AbstractAccTest;
+import acceptance.TaskTestMapper;
+import acceptance.TaskanaEngineProxy;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;

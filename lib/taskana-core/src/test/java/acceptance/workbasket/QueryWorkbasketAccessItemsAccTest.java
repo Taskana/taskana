@@ -7,7 +7,7 @@ import static pro.taskana.workbasket.api.AccessItemQueryColumnName.ACCESS_ID;
 import static pro.taskana.workbasket.api.AccessItemQueryColumnName.WORKBASKET_ID;
 import static pro.taskana.workbasket.api.AccessItemQueryColumnName.WORKBASKET_KEY;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;

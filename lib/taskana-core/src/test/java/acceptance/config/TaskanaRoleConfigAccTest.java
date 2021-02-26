@@ -2,7 +2,7 @@ package acceptance.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import helper.TaskanaEngineTestConfiguration;
+import acceptance.TaskanaEngineTestConfiguration;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

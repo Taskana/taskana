@@ -1,8 +1,8 @@
 package acceptance.task;
 
-import static helper.CreateTaskModelHelper.createAttachment;
-import static helper.CreateTaskModelHelper.createDummyClassification;
-import static helper.CreateTaskModelHelper.createUnitTestTask;
+import static acceptance.CreateTaskModelHelper.createAttachment;
+import static acceptance.CreateTaskModelHelper.createDummyClassification;
+import static acceptance.CreateTaskModelHelper.createUnitTestTask;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import helper.AbstractAccTest;
-import helper.TaskanaEngineProxy;
+import acceptance.AbstractAccTest;
+import acceptance.TaskanaEngineProxy;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

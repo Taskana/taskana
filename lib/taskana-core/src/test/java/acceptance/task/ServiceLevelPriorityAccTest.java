@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;

@@ -3,7 +3,7 @@ package acceptance.taskrouting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

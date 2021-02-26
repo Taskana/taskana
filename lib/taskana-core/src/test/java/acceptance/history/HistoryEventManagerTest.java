@@ -2,7 +2,7 @@ package acceptance.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.Test;
 
 /** Acceptance test for HistoryEventManager class. */

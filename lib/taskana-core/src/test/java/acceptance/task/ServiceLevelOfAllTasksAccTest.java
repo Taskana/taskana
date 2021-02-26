@@ -2,7 +2,7 @@ package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

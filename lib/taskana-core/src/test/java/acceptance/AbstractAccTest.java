@@ -1,6 +1,5 @@
-package helper;
+package acceptance;
 
-import helper.TaskanaEngineTestConfiguration;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;

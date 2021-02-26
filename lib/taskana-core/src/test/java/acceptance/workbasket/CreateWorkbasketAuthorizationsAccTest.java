@@ -2,7 +2,7 @@ package acceptance.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 

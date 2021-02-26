@@ -3,8 +3,8 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import helper.AbstractAccTest;
-import helper.TaskanaEngineProxy;
+import acceptance.AbstractAccTest;
+import acceptance.TaskanaEngineProxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;

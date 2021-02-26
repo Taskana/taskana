@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.task.api.ObjectReferenceQueryColumnName.COMPANY;
 import static pro.taskana.task.api.ObjectReferenceQueryColumnName.SYSTEM;
 
-import helper.AbstractAccTest;
+import acceptance.AbstractAccTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 

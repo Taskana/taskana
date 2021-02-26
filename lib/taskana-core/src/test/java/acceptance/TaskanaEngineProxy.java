@@ -1,4 +1,4 @@
-package helper;
+package acceptance;
 
 import java.lang.reflect.Field;
 import org.apache.ibatis.session.SqlSession;

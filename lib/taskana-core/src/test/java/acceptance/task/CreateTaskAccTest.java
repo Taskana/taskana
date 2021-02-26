@@ -3,9 +3,9 @@ package acceptance.task;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import helper.AbstractAccTest;
-import helper.TaskTestMapper;
-import helper.TaskanaEngineProxy;
+import acceptance.AbstractAccTest;
+import acceptance.TaskTestMapper;
+import acceptance.TaskanaEngineProxy;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
