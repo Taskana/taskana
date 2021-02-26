@@ -350,14 +350,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void testQueryTaskByCustomAttributes() throws Exception {
-    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setClassificationKey("T2100");
     Map<String, String> customAttributesForCreate =
         createSimpleCustomPropertyMap(20000); // about 1 Meg
     newTask.setCustomAttributeMap(customAttributesForCreate);
-    Task createdTask = taskService.createTask(newTask);
+    Task createdTask = TASK_SERVICE.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
     // query the task by custom attributes
