@@ -1,4 +1,4 @@
-package acceptance.security;
+package acceptance.classification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
