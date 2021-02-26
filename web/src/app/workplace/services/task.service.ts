@@ -43,9 +43,9 @@ export class TaskService {
   findTasksWithWorkbasket(
     filterParameter: TaskQueryFilterParameter,
     sortParameter: Sorting<TaskQuerySortParameter>,
-    pagingParameter: QueryPagingParameter,
+    pagingParameter: QueryPagingParameter
   ): Observable<TaskResource> {
-    const url = `${this.url}${asUrlQueryString({ ...filterParameter, ...sortParameter, ...pagingParameter})}`;
+    const url = `${this.url}${asUrlQueryString({ ...filterParameter, ...sortParameter, ...pagingParameter })}`;
     return this.httpClient.get<TaskResource>(url);
   }
 
