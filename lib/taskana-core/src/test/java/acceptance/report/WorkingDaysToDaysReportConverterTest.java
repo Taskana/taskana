@@ -52,7 +52,7 @@ class WorkingDaysToDaysReportConverterTest {
     assertThat(instance.convertDaysToWorkingDays(-3)).isEqualTo(-1);
     assertThat(instance.convertDaysToWorkingDays(-2)).isEqualTo(-1);
     assertThat(instance.convertDaysToWorkingDays(-1)).isEqualTo(-1);
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(2);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(3);
@@ -194,7 +194,7 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-03-28T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(1);
@@ -210,7 +210,7 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-05-16T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(2);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(2);
@@ -225,7 +225,7 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-04-26T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(1);
@@ -241,7 +241,7 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-05-07T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(2);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(2);
@@ -258,7 +258,7 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-10-01T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(2);
@@ -275,7 +275,7 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-12-20T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(1);
@@ -298,9 +298,9 @@ class WorkingDaysToDaysReportConverterTest {
         WorkingDaysToDaysReportConverter.initialize(
             getLargeListOfColumnHeaders(), converter, Instant.parse("2018-10-26T00:00:00.000Z"));
 
-    assertThat(instance.convertDaysToWorkingDays(0)).isEqualTo(0);
-    assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(0);
-    assertThat(instance.convertDaysToWorkingDays(2)).isEqualTo(0);
+    assertThat(instance.convertDaysToWorkingDays(0)).isZero();
+    assertThat(instance.convertDaysToWorkingDays(1)).isZero();
+    assertThat(instance.convertDaysToWorkingDays(2)).isZero();
     assertThat(instance.convertDaysToWorkingDays(3)).isEqualTo(1);
     assertThat(instance.convertDaysToWorkingDays(4)).isEqualTo(2);
     assertThat(instance.convertDaysToWorkingDays(5)).isEqualTo(2);

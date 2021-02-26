@@ -39,8 +39,9 @@ class WorkbasketModelsCloneTest {
 
     assertThat(dummyWorkbasketSummaryCloned).isNotEqualTo(dummyWorkbasketSummary);
     dummyWorkbasketSummaryCloned.setId(dummyWorkbasketSummary.getId());
-    assertThat(dummyWorkbasketSummaryCloned).isEqualTo(dummyWorkbasketSummary);
-    assertThat(dummyWorkbasketSummaryCloned).isNotSameAs(dummyWorkbasketSummary);
+    assertThat(dummyWorkbasketSummaryCloned)
+        .isEqualTo(dummyWorkbasketSummary)
+        .isNotSameAs(dummyWorkbasketSummary);
   }
 
   @Test
@@ -64,8 +65,7 @@ class WorkbasketModelsCloneTest {
 
     assertThat(dummyWorkbasketCloned).isNotEqualTo(dummyWorkbasket);
     dummyWorkbasketCloned.setId(dummyWorkbasket.getId());
-    assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket);
-    assertThat(dummyWorkbasketCloned).isNotSameAs(dummyWorkbasket);
+    assertThat(dummyWorkbasketCloned).isEqualTo(dummyWorkbasket).isNotSameAs(dummyWorkbasket);
   }
 
   @Test
@@ -95,7 +95,8 @@ class WorkbasketModelsCloneTest {
 
     assertThat(dummyWorkbasketAccessItemCloned).isNotEqualTo(dummyWorkbasketAccessItem);
     dummyWorkbasketAccessItemCloned.setId(dummyWorkbasketAccessItem.getId());
-    assertThat(dummyWorkbasketAccessItemCloned).isEqualTo(dummyWorkbasketAccessItem);
-    assertThat(dummyWorkbasketAccessItemCloned).isNotSameAs(dummyWorkbasketAccessItem);
+    assertThat(dummyWorkbasketAccessItemCloned)
+        .isEqualTo(dummyWorkbasketAccessItem)
+        .isNotSameAs(dummyWorkbasketAccessItem);
   }
 }

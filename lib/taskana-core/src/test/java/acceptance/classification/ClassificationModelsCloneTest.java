@@ -46,8 +46,9 @@ class ClassificationModelsCloneTest {
 
     assertThat(dummyClassificationSummaryCloned).isNotEqualTo(dummyClassificationSummary);
     dummyClassificationSummaryCloned.setId(dummyClassificationSummary.getId());
-    assertThat(dummyClassificationSummaryCloned).isEqualTo(dummyClassificationSummary);
-    assertThat(dummyClassificationSummaryCloned).isNotSameAs(dummyClassificationSummary);
+    assertThat(dummyClassificationSummaryCloned)
+        .isEqualTo(dummyClassificationSummary)
+        .isNotSameAs(dummyClassificationSummary);
   }
 
   @Test
@@ -77,7 +78,8 @@ class ClassificationModelsCloneTest {
 
     assertThat(dummyClassificationCloned).isNotEqualTo(dummyClassification);
     dummyClassificationCloned.setId(dummyClassification.getId());
-    assertThat(dummyClassificationCloned).isEqualTo(dummyClassification);
-    assertThat(dummyClassificationCloned).isNotSameAs(dummyClassification);
+    assertThat(dummyClassificationCloned)
+        .isEqualTo(dummyClassification)
+        .isNotSameAs(dummyClassification);
   }
 }

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
@@ -117,7 +116,7 @@ class WorkbasketServiceImplTest {
     String otherWorkbasketId = "4711";
     List<String> destinations = List.of(otherWorkbasketId);
     workbasketServiceSpy.createWorkbasket(expectedWb);
-    doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(eq(expectedWb.getId()));
+    doReturn(expectedWb).when(workbasketServiceSpy).getWorkbasket(expectedWb.getId());
 
     ThrowingCallable call =
         () -> {
@@ -139,8 +138,8 @@ class WorkbasketServiceImplTest {
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(internalTaskanaEngineMock, times(1)).domainExists(any());
     verify(distributionTargetMapperMock)
-        .deleteAllDistributionTargetsBySourceId(eq(expectedWb.getId()));
-    verify(workbasketMapperMock).update(eq(expectedWb));
+        .deleteAllDistributionTargetsBySourceId(expectedWb.getId());
+    verify(workbasketMapperMock).update(expectedWb);
     verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
 
     verifyNoMoreInteractions(

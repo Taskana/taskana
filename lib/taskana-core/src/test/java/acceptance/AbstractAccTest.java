@@ -40,11 +40,11 @@ public abstract class AbstractAccTest {
   protected static WorkingDaysToDaysConverter converter;
 
   @BeforeAll
-  public static void setupTest() throws Exception {
+  protected static void setupTest() throws Exception {
     resetDb(false);
   }
 
-  public static void resetDb(boolean dropTables) throws Exception {
+  protected static void resetDb(boolean dropTables) throws Exception {
 
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
@@ -62,7 +62,7 @@ public abstract class AbstractAccTest {
     sampleDataGenerator.generateTestData();
   }
 
-  public JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
 
     Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
     sessionManagerField.setAccessible(true);
@@ -72,7 +72,7 @@ public abstract class AbstractAccTest {
     return sqlSessionManager.getMapper(JobMapper.class);
   }
 
-  public ObjectReference createObjectReference(
+  protected ObjectReference createObjectReference(
       String company, String system, String systemInstance, String type, String value) {
     ObjectReference objectReference = new ObjectReference();
     objectReference.setCompany(company);
@@ -83,13 +83,13 @@ public abstract class AbstractAccTest {
     return objectReference;
   }
 
-  public Map<String, String> createSimpleCustomPropertyMap(int propertiesCount) {
+  protected Map<String, String> createSimpleCustomPropertyMap(int propertiesCount) {
     return IntStream.rangeClosed(1, propertiesCount)
         .mapToObj(String::valueOf)
         .collect(Collectors.toMap("Property_"::concat, "Property Value of Property_"::concat));
   }
 
-  public Attachment createAttachment(
+  protected Attachment createAttachment(
       String classificationKey,
       ObjectReference objRef,
       String channel,
@@ -121,7 +121,7 @@ public abstract class AbstractAccTest {
     return attachment;
   }
 
-  public TimeInterval toDaysInterval() {
+  protected TimeInterval toDaysInterval() {
     Instant begin =
         ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MIN, ZoneId.of("UTC"))
             .toInstant();
@@ -131,15 +131,15 @@ public abstract class AbstractAccTest {
     return new TimeInterval(begin, end);
   }
 
-  public Instant getInstant(String datetime) {
+  protected Instant getInstant(String datetime) {
     return LocalDateTime.parse(datetime).atZone(ZoneId.of("UTC")).toInstant();
   }
 
-  public Instant moveForwardToWorkingDay(Instant date) {
+  protected Instant moveForwardToWorkingDay(Instant date) {
     return converter.addWorkingDaysToInstant(date, Duration.ZERO);
   }
 
-  public Instant moveBackToWorkingDay(Instant date) {
+  protected Instant moveBackToWorkingDay(Instant date) {
     return converter.subtractWorkingDaysFromInstant(date, Duration.ZERO);
   }
 }
