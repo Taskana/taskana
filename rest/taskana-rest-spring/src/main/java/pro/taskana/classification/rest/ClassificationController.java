@@ -135,7 +135,7 @@ public class ClassificationController {
    *
    * @title Create a new Classification
    * @param repModel the Classification which should be created.
-   * @return The persisted Classification
+   * @return The inserted Classification
    * @throws NotAuthorizedException if the current user is not allowed to create a Classification.
    * @throws ClassificationAlreadyExistException if the new Classification already exists. This
    *     means that a Classification with the requested key and domain already exist.
