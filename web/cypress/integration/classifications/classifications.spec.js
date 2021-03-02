@@ -12,17 +12,17 @@ context('TASKANA Classifications', () => {
     cy.get('#classification-service-level').should('have.value', editedValue);
   });
 
-
   it('should be able to visit classifications and filter by manual', () => {
     cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/classifications');
     cy.verifyPageLoad('/classifications');
 
-    cy.get('button[mattooltip="Filter Category"]').click().then(() => {
-      cy.get('.mat-menu-content').contains('MANUAL').click()
-      cy.get('tree-node-collection').find('tree-node').should('have.length', 2);
-    });
+    cy.get('button[mattooltip="Filter Category"]')
+      .click()
+      .then(() => {
+        cy.get('.mat-menu-content').contains('MANUAL').click();
+        cy.get('tree-node-collection').find('tree-node').should('have.length', 8);
+      });
   });
-
 
   it('should be possible to edit the name of a classification', () => {
     const editedValue = 'CY-TEST';
@@ -35,7 +35,6 @@ context('TASKANA Classifications', () => {
     cy.get('#classification-name').should('have.value', editedValue);
   });
 
-
   it('should be possible to edit the category of a classification', () => {
     cy.visitTestClassification();
 
@@ -45,7 +44,11 @@ context('TASKANA Classifications', () => {
     cy.get('button').contains('Save').click();
 
     // assure that its process now
-    cy.get('ng-form').find('mat-form-field').find('mat-select[role="listbox"]').contains('PROCESS').should('be.visible');
+    cy.get('ng-form')
+      .find('mat-form-field')
+      .find('mat-select[role="listbox"]')
+      .contains('PROCESS')
+      .should('be.visible');
 
     // change back to external
     cy.get('ng-form').find('mat-form-field').find('mat-select[role="listbox"]').click();
@@ -54,7 +57,6 @@ context('TASKANA Classifications', () => {
 
     cy.get('button').contains('Save').click();
   });
-
 
   it('should be possible to edit the description of a classification', () => {
     const editedValue = 'CY-TEST-DESC';
@@ -67,19 +69,15 @@ context('TASKANA Classifications', () => {
     cy.get('#classification-description').should('have.value', editedValue);
   });
 
-
   it('should be possible to edit the custom classification', () => {
     cy.visitTestClassification();
 
-    cy.get('#classification-custom-1')
-      .clear()
-      .type(Cypress.env('testValueClassifications'));
+    cy.get('#classification-custom-1').clear().type(Cypress.env('testValueClassifications'));
 
     cy.get('button').contains('Save').click();
 
     cy.get('#classification-custom-1').should('have.value', Cypress.env('testValueClassifications'));
   });
-
 
   it('should be possible to edit the application entry point', () => {
     cy.visitTestClassification();
@@ -89,7 +87,4 @@ context('TASKANA Classifications', () => {
 
     cy.get('#classification-application-entry-point').should('have.value', Cypress.env('testValueClassifications'));
   });
-
 });
-
-
