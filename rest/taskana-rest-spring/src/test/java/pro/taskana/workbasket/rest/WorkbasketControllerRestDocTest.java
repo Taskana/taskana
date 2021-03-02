@@ -50,7 +50,7 @@ class WorkbasketControllerRestDocTest extends BaseRestDocTest {
   void deleteWorkbasketDocTest() throws Exception {
     mockMvc
         .perform(
-            delete(RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000008"))
+            delete(RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000002"))
         .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
@@ -71,15 +71,16 @@ class WorkbasketControllerRestDocTest extends BaseRestDocTest {
   @Test
   @WithAccessId(user = "admin")
   void updateWorkbasketDocTest() throws Exception {
+
     Workbasket workbasket =
-        workbasketService.getWorkbasket("WBI:100000000000000000000000000000000002");
+        workbasketService.getWorkbasket("WBI:100000000000000000000000000000000003");
     workbasket.setName("new name");
 
     WorkbasketRepresentationModel repModel = assembler.toModel(workbasket);
 
     mockMvc
         .perform(
-            put(RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000002")
+            put(RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000003")
                 .content(objectMapper.writeValueAsString(repModel)))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
