@@ -82,7 +82,7 @@ class ClassificationControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(13);
+    assertThat(response.getBody().getContent()).hasSize(33);
   }
 
   @Test
@@ -98,7 +98,7 @@ class ClassificationControllerIntTest {
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith("/api/v1/classifications?domain=DOMAIN_A&sort-by=KEY&order=ASCENDING");
-    assertThat(response.getBody().getContent()).hasSize(17);
+    assertThat(response.getBody().getContent()).hasSize(37);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("A12");
   }
 
