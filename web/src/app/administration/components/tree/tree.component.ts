@@ -40,6 +40,7 @@ import { Pair } from '../../../shared/models/pair';
 })
 export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
   treeNodes: TreeNodeModel[];
+  categoryIcons: ClassificationCategoryImages;
 
   @Input() selectNodeId: string;
   @Input() filterText: string;
@@ -60,6 +61,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       }
     },
     useVirtualScroll: true,
+    scrollOnActivate: false,
     levelPadding: 20,
     allowDrag: true,
     allowDrop: true
@@ -112,6 +114,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       if (this.tree.treeModel.getActiveNode()) {
         this.deselectActiveNode();
       }
+    });
+
+    this.categoryIcons$.pipe(takeUntil(this.destroy$)).subscribe((categoryIcons) => {
+      this.categoryIcons = categoryIcons;
     });
   }
 
@@ -168,14 +174,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     }
   }
 
-  getCategoryIcon(category: string): Observable<Pair<string, string>> {
-    return this.categoryIcons$.pipe(
-      map((iconMap) =>
-        iconMap[category]
-          ? { left: iconMap[category], right: category }
-          : { left: iconMap.missing, right: 'Category does not match with the configuration' }
-      )
-    );
+  getCategoryIcon(category: string): Pair<string, string> {
+    return this.categoryIcons[category]
+      ? { left: this.categoryIcons[category], right: category }
+      : { left: this.categoryIcons.missing, right: 'Category does not match with the configuration' };
   }
 
   switchTaskanaSpinner(active: boolean) {
