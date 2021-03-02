@@ -179,16 +179,41 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     jobService.createJob(scheduledJob);
     jobsToRun = jobMapper.findJobsToRun(Instant.now());
 
-    assertThat(jobsToRun).hasSize(1);
-    assertThat(jobsToRun.get(0).getDue()).isEqualTo(firstDue);
+    assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue);
 
     JobRunner runner = new JobRunner(taskanaEngine);
     runner.runJobs();
     Duration runEvery = taskanaEngineConfiguration.getCleanupJobRunEvery();
     jobsToRun = jobMapper.findJobsToRun(Instant.now().plus(runEvery));
 
-    assertThat(jobsToRun).hasSize(1);
     assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue.plus(runEvery));
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ScheduleNextJobAccordingToFirstRun_When_PreviousJobNotExisting() throws Exception {
+    Instant firstRun = Instant.now().minus(2, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MILLIS);
+    Duration runEvery = Duration.ofMinutes(5);
+    taskanaEngineConfiguration.setCleanupJobRunEvery(runEvery);
+    taskanaEngineConfiguration.setCleanupJobFirstRun(firstRun);
+
+    TaskCleanupJob.initializeSchedule(taskanaEngine);
+
+    List<ScheduledJob> nextJobs = getJobMapper().findJobsToRun(Instant.now().plus(runEvery));
+    assertThat(nextJobs).extracting(ScheduledJob::getDue).containsExactly(firstRun.plus(runEvery));
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
+      throws Exception {
+    taskanaEngineConfiguration.setCleanupJobRunEvery(Duration.ZERO);
+    taskanaEngineConfiguration.setCleanupJobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
+
+    TaskCleanupJob.initializeSchedule(taskanaEngine);
+
+    List<ScheduledJob> nextJobs = getJobMapper().findJobsToRun(Instant.now());
+    assertThat(nextJobs).isEmpty();
   }
 
   private String createAndInsertTask(String parentBusinessProcessId) throws Exception {
