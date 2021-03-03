@@ -40,6 +40,15 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     Builder stateIn(List<TaskState> states);
 
     /**
+     * Adds a priority Integer to the builder. The created report contains only Tasks with a
+     * priority greater or equal than this provided Integer.
+     *
+     * @param priority an Integer for the minimum priority
+     * @return the Builder
+     */
+    Builder priorityMinimum(Integer priority);
+
+    /**
      * Adds a list of domains to the builder. The created report contains only tasks with a domain
      * in this list.
      *

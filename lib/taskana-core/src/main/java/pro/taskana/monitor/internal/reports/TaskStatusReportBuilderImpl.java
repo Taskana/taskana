@@ -27,6 +27,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   private List<String> domains;
   private List<TaskState> states;
   private List<String> workbasketIds;
+  private Integer priorityMinimum;
 
   public TaskStatusReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
@@ -42,17 +43,16 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
     try {
       this.taskanaEngine.openConnection();
       List<TaskQueryItem> tasks =
-          this.monitorMapper.getTasksCountByState(this.domains, this.states, this.workbasketIds);
+          this.monitorMapper.getTasksCountByState(
+              this.domains, this.states, this.workbasketIds, this.priorityMinimum);
       TaskStatusReport report = new TaskStatusReport(this.states);
       report.addItems(tasks);
       Map<String, String> displayMap =
           taskanaEngine.runAsAdmin(
               () ->
-                  workbasketService
-                      .createWorkbasketQuery()
+                  workbasketService.createWorkbasketQuery()
                       .keyIn(report.getRows().keySet().toArray(new String[0]))
-                      .domainIn(domains != null ? domains.toArray(new String[0]) : null)
-                      .list()
+                      .domainIn(domains != null ? domains.toArray(new String[0]) : null).list()
                       .stream()
                       .collect(
                           Collectors.toMap(
@@ -68,6 +68,12 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   @Override
   public TaskStatusReportBuilderImpl stateIn(List<TaskState> states) {
     this.states = states;
+    return this;
+  }
+
+  @Override
+  public TaskStatusReportBuilderImpl priorityMinimum(Integer priorityMinimum) {
+    this.priorityMinimum = priorityMinimum;
     return this;
   }
 

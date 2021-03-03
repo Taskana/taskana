@@ -1,5 +1,6 @@
 package pro.taskana.monitor.rest.models;
 
+import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -13,13 +14,12 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
 
   /** Object holding meta info on the report. */
   private final MetaInformation meta;
-
   /** Array holding the rows of the report. */
   private final List<RowRepresentationModel> rows;
-
   /** Array holding the sums in the columns over all rows. */
   private final List<RowRepresentationModel> sumRow;
 
+  @ConstructorProperties({"meta", "rows", "sumRow"})
   public ReportRepresentationModel(
       MetaInformation meta,
       List<RowRepresentationModel> rows,
@@ -55,6 +55,7 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     /** Boolean identifying if the given row should be initially displayed or not. */
     private final boolean display;
 
+    @ConstructorProperties({"cells", "total", "depth", "desc", "display"})
     public RowRepresentationModel(
         int[] cells, int total, int depth, String[] desc, boolean display) {
       this.cells = cells;
@@ -114,6 +115,7 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     /** Description for the sum column. */
     private final String sumRowDesc;
 
+    @ConstructorProperties({"name", "date", "header", "rowDesc", "sumRowDesc"})
     public MetaInformation(
         String name, Instant date, String[] header, String[] rowDesc, String sumRowDesc) {
       this.name = name;

@@ -53,7 +53,10 @@ public class MonitorController {
    * State.
    *
    * @param domains Filter the report values by domains.
-   * @param states Filter the report values by task states.
+   * @param states Filter the report values by Task states.
+   * @param workbasketIds Filter the report values by Workbasket Ids.
+   * @param priorityMinimum Filter the report values by a minimum priority.
+   *
    * @return the computed TaskStatusReport
    * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @title Get a Task Status Report
@@ -62,7 +65,9 @@ public class MonitorController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> getTaskStatusReport(
       @RequestParam(required = false) List<String> domains,
-      @RequestParam(required = false) List<TaskState> states)
+      @RequestParam(required = false) List<TaskState> states,
+      @RequestParam(name = "workbasket-ids", required = false) List<String> workbasketIds,
+      @RequestParam(name = "priority-minimum", required = false) Integer priorityMinimum)
       throws NotAuthorizedException {
     LOGGER.debug("Entry to getTasksStatusReport(), states to include {}", states);
     ResponseEntity<ReportRepresentationModel> response =
@@ -72,9 +77,13 @@ public class MonitorController {
                     .createTaskStatusReportBuilder()
                     .stateIn(states)
                     .domainIn(domains)
+                    .workbasketIdsIn(workbasketIds)
+                    .priorityMinimum(priorityMinimum)
                     .buildReport(),
                 domains,
-                states));
+                states,
+                workbasketIds,
+                priorityMinimum));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
     }
