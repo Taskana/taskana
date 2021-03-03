@@ -363,6 +363,9 @@ public interface MonitorMapper {
           + "<if test='workbasketIds != null'>"
           + "AND WORKBASKET_ID IN (<foreach collection='workbasketIds' item='workbasketId' separator=','>#{workbasketId}</foreach>) "
           + "</if>"
+          + "<if test='priorityMinimum != null'>"
+          + "AND priority >= #{priorityMinimum} "
+          + "</if>"
           + "</where>"
           + "GROUP BY WORKBASKET_KEY, STATE"
           + "</script>")
@@ -372,7 +375,8 @@ public interface MonitorMapper {
   List<TaskQueryItem> getTasksCountByState(
       @Param("domains") List<String> domains,
       @Param("states") List<TaskState> states,
-      @Param("workbasketIds") List<String> workbasketIds);
+      @Param("workbasketIds") List<String> workbasketIds,
+      @Param("priorityMinimum") Integer priorityMinimum);
 
   @Select(
       "<script>"

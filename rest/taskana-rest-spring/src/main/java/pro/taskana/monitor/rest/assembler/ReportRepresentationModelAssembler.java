@@ -39,13 +39,16 @@ public class ReportRepresentationModelAssembler {
   public ReportRepresentationModel toModel(
       @NonNull TaskStatusReport report,
       @NonNull List<String> domains,
-      @NonNull List<TaskState> states)
+      @NonNull List<TaskState> states,
+      @NonNull List<String> workbasketIds,
+      @NonNull Integer priorityMinimum)
       throws NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
-        linkTo(methodOn(MonitorController.class).getTaskStatusReport(domains, states))
-            .withSelfRel()
-            .expand());
+        linkTo(
+                methodOn(MonitorController.class)
+                    .getTaskStatusReport(domains, states, workbasketIds, priorityMinimum))
+            .withSelfRel());
     return resource;
   }
 
@@ -56,8 +59,7 @@ public class ReportRepresentationModelAssembler {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(methodOn(MonitorController.class).getClassificationReport(taskTimestamp))
-            .withSelfRel()
-            .expand());
+            .withSelfRel());
     return resource;
   }
 
@@ -70,8 +72,7 @@ public class ReportRepresentationModelAssembler {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(methodOn(MonitorController.class).getWorkbasketReport(states, taskTimestamp))
-            .withSelfRel()
-            .expand());
+            .withSelfRel());
     return resource;
   }
 
@@ -84,8 +85,7 @@ public class ReportRepresentationModelAssembler {
         linkTo(
                 methodOn(MonitorController.class)
                     .getTasksWorkbasketPlannedDateReport(daysInPast, states))
-            .withSelfRel()
-            .expand());
+            .withSelfRel());
     return resource;
   }
 
@@ -93,8 +93,7 @@ public class ReportRepresentationModelAssembler {
   public ReportRepresentationModel toModel(@NonNull TimestampReport report)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
-    resource.add(
-        linkTo(methodOn(MonitorController.class).getTimestampReport()).withSelfRel().expand());
+    resource.add(linkTo(methodOn(MonitorController.class).getTimestampReport()).withSelfRel());
     return resource;
   }
 

@@ -192,6 +192,26 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
+  void should_FilterTasksByMinimumPriority_When_BuilderIsFilteredWithMinimumPriority()
+      throws Exception {
+
+    TaskStatusReport report =
+        MONITOR_SERVICE.createTaskStatusReportBuilder().priorityMinimum(5).buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(2);
+
+    Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
+    assertThat(row1.getCells()).isEqualTo(new int[] {3, 1, 0, 0, 0});
+    assertThat(row1.getTotalValue()).isEqualTo(4);
+
+    Row<TaskQueryItem> sumRow = report.getSumRow();
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {3, 2, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(5);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
   void should_FilterTasksByWorkbasket_When_BuilderIsFilteredWithWorkbasketIds() throws Exception {
     TaskStatusReport report =
         MONITOR_SERVICE
