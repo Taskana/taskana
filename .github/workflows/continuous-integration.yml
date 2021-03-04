@@ -82,7 +82,7 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -165,7 +165,7 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
