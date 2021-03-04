@@ -7,12 +7,7 @@ updates:
     time: "06:00"
     timezone: Europe/Berlin
   open-pull-requests-limit: 99
-  labels:
-  - dependencies
-  ignore:
-  - dependency-name: org.hibernate.validator:hibernate-validator
-    versions:
-    - "> 6.1.6.Final"
+
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
