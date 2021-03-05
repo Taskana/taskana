@@ -86,9 +86,8 @@
       <version>${version.auto-restdocs}</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate.validator</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>${version.hibernate}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
