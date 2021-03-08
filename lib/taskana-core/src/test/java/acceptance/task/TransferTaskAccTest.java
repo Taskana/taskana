@@ -401,7 +401,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_NotSetTheTransferFlag_When_SetTransferFlagDisabled() throws Exception {
+  void should_NotSetTheTransferFlag_When_SetTransferFlagNotRequested() throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     taskService.transfer(
         "TKI:000000000000000000000000000000000003",
@@ -415,7 +415,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_NotSetTheTransferFlagWithinBulkTransfer_When_SetTransferFlagDisabled()
+  void should_NotSetTheTransferFlagWithinBulkTransfer_When_SetTransferFlagNotRequested()
       throws Exception {
     TaskService taskService = taskanaEngine.getTaskService();
     taskService.transferTasks(
@@ -435,9 +435,6 @@ class TransferTaskAccTest extends AbstractAccTest {
                 "TKI:000000000000000000000000000000000003")
             .list();
 
-    assertThat(transferredTasks)
-        .extracting(TaskSummary::isTransferred)
-        .contains(false)
-        .doesNotContain(true);
+    assertThat(transferredTasks).extracting(TaskSummary::isTransferred).containsOnly(false);
   }
 }

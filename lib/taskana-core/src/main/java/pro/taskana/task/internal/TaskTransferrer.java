@@ -89,8 +89,6 @@ class TaskTransferrer {
       Workbasket destinationWorkbasket =
           workbasketService.getWorkbasket(destinationWorkbasketKey, domain);
 
-      // reset read flag
-      // set transferred flag only if wanted
       task.setRead(false);
       task.setTransferred(setTransferFlag);
 
@@ -148,8 +146,6 @@ class TaskTransferrer {
 
       Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
 
-      // reset read flag
-      // set transferred flag only if wanted
       task.setRead(false);
       task.setTransferred(setTransferFlag);
 
