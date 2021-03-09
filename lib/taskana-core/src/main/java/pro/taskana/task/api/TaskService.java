@@ -180,8 +180,8 @@ public interface TaskService {
    * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
    * {@code true}.
    *
-   * @param taskId the id of the {@linkplain Task} to be transferred
-   * @param destinationWorkbasketId the Id of the target {@linkplain
+   * @param taskId the id of the {@linkplain Task} which should be transferred
+   * @param destinationWorkbasketId the id of the target {@linkplain
    *     pro.taskana.workbasket.api.models.Workbasket Workbasket}
    * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
    *     flag or not
@@ -220,7 +220,7 @@ public interface TaskService {
    * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
    * {@code true}.
    *
-   * @param taskId the id of the {@linkplain Task} to be transferred
+   * @param taskId the id of the {@linkplain Task} which should be transferred
    * @param workbasketKey the key of the target {@linkplain
    *     pro.taskana.workbasket.api.models.Workbasket Workbasket}
    * @param domain the domain of the target {@linkplain pro.taskana.workbasket.api.models.Workbasket
