@@ -99,7 +99,7 @@ class TaskControllerIntTest {
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(48);
+    assertThat(response.getBody().getContent()).hasSize(58);
   }
 
   @Test
@@ -481,7 +481,7 @@ class TaskControllerIntTest {
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(73);
+    assertThat(response.getBody().getContent()).hasSize(88);
   }
 
   @Test
@@ -509,22 +509,22 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?state=READY&state=CLAIMED&sort-by=POR_VALUE"
-                + "&order=DESCENDING&page-size=5&page=14",
+                + "&order=DESCENDING&page-size=5&page=16",
             HttpMethod.GET,
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
-    assertThat((response.getBody()).getContent()).hasSize(1);
+    assertThat((response.getBody()).getContent()).hasSize(3);
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
-        .contains("page=14");
+        .contains("page=16");
     assertThat(response.getBody().getContent().iterator().next().getTaskId())
-        .isEqualTo("TKI:100000000000000000000000000000000000");
+        .isEqualTo("TKI:000000000000000000000000000000000064");
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith(
             "/api/v1/tasks?state=READY&state=CLAIMED"
-                + "&sort-by=POR_VALUE&order=DESCENDING&page-size=5&page=14");
+                + "&sort-by=POR_VALUE&order=DESCENDING&page-size=5&page=16");
 
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
@@ -546,7 +546,7 @@ class TaskControllerIntTest {
             request,
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
-    assertThat((response.getBody()).getContent()).hasSize(48);
+    assertThat((response.getBody()).getContent()).hasSize(58);
 
     response =
         TEMPLATE.exchange(
@@ -558,9 +558,9 @@ class TaskControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getContent()).hasSize(5);
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
-        .contains("page=10");
+        .contains("page=12");
     assertThat(response.getBody().getContent().iterator().next().getTaskId())
-        .isEqualTo("TKI:000000000000000000000000000000000005");
+        .isEqualTo("TKI:000000000000000000000000000000000073");
 
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
