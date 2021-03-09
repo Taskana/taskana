@@ -149,7 +149,7 @@ public interface TaskService {
           TaskAlreadyExistException, InvalidArgumentException;
 
   /**
-   * Get the details of a task by Id without checking permissions.
+   * Gets the details of a task by Id without checking permissions.
    *
    * @param taskId the id of the task
    * @return the Task
@@ -160,39 +160,83 @@ public interface TaskService {
   Task getTask(String taskId) throws TaskNotFoundException, NotAuthorizedException;
 
   /**
-   * Transfer a Task to another work basket. The transfer sets the transferred flag and resets the
-   * read flag.
+   * Transfers a {@linkplain Task} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
+   * Task#isTransferred transfer} flag.
    *
-   * @param taskId The id of the {@link Task} to be transferred
-   * @param destinationWorkbasketId The Id of the target work basket
-   * @return the transferred task
-   * @throws TaskNotFoundException Thrown if the {@link Task} with taskId was not found.
-   * @throws WorkbasketNotFoundException Thrown if the target work basket was not found.
-   * @throws NotAuthorizedException Thrown if the current user is not authorized to transfer this
-   *     {@link Task} to the target work basket
-   * @throws InvalidStateException Thrown if the task is in a state which does not allow
-   *     transferring
+   * @see #transfer(String, String, boolean)
    */
-  Task transfer(String taskId, String destinationWorkbasketId)
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default Task transfer(String taskId, String destinationWorkbasketId)
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+          InvalidStateException {
+    return transfer(taskId, destinationWorkbasketId, true);
+  }
+
+  /**
+   * Transfers a {@linkplain Task} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   *
+   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
+   * {@code true}.
+   *
+   * @param taskId the id of the {@linkplain Task} which should be transferred
+   * @param destinationWorkbasketId the id of the target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}
+   * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
+   *     flag or not
+   * @return the transferred {@linkplain Task}
+   * @throws TaskNotFoundException Thrown if the {@linkplain Task} with taskId was not found.
+   * @throws WorkbasketNotFoundException Thrown if the target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} was not found.
+   * @throws NotAuthorizedException Thrown if the current user is not authorized to transfer this
+   *     {@linkplain Task} to the target {@linkplain pro.taskana.workbasket.api.models.Workbasket
+   *     Workbasket}
+   * @throws InvalidStateException Thrown if the {@linkplain Task} is in a state which does not
+   *     allow transferring
+   */
+  Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException;
 
   /**
-   * Transfer a task to another work basket. The transfer sets the transferred flag and resets the
-   * read flag.
+   * Transfers a {@linkplain Task} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
+   * Task#isTransferred transfer} flag.
    *
-   * @param taskId The id of the {@link Task} to be transferred
-   * @param workbasketKey The key of the target work basket
-   * @param domain The domain of the target work basket
-   * @return the transferred task
-   * @throws TaskNotFoundException Thrown if the {@link Task} with taskId was not found.
-   * @throws WorkbasketNotFoundException Thrown if the target work basket was not found.
-   * @throws NotAuthorizedException Thrown if the current user is not authorized to transfer this
-   *     {@link Task} to the target work basket
-   * @throws InvalidStateException Thrown if the task is in a state which does not allow
-   *     transferring
+   * @see #transfer(String, String, String, boolean)
    */
-  Task transfer(String taskId, String workbasketKey, String domain)
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default Task transfer(String taskId, String workbasketKey, String domain)
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+          InvalidStateException {
+    return transfer(taskId, workbasketKey, domain, true);
+  }
+
+  /**
+   * Transfers a {@linkplain Task} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   *
+   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
+   * {@code true}.
+   *
+   * @param taskId the id of the {@linkplain Task} which should be transferred
+   * @param workbasketKey the key of the target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}
+   * @param domain the domain of the target {@linkplain pro.taskana.workbasket.api.models.Workbasket
+   *     Workbasket}
+   * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
+   *     flag or not
+   * @return the transferred {@linkplain Task}
+   * @throws TaskNotFoundException Thrown if the {@link Task} with taskId was not found.
+   * @throws WorkbasketNotFoundException Thrown if the target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} was not found.
+   * @throws NotAuthorizedException Thrown if the current user is not authorized to transfer this
+   *     {@linkplain Task} to the target Workbasket
+   * @throws InvalidStateException Thrown if the {@linkplain Task} is in a state which does not
+   *     allow transferring
+   */
+  Task transfer(String taskId, String workbasketKey, String domain, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException;
 
@@ -282,36 +326,84 @@ public interface TaskService {
           InvalidStateException;
 
   /**
-   * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got
-   * no permissions on the target or it doesn´t exist. Other Exceptions will be stored and returned
-   * in the end.
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
+   * Task#isTransferred transfer} flag.
    *
-   * @param destinationWorkbasketId target workbasket id
-   * @param taskIds source task which will be moved
+   * @see #transferTasks(String, List, boolean)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default BulkOperationResults<String, TaskanaException> transferTasks(
+      String destinationWorkbasketId, List<String> taskIds)
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+    return transferTasks(destinationWorkbasketId, taskIds, true);
+  }
+
+  /**
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   *
+   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
+   * {@code true}. Exceptions will be thrown if the caller got no permissions on the target or it
+   * does not exist. Other Exceptions will be stored and returned in the end.
+   *
+   * @param destinationWorkbasketId target {@linkplain pro.taskana.workbasket.api.models.Workbasket
+   *     Workbasket} id
+   * @param taskIds list of source {@linkplain Task Tasks} which will be moved
+   * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
+   *     flag or not
    * @return Bulkresult with ID and Error in it for failed transactions.
-   * @throws NotAuthorizedException if the caller hasn´t permissions on tarket WB.
-   * @throws InvalidArgumentException if the method paramesters are EMPTY or NULL.
-   * @throws WorkbasketNotFoundException if the target WB can´t be found.
+   * @throws NotAuthorizedException if the caller has no permissions on target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * @throws InvalidArgumentException if the method parameters are EMPTY or NULL.
+   * @throws WorkbasketNotFoundException if the target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} can not be found.
    */
   BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketId, List<String> taskIds)
+      String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
   /**
-   * Transfers a list of tasks to an other workbasket. Exceptions will be thrown if the caller got
-   * no permissions on the target or it doesn´t exist. Other Exceptions will be stored and returned
-   * in the end.
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
+   * Task#isTransferred} flag.
    *
-   * @param destinationWorkbasketKey target workbasket key
-   * @param destinationWorkbasketDomain target workbasket domain
-   * @param taskIds source task which will be moved
+   * @see #transferTasks(String, String, List, boolean)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default BulkOperationResults<String, TaskanaException> transferTasks(
+      String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
+      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+    return transferTasks(destinationWorkbasketKey, destinationWorkbasketDomain, taskIds, true);
+  }
+
+  /**
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   *
+   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
+   * {@code true}. Exceptions will be thrown if the caller got no permissions on the target or it
+   * does not exist. Other Exceptions will be stored and returned in the end.
+   *
+   * @param destinationWorkbasketKey target {@linkplain pro.taskana.workbasket.api.models.Workbasket
+   *     Workbasket} key
+   * @param destinationWorkbasketDomain target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} domain
+   * @param taskIds list of source {@linkplain Task Tasks} which will be moved
+   * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
+   *     flag or not
    * @return Bulkresult with ID and Error in it for failed transactions.
-   * @throws NotAuthorizedException if the caller hasn´t permissions on tarket WB.
-   * @throws InvalidArgumentException if the method paramesters are EMPTY or NULL.
-   * @throws WorkbasketNotFoundException if the target WB can´t be found.
+   * @throws NotAuthorizedException if the caller has no permissions on target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * @throws InvalidArgumentException if the method parameters are EMPTY or NULL.
+   * @throws WorkbasketNotFoundException if the target {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} can not be found.
    */
   BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
   /**

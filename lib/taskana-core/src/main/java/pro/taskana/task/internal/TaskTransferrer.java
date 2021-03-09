@@ -57,7 +57,8 @@ class TaskTransferrer {
     this.historyEventManager = taskanaEngine.getHistoryEventManager();
   }
 
-  Task transfer(String taskId, String destinationWorkbasketKey, String domain)
+  Task transfer(
+      String taskId, String destinationWorkbasketKey, String domain, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
     LOGGER.debug(
@@ -88,9 +89,8 @@ class TaskTransferrer {
       Workbasket destinationWorkbasket =
           workbasketService.getWorkbasket(destinationWorkbasketKey, domain);
 
-      // reset read flag and set transferred flag
       task.setRead(false);
-      task.setTransferred(true);
+      task.setTransferred(setTransferFlag);
 
       // transfer task from source to destination workbasket
       if (!destinationWorkbasket.isMarkedForDeletion()) {
@@ -120,7 +120,7 @@ class TaskTransferrer {
     }
   }
 
-  Task transfer(String taskId, String destinationWorkbasketId)
+  Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
     LOGGER.debug(
@@ -146,9 +146,8 @@ class TaskTransferrer {
 
       Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
 
-      // reset read flag and set transferred flag
       task.setRead(false);
-      task.setTransferred(true);
+      task.setTransferred(setTransferFlag);
 
       // transfer task from source to destination workbasket
       if (!destinationWorkbasket.isMarkedForDeletion()) {
@@ -178,7 +177,10 @@ class TaskTransferrer {
   }
 
   BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
     try {
       taskanaEngine.openConnection();
@@ -198,7 +200,7 @@ class TaskTransferrer {
       Workbasket destinationWorkbasket =
           workbasketService.getWorkbasket(destinationWorkbasketKey, destinationWorkbasketDomain);
 
-      return transferTasks(taskIds, destinationWorkbasket);
+      return transferTasks(taskIds, destinationWorkbasket, setTransferFlag);
     } finally {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
@@ -214,7 +216,7 @@ class TaskTransferrer {
   }
 
   BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketId, List<String> taskIds)
+      String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
     try {
       taskanaEngine.openConnection();
@@ -231,7 +233,7 @@ class TaskTransferrer {
       }
       Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
 
-      return transferTasks(taskIds, destinationWorkbasket);
+      return transferTasks(taskIds, destinationWorkbasket, setTransferFlag);
     } finally {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
@@ -245,7 +247,9 @@ class TaskTransferrer {
   }
 
   private BulkOperationResults<String, TaskanaException> transferTasks(
-      List<String> taskIdsToBeTransferred, Workbasket destinationWorkbasket)
+      List<String> taskIdsToBeTransferred,
+      Workbasket destinationWorkbasket,
+      boolean setTransferFlag)
       throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -271,7 +275,7 @@ class TaskTransferrer {
     List<MinimalTaskSummary> taskSummaries;
     taskSummaries = taskMapper.findExistingTasks(taskIds, null);
     checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
-    updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket);
+    updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket, setTransferFlag);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("exit from transferTasks(), returning {}", bulkLog);
     }
@@ -372,7 +376,8 @@ class TaskTransferrer {
   private void updateTasksToBeTransferred(
       List<String> taskIds,
       List<MinimalTaskSummary> taskSummaries,
-      Workbasket destinationWorkbasket) {
+      Workbasket destinationWorkbasket,
+      boolean setTransferFlag) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "entry to updateTasksToBeTransferred(taskIds = {}, taskSummaries = {}, "
@@ -390,7 +395,7 @@ class TaskTransferrer {
       Instant now = Instant.now();
       TaskSummaryImpl updateObject = new TaskSummaryImpl();
       updateObject.setRead(false);
-      updateObject.setTransferred(true);
+      updateObject.setTransferred(setTransferFlag);
       updateObject.setWorkbasketSummary(destinationWorkbasket.asSummary());
       updateObject.setDomain(destinationWorkbasket.getDomain());
       updateObject.setModified(now);

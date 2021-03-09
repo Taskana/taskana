@@ -12,11 +12,17 @@ import java.net.URL;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -943,6 +949,51 @@ class TaskControllerIntTest {
             "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> should_SetTransferFlagDependentOnRequestBody_When_TransferringTask() {
+    Iterator<Boolean> iterator = Arrays.asList(true, false).iterator();
+
+    ThrowingConsumer<Boolean> test =
+        setTransferFlag -> {
+          ResponseEntity<TaskRepresentationModel> response =
+              TEMPLATE.exchange(
+                  restHelper.toUrl(
+                      RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
+                      "TKI:000000000000000000000000000000000003",
+                      "WBI:100000000000000000000000000000000006"),
+                  HttpMethod.POST,
+                  new HttpEntity<>(setTransferFlag.toString(), restHelper.getHeadersAdmin()),
+                  TASK_MODEL_TYPE);
+
+          TaskRepresentationModel task = response.getBody();
+          assertThat(task).isNotNull();
+          assertThat(task.getWorkbasketSummary().getWorkbasketId())
+              .isEqualTo("WBI:100000000000000000000000000000000006");
+          assertThat(task.isTransferred()).isEqualTo(setTransferFlag);
+        };
+
+    return DynamicTest.stream(iterator, c -> "for setTransferFlag: " + c, test);
+  }
+
+  @Test
+  void should_SetTransferFlagToTrue_When_TransferringWithoutRequestBody() {
+    ResponseEntity<TaskRepresentationModel> response =
+        TEMPLATE.exchange(
+            restHelper.toUrl(
+                RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
+                "TKI:000000000000000000000000000000000003",
+                "WBI:100000000000000000000000000000000006"),
+            HttpMethod.POST,
+            new HttpEntity<>(restHelper.getHeadersAdmin()),
+            TASK_MODEL_TYPE);
+
+    TaskRepresentationModel task = response.getBody();
+    assertThat(task).isNotNull();
+    assertThat(task.getWorkbasketSummary().getWorkbasketId())
+        .isEqualTo("WBI:100000000000000000000000000000000006");
+    assertThat(task.isTransferred()).isTrue();
   }
 
   private TaskRepresentationModel getTaskResourceSample() {
