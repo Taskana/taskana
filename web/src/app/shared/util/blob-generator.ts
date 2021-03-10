@@ -1,4 +1,4 @@
-import { saveAs } from 'file-saver/FileSaver';
+import { saveAs } from 'file-saver';
 
 export class BlobGenerator {
   public static saveFile(object: Object, fileName: string) {

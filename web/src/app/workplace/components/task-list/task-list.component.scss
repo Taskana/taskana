@@ -1,7 +1,6 @@
 @import 'src/theme/_colors.scss';
 
 .task-list {
-
   &__task {
     display: flex;
   }
@@ -17,8 +16,6 @@
     width: 40px;
   }
 }
-
-
 
 p {
   margin: 0;
@@ -48,4 +45,3 @@ p {
   right: 16px;
   background-color: $green;
 }
-

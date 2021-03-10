@@ -48,36 +48,24 @@ class InputStub {
   @Input() ngModel;
 }
 
-const classificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ClassificationsService> => ({
-    getClassification: jest.fn().mockReturnValue(of()),
-    getClassifications: jest.fn().mockReturnValue(of())
-  })
-);
-const classificationCategoriesServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ClassificationCategoriesService> => ({
-    getCustomisation: jest.fn().mockReturnValue(of())
-  })
-);
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
-    getSelectedDomain: jest.fn().mockReturnValue(of())
-  })
-);
+const classificationServiceSpy: Partial<ClassificationsService> = {
+  getClassification: jest.fn().mockReturnValue(of()),
+  getClassifications: jest.fn().mockReturnValue(of())
+};
+const classificationCategoriesServiceSpy = jest.fn().mockImplementation(() => jest.fn().mockReturnValue(of()));
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getSelectedDomain: jest.fn().mockReturnValue(of())
+};
 const getImportingFinishedFn = jest.fn().mockReturnValue(of(true));
-const importExportServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ImportExportService> => ({
-    getImportingFinished: getImportingFinishedFn
-  })
-);
+const importExportServiceSpy: Partial<ImportExportService> = {
+  getImportingFinished: getImportingFinishedFn
+};
 
-const requestInProgressServiceSpy = jest.fn().mockImplementation(
-  (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn().mockReturnValue(of()),
-    getRequestInProgress: jest.fn().mockReturnValue(of(false))
-  })
-);
+const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
+  setRequestInProgress: jest.fn().mockReturnValue(of()),
+  getRequestInProgress: jest.fn().mockReturnValue(of(false))
+};
 
 describe('ClassificationListComponent', () => {
   let fixture: ComponentFixture<ClassificationListComponent>;
@@ -106,11 +94,11 @@ describe('ClassificationListComponent', () => {
         InputStub
       ],
       providers: [
-        { provide: ClassificationsService, useClass: classificationServiceSpy },
-        { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
-        { provide: DomainService, useClass: domainServiceSpy },
-        { provide: ImportExportService, useClass: importExportServiceSpy },
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
+        { provide: ClassificationsService, useValue: classificationServiceSpy },
+        { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy },
+        { provide: ImportExportService, useValue: importExportServiceSpy },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy }
       ]
     }).compileComponents();
 

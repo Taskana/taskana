@@ -20,21 +20,13 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": [
-              "src/assets",
-              "src/environments/data-sources"
-            ],
+            "assets": ["src/assets", "src/environments/data-sources"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/theme/_main.scss",
               "src/theme/custom-theme-material.scss"
             ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -47,7 +39,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": true,
               "aot": true,
               "extractLicenses": true,
@@ -83,10 +74,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
             "exclude": []
           }
         }

@@ -13,11 +13,13 @@ import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
+import { Injectable } from '@angular/core';
 
 class InitializeStore {
   static readonly type = '[Access Items Management] Initializing state';
 }
 
+@Injectable()
 @State<AccessItemsManagementStateModel>({ name: 'accessItemsManagement' })
 export class AccessItemsManagementState implements NgxsAfterBootstrap {
   constructor(

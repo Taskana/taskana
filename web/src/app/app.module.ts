@@ -7,12 +7,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
-import { AlertModule } from 'ngx-bootstrap';
+import { AlertModule } from 'ngx-bootstrap/alert';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TreeModule } from 'angular-tree-component';
+import { TreeModule } from '@circlon/angular-tree-component';
 import { SharedModule } from 'app/shared/shared.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /**
  * Services
@@ -51,16 +61,8 @@ import { UserGuard } from './shared/guards/user.guard';
 import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
 import { STATES } from './shared/store';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent, SidenavListComponent];
 
 const MODULES = [
   TabsModule.forRoot(),
@@ -81,44 +83,47 @@ const MODULES = [
   MatButtonModule,
   MatIconModule,
   MatSelectModule,
+  MatToolbarModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule,
   NgxsModule.forRoot(STATES, { developmentMode: !environment.production }),
   NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
 ];
 
-const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent, SidenavListComponent];
+const PROVIDERS = [
+  WindowRefService,
+  DomainService,
+  RequestInProgressService,
+  OrientationService,
+  SelectedRouteService,
+  DomainGuard,
+  BusinessAdminGuard,
+  MonitorGuard,
+  UserGuard,
+  StartupService,
+  MasterAndDetailService,
+  TaskanaEngineService,
+  FormsValidatorService,
+  UploadService,
+  NotificationService,
+  ClassificationCategoriesService,
+  SidenavService,
+  {
+    provide: APP_INITIALIZER,
+    useFactory: startupServiceFactory,
+    deps: [StartupService],
+    multi: true
+  }
+];
+
+@NgModule({
+  declarations: DECLARATIONS,
+  imports: MODULES,
+  providers: PROVIDERS,
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
 
 export function startupServiceFactory(startupService: StartupService): () => Promise<any> {
   return (): Promise<any> => startupService.load();
 }
-
-@NgModule({
-  declarations: DECLARATIONS,
-  imports: [MODULES, MatSidenavModule, MatIconModule, MatToolbarModule, MatProgressBarModule, MatProgressSpinnerModule],
-  providers: [
-    WindowRefService,
-    DomainService,
-    RequestInProgressService,
-    OrientationService,
-    SelectedRouteService,
-    DomainGuard,
-    BusinessAdminGuard,
-    MonitorGuard,
-    UserGuard,
-    StartupService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: startupServiceFactory,
-      deps: [StartupService],
-      multi: true
-    },
-    MasterAndDetailService,
-    TaskanaEngineService,
-    FormsValidatorService,
-    UploadService,
-    NotificationService,
-    ClassificationCategoriesService,
-    SidenavService
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}

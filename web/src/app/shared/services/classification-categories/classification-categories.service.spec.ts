@@ -13,8 +13,8 @@ describe('ClassificationCategoriesService', () => {
       providers: [ClassificationCategoriesService]
     });
 
-    categoryService = TestBed.get(ClassificationCategoriesService);
-    httpMock = TestBed.get(HttpTestingController);
+    categoryService = TestBed.inject(ClassificationCategoriesService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it('should insert missing icon into customisation', async(() => {

@@ -8,12 +8,12 @@ import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-
 import { of } from 'rxjs/internal/observable/of';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-const TaskanaEngingeServiceSpy = jest.fn().mockImplementation(
-  (): Partial<TaskanaEngineServiceMock> => ({
-    hasRole: jest.fn().mockReturnValue(of()),
-    isHistoryProviderEnabled: jest.fn().mockReturnValue(of())
-  })
-);
+jest.mock('angular-svg-icon');
+
+const TaskanaEngineServiceSpy: Partial<TaskanaEngineServiceMock> = {
+  hasRole: jest.fn().mockReturnValue(of()),
+  isHistoryProviderEnabled: jest.fn().mockReturnValue(of())
+};
 
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {}

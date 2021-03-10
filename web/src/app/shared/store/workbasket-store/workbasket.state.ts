@@ -38,11 +38,13 @@ import { WorkbasketType } from '../../models/workbasket-type';
 import { TaskanaDate } from '../../util/taskana.date';
 import { DomainService } from '../../services/domain/domain.service';
 import { ClearFilter } from '../filter-store/filter.actions';
+import { Injectable } from '@angular/core';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
 }
 
+@Injectable()
 @State<WorkbasketStateModel>({ name: 'workbasket' })
 export class WorkbasketState implements NgxsAfterBootstrap {
   constructor(

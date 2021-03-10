@@ -17,18 +17,14 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 
-const SidenavServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SidenavService> => ({
-    toggleSidenav: jest.fn().mockReturnValue(of())
-  })
-);
+const SidenavServiceSpy: Partial<SidenavService> = {
+  toggleSidenav: jest.fn().mockReturnValue(of())
+};
 
-const TaskanaEngingeServiceSpy = jest.fn().mockImplementation(
-  (): Partial<TaskanaEngineServiceMock> => ({
-    hasRole: jest.fn().mockReturnValue(of()),
-    isHistoryProviderEnabled: jest.fn().mockReturnValue(of())
-  })
-);
+const TaskanaEngineServiceSpy: Partial<TaskanaEngineServiceMock> = {
+  hasRole: jest.fn().mockReturnValue(of()),
+  isHistoryProviderEnabled: jest.fn().mockReturnValue(of())
+};
 
 describe('SidenavListComponent', () => {
   let component: SidenavListComponent;
@@ -51,8 +47,8 @@ describe('SidenavListComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        { provide: SidenavService, useClass: SidenavServiceSpy },
-        { provide: TaskanaEngineService, useClass: TaskanaEngingeServiceSpy }
+        { provide: SidenavService, useValue: SidenavServiceSpy },
+        { provide: TaskanaEngineService, useValue: TaskanaEngineServiceSpy }
       ]
     }).compileComponents();
   }));

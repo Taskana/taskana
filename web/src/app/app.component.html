@@ -23,8 +23,8 @@
     <taskana-shared-nav-bar></taskana-shared-nav-bar>
     <div (window:resize)="onResize()">
       <div class="taskana-main">
-        <div class="taskana-main__progress-bar">
-          <mat-progress-bar [hidden]="!requestInProgress" mode="indeterminate"></mat-progress-bar>
+        <div class="taskana-main__progress-bar" [hidden]="requestNotInProgress | async">
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         </div>
         <router-outlet></router-outlet>
         <taskana-shared-progress-spinner
