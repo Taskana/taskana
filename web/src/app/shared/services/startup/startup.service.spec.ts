@@ -28,9 +28,9 @@ describe('StartupService', () => {
 
   beforeEach(() => {
     const injector = getTestBed();
-    httpMock = injector.get(HttpTestingController);
+    httpMock = injector.inject(HttpTestingController);
     // UserService provided to the TestBed
-    service = TestBed.get(StartupService);
+    service = injector.inject(StartupService);
   });
 
   it('should be created', inject([StartupService], () => {

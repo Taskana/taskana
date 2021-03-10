@@ -9,13 +9,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getDomains: jest.fn().mockReturnValue(of(['domain a', 'domain b'])),
-    getSelectedDomain: jest.fn().mockReturnValue(of('domain a')),
-    switchDomain: jest.fn()
-  })
-);
+const domainServiceSpy: Partial<DomainService> = {
+  getDomains: jest.fn().mockReturnValue(of(['domain a', 'domain b'])),
+  getSelectedDomain: jest.fn().mockReturnValue(of('domain a')),
+  switchDomain: jest.fn()
+};
 
 describe('AdministrationOverviewComponent', () => {
   let component: AdministrationOverviewComponent;
@@ -32,7 +30,7 @@ describe('AdministrationOverviewComponent', () => {
         BrowserAnimationsModule
       ],
       declarations: [AdministrationOverviewComponent],
-      providers: [{ provide: DomainService, useClass: domainServiceSpy }]
+      providers: [{ provide: DomainService, useValue: domainServiceSpy }]
     }).compileComponents();
   }));
 

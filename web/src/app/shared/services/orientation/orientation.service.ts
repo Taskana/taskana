@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable()
 export class OrientationService {
   private lock = false;
-  private currentOrientation;
+  private currentOrientation = Orientation.landscape;
   public orientation = new BehaviorSubject<Orientation>(this.currentOrientation);
 
   private static detectOrientation(): Orientation {

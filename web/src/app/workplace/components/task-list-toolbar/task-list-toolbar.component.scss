@@ -39,6 +39,16 @@
   }
 }
 
+  &__workbasket-icon {
+    width: 16px;
+    height: 16px;
+    fill: #555;
+  }
+
+  &__additional-toolbar {
+    display: flex;
+    margin-top: 12px;
+  }
 ::ng-deep .task-list-toolbar > .mat-tab-group > .mat-tab-header > .mat-tab-label-container > .mat-tab-list > .mat-tab-labels {
   background-color: $light-grey;
 }

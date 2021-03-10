@@ -20,7 +20,7 @@ env:
   ARTIFACTS_TASKANA_WEB_NAME: taskana-web
   ARTIFACTS_TASKANA_WEB_PATH: web/dist
   ARTIFACTS_JACOCO_REPORTS_NAME: jacoco-reports
-  ARTIFACTS_JACOCO_REPORTS_PATH: '**/jacoco.exec'
+  ARTIFACTS_JACOCO_REPORTS_PATH: "**/jacoco.exec"
 
   CACHE_WEB_NAME: web
   # IMPORTANT: this cannot start with CACHE_MAVEN_NAME's value
@@ -103,7 +103,7 @@ jobs:
       - name: Install Dependencies
         if: steps.web-cache.outputs.cache-hit != 'true'
         working-directory: web
-        run: npm ci
+        run: yarn ci
       # currently this is not working because the angular-tree-component needs core-js ^2.4.1 and we have 3.X.X
       #- name: Verify Dependencies
       #working-directory: web
@@ -111,8 +111,8 @@ jobs:
       - name: Compile & build
         working-directory: web
         run: |
-          npm run lint
-          npm run build:prod
+          yarn lint
+          yarn build:prod
       - name: Build maven artifact
         run: ./mvnw -B install -pl :taskana-web -am
       - name: Upload taskana-web artifact
@@ -159,7 +159,7 @@ jobs:
   test_frontend:
     runs-on: ubuntu-20.04
     name: Test taskana-web
-    needs: [ compile_frontend, compile_backend ]
+    needs: [compile_frontend, compile_backend]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2.3.4
@@ -184,7 +184,7 @@ jobs:
       - name: Install Dependencies
         if: steps.web-cache.outputs.cache-hit != 'true'
         working-directory: web
-        run: npm ci
+        run: yarn ci
       - name: Cache maven dependencies
         uses: actions/cache@v2.1.6
         with:
@@ -223,7 +223,7 @@ jobs:
   test_backend:
     runs-on: ubuntu-20.04
     name: Test ${{ matrix.module }} on ${{ matrix.database }}
-    needs: [ compile_taskana-rest-spring-example-wildfly ]
+    needs: [compile_taskana-rest-spring-example-wildfly]
     strategy:
       matrix:
         module:
@@ -293,7 +293,7 @@ jobs:
   test_taskana-rest-spring-example-wildfly:
     runs-on: ubuntu-20.04
     name: Test taskana-rest-spring-example-wildfly on POSTGRES_10
-    needs: [ compile_taskana-rest-spring-example-wildfly ]
+    needs: [compile_taskana-rest-spring-example-wildfly]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2.3.4
@@ -321,12 +321,12 @@ jobs:
         if: failure()
         uses: andymckay/cancel-action@0.2
 
-
   release_artifacts:
     runs-on: ubuntu-20.04
     name: Release artifacts to OSS Sonatype
     if: github.repository == 'Taskana/taskana' && ( startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/master' ) && github.head_ref == ''
-    needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
+    needs:
+      [test_frontend, test_backend, test_taskana-rest-spring-example-wildfly]
     # as documented in the gpg manual (https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html)
     # we should execute this command before interacting with gpg (otherwise gpg won't work)
     env:
@@ -395,7 +395,8 @@ jobs:
     runs-on: ubuntu-20.04
     name: Deploy demo app to IBM Cloud Foundry
     if: github.repository == 'Taskana/taskana' && github.ref == 'refs/heads/master' && github.head_ref == ''
-    needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
+    needs:
+      [test_frontend, test_backend, test_taskana-rest-spring-example-wildfly]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2.3.4
@@ -450,12 +451,13 @@ jobs:
     name: Upload SonarQube analysis to sonarcloud
     # no pull request and not on release
     if: github.head_ref == '' && !startsWith(github.ref, 'refs/tags')
-    needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
+    needs:
+      [test_frontend, test_backend, test_taskana-rest-spring-example-wildfly]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2.3.4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v2
         with:

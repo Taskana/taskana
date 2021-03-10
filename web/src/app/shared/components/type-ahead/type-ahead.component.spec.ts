@@ -15,12 +15,10 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-const AccessIdsServiceSpy = jest.fn().mockImplementation(
-  (): Partial<AccessIdsService> => ({
-    getAccessItems: jest.fn().mockReturnValue(of()),
-    searchForAccessId: jest.fn().mockReturnValue(of())
-  })
-);
+const AccessIdsServiceSpy: Partial<AccessIdsService> = {
+  getAccessItems: jest.fn().mockReturnValue(of()),
+  searchForAccessId: jest.fn().mockReturnValue(of())
+};
 
 describe('TypeAheadComponent', () => {
   let component: TypeAheadComponent;
@@ -43,7 +41,7 @@ describe('TypeAheadComponent', () => {
         FormsModule,
         BrowserAnimationsModule
       ],
-      providers: [{ provide: AccessIdsService, useClass: AccessIdsServiceSpy }]
+      providers: [{ provide: AccessIdsService, useValue: AccessIdsServiceSpy }]
     }).compileComponents();
   }));
 

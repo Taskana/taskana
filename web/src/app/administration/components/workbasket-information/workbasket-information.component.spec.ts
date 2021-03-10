@@ -21,7 +21,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { ACTION } from '../../../shared/models/action';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MarkWorkbasketForDeletion, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
@@ -55,39 +55,33 @@ class IconTypeStub {
 }
 
 const triggerWorkbasketSavedFn = jest.fn().mockReturnValue(true);
-const workbasketServiceMock = jest.fn().mockImplementation(
-  (): Partial<WorkbasketService> => ({
-    triggerWorkBasketSaved: triggerWorkbasketSavedFn,
-    updateWorkbasket: jest.fn().mockReturnValue(of(true)),
-    markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
-    createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
-    getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
-    getWorkBasketAccessItems: jest.fn().mockReturnValue(of()),
-    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
-  })
-);
+const workbasketServiceMock: Partial<WorkbasketService> = {
+  triggerWorkBasketSaved: triggerWorkbasketSavedFn,
+  updateWorkbasket: jest.fn().mockReturnValue(of(true)),
+  markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
+  createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+  getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
+  getWorkBasketAccessItems: jest.fn().mockReturnValue(of()),
+  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
+};
 
 const isFieldValidFn = jest.fn().mockReturnValue(true);
 const validateFormInformationFn = jest.fn().mockImplementation((): Promise<any> => Promise.resolve(true));
-const formValidatorServiceSpy = jest.fn().mockImplementation(
-  (): Partial<FormsValidatorService> => ({
-    isFieldValid: isFieldValidFn,
-    validateInputOverflow: jest.fn(),
-    validateFormInformation: validateFormInformationFn,
-    get inputOverflowObservable(): Observable<Map<string, boolean>> {
-      return of(new Map<string, boolean>());
-    }
-  })
-);
+const formValidatorServiceMock: Partial<FormsValidatorService> = {
+  isFieldValid: isFieldValidFn,
+  validateInputOverflow: jest.fn(),
+  validateFormInformation: validateFormInformationFn,
+  get inputOverflowObservable(): Observable<Map<string, boolean>> {
+    return of(new Map<string, boolean>());
+  }
+};
 
 const showDialogFn = jest.fn().mockReturnValue(true);
-const notificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<NotificationService> => ({
-    showDialog: showDialogFn,
-    showToast: showDialogFn,
-    triggerError: showDialogFn
-  })
-);
+const notificationServiceMock: Partial<NotificationService> = {
+  showDialog: showDialogFn,
+  showToast: showDialogFn,
+  triggerError: showDialogFn
+};
 
 describe('WorkbasketInformationComponent', () => {
   let fixture: ComponentFixture<WorkbasketInformationComponent>;
@@ -125,9 +119,9 @@ describe('WorkbasketInformationComponent', () => {
         RemoveNoneTypePipe
       ],
       providers: [
-        { provide: WorkbasketService, useClass: workbasketServiceMock },
-        { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
-        { provide: NotificationService, useClass: notificationServiceSpy },
+        { provide: WorkbasketService, useValue: workbasketServiceMock },
+        { provide: FormsValidatorService, useValue: formValidatorServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
         RequestInProgressService,
         DomainService,
         SelectedRouteService,

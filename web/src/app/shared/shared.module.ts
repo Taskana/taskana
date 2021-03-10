@@ -4,8 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterModule } from '@angular/router';
-import { TreeModule } from 'angular-tree-component';
-import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
+import { TreeModule } from '@circlon/angular-tree-component';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { AccordionModule } from 'ngx-bootstrap/accordion';
@@ -58,6 +59,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WorkbasketFilterComponent } from './components/workbasket-filter/workbasket-filter.component';
 import { TaskFilterComponent } from './components/task-filter/task-filter.component';
+import { ClassificationCategoriesService } from './services/classification-categories/classification-categories.service';
 
 const MODULES = [
   CommonModule,
@@ -72,7 +74,7 @@ const MODULES = [
   MatDialogModule,
   MatButtonModule,
   RouterModule,
-  TreeModule.forRoot(),
+  TreeModule,
   MatAutocompleteModule
 ];
 
@@ -124,7 +126,6 @@ const DECLARATIONS = [
     AccessIdsService,
     ClassificationsService,
     WorkbasketService
-  ],
-  entryComponents: [ToastComponent, DialogPopUpComponent]
+  ]
 })
 export class SharedModule {}

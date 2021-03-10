@@ -10,3 +10,4 @@ coverage/**
 **/dist/**
 out-tsc/**
 **/*.html
+target/**

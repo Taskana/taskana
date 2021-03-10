@@ -21,20 +21,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { take } from 'rxjs/operators';
 
 const showDialogFn = jest.fn().mockReturnValue(true);
-const NotificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<NotificationService> => ({
-    triggerError: showDialogFn,
-    showToast: showDialogFn
-  })
-);
+const NotificationServiceSpy: Partial<NotificationService> = {
+  triggerError: showDialogFn,
+  showToast: showDialogFn
+};
 
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
-    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
-    getDomains: jest.fn().mockReturnValue(of())
-  })
-);
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+  getDomains: jest.fn().mockReturnValue(of())
+};
 
 const mockActivatedRoute = {
   firstChild: {
@@ -86,7 +82,7 @@ describe('WorkbasketOverviewComponent', () => {
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
-        { provide: NotificationService, useClass: NotificationServiceSpy },
+        { provide: NotificationService, useValue: NotificationServiceSpy },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: DomainService, useValue: domainServiceSpy },
         DomainService,
@@ -152,7 +148,7 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
-        { provide: NotificationService, useClass: NotificationServiceSpy },
+        { provide: NotificationService, useValue: NotificationServiceSpy },
         { provide: ActivatedRoute, useValue: mockActivatedRouteAlternative },
         DomainService,
         RequestInProgressService,
@@ -195,7 +191,7 @@ describe('WorkbasketOverviewComponent No Params', () => {
       declarations: [WorkbasketOverviewComponent, WorkbasketListStub, WorkbasketDetailsStub, SvgIconStub],
       providers: [
         WorkbasketService,
-        { provide: NotificationService, useClass: NotificationServiceSpy },
+        { provide: NotificationService, useValue: NotificationServiceSpy },
         { provide: ActivatedRoute, useValue: mockActivatedRouteNoParams },
         DomainService,
         RequestInProgressService,

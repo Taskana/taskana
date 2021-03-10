@@ -35,31 +35,23 @@ class WorkbasketDistributionTargetsListStub {
   @Input() allSelected;
 }
 
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
-    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
-    getDomains: jest.fn().mockReturnValue(of())
-  })
-);
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+  getDomains: jest.fn().mockReturnValue(of())
+};
 
-const workbasketServiceSpy = jest.fn().mockImplementation(
-  (): Partial<WorkbasketService> => ({
-    getWorkBasketsSummary: jest.fn().mockReturnValue(of()),
-    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
-  })
-);
+const workbasketServiceSpy: Partial<WorkbasketService> = {
+  getWorkBasketsSummary: jest.fn().mockReturnValue(of()),
+  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
+};
 
-const notificationsServiceSpy = jest.fn().mockImplementation(
-  (): Partial<NotificationService> => ({
-    showToast: jest.fn().mockReturnValue(true)
-  })
-);
-const requestInProgressServiceSpy = jest.fn().mockImplementation(
-  (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn().mockReturnValue(of())
-  })
-);
+const notificationsServiceSpy: Partial<NotificationService> = {
+  showToast: jest.fn().mockReturnValue(true)
+};
+const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
+  setRequestInProgress: jest.fn().mockReturnValue(of())
+};
 
 describe('WorkbasketDistributionTargetsComponent', () => {
   let fixture: ComponentFixture<WorkbasketDistributionTargetsComponent>;
@@ -79,11 +71,11 @@ describe('WorkbasketDistributionTargetsComponent', () => {
       ],
       declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
       providers: [
-        { provide: WorkbasketService, useClass: workbasketServiceSpy },
-        { provide: NotificationService, useClass: notificationsServiceSpy },
+        { provide: WorkbasketService, useValue: workbasketServiceSpy },
+        { provide: NotificationService, useValue: notificationsServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
-        { provide: DomainService, useClass: domainServiceSpy }
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy }
       ]
     }).compileComponents();
 
