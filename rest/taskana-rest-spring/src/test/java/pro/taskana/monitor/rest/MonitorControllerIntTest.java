@@ -10,7 +10,6 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
@@ -21,18 +20,17 @@ import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 @TaskanaSpringBootTest
 class MonitorControllerIntTest {
 
-  static RestTemplate template = RestHelper.TEMPLATE;
   @Autowired RestHelper restHelper;
 
   @Test
-  void
-      should_ReturnAllOpenTasksByState_When_QueryingForSpecificWorkbasketAndReadyAndClaimedState() {
+  void should_ReturnAllOpenTasksByState_When_QueryingForAWorkbasketAndReadyAndClaimedState() {
 
     HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
     ResponseEntity<ReportRepresentationModel> response =
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
-                + "?workbasket-ids=WBI:100000000000000000000000000000000007&states=READY,CLAIMED",
+                + "?workbasket-ids=WBI:100000000000000000000000000000000007"
+                + "&states=READY&states=CLAIMED",
             HttpMethod.GET,
             request,
             ParameterizedTypeReference.forType(ReportRepresentationModel.class));
