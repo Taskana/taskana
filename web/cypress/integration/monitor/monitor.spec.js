@@ -9,7 +9,6 @@ context('TASKANA Monitor', () => {
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
 
-
   it('should visit taskana workbaskets monitor page', () => {
     cy.visit(Cypress.env('appUrl') + '/monitor');
     cy.verifyPageLoad('/monitor');
@@ -18,7 +17,6 @@ context('TASKANA Monitor', () => {
     cy.get('nav').find('.mat-tab-label-active').should('contain', 'Workbaskets');
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
-
 
   it('should visit taskana classifications monitor page', () => {
     cy.visit(Cypress.env('appUrl') + '/monitor');
@@ -29,7 +27,6 @@ context('TASKANA Monitor', () => {
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
 
-
   it('should visit taskana timestamp monitor page', () => {
     cy.visit(Cypress.env('appUrl') + '/monitor');
     cy.verifyPageLoad('/monitor');
@@ -38,5 +35,4 @@ context('TASKANA Monitor', () => {
     cy.get('nav').find('.mat-tab-label-active').should('contain', 'Timestamp');
     cy.contains('TimestampReport').should('be.visible');
   });
-
 });
