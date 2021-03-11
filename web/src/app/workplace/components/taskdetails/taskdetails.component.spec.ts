@@ -11,7 +11,7 @@ import { WorkplaceService } from '../../services/workplace.service';
 import { TaskService } from '../../services/task.service';
 import { TaskAttributeValueComponent } from '../task-attribute-value/task-attribute-value.component';
 import { TaskCustomFieldsComponent } from '../task-custom-fields/task-custom-fields.component';
-import { TaskdetailsGeneralFieldsComponent } from '../taskdetails-general/general-fields.component';
+import { TaskInformationComponent } from '../task-information/task-information.component';
 import { TaskdetailsComponent } from './taskdetails.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
@@ -33,9 +33,9 @@ xdescribe('TaskdetailsComponent', () => {
       declarations: [
         TaskdetailsComponent,
         SpinnerComponent,
-        TaskdetailsGeneralFieldsComponent,
         TaskAttributeValueComponent,
         TaskCustomFieldsComponent,
+        TaskInformationComponent,
         DummyDetailComponent
       ],
       imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
