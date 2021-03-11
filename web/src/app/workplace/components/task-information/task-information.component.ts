@@ -20,13 +20,14 @@ import { ClassificationsService } from '../../../shared/services/classifications
 import { Classification } from '../../../shared/models/classification';
 import { TasksCustomisation } from '../../../shared/models/customisation';
 import { takeUntil } from 'rxjs/operators';
+import { AccessIdDefinition } from '../../../shared/models/access-id';
 
 @Component({
-  selector: 'taskana-task-details-general-fields',
-  templateUrl: './general-fields.component.html',
-  styleUrls: ['./general-fields.component.scss']
+  selector: 'taskana-task-information',
+  templateUrl: './task-information.component.html',
+  styleUrls: ['./task-information.component.scss']
 })
-export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnDestroy {
+export class TaskInformationComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   task: Task;
 
@@ -112,6 +113,12 @@ export class TaskdetailsGeneralFieldsComponent implements OnInit, OnChanges, OnD
         this.classifications = classificationPagingList.classifications;
         this.requestInProgress = false;
       });
+  }
+
+  onSelectedOwner(owner: AccessIdDefinition) {
+    if (owner?.accessId) {
+      this.task.owner = owner.accessId;
+    }
   }
 
   ngOnDestroy() {

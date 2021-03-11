@@ -38,8 +38,8 @@
           <span class="float-right pull-right material-icons md-20 blue">{{accordion1State ?
             'expand_more' : 'expand_less'}}</span>
         </button>
-        <taskana-task-details-general-fields [task]="task" [saveToggleTriggered]="toggleFormValidation"
-                                             (formValid)="onSave()"></taskana-task-details-general-fields>
+        <taskana-task-information [task]="task" [saveToggleTriggered]="toggleFormValidation"
+                                  (formValid)="onSave()"></taskana-task-information>
       </accordion-group>
       <!--Status Details-->
       <accordion-group panelClass="customClass" (isOpenChange)="accordion2State = $event">

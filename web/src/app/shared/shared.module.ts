@@ -30,7 +30,6 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { NumberPickerComponent } from './components/number-picker/number-picker.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
-import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 /**
  * Pipes
@@ -98,7 +97,6 @@ const DECLARATIONS = [
   NumberPickerComponent,
   ProgressSpinnerComponent,
   DatePickerComponent,
-  DropdownComponent,
   ToastComponent,
   DialogPopUpComponent,
   WorkbasketFilterComponent,
