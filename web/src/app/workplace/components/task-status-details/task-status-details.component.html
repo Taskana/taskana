@@ -1,0 +1,76 @@
+<div class="task-status-details" *ngIf="task && task.taskId">
+
+  <!-- LEFT COLUMN -->
+  <div class="task-status-details__column--left">
+
+    <!-- MODIFICATION DATE -->
+    <mat-form-field appearance="outline">
+      <mat-label>Modification Date</mat-label>
+      <label for="task-modified"></label>
+      <input matInput type="text" disabled id="task-modified" placeholder="Modified Date" [value]="task.modified | dateTimeZone"
+             name="task.modified">
+    </mat-form-field>
+
+
+    <!-- COMPLETION DATE -->
+    <mat-form-field appearance="outline">
+      <mat-label>Completion Date</mat-label>
+      <label for="task-completed"></label>
+      <input matInput type="text" disabled id="task-completed" placeholder="Complete Date" [value]="task.completed | dateTimeZone"
+             name="task.completed">
+    </mat-form-field>
+
+    <!-- STATE -->
+    <mat-form-field appearance="outline">
+      <mat-label>State</mat-label>
+      <label for="task-state"></label>
+      <input matInput type="text" disabled id="task-state" placeholder="State" [(ngModel)]="task.state"
+             name="task.state">
+    </mat-form-field>
+
+    <!-- TASK READ -->
+    <mat-form-field appearance="outline">
+      <mat-label>Task read</mat-label>
+      <label for="task-read"></label>
+      <input matInput type="text" disabled id="task-read" placeholder="Read" [(ngModel)]="task.read" name="task.read">
+    </mat-form-field>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="task-status-details__column--right">
+
+    <!-- CLAIM DATE -->
+    <mat-form-field appearance="outline">
+      <mat-label>Claim Date</mat-label>
+      <label for="task-claimed"></label>
+      <input matInput type="text" disabled id="task-claimed" placeholder="Claimed Date" [value]="task.claimed | dateTimeZone"
+             name="task.claimed">
+    </mat-form-field>
+
+    <!-- PLANNED DATE -->
+    <mat-form-field appearance="outline">
+      <mat-label>Planned Date</mat-label>
+      <label for="task-planned"></label>
+      <input matInput type="text" disabled id="task-planned" placeholder="Planned Date" [value]="task.planned | dateTimeZone"
+             name="task.planned">
+    </mat-form-field>
+
+    <!-- CREATION DATE -->
+    <mat-form-field appearance="outline">
+      <mat-label>Creation Date</mat-label>
+      <label for="task-created"></label>
+      <input matInput type="text" disabled id="task-created" placeholder="Creation Date" [value]="task.created | dateTimeZone"
+             name="task.created">
+    </mat-form-field>
+
+    <!-- TRANSFERRED -->
+    <mat-form-field appearance="outline">
+      <mat-label>Transferred</mat-label>
+      <label for="task-transferred"></label>
+      <input matInput type="text" disabled id="task-transferred" placeholder="Transferred" [(ngModel)]="task.transferred"
+             name="task.transferred">
+    </mat-form-field>
+
+  </div>
+</div>
