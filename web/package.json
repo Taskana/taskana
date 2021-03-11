@@ -16,7 +16,7 @@
     "format:html": "prettier --write \"**/*.{html,}\"",
     "e2e-dev": "cypress install && cypress run",
     "e2e-dev:open": "cypress install && cypress open",
-    "e2e-standalone": "cypress install && cypress run --config-file cypress-standalone.json"
+    "e2e-standalone": "cypress install && cypress run --config-file cypress-standalone.json",
     "ci": "yarn install --frozen-lockfile"
   },
   "private": true,

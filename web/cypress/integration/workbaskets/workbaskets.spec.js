@@ -6,7 +6,6 @@ context('TASKANA Workbaskets', () => {
     cy.verifyPageLoad('/workbaskets');
   });
 
-
   it('should be able to filter workbaskets by name', () => {
     cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
     cy.verifyPageLoad('/workbaskets');
@@ -19,30 +18,23 @@ context('TASKANA Workbaskets', () => {
       });
   });
 
-
   it('should be possible to edit workbasket custom information', () => {
     cy.visitTestWorkbasket();
 
-    cy.get('#wb-custom-1')
-      .clear()
-      .type(Cypress.env('testValueWorkbaskets'));
+    cy.get('#wb-custom-1').clear().type(Cypress.env('testValueWorkbaskets'));
 
     cy.saveWorkbaskets();
     cy.get('#wb-custom-1').should('have.value', Cypress.env('testValueWorkbaskets'));
   });
 
-
   it('should be possible to edit workbasket information orgLevel', () => {
     cy.visitTestWorkbasket();
 
-    cy.get('input[name="workbasket.orgLevel1"]')
-      .clear()
-      .type(Cypress.env('testValueWorkbaskets'));
+    cy.get('input[name="workbasket.orgLevel1"]').clear().type(Cypress.env('testValueWorkbaskets'));
 
     cy.saveWorkbaskets();
     cy.get('input[name="workbasket.orgLevel1"]').should('have.value', Cypress.env('testValueWorkbaskets'));
   });
-
 
   it('should be possible to edit workbasket description', () => {
     cy.visitTestWorkbasket();
@@ -55,7 +47,6 @@ context('TASKANA Workbaskets', () => {
         cy.get('#workbasket-description').should('have.value', Cypress.env('testValueWorkbaskets'));
       });
   });
-
 
   it('should be possible to edit the type of a workbasket', () => {
     cy.visitTestWorkbasket();
@@ -76,7 +67,6 @@ context('TASKANA Workbaskets', () => {
     cy.saveWorkbaskets();
   });
 
-
   it('should be possible to add new access', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsAccessPage();
@@ -84,8 +74,7 @@ context('TASKANA Workbaskets', () => {
     cy.get('button[mattooltip="Add new access"')
       .click()
       .then(() => {
-        cy.get('mat-form-field').contains('mat-form-field', "Access id").find('input')
-          .type('teamlead-2');
+        cy.get('mat-form-field').contains('mat-form-field', 'Access id').find('input').type('teamlead-2');
         cy.get('input[aria-label="checkAll"]:first').click();
         cy.saveWorkbaskets();
       });
@@ -94,26 +83,30 @@ context('TASKANA Workbaskets', () => {
     cy.get('table#table-access-items > tbody > tr').should('have.length', 2);
   });
 
-
   it('should be possible to add a distribution target', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsDistributionTargetsPage();
 
-    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Available distribution targets"]').find('mat-list-option:first')
-      .find('mat-pseudo-checkbox').click()
-    cy.get('button').contains('Add selected distribution targets').click()
+    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Available distribution targets"]')
+      .find('mat-list-option:first')
+      .find('mat-pseudo-checkbox')
+      .click();
+    cy.get('button').contains('Add selected distribution targets').click();
 
     cy.saveWorkbaskets();
 
     cy.visitWorkbasketsDistributionTargetsPage();
-    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]').find('mat-selection-list').should('not.be.empty');
+    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]')
+      .find('mat-selection-list')
+      .should('not.be.empty');
 
     // undo changes
-    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]').find('mat-list-option:first')
-      .find('mat-pseudo-checkbox').click()
-    cy.get('button').contains('Remove selected distribution target').click()
+    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]')
+      .find('mat-list-option:first')
+      .find('mat-pseudo-checkbox')
+      .click();
+    cy.get('button').contains('Remove selected distribution target').click();
 
     cy.saveWorkbaskets();
   });
-
 });

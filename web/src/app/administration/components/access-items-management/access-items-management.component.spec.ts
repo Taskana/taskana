@@ -114,8 +114,7 @@ describe('AccessItemsManagementComponent', () => {
         ClassificationCategoriesService,
         StartupService,
         TaskanaEngineService,
-        WindowRefService,
-        SvgIconRegistryService
+        WindowRefService
       ]
     }).compileComponents();
 

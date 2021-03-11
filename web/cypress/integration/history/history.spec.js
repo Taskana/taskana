@@ -10,7 +10,5 @@ context('TASKANA History', () => {
     } else {
       cy.log('History plugin not enabled - No need for testing history functionality');
     }
-
   });
-
 });

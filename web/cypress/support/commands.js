@@ -15,7 +15,7 @@ Cypress.Commands.add('saveWorkbaskets', () => {
 });
 
 Cypress.Commands.add('verifyPageLoad', (path) => {
-  cy.location('hash', {timeout: 10000}).should('include', path);
+  cy.location('hash', { timeout: 10000 }).should('include', path);
 });
 
 Cypress.Commands.add('visitTestWorkbasket', () => {
@@ -25,8 +25,7 @@ Cypress.Commands.add('visitTestWorkbasket', () => {
   // since the list is loaded dynamically, we need to explicitly wait 400ms for the results
   // in order to avoid errors regarding detached DOM elements although it is a bad practice
   cy.wait(400);
-  cy.get('mat-selection-list').contains(Cypress.env('testValueWorkbasketSelectionName'))
-    .should('exist').click();
+  cy.get('mat-selection-list').contains(Cypress.env('testValueWorkbasketSelectionName')).should('exist').click();
   cy.visitWorkbasketsInformationPage();
 });
 
@@ -34,22 +33,24 @@ Cypress.Commands.add('visitTestClassification', () => {
   cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/classifications');
   cy.verifyPageLoad('/classifications');
 
-  cy.get('taskana-administration-tree').contains(Cypress.env('testValueClassificationSelectionName'))
-    .should('exist').click();
+  cy.get('taskana-administration-tree')
+    .contains(Cypress.env('testValueClassificationSelectionName'))
+    .should('exist')
+    .click();
 });
 
 Cypress.Commands.add('loginAs', (username) => {
   if (Cypress.env('isLocal')) {
-      cy.log('Local development - No need for testing login functionality');
+    cy.log('Local development - No need for testing login functionality');
   } else {
-      cy.visit(Cypress.env('loginUrl') + '/login');
-      // not calling verifyPageLoad as we cannot verify via hash in this case
-      cy.location('pathname', {timeout: 10000}).should('include', '/login');
+    cy.visit(Cypress.env('loginUrl') + '/login');
+    // not calling verifyPageLoad as we cannot verify via hash in this case
+    cy.location('pathname', { timeout: 10000 }).should('include', '/login');
 
-      cy.get('#username').type('admin').should('have.value', 'admin');
-      cy.get('#password').type('admin').should('have.value', 'admin');
-      cy.get('#login-submit').click();
+    cy.get('#username').type('admin').should('have.value', 'admin');
+    cy.get('#password').type('admin').should('have.value', 'admin');
+    cy.get('#login-submit').click();
 
-      cy.verifyPageLoad('/workplace/tasks');
-    }
+    cy.verifyPageLoad('/workplace/tasks');
+  }
 });
