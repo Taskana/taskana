@@ -17,7 +17,7 @@ import { TaskdetailsGeneralFieldsComponent } from './components/taskdetails-gene
 import { TaskdetailsCustomFieldsComponent } from './components/taskdetails-custom-fields/custom-fields.component';
 import { TaskdetailsAttributeComponent } from './components/taskdetails-attribute/attribute.component';
 import { TaskComponent } from './components/task/task.component';
-import { GeneralFieldsExtensionComponent } from './components/taskdetails-general-fields-extension/general-fields-extension.component';
+import { TaskStatusDetailsComponent } from './components/task-status-details/task-status-details.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
 
 import { TaskService } from './services/task.service';
@@ -58,7 +58,7 @@ const DECLARATIONS = [
   TaskdetailsCustomFieldsComponent,
   TaskdetailsAttributeComponent,
   TaskComponent,
-  GeneralFieldsExtensionComponent,
+  TaskStatusDetailsComponent,
   TaskListComponent
 ];
 

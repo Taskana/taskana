@@ -1,0 +1,26 @@
+.task-status-details {
+  display: flex;
+  flex-direction: row;
+
+  &__column--left {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-right: 16px;
+  }
+
+  &__column--right {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
+}
+
+
+.mat-input-element:disabled {
+  color: gray;
+}
+
+::ng-deep .mat-form-field-outline {
+  color: lightgray !important;
+}
