@@ -9,7 +9,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { WorkplaceService } from '../../services/workplace.service';
 import { TaskService } from '../../services/task.service';
-import { TaskdetailsAttributeComponent } from '../taskdetails-attribute/attribute.component';
+import { TaskAttributeValueComponent } from '../task-attribute-value/task-attribute-value.component';
 import { TaskdetailsCustomFieldsComponent } from '../taskdetails-custom-fields/custom-fields.component';
 import { TaskdetailsGeneralFieldsComponent } from '../taskdetails-general/general-fields.component';
 import { TaskdetailsComponent } from './taskdetails.component';
@@ -35,7 +35,7 @@ xdescribe('TaskdetailsComponent', () => {
         SpinnerComponent,
         TaskdetailsGeneralFieldsComponent,
         TaskdetailsCustomFieldsComponent,
-        TaskdetailsAttributeComponent,
+        TaskAttributeValueComponent,
         DummyDetailComponent
       ],
       imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],

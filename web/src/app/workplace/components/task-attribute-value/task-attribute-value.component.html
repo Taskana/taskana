@@ -1,0 +1,69 @@
+<div class="task-attribute-value">
+
+  <!-- ATTRIBUTE VALUE TABLE -->
+  <div class="task-attribute-value__table" *ngIf="attributes.length > 0; else noAttributes">
+
+    <!-- HEADER -->
+    <div class="task-attribute-value__row">
+      <div style="width: 60px"></div>
+      <div class="task-attribute-value__spacer"> </div>
+      <div class="task-attribute-value__header"> Attribute </div>
+      <div class="task-attribute-value__spacer"> </div>
+      <div class="task-attribute-value__header"> Value </div>
+    </div>
+
+    <mat-divider> </mat-divider>
+
+    <!-- ENTRIES -->
+    <div *ngFor="let entry of attributes; let i = index">
+
+      <div class="task-attribute-value__row {{(i % 2 === 0)? 'task-attribute-value__background-grey' : 'task-attribute-value__background-white'}}" >
+
+        <!-- REMOVE BUTTON -->
+        <div class="task-attribute-value__column--button">
+          <button mat-stroked-button class="task-attribute-value__button--secondary" color="warn" matTooltip="Remove attribute"
+                  (click)="removeAttribute(i)">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+
+        <div class="task-attribute-value__spacer"> </div>
+        <div class="task-attribute-value__spacer"> </div>
+
+        <!-- ATTRIBUTE INPUT -->
+        <div class="task-attribute-value__column--inputs">
+          <mat-form-field style="width: 98%" appearance="outline">
+            <input matInput type="text" [(ngModel)]="entry.key" name="{{callbackInfo ? 'callback-info' : 'custom-attribute'}}-{{i}}">
+          </mat-form-field>
+        </div>
+
+        <div class="task-attribute-value__spacer"> </div>
+
+        <!-- VALUE INPUT -->
+        <div class="task-attribute-value__column--inputs">
+          <mat-form-field style="width: 98%" appearance="outline">
+            <input matInput type="text" [(ngModel)]="entry.value" name="{{callbackInfo ? 'callback-info' : 'custom-attribute'}}-{{i}}-val">
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+
+ <!-- NO CUSTOM ATTRIBUTE OR CALLBACK INFORMATION -->
+  <ng-template #noAttributes>
+    <div> There is currently no {{ callbackInfo ? 'callback information' : 'custom attribute'}}. </div>
+  </ng-template>
+
+
+  <!-- ADD BUTTON -->
+  <button mat-flat-button class="task-attribute-value__button--primary"
+          (click)="addAttribute()">
+    <span> Add {{ callbackInfo ? 'callback information' : 'custom attribute'}} </span>
+    <mat-icon>add</mat-icon>
+  </button>
+
+</div>
