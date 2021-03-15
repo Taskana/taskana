@@ -34,6 +34,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const MODULES = [
   TypeaheadModule.forRoot(),
@@ -74,7 +76,9 @@ const DECLARATIONS = [
     MatButtonModule,
     MatRadioModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     TaskService,

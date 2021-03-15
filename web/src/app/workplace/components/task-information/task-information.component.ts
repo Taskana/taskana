@@ -21,6 +21,7 @@ import { Classification } from '../../../shared/models/classification';
 import { TasksCustomisation } from '../../../shared/models/customisation';
 import { takeUntil } from 'rxjs/operators';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
+import { TaskanaDate } from '../../../shared/util/taskana.date';
 
 @Component({
   selector: 'taskana-task-information',
@@ -83,8 +84,13 @@ export class TaskInformationComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   updateDate($event) {
-    if (new Date(this.task.due).toISOString() !== $event) {
-      this.task.due = $event;
+    const newDate = $event.value;
+    if (typeof newDate !== 'undefined' && newDate !== null) {
+      const newDateISOString = newDate.toISOString();
+      const currentDate = new Date(this.task.due);
+      if (typeof currentDate === 'undefined' || currentDate !== newDate) {
+        this.task.due = newDateISOString;
+      }
     }
   }
 

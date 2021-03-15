@@ -142,13 +142,12 @@
         <div class="task-information__due-date-and-priority">
 
           <!-- DUE DATE -->
-          <div class="task-information__due-date">
-            <span style="color: gray; font-size: 0.8em;">Due date</span>
-            <div class="task-information__date-picker" style="position: relative; top: 4px;">
-              <taskana-shared-date-picker placeholder="Due date" [value]="task.due" [name]="'task.due'" [id]="'task-due'"
-                                          (dateOutput)="updateDate($event)"></taskana-shared-date-picker>
-            </div>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label> Due Date </mat-label>
+            <input matInput [matDatepicker]="picker" value="{{task.due}}" (dateInput)="updateDate($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
 
           <!-- PRIORITY -->
           <mat-form-field appearance="outline" style="min-width: 100px; padding-left: 8px;">
