@@ -5,16 +5,18 @@ import { FormsValidatorService } from '../../../shared/services/forms-validator/
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'taskana-task-details-custom-fields',
-  templateUrl: './custom-fields.component.html'
+  selector: 'taskana-task-custom-fields',
+  templateUrl: './task-custom-fields.component.html',
+  styleUrls: ['./task-custom-fields.component.scss']
 })
-export class TaskdetailsCustomFieldsComponent implements OnInit, OnDestroy {
+export class TaskCustomFieldsComponent implements OnInit, OnDestroy {
   @Input() task: Task;
   @Output() taskChange: EventEmitter<Task> = new EventEmitter<Task>();
 
   readonly lengthError = 'You have reached the maximum length';
   inputOverflowMap = new Map<string, boolean>();
   validateKeypress: Function;
+  customFields: string[];
 
   destroy$ = new Subject<void>();
 
@@ -27,6 +29,10 @@ export class TaskdetailsCustomFieldsComponent implements OnInit, OnDestroy {
     this.validateKeypress = (inputFieldModel, maxLength) => {
       this.formsValidatorService.validateInputOverflow(inputFieldModel, maxLength);
     };
+
+    this.customFields = Object.keys(this.task).filter(
+      (attribute) => attribute.startsWith('custom') && /\d/.test(attribute)
+    );
   }
 
   ngOnDestroy(): void {

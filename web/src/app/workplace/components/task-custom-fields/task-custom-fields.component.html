@@ -1,0 +1,24 @@
+<div *ngIf="task">
+  <div class="task-custom-fields">
+    <div *ngFor="let customField of customFields; let i = index" class="task-custom-fields__custom-field">
+
+      <!-- INPUT -->
+      <div class="task-custom-fields__input">
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Custom {{i + 1}}</mat-label>
+          <label for="task-custom-{{i + 1}}"></label>
+          <input matInput type="text" maxlength="255"
+                 id="task-custom-{{i + 1}}" placeholder="Custom {{i + 1}}"
+                 [(ngModel)]="task[customField]"
+                 name="task.custom{{i + 1}}" #custom="ngModel"
+                 (input)="validateKeypress(custom, 255)">
+        </mat-form-field>
+        <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
+      </div>
+
+      <!-- WHITE SPACE BETWEEN INPUTS -->
+      <div *ngIf="i % 2 === 0" class="task-custom-fields__spacer"></div>
+
+    </div>
+  </div>
+</div>
