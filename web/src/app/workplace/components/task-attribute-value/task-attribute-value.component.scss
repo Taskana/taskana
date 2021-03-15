@@ -1,0 +1,66 @@
+@import 'src/theme/_colors.scss';
+
+.task-attribute-value {
+
+  &__button--primary {
+    background-color: $aquamarine;
+    color: white;
+    margin-top: 16px;
+  }
+
+  &__button--secondary {
+    min-width: 16px;
+    left: 8px;
+  }
+
+  &__table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 8px 0;
+  }
+
+  &__column--button {
+    width: 60px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__column--inputs {
+    flex-grow: 1;
+  }
+
+  &__spacer {
+    width: 8px;
+  }
+
+  &__background-grey {
+    background-color: $light-grey;
+  }
+
+  &__background-white {
+    background-color: white;
+  }
+}
+
+::ng-deep .mat-form-field-wrapper {
+  padding: 0;
+}
+
+::ng-deep .task-attribute-value__column--inputs > .mat-form-field-appearance-outline > div.mat-form-field-wrapper > div.mat-form-field-flex > div.mat-form-field-infix  {
+  border-top-width: 0;
+  height: 40px;
+}
+
+

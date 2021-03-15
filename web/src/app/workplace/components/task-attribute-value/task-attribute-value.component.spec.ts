@@ -1,22 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormsModule } from '@angular/forms';
-import { TaskdetailsAttributeComponent } from './attribute.component';
+import { TaskAttributeValueComponent } from './task-attribute-value.component';
 
 // TODO: test pending to test. Failing random
-xdescribe('AttributeComponent', () => {
-  let component: TaskdetailsAttributeComponent;
-  let fixture: ComponentFixture<TaskdetailsAttributeComponent>;
+xdescribe('TaskAttributeValueComponent', () => {
+  let component: TaskAttributeValueComponent;
+  let fixture: ComponentFixture<TaskAttributeValueComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
-      declarations: [TaskdetailsAttributeComponent]
+      declarations: [TaskAttributeValueComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskdetailsAttributeComponent);
+    fixture = TestBed.createComponent(TaskAttributeValueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

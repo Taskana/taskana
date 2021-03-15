@@ -66,7 +66,7 @@
           <span class="float-right pull-right material-icons md-20 blue">{{accordion4State ?
             'expand_more' : 'expand_less'}}</span>
         </button>
-        <taskana-task-details-attributes [attributes]="task.customAttributes"></taskana-task-details-attributes>
+        <taskana-task-attribute-value [attributes]="task.customAttributes"></taskana-task-attribute-value>
       </accordion-group>
       <!--Callback Information-->
       <accordion-group panelClass="customClass" (isOpenChange)="accordion5State = $event">
@@ -75,8 +75,8 @@
           <span class="float-right pull-right material-icons md-20 blue">{{accordion5State ?
             'expand_more' : 'expand_less'}}</span>
         </button>
-        <taskana-task-details-attributes [attributes]="task.callbackInfo"
-                                         [callbackInfo]="true"></taskana-task-details-attributes>
+        <taskana-task-attribute-value [attributes]="task.callbackInfo"
+                                         [callbackInfo]="true"></taskana-task-attribute-value>
       </accordion-group>
     </accordion>
   </div>
