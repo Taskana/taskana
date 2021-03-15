@@ -10,7 +10,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { WorkplaceService } from '../../services/workplace.service';
 import { TaskService } from '../../services/task.service';
 import { TaskAttributeValueComponent } from '../task-attribute-value/task-attribute-value.component';
-import { TaskdetailsCustomFieldsComponent } from '../taskdetails-custom-fields/custom-fields.component';
+import { TaskCustomFieldsComponent } from '../task-custom-fields/task-custom-fields.component';
 import { TaskdetailsGeneralFieldsComponent } from '../taskdetails-general/general-fields.component';
 import { TaskdetailsComponent } from './taskdetails.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -34,8 +34,8 @@ xdescribe('TaskdetailsComponent', () => {
         TaskdetailsComponent,
         SpinnerComponent,
         TaskdetailsGeneralFieldsComponent,
-        TaskdetailsCustomFieldsComponent,
         TaskAttributeValueComponent,
+        TaskCustomFieldsComponent,
         DummyDetailComponent
       ],
       imports: [FormsModule, RouterTestingModule.withRoutes(routes), HttpClientModule],
