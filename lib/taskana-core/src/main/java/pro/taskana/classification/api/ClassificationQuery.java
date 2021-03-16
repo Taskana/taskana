@@ -5,162 +5,224 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
-/** ClassificationQuery for generating dynamic sql. */
+/**
+ * The ClassificationQuery allows for a custom search across all {@linkplain
+ * pro.taskana.classification.api.models.Classification Classifications}.
+ */
 public interface ClassificationQuery
     extends BaseQuery<ClassificationSummary, ClassificationQueryColumnName> {
 
   /**
-   * Add your key to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getKey() key}
+   * value equal to any of the passed values.
    *
-   * @param key as String
+   * @param key the values of interest
    * @return the query
    */
   ClassificationQuery keyIn(String... key);
 
   /**
-   * Add your Id to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getId() id} value
+   * equal to any of the passed values.
    *
-   * @param id as String
+   * @param id the values of interest
    * @return the query
    */
   ClassificationQuery idIn(String... id);
 
   /**
-   * Add your parentIds to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getParentId()
+   * parent id} value equal to any of the passed values.
    *
-   * @param parentId as an array of Strings
+   * @param parentId the values of interest
    * @return the query
    */
   ClassificationQuery parentIdIn(String... parentId);
 
   /**
-   * Add your parentKeys to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getParentKey()
+   * parent key} value equal to any of the passed values.
    *
-   * @param parentKey as an array of Strings
+   * @param parentKey the values of interest
    * @return the query
    */
   ClassificationQuery parentKeyIn(String... parentKey);
 
   /**
-   * Add your category to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getCategory()
+   * category} value equal to any of the passed values.
    *
-   * @param category as String
+   * @param category the values of interest
    * @return the query
    */
   ClassificationQuery categoryIn(String... category);
 
   /**
-   * Add your type to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getType() type}
+   * value equal to any of the passed values.
    *
-   * @param type as String
+   * @param type the values of interest
    * @return the query
    */
   ClassificationQuery typeIn(String... type);
 
   /**
-   * Add your domains to your query which are used as filter.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getDomain()
+   * domain} value equal to any of the passed values.
    *
-   * @param domain or domains for filtering.
+   * @param domain the values of interest
    * @return the query
    */
   ClassificationQuery domainIn(String... domain);
 
   /**
-   * Add to your query if the Classification shall be valid in its domain.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain
+   * pro.taskana.classification.api.models.Classification#getIsValidInDomain() valid in domain} flag
+   * equal to the passed flag.
    *
-   * @param validInDomain a simple flag showing if domain is valid
+   * @param validInDomain the flag of interest
    * @return the query
    */
   ClassificationQuery validInDomainEquals(Boolean validInDomain);
 
   /**
-   * Add your created-Dates to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getCreated()
+   * created} value equal to any of the passed values.
    *
-   * @param createdIn the {@link TimeInterval} within which the searched-for classifications were
-   *     created.
+   * @param createdIn the values of interest
    * @return the query
    */
   ClassificationQuery createdWithin(TimeInterval... createdIn);
 
   /**
-   * Add your modified-Dates to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getModified()
+   * modified} value equal to any of the passed values.
    *
-   * @param modifiedIn the {@link TimeInterval} within which the searched-for classifications were
-   *     modified the last time.
+   * @param modifiedIn the values of interest
    * @return the query
    */
   ClassificationQuery modifiedWithin(TimeInterval... modifiedIn);
 
   /**
-   * Add your name to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getName() name}
+   * value equal to any of the passed values.
    *
-   * @param nameIn as String
+   * @param nameIn the values of interest
    * @return the query
    */
   ClassificationQuery nameIn(String... nameIn);
 
   /**
-   * Add your name to your query. It will be compared in SQL with an LIKE.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getName() name}
+   * value that contains any of the passed patterns.
    *
-   * @param nameLike as String
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param nameLike the patterns of interest
    * @return the query
    */
   ClassificationQuery nameLike(String... nameLike);
 
   /**
-   * Add your description to your query. It will be compared in SQL with an LIKE. If you use a
-   * wildcard like % then it will be transmitted to the database.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getDescription()
+   * description} value that contains any of the passed patterns.
    *
-   * @param descriptionLike your description
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param descriptionLike the patterns of interest
    * @return the query
    */
   ClassificationQuery descriptionLike(String descriptionLike);
 
   /**
-   * Add your priority to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getPriority()
+   * priority} value equal to any of the passed values.
    *
-   * @param priorities as integers
+   * @param priorities the values of interest
    * @return the query
    */
   ClassificationQuery priorityIn(int... priorities);
 
   /**
-   * Add your serviceLevel to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getServiceLevel()
+   * service level} value equal to any of the passed values.
    *
-   * @param serviceLevelIn as String
+   * @param serviceLevelIn the values of interest
    * @return the query
    */
   ClassificationQuery serviceLevelIn(String... serviceLevelIn);
 
   /**
-   * Add your serviceLevel to your query. It will be compared in SQL with an LIKE.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain pro.taskana.classification.api.models.Classification#getServiceLevel()
+   * service level} value that contains any of the passed patterns.
    *
-   * @param serviceLevelLike as String
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param serviceLevelLike the patterns of interest
    * @return the query
    */
   ClassificationQuery serviceLevelLike(String... serviceLevelLike);
 
   /**
-   * Add your applicationEntryPoint to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain
+   * pro.taskana.classification.api.models.Classification#getApplicationEntryPoint() name} value
+   * equal to any of the passed values.
    *
-   * @param applicationEntryPointIn name of the applications entrypoint
+   * @param applicationEntryPointIn the values of interest
    * @return the query
    */
   ClassificationQuery applicationEntryPointIn(String... applicationEntryPointIn);
 
   /**
-   * Add your applicationEntryPoint to your query. It will be compared in SQL with an LIKE.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain
+   * pro.taskana.classification.api.models.Classification#getApplicationEntryPoint() application
+   * entry point} value that contains any of the passed patterns.
    *
-   * @param applicationEntryPointLike name of the applications entrypoint
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param applicationEntryPointLike the patterns of interest
    * @return the query
    */
   ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike);
 
   /**
-   * Add the values of custom attributes for exact matching to your query.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain
+   * pro.taskana.classification.api.models.Classification#getCustomAttribute custom attribute} value
+   * equal to any of the passed values.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched for tasks
+   * @param customField identifies which custom attribute is affected
+   * @param searchArguments the values of interest
    * @return the query
    * @throws InvalidArgumentException if searchArguments is empty or null
    */
@@ -169,12 +231,18 @@ public interface ClassificationQuery
       throws InvalidArgumentException;
 
   /**
-   * Add the values of custom attributes for pattern matching to your query. They will be compared
-   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * which have a {@linkplain
+   * pro.taskana.classification.api.models.Classification#getCustomAttribute custom attribute} value
+   * that contains any of the passed patterns.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched-for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param customField identifies which custom attribute is affected
+   * @param searchArguments the patterns of interest
    * @return the query
    * @throws InvalidArgumentException if searchArguments is empty or null
    */
@@ -183,92 +251,105 @@ public interface ClassificationQuery
       throws InvalidArgumentException;
 
   /**
-   * Sort the query result by key.
+   * Sorts the query result by {@linkplain
+   * pro.taskana.classification.api.models.Classification#getKey() key}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by the parent classification ID.
+   * Sorts the query result by the {@linkplain
+   * pro.taskana.classification.api.models.Classification#getParentId parent id}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByParentId(SortDirection sortDirection);
 
   /**
-   * Sort the query result by the parent classification key.
+   * Sorts the query result by the {@linkplain
+   * pro.taskana.classification.api.models.Classification#getParentKey parent key}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByParentKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by category.
+   * Sorts the query result by {@linkplain
+   * pro.taskana.classification.api.models.Classification#getCategory() category}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByCategory(SortDirection sortDirection);
 
   /**
-   * Sort the query result by domain.
+   * Sorts the query result by {@linkplain
+   * pro.taskana.classification.api.models.Classification#getDomain() domain}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByDomain(SortDirection sortDirection);
 
   /**
-   * Sort the query result by name.
+   * Sorts the query result by {@linkplain
+   * pro.taskana.classification.api.models.Classification#getName() name}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByName(SortDirection sortDirection);
 
   /**
-   * Sort the query result by service level.
+   * Sorts the query result by {@linkplain
+   * pro.taskana.classification.api.models.Classification#getServiceLevel() service level}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByServiceLevel(SortDirection sortDirection);
 
   /**
-   * Sort the query result by priority.
+   * Sorts the query result by {@linkplain
+   * pro.taskana.classification.api.models.Classification#getPriority() priority}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByPriority(SortDirection sortDirection);
 
   /**
-   * Sort the query result by the application entry point name.
+   * Sorts the query result by the {@linkplain
+   * pro.taskana.classification.api.models.Classification#getApplicationEntryPoint() application
+   * entry point}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the value of a custom field.
+   * Sorts the query result according to the value of a {@linkplain
+   * pro.taskana.classification.api.models.Classification#getCustomAttribute custom attribute}.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param customField identifies which {@linkplain
+   *     pro.taskana.classification.api.models.Classification#getCustomAttribute custom attribute}
+   *     is affected.
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   ClassificationQuery orderByCustomAttribute(

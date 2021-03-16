@@ -9,30 +9,30 @@ import pro.taskana.workbasket.api.WorkbasketType;
 public interface Workbasket extends WorkbasketSummary {
 
   /**
-   * Sets the name of the workbasket.
+   * Sets the name of this Workbasket.
    *
-   * @param workbasketName the name of the workbasket
+   * @param workbasketName the name of this Workbasket
    */
   void setName(String workbasketName);
 
   /**
-   * Sets the workbasket-descriptions.
+   * Sets the description of this Workbasket.
    *
-   * @param description the description of the workbasket
+   * @param description the description of this Workbasket
    */
   void setDescription(String description);
 
   /**
-   * Sets the type of the workbasket.
+   * Sets the type of this Workbasket.
    *
-   * @param type the type of the workbasket
+   * @param type the type of this Workbasket
    */
   void setType(WorkbasketType type);
 
   /**
-   * Sets the value for custom Attribute.
+   * Sets the value for custom attribute.
    *
-   * @param customField identifies which custom attribute is to be set.
+   * @param customField identifies which custom attribute is to be set
    * @param value the value of the custom attribute to be set
    */
   void setCustomAttribute(WorkbasketCustomField customField, String value);
@@ -40,33 +40,33 @@ public interface Workbasket extends WorkbasketSummary {
   /**
    * Sets the value for orgLevel1 attribute.
    *
-   * @param orgLevel1 the orgLevel1 property of the workbasket
+   * @param orgLevel1 the orgLevel1 property of this Workbasket
    */
   void setOrgLevel1(String orgLevel1);
 
   /**
    * Sets the value for orgLevel2 attribute.
    *
-   * @param orgLevel2 the orgLevel2 property of the workbasket
+   * @param orgLevel2 the orgLevel2 property of this Workbasket
    */
   void setOrgLevel2(String orgLevel2);
 
   /**
    * Sets the value for orgLevel3 attribute.
    *
-   * @param orgLevel3 the orgLevel3 property of the workbasket
+   * @param orgLevel3 the orgLevel3 property of this Workbasket
    */
   void setOrgLevel3(String orgLevel3);
 
   /**
    * Sets the value for orgLevel4 attribute.
    *
-   * @param orgLevel4 the orgLevel4 property of the workbasket
+   * @param orgLevel4 the orgLevel4 property of this Workbasket
    */
   void setOrgLevel4(String orgLevel4);
 
   /**
-   * Return the value for the markedForDeletion attribute.
+   * Returns the value for the markedForDeletion attribute.
    *
    * @return markedForDeletion
    */
@@ -75,12 +75,12 @@ public interface Workbasket extends WorkbasketSummary {
   /**
    * Sets the value for markedForDeletion attribute.
    *
-   * @param markedForDeletion the markedForDeletion property of the workbasket
+   * @param markedForDeletion the markedForDeletion property of this Workbasket
    */
   void setMarkedForDeletion(boolean markedForDeletion);
 
   /**
-   * Duplicates this Workbasket without the id.
+   * Duplicates this Workbasket without the ID.
    *
    * @param key for the new Workbasket
    * @return a copy of this Workbasket
@@ -88,30 +88,30 @@ public interface Workbasket extends WorkbasketSummary {
   Workbasket copy(String key);
 
   /**
-   * Sets the owner-ID of the workbasket.
+   * Sets the owner-ID of this Workbasket.
    *
-   * @param owner of the current workbasket
+   * @param owner of this Workbasket
    */
   void setOwner(String owner);
 
   /**
-   * Returns the date when the workbasket was created.
+   * Returns the date when this Workbasket was created.
    *
-   * @return created as Instant
+   * @return created as {@linkplain Instant}
    */
   Instant getCreated();
 
   /**
-   * Returns the date when the workbasket was modified the last time.
+   * Returns the date when this Workbasket was modified the last time.
    *
-   * @return modified as Instant
+   * @return modified as {@linkplain Instant}
    */
   Instant getModified();
 
   /**
-   * Return a summary of the current workbasket.
+   * Returns a summary of this Workbasket.
    *
-   * @return the WorkbasketSummary object for the current work basket
+   * @return the {@linkplain WorkbasketSummary} object for this Workbasket
    */
   WorkbasketSummary asSummary();
 }

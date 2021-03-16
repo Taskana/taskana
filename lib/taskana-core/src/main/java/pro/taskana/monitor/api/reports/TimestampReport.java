@@ -9,7 +9,10 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.api.reports.row.TimestampRow;
 
-/** A {@link TimestampReport} displays created and competed tasks for a specific dates. */
+/**
+ * A TimestampReport displays created and completed {@linkplain pro.taskana.task.api.models.Task
+ * Tasks} for specific dates.
+ */
 public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader> {
 
   public TimestampReport(List<TimeIntervalColumnHeader> dates) {
@@ -27,7 +30,7 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
     return new TimestampRow(key, columnSize);
   }
 
-  /** Builder for {@link TimestampReport}. */
+  /** Builder for {@linkplain TimestampReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<
           TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader> {

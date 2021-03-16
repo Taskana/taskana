@@ -10,99 +10,99 @@ import pro.taskana.workbasket.api.WorkbasketType;
 public interface WorkbasketSummary {
 
   /**
-   * Gets the id of the workbasket.
+   * Returns the ID of the {@linkplain Workbasket}.
    *
    * @return workbasketId
    */
   String getId();
 
   /**
-   * Gets the key of the workbasket.
+   * Returns the key of the {@linkplain Workbasket}.
    *
    * @return workbasketKey
    */
   String getKey();
 
   /**
-   * Gets the name of the workbasket.
+   * Returns the name of the {@linkplain Workbasket}.
    *
    * @return workbasket's name
    */
   String getName();
 
   /**
-   * Gets the description of the workbasket.
+   * Returns the description of the {@linkplain Workbasket}.
    *
    * @return workbasket's description
    */
   String getDescription();
 
   /**
-   * Gets the owner of the workbasket.
+   * Returns the owner of the {@linkplain Workbasket}.
    *
    * @return workbasket's owner
    */
   String getOwner();
 
   /**
-   * Gets the domain of the workbasket.
+   * Returns the domain of the {@linkplain Workbasket}.
    *
    * @return workbasket's domain
    */
   String getDomain();
 
   /**
-   * Gets the type of the workbasket.
+   * Returns the type of the {@linkplain Workbasket}.
    *
    * @return workbasket's type
    */
   WorkbasketType getType();
 
   /**
-   * Gets the custom attribute of the workbasket.
+   * Returns the custom attribute of the {@linkplain Workbasket}.
    *
-   * @param customField identifies which custom attribute is requested.
+   * @param customField identifies which custom attribute is requested
    * @return the value for the given customField
    */
   String getCustomAttribute(WorkbasketCustomField customField);
 
   /**
-   * Gets the orglevel1 property of the workbasket.
+   * Returns the orglevel1 property of the {@linkplain Workbasket}.
    *
    * @return the workbasket's orglevel1 property
    */
   String getOrgLevel1();
 
   /**
-   * Gets the orglevel2 property of the workbasket.
+   * Returns the orglevel2 property of the {@linkplain Workbasket}.
    *
    * @return the workbasket's orglevel2 property
    */
   String getOrgLevel2();
 
   /**
-   * Gets the orglevel3 property of the workbasket.
+   * Returns the orglevel3 property of the {@linkplain Workbasket}.
    *
    * @return the workbasket's orglevel3 property
    */
   String getOrgLevel3();
 
   /**
-   * Gets the orglevel4 property of the workbasket.
+   * Returns the orglevel4 property of the {@linkplain Workbasket}.
    *
    * @return the workbasket's orglevel4 property
    */
   String getOrgLevel4();
 
   /**
-   * Gets the markedForDeletion property of the workbasket.
+   * Returns the markedForDeletion property of the {@linkplain Workbasket}.
    *
    * @return the workbasket's markedForDeletion property
    */
   boolean isMarkedForDeletion();
 
   /**
-   * Duplicates this WorkbasketSummary without the id.
+   * Duplicates this WorkbasketSummary without the ID.
    *
    * @return a copy of this WorkbasketSummary
    */

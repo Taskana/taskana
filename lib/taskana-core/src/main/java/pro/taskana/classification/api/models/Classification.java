@@ -8,51 +8,53 @@ import pro.taskana.classification.api.ClassificationCustomField;
 public interface Classification extends ClassificationSummary {
 
   /**
-   * Set/Change a reference to the current parent classification via ID. EMPTY if there is no
-   * parent.
+   * Sets a reference to the current Parent-Classification via ID.
    *
-   * @param parentId The ID of the parent classification.
+   * <p>EMPTY if there is no parent.
+   *
+   * @param parentId the ID of the Parent-Classification
    */
   void setParentId(String parentId);
 
   /**
-   * Set/Change a reference to the current parent classification via key. EMPTY if there is no
-   * parent.
+   * Sets a reference to the current Parent-Classification via key.
    *
-   * @param parentKey The key of the parent classification.
+   * <p>EMPTY if there is no parent.
+   *
+   * @param parentKey the key of the Parent-Classification
    */
   void setParentKey(String parentKey);
 
   /**
-   * Set/Change the category of this classification.
+   * Sets the category of this Classification.
    *
-   * @param category The category of the classification.
+   * @param category the category of this Classification
    */
   void setCategory(String category);
 
   /**
-   * Get the current domain-name of this classification.
+   * Returns the current domain-name of this Classification.
    *
-   * @return domain name
+   * @return domainName
    */
   String getDomain();
 
   /**
-   * Get the logical name of the associated application entry point.
+   * Returns the logical name of the associated application entry point.
    *
    * @return applicationEntryPoint
    */
   String getApplicationEntryPoint();
 
   /**
-   * Set the logical name of the associated application entry point.
+   * Sets the logical name of the associated application entry point.
    *
-   * @param applicationEntryPoint The application entry point
+   * @param applicationEntryPoint the application entry point
    */
   void setApplicationEntryPoint(String applicationEntryPoint);
 
   /**
-   * Duplicates this Classification without the id.
+   * Duplicates this Classification without the ID.
    *
    * @param key for the new Classification
    * @return a copy of this Classification
@@ -60,82 +62,81 @@ public interface Classification extends ClassificationSummary {
   Classification copy(String key);
 
   /**
-   * Get a flag if the classification if currently valid in the used domain.
+   * Returns a flag if the Classification is currently valid in the used domain.
    *
    * @return isValidInDomain - flag
    */
   Boolean getIsValidInDomain();
 
   /**
-   * Set/Change the flag which marks the classification as valid/invalid in the currently used
-   * domain.
+   * Sets the flag which marks the Classification as valid/invalid in the currently used domain.
    *
-   * @param isValidInDomain - flag
+   * @param isValidInDomain flag
    */
   void setIsValidInDomain(Boolean isValidInDomain);
 
   /**
-   * Get the timestamp when this classification was as created.
+   * Returns the timestamp when this Classification was as created.
    *
-   * @return created as instant
+   * @return created as {@linkplain Instant}
    */
   Instant getCreated();
 
   /**
-   * Get the timestamp when this classification was as modified the last time.
+   * Returns the timestamp when this Classification was modified the last time.
    *
-   * @return modified as instant
+   * @return modified as {@linkplain Instant}
    */
   Instant getModified();
 
   /**
-   * Set/Change the classification name.
+   * Sets the name of this Classification.
    *
-   * @param name the name of the Classification
+   * @param name the name of this Classification
    */
   void setName(String name);
 
   /**
-   * Get the description of a classification.
+   * Returns the description of this Classification.
    *
    * @return description
    */
   String getDescription();
 
   /**
-   * Set/Change the classification description.
+   * Sets the description of this Classification.
    *
-   * @param description the description of the Classification
+   * @param description the description of this Classification
    */
   void setDescription(String description);
 
   /**
-   * Set/Change the numeric priority of a classification.
+   * Sets the numeric priority of this Classification.
    *
-   * @param priority the Priority of the Classification
+   * @param priority the Priority of this Classification
    */
   void setPriority(int priority);
 
   /**
-   * Set/Change the service level.
+   * Sets the service level of this Classification.
    *
-   * @param serviceLevel the service level. Must be a String in ISO-8601 duration format. See the
-   *     parse() method of {@code Duration} for details.
+   * @param serviceLevel the service level. Must be a String in ISO-8601 duration format. See
+   *     {@linkplain java.time.Duration#parse Duration.parse()} for details.
    */
   void setServiceLevel(String serviceLevel);
 
   /**
-   * Sets the value for custom Attribute.
+   * Sets the value for custom attribute of this Classification.
    *
-   * @param customField identifies which custom attribute is to be set.
+   * @param customField identifies which custom attribute is to be set
    * @param value the value of the custom attribute to be set
    */
   void setCustomAttribute(ClassificationCustomField customField, String value);
 
   /**
-   * Return a summary of the current Classification.
+   * Returns a summary of this Classification.
    *
-   * @return the ClassificationSummary object for the current classification
+   * @return the {@linkplain ClassificationSummary} object for this Classification
    */
   ClassificationSummary asSummary();
 }

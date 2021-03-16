@@ -7,17 +7,19 @@ import pro.taskana.task.api.models.Task;
 public interface TaskRoutingProvider {
 
   /**
-   * Initialize TaskRoutingProvider service.
+   * Initializes TaskRoutingProvider service.
    *
-   * @param taskanaEngine {@link TaskanaEngine} The Taskana engine needed for initialization.
+   * @param taskanaEngine The {@linkplain TaskanaEngine} needed for initialization
    */
   void initialize(TaskanaEngine taskanaEngine);
 
   /**
-   * Determines a WorkbasketId for a given task.
+   * Determines a workbasketId for a given {@linkplain Task}.
    *
-   * @param task {@link Task} The task for which a workbasket must be determined.
-   * @return the id of the workbasket in which the task is to be created.
+   * @param task the {@linkplain Task} for which a {@linkplain
+   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} must be determined
+   * @return the id of the {@linkplain pro.taskana.workbasket.api.models.Workbasket Workbasket} in
+   *     which the {@linkplain Task} is to be created
    */
   String determineWorkbasketId(Task task);
 }

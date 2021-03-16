@@ -1,6 +1,9 @@
 package pro.taskana.workbasket.api;
 
-/** This enum contains the supported work basket types. */
+/**
+ * This Enum contains the supported {@linkplain pro.taskana.workbasket.api.models.Workbasket
+ * Workbasket} types.
+ */
 public enum WorkbasketType {
   GROUP,
   PERSONAL,

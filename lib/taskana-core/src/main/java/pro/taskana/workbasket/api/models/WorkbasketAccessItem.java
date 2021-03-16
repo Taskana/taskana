@@ -4,36 +4,35 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 
 /**
  * Interface for WorkbasketAccessItem. This interface is used to control access of users to
- * workbaskets.
+ * {@linkplain Workbasket Workbaskets}.
  */
 public interface WorkbasketAccessItem {
 
   /**
-   * Returns the current id of the WorkbasketAccessItem.
+   * Returns the ID of this WorkbasketAccessItem.
    *
-   * @return Id
+   * @return id
    */
   String getId();
 
   /**
-   * Returns the Id of the referenced workbasket.
+   * Returns the ID of the referenced {@linkplain Workbasket}.
    *
-   * @return the workbasket Id
+   * @return the ID of the {@linkplain Workbasket}
    */
   String getWorkbasketId();
 
   /**
-   * Returns the Key of the referenced workbasket.
+   * Returns the key of the referenced {@linkplain Workbasket}.
    *
-   * @return the workbasket Key
+   * @return the key of the {@linkplain Workbasket}
    */
   String getWorkbasketKey();
 
   /**
-   * Returns the group id or user id for which this WorkbasketAccessItem controls access
-   * permissions.
+   * Returns the groupId or userId for which this WorkbasketAccessItem controls access permissions.
    *
-   * @return access id, this is the group id or user id
+   * @return accessId, this is the groupId or userId
    */
   String getAccessId();
 
@@ -46,32 +45,32 @@ public interface WorkbasketAccessItem {
   String getAccessName();
 
   /**
-   * Set the name of the group or user for which this WorkbasketAccessItem controls access
+   * Sets the name of the group or user for which this WorkbasketAccessItem controls access
    * permissions.
    *
    * @param name the name of the group or user for which this WorkbasketAccessItem controls access
-   *     permissions.
+   *     permissions
    */
   void setAccessName(String name);
 
   /**
-   * Sets a given permission for the referenced workbasket.
+   * Sets a given permission for the referenced {@linkplain Workbasket}.
    *
-   * @param permission the permission which is set.
-   * @param value the value for the permission.
+   * @param permission the permission which is set
+   * @param value the value for the permission
    */
   void setPermission(WorkbasketPermission permission, boolean value);
 
   /**
-   * Returns weather the given permission is permitted or not.
+   * Returns whether the given permission is permitted or not.
    *
-   * @param permission the permission in question.
-   * @return True, when the given permission is permitted. Otherwise false.
+   * @param permission the permission in question
+   * @return true, when the given permission is permitted. Otherwise false
    */
   boolean getPermission(WorkbasketPermission permission);
 
   /**
-   * Duplicates this WorkbasketAccessItem without the id.
+   * Duplicates this WorkbasketAccessItem without the ID.
    *
    * @return a copy of this WorkbasketAccessItem
    */

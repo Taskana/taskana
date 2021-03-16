@@ -9,59 +9,60 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 public interface Attachment extends AttachmentSummary {
 
   /**
-   * Sets the {@link ObjectReference primaryObjectReference} of the attachment.
+   * Sets the primary {@linkplain ObjectReference ObjectReference} of this Attachment}.
    *
-   * @param objectReference the {@link ObjectReference primaryObjectReference} of the attachment
+   * @param objectReference the primary {@linkplain ObjectReference} of this Attachment}
    */
   void setObjectReference(ObjectReference objectReference);
 
   /**
-   * Set the classification summary for this attachment.
+   * Sets the {@linkplain ClassificationSummary} for this Attachment}.
    *
-   * @param classificationSummary the {@link ClassificationSummary} for this attachment
+   * @param classificationSummary the {@linkplain ClassificationSummary} for this Attachment}
    */
   void setClassificationSummary(ClassificationSummary classificationSummary);
 
   /**
-   * Sets the time when the attachment was received.
+   * Sets the time when this Attachment} was received.
    *
-   * @param received the time as {@link Instant} when the attachment was received
+   * @param received the time as {@linkplain Instant} when this Attachment} was received
    */
   void setReceived(Instant received);
 
   /**
-   * Sets the Channel on which the attachment was received.
+   * Sets the {@linkplain java.nio.channels.Channel Channel} on which this Attachment} was received.
    *
-   * @param channel the channel on which the attachment was received
+   * @param channel the {@linkplain java.nio.channels.Channel Channel} on which this Attachment was
+   *     received
    */
   void setChannel(String channel);
 
   /**
-   * Returns the custom attributes of this attachment.
+   * Returns the custom attributes of this Attachment}.
    *
-   * @return customAttributes as {@link Map}
+   * @return customAttributes as Map
    */
   Map<String, String> getCustomAttributeMap();
 
   /**
-   * Sets the custom attribute Map of the attachment.
+   * Sets the custom attribute Map of this Attachment}.
    *
-   * @param customAttributes a {@link Map} that contains the custom attributes of the attachment as
-   *     key, value pairs
+   * @param customAttributes a Map that contains the custom attributes of this Attachment} as key,
+   *     value pairs
    */
   void setCustomAttributeMap(Map<String, String> customAttributes);
 
   /**
-   * Return a summary of the current Attachment.
+   * Returns a {@linkplain AttachmentSummary} of this Attachment}.
    *
-   * @return the AttachmentSummary object for the current attachment
+   * @return the {@linkplain AttachmentSummary} object for this Attachment}
    */
   AttachmentSummary asSummary();
 
   /**
-   * Duplicates this Attachment without the id and taskId.
+   * Duplicates this Attachment} without the id and taskId.
    *
-   * @return a copy of this Attachment
+   * @return a copy of this Attachment}
    */
   Attachment copy();
 }

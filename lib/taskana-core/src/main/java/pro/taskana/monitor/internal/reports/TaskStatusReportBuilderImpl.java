@@ -50,9 +50,11 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
       Map<String, String> displayMap =
           taskanaEngine.runAsAdmin(
               () ->
-                  workbasketService.createWorkbasketQuery()
+                  workbasketService
+                      .createWorkbasketQuery()
                       .keyIn(report.getRows().keySet().toArray(new String[0]))
-                      .domainIn(domains != null ? domains.toArray(new String[0]) : null).list()
+                      .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+                      .list()
                       .stream()
                       .collect(
                           Collectors.toMap(

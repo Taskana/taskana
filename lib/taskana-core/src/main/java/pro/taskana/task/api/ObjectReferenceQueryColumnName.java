@@ -3,8 +3,8 @@ package pro.taskana.task.api;
 import pro.taskana.common.api.QueryColumnName;
 
 /**
- * Enum containing the column names for {@link
- * pro.taskana.task.internal.TaskQueryMapper#queryObjectReferenceColumnValues}.
+ * This Enum contains the database column names for a {@linkplain
+ * pro.taskana.task.api.models.ObjectReference ObjectReference}.
  */
 public enum ObjectReferenceQueryColumnName implements QueryColumnName {
   ID("id"),
