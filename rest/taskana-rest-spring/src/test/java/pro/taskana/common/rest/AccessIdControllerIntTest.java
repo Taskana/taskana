@@ -39,7 +39,7 @@ class AccessIdControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
                 + "?search-for=cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody())
         .isNotNull()
@@ -55,7 +55,7 @@ class AccessIdControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
                 + "?search-for=uid=teamlead-1,cn=users,OU=Test,O=TASKANA",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody())
         .isNotNull()
@@ -70,7 +70,7 @@ class AccessIdControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=ksc-use",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody())
         .isNotNull()
@@ -85,7 +85,7 @@ class AccessIdControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=ksc-teamleads,cn=groups",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
     assertThat(response.getBody()).isNotNull().isEmpty();
   }
@@ -96,7 +96,7 @@ class AccessIdControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=rig",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
@@ -111,7 +111,7 @@ class AccessIdControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=läf",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
@@ -127,7 +127,7 @@ class AccessIdControllerIntTest {
             TEMPLATE.exchange(
                 restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=al",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 ParameterizedTypeReference.forType(List.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -142,7 +142,7 @@ class AccessIdControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
@@ -163,7 +163,7 @@ class AccessIdControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=user-2-1",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
@@ -184,7 +184,7 @@ class AccessIdControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS)
                     + "?access-id=teamlead-2,cn=users",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
@@ -202,7 +202,7 @@ class AccessIdControllerIntTest {
                 + "?access-id=cn=Organisationseinheit KSC 1,"
                 + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ACCESS_ID_LIST_TYPE);
 
     assertThat(response.getBody())
