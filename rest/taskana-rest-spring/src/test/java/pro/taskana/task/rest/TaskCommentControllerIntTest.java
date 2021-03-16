@@ -49,7 +49,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 urlToNonExistingTaskComment,
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<>(restHelper.getHeadersAdmin()),
                 ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -68,7 +68,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 urlToNotVisibleTask,
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
+                new HttpEntity<>(restHelper.getHeadersUser_1_1()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -87,7 +87,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url + "?sort-by=MODIFIED&order=DESCENDING",
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
 
     assertThat(getTaskCommentsSortedByModifiedOrderedByDescendingResponse.getBody()).isNotNull();
@@ -101,7 +101,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url + "?sort-by=MODIFIED",
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
 
     assertThat(getTaskCommentsSortedByModifiedOrderedByAscendingResponse.getBody()).isNotNull();
@@ -115,7 +115,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url + "?sort-by=CREATED&order=DESCENDING",
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
 
     assertThat(getTaskCommentsSortedByCreatedOrderedByDescendingResponse.getBody()).isNotNull();
@@ -129,7 +129,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url + "?sort-by=CREATED",
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<>(restHelper.getHeadersAdmin()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
 
     assertThat(getTaskCommentsSortedByCreatedOrderedByAscendingResponse.getBody()).isNotNull();
@@ -151,7 +151,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url + "?sort-by=invalidSortParam",
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
+                new HttpEntity<>(restHelper.getHeadersUser_1_1()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -170,7 +170,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 urlToNotVisibleTask,
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersUser_1_2()),
+                new HttpEntity<>(restHelper.getHeadersUser_1_2()),
                 ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -230,7 +230,7 @@ class TaskCommentControllerIntTest {
         TEMPLATE.exchange(
             url,
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersAdmin()),
+            new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     TaskCommentRepresentationModel taskCommentToUpdate = getTaskCommentResponse.getBody();
     assertThat(taskCommentToUpdate).isNotNull();
@@ -262,7 +262,7 @@ class TaskCommentControllerIntTest {
         TEMPLATE.exchange(
             url,
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersUser_1_1()),
+            new HttpEntity<>(restHelper.getHeadersUser_1_1()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     TaskCommentRepresentationModel taskComment = getTaskCommentResponse.getBody();
     assertThat(taskComment).isNotNull();
@@ -295,7 +295,7 @@ class TaskCommentControllerIntTest {
         TEMPLATE.exchange(
             url,
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersAdmin()),
+            new HttpEntity<>(restHelper.getHeadersAdmin()),
             ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThat(getTaskCommentResponse.getBody()).isNotNull();
     assertThat(getTaskCommentResponse.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -329,7 +329,7 @@ class TaskCommentControllerIntTest {
                 restHelper.toUrl(
                     RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001"),
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersUser_1_2()),
+                new HttpEntity<>(restHelper.getHeadersUser_1_2()),
                 TASK_COMMENT_PAGE_MODEL_TYPE);
     assertThat(getTaskCommentsBeforeDeleteionResponse.getBody()).isNotNull();
     assertThat(getTaskCommentsBeforeDeleteionResponse.getBody().getContent()).hasSize(2);
@@ -343,7 +343,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url,
                 HttpMethod.DELETE,
-                new HttpEntity<String>(restHelper.getHeadersUser_1_2()),
+                new HttpEntity<>(restHelper.getHeadersUser_1_2()),
                 ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -362,7 +362,7 @@ class TaskCommentControllerIntTest {
             TEMPLATE.exchange(
                 url,
                 HttpMethod.DELETE,
-                new HttpEntity<String>(restHelper.getHeadersAdmin()),
+                new HttpEntity<>(restHelper.getHeadersAdmin()),
                 ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())

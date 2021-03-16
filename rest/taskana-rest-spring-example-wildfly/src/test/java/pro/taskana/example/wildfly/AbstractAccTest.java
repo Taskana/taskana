@@ -50,7 +50,7 @@ public class AbstractAccTest {
     return RestHelper.TEMPLATE.exchange(
         restHelper.toUrl("/taskana" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
         HttpMethod.GET,
-        new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+        new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
         ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
   }
 

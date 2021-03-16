@@ -58,7 +58,7 @@ class AsyncUpdateJobIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
@@ -86,7 +86,7 @@ class AsyncUpdateJobIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, CLASSIFICATION_ID),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
 
     assertThat(repeatedResponse.getBody()).isNotNull();

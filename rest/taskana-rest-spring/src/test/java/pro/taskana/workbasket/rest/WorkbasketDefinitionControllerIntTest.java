@@ -274,7 +274,7 @@ class WorkbasketDefinitionControllerIntTest {
     return TEMPLATE.exchange(
         restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
         HttpMethod.GET,
-        new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+        new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
         ParameterizedTypeReference.forType(
             WorkbasketDefinitionCollectionRepresentationModel.class));
   }

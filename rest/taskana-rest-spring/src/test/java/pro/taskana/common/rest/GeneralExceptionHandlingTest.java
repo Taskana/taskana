@@ -33,7 +33,7 @@ class GeneralExceptionHandlingTest {
             TEMPLATE.exchange(
                 restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, "non-existing-id"),
                 HttpMethod.DELETE,
-                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
                 ParameterizedTypeReference.forType(
                     ClassificationSummaryPagedRepresentationModel.class));
     assertThatThrownBy(httpCall)
