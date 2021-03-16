@@ -16,6 +16,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ class WorkbasketAccessItemControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -62,7 +63,7 @@ class WorkbasketAccessItemControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -83,7 +84,7 @@ class WorkbasketAccessItemControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
@@ -113,7 +114,7 @@ class WorkbasketAccessItemControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
             HttpMethod.DELETE,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(Void.class));
     assertThat(response.getBody()).isNull();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -131,7 +132,7 @@ class WorkbasketAccessItemControllerIntTest {
                     + "&anotherIllegalParam=stillIllegal"
                     + "&sort-by=WORKBASKET_KEY&order=DESCENDING&page-size=5&page=2",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
@@ -158,7 +159,7 @@ class WorkbasketAccessItemControllerIntTest {
                   TEMPLATE.exchange(
                       restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
                       HttpMethod.DELETE,
-                      restHelper.defaultRequest(),
+                      new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                       ParameterizedTypeReference.forType(Void.class));
           assertThatThrownBy(httpCall)
               .isInstanceOf(HttpClientErrorException.class)

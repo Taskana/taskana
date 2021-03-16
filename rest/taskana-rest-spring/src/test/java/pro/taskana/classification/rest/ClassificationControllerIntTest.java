@@ -51,7 +51,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(
                 RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000002"),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -64,7 +64,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -77,7 +77,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&custom-1-like=RVNR",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
@@ -92,7 +92,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&sort-by=KEY&order=ASCENDING",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -109,7 +109,7 @@ class ClassificationControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
                 + "?domain=DOMAIN_A&sort-by=KEY&order=ASCENDING&page-size=5&page=2",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
@@ -242,7 +242,7 @@ class ClassificationControllerIntTest {
         template.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
@@ -357,7 +357,7 @@ class ClassificationControllerIntTest {
                     + "&anotherIllegalParam=stillIllegal"
                     + "&sort-by=NAME&order=DESCENDING&page-size=5&page=2",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)

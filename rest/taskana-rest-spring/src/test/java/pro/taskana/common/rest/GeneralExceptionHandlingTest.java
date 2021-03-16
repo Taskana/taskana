@@ -7,6 +7,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -32,7 +33,7 @@ class GeneralExceptionHandlingTest {
             TEMPLATE.exchange(
                 restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, "non-existing-id"),
                 HttpMethod.DELETE,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 ParameterizedTypeReference.forType(
                     ClassificationSummaryPagedRepresentationModel.class));
     assertThatThrownBy(httpCall)

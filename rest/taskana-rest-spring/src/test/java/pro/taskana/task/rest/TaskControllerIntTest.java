@@ -95,7 +95,7 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_TASKS),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -109,7 +109,7 @@ class TaskControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?workbasket-id=WBI:100000000000000000000000000000000001",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -137,7 +137,7 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_TASKS) + parameters,
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -160,7 +160,7 @@ class TaskControllerIntTest {
                 + plannedToInstant
                 + "&sort-by=PLANNED",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -180,7 +180,7 @@ class TaskControllerIntTest {
                 + plannedFromInstant
                 + "&sort-by=PLANNED",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -200,7 +200,7 @@ class TaskControllerIntTest {
                     + "&planned-from=2020-01-19T07:44:47.453Z"
                     + "&sort-by=planned",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -229,7 +229,7 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_TASKS) + parameters,
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -340,7 +340,7 @@ class TaskControllerIntTest {
             TEMPLATE.exchange(
                 restHelper.toUrl(RestEndpoints.URL_TASKS) + "?wildcard-search-value=%rt%",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -354,7 +354,7 @@ class TaskControllerIntTest {
                 restHelper.toUrl(RestEndpoints.URL_TASKS)
                     + "?wildcard-search-fields=NAME,CUSTOM_3,CUSTOM_4",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall2)
         .isInstanceOf(HttpClientErrorException.class)
@@ -379,7 +379,7 @@ class TaskControllerIntTest {
                 + dueToInstant
                 + "&sort-by=DUE",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -399,7 +399,7 @@ class TaskControllerIntTest {
                 + dueToInstant
                 + "&sort-by=DUE",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -419,7 +419,7 @@ class TaskControllerIntTest {
                     + "&due-from=2020-01-19T07:44:47.453Z"
                     + "&sort-by=planned",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -448,7 +448,7 @@ class TaskControllerIntTest {
                 + "?external-id=ETI:000000000000000000000000000000000003"
                 + "&external-id=ETI:000000000000000000000000000000000004",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -491,7 +491,7 @@ class TaskControllerIntTest {
             restHelper.toUrl(RestEndpoints.URL_TASKS)
                 + "?por.type=VNR&por.value=22334455&sort-by=POR_VALUE&order=DESCENDING",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             TASK_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -940,7 +940,7 @@ class TaskControllerIntTest {
                     + "&anotherIllegalParam=stillIllegal"
                     + "&sort-by=NAME&order=DESCENDING&page-size=5&page=2",
                 HttpMethod.GET,
-                restHelper.defaultRequest(),
+                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
                 TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)

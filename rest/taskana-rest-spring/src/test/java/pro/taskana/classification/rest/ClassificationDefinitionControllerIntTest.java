@@ -76,7 +76,7 @@ class ClassificationDefinitionControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(
                 ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -98,7 +98,7 @@ class ClassificationDefinitionControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(
                 ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -117,7 +117,7 @@ class ClassificationDefinitionControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe",
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(
                 ClassificationDefinitionCollectionRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
@@ -53,10 +52,6 @@ public class RestHelper {
         .build(false)
         .expand(uriVariables)
         .toString();
-  }
-
-  public HttpEntity<String> defaultRequest() {
-    return new HttpEntity<>(getHeadersTeamlead_1());
   }
 
   public HttpHeaders getHeadersTeamlead_1() {

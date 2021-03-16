@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +73,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_CURRENT_USER),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
@@ -89,7 +90,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {});
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).hasSize(2);
@@ -104,7 +105,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
                 "/taskana" + RestEndpoints.URL_TASKS_ID,
                 "TKI:000000000000000000000000000000000001"),
             HttpMethod.GET,
-            restHelper.defaultRequest(),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(TaskRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
