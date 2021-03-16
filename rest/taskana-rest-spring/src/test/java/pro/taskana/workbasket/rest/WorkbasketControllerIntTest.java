@@ -65,7 +65,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             url,
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -80,7 +80,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -92,7 +92,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=OPEN",
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
@@ -106,7 +106,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -128,7 +128,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_REPRESENTATION_MODEL_TYPE);
 
     WorkbasketRepresentationModel workbasketRepresentationModel =
@@ -164,7 +164,7 @@ class WorkbasketControllerIntTest {
             TEMPLATE.exchange(
                 restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersBusinessAdmin()),
+                new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
                 WORKBASKET_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -180,7 +180,7 @@ class WorkbasketControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
@@ -238,7 +238,7 @@ class WorkbasketControllerIntTest {
                 RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
                 "WBI:100000000000000000000000000000000007"),
             HttpMethod.DELETE,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             Void.class);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
@@ -248,7 +248,7 @@ class WorkbasketControllerIntTest {
                 RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
                 "WBI:100000000000000000000000000000000002"),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response2.getBody()).isNotNull();
@@ -265,7 +265,7 @@ class WorkbasketControllerIntTest {
                 RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
                 "WBI:100000000000000000000000000000000005"),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -281,7 +281,7 @@ class WorkbasketControllerIntTest {
                 RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
                 "WBI:100000000000000000000000000000000001"),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -301,7 +301,7 @@ class WorkbasketControllerIntTest {
                     + "&anotherIllegalParam=stillIllegal"
                     + "&sort-by=KEY&order=DESCENDING&page-size=5&page=2",
                 HttpMethod.GET,
-                new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
                 WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)

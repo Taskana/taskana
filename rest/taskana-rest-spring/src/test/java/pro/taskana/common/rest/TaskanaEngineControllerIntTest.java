@@ -35,7 +35,7 @@ class TaskanaEngineControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_DOMAIN),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody()).contains("DOMAIN_A");
   }
@@ -46,7 +46,7 @@ class TaskanaEngineControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody()).containsExactlyInAnyOrder("TASK", "DOCUMENT");
   }
@@ -57,7 +57,7 @@ class TaskanaEngineControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody())
         .containsExactlyInAnyOrder("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS", "EXTERNAL");
@@ -69,7 +69,7 @@ class TaskanaEngineControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(RestEndpoints.URL_CURRENT_USER),
             HttpMethod.GET,
-            new HttpEntity<String>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getUserId()).isEqualTo("teamlead-1");
