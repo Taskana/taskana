@@ -419,7 +419,7 @@ jobs:
       - name: Verify Example Application contains documentation
         run: ci/verify_docs_jar.sh
       - name: Deploy to IBM Cloud Foundry
-        uses: IBM/cloudfoundry-deploy@v1.1
+        uses: IBM/cloudfoundry-deploy@v2.0
         with:
           IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
           IBM_CLOUD_CF_API: ${{ secrets.IBM_CLOUD_CF_API }}
