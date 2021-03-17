@@ -19,6 +19,6 @@ class CollectionUtilTest {
     assertThat(listWith1000Entries).hasSize(1000);
     Collection<List<Integer>> partitions =
         CollectionUtil.partitionBasedOnSize(listWith1000Entries, 100);
-    assertThat(partitions).hasSize(10);
+    assertThat(partitions).hasSize(11);
   }
 }

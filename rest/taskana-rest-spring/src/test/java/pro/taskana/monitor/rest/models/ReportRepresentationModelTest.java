@@ -62,7 +62,7 @@ class ReportRepresentationModelTest {
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"WORKBASKET"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());
-    assertThat(meta.getSumRowDesc()).isEqualTo("Total");
+    assertThat(meta.getSumRowDesc()).isEqualTo("Total2");
 
     // rows
     assertThat(resource.getRows()).isEmpty();
@@ -94,7 +94,7 @@ class ReportRepresentationModelTest {
     // meta
     ReportRepresentationModel.MetaInformation meta = resource.getMeta();
     assertThat(meta.getName()).isEqualTo("ClassificationReport");
-    assertThat(meta.getDate()).isEqualTo("2019-01-02T00:00:00Z");
+    assertThat(meta.getDate()).isEqualTo("2020-01-02T00:00:00Z");
     assertThat(meta.getRowDesc()).isEqualTo(new String[] {"CLASSIFICATION"});
     assertThat(meta.getHeader())
         .isEqualTo(headers.stream().map(TimeIntervalColumnHeader::getDisplayName).toArray());

@@ -174,7 +174,7 @@ class TaskCommentControllerIntTest {
                 ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.FORBIDDEN);
+        .isEqualTo(HttpStatus.OK);
   }
 
   @Test

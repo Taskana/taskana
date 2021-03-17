@@ -59,7 +59,7 @@ class ReportTest {
     // then
     assertThat(report.getRows()).hasSize(1);
     Row<MonitorQueryItem> row = report.getRow("key");
-    assertThat(row.getKey()).isEqualTo("key");
+    assertThat(row.getKey()).isEqualTo("key2");
   }
 
   @Test
