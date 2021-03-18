@@ -76,7 +76,9 @@
     <version.db2>11.1.1.1</version.db2>
 
     <!-- sonar settings -->
+    <!--suppress UnresolvedMavenProperty -->
     <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
+    <!--suppress UnresolvedMavenProperty -->
     <sonar.organization>${env.SONAR_ORGANIZATION}</sonar.organization>
     <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -87,6 +89,9 @@
       ${project.basedir}/../../ci/taskana-sonar-test-coverage/target/site/jacoco-aggregate/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.sources>src/main/java</sonar.sources>
+
+    <!--suppress UnresolvedMavenProperty -->
+    <surefire.reportNameSuffix>${env.DATABASE}</surefire.reportNameSuffix>
   </properties>
 
   <dependencyManagement>

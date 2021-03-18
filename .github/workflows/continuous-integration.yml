@@ -21,6 +21,8 @@ env:
   ARTIFACTS_TASKANA_WEB_PATH: web/dist
   ARTIFACTS_JACOCO_REPORTS_NAME: jacoco-reports
   ARTIFACTS_JACOCO_REPORTS_PATH: '**/jacoco.exec'
+  ARTIFACTS_SUREFIRE_REPORT_NAME: surefire-reports
+  ARTIFACTS_SUREFIRE_REPORT_PATH: '**/surefire-reports/TEST-*.xml'
 
   CACHE_WEB_NAME: web
   # IMPORTANT: this cannot start with CACHE_MAVEN_NAME's value
@@ -270,13 +272,21 @@ jobs:
         if: matrix.module == 'taskana-simplehistory-rest-spring'
         run: ./mvnw -B validate -pl :taskana-rest-spring
       - name: Test
-        run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip
+        run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip -Dmaven.test.failure.ignore
+        env:
+          DATABASE: ${{ matrix.database }}
       - name: Upload JaCoCo Report
         if: matrix.database == 'H2'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}
           path: ${{ env.ARTIFACTS_JACOCO_REPORTS_PATH }}
+          if-no-files-found: ignore
+      - name: Upload Surefire Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.ARTIFACTS_SUREFIRE_REPORT_NAME }}
+          path: ${{ env.ARTIFACTS_SUREFIRE_REPORT_PATH }}
           if-no-files-found: ignore
       - name: Cancel workflow
         if: failure()
@@ -308,17 +318,42 @@ jobs:
       - name: Start database
         run: ci/prepare_db.sh POSTGRES_10
       - name: Test
-        run: ./mvnw -B verify -f rest/taskana-rest-spring-example-wildfly
+        run: ./mvnw -B verify -f rest/taskana-rest-spring-example-wildfly -Dmaven.test.failure.ignore
+        env:
+          DATABASE: POSTGRES_10
+      - name: Upload Surefire Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: surefire-report
+          path: '**/surefire-reports/TEST-*.xml'
+          if-no-files-found: ignore
       - name: Cancel workflow
         if: failure()
         uses: andymckay/cancel-action@0.2
 
+  aggregate_backend_test_results:
+    runs-on: ubuntu-20.04
+    name: Aggregate Backend Test Results
+    needs: [ test_backend, test_taskana-rest-spring-example-wildfly ]
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Download Surefire Report
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.ARTIFACTS_SUREFIRE_REPORT_NAME }}
+      - name: Publish Backend Test Report
+        uses: scacap/action-surefire-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_test_failures: true
+          check_name: Backend Test Report
 
   release_artifacts:
     runs-on: ubuntu-20.04
     name: Release artifacts to OSS Sonatype
     if: github.repository == 'Taskana/taskana' && ( startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/master' ) && github.head_ref == ''
-    needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
+    needs: [ test_frontend, aggregate_backend_test_results ]
     # as documented in the gpg manual (https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html)
     # we should execute this command before interacting with gpg (otherwise gpg won't work)
     env:
@@ -384,7 +419,7 @@ jobs:
     runs-on: ubuntu-20.04
     name: Deploy demo app to IBM Cloud Foundry
     if: github.repository == 'Taskana/taskana' && github.ref == 'refs/heads/master' && github.head_ref == ''
-    needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
+    needs: [ test_frontend, aggregate_backend_test_results ]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
@@ -438,7 +473,7 @@ jobs:
     name: Upload SonarQube analysis to sonarcloud
     # no pull request and not on release
     if: github.head_ref == '' && !startsWith(github.ref, 'refs/tags')
-    needs: [ test_frontend, test_backend, test_taskana-rest-spring-example-wildfly ]
+    needs: [ test_frontend, aggregate_backend_test_results ]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
