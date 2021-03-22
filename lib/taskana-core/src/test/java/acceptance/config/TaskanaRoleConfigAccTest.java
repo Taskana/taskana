@@ -3,15 +3,13 @@ package acceptance.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.TaskanaEngineTestConfiguration;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
-import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
@@ -19,6 +17,8 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 
 /** Test taskana's role configuration. */
 class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
+
+  @TempDir Path tempDir;
 
   TaskanaRoleConfigAccTest() throws Exception {
     super(
@@ -63,80 +63,65 @@ class TaskanaRoleConfigAccTest extends TaskanaEngineImpl {
 
   @Test
   void testOtherConfigFileSameDelimiter() throws Exception {
-    String propertiesFileName = createNewConfigFileWithSameDelimiter("/dummyTestConfig.properties");
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, "|");
+    String propertiesFileName = createNewConfigFileWithSameDelimiter("dummyTestConfig.properties");
+    getConfiguration().initTaskanaProperties(propertiesFileName, "|");
 
-      Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
-      assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
+    Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
+    assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
 
-      Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-      assertThat(users).containsExactly("nobody");
+    Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
+    assertThat(users).containsExactly("nobody");
 
-      Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      assertThat(admins).containsExactlyInAnyOrder("user", "username");
+    Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
+    assertThat(admins).containsExactlyInAnyOrder("user", "username");
 
-      Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-      assertThat(businessAdmins).containsExactlyInAnyOrder("user2", "user3");
+    Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    assertThat(businessAdmins).containsExactlyInAnyOrder("user2", "user3");
 
-      Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
-      assertThat(taskAdmins).containsExactlyInAnyOrder("taskadmin");
-
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    assertThat(taskAdmins).containsExactlyInAnyOrder("taskadmin");
   }
 
   @Test
   void testOtherConfigFileDifferentDelimiter() throws Exception {
     String delimiter = ";";
     String propertiesFileName =
-        createNewConfigFileWithDifferentDelimiter("/dummyTestConfig.properties", delimiter);
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
+        createNewConfigFileWithDifferentDelimiter("dummyTestConfig.properties", delimiter);
+    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
 
-      Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
-      assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
+    Set<TaskanaRole> rolesConfigured = getConfiguration().getRoleMap().keySet();
+    assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
 
-      Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
-      assertThat(users).isEmpty();
+    Set<String> users = getConfiguration().getRoleMap().get(TaskanaRole.USER);
+    assertThat(users).isEmpty();
 
-      Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
-      assertThat(admins).containsExactlyInAnyOrder("user", "name=username,organisation=novatec");
+    Set<String> admins = getConfiguration().getRoleMap().get(TaskanaRole.ADMIN);
+    assertThat(admins).containsExactlyInAnyOrder("user", "name=username,organisation=novatec");
 
-      Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
-      assertThat(businessAdmins).containsExactlyInAnyOrder("name=user2, ou = bpm", "user3");
+    Set<String> businessAdmins = getConfiguration().getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    assertThat(businessAdmins).containsExactlyInAnyOrder("name=user2, ou = bpm", "user3");
 
-      Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
-      assertThat(taskAdmins).contains("taskadmin");
-
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    Set<String> taskAdmins = getConfiguration().getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    assertThat(taskAdmins).contains("taskadmin");
   }
 
   private String createNewConfigFileWithDifferentDelimiter(String filename, String delimiter)
       throws Exception {
-    Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
+    Path file = Files.createFile(tempDir.resolve(filename));
     List<String> lines =
         List.of(
             "taskana.roles.admin =uSeR " + delimiter + "name=Username,Organisation=novatec",
             "  taskana.roles.businessadmin  = name=user2, ou = bpm " + delimiter + " user3 ",
             " taskana.roles.user = ",
             "taskana.roles.taskadmin= taskadmin");
+
     Files.write(file, lines, StandardCharsets.UTF_8);
+
     return file.toString();
   }
 
-  private void deleteFile(String propertiesFileName) {
-    File f = new File(propertiesFileName);
-    if (f.exists() && !f.isDirectory()) {
-      FileUtils.delete(propertiesFileName);
-    }
-  }
-
   private String createNewConfigFileWithSameDelimiter(String filename) throws Exception {
-    Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
+    Path file = Files.createFile(tempDir.resolve(filename));
     List<String> lines =
         List.of(
             "taskana.roles.admin =uSeR|Username",
