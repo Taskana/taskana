@@ -3,24 +3,24 @@ package acceptance.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.TaskanaEngineTestConfiguration;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.h2.store.fs.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 
 /** Test taskana configuration without roles. */
 class TaskanaConfigAccTest extends TaskanaEngineImpl {
+
+  @TempDir Path tempDir;
 
   TaskanaConfigAccTest() throws Exception {
     super(
@@ -50,13 +50,9 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   @Test
   void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws Exception {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
-    String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", false, true);
+    String propertiesFileName = createNewConfigFile("dummyTestConfig.properties", false, true);
     String delimiter = ";";
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
     assertThat(taskanaEngineConfiguration.getClassificationTypes()).isEmpty();
   }
 
@@ -64,13 +60,9 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   void testDoesNotExistPropertyClassificationCategoryOrItIsEmpty() throws Exception {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
     taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
-    String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, false);
+    String propertiesFileName = createNewConfigFile("dummyTestConfig.properties", true, false);
     String delimiter = ";";
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
     assertThat(
             taskanaEngineConfiguration.getClassificationCategoriesByType(
                 taskanaEngineConfiguration.getClassificationTypes().get(0)))
@@ -81,13 +73,9 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
   void testWithCategoriesAndClassificationFilled() throws Exception {
     taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
     taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
-    String propertiesFileName = createNewConfigFile("/dummyTestConfig.properties", true, true);
+    String propertiesFileName = createNewConfigFile("dummyTestConfig.properties", true, true);
     String delimiter = ";";
-    try {
-      getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
-    } finally {
-      deleteFile(propertiesFileName);
-    }
+    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
     assertThat(taskanaEngineConfiguration.getClassificationTypes().isEmpty()).isFalse();
     assertThat(
             taskanaEngineConfiguration
@@ -112,7 +100,7 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
   private String createNewConfigFile(
       String filename, boolean addingTypes, boolean addingClassification) throws Exception {
-    Path file = Files.createFile(Paths.get(System.getProperty("user.home") + filename));
+    Path file = Files.createFile(tempDir.resolve(filename));
     List<String> lines =
         Stream.of(
                 "taskana.roles.admin =Holger|Stefan",
@@ -129,12 +117,5 @@ class TaskanaConfigAccTest extends TaskanaEngineImpl {
 
     Files.write(file, lines, StandardCharsets.UTF_8);
     return file.toString();
-  }
-
-  private void deleteFile(String propertiesFileName) {
-    File f = new File(propertiesFileName);
-    if (f.exists() && !f.isDirectory()) {
-      FileUtils.delete(propertiesFileName);
-    }
   }
 }
