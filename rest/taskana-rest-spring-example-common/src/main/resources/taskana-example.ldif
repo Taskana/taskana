@@ -172,7 +172,7 @@ uid: user-2-2
 sn:: U2NobMOkZnJpZw==
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn:: VGltIFNjaGzDpGZyaWc=
-userPassword: user-2-1
+userPassword: user-2-2
 
 dn: uid=user-2-3,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
