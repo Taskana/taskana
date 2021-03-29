@@ -1,8 +1,6 @@
 package pro.taskana.common.rest;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -22,8 +20,6 @@ import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class AccessIdController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(AccessIdController.class);
 
   private final LdapClient ldapClient;
   private final TaskanaEngine taskanaEngine;
@@ -48,18 +44,10 @@ public class AccessIdController {
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroups(
       @RequestParam("search-for") String searchFor)
       throws InvalidArgumentException, NotAuthorizedException {
-
-    LOGGER.debug("Entry to validateAccessIds(search-for= {})", searchFor);
-
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
     List<AccessIdRepresentationModel> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
-    ResponseEntity<List<AccessIdRepresentationModel>> response = ResponseEntity.ok(accessIdUsers);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from validateAccessIds(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(accessIdUsers);
   }
 
   /**
@@ -75,9 +63,6 @@ public class AccessIdController {
   public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
       @RequestParam("access-id") String accessId)
       throws InvalidArgumentException, NotAuthorizedException {
-
-    LOGGER.debug("Entry to getGroupsByAccessId(access-id= {})", accessId);
-
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
     if (!ldapClient.validateAccessId(accessId)) {
@@ -86,11 +71,7 @@ public class AccessIdController {
 
     List<AccessIdRepresentationModel> accessIds =
         ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
-    ResponseEntity<List<AccessIdRepresentationModel>> response = ResponseEntity.ok(accessIds);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getGroupsByAccessId(), returning {}", response);
-    }
-    return response;
+    return ResponseEntity.ok(accessIds);
   }
 }

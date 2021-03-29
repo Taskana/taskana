@@ -40,9 +40,6 @@
   <profiles>
     <profile>
       <id>history.plugin</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
       <dependencies>
         <dependency>
           <groupId>pro.taskana.history</groupId>
@@ -83,9 +80,6 @@
     </profile>
     <profile>
       <id>historyLogging.plugin</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
       <dependencies>
         <dependency>
           <groupId>pro.taskana.history</groupId>

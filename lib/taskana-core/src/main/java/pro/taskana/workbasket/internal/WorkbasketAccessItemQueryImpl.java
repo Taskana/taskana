@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -24,7 +22,6 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbasketAccessItems";
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketAccessItemColumnValues";
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
   private AccessItemQueryColumnName columnName;
   private String[] accessIdIn;
   private String[] accessIdLike;
@@ -102,19 +99,14 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
   @Override
   public List<WorkbasketAccessItem> list() {
-    LOGGER.debug("entry to list(), this = {}", this);
     List<WorkbasketAccessItem> result =
         taskanaEngine.openAndReturnConnection(
             () -> new ArrayList<>(taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this)));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-    }
     return result;
   }
 
   @Override
   public List<WorkbasketAccessItem> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<WorkbasketAccessItem> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -134,19 +126,12 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       throw e;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(
       AccessItemQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
     List<String> result = null;
     try {
       taskanaEngine.openConnection();
@@ -157,19 +142,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        int numberOfResultObjects = result == null ? 0 : result.size();
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            numberOfResultObjects,
-            result);
-      }
     }
   }
 
   @Override
   public WorkbasketAccessItem single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     WorkbasketAccessItem accessItm = null;
     try {
       taskanaEngine.openConnection();
@@ -177,13 +154,11 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       return accessItm;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", accessItm);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
@@ -191,7 +166,6 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 

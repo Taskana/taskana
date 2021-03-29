@@ -159,7 +159,6 @@ public class TaskServiceImpl implements TaskService {
   public Task createTask(Task taskToCreate)
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException {
-    LOGGER.debug("entry to createTask(task = {})", taskToCreate);
 
     if (CreateTaskPreprocessorManager.isCreateTaskPreprocessorEnabled()) {
       taskToCreate = createTaskPreprocessorManager.processTaskBeforeCreation(taskToCreate);
@@ -174,7 +173,9 @@ public class TaskServiceImpl implements TaskService {
         throw new TaskAlreadyExistException(task.getId());
       }
 
-      LOGGER.debug("Task {} cannot be found, so it can be created.", task.getId());
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Task {} cannot be found, so it can be created.", task.getId());
+      }
       Workbasket workbasket;
 
       if (task.getWorkbasketSummary().getId() != null) {
@@ -219,7 +220,9 @@ public class TaskServiceImpl implements TaskService {
       setCallbackStateOnTaskCreation(task);
       try {
         this.taskMapper.insert(task);
-        LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
+        }
         if (HistoryEventManager.isHistoryEnabled()) {
 
           String details =
@@ -266,13 +269,11 @@ public class TaskServiceImpl implements TaskService {
       return task;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from createTask(task = {})", task);
     }
   }
 
   @Override
   public Task getTask(String id) throws NotAuthorizedException, TaskNotFoundException {
-    LOGGER.debug("entry to getTaskById(id = {})", id);
     TaskImpl resultTask = null;
     try {
       taskanaEngine.openConnection();
@@ -325,7 +326,6 @@ public class TaskServiceImpl implements TaskService {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from getTaskById(). Returning result {} ", resultTask);
     }
   }
 
@@ -346,7 +346,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task setTaskRead(String taskId, boolean isRead)
       throws TaskNotFoundException, NotAuthorizedException {
-    LOGGER.debug("entry to setTaskRead(taskId = {}, isRead = {})", taskId, isRead);
     TaskImpl task = null;
     try {
       taskanaEngine.openConnection();
@@ -354,11 +353,12 @@ public class TaskServiceImpl implements TaskService {
       task.setRead(isRead);
       task.setModified(Instant.now());
       taskMapper.update(task);
-      LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", task, isRead);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", task, isRead);
+      }
       return task;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from setTaskRead(taskId, isRead). Returning result {} ", task);
     }
   }
 
@@ -384,13 +384,11 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task newTask(String workbasketKey, String domain) {
-    LOGGER.debug("entry to newTask(workbasketKey = {}, domain = {})", workbasketKey, domain);
     TaskImpl task = new TaskImpl();
     WorkbasketSummaryImpl wb = new WorkbasketSummaryImpl();
     wb.setKey(workbasketKey);
     wb.setDomain(domain);
     task.setWorkbasketSummary(wb);
-    LOGGER.debug("exit from newTask(), returning {}", task);
     return task;
   }
 
@@ -410,7 +408,6 @@ public class TaskServiceImpl implements TaskService {
           NotAuthorizedException, AttachmentPersistenceException, InvalidStateException,
           ClassificationNotFoundException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    LOGGER.debug("entry to updateTask(task = {}, userId = {})", task, userId);
     TaskImpl newTaskImpl = (TaskImpl) task;
     TaskImpl oldTaskImpl;
     try {
@@ -426,7 +423,9 @@ public class TaskServiceImpl implements TaskService {
 
       taskMapper.update(newTaskImpl);
 
-      LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+      }
 
       if (HistoryEventManager.isHistoryEnabled()) {
 
@@ -443,7 +442,6 @@ public class TaskServiceImpl implements TaskService {
 
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from claim()");
     }
     return task;
   }
@@ -482,10 +480,6 @@ public class TaskServiceImpl implements TaskService {
   public Task selectAndClaim(TaskQuery taskQuery)
       throws NotAuthorizedException, InvalidOwnerException {
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to selectAndClaim(taskQuery = {})", taskQuery);
-    }
-
     try {
 
       taskanaEngine.openConnection();
@@ -505,7 +499,6 @@ public class TaskServiceImpl implements TaskService {
     } catch (InvalidStateException | TaskNotFoundException e) {
       throw new SystemException("Caught exception ", e);
     } finally {
-      LOGGER.debug("exit from selectAndClaim()");
       taskanaEngine.returnConnection();
     }
   }
@@ -513,9 +506,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to deleteTasks(tasks = {})", taskIds);
-    }
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
 
@@ -553,7 +543,6 @@ public class TaskServiceImpl implements TaskService {
       }
       return bulkLog;
     } finally {
-      LOGGER.debug("exit from deleteTasks()");
       taskanaEngine.returnConnection();
     }
   }
@@ -574,12 +563,7 @@ public class TaskServiceImpl implements TaskService {
   public List<String> updateTasks(
       ObjectReference selectionCriteria, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to updateTasks(selectionCriteria = {}, customFieldsToUpdate = {})",
-          selectionCriteria,
-          customFieldsToUpdate);
-    }
+
     ObjectReference.validate(selectionCriteria, "ObjectReference", "updateTasks call");
     validateCustomFields(customFieldsToUpdate);
     TaskCustomPropertySelector fieldSelector = new TaskCustomPropertySelector();
@@ -600,11 +584,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
       } else {
-        LOGGER.debug("updateTasks() found no tasks for update ");
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("updateTasks() found no tasks for update ");
+        }
       }
       return changedTasks;
     } finally {
-      LOGGER.debug("exit from updateTasks().");
       taskanaEngine.returnConnection();
     }
   }
@@ -613,12 +598,6 @@ public class TaskServiceImpl implements TaskService {
   public List<String> updateTasks(
       List<String> taskIds, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to updateTasks(taskIds = {}, customFieldsToUpdate = {})",
-          taskIds,
-          customFieldsToUpdate);
-    }
 
     validateCustomFields(customFieldsToUpdate);
     TaskCustomPropertySelector fieldSelector = new TaskCustomPropertySelector();
@@ -639,11 +618,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
       } else {
-        LOGGER.debug("updateTasks() found no tasks for update ");
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("updateTasks() found no tasks for update ");
+        }
       }
       return changedTasks;
     } finally {
-      LOGGER.debug("exit from updateTasks().");
       taskanaEngine.returnConnection();
     }
   }
@@ -685,9 +665,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
       List<String> externalIds, CallbackState state) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to setCallbackStateForTasks(externalIds = {})", externalIds);
-    }
+
     try {
       taskanaEngine.openConnection();
 
@@ -708,7 +686,6 @@ public class TaskServiceImpl implements TaskService {
       }
       return bulkLog;
     } finally {
-      LOGGER.debug("exit from setCallbckStateForTasks()");
       taskanaEngine.returnConnection();
     }
   }
@@ -716,9 +693,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public BulkOperationResults<String, TaskanaException> setOwnerOfTasks(
       String owner, List<String> argTaskIds) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to setOwnerOfTasks(owner = {}, tasks = {})", owner, argTaskIds);
-    }
+
     BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
     if (argTaskIds == null || argTaskIds.isEmpty()) {
       return bulkLog;
@@ -756,7 +731,6 @@ public class TaskServiceImpl implements TaskService {
       }
       return bulkLog;
     } finally {
-      LOGGER.debug("exit from setOwnerOfTasks()");
       taskanaEngine.returnConnection();
     }
   }
@@ -764,10 +738,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public BulkOperationResults<String, TaskanaException> setPlannedPropertyOfTasks(
       Instant planned, List<String> argTaskIds) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to setPlannedPropertyOfTasks(planned = {}, tasks = {})", planned, argTaskIds);
-    }
 
     BulkLog bulkLog = new BulkLog();
     if (argTaskIds == null || argTaskIds.isEmpty()) {
@@ -783,7 +753,6 @@ public class TaskServiceImpl implements TaskService {
       bulkLog.addAllErrors(errorsFromProcessing);
       return bulkLog;
     } finally {
-      LOGGER.debug("exit from setPlannedPropertyOfTasks");
       taskanaEngine.returnConnection();
     }
   }
@@ -791,7 +760,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task cancelTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-    LOGGER.debug("entry to cancelTask(task = {})", taskId);
 
     Task cancelledTask;
 
@@ -808,7 +776,6 @@ public class TaskServiceImpl implements TaskService {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from cancelTask()");
     }
 
     return cancelledTask;
@@ -817,7 +784,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task terminateTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-    LOGGER.debug("entry to terminateTask(task = {})", taskId);
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
 
@@ -837,15 +803,11 @@ public class TaskServiceImpl implements TaskService {
 
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from terminateTask()");
     }
     return terminatedTask;
   }
 
   public List<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
-    LOGGER.debug(
-        "entry to findTasksIdsAffectedByClassificationChange(classificationId = {})",
-        classificationId);
     // tasks directly affected
     List<TaskSummary> tasksAffectedDirectly =
         createTaskQuery()
@@ -883,15 +845,11 @@ public class TaskServiceImpl implements TaskService {
           classificationId,
           affectedTaskIds);
     }
-    LOGGER.debug("exit from findTasksIdsAffectedByClassificationChange(). ");
     return affectedTaskIds;
   }
 
   public void refreshPriorityAndDueDatesOfTasksOnClassificationUpdate(
       List<String> taskIds, boolean serviceLevelChanged, boolean priorityChanged) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to refreshPriorityAndDueDateOfTasks(tasks = {})", taskIds);
-    }
     Pair<List<MinimalTaskSummary>, BulkLog> resultsPair = getMinimalTaskSummaries(taskIds);
     List<MinimalTaskSummary> tasks = resultsPair.getLeft();
     try {
@@ -910,7 +868,6 @@ public class TaskServiceImpl implements TaskService {
             });
       }
     } finally {
-      LOGGER.debug("exit from refreshPriorityAndDueDateOfTasks");
       taskanaEngine.returnConnection();
     }
   }
@@ -973,12 +930,6 @@ public class TaskServiceImpl implements TaskService {
 
   void removeNonExistingTasksFromTaskIdList(
       List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to removeNonExistingTasksFromTaskIdList(targetWbId = {}, taskIds = {})",
-          taskIds,
-          bulkLog);
-    }
 
     Iterator<String> taskIdIterator = taskIds.iterator();
     while (taskIdIterator.hasNext()) {
@@ -989,16 +940,11 @@ public class TaskServiceImpl implements TaskService {
         taskIdIterator.remove();
       }
     }
-    LOGGER.debug("exit from removeNonExistingTasksFromTaskIdList()");
   }
 
   List<TaskSummary> augmentTaskSummariesByContainedSummariesWithPartitioning(
       List<TaskSummaryImpl> taskSummaries) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to augmentTaskSummariesByContainedSummariesWithPartitioning(taskSummaries= {})",
-          taskSummaries);
-    }
+
     // splitting Augmentation into steps of maximal 32000 tasks
     // reason: DB2 has a maximum for parameters in a query
     List<TaskSummary> result =
@@ -1007,7 +953,6 @@ public class TaskServiceImpl implements TaskService {
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
-    LOGGER.debug("exit from to augmentTaskSummariesByContainedSummariesWithPartitioning()");
     return result;
   }
 
@@ -1042,7 +987,6 @@ public class TaskServiceImpl implements TaskService {
   private BulkOperationResults<String, TaskanaException> completeTasks(
       List<String> taskIds, boolean forced) throws InvalidArgumentException {
     try {
-      LOGGER.debug("entry to completeTasks(taskIds = {})", taskIds);
       taskanaEngine.openConnection();
       if (taskIds == null) {
         throw new InvalidArgumentException("TaskIds can't be used as NULL-Parameter.");
@@ -1078,7 +1022,6 @@ public class TaskServiceImpl implements TaskService {
       return bulkLog;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from to completeTasks(taskIds = {})", taskIds);
     }
   }
 
@@ -1152,10 +1095,12 @@ public class TaskServiceImpl implements TaskService {
     task.setCompleted(now);
     task.setState(targetState);
     taskMapper.update(task);
-    LOGGER.debug(
-        "Task '{}' cancelled by user '{}'.",
-        taskId,
-        taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Task '{}' cancelled by user '{}'.",
+          taskId,
+          taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+    }
     return task;
   }
 
@@ -1187,8 +1132,6 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    LOGGER.debug(
-        "entry to claim(id = {}, userId = {}, forceClaim = {})", taskId, userId, forceClaim);
     TaskImpl task;
     try {
       taskanaEngine.openConnection();
@@ -1198,7 +1141,9 @@ public class TaskServiceImpl implements TaskService {
       checkPreconditionsForClaimTask(task, forceClaim);
       claimActionsOnTask(task, userId, now);
       taskMapper.update(task);
-      LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
+      }
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
             new TaskClaimedEvent(
@@ -1208,7 +1153,6 @@ public class TaskServiceImpl implements TaskService {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from claim()");
     }
     return task;
   }
@@ -1281,11 +1225,6 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    LOGGER.debug(
-        "entry to cancelClaim(taskId = {}), userId = {}, forceUnclaim = {})",
-        taskId,
-        userId,
-        forceUnclaim);
     TaskImpl task;
     try {
       taskanaEngine.openConnection();
@@ -1306,7 +1245,9 @@ public class TaskServiceImpl implements TaskService {
       task.setRead(true);
       task.setState(TaskState.READY);
       taskMapper.update(task);
-      LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
+      }
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
             new TaskClaimCancelledEvent(
@@ -1316,7 +1257,6 @@ public class TaskServiceImpl implements TaskService {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from cancelClaim()");
     }
     return task;
   }
@@ -1325,8 +1265,6 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    LOGGER.debug(
-        "entry to completeTask(id = {}, userId = {}, isForced = {})", taskId, userId, isForced);
     TaskImpl task;
     try {
       taskanaEngine.openConnection();
@@ -1347,7 +1285,9 @@ public class TaskServiceImpl implements TaskService {
       Instant now = Instant.now();
       completeActionsOnTask(task, userId, now);
       taskMapper.update(task);
-      LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
+      }
       if (HistoryEventManager.isHistoryEnabled()) {
         historyEventManager.createEvent(
             new TaskCompletedEvent(
@@ -1357,14 +1297,12 @@ public class TaskServiceImpl implements TaskService {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from completeTask()");
     }
     return task;
   }
 
   private void deleteTask(String taskId, boolean forceDelete)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-    LOGGER.debug("entry to deleteTask(taskId = {} , forceDelete = {})", taskId, forceDelete);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
     TaskImpl task;
     try {
@@ -1391,10 +1329,11 @@ public class TaskServiceImpl implements TaskService {
         historyEventManager.deleteEvents(Collections.singletonList(taskId));
       }
 
-      LOGGER.debug("Task {} deleted.", taskId);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Task {} deleted.", taskId);
+      }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from deleteTask().");
     }
   }
 
@@ -1402,7 +1341,6 @@ public class TaskServiceImpl implements TaskService {
       BulkOperationResults<String, TaskanaException> bulkLog,
       List<MinimalTaskSummary> taskSummaries,
       Iterator<String> taskIdIterator) {
-    LOGGER.debug("entry to removeSingleTask()");
     String currentTaskId = taskIdIterator.next();
     if (currentTaskId == null || currentTaskId.equals("")) {
       bulkLog.addError(
@@ -1436,7 +1374,6 @@ public class TaskServiceImpl implements TaskService {
         }
       }
     }
-    LOGGER.debug("exit from removeSingleTask()");
   }
 
   private void removeSingleTaskForCallbackStateByExternalId(
@@ -1444,7 +1381,6 @@ public class TaskServiceImpl implements TaskService {
       List<MinimalTaskSummary> taskSummaries,
       Iterator<String> externalIdIterator,
       CallbackState desiredCallbackState) {
-    LOGGER.debug("entry to removeSingleTask()");
     String currentExternalId = externalIdIterator.next();
     if (currentExternalId == null || currentExternalId.equals("")) {
       bulkLog.addError(
@@ -1470,7 +1406,6 @@ public class TaskServiceImpl implements TaskService {
         externalIdIterator.remove();
       }
     }
-    LOGGER.debug("exit from removeSingleTask()");
   }
 
   private boolean desiredCallbackStateCanBeSetForFoundSummary(
@@ -1501,7 +1436,6 @@ public class TaskServiceImpl implements TaskService {
   private void standardSettings(TaskImpl task, Classification classification)
       throws InvalidArgumentException {
     TaskImpl task1 = task;
-    LOGGER.debug("entry to standardSettings()");
     final Instant now = Instant.now();
     task1.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK));
     if (task1.getExternalId() == null) {
@@ -1547,7 +1481,6 @@ public class TaskServiceImpl implements TaskService {
       throw new SystemException(
           "Internal error when trying to insert new Attachments on Task Creation.", e);
     }
-    LOGGER.debug("exit from standardSettings()");
   }
 
   private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {
@@ -1569,9 +1502,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void updateTasksToBeCompleted(Stream<TaskSummaryImpl> taskSummaries, Instant now) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to updateTasksToBeCompleted()");
-    }
+
     List<String> taskIds = new ArrayList<>();
     List<String> updateClaimedTaskIds = new ArrayList<>();
     List<TaskSummary> taskSummaryList =
@@ -1605,20 +1536,12 @@ public class TaskServiceImpl implements TaskService {
         createTasksCompletedEvents(taskSummaryList);
       }
     }
-    LOGGER.debug("exit from updateTasksToBeCompleted()");
   }
 
   private void addClassificationSummariesToTaskSummaries(
       List<TaskSummaryImpl> tasks, List<ClassificationSummary> classifications) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to addClassificationSummariesToTaskSummaries(tasks = {}, classifications = {})",
-          tasks,
-          classifications);
-    }
 
     if (tasks == null || tasks.isEmpty()) {
-      LOGGER.debug("exit from addClassificationSummariesToTaskSummaries()");
       return;
     }
     // assign query results to appropriate tasks.
@@ -1640,12 +1563,10 @@ public class TaskServiceImpl implements TaskService {
       // set the classification on the task object
       task.setClassificationSummary(classificationSummary);
     }
-    LOGGER.debug("exit from addClassificationSummariesToTaskSummaries()");
   }
 
   private List<ClassificationSummary> findClassificationsForTasksAndAttachments(
       List<TaskSummaryImpl> taskSummaries, List<AttachmentSummaryImpl> attachmentSummaries) {
-    LOGGER.debug("entry to findClassificationsForTasksAndAttachments()");
     if (taskSummaries == null || taskSummaries.isEmpty()) {
       return new ArrayList<>();
     }
@@ -1660,13 +1581,11 @@ public class TaskServiceImpl implements TaskService {
         classificationIdSet.add(att.getClassificationSummary().getId());
       }
     }
-    LOGGER.debug("exit from findClassificationsForTasksAndAttachments()");
     return queryClassificationsForTasksAndAttachments(classificationIdSet);
   }
 
   private List<ClassificationSummary> findClassificationForTaskImplAndAttachments(
       TaskImpl task, List<AttachmentImpl> attachmentImpls) {
-    LOGGER.debug("entry to transferBulk()");
     Set<String> classificationIdSet =
         new HashSet<>(Collections.singletonList(task.getClassificationSummary().getId()));
     if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
@@ -1674,17 +1593,19 @@ public class TaskServiceImpl implements TaskService {
         classificationIdSet.add(att.getClassificationSummary().getId());
       }
     }
-    LOGGER.debug("exit from findClassificationForTaskImplAndAttachments()");
     return queryClassificationsForTasksAndAttachments(classificationIdSet);
   }
 
+  // TODO StackTrace
   private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(
       Set<String> classificationIdSet) {
 
     String[] classificationIdArray = classificationIdSet.toArray(new String[0]);
 
-    LOGGER.debug(
-        "getClassificationsForTasksAndAttachments() about to query classifications and exit");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "getClassificationsForTasksAndAttachments() about to query classifications and exit");
+    }
     // perform classification query
     return this.classificationService
         .createClassificationQuery()
@@ -1693,7 +1614,6 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void addWorkbasketSummariesToTaskSummaries(List<TaskSummaryImpl> taskSummaries) {
-    LOGGER.debug("entry to addWorkbasketSummariesToTaskSummaries()");
     if (taskSummaries == null || taskSummaries.isEmpty()) {
       return;
     }
@@ -1703,7 +1623,9 @@ public class TaskServiceImpl implements TaskService {
             .map(t -> t.getWorkbasketSummary().getId())
             .distinct()
             .toArray(String[]::new);
-    LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
+    }
     WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
     query.setUsedToAugmentTasks(true);
 
@@ -1726,21 +1648,12 @@ public class TaskServiceImpl implements TaskService {
 
       task.setWorkbasketSummary(workbasketSummary);
     }
-    LOGGER.debug("exit from addWorkbasketSummariesToTaskSummaries()");
   }
 
   private void addAttachmentSummariesToTaskSummaries(
       List<TaskSummaryImpl> taskSummaries,
       List<AttachmentSummaryImpl> attachmentSummaries,
       List<ClassificationSummary> classifications) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to addAttachmentSummariesToTaskSummaries(taskSummaries = {}, "
-              + "attachmentSummaries = {}, classifications = {})",
-          taskSummaries,
-          attachmentSummaries,
-          classifications);
-    }
 
     if (taskSummaries == null || taskSummaries.isEmpty()) {
       return;
@@ -1760,21 +1673,17 @@ public class TaskServiceImpl implements TaskService {
         }
       }
     }
-
-    LOGGER.debug("exit from addAttachmentSummariesToTaskSummaries()");
   }
 
   private void addClassificationSummariesToAttachmentSummaries(
       List<AttachmentSummaryImpl> attachmentSummaries,
       List<TaskSummaryImpl> taskSummaries,
       List<ClassificationSummary> classifications) {
-    LOGGER.debug("entry to addClassificationSummariesToAttachmentSummaries()");
     // prereq: in each attachmentSummary, the classificationSummary.key property is set.
     if (attachmentSummaries == null
         || attachmentSummaries.isEmpty()
         || taskSummaries == null
         || taskSummaries.isEmpty()) {
-      LOGGER.debug("exit from addClassificationSummariesToAttachmentSummaries()");
       return;
     }
     // iterate over all attachment summaries an add the appropriate classification summary to each
@@ -1790,20 +1699,12 @@ public class TaskServiceImpl implements TaskService {
       }
       att.setClassificationSummary(classificationSummary);
     }
-    LOGGER.debug("exit from addClassificationSummariesToAttachmentSummaries()");
   }
 
   private List<Attachment> addClassificationSummariesToAttachments(
       List<AttachmentImpl> attachmentImpls, List<ClassificationSummary> classifications) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to addClassificationSummariesToAttachments(targetWbId = {}, taskIds = {})",
-          attachmentImpls,
-          classifications);
-    }
 
     if (attachmentImpls == null || attachmentImpls.isEmpty()) {
-      LOGGER.debug("exit from addClassificationSummariesToAttachments()");
       return new ArrayList<>();
     }
 
@@ -1822,21 +1723,12 @@ public class TaskServiceImpl implements TaskService {
       att.setClassificationSummary(classificationSummary);
       result.add(att);
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from addClassificationSummariesToAttachments(), returning {}", result);
-    }
 
     return result;
   }
 
   private TaskImpl initUpdatedTask(
       Map<TaskCustomField, String> customFieldsToUpdate, TaskCustomPropertySelector fieldSelector) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to initUpdatedTask(customFieldsToUpdate = {}, fieldSelector = {})",
-          customFieldsToUpdate,
-          fieldSelector);
-    }
 
     TaskImpl newTask = new TaskImpl();
     newTask.setModified(Instant.now());
@@ -1846,25 +1738,16 @@ public class TaskServiceImpl implements TaskService {
       fieldSelector.setCustomProperty(key, true);
       newTask.setCustomAttribute(key, entry.getValue());
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from initUpdatedTask(), returning {}", newTask);
-    }
-
     return newTask;
   }
 
   private void validateCustomFields(Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to validateCustomFields(customFieldsToUpdate = {})", customFieldsToUpdate);
-    }
 
     if (customFieldsToUpdate == null || customFieldsToUpdate.isEmpty()) {
       throw new InvalidArgumentException(
           "The customFieldsToUpdate argument to updateTasks must not be empty.");
     }
-    LOGGER.debug("exit from validateCustomFields()");
   }
 
   private List<TaskSummary> getTasksToChange(List<String> taskIds) {

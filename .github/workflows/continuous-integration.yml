@@ -230,6 +230,7 @@ jobs:
           - taskana-common
           - taskana-common-security
           - taskana-common-data
+          - taskana-common-logging
           - taskana-common-test
           - taskana-core
           - taskana-cdi

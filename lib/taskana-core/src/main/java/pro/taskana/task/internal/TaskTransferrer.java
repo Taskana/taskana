@@ -61,11 +61,6 @@ class TaskTransferrer {
       String taskId, String destinationWorkbasketKey, String domain, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
-    LOGGER.debug(
-        "entry to transfer(taskId = {}, destinationWorkbasketKey = {}, domain = {})",
-        taskId,
-        destinationWorkbasketKey,
-        domain);
     TaskImpl task = null;
     WorkbasketSummary oldWorkbasketSummary = null;
     try {
@@ -105,10 +100,12 @@ class TaskTransferrer {
       task.setState(TaskState.READY);
       task.setOwner(null);
       taskMapper.update(task);
-      LOGGER.debug(
-          "Method transfer() transferred Task '{}' to destination workbasket {}",
-          taskId,
-          destinationWorkbasket.getId());
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Method transfer() transferred Task '{}' to destination workbasket {}",
+            taskId,
+            destinationWorkbasket.getId());
+      }
       if (HistoryEventManager.isHistoryEnabled()) {
         createTaskTransferredEvent(
             task, oldWorkbasketSummary.getId(), destinationWorkbasket.asSummary().getId());
@@ -116,17 +113,13 @@ class TaskTransferrer {
       return task;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from transfer(). Returning result {} ", task);
     }
   }
 
   Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
-    LOGGER.debug(
-        "entry to transfer(taskId = {}, destinationWorkbasketId = {})",
-        taskId,
-        destinationWorkbasketId);
+
     TaskImpl task = null;
     WorkbasketSummary oldWorkbasketSummary = null;
     try {
@@ -162,17 +155,18 @@ class TaskTransferrer {
       task.setState(TaskState.READY);
       task.setOwner(null);
       taskMapper.update(task);
-      LOGGER.debug(
-          "Method transfer() transferred Task '{}' to destination workbasket {}",
-          taskId,
-          destinationWorkbasketId);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Method transfer() transferred Task '{}' to destination workbasket {}",
+            taskId,
+            destinationWorkbasketId);
+      }
       if (HistoryEventManager.isHistoryEnabled()) {
         createTaskTransferredEvent(task, oldWorkbasketSummary.getId(), destinationWorkbasketId);
       }
       return task;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from transfer(). Returning result {} ", task);
     }
   }
 
@@ -184,13 +178,6 @@ class TaskTransferrer {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
     try {
       taskanaEngine.openConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "entry to transferTasks(targetWbKey = {}, domain = {}, taskIds = {})",
-            destinationWorkbasketKey,
-            destinationWorkbasketDomain,
-            taskIds);
-      }
 
       // Check pre-conditions with trowing Exceptions
       if (destinationWorkbasketKey == null || destinationWorkbasketDomain == null) {
@@ -202,15 +189,6 @@ class TaskTransferrer {
 
       return transferTasks(taskIds, destinationWorkbasket, setTransferFlag);
     } finally {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from transferTasks(targetWbKey = {}, targetWbDomain = {}, "
-                + "destination taskIds = {})",
-            destinationWorkbasketKey,
-            destinationWorkbasketDomain,
-            taskIds);
-      }
-
       taskanaEngine.returnConnection();
     }
   }
@@ -220,12 +198,6 @@ class TaskTransferrer {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
     try {
       taskanaEngine.openConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "entry to transferTasks(targetWbId = {}, taskIds = {})",
-            destinationWorkbasketId,
-            taskIds);
-      }
 
       // Check pre-conditions with trowing Exceptions
       if (destinationWorkbasketId == null || destinationWorkbasketId.isEmpty()) {
@@ -235,13 +207,6 @@ class TaskTransferrer {
 
       return transferTasks(taskIds, destinationWorkbasket, setTransferFlag);
     } finally {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from transferTasks(targetWbKey = {}, taskIds = {})",
-            destinationWorkbasketId,
-            taskIds);
-      }
-
       taskanaEngine.returnConnection();
     }
   }
@@ -251,12 +216,6 @@ class TaskTransferrer {
       Workbasket destinationWorkbasket,
       boolean setTransferFlag)
       throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to transferTasks(taskIdsToBeTransferred = {}, destinationWorkbasket = {})",
-          taskIdsToBeTransferred,
-          destinationWorkbasket);
-    }
 
     workbasketService.checkAuthorization(
         destinationWorkbasket.getId(), WorkbasketPermission.APPEND);
@@ -276,10 +235,6 @@ class TaskTransferrer {
     taskSummaries = taskMapper.findExistingTasks(taskIds, null);
     checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
     updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket, setTransferFlag);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from transferTasks(), returning {}", bulkLog);
-    }
-
     return bulkLog;
   }
 
@@ -287,14 +242,6 @@ class TaskTransferrer {
       List<String> taskIds,
       List<MinimalTaskSummary> taskSummaries,
       BulkOperationResults<String, TaskanaException> bulkLog) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to checkIfTransferConditionsAreFulfilled(taskIds = {}, "
-              + "taskSummaries = {}, bulkLog = {})",
-          taskIds,
-          taskSummaries,
-          bulkLog);
-    }
 
     Set<String> workbasketIds = new HashSet<>();
     taskSummaries.forEach(t -> workbasketIds.add(t.getWorkbasketId()));
@@ -311,7 +258,6 @@ class TaskTransferrer {
               .list();
     }
     checkIfTasksMatchTransferCriteria(taskIds, taskSummaries, sourceWorkbaskets, bulkLog);
-    LOGGER.debug("exit from checkIfTransferConditionsAreFulfilled()");
   }
 
   private void checkIfTasksMatchTransferCriteria(
@@ -319,15 +265,6 @@ class TaskTransferrer {
       List<MinimalTaskSummary> taskSummaries,
       List<WorkbasketSummary> sourceWorkbaskets,
       BulkOperationResults<String, TaskanaException> bulkLog) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to checkIfTasksMatchTransferCriteria(taskIds = {}, taskSummaries = {}, "
-              + "sourceWorkbaskets = {}, bulkLog = {})",
-          taskIds,
-          taskSummaries,
-          sourceWorkbaskets,
-          bulkLog);
-    }
 
     Iterator<String> taskIdIterator = taskIds.iterator();
     while (taskIdIterator.hasNext()) {
@@ -359,7 +296,6 @@ class TaskTransferrer {
         taskIdIterator.remove();
       }
     }
-    LOGGER.debug("exit from checkIfTasksMatchTransferCriteria()");
   }
 
   private void createTaskTransferredEvent(
@@ -378,14 +314,6 @@ class TaskTransferrer {
       List<MinimalTaskSummary> taskSummaries,
       Workbasket destinationWorkbasket,
       boolean setTransferFlag) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to updateTasksToBeTransferred(taskIds = {}, taskSummaries = {}, "
-              + "destinationWorkbasket = {})",
-          taskIds,
-          taskSummaries,
-          destinationWorkbasket.getId());
-    }
 
     taskSummaries =
         taskSummaries.stream()
@@ -406,7 +334,6 @@ class TaskTransferrer {
         createTasksTransferredEvents(taskSummaries, updateObject);
       }
     }
-    LOGGER.debug("exit from updateTasksToBeTransferred()");
   }
 
   private void createTasksTransferredEvents(

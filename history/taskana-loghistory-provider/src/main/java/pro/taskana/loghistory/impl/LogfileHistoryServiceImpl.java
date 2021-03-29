@@ -105,13 +105,17 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
           LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
         } else {
           props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          LOGGER.debug("properties were loaded from file {} from classpath.", propertiesFile);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("properties were loaded from file {} from classpath.", propertiesFile);
+          }
         }
       } else {
         try (FileInputStream stream = new FileInputStream(propertiesFile)) {
           props.load(stream);
         }
-        LOGGER.debug("properties were loaded from file {}.", propertiesFile);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("properties were loaded from file {}.", propertiesFile);
+        }
       }
     } catch (IOException e) {
       LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);

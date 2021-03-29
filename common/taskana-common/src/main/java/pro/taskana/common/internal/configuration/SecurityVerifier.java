@@ -26,13 +26,6 @@ public class SecurityVerifier {
   }
 
   public void checkSecureAccess(boolean securityEnabled) {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          String.format(
-              "Entering checkSecureAccess with securityEnabled set to %b", securityEnabled));
-    }
-
     try (Connection connection = dataSource.getConnection()) {
 
       if (LOGGER.isDebugEnabled()) {
@@ -54,14 +47,18 @@ public class SecurityVerifier {
       }
     } catch (SQLException ex) {
 
-      LOGGER.debug(
-          String.format(
-              "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            String.format(
+                "Security-mode is not yet set. Setting security flag to %b", securityEnabled));
+      }
 
       setInitialSecurityMode(securityEnabled);
     }
 
-    LOGGER.debug("Security-mode is enabled");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Security-mode is enabled");
+    }
   }
 
   private void setInitialSecurityMode(boolean securityEnabled) {

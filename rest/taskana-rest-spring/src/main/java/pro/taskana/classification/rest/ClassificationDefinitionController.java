@@ -5,7 +5,6 @@ import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -48,9 +45,6 @@ import pro.taskana.common.rest.RestEndpoints;
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ClassificationDefinitionController {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClassificationDefinitionController.class);
-
   private final ObjectMapper mapper;
   private final ClassificationService classificationService;
   private final ClassificationDefinitionRepresentationModelAssembler assembler;
@@ -76,9 +70,6 @@ public class ClassificationDefinitionController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationDefinitionCollectionRepresentationModel>
       exportClassifications(@RequestParam(required = false) String[] domain) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to exportClassifications(domain= {})", Arrays.toString(domain));
-    }
     ClassificationQuery query = classificationService.createClassificationQuery();
 
     List<ClassificationSummary> summaries =
@@ -94,9 +85,6 @@ public class ClassificationDefinitionController {
 
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         ResponseEntity.ok(collectionModel);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from exportClassifications(), returning {}", response);
-    }
 
     return response;
   }
@@ -122,7 +110,6 @@ public class ClassificationDefinitionController {
       throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException,
           ClassificationNotFoundException, ClassificationAlreadyExistException,
           DomainNotFoundException, IOException {
-    LOGGER.debug("Entry to importClassifications()");
     Map<String, String> systemIds = getSystemIds();
     ClassificationDefinitionCollectionRepresentationModel collection =
         extractClassificationResourcesFromFile(file);
@@ -133,7 +120,6 @@ public class ClassificationDefinitionController {
     insertOrUpdateClassificationsWithoutParent(collection.getContent(), systemIds);
     updateParentChildrenRelations(childrenInFile);
     ResponseEntity<Void> response = ResponseEntity.noContent().build();
-    LOGGER.debug("Exit from importClassifications(), returning {}", response);
     return response;
   }
 
@@ -171,7 +157,6 @@ public class ClassificationDefinitionController {
   private Map<Classification, String> mapChildrenToParentKeys(
       Collection<ClassificationDefinitionRepresentationModel> definitionList,
       Map<String, String> systemIds) {
-    LOGGER.debug("Entry to mapChildrenToParentKeys()");
     Map<Classification, String> childrenInFile = new HashMap<>();
     Set<String> newKeysWithDomain = new HashSet<>();
     definitionList.stream()
@@ -200,10 +185,6 @@ public class ClassificationDefinitionController {
         childrenInFile.put(assembler.toEntityModel(def), cl.getParentKey());
       }
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from mapChildrenToParentKeys(), returning {}", childrenInFile);
-    }
-
     return childrenInFile;
   }
 
@@ -212,8 +193,6 @@ public class ClassificationDefinitionController {
       Map<String, String> systemIds)
       throws ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException,
           ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException {
-    LOGGER.debug("Entry to insertOrUpdateClassificationsWithoutParent()");
-
     for (ClassificationDefinitionRepresentationModel definition : definitionList) {
       ClassificationRepresentationModel classificationRepModel = definition.getClassification();
       classificationRepModel.setParentKey(null);
@@ -230,14 +209,11 @@ public class ClassificationDefinitionController {
         classificationService.createClassification(newClassification);
       }
     }
-    LOGGER.debug("Exit from insertOrUpdateClassificationsWithoutParent()");
   }
 
   private void updateParentChildrenRelations(Map<Classification, String> childrenInFile)
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InvalidArgumentException {
-    LOGGER.debug("Entry to updateParentChildrenRelations()");
-
     for (Map.Entry<Classification, String> entry : childrenInFile.entrySet()) {
       Classification childRes = entry.getKey();
       String parentKey = entry.getValue();
@@ -256,13 +232,11 @@ public class ClassificationDefinitionController {
 
       classificationService.updateClassification(child);
     }
-    LOGGER.debug("Exit from updateParentChildrenRelations()");
   }
 
   private void updateExistingClassification(Classification newClassification, String systemId)
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
           InvalidArgumentException {
-    LOGGER.debug("Entry to updateExistingClassification()");
     Classification currentClassification = classificationService.getClassification(systemId);
     if (newClassification.getType() != null
         && !newClassification.getType().equals(currentClassification.getType())) {
@@ -302,6 +276,5 @@ public class ClassificationDefinitionController {
         ClassificationCustomField.CUSTOM_8,
         newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_8));
     classificationService.updateClassification(currentClassification);
-    LOGGER.debug("Exit from updateExistingClassification()");
   }
 }

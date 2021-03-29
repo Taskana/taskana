@@ -149,8 +149,10 @@ public class TaskanaEngineConfiguration {
   }
 
   public void initTaskanaProperties(String propertiesFile, String separator) {
-    LOGGER.debug(
-        "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
+    }
     Properties props = readPropertiesFromFile(propertiesFile);
     initTaskanaRoles(props, separator);
     initJobParameters(props);
@@ -407,18 +409,20 @@ public class TaskanaEngineConfiguration {
             Boolean::parseBoolean)
         .ifPresent(this::setTaskCleanupJobAllCompletedSameParentBusiness);
 
-    LOGGER.debug(
-        "Configured number of task and workbasket updates per transaction: {}", jobBatchSize);
-    LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
-    LOGGER.debug("CleanupJob configuration: first run at {}", cleanupJobFirstRun);
-    LOGGER.debug("CleanupJob configuration: runs every {}", cleanupJobRunEvery);
-    LOGGER.debug(
-        "CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
-        cleanupJobMinimumAge);
-    LOGGER.debug(
-        "TaskCleanupJob configuration: all completed task with the "
-            + "same parent business property id {}",
-        taskCleanupJobAllCompletedSameParentBusiness);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Configured number of task and workbasket updates per transaction: {}", jobBatchSize);
+      LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
+      LOGGER.debug("CleanupJob configuration: first run at {}", cleanupJobFirstRun);
+      LOGGER.debug("CleanupJob configuration: runs every {}", cleanupJobRunEvery);
+      LOGGER.debug(
+          "CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
+          cleanupJobMinimumAge);
+      LOGGER.debug(
+          "TaskCleanupJob configuration: all completed task with the "
+              + "same parent business property id {}",
+          taskCleanupJobAllCompletedSameParentBusiness);
+    }
   }
 
   private void initDomains(Properties props) {
@@ -426,7 +430,9 @@ public class TaskanaEngineConfiguration {
         p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
     parseProperty(props, TASKANA_DOMAINS_PROPERTY, parseFunction).ifPresent(this::setDomains);
 
-    LOGGER.debug("Configured domains: {}", domains);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Configured domains: {}", domains);
+    }
   }
 
   private void initClassificationTypes(Properties props) {
@@ -435,7 +441,9 @@ public class TaskanaEngineConfiguration {
     parseProperty(props, TASKANA_CLASSIFICATION_TYPES_PROPERTY, parseFunction)
         .ifPresent(this::setClassificationTypes);
 
-    LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
+    }
   }
 
   private void initClassificationCategories(Properties props) {
@@ -455,7 +463,9 @@ public class TaskanaEngineConfiguration {
             .map(type -> Pair.of(type, getClassificationCategoriesForType.apply(type)))
             .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
-    LOGGER.debug("Configured classification categories : {}", classificationCategoriesByTypeMap);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Configured classification categories : {}", classificationCategoriesByTypeMap);
+    }
   }
 
   private void initBooleanProperty(
@@ -482,7 +492,9 @@ public class TaskanaEngineConfiguration {
       LOGGER.error("Caught exception when attempting to initialize the schema name", ex);
     }
 
-    LOGGER.debug("Using schema name {}", this.getSchemaName());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Using schema name {}", this.getSchemaName());
+    }
   }
 
   private void initTaskanaRoles(Properties props, String rolesSeparator) {
@@ -525,7 +537,9 @@ public class TaskanaEngineConfiguration {
                 .collect(Collectors.toList());
     parseProperty(props, TASKANA_CUSTOM_HOLIDAY, parseFunction).ifPresent(this::addCustomHolidays);
 
-    LOGGER.debug("Configured custom Holidays : {}", customHolidays);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Configured custom Holidays : {}", customHolidays);
+    }
   }
 
   private CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
@@ -566,13 +580,18 @@ public class TaskanaEngineConfiguration {
           LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
         } else {
           props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "Role properties were loaded from file {} from classpath.", propertiesFile);
+          }
         }
       } else {
         try (FileInputStream stream = new FileInputStream(propertiesFile)) {
           props.load(stream);
         }
-        LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
+        }
       }
     } catch (IOException e) {
       LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);

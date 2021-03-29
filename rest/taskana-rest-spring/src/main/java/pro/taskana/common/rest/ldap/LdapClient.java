@@ -57,7 +57,6 @@ public class LdapClient {
    */
   public List<AccessIdRepresentationModel> searchUsersAndGroups(final String name)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchUsersAndGroups(name = {})", name);
     isInitOrFail();
     testMinSearchForLength(name);
 
@@ -72,20 +71,11 @@ public class LdapClient {
       accessIds.addAll(searchGroupsByName(name));
     }
     sortListOfAccessIdResources(accessIds);
-    List<AccessIdRepresentationModel> result = getFirstPageOfaResultList(accessIds);
-
-    LOGGER.debug(
-        "exit from searchUsersAndGroups(name = {}). Returning {} users and groups: {}",
-        name,
-        accessIds.size(),
-        result);
-
-    return result;
+    return getFirstPageOfaResultList(accessIds);
   }
 
   public List<AccessIdRepresentationModel> searchUsersByNameOrAccessId(final String name)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchUsersByNameOrAccessId(name = {}).", name);
     isInitOrFail();
     testMinSearchForLength(name);
 
@@ -99,20 +89,15 @@ public class LdapClient {
     orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
     andFilter.and(orFilter);
 
-    final List<AccessIdRepresentationModel> accessIds =
-        ldapTemplate.search(
-            getUserSearchBase(),
-            andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            getLookUpUserAttributesToReturn(),
-            new UserContextMapper());
-    LOGGER.debug(
-        "exit from searchUsersByNameOrAccessId. Retrieved the following users: {}.", accessIds);
-    return accessIds;
+    return ldapTemplate.search(
+        getUserSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        getLookUpUserAttributesToReturn(),
+        new UserContextMapper());
   }
 
   public List<AccessIdRepresentationModel> getUsersByAccessId(final String accessId) {
-    LOGGER.debug("entry to searchUsersByAccessId(name = {}).", accessId);
     isInitOrFail();
 
     final AndFilter andFilter = new AndFilter();
@@ -123,20 +108,16 @@ public class LdapClient {
       getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
     };
 
-    final List<AccessIdRepresentationModel> accessIds =
-        ldapTemplate.search(
-            getUserSearchBase(),
-            andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            userAttributesToReturn,
-            new UserContextMapper());
-    LOGGER.debug("exit from searchUsersByAccessId. Retrieved the following users: {}.", accessIds);
-    return accessIds;
+    return ldapTemplate.search(
+        getUserSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        userAttributesToReturn,
+        new UserContextMapper());
   }
 
   public List<AccessIdRepresentationModel> searchGroupsByName(final String name)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchGroupsByName(name = {}).", name);
     isInitOrFail();
     testMinSearchForLength(name);
 
@@ -149,37 +130,31 @@ public class LdapClient {
     }
     andFilter.and(orFilter);
 
-    final List<AccessIdRepresentationModel> accessIds =
-        ldapTemplate.search(
-            getGroupSearchBase(),
-            andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            getLookUpGroupAttributesToReturn(),
-            new GroupContextMapper());
-    LOGGER.debug("Exit from searchGroupsByName. Retrieved the following groups: {}", accessIds);
-    return accessIds;
+    return ldapTemplate.search(
+        getGroupSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        getLookUpGroupAttributesToReturn(),
+        new GroupContextMapper());
   }
 
   public AccessIdRepresentationModel searchAccessIdByDn(final String dn) {
-    LOGGER.debug("entry to searchGroupByDn(name = {}).", dn);
     isInitOrFail();
     // Obviously Spring LdapTemplate does have a inconsistency and always adds the base name to the
     // given DN.
     // https://stackoverflow.com/questions/55285743/spring-ldaptemplate-how-to-lookup-fully-qualified-dn-with-configured-base-dn
     // Therefore we have to remove the base name from the dn before performing the lookup
     String nameWithoutBaseDn = getNameWithoutBaseDn(dn);
-    LOGGER.debug(
-        "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
-    final AccessIdRepresentationModel accessId =
-        ldapTemplate.lookup(
-            nameWithoutBaseDn, getLookUpUserAndGroupAttributesToReturn(), new DnContextMapper());
-    LOGGER.debug("Exit from searchGroupByDn. Retrieved the following group: {}", accessId);
-    return accessId;
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
+    }
+    return ldapTemplate.lookup(
+        nameWithoutBaseDn, getLookUpUserAndGroupAttributesToReturn(), new DnContextMapper());
   }
 
   public List<AccessIdRepresentationModel> searchGroupsAccessIdIsMemberOf(final String accessId)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to searchGroupsAccessIdIsMemberOf(name = {}).", accessId);
     isInitOrFail();
     testMinSearchForLength(accessId);
 
@@ -200,18 +175,12 @@ public class LdapClient {
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
 
-    final List<AccessIdRepresentationModel> accessIds =
-        ldapTemplate.search(
-            getGroupSearchBase(),
-            andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            userAttributesToReturn,
-            new GroupContextMapper());
-
-    LOGGER.debug(
-        "exit from searchGroupsAccessIdIsMemberOf. Retrieved the following accessIds: {}.",
-        accessIds);
-    return accessIds;
+    return ldapTemplate.search(
+        getGroupSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        userAttributesToReturn,
+        new GroupContextMapper());
   }
 
   /**
@@ -221,9 +190,6 @@ public class LdapClient {
    * @return whether the given name is valid or not
    */
   public boolean validateAccessId(final String name) {
-
-    LOGGER.debug("entry to validateAccessId(name = {})", name);
-
     isInitOrFail();
 
     if (nameIsDn(name)) {
@@ -381,7 +347,6 @@ public class LdapClient {
 
   @PostConstruct
   void init() {
-    LOGGER.debug("Entry to init()");
     minSearchForLength = calcMinSearchForLength(3);
     maxNumberOfReturnedAccessIds = calcMaxNumberOfReturnedAccessIds(50);
 
@@ -394,8 +359,6 @@ public class LdapClient {
       throw new SystemException(message);
     }
     active = true;
-
-    LOGGER.debug("Exit from init()");
   }
 
   List<LdapSettings> checkForMissingConfigurations() {

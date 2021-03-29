@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
@@ -39,8 +37,6 @@ abstract class TimeIntervalReportBuilderImpl<
         I extends AgeQueryItem,
         H extends TimeIntervalColumnHeader>
     implements TimeIntervalReportBuilder<B, I, H> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TimeIntervalReportBuilder.class);
 
   protected InternalTaskanaEngine taskanaEngine;
   protected MonitorMapper monitorMapper;
@@ -120,12 +116,6 @@ abstract class TimeIntervalReportBuilderImpl<
   public List<String> listTaskIdsForSelectedItems(
       List<SelectedItem> selectedItems, TaskTimestamp timestamp)
       throws NotAuthorizedException, InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to listTaskIdsForSelectedItems(selectedItems = {}), this = {}",
-          selectedItems,
-          this);
-    }
 
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
@@ -162,17 +152,12 @@ abstract class TimeIntervalReportBuilderImpl<
           joinWithAttachments);
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from listTaskIdsForSelectedItems().");
     }
   }
 
   @Override
   public List<String> listCustomAttributeValuesForCustomAttributeName(
       TaskCustomField taskCustomField) throws NotAuthorizedException {
-    LOGGER.debug(
-        "entry to listCustomAttributeValuesForCustomAttributeName(customField = {}), this = {}",
-        taskCustomField,
-        this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
       this.taskanaEngine.openConnection();
@@ -188,7 +173,6 @@ abstract class TimeIntervalReportBuilderImpl<
           taskCustomField);
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from listCustomAttributeValuesForCustomAttributeName().");
     }
   }
 

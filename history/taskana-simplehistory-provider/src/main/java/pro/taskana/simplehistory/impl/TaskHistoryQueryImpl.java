@@ -625,7 +625,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   @Override
   public List<TaskHistoryEvent> list() {
-    LOGGER.debug("entry to list(), this = {}", this);
     List<TaskHistoryEvent> result = new ArrayList<>();
     try {
       taskanaHistoryEngine.openConnection();
@@ -636,16 +635,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public List<TaskHistoryEvent> list(int offset, int limit) {
-    LOGGER.debug("entry to list({},{}), this = {}", offset, limit, this);
     List<TaskHistoryEvent> result = new ArrayList<>();
     try {
       taskanaHistoryEngine.openConnection();
@@ -657,23 +651,12 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(
       TaskHistoryQueryColumnName dbColumnName, SortDirection sortDirection) {
-    LOGGER.debug(
-        "entry to listValues() of column {} with sortDirection {}, this {}",
-        dbColumnName,
-        sortDirection,
-        this);
     List<String> result = new ArrayList<>();
     this.columnName = dbColumnName;
     this.orderBy.clear();
@@ -689,16 +672,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
     } finally {
       this.orderColumns.remove(orderColumns.size() - 1);
       taskanaHistoryEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public TaskHistoryEvent single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     TaskHistoryEvent result = null;
     try {
       taskanaHistoryEngine.openConnection();
@@ -711,13 +689,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", result);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaHistoryEngine.openConnection();
@@ -728,7 +704,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       return -1;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 

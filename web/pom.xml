@@ -18,6 +18,14 @@
     <sonar.skip>true</sonar.skip>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

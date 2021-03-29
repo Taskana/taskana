@@ -82,7 +82,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   }
 
   private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
-    LOGGER.debug("entry to getTasksCompletedBefore(untilDate = {})", untilDate);
 
     List<TaskSummary> tasksToDelete =
         taskanaEngineImpl
@@ -127,17 +126,10 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
               .collect(Collectors.toList());
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from getTasksCompletedBefore(), returning {}", tasksToDelete);
-    }
-
     return tasksToDelete;
   }
 
   private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to deleteTasksTransactionally(tasksToBeDeleted = {})", tasksToBeDeleted);
-    }
 
     int deletedTaskCount = 0;
     if (txProvider != null) {
@@ -152,7 +144,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                       return 0;
                     }
                   });
-      LOGGER.debug("exit from deleteTasksTransactionally(), returning {}", count);
       return count;
     } else {
       try {
@@ -161,21 +152,19 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         LOGGER.warn("Could not delete tasks.", e);
       }
     }
-    LOGGER.debug("exit from deleteTasksTransactionally(), returning {}", deletedTaskCount);
     return deletedTaskCount;
   }
 
   private int deleteTasks(List<TaskSummary> tasksToBeDeleted)
       throws InvalidArgumentException, NotAuthorizedException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to deleteTasks(tasksToBeDeleted = {})", tasksToBeDeleted);
-    }
 
     List<String> tasksIdsToBeDeleted =
         tasksToBeDeleted.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
-    LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
+    }
     for (String failedId : results.getFailedIds()) {
       if (LOGGER.isWarnEnabled()) {
         LOGGER.warn(
@@ -184,18 +173,13 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             LogSanitizer.stripLineBreakingChars(results.getErrorForId(failedId)));
       }
     }
-    LOGGER.debug(
-        "exit from deleteTasks(), returning {}",
-        tasksIdsToBeDeleted.size() - results.getFailedIds().size());
     return tasksIdsToBeDeleted.size() - results.getFailedIds().size();
   }
 
   private void scheduleNextCleanupJob() {
-    LOGGER.debug("Entry to scheduleNextCleanupJob.");
     ScheduledJob job = new ScheduledJob();
     job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
     job.setDue(getNextDueForCleanupJob());
     taskanaEngineImpl.getJobService().createJob(job);
-    LOGGER.debug("Exit from scheduleNextCleanupJob.");
   }
 }

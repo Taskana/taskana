@@ -51,43 +51,29 @@ public class SampleDataGenerator {
   }
 
   public void generateSampleData() {
-    LOGGER.debug("entry to generateSampleData()");
     clearDb();
     Stream<String> scripts = SampleDataProvider.getSampleDataCreationScripts();
     executeAndCacheScripts(scripts, CACHED_SAMPLE);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("exit from generateSampleData()");
-    }
   }
 
   public void generateTestData() {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to generateTestData()");
-    }
     Stream<String> scripts = SampleDataProvider.getTestDataScripts();
     executeAndCacheScripts(scripts, CACHED_TEST);
-    LOGGER.debug("exit from generateTestData()");
   }
 
   public void generateMonitorData() {
-    LOGGER.debug("entry to generateMonitorData()");
     Stream<String> scripts = SampleDataProvider.getMonitorDataScripts();
     executeAndCacheScripts(scripts, CACHED_MONITOR);
-    LOGGER.debug("exit from generateMonitorData()");
   }
 
   public void clearDb() {
-    LOGGER.debug("entry to clearDb()");
     Stream<String> scripts = SampleDataProvider.getScriptsToClearDatabase();
     executeAndCacheScripts(scripts, CACHED_CLEAR_DB);
-    LOGGER.debug("exit from clearDb()");
   }
 
   public void dropDb() {
-    LOGGER.debug("entry to dropDb()");
     Stream<String> scripts = SampleDataProvider.getScriptsToDropDatabase();
     executeAndCacheScripts(scripts, CACHED_DROP_DB);
-    LOGGER.debug("exit from dropDb()");
   }
 
   private List<String> parseScripts(Stream<String> scripts) {
@@ -127,7 +113,6 @@ public class SampleDataGenerator {
   }
 
   private void executeAndCacheScripts(Stream<String> scripts, String cacheKey) {
-    LOGGER.debug("entry to executeAndCacheScripts(scripts = {}, cacheKey = {})", scripts, cacheKey);
     runScripts(
         runner ->
             CACHED_SCRIPTS.computeIfAbsent(cacheKey, key -> parseScripts(scripts)).stream()
@@ -135,7 +120,6 @@ public class SampleDataGenerator {
                 .map(ByteArrayInputStream::new)
                 .map(s -> new InputStreamReader(s, StandardCharsets.UTF_8))
                 .forEach(runner::runScript));
-    LOGGER.debug("exit from executeAndCacheScripts()");
   }
 
   private ScriptRunner getScriptRunner(

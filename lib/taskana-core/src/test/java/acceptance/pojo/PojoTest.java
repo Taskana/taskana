@@ -1,4 +1,4 @@
-package acceptance;
+package acceptance.pojo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,8 +7,6 @@ import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.rule.Rule;
 import com.openpojo.validation.rule.impl.GetterMustExistRule;
 import com.openpojo.validation.rule.impl.NoPublicFieldsRule;
-import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
-import com.openpojo.validation.rule.impl.SetterMustExistRule;
 import com.openpojo.validation.test.Tester;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -28,21 +25,16 @@ import org.junit.jupiter.api.TestFactory;
 /** check classes with a custom equals and hashcode implementation for correctness. */
 class PojoTest {
 
-  private static List<Class<?>> pojoClasses;
-
-  @BeforeAll
-  static void setup() {
-    pojoClasses = getPojoClasses();
-  }
+  private static final List<Class<?>> POJO_CLASSES = getPojoClasses();
 
   @Test
   void testsThatPojoClassesAreFound() {
-    assertThat(pojoClasses).isNotEmpty();
+    assertThat(POJO_CLASSES).isNotEmpty();
   }
 
   @TestFactory
   Stream<DynamicTest> equalsContract() {
-    return pojoClasses.stream()
+    return POJO_CLASSES.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
@@ -52,7 +44,7 @@ class PojoTest {
 
   @TestFactory
   Stream<DynamicTest> validateGetters() {
-    return pojoClasses.stream()
+    return POJO_CLASSES.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
@@ -62,7 +54,7 @@ class PojoTest {
 
   @TestFactory
   Stream<DynamicTest> validateSetters() {
-    return pojoClasses.stream()
+    return POJO_CLASSES.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
@@ -73,7 +65,7 @@ class PojoTest {
   @TestFactory
   @Disabled("because of the truncation of all Instant member variables")
   Stream<DynamicTest> validateGetAndSet() {
-    return pojoClasses.stream()
+    return POJO_CLASSES.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
@@ -83,7 +75,7 @@ class PojoTest {
 
   @TestFactory
   Stream<DynamicTest> validateNoStaticExceptFinalFields() {
-    return pojoClasses.stream()
+    return POJO_CLASSES.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(
@@ -93,7 +85,7 @@ class PojoTest {
 
   @TestFactory
   Stream<DynamicTest> validateNoPublicFields() {
-    return pojoClasses.stream()
+    return POJO_CLASSES.stream()
         .map(
             cl ->
                 DynamicTest.dynamicTest(

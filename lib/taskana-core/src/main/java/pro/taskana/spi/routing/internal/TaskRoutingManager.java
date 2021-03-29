@@ -63,10 +63,6 @@ public final class TaskRoutingManager {
    * @return the id of the workbasket in which the task is to be created.
    */
   public String determineWorkbasketId(Task task) {
-    LOGGER.debug(
-        "entry to routeToWorkbasket. TaskRouterr is enabled {}, task = {}",
-        isTaskRoutingEnabled(),
-        task);
     String workbasketId = null;
     if (isTaskRoutingEnabled()) {
       // route to all TaskRoutingProviders
@@ -104,7 +100,6 @@ public final class TaskRoutingManager {
         workbasketId = workbasketIds.stream().findFirst().orElse(null);
       }
     }
-    LOGGER.debug("exit from routeToWorkbasketId. Destination WorkbasketId = {}", workbasketId);
     return workbasketId;
   }
 }

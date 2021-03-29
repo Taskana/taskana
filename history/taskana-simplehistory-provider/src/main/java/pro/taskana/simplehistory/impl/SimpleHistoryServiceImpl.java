@@ -62,7 +62,6 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       LOGGER.error("Error while inserting task history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("Exit from create(TaskHistoryEvent event). Returning object = {}.", event);
     }
   }
 
@@ -79,7 +78,6 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       LOGGER.error("Error while inserting workbasket history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("Exit from create(WorkbasketHistoryEvent event). Returning object = {}.", event);
     }
   }
 
@@ -96,19 +94,12 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       LOGGER.error("Error while inserting classification history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug(
-          "Exit from create(ClassificationHistoryEvent event). Returning object = {}.", event);
     }
   }
 
   @Override
   public void deleteHistoryEventsByTaskIds(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("entry to deleteHistoryEventsByTaskIds(taskIds = {})", taskIds);
-    }
-
     taskanaHistoryEngine.checkRoleMembership(TaskanaRole.ADMIN);
 
     if (taskIds == null) {
@@ -123,14 +114,12 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
     } catch (SQLException e) {
       LOGGER.error("Caught exception while trying to delete history events", e);
     } finally {
-      LOGGER.debug("exit from deleteHistoryEventsByTaskIds()");
       taskanaHistoryEngine.returnConnection();
     }
   }
 
   public TaskHistoryEvent getTaskHistoryEvent(String historyEventId)
       throws TaskanaHistoryEventNotFoundException {
-    LOGGER.debug("entry to getTaskHistoryEvent (id = {})", historyEventId);
     TaskHistoryEvent resultEvent = null;
     try {
       taskanaHistoryEngine.openConnection();
@@ -149,7 +138,6 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       return resultEvent;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("exit from getHistoryEvent(). Returning result {} ", resultEvent);
     }
   }
 

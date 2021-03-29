@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaClass.Predicates;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
@@ -75,8 +76,9 @@ class ArchitectureTest {
             .and()
             .resideInAPackage("..api..")
             .should()
-            .onlyDependOnClassesThat()
-            .resideOutsideOfPackage("..internal..");
+            .onlyDependOnClassesThat(
+                Predicates.resideOutsideOfPackage("..pro.taskana..internal..")
+                    .or(Predicates.simpleName("LoggingAspect")));
     myRule.check(importedClasses);
   }
 

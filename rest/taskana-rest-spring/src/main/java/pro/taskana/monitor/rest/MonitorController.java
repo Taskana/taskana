@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
@@ -30,8 +28,6 @@ import pro.taskana.task.api.TaskState;
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class MonitorController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
 
   private final MonitorService monitorService;
 
@@ -69,26 +65,20 @@ public class MonitorController {
       @RequestParam(name = "workbasket-ids", required = false) List<String> workbasketIds,
       @RequestParam(name = "priority-minimum", required = false) Integer priorityMinimum)
       throws NotAuthorizedException {
-    LOGGER.debug("Entry to getTasksStatusReport(), states to include {}", states);
-    ResponseEntity<ReportRepresentationModel> response =
-        ResponseEntity.ok(
-            reportRepresentationModelAssembler.toModel(
-                monitorService
-                    .createTaskStatusReportBuilder()
-                    .stateIn(states)
-                    .domainIn(domains)
-                    .workbasketIdsIn(workbasketIds)
-                    .priorityMinimum(priorityMinimum)
-                    .buildReport(),
-                domains,
-                states,
-                workbasketIds,
-                priorityMinimum));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
-    }
 
-    return response;
+    return ResponseEntity.ok(
+        reportRepresentationModelAssembler.toModel(
+            monitorService
+                .createTaskStatusReportBuilder()
+                .stateIn(states)
+                .domainIn(domains)
+                .workbasketIdsIn(workbasketIds)
+                .priorityMinimum(priorityMinimum)
+                .buildReport(),
+            domains,
+            states,
+            workbasketIds,
+            priorityMinimum));
   }
 
   /**
@@ -111,7 +101,6 @@ public class MonitorController {
       @RequestParam List<TaskState> states,
       @RequestParam(required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to getTasksWorkbasketReport(), states to include {}", states);
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -126,10 +115,6 @@ public class MonitorController {
             states,
             taskTimestamp);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTasksWorkbasketReport(), returning {}", report);
-    }
-
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
 
@@ -140,12 +125,6 @@ public class MonitorController {
       @RequestParam(value = "daysInPast") int daysInPast,
       @RequestParam(value = "states") List<TaskState> states)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug(
-        "Entry to getTasksWorkbasketPlannedDateReport(), "
-            + "upto {} days in the past, states to include {}",
-        daysInPast,
-        states);
-
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
             monitorService
@@ -155,9 +134,6 @@ public class MonitorController {
                 .buildReport(TaskTimestamp.PLANNED),
             daysInPast,
             states);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTasksWorkbasketPlannedDateReport(), returning {}", report);
-    }
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
@@ -180,7 +156,6 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> getClassificationReport(
       @RequestParam(required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to getClassificationReport()");
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -192,10 +167,6 @@ public class MonitorController {
                 .withColumnHeaders(getRangeTimeInterval())
                 .buildReport(taskTimestamp),
             taskTimestamp);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getClassificationReport(), returning {}", report);
-    }
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }

@@ -42,7 +42,6 @@ public class JobScheduler {
   public void scheduleCleanupJob()
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
           ClassNotFoundException {
-    LOGGER.debug("Entry to scheduleCleanupJob.");
     TaskCleanupJob.initializeSchedule(taskanaEngine);
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
 
@@ -53,7 +52,6 @@ public class JobScheduler {
           .getDeclaredMethod("initializeSchedule", TaskanaEngine.class)
           .invoke(null, taskanaEngine);
     }
-    LOGGER.debug("Exit from scheduleCleanupJob.");
   }
 
   @Scheduled(cron = "${taskana.jobscheduler.async.cron}")

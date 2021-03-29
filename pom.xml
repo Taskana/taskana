@@ -72,6 +72,11 @@
     <version.slf4j-test>1.2.0</version.slf4j-test>
     <version.auto-restdocs>2.0.10</version.auto-restdocs>
 
+    <!-- AspectJ dependencies -->
+    <version.aspectj-maven-plugin>1.12.6</version.aspectj-maven-plugin>
+    <version.aspectj-tools>1.9.6</version.aspectj-tools>
+    <version.aspectjrt>1.9.6</version.aspectjrt>
+
     <!-- database driver versions -->
     <version.db2>11.1.1.1</version.db2>
 
@@ -124,6 +129,51 @@
   </licenses>
 
   <profiles>
+    <profile>
+      <id>aspectj-logging</id>
+      <activation>
+        <property>
+          <name>!skipAspectJ</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.nickwongdev</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <version>${version.aspectj-maven-plugin}</version>
+            <configuration>
+              <complianceLevel>${java.version}</complianceLevel>
+              <source>11</source>
+              <target>8</target>
+              <showWeaveInfo>false</showWeaveInfo>
+              <verbose>true</verbose>
+              <aspectLibraries>
+                <aspectLibrary>
+                  <groupId>pro.taskana</groupId>
+                  <artifactId>taskana-common-logging</artifactId>
+                </aspectLibrary>
+              </aspectLibraries>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>compile</goal>
+                  <goal>test-compile</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjtools</artifactId>
+                <version>${version.aspectj-tools}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>jdk8-compatibility</id>
       <activation>
@@ -250,6 +300,7 @@
           </execution>
         </executions>
       </plugin>
+
       <!-- This plugin appends version information into the jar, so
           that it can be extracted from the jar. See TSK-837 for more information -->
       <plugin>

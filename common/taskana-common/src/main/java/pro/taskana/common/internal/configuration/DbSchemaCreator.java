@@ -56,10 +56,12 @@ public class DbSchemaCreator {
    */
   public void run() throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
-      LOGGER.debug(
-          "Using database of type {} with url '{}'",
-          connection.getMetaData().getDatabaseProductName(),
-          connection.getMetaData().getURL());
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Using database of type {} with url '{}'",
+            connection.getMetaData().getDatabaseProductName(),
+            connection.getMetaData().getURL());
+      }
       ScriptRunner runner = getScriptRunnerInstance(connection);
       String dbProductId =
           DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
@@ -72,7 +74,9 @@ public class DbSchemaCreator {
         runner.runScript(getSqlSchemaNameParsed(reader));
       }
     }
-    LOGGER.debug(outWriter.toString());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(outWriter.toString());
+    }
     if (!errorWriter.toString().trim().isEmpty()) {
       LOGGER.error(errorWriter.toString());
     }
@@ -82,7 +86,9 @@ public class DbSchemaCreator {
     try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(this.schemaName);
       SqlRunner runner = new SqlRunner(connection);
-      LOGGER.debug(connection.getMetaData().toString());
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(connection.getMetaData().toString());
+      }
 
       String query =
           "select VERSION from TASKANA_SCHEMA_VERSION where "
@@ -100,7 +106,9 @@ public class DbSchemaCreator {
             expectedMinVersion);
         return false;
       } else {
-        LOGGER.debug("Schema version is valid.");
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Schema version is valid.");
+        }
         return true;
       }
 
@@ -164,13 +172,17 @@ public class DbSchemaCreator {
         BufferedReader reader = new BufferedReader(inputReader)) {
       runner.runScript(getSqlSchemaNameParsed(reader));
     } catch (RuntimeSqlException | IOException e) {
-      LOGGER.debug("Schema does not exist.");
-      if (!errorWriter.toString().trim().isEmpty()) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Schema does not exist.");
+      }
+      if (!errorWriter.toString().trim().isEmpty() && LOGGER.isDebugEnabled()) {
         LOGGER.debug(errorWriter.toString());
       }
       return false;
     }
-    LOGGER.debug("Schema does exist.");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Schema does exist.");
+    }
     return true;
   }
 

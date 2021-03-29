@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -23,7 +21,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       "pro.taskana.task.internal.TaskQueryMapper.countQueryObjectReferences";
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.task.internal.TaskQueryMapper.queryObjectReferenceColumnValues";
-  private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceQueryImpl.class);
   private final InternalTaskanaEngine taskanaEngine;
   private final List<String> orderBy;
   private ObjectReferenceQueryColumnName columnName;
@@ -70,7 +67,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   @Override
   public List<ObjectReference> list() {
-    LOGGER.debug("entry to list(), this = {}", this);
     List<ObjectReference> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -78,16 +74,11 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public List<ObjectReference> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<ObjectReference> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -105,19 +96,12 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       throw e;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(
       ObjectReferenceQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
     List<String> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -128,16 +112,11 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public ObjectReference single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     ObjectReference result = null;
     try {
       taskanaEngine.openConnection();
@@ -145,13 +124,11 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", result);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
@@ -159,7 +136,6 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 
