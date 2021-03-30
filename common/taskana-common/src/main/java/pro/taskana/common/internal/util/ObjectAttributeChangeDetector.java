@@ -27,6 +27,7 @@ public class ObjectAttributeChangeDetector {
    * @param newObject the new object for the comparison
    * @param <T> The generic type parameter
    * @return the details of all changed fields as JSON string
+   * @throws SystemException when any parameter is null
    */
   public static <T> String determineChangesInAttributes(T oldObject, T newObject) {
     LOGGER.debug(
@@ -37,7 +38,6 @@ public class ObjectAttributeChangeDetector {
     List<Field> fields = new ArrayList<>();
 
     if (Objects.isNull(oldObject) || Objects.isNull(newObject)) {
-
       throw new SystemException(
           "Null was provided as a parameter. Please provide two objects of the same type");
     }

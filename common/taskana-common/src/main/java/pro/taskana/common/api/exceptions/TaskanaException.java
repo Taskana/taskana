@@ -1,6 +1,6 @@
 package pro.taskana.common.api.exceptions;
 
-/** common base class for Taskana's checked exceptions. */
+/** common base class for TASKANA's checked exceptions. */
 public class TaskanaException extends Exception {
 
   public TaskanaException() {
