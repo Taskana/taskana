@@ -257,6 +257,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    * sets the databaseId attribute.
    *
    * @return a {@link SqlSessionFactory}
+   * @throws SystemException when a connection to the database could not be opened.
    */
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
