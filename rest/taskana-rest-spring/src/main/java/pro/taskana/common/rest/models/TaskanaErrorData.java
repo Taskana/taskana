@@ -14,7 +14,7 @@ public class TaskanaErrorData {
   private final String message;
   private String path;
 
-  public TaskanaErrorData(HttpStatus stat, Exception ex, WebRequest req) {
+  public TaskanaErrorData(HttpStatus stat, Throwable ex, WebRequest req) {
     this.timestamp = new Date();
     this.status = stat.value();
     this.error = stat.name();
