@@ -61,12 +61,11 @@ class WorkbasketControllerIntTest {
     final String url =
         restHelper.toUrl(
             RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketRepresentationModel> response =
-        TEMPLATE.exchange(
-            url,
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_REPRESENTATION_MODEL_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
@@ -76,24 +75,24 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testGetAllWorkbaskets() {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET);
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
 
   @Test
   void testGetAllWorkbasketsBusinessAdminHasOpenPermission() {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=OPEN";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=OPEN",
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(6);
@@ -102,12 +101,12 @@ class WorkbasketControllerIntTest {
   @Test
   void testGetAllWorkbasketsKeepingFilters() {
     String parameters = "?type=PERSONAL&sort-by=KEY&order=DESCENDING";
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters;
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
@@ -121,34 +120,30 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testUpdateWorkbasketWithConcurrentModificationShouldThrowException() {
-
-    String workbasketId = "WBI:100000000000000000000000000000000001";
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000001");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
     ResponseEntity<WorkbasketRepresentationModel> initialWorkbasketResourceRequestResponse =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_REPRESENTATION_MODEL_TYPE);
-
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_REPRESENTATION_MODEL_TYPE);
     WorkbasketRepresentationModel workbasketRepresentationModel =
         initialWorkbasketResourceRequestResponse.getBody();
-
     assertThat(workbasketRepresentationModel).isNotNull();
+
     workbasketRepresentationModel.setKey("GPK_KSC");
     workbasketRepresentationModel.setDomain("DOMAIN_A");
     workbasketRepresentationModel.setType(WorkbasketType.PERSONAL);
     workbasketRepresentationModel.setName("was auch immer");
     workbasketRepresentationModel.setOwner("Joerg");
     workbasketRepresentationModel.setModified(Instant.now());
+    HttpEntity<WorkbasketRepresentationModel> auth2 =
+        new HttpEntity<>(workbasketRepresentationModel, restHelper.getHeadersTeamlead_1());
 
     ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
-                HttpMethod.PUT,
-                new HttpEntity<>(workbasketRepresentationModel, restHelper.getHeadersTeamlead_1()),
-                WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        () -> {
+          TEMPLATE.exchange(url, HttpMethod.PUT, auth2, WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        };
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.CONFLICT);
@@ -156,16 +151,16 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testUpdateWorkbasketOfNonExistingWorkbasketShouldThrowException() {
-
-    String workbasketId = "WBI:100004857400039500000999999999999999";
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID, "WBI:100004857400039500000999999999999999");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersBusinessAdmin());
 
     ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketId),
-                HttpMethod.GET,
-                new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
-                WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        () -> {
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        };
+
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -174,14 +169,13 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testGetSecondPageSortedByKey() {
-
     String parameters = "?sort-by=KEY&order=DESCENDING&page-size=5&page=2";
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters;
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + parameters,
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
     assertThat(response.getBody().getContent().iterator().next().getKey()).isEqualTo("USER-1-1");
@@ -201,29 +195,28 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testMarkWorkbasketForDeletionAsBusinessAdminWithoutExplicitReadPermission() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000005");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersBusinessAdmin());
 
-    String workbasketID = "WBI:100000000000000000000000000000000005";
+    ResponseEntity<?> response = TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
 
-    ResponseEntity<?> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketID),
-            HttpMethod.DELETE,
-            new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
-            Void.class);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
   }
 
   @Test
   void statusCode423ShouldBeReturnedIfWorkbasketContainsNonCompletedTasks() {
-    String workbasketWithNonCompletedTasks = "WBI:100000000000000000000000000000000004";
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000004");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersBusinessAdmin());
 
     ThrowingCallable call =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ID, workbasketWithNonCompletedTasks),
-                HttpMethod.DELETE,
-                new HttpEntity<>(restHelper.getHeadersBusinessAdmin()),
-                Void.class);
+        () -> {
+          TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
+        };
+
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -232,24 +225,23 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testRemoveWorkbasketAsDistributionTarget() {
-    ResponseEntity<?> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(
-                RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
-                "WBI:100000000000000000000000000000000007"),
-            HttpMethod.DELETE,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            Void.class);
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+            "WBI:100000000000000000000000000000000007");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
+    ResponseEntity<?> response = TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
+    String url2 =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+            "WBI:100000000000000000000000000000000002");
     ResponseEntity<DistributionTargetsCollectionRepresentationModel> response2 =
         TEMPLATE.exchange(
-            restHelper.toUrl(
-                RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
-                "WBI:100000000000000000000000000000000002"),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
+            url2, HttpMethod.GET, auth, DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
+
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response2.getBody()).isNotNull();
     assertThat(response2.getBody().getContent())
@@ -259,14 +251,16 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testGetWorkbasketAccessItems() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
+            "WBI:100000000000000000000000000000000005");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(
-                RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
-                "WBI:100000000000000000000000000000000005"),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE);
+            url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
@@ -275,14 +269,16 @@ class WorkbasketControllerIntTest {
 
   @Test
   void testGetWorkbasketDistributionTargets() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
+            "WBI:100000000000000000000000000000000001");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<DistributionTargetsCollectionRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(
-                RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
-                "WBI:100000000000000000000000000000000001"),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
+            url, HttpMethod.GET, auth, DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
@@ -291,18 +287,18 @@ class WorkbasketControllerIntTest {
 
   @Test
   void should_ThrowException_When_ProvidingInvalidFilterParams() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_WORKBASKET)
+            + "?type=PERSONAL"
+            + "&illegalParam=illegal"
+            + "&anotherIllegalParam=stillIllegal"
+            + "&sort-by=KEY&order=DESCENDING&page-size=5&page=2";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
     ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET)
-                    + "?type=PERSONAL"
-                    + "&illegalParam=illegal"
-                    + "&anotherIllegalParam=stillIllegal"
-                    + "&sort-by=KEY&order=DESCENDING&page-size=5&page=2",
-                HttpMethod.GET,
-                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-                WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        () -> {
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        };
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)

@@ -271,10 +271,13 @@ class WorkbasketDefinitionControllerIntTest {
 
   private ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel>
       executeExportRequestForDomain(String domain) {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain;
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     return TEMPLATE.exchange(
-        restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain,
+        url,
         HttpMethod.GET,
-        new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+        auth,
         ParameterizedTypeReference.forType(
             WorkbasketDefinitionCollectionRepresentationModel.class));
   }

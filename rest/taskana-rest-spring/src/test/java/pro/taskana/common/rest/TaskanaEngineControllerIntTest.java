@@ -31,45 +31,48 @@ class TaskanaEngineControllerIntTest {
 
   @Test
   void testDomains() {
+    String url = restHelper.toUrl(RestEndpoints.URL_DOMAIN);
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_DOMAIN),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(List.class));
+            url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody()).contains("DOMAIN_A");
   }
 
   @Test
   void testClassificationTypes() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES);
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(List.class));
+            url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody()).containsExactlyInAnyOrder("TASK", "DOCUMENT");
   }
 
   @Test
   void testClassificationCategories() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES);
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(List.class));
+            url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody())
         .containsExactlyInAnyOrder("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS", "EXTERNAL");
   }
 
   @Test
   void testGetCurrentUserInfo() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CURRENT_USER);
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<TaskanaUserInfoRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_CURRENT_USER),
+            url,
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            auth,
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getUserId()).isEqualTo("teamlead-1");

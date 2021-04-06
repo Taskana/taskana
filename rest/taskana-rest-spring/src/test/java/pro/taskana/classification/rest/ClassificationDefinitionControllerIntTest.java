@@ -50,6 +50,12 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 @TestMethodOrder(OrderAnnotation.class)
 class ClassificationDefinitionControllerIntTest {
 
+  private static final ParameterizedTypeReference<
+          ClassificationDefinitionCollectionRepresentationModel>
+      CLASSIFICATION_DEFINITION_COLLECTION =
+          new ParameterizedTypeReference<
+              ClassificationDefinitionCollectionRepresentationModel>() {};
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
   private final RestHelper restHelper;
@@ -72,13 +78,12 @@ class ClassificationDefinitionControllerIntTest {
   @Test
   @Order(1) // since the import tests adds Classifications this has to be tested first.
   void should_ExportAllClassifications_When_ExportIsRequested() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(
-                ClassificationDefinitionCollectionRepresentationModel.class));
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_DEFINITION_COLLECTION);
+
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
@@ -94,13 +99,13 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void should_NotContainAnyLinks_When_ExportIsRequested() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B",
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(
-                ClassificationDefinitionCollectionRepresentationModel.class));
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_DEFINITION_COLLECTION);
+
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isPresent();
@@ -113,13 +118,12 @@ class ClassificationDefinitionControllerIntTest {
 
   @Test
   void should_ExportNothing_When_DomainIsUnknown() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe",
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(
-                ClassificationDefinitionCollectionRepresentationModel.class));
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_DEFINITION_COLLECTION);
+
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).isEmpty();
   }
@@ -414,7 +418,7 @@ class ClassificationDefinitionControllerIntTest {
     LOGGER.debug("Start Import");
     File tmpFile = File.createTempFile("test", ".tmp");
     try (FileOutputStream out = new FileOutputStream(tmpFile);
-        OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8); ) {
+        OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
       mapper.writeValue(writer, clList);
     }
     MultiValueMap<String, FileSystemResource> body = new LinkedMultiValueMap<>();
