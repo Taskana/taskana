@@ -45,12 +45,12 @@ class WorkbasketAccessItemControllerIntTest {
 
   @Test
   void testGetAllWorkbasketAccessItems() {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS);
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS),
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
+            url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
   }
@@ -59,12 +59,12 @@ class WorkbasketAccessItemControllerIntTest {
   void testGetWorkbasketAccessItemsKeepingFilters() {
     String parameters =
         "?sort-by=WORKBASKET_KEY&order=ASCENDING&page-size=9&access-id=user-1-1&page=1";
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters;
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
+            url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(
@@ -80,12 +80,12 @@ class WorkbasketAccessItemControllerIntTest {
   void testGetSecondPageSortedByWorkbasketKey() {
     String parameters =
         "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=2&page-size=9&access-id=user-1-1";
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters;
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-            HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
+            url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent().iterator().next().getAccessId())
@@ -108,33 +108,32 @@ class WorkbasketAccessItemControllerIntTest {
 
   @Test
   void should_DeleteAllAccessItemForUser_ifValidAccessIdOfUserIsSupplied() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + "?access-id=teamlead-2";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
-    String parameters = "?access-id=teamlead-2";
     ResponseEntity<Void> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-            HttpMethod.DELETE,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-            ParameterizedTypeReference.forType(Void.class));
+            url, HttpMethod.DELETE, auth, ParameterizedTypeReference.forType(Void.class));
     assertThat(response.getBody()).isNull();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
   @Test
   void should_ThrowException_When_ProvidingInvalidFilterParams() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
+            + "?access-id=teamlead-2"
+            + "&illegalParam=illegal"
+            + "&anotherIllegalParam=stillIllegal"
+            + "&sort-by=WORKBASKET_KEY&order=DESCENDING&page-size=5&page=2";
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
     ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
-                    + "?access-id=teamlead-2"
-                    + "&illegalParam=illegal"
-                    + "&anotherIllegalParam=stillIllegal"
-                    + "&sort-by=WORKBASKET_KEY&order=DESCENDING&page-size=5&page=2",
-                HttpMethod.GET,
-                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-                WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
-
+        () -> {
+          TEMPLATE.exchange(
+              url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
+        };
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining(
@@ -153,19 +152,23 @@ class WorkbasketAccessItemControllerIntTest {
 
     ThrowingConsumer<String> test =
         accessId -> {
-          String parameters = "?access-id=" + accessId;
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
+                  + "?access-id="
+                  + accessId;
+          HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
           ThrowingCallable httpCall =
-              () ->
-                  TEMPLATE.exchange(
-                      restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters,
-                      HttpMethod.DELETE,
-                      new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-                      ParameterizedTypeReference.forType(Void.class));
+              () -> {
+                TEMPLATE.exchange(
+                    url, HttpMethod.DELETE, auth, ParameterizedTypeReference.forType(Void.class));
+              };
           assertThatThrownBy(httpCall)
               .isInstanceOf(HttpClientErrorException.class)
               .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
               .isEqualTo(HttpStatus.BAD_REQUEST);
         };
+
     return DynamicTest.stream(accessIds.iterator(), s -> String.format("for user '%s'", s), test);
   }
 }

@@ -20,26 +20,26 @@ import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 @TaskanaSpringBootTest
 class MonitorControllerIntTest {
 
+  private static final ParameterizedTypeReference<ReportRepresentationModel> REPORT_MODEL =
+      new ParameterizedTypeReference<ReportRepresentationModel>() {};
+
   @Autowired RestHelper restHelper;
 
   @Test
   void should_ReturnAllOpenTasksByState_When_QueryingForAWorkbasketAndReadyAndClaimedState() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
+            + "?workbasket-ids=WBI:100000000000000000000000000000000007"
+            + "&states=READY&states=CLAIMED";
+    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
 
-    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
     ResponseEntity<ReportRepresentationModel> response =
-        TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
-                + "?workbasket-ids=WBI:100000000000000000000000000000000007"
-                + "&states=READY&states=CLAIMED",
-            HttpMethod.GET,
-            request,
-            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, REPORT_MODEL);
+
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-
     int totalOpenTasks = response.getBody().getSumRow().get(0).getTotal();
     assertThat(totalOpenTasks).isEqualTo(15);
-
     int[] tasksPerState = response.getBody().getSumRow().get(0).getCells();
     // should be 2 READY, 13 CLAIMED
     int[] expectedTasksPerState = new int[] {2, 13};
@@ -48,19 +48,20 @@ class MonitorControllerIntTest {
 
   @Test
   void should_ReturnAllOpenTasksByState_When_QueryingForSpecificWbAndStateReadyAndMinimumPrio() {
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT);
+    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
 
-    HttpEntity<String> request = new HttpEntity<>(restHelper.getHeadersAdmin());
     ResponseEntity<ReportRepresentationModel> response =
         TEMPLATE.exchange(
-            restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
+            url
                 + "?workbasket-ids=WBI:100000000000000000000000000000000007"
                 + "&states=READY&priority-minimum=1",
             HttpMethod.GET,
-            request,
-            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+            auth,
+            REPORT_MODEL);
+
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-
     int[] tasksInStateReady = response.getBody().getSumRow().get(0).getCells();
     // should be 2 READY
     int[] expectedTasksPerState = new int[] {2};

@@ -28,14 +28,19 @@ class GeneralExceptionHandlingTest {
 
   @Test
   void testDeleteNonExisitingClassificationExceptionIsLogged() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, "non-existing-id");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
     ThrowingCallable httpCall =
-        () ->
-            TEMPLATE.exchange(
-                restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, "non-existing-id"),
-                HttpMethod.DELETE,
-                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
-                ParameterizedTypeReference.forType(
-                    ClassificationSummaryPagedRepresentationModel.class));
+        () -> {
+          TEMPLATE.exchange(
+              url,
+              HttpMethod.DELETE,
+              auth,
+              ParameterizedTypeReference.forType(
+                  ClassificationSummaryPagedRepresentationModel.class));
+        };
+
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining("non-existing-id");
