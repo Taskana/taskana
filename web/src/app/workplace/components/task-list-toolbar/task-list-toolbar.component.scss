@@ -1,22 +1,28 @@
 @import 'src/theme/_colors.scss';
 
 .task-list-toolbar {
-  padding: 4px 16px 16px 16px;
+  // padding: 4px 16px 16px 16px;
+  padding: 0 0 16px 0;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 
-  &__search {
+  &__tab {
     display: flex;
-    justify-content: space-between;
-    height: 54px;
+    margin: 8px 16px 0 16px;
   }
 
-  &__filter {
-    display: flex;
+  &__spacer {
+    flex-grow: 1;
   }
 
-  &__filter--type-value {
+  &__additional-toolbar {
     display: flex;
-    justify-content: space-between;
+    margin: 0 16px;
+  }
+
+  &__additional-filter {
+    position: relative;
+    top: -8px;
+    margin: 0 16px;
   }
 
   &__button--primary {
@@ -31,20 +37,12 @@
     top: 12px;
     color: #555;
   }
-
-  &__workbasket-icon {
-    width: 16px;
-    height: 16px;
-    fill: #555;
-  }
-
-  &__additional-toolbar {
-    display: flex;
-    margin-top: 12px;
-  }
-
 }
 
-::ng-deep .task-list-toolbar__filter--type-value .mat-form-field-wrapper {
-  width: 100px;
+::ng-deep .mat-tab-labels {
+  background-color: $light-grey;
+}
+
+::ng-deep .task-list-toolbar__filter-input .mat-form-field-wrapper {
+  width: 240px;
 }

@@ -5,13 +5,14 @@ import { TaskService } from 'app/workplace/services/task.service';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { Sorting, TASK_SORT_PARAMETER_NAMING, TaskQuerySortParameter } from 'app/shared/models/sorting';
 import { expandDown } from 'app/shared/animations/expand.animation';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
-import { ObjectReference } from 'app/workplace/models/object-reference';
 import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { Actions, ofActionCompleted, Store } from '@ngxs/store';
+import { ClearTaskFilter, SetTaskFilter } from '../../../shared/store/filter-store/filter.actions';
 
 export enum Search {
   byWorkbasket = 'workbasket',
@@ -45,8 +46,8 @@ export class TaskListToolbarComponent implements OnInit {
 
   search = Search;
   searchSelected: Search = Search.byWorkbasket;
-  resultType = '';
-  resultValue = '';
+  activeTab: number = 0;
+  filterInput = '';
 
   destroy$ = new Subject<void>();
 
@@ -56,10 +57,16 @@ export class TaskListToolbarComponent implements OnInit {
     private workbasketService: WorkbasketService,
     private workplaceService: WorkplaceService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: Store,
+    private ngxsActions$: Actions
   ) {}
 
   ngOnInit() {
+    this.ngxsActions$.pipe(ofActionCompleted(ClearTaskFilter), takeUntil(this.destroy$)).subscribe(() => {
+      this.filterInput = '';
+    });
+
     this.workbasketService
       .getAllWorkBaskets()
       .pipe(takeUntil(this.destroy$))
@@ -88,22 +95,56 @@ export class TaskListToolbarComponent implements OnInit {
     this.taskService
       .getSelectedTask()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((t) => {
-        if (!this.resultName) {
-          this.resultName = t.workbasketSummary.name;
-          this.resultId = t.workbasketSummary.workbasketId;
-          this.currentBasket = t.workbasketSummary;
-          this.workplaceService.selectWorkbasket(this.currentBasket);
-          this.workbasketSelected = true;
+      .subscribe((task) => {
+        if (typeof task !== 'undefined') {
+          const workbasketSummary = task.workbasketSummary;
+          if (this.searchSelected === this.search.byWorkbasket && this.resultName !== workbasketSummary.name) {
+            this.resultName = workbasketSummary.name;
+            this.resultId = workbasketSummary.workbasketId;
+            this.currentBasket = workbasketSummary;
+            this.workplaceService.selectWorkbasket(this.currentBasket);
+            this.workbasketSelected = true;
+          }
         }
       });
 
-    if (this.route.snapshot.queryParams.search === this.search.byTypeAndValue) {
-      this.searchSelected = this.search.byTypeAndValue;
-    }
+    this.route.queryParams.subscribe((params) => {
+      const component = params.component;
+      if (component == 'workbaskets') {
+        this.activeTab = 0;
+        if (this.currentBasket) {
+          this.resultName = this.currentBasket.name;
+          this.resultId = this.currentBasket.workbasketId;
+        }
+        this.selectSearch(this.search.byWorkbasket);
+      }
+      if (component == 'task-search') {
+        this.activeTab = 1;
+        this.searched = true;
+        this.selectSearch(this.search.byTypeAndValue);
+      }
+    });
+
     if (this.router.url.includes('taskdetail')) {
       this.searched = true;
     }
+  }
+
+  onTabChange(search) {
+    const tab = search.path[0].innerText;
+    if (tab === 'Workbaskets') {
+      this.router.navigate(['taskana/workplace'], { queryParams: { component: 'workbaskets' } });
+    }
+    if (tab === 'Task search') {
+      this.router.navigate(['taskana/workplace'], { queryParams: { component: 'task-search' } });
+    }
+  }
+
+  updateState() {
+    const wildcardFilter: TaskQueryFilterParameter = {
+      'wildcard-search-value': [this.filterInput]
+    };
+    this.store.dispatch(new SetTaskFilter(wildcardFilter));
   }
 
   filterWorkbasketNames() {
@@ -115,60 +156,58 @@ export class TaskListToolbarComponent implements OnInit {
   searchBasket() {
     this.toolbarState = false;
     this.workbasketSelected = true;
-    if (this.searchSelected === this.search.byTypeAndValue) {
-      const objectReference = new ObjectReference();
-      objectReference.type = this.resultType;
-      objectReference.value = this.resultValue;
-      this.workplaceService.selectObjectReference(objectReference);
-      this.searched = true;
-    } else {
-      if (this.workbaskets) {
-        this.workbaskets.forEach((workbasket) => {
-          if (workbasket.name === this.resultName) {
-            this.resultId = workbasket.workbasketId;
-            this.currentBasket = workbasket;
-            this.searched = true;
-            this.workplaceService.selectWorkbasket(this.currentBasket);
-          }
-        });
-
-        if (!this.resultId) {
-          delete this.currentBasket;
-          this.workplaceService.selectWorkbasket();
+    if (this.searchSelected === this.search.byWorkbasket && this.workbaskets) {
+      this.workbaskets.forEach((workbasket) => {
+        if (workbasket.name === this.resultName) {
+          this.resultId = workbasket.workbasketId;
+          this.currentBasket = workbasket;
+          this.workplaceService.selectWorkbasket(this.currentBasket);
         }
+      });
+
+      this.searched = !!this.currentBasket;
+
+      if (!this.resultId) {
+        delete this.currentBasket;
+        this.workplaceService.selectWorkbasket();
       }
     }
 
     this.resultId = '';
-    this.router.navigate(['']);
+  }
+
+  navigateBack() {
+    this.router.navigate([''], { queryParamsHandling: 'merge' });
   }
 
   sorting(sort: Sorting<TaskQuerySortParameter>) {
     this.performSorting.emit(sort);
   }
 
-  filtering(filterBy: TaskQueryFilterParameter) {
-    this.performFilter.emit(filterBy);
+  onFilter() {
+    this.performFilter.emit();
+  }
+
+  onClearFilter() {
+    this.store.dispatch(new ClearTaskFilter()).subscribe(() => {
+      this.performFilter.emit();
+    });
   }
 
   createTask() {
     this.taskService.selectTask();
-    this.router.navigate([{ outlets: { detail: 'taskdetail/new-task' } }], { relativeTo: this.route });
+    this.router.navigate([{ outlets: { detail: 'taskdetail/new-task' } }], {
+      relativeTo: this.route,
+      queryParamsHandling: 'merge'
+    });
   }
 
   selectSearch(type: Search) {
-    this.searched = false;
-    delete this.resultId;
-    delete this.currentBasket;
-    this.selectSearchType.emit(type);
     this.searchSelected = type;
-
-    const navigationExtras: NavigationExtras = {
-      queryParams: { search: type }
-    };
-
-    this.router.navigate([''], navigationExtras);
+    delete this.resultId;
+    this.selectSearchType.emit(type);
     this.searchBasket();
+    this.onClearFilter();
   }
 
   ngOnDestroy() {

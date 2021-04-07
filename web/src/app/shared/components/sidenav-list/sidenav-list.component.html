@@ -14,6 +14,14 @@
         *ngIf="monitorAccess" (click)="toggleSidenav()">Monitor</a>
     <a mat-list-item class="navlist__item navlist__workplace" [routerLink]=[workplaceUrl]
         [routerLinkActive]="['active']" *ngIf="workplaceAccess" (click)="toggleSidenav()">Workplace</a>
+    <div class="navlist__admin-item">
+      <a mat-list-item class="navlist__item  navlist__workplace--workbaskets"
+         [routerLinkActive]="['active__sub']" *ngIf="workplaceAccess" [routerLink]=[workplaceUrl] [queryParams]="{component: 'workbaskets'}"
+         (click)="toggleSidenav()">Workbaskets</a>
+      <a mat-list-item class="navlist__item  navlist__workplace--task-search"
+         [routerLinkActive]="['active__sub']" *ngIf="workplaceAccess" [routerLink]=[workplaceUrl] [queryParams]="{component: 'task-search'}"
+         (click)="toggleSidenav()">Task Search</a>
+    </div>
     <a mat-list-item class="navlist__item navlist__history" [routerLink]=[historyUrl] [routerLinkActive]="['active']"
         *ngIf="historyAccess" (click)="toggleSidenav()">History</a>
 </mat-nav-list>

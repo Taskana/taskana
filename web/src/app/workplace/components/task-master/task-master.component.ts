@@ -1,19 +1,20 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { TaskService } from 'app/workplace/services/task.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Direction, Sorting, TaskQuerySortParameter } from 'app/shared/models/sorting';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
 import { Page } from 'app/shared/models/page';
-import { takeUntil } from 'rxjs/operators';
-import { ObjectReference } from '../../models/object-reference';
+import { take, takeUntil } from 'rxjs/operators';
 import { Search } from '../task-list-toolbar/task-list-toolbar.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
+import { Select } from '@ngxs/store';
+import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
 
 @Component({
   selector: 'taskana-task-master',
@@ -44,6 +45,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
 
   @ViewChild('wbToolbar', { static: true })
   private toolbarElement: ElementRef;
+
+  @Select(FilterSelectors.getTaskFilter) filter$: Observable<TaskQueryFilterParameter>;
 
   constructor(
     private taskService: TaskService,
@@ -87,16 +90,6 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
           this.getTasks();
         }
       });
-
-    this.workplaceService
-      .getSelectedObjectReference()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((objectReference) => {
-        if (objectReference) {
-          delete this.currentBasket;
-          this.getTasks(objectReference);
-        }
-      });
   }
 
   performSorting(sort: Sorting<TaskQuerySortParameter>) {
@@ -104,9 +97,12 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
-  performFilter(filterBy: TaskQueryFilterParameter) {
-    this.filterBy = filterBy;
-    this.getTasks();
+  performFilter() {
+    this.paging.page = 1;
+    this.filter$.pipe(take(1)).subscribe((filter) => {
+      this.filterBy = { ...filter };
+      this.getTasks();
+    });
   }
 
   selectSearchType(type: Search) {
@@ -135,24 +131,32 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getTasks(objectReference?: ObjectReference): void {
-    this.filterBy['workbasket-id'] = [this.currentBasket?.workbasketId];
+  private getTasks(): void {
     this.requestInProgress = true;
-    if (!this.currentBasket && !objectReference) {
+
+    if (this.selectedSearchType === Search.byTypeAndValue) {
+      delete this.currentBasket;
+    }
+
+    this.filterBy['workbasket-id'] = [this.currentBasket?.workbasketId];
+
+    if (this.selectedSearchType === Search.byWorkbasket && !this.currentBasket) {
       this.requestInProgress = false;
       this.tasks = [];
     } else {
       this.calculateHeightCard();
       this.taskService
         .findTasksWithWorkbasket(this.filterBy, this.sort, this.paging)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(take(1))
         .subscribe((taskResource) => {
           this.requestInProgress = false;
           if (taskResource.tasks && taskResource.tasks.length > 0) {
             this.tasks = taskResource.tasks;
           } else {
             this.tasks = [];
-            this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT_2);
+            if (this.selectedSearchType === Search.byWorkbasket) {
+              this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT_2);
+            }
           }
           this.tasksPageInformation = taskResource.page;
         });
