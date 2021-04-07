@@ -1,6 +1,7 @@
 import { FilterState, FilterStateModel } from './filter.state';
 import { Selector } from '@ngxs/store';
 import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
+import { TaskQueryFilterParameter } from '../../models/task-query-filter-parameter';
 
 export class FilterSelectors {
   @Selector([FilterState])
@@ -16,5 +17,10 @@ export class FilterSelectors {
   @Selector([FilterState])
   static getWorkbasketListFilter(state: FilterStateModel): WorkbasketQueryFilterParameter {
     return state.workbasketList;
+  }
+
+  @Selector([FilterState])
+  static getTaskFilter(state: FilterStateModel): TaskQueryFilterParameter {
+    return state.tasks;
   }
 }

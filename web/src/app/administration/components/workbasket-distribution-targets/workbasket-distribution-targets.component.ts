@@ -22,7 +22,7 @@ import { ButtonAction } from '../../models/button-action';
 import { Pair } from '../../../shared/models/pair';
 import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
 import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
-import { SetFilter } from '../../../shared/store/filter-store/filter.actions';
+import { SetWorkbasketFilter } from '../../../shared/store/filter-store/filter.actions';
 
 export enum Side {
   AVAILABLE,
@@ -283,8 +283,10 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     this.availableDistributionTargetsFilterClone = this.availableDistributionTargets;
     this.selectAllRight = true;
     this.selectAllLeft = true;
-    this.store.dispatch(new SetFilter(this.selectedDistributionTargetsFilter, 'selectedDistributionTargets'));
-    this.store.dispatch(new SetFilter(this.availableDistributionTargetsFilter, 'availableDistributionTargets'));
+    this.store.dispatch(new SetWorkbasketFilter(this.selectedDistributionTargetsFilter, 'selectedDistributionTargets'));
+    this.store.dispatch(
+      new SetWorkbasketFilter(this.availableDistributionTargetsFilter, 'availableDistributionTargets')
+    );
   }
 
   onClear() {

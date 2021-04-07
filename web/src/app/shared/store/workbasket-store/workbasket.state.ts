@@ -37,7 +37,7 @@ import { RequestInProgressService } from '../../services/request-in-progress/req
 import { WorkbasketType } from '../../models/workbasket-type';
 import { TaskanaDate } from '../../util/taskana.date';
 import { DomainService } from '../../services/domain/domain.service';
-import { ClearFilter } from '../filter-store/filter.actions';
+import { ClearWorkbasketFilter } from '../filter-store/filter.actions';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -136,8 +136,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
               .replace(/(workbaskets).*/g, `workbaskets/(detail:${action.workbasketId})?tab=${selectedComponent}`)
           );
 
-          ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
-          ctx.dispatch(new ClearFilter('availableDistributionTargets'));
+          ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
+          ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
         })
       );
     }
@@ -224,8 +224,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       badgeMessage: `Copying workbasket: ${workbasket.key}`
     });
 
-    ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
-    ctx.dispatch(new ClearFilter('availableDistributionTargets'));
+    ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
+    ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
 
     return of(null);
   }
@@ -261,8 +261,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           workbasketDistributionTargets: distributionTargets
         });
 
-        ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
-        ctx.dispatch(new ClearFilter('availableDistributionTargets'));
+        ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
+        ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
 
         return of(null);
       })
@@ -433,8 +433,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
                 selectedWorkbasket,
                 action: ACTION.READ
               });
-              ctx.dispatch(new ClearFilter('selectedDistributionTargets'));
-              ctx.dispatch(new ClearFilter('availableDistributionTargets'));
+              ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
+              ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
             });
           }
           this.requestInProgressService.setRequestInProgress(false);
