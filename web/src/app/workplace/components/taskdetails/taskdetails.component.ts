@@ -53,7 +53,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       this.currentId = params.id;
       // redirect if user enters through a deep-link
       if (!this.currentWorkbasket && this.currentId === 'new-task') {
-        this.router.navigate(['']);
+        this.router.navigate([''], { queryParamsHandling: 'merge' });
       }
       this.getTask();
     });
@@ -99,7 +99,10 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   }
 
   openTask() {
-    this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], { relativeTo: this.route.parent });
+    this.router.navigate([{ outlets: { detail: `task/${this.currentId}` } }], {
+      relativeTo: this.route.parent,
+      queryParamsHandling: 'merge'
+    });
   }
 
   workOnTaskDisabled(): boolean {
@@ -118,7 +121,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
       () => {
         this.taskService.publishTaskDeletion();
         this.task = null;
-        this.router.navigate(['taskana/workplace/tasks']);
+        this.router.navigate(['taskana/workplace/tasks'], { queryParamsHandling: 'merge' });
       },
       (error) => {
         this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
@@ -133,7 +136,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
   backClicked(): void {
     delete this.task;
     this.taskService.selectTask(this.task);
-    this.router.navigate(['./'], { relativeTo: this.route.parent });
+    this.router.navigate(['./'], { relativeTo: this.route.parent, queryParamsHandling: 'merge' });
   }
 
   ngOnDestroy(): void {
@@ -188,7 +191,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
         this.task = task;
         this.taskService.selectTask(this.task);
         this.taskService.publishUpdatedTask(task);
-        this.router.navigate([`../${task.taskId}`], { relativeTo: this.route });
+        this.router.navigate([`../${task.taskId}`], { relativeTo: this.route, queryParamsHandling: 'merge' });
       },
       () => {
         this.requestInProgressService.setRequestInProgress(false);

@@ -112,7 +112,8 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   navigateBack() {
     this.router.navigate([{ outlets: { detail: `taskdetail/${this.task.taskId}` } }], {
-      relativeTo: this.route.parent
+      relativeTo: this.route.parent,
+      queryParamsHandling: 'merge'
     });
   }
 
