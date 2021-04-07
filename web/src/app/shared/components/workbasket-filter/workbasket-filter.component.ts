@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ALL_TYPES, WorkbasketType } from '../../models/workbasket-type';
 import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
 import { Select, Store } from '@ngxs/store';
-import { ClearFilter, SetFilter } from '../../store/filter-store/filter.actions';
+import { ClearWorkbasketFilter, SetWorkbasketFilter } from '../../store/filter-store/filter.actions';
 import { FilterSelectors } from '../../store/filter-store/filter.selectors';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -60,7 +60,7 @@ export class WorkbasketFilterComponent implements OnInit, OnDestroy {
   }
 
   clear() {
-    this.store.dispatch(new ClearFilter(this.component));
+    this.store.dispatch(new ClearWorkbasketFilter(this.component));
   }
 
   selectType(type: WorkbasketType) {
@@ -68,7 +68,7 @@ export class WorkbasketFilterComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    this.store.dispatch(new SetFilter(this.filter, this.component));
+    this.store.dispatch(new SetWorkbasketFilter(this.filter, this.component));
   }
 
   ngOnDestroy() {

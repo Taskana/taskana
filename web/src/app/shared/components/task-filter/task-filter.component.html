@@ -1,46 +1,39 @@
-<div class="row">
-  <div class="col-xs-2">
-    <taskana-shared-number-picker [(ngModel)]="filter.priority[0]"
-                                  (keyup.enter)="search()" title="priority"
-                                  id="display-priority-filter"></taskana-shared-number-picker>
+<div class="task-filter">
+
+  <!-- INPUT FIELDS -->
+  <div class="task-filter__input-fields">
+
+    <div class="task-filter__row">
+      <!-- FILTER BY NAME AND OWNER -->
+      <mat-form-field class="task-filter__input-field--large" style="margin-right: 16px;" matTooltip="Filter Tasks by name">
+        <mat-label>Filter by name</mat-label>
+        <input matInput type="text" placeholder="Name" [(ngModel)]="filter['name-like'][0]" (keyup.enter)="search()" (keyup)="updateState()">
+      </mat-form-field>
+
+      <!-- FILTER BY PRIORITY -->
+      <mat-form-field class="task-filter__input-field--small" matTooltip="Filter Tasks by priority">
+        <mat-label>Filter by priority</mat-label>
+        <input matInput type="number" placeholder="Priority" [(ngModel)]="filter.priority[0]" (keyup.enter)="search()" (ngModelChange)="updateState()">
+      </mat-form-field>
+    </div>
+
+    <div class="task-filter__row">
+      <mat-form-field class="task-filter__input-field--large" style="margin-right: 16px" matTooltip="Filter Tasks by owner">
+        <mat-label>Filter by owner</mat-label>
+        <input matInput type="text" placeholder="Owner" [(ngModel)]="filter['owner-like'][0]" (keyup.enter)="search()" (keyup)="updateState()">
+      </mat-form-field>
+
+      <!-- FILTER BY TASK STATE -->
+      <mat-form-field class="task-filter__input-field--small" matTooltip="Filter Tasks by status">
+        <mat-label>Filter by status</mat-label>
+        <mat-select [value]="filter.state && filter.state[0] ? filter.state[0] : undefined">
+          <mat-option class="types-selector__options" *ngFor="let state of allStates | mapValues" [value]="state.key" (click)="setStatus(state.key)">
+            {{ state.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
   </div>
-  <div class="col-xs-4">
-    <input type="text" [(ngModel)]="filter['name-like'][0]" (keyup.enter)="search()"
-           class="form-control" id="display-name-filter"
-           placeholder="Filter name">
-  </div>
-  <div class="col-xs-4">
-    <input type="text" [(ngModel)]="filter['owner-like'][0]" (keyup.enter)="search()"
-           class="form-control" id="display-owner-filter"
-           placeholder="Filter owner">
-  </div>
-  <button (click)="clear(); search()" class="btn btn-default pull-right margin-right" type="button"
-          data-toggle="tooltip"
-          title="Clear">
-    <span class="material-icons md-20 blue">clear</span>
-  </button>
-</div>
-<div class="row">
-  <div class="dropdown col-xs-2 col-xs-offset-2">
-    <button class="btn btn-default" type="button" data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="true"
-            title="State: {{filter.state && filter.state[0] ? filter.state[0] : 'All'}}">
-      <span>{{filter.state ? filter.state[0] : 'All'}}</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-users" role="menu">
-      <li>
-        <a *ngFor="let state of allStates | mapValues" type="button"
-           (click)="selectState(state.key); search()"
-           data-toggle="tooltip" [title]="state.value">
-          <label class="blue">{{state.value}}</label>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <button (click)="search()" type="button" class="btn btn-default pull-right margin-right"
-          data-toggle="tooltip"
-          title="Search">
-    <span class="material-icons md-20 blue">search</span>
-  </button>
+
 </div>
