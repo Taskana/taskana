@@ -24,6 +24,9 @@ export class TaskListComponent implements OnInit {
   selectTask(taskId: string) {
     this.selectedId = taskId;
     this.selectedIdChange.emit(taskId);
-    this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], { relativeTo: this.route });
+    this.router.navigate([{ outlets: { detail: `taskdetail/${this.selectedId}` } }], {
+      relativeTo: this.route,
+      queryParamsHandling: 'merge'
+    });
   }
 }

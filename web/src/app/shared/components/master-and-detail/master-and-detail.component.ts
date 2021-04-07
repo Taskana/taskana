@@ -33,7 +33,7 @@ export class MasterAndDetailComponent implements OnInit {
   }
 
   backClicked(): void {
-    this.router.navigate(['../'], { relativeTo: this.route });
+    this.router.navigate(['../'], { relativeTo: this.route, queryParamsHandling: 'merge' });
   }
 
   private showDetails(event?: RouterEvent): boolean {
