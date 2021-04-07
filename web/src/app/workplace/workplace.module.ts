@@ -36,6 +36,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const MODULES = [
   TypeaheadModule.forRoot(),
@@ -78,7 +79,8 @@ const DECLARATIONS = [
     MatMenuModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTabsModule
   ],
   providers: [
     TaskService,
