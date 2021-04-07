@@ -27,7 +27,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { SortComponent } from './components/sort/sort.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
-import { NumberPickerComponent } from './components/number-picker/number-picker.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 
 /**
@@ -93,7 +92,6 @@ const DECLARATIONS = [
   IconTypeComponent,
   FieldErrorDisplayComponent,
   PaginationComponent,
-  NumberPickerComponent,
   ProgressSpinnerComponent,
   ToastComponent,
   DialogPopUpComponent,
