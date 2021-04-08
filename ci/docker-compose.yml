@@ -10,4 +10,3 @@ services:
     image: taskana/db2:11.1
     ports:
       - 5101:50000
-    command: -d
