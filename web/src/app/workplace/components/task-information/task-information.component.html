@@ -142,7 +142,7 @@
         <div class="task-information__due-date-and-priority">
 
           <!-- DUE DATE -->
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" style="min-width: 0">
             <mat-label> Due Date </mat-label>
             <input matInput [matDatepicker]="picker" value="{{task.due}}" (dateInput)="updateDate($event)">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

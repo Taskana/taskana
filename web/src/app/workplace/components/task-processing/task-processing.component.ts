@@ -11,11 +11,11 @@ import { take } from 'rxjs/operators';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss']
+  selector: 'taskana-task-processing',
+  templateUrl: './task-processing.component.html',
+  styleUrls: ['./task-processing.component.scss']
 })
-export class TaskComponent implements OnInit, OnDestroy {
+export class TaskProcessingComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription;
 
   regex = /\${(.*?)}/g;

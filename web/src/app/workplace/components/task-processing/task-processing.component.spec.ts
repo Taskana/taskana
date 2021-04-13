@@ -12,7 +12,7 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { TaskService } from '../../services/task.service';
-import { TaskComponent } from './task.component';
+import { TaskProcessingComponent } from './task-processing.component';
 
 @Component({
   selector: 'taskana-dummy-detail',
@@ -23,14 +23,14 @@ class DummyDetailComponent {}
 const routes: Routes = [{ path: 'workplace/tasks', component: DummyDetailComponent }];
 
 // TODO: test pending to test. Failing random
-xdescribe('TaskComponent', () => {
-  let component: TaskComponent;
-  let fixture: ComponentFixture<TaskComponent>;
+xdescribe('TaskProcessingComponent', () => {
+  let component: TaskProcessingComponent;
+  let fixture: ComponentFixture<TaskProcessingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, HttpClientModule, RouterTestingModule.withRoutes(routes)],
-      declarations: [TaskComponent, SpinnerComponent, DummyDetailComponent],
+      declarations: [TaskProcessingComponent, SpinnerComponent, DummyDetailComponent],
       providers: [
         TaskService,
         HttpClient,
@@ -44,7 +44,7 @@ xdescribe('TaskComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskComponent);
+    fixture = TestBed.createComponent(TaskProcessingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
