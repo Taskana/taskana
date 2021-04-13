@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MasterAndDetailComponent } from '../shared/components/master-and-detail/master-and-detail.component';
-import { TaskComponent } from './components/task/task.component';
+import { TaskProcessingComponent } from './components/task-processing/task-processing.component';
 import { TaskdetailsComponent } from './components/taskdetails/taskdetails.component';
 import { TaskMasterComponent } from './components/task-master/task-master.component';
 
@@ -22,7 +22,7 @@ const routes: Routes = [
       },
       {
         path: 'task/:id',
-        component: TaskComponent,
+        component: TaskProcessingComponent,
         outlet: 'detail'
       }
     ]
