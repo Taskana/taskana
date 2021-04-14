@@ -64,3 +64,6 @@ Thumbs.db
 
 # jenv on mac
 /.java-version
+
+# java-format
+.java-format-cache
