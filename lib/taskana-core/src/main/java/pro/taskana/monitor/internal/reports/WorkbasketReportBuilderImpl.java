@@ -68,7 +68,7 @@ public class WorkbasketReportBuilderImpl
               this.columnHeaders, converter, this.inWorkingDays));
 
       Map<String, String> displayMap =
-          taskanaEngine.runAsAdmin(
+          taskanaEngine.getEngine().runAsAdmin(
               () ->
                   workbasketService
                       .createWorkbasketQuery()

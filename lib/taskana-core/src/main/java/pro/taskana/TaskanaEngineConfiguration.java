@@ -40,6 +40,7 @@ import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.util.CheckedFunction;
+import pro.taskana.common.internal.util.FileLoaderUtil;
 import pro.taskana.common.internal.util.Pair;
 
 /**
@@ -555,9 +556,14 @@ public class TaskanaEngineConfiguration {
         .collect(Collectors.toList());
   }
 
+  public Properties readPropertiesFromFile() {
+    return readPropertiesFromFile(this.propertiesFileName);
+  }
+
+
   private Properties readPropertiesFromFile(String propertiesFile) {
     Properties props = new Properties();
-    boolean loadFromClasspath = loadFromClasspath(propertiesFile);
+    boolean loadFromClasspath = FileLoaderUtil.loadFromClasspath(propertiesFile);
     try {
       if (loadFromClasspath) {
         InputStream inputStream =

@@ -53,6 +53,7 @@ public class RestConfiguration {
   }
 
   @Bean
+  @ConditionalOnMissingBean(TaskanaEngine.class)
   public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
       throws SQLException {
     return taskanaEngineConfiguration.buildTaskanaEngine();

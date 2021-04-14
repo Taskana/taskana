@@ -156,7 +156,7 @@ class SetOwnerAccTest extends AbstractAccTest {
     resetDb(false);
     List<TaskSummary> allTaskSummaries =
         new TaskanaEngineProxy(taskanaEngine)
-            .getEngine()
+            .getEngine().getEngine()
             .runAsAdmin(() -> taskanaEngine.getTaskService().createTaskQuery().list());
     List<String> allTaskIds =
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());

@@ -845,7 +845,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       }
 
       long countTasksNotCompletedInWorkbasket =
-          taskanaEngine.runAsAdmin(() -> getCountTasksNotCompletedByWorkbasketId(workbasketId));
+          taskanaEngine
+              .getEngine()
+              .runAsAdmin(() -> getCountTasksNotCompletedByWorkbasketId(workbasketId));
 
       if (countTasksNotCompletedInWorkbasket > 0) {
         String errorMessage =
@@ -856,7 +858,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       }
 
       long countTasksInWorkbasket =
-          taskanaEngine.runAsAdmin(() -> getCountTasksByWorkbasketId(workbasketId));
+          taskanaEngine.getEngine().runAsAdmin(() -> getCountTasksByWorkbasketId(workbasketId));
 
       boolean canBeDeletedNow = countTasksInWorkbasket == 0;
 

@@ -84,13 +84,4 @@ public interface InternalTaskanaEngine {
    */
   CreateTaskPreprocessorManager getCreateTaskPreprocessorManager();
 
-  /**
-   * This method is supposed to skip further permission checks if we are already in a secured
-   * environment. With great power comes great responsibility.
-   *
-   * @param supplier will be executed with admin privileges
-   * @param <T> defined with the supplier return value
-   * @return output from supplier
-   */
-  <T> T runAsAdmin(Supplier<T> supplier);
 }

@@ -37,7 +37,7 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
 
     new TaskanaEngineProxy(taskanaEngine)
-        .getEngine()
+        .getEngine().getEngine()
         .runAsAdmin(() -> assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue());
 
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();

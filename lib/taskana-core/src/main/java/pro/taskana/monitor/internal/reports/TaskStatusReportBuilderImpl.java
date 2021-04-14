@@ -48,7 +48,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
       TaskStatusReport report = new TaskStatusReport(this.states);
       report.addItems(tasks);
       Map<String, String> displayMap =
-          taskanaEngine.runAsAdmin(
+          taskanaEngine.getEngine().runAsAdmin(
               () ->
                   workbasketService.createWorkbasketQuery()
                       .keyIn(report.getRows().keySet().toArray(new String[0]))

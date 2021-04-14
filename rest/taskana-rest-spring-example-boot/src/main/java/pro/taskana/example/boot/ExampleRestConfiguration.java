@@ -10,6 +10,9 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @Configuration
@@ -21,16 +24,28 @@ public class ExampleRestConfiguration {
   }
 
   @Bean
-  @DependsOn("getTaskanaEngine") // generate sample data after schema was inserted
+  @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
   public SampleDataGenerator generateSampleData(
+      TaskanaEngineConfiguration taskanaEngineConfiguration,
       DataSource dataSource,
-      @Value("${taskana.schemaName:TASKANA}") String schemaName,
-      @Value("${generateSampleData:true}") boolean generateSampleData) {
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+      @Value("${generateSampleData:true}") boolean generateSampleData)
+      throws SQLException {
+    DbSchemaCreator dbSchemaCreator =
+        new DbSchemaCreator(dataSource, taskanaEngineConfiguration.getSchemaName());
+    dbSchemaCreator.run();
+    SampleDataGenerator sampleDataGenerator =
+        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
     if (generateSampleData) {
       sampleDataGenerator.generateSampleData();
     }
     return sampleDataGenerator;
+  }
+
+  @Bean
+  @DependsOn("generateSampleData")
+  public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
+      throws SQLException {
+    return taskanaEngineConfiguration.buildTaskanaEngine();
   }
 
   // only required to let the adapter example connect to the same database

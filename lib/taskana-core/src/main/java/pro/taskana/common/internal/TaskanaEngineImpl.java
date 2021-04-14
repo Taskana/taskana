@@ -1,7 +1,5 @@
 package pro.taskana.common.internal;
 
-import java.security.AccessController;
-import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -42,7 +40,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.api.security.CurrentUserContext;
-import pro.taskana.common.api.security.GroupPrincipal;
+import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.internal.configuration.SecurityVerifier;
@@ -252,6 +250,19 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return currentUserContext;
   }
 
+  public <T> T runAsAdmin(Supplier<T> supplier) {
+
+    String adminName =
+        this.getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
+            .findFirst()
+            .orElseThrow(() -> new TaskanaRuntimeException("There is no admin configured"));
+
+    Subject subject = new Subject();
+    subject.getPrincipals().add(new UserPrincipal(adminName));
+
+    return Subject.doAs(subject, (PrivilegedAction<T>) supplier::get);
+  }
+
   /**
    * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and
    * sets the databaseId attribute.
@@ -459,31 +470,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public CreateTaskPreprocessorManager getCreateTaskPreprocessorManager() {
       return createTaskPreprocessorManager;
-    }
-
-    @Override
-    public <T> T runAsAdmin(Supplier<T> supplier) {
-
-      Subject subject = Subject.getSubject(AccessController.getContext());
-      if (subject == null) {
-        // dont add authorisation if none is available.
-        return supplier.get();
-      }
-
-      Set<Principal> principalsCopy = new HashSet<>(subject.getPrincipals());
-      Set<Object> privateCredentialsCopy = new HashSet<>(subject.getPrivateCredentials());
-      Set<Object> publicCredentialsCopy = new HashSet<>(subject.getPublicCredentials());
-
-      String adminName =
-          this.getEngine().getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
-              .findFirst()
-              .orElseThrow(() -> new TaskanaRuntimeException("There is no admin configured"));
-
-      principalsCopy.add(new GroupPrincipal(adminName));
-      Subject subject1 =
-          new Subject(true, principalsCopy, privateCredentialsCopy, publicCredentialsCopy);
-
-      return Subject.doAs(subject1, (PrivilegedAction<T>) supplier::get);
     }
   }
 }
