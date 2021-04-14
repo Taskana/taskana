@@ -12,7 +12,7 @@ import { TaskService } from '../../services/task.service';
 import { TaskAttributeValueComponent } from '../task-attribute-value/task-attribute-value.component';
 import { TaskCustomFieldsComponent } from '../task-custom-fields/task-custom-fields.component';
 import { TaskInformationComponent } from '../task-information/task-information.component';
-import { TaskdetailsComponent } from './taskdetails.component';
+import { TaskDetailsComponent } from './task-details.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
@@ -24,14 +24,14 @@ class DummyDetailComponent {}
 const routes: Routes = [{ path: 'workplace/taskdetail/:id', component: DummyDetailComponent }];
 
 // TODO: test pending to test. Failing random
-xdescribe('TaskdetailsComponent', () => {
-  let component: TaskdetailsComponent;
-  let fixture: ComponentFixture<TaskdetailsComponent>;
+xdescribe('TaskDetailsComponent', () => {
+  let component: TaskDetailsComponent;
+  let fixture: ComponentFixture<TaskDetailsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TaskdetailsComponent,
+        TaskDetailsComponent,
         SpinnerComponent,
         TaskAttributeValueComponent,
         TaskCustomFieldsComponent,
@@ -44,7 +44,7 @@ xdescribe('TaskdetailsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskdetailsComponent);
+    fixture = TestBed.createComponent(TaskDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

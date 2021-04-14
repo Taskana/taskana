@@ -16,10 +16,10 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-task-details',
-  templateUrl: './taskdetails.component.html',
-  styleUrls: ['./taskdetails.component.scss']
+  templateUrl: './task-details.component.html',
+  styleUrls: ['./task-details.component.scss']
 })
-export class TaskdetailsComponent implements OnInit, OnDestroy {
+export class TaskDetailsComponent implements OnInit, OnDestroy {
   task: Task;
   taskClone: Task;
   requestInProgress = false;
@@ -157,7 +157,7 @@ export class TaskdetailsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private onSave() {
+  onSave() {
     this.currentId === 'new-task' ? this.createTask() : this.updateTask();
   }
 

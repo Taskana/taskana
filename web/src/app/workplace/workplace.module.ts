@@ -12,7 +12,7 @@ import { WorkplaceRoutingModule } from './workplace-routing.module';
 
 import { TaskListToolbarComponent } from './components/task-list-toolbar/task-list-toolbar.component';
 import { TaskMasterComponent } from './components/task-master/task-master.component';
-import { TaskdetailsComponent } from './components/taskdetails/taskdetails.component';
+import { TaskDetailsComponent } from './components/task-details/task-details.component';
 import { TaskAttributeValueComponent } from './components/task-attribute-value/task-attribute-value.component';
 import { TaskCustomFieldsComponent } from './components/task-custom-fields/task-custom-fields.component';
 import { TaskInformationComponent } from './components/task-information/task-information.component';
@@ -57,7 +57,7 @@ const MODULES = [
 const DECLARATIONS = [
   TaskListToolbarComponent,
   TaskMasterComponent,
-  TaskdetailsComponent,
+  TaskDetailsComponent,
   TaskInformationComponent,
   TaskAttributeValueComponent,
   TaskCustomFieldsComponent,

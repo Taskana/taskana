@@ -117,7 +117,7 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair<string, string>>([
     \n The uploaded file probably exceeded the maximum file size of 10 MB.`
     }
   ],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.FETCH_ERR_3, { left: '', right: 'An error occurred while fetching the task' }],
   // workbasket-details.component
   [NOTIFICATION_TYPES.FETCH_ERR_4, { left: '', right: 'An error occurred while fetching the workbasket' }],
@@ -176,9 +176,9 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair<string, string>>([
       right: 'Request time exceeded'
     }
   ],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.FETCH_ERR_7, { left: 'An error occurred while fetching the task', right: '' }],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.DELETE_ERR_2, { left: 'An error occurred while deleting the task', right: '' }],
 
   // ALERTS
@@ -199,7 +199,7 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair<string, string>>([
   // access-items.component
   // workbasket.distribution-targets.component
   // workbasket-information.component
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.INFO_ALERT, { left: '', right: 'Information restored' }],
   // classification-details.component
   [
@@ -238,13 +238,13 @@ export const notifications = new Map<NOTIFICATION_TYPES, Pair<string, string>>([
   [NOTIFICATION_TYPES.WARNING_ALERT, { left: '', right: 'There are some empty fields which are required.' }],
   // forms-validator.service x2
   [NOTIFICATION_TYPES.WARNING_ALERT_2, { left: '', right: 'The {owner} introduced is not valid.' }],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.DANGER_ALERT, { left: '', right: 'There was an error while updating.' }],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.SUCCESS_ALERT_13, { left: '', right: 'Task {taskId} was created successfully.' }],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.SUCCESS_ALERT_14, { left: '', right: 'Updating was successful.' }],
-  // taskdetails.component
+  // task-details.component
   [NOTIFICATION_TYPES.DANGER_ALERT_2, { left: '', right: 'There was an error while creating a new task.' }],
   // task-master.component
   [NOTIFICATION_TYPES.INFO_ALERT_2, { left: '', right: 'The selected Workbasket is empty!' }],
