@@ -1,12 +1,14 @@
 version: '3'
 services:
   taskana-postgres_10:
-    build: .
+    build: postgres_10
     ports:
       - 5102:5432
     environment:
       - POSTGRES_PASSWORD=postgres
   taskana-db2_11-1:
     image: taskana/db2:11.1
+    environment:
+      - LICENSE=accept
     ports:
       - 5101:50000

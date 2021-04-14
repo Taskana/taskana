@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e #fail fast
+trap "exit 1" TERM
+export TOP_PID=$$
 
 #H Usage:
 #H %FILE% -h | %FILE% --help
@@ -39,7 +41,7 @@ function mapDBToDockerComposeServiceName() {
       echo "taskana-postgres_10"
       ;;
     *)
-      echo "unknown database '$1'" >&2 && exit 1
+      echo "unknown database '$1'" >&2 && kill -s TERM $TOP_PID
   esac
 }
 
@@ -71,8 +73,11 @@ function main() {
     echo 'schemaName=taskana' >> $propFile
     ;;
   stop)
-    docker-compose -f $scriptDir/docker-compose.yml rm -f -s -v "$(mapDBToDockerComposeServiceName "$2")"
-    
+    # this variable is necessary, so that the script can terminate properly
+    # when the provided database name does not match. PLEASE DO NOT INLINE!
+    local composeServiceName="$(mapDBToDockerComposeServiceName "$2")"
+    docker-compose -f $scriptDir/docker-compose.yml rm -f -s -v $composeServiceName
+
     [[ -f "$propFile" ]] && rm "$propFile"
     ;;
   *)
