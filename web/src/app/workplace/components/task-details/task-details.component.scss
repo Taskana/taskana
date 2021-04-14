@@ -5,13 +5,13 @@
 }
 
 .task-details {
-
   &__header {
     padding: 8px 8px 0 8px;
     height: 88px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr ;
   }
 
   &__badge-message {
@@ -29,6 +29,7 @@
   }
 
   &__action-buttons {
+    grid-area: 1/2;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -38,7 +39,7 @@
     background-color: $aquamarine;
     color: white;
     margin-right: 4px;
-    min-width: 1%
+    min-width: 1%;
   }
 
   &__button--secondary {
@@ -61,7 +62,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    z-index: 10;
+    grid-area: 2/1;
+    grid-column-start: 1;
+    grid-column-end: 3;
   }
 
   &__tab-group-wrapper {
@@ -72,7 +75,6 @@
   &__tab-wrapper {
     padding: 12px;
   }
-
 }
 
 ::ng-deep .mat-tab-body-wrapper {
@@ -80,7 +82,14 @@
   max-height: calc(100vh - 182px);
 }
 
-::ng-deep .task-details__tab-group-wrapper > .mat-tab-group > .mat-tab-header > .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
+::ng-deep
+  .task-details__tab-group-wrapper
+  > .mat-tab-group
+  > .mat-tab-header
+  > .mat-tab-label-container
+  > .mat-tab-list
+  > .mat-tab-labels
+  > .mat-tab-label {
   min-width: 0 !important;
   height: 36px !important;
 }
