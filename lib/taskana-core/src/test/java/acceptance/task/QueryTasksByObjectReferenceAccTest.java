@@ -108,7 +108,21 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExcactValueAndTypeOfObjectReference() {
+  void should_CountWithObjectReferencesFilter_When_MultipleFieldsAreSet() {
+    ObjectReference objectReference = new ObjectReference();
+    objectReference.setCompany("00");
+    objectReference.setSystem("PASyste2");
+    objectReference.setSystemInstance("00");
+    objectReference.setType("VNR");
+    objectReference.setValue("67890123");
+    long count =
+        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).count();
+    assertThat(count).isEqualTo(1);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void testQueryTasksByExactValueAndTypeOfObjectReference() {
     List<TaskSummary> results =
         TASK_SERVICE
             .createTaskQuery()
