@@ -67,3 +67,6 @@ Thumbs.db
 
 # java-format
 .java-format-cache
+
+# DB2 database
+db.tar.gz

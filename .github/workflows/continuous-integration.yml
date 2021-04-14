@@ -270,7 +270,7 @@ jobs:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Prepare database
-        run: ci/prepare_db.sh ${{ matrix.database }}
+        run: docker-databases/prepare_db.sh ${{ matrix.database }}
       - name: Generate JavaDoc for Rest Documentation
         if: matrix.module == 'taskana-simplehistory-rest-spring'
         run: ./mvnw -B validate -pl :taskana-rest-spring
@@ -312,7 +312,7 @@ jobs:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Start database
-        run: ci/prepare_db.sh POSTGRES_10
+        run: docker-databases/prepare_db.sh POSTGRES_10
       - name: Test
         run: ./mvnw -B verify -f rest/taskana-rest-spring-example-wildfly
       - name: Cancel workflow
