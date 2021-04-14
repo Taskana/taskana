@@ -60,8 +60,8 @@ public final class TaskanaEngineTestConfiguration {
    */
   public static String getSchemaName() {
     if (schemaName == null) {
-      String userHomeDirectroy = System.getProperty("user.home");
-      String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+      String userHomeDirectory = System.getProperty("user.home");
+      String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
       File f = new File(propertiesFileName);
       if (f.exists() && !f.isDirectory()) {
         schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
