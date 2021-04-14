@@ -593,6 +593,7 @@ public interface TaskQueryMapper {
           + "<if test='attachmentReferenceIn != null'>AND a.REF_VALUE IN(<foreach item='item' collection='attachmentReferenceIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='attachmentReferenceLike != null'>AND (<foreach item='item' collection='attachmentReferenceLike' separator=' OR '>UPPER(a.REF_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='attachmentReceivedIn !=null'> AND ( <foreach item='item' collection='attachmentReceivedIn' separator=' OR ' > ( <if test='item.begin!=null'> a.RECEIVED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> a.RECEIVED &lt;=#{item.end} </if>)</foreach>)</if> "
+          + "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND (<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>UPPER(t.${item}) LIKE #{wildcardSearchValueLike}</foreach>)</if> "
           + "</where>"
           + "</script>")
   Long countQueryTasks(TaskQueryImpl taskQuery);
@@ -699,6 +700,7 @@ public interface TaskQueryMapper {
           + "<if test='attachmentReferenceIn != null'>AND a.REF_VALUE IN(<foreach item='item' collection='attachmentReferenceIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='attachmentReferenceLike != null'>AND (<foreach item='item' collection='attachmentReferenceLike' separator=' OR '>UPPER(a.REF_VALUE) LIKE #{item}</foreach>)</if> "
           + "<if test='attachmentReceivedIn !=null'> AND ( <foreach item='item' collection='attachmentReceivedIn' separator=' OR ' > ( <if test='item.begin!=null'> a.RECEIVED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> a.RECEIVED &lt;=#{item.end} </if>)</foreach>)</if> "
+          + "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND (<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>UPPER(t.${item}) LIKE #{wildcardSearchValueLike}</foreach>)</if> "
           + "</where> "
           + "), Y (ID, FLAG) AS "
           + "(SELECT ID, (SELECT 1 FROM WORKBASKET_ACCESS_LIST s WHERE "

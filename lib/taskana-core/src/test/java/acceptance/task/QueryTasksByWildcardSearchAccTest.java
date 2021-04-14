@@ -18,18 +18,17 @@ import pro.taskana.task.api.models.TaskSummary;
 
 @ExtendWith(JaasExtension.class)
 class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
+  private static final TaskService TASK_SERVICE = taskanaEngine.getTaskService();
 
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
     WildcardSearchField[] wildcards = {
       WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
     };
 
     List<TaskSummary> foundTasks =
-        taskService
+        TASK_SERVICE
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%99%")
@@ -41,15 +40,31 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
-    TaskService taskService = taskanaEngine.getTaskService();
+  void should_CountAllTasksByWildcardSearch_For_ProvidedSearchValue() {
+    WildcardSearchField[] wildcards = {
+      WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
+    };
 
+    long foundTasks =
+        TASK_SERVICE
+            .createTaskQuery()
+            .wildcardSearchFieldsIn(wildcards)
+            .wildcardSearchValueLike("%99%")
+            .orderByName(SortDirection.ASCENDING)
+            .count();
+
+    assertThat(foundTasks).isEqualTo(4);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
     WildcardSearchField[] wildcards = {
       WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
     };
 
     List<TaskSummary> foundTasks =
-        taskService
+        TASK_SERVICE
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%99%")
@@ -64,19 +79,17 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnAllTasksCaseInsensitive_When_PerformingWildcardQuery() {
-    TaskService taskService = taskanaEngine.getTaskService();
-
     WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
 
     List<TaskSummary> foundTasksCaseSensitive =
-        taskService
+        TASK_SERVICE
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%Wid%")
             .list();
 
     List<TaskSummary> foundTasksCaseInsensitive =
-        taskService
+        TASK_SERVICE
             .createTaskQuery()
             .wildcardSearchFieldsIn(wildcards)
             .wildcardSearchValueLike("%wid%")
@@ -90,11 +103,9 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {
 
-    TaskService taskService = taskanaEngine.getTaskService();
-
     ThrowingCallable queryAttempt =
         () ->
-            taskService
+            TASK_SERVICE
                 .createTaskQuery()
                 .wildcardSearchValueLike("%99%")
                 .orderByName(SortDirection.ASCENDING)
@@ -104,7 +115,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
     queryAttempt =
         () ->
-            taskService
+            TASK_SERVICE
                 .createTaskQuery()
                 .wildcardSearchFieldsIn(
                     WildcardSearchField.CUSTOM_1, WildcardSearchField.DESCRIPTION)
