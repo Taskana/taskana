@@ -48,13 +48,13 @@ public abstract class AbstractAccTest {
 
     DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
     String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
+    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
+    taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
+    SampleDataGenerator sampleDataGenerator =
+        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
     if (dropTables) {
       sampleDataGenerator.dropDb();
     }
-    dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
-    taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
     taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
     taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();

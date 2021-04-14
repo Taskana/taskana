@@ -36,7 +36,7 @@ SET PROP_FILE=%HOMEPATH%\taskanaUnitTest.properties
     ECHO jdbcUrl=jdbc:db2://localhost:5101/tskdb>> %PROP_FILE%
     ECHO dbUserName=db2inst1>> %PROP_FILE%
     ECHO dbPassword=db2inst1-pwd>> %PROP_FILE%
-    ECHO schemaName=taskana>> %PROP_FILE%
+    ECHO schemaName=TASKANA>> %PROP_FILE%
     ECHO ---
     GOTO MENU
 

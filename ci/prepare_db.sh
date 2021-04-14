@@ -53,7 +53,7 @@ function main() {
     [[ -f "$propFile" ]] && rm "$propFile"
     ;;
   DB2_11_1)
-    docker-compose -f $scriptDir/docker-compose.yml up -d $(mapDBToDockerComposeServiceName "$1")
+    docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
 
     echo 'jdbcDriver=com.ibm.db2.jcc.DB2Driver' > $propFile
     echo 'jdbcUrl=jdbc:db2://localhost:5101/tskdb' >> $propFile
@@ -62,7 +62,7 @@ function main() {
     echo 'schemaName=TASKANA' >> $propFile
     ;;
   POSTGRES_10)
-    docker-compose -f $scriptDir/docker-compose.yml up -d $(mapDBToDockerComposeServiceName "$1")
+    docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
    
     echo 'jdbcDriver=org.postgresql.Driver' > $propFile
     echo 'jdbcUrl=jdbc:postgresql://localhost:5102/postgres' >> $propFile
@@ -71,7 +71,7 @@ function main() {
     echo 'schemaName=taskana' >> $propFile
     ;;
   stop)
-    docker-compose -f $scriptDir/docker-compose.yml rm -f -s -v $(mapDBToDockerComposeServiceName "$2")
+    docker-compose -f $scriptDir/docker-compose.yml rm -f -s -v "$(mapDBToDockerComposeServiceName "$2")"
     
     [[ -f "$propFile" ]] && rm "$propFile"
     ;;
