@@ -10,9 +10,8 @@
   }
 
   &__task-details {
+    display: flex;
     flex-grow: 1;
-    min-width: calc(920px - 500px);
-    height: calc(100vh - 56px);
   }
 
   &__empty-page {

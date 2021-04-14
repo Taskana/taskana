@@ -1,5 +1,9 @@
 @import 'src/theme/_colors.scss';
 
+:host {
+  flex-grow: 1;
+}
+
 .task-processing {
   height: 100%;
   display: flex;
