@@ -1,6 +1,7 @@
 package pro.taskana.common.api;
 
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
@@ -114,6 +115,17 @@ public interface TaskanaEngine {
    * @throws NotAuthorizedException If the current user is not member of any specified role
    */
   void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
+
+  /**
+   * This method is supposed to skip further permission checks if we are already in a secured
+   * environment. With great power comes great responsibility.
+   *
+   * @param supplier will be executed with admin privileges
+   * @param <T> defined with the supplier return value
+   * @return output from supplier
+   */
+  <T> T runAsAdmin(Supplier<T> supplier);
+
 
   /**
    * Returns the CurrentUserContext class.

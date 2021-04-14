@@ -18,6 +18,7 @@
     <!-- History is an optional module. -->
     <module>history</module>
     <module>ci/taskana-sonar-test-coverage</module>
+    <module>taskana-routing-parent</module>
   </modules>
 
   <properties>
@@ -57,6 +58,10 @@
 
     <!-- wildfly dependencies -->
     <version.wildfly>13.0.0.Final</version.wildfly>
+
+    <!-- camunda dependencies -->
+    <version.camunda.dmn>7.14.0</version.camunda.dmn>
+
 
     <!-- java ee dependencies -->
     <version.resteasy>4.6.0.Final</version.resteasy>

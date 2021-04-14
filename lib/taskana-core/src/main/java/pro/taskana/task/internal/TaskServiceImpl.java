@@ -902,7 +902,7 @@ public class TaskServiceImpl implements TaskService {
         serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
             tasks, serviceLevelChanged, priorityChanged);
       } else {
-        taskanaEngine.runAsAdmin(
+        taskanaEngine.getEngine().runAsAdmin(
             () -> {
               serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
                   tasks, serviceLevelChanged, priorityChanged);
