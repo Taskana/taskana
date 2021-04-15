@@ -8,11 +8,13 @@ import { expandDown } from 'app/shared/animations/expand.animation';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
-import { Actions, ofActionCompleted, Store } from '@ngxs/store';
+import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
 import { ClearTaskFilter, SetTaskFilter } from '../../../shared/store/filter-store/filter.actions';
+import { WorkplaceSelectors } from '../../../shared/store/workplace-store/workplace.selectors';
+import { SetFilterExpansion } from '../../../shared/store/workplace-store/workplace.actions';
 
 export enum Search {
   byWorkbasket = 'workbasket',
@@ -41,13 +43,14 @@ export class TaskListToolbarComponent implements OnInit {
   workbaskets: Workbasket[];
   currentBasket: Workbasket;
   workbasketSelected = false;
-  toolbarState = false;
   searched = false;
 
   search = Search;
   searchSelected: Search = Search.byWorkbasket;
   activeTab: number = 0;
   filterInput = '';
+
+  @Select(WorkplaceSelectors.getFilterExpansion) isFilterExpanded$: Observable<boolean>;
 
   destroy$ = new Subject<void>();
 
@@ -130,6 +133,10 @@ export class TaskListToolbarComponent implements OnInit {
     }
   }
 
+  setFilterExpansion() {
+    this.store.dispatch(new SetFilterExpansion());
+  }
+
   onTabChange(search) {
     const tab = search.path[0].innerText;
     if (tab === 'Workbaskets') {
@@ -154,7 +161,7 @@ export class TaskListToolbarComponent implements OnInit {
   }
 
   searchBasket() {
-    this.toolbarState = false;
+    this.store.dispatch(new SetFilterExpansion(false));
     this.workbasketSelected = true;
     if (this.searchSelected === this.search.byWorkbasket && this.workbaskets) {
       this.workbaskets.forEach((workbasket) => {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Task } from 'app/workplace/models/task';
 import { TaskService } from 'app/workplace/services/task.service';
 import { Observable, Subject } from 'rxjs';
@@ -13,8 +13,10 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
+import { WorkplaceSelectors } from '../../../shared/store/workplace-store/workplace.selectors';
+import { CalculateNumberOfCards } from '../../../shared/store/workplace-store/workplace.actions';
 
 @Component({
   selector: 'taskana-task-master',
@@ -43,19 +45,23 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject();
 
-  @ViewChild('wbToolbar', { static: true })
-  private toolbarElement: ElementRef;
-
   @Select(FilterSelectors.getTaskFilter) filter$: Observable<TaskQueryFilterParameter>;
+  @Select(WorkplaceSelectors.getNumberOfCards) cards$: Observable<number>;
 
   constructor(
     private taskService: TaskService,
     private workplaceService: WorkplaceService,
     private notificationsService: NotificationService,
-    private orientationService: OrientationService
+    private orientationService: OrientationService,
+    private store: Store
   ) {}
 
   ngOnInit() {
+    this.cards$.pipe(takeUntil(this.destroy$)).subscribe((cards) => {
+      this.paging['page-size'] = cards;
+      this.getTasks();
+    });
+
     this.taskService.taskSelectedStream.pipe(takeUntil(this.destroy$)).subscribe((task: Task) => {
       this.selectedId = task ? task.taskId : '';
       if (!this.tasks) {
@@ -78,7 +84,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       .getOrientation()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.refreshWorkbasketList();
+        this.store.dispatch(new CalculateNumberOfCards());
       });
 
     this.workplaceService
@@ -115,22 +121,6 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
-  private refreshWorkbasketList() {
-    this.calculateHeightCard();
-    this.getTasks();
-  }
-
-  private calculateHeightCard() {
-    if (this.toolbarElement) {
-      const toolbarSize = this.toolbarElement.nativeElement.offsetHeight;
-      const cardHeight = 90;
-      const unusedHeight = 180;
-      const totalHeight = window.innerHeight;
-      const cards = Math.round((totalHeight - (unusedHeight + toolbarSize)) / cardHeight);
-      this.paging['page-size'] = cards > 0 ? cards : 1;
-    }
-  }
-
   private getTasks(): void {
     this.requestInProgress = true;
 
@@ -144,7 +134,6 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
       this.requestInProgress = false;
       this.tasks = [];
     } else {
-      this.calculateHeightCard();
       this.taskService
         .findTasksWithWorkbasket(this.filterBy, this.sort, this.paging)
         .pipe(take(1))
