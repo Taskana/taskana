@@ -8,9 +8,9 @@
       <div class="task-list-toolbar__tab">
 
         <!-- BUTTON TO FURTHER FILTER OPTIONS -->
-        <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary" matTooltip="Display more filter options" (click)="toolbarState=!toolbarState">
-          <mat-icon *ngIf="!toolbarState">keyboard_arrow_down</mat-icon>
-          <mat-icon *ngIf="toolbarState">keyboard_arrow_up</mat-icon>
+        <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary" matTooltip="Display more filter options" (click)="setFilterExpansion()">
+          <mat-icon *ngIf="!(isFilterExpanded$ | async)">keyboard_arrow_down</mat-icon>
+          <mat-icon *ngIf="(isFilterExpanded$ | async)">keyboard_arrow_up</mat-icon>
         </button>
 
         <div class="task-list-toolbar__spacer"> </div>
@@ -59,9 +59,9 @@
 
         <!-- BUTTON TO FURTHER FILTER OPTIONS -->
         <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary"
-                matTooltip="Display more filter options" (click)="toolbarState=!toolbarState">
-          <mat-icon *ngIf="!toolbarState">keyboard_arrow_down</mat-icon>
-          <mat-icon *ngIf="toolbarState">keyboard_arrow_up</mat-icon>
+                matTooltip="Display more filter options" (click)="setFilterExpansion()">
+          <mat-icon *ngIf="!(isFilterExpanded$ | async)">keyboard_arrow_down</mat-icon>
+          <mat-icon *ngIf="(isFilterExpanded$ | async)">keyboard_arrow_up</mat-icon>
         </button>
 
         <div class="task-list-toolbar__spacer"> </div>
@@ -94,7 +94,7 @@
   </mat-tab-group>
 
   <!-- FURTHER FILTER OPTIONS -->
-  <div *ngIf="toolbarState" class="task-list-toolbar__additional-filter">
+  <div *ngIf="(isFilterExpanded$ | async)" class="task-list-toolbar__additional-filter">
     <taskana-shared-task-filter> </taskana-shared-task-filter>
   </div>
 
