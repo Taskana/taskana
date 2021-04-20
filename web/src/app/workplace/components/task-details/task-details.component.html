@@ -1,0 +1,93 @@
+<div class="task-details" *ngIf="task && !requestInProgress">
+
+  <div class="task-details__header">
+
+
+    <!-- ACTION BUTTONS -->
+    <div class="task-details__action-buttons">
+
+      <!-- BADGE MESSAGE -->
+      <div style="max-width: calc(100% - 312px); margin-right: 4px;">
+        <span *ngIf="!task.taskId" class="task-details__badge-message"> &nbsp; Creating Task &nbsp; </span>
+      </div>
+
+      <div>
+
+        <button mat-stroked-button class="task-details__button--primary" matTooltip="Save Task" (click)="toggleFormValidation = !toggleFormValidation">
+          <span> Save </span>
+          <mat-icon>save</mat-icon>
+        </button>
+
+        <!-- TODO: delete ngIf when introducing workbasket store -->
+        <button mat-stroked-button class="task-details__button--secondary" *ngIf="currentId != 'new-task'"
+                matTooltip="Undo changes" (click)="resetTask()">
+          <mat-icon class="task-details__icon--aquamarine">undo</mat-icon>
+          <span> Undo changes </span>
+        </button>
+
+        <button mat-stroked-button [matMenuTriggerFor]="buttonMenu" style="height: 37px; top: 1px;"
+                matTooltip="More actions" class="task-details__button--secondary">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #buttonMenu="matMenu">
+          <button mat-menu-item class="task-details__button--secondary" *ngIf="currentId != 'new-task'"
+                  matTooltip="Open Task to work on it" (click)="openTask()">
+            <mat-icon class="task-details__icon--aquamarine">open_in_new</mat-icon>
+            <span> Open </span>
+          </button>
+
+          <button mat-menu-item class="task-details__button--secondary" *ngIf="currentId != 'new-task'"
+                  matTooltip="Save Task" (click)="deleteTask()">
+            <mat-icon class="task-details__icon--red">delete</mat-icon>
+            <span> Delete </span>
+          </button>
+
+          <button mat-menu-item class="task-details__button--secondary" matTooltip="Close Task" (click)="backClicked()">
+            <mat-icon>close</mat-icon>
+            <span> Close </span>
+          </button>
+        </mat-menu>
+      </div>
+
+    </div>
+
+    <!-- TITLE -->
+    <h4 class="task-details__task-name"> {{task.name}} </h4>
+
+  </div>
+
+  <!-- TABS -->
+  <div class="task-details__tab-group-wrapper">
+
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab label="Information">
+        <div class="task-details__tab-wrapper">
+          <taskana-task-information [task]="task" [saveToggleTriggered]="toggleFormValidation"
+                                    (formValid)="onSave()"></taskana-task-information>
+        </div>
+      </mat-tab>
+      <mat-tab label="Status Details">
+        <div class="task-details__tab-wrapper">
+          <taskana-task-status-details [task]="task"></taskana-task-status-details>
+        </div>
+      </mat-tab>
+      <mat-tab label="Custom Fields">
+        <div class="task-details__tab-wrapper">
+          <taskana-task-custom-fields [task]="task"></taskana-task-custom-fields>
+        </div>
+      </mat-tab>
+      <mat-tab label="Custom Attributes">
+        <div class="task-details__tab-wrapper">
+          <taskana-task-attribute-value [attributes]="task.customAttributes"></taskana-task-attribute-value>
+        </div>
+      </mat-tab>
+      <mat-tab label="Callback Information">
+        <div class="task-details__tab-wrapper">
+          <taskana-task-attribute-value [attributes]="task.callbackInfo" [callbackInfo]="true"></taskana-task-attribute-value>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
+</div>

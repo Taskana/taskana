@@ -1,21 +1,25 @@
 @import 'src/theme/_colors.scss';
 
 .workplace-overview {
-  display: flex;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 500px 1px 1fr;
 
   &__task-list {
-    width: 500px;
-    min-width: 500px;
-    max-width: 500px;
+    grid-area: 1/1;
+  }
+
+  &__divider {
+    grid-area: 1/2;
   }
 
   &__task-details {
     display: flex;
-    flex-grow: 1;
+    grid-area: 1/3;
   }
 
   &__empty-page {
-    flex-grow: 1;
+    grid-area: 1/3;
     display: flex;
     flex-direction: column;
     justify-content: center;

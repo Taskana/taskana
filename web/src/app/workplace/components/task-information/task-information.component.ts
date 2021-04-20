@@ -21,7 +21,6 @@ import { Classification } from '../../../shared/models/classification';
 import { TasksCustomisation } from '../../../shared/models/customisation';
 import { takeUntil } from 'rxjs/operators';
 import { AccessIdDefinition } from '../../../shared/models/access-id';
-import { TaskanaDate } from '../../../shared/util/taskana.date';
 
 @Component({
   selector: 'taskana-task-information',
