@@ -112,8 +112,12 @@ public class TaskRepresentationModelAssembler
 
   public Task toEntityModel(TaskRepresentationModel repModel) throws InvalidArgumentException {
     verifyCorrectCustomAttributesFormat(repModel);
-    TaskImpl task =
-        (TaskImpl) taskService.newTask(repModel.getWorkbasketSummary().getWorkbasketId());
+    TaskImpl task;
+    if (repModel.getWorkbasketSummary() != null) {
+      task = (TaskImpl) taskService.newTask(repModel.getWorkbasketSummary().getWorkbasketId());
+    } else {
+      task = (TaskImpl) taskService.newTask();
+    }
     task.setId(repModel.getTaskId());
     task.setExternalId(repModel.getExternalId());
     task.setCreated(repModel.getCreated());
@@ -130,7 +134,9 @@ public class TaskRepresentationModelAssembler
     task.setState(repModel.getState());
     task.setClassificationSummary(
         classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
-    task.setWorkbasketSummary(workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
+    if (repModel.getWorkbasketSummary() != null) {
+      task.setWorkbasketSummary(workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
+    }
     task.setBusinessProcessId(repModel.getBusinessProcessId());
     task.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     task.setOwner(repModel.getOwner());

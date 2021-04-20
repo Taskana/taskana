@@ -116,8 +116,10 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setState(repModel.getState());
     taskSummary.setClassificationSummary(
         classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
-    taskSummary.setWorkbasketSummary(
-        workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
+    if (repModel.getWorkbasketSummary() != null) {
+      taskSummary.setWorkbasketSummary(
+          workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
+    }
     taskSummary.setBusinessProcessId(repModel.getBusinessProcessId());
     taskSummary.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     taskSummary.setOwner(repModel.getOwner());
