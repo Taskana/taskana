@@ -117,6 +117,35 @@ class TaskRepresentationModelAssemberTest {
   }
 
   @Test
+  void should_ReturnEntity_When_ConvertingRepresentationModelWithoutWorkbasketSummaryToEntity()
+      throws Exception {
+    // given
+    ObjectReferenceRepresentationModel primaryObjRef = new ObjectReferenceRepresentationModel();
+    primaryObjRef.setId("abc");
+    ClassificationSummaryRepresentationModel classificationSummary =
+        new ClassificationSummaryRepresentationModel();
+    classificationSummary.setKey("keyabc");
+    classificationSummary.setDomain("DOMAIN_A");
+    classificationSummary.setType("MANUAL");
+    AttachmentRepresentationModel attachment = new AttachmentRepresentationModel();
+    attachment.setClassificationSummary(classificationSummary);
+    attachment.setAttachmentId("attachmentId");
+    attachment.setObjectReference(primaryObjRef);
+    TaskRepresentationModel repModel = new TaskRepresentationModel();
+    repModel.setTaskId("taskId");
+    repModel.setExternalId("externalId");
+    repModel.setClassificationSummary(classificationSummary);
+    repModel.setPrimaryObjRef(primaryObjRef);
+    // when
+    Task task = assembler.toEntityModel(repModel);
+    // then
+    assertThat(repModel.getWorkbasketSummary()).isNull();
+    assertThat(task.getWorkbasketSummary())
+        .isNotNull()
+        .hasAllNullFieldsOrPropertiesExcept("markedForDeletion");
+  }
+
+  @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel()
       throws Exception {
     // given
