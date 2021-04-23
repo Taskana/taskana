@@ -71,7 +71,7 @@
     <version.openpojo>0.8.13</version.openpojo>
     <version.jacoco>0.8.6</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>
-    <version.auto-restdocs>2.0.10</version.auto-restdocs>
+    <version.auto-restdocs>2.0.11</version.auto-restdocs>
 
     <!-- database driver versions -->
     <version.db2>11.1.1.1</version.db2>
