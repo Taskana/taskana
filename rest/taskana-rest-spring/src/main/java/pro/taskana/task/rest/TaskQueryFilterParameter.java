@@ -14,18 +14,20 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.QueryParameter;
+import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.WildcardSearchField;
+import pro.taskana.task.api.models.ObjectReference;
 
 public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void> {
 
   /** Filter by the name of the task. This is an exact match. */
   private final String[] name;
   /**
-   * Filter by the name of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
+   * Filter by the name of the task. This results in a substring search (% is appended to the front
+   * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("name-like")
@@ -37,109 +39,225 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by the task state. This is an exact match. */
   private final TaskState[] state;
 
-  /** Filter by the classification key. This is an exact match. */
+  /** Filter by the classification id of the task. This is an exact match. */
+  @JsonProperty("classification-id")
+  private final String[] classificationId;
+
+  /** Filter by the classification key of the task. This is an exact match. */
   @JsonProperty("classification.key")
   private final String[] classificationKeys;
 
   /**
-   * Filter by the classification key of the task. This results in a substring search.. (% is
-   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
-   * will be resolved correctly.
+   * Filter by the classification key of the task. This results in a substring search (% is appended
+   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * resolved correctly.
    */
-  @JsonProperty("classification.key-like")
+  @JsonProperty("classification-key-like")
   private final String[] classificationKeysLike;
 
-  /**
-   * Filter by the classification category of the task. This results in a substring search.. (% is
-   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
-   * will be resolved correctly.
-   */
-  @JsonProperty("classification.category-like")
-  private final String[] classificationCategoriesLike;
+  /** Filter by the classification key of the task. This is an exact match. */
+  @JsonProperty("classification-key-not-in")
+  private final String[] classificationKeysNotIn;
 
-  /** Filter by the classification category. This is an exact match. */
-  @JsonProperty("classification.category")
-  private final String[] classificationCategories;
+  /** Filter by the is read flag of the task. This is an exact match. */
+  @JsonProperty("is-read")
+  private final Boolean isRead;
 
-  /**
-   * Filter by the classification name of the task. This results in a substring search.. (% is
-   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
-   * will be resolved correctly.
-   */
-  @JsonProperty("classification.name-like")
-  private final String[] classificationNamesLike;
+  /** Filter by the is transferred flag of the task. This is an exact match. */
+  @JsonProperty("is-transferred")
+  private final Boolean isTransferred;
 
-  /** Filter by the classification name. This is an exact match. */
-  @JsonProperty("classification.name")
-  private final String[] classificationNames;
+  /** Filter by the primary object reference of the task. This is an exact match. */
+  @JsonProperty("object-reference")
+  private final ObjectReference[] objectReferences;
 
-  /**
-   * Filter by the attachment classification name of the task. This results in a substring search..
-   * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
-   * characters will be resolved correctly.
-   */
-  @JsonProperty("attachment.classification.name-like")
-  private final String[] attachmentClassificationNamesLike;
+  /** Filter by the callback state of the task. This is an exact match. */
+  @JsonProperty("callback-state")
+  private final CallbackState[] callbackStates;
 
-  /** Filter by the attachment classification name. This is an exact match. */
-  @JsonProperty("attachment.classification.name")
-  private final String[] attachmentClassificationNames;
+  /** Filter by the attachment classification key of the task. This is an exact match. */
+  @JsonProperty("attachment-classification-key")
+  private final String[] attachmentClassificationKeys;
 
   /**
-   * Filter by the parent business process id of the task. This results in a substring search.. (%
+   * Filter by the attachment classification key of the task. This results in a substring search (%
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
-  @JsonProperty("parent-business-process-id-like")
-  private final String[] parentBusinessProcessIdsLike;
+  @JsonProperty("attachment-classification-key-like")
+  private final String[] attachmentClassificationKeysLike;
 
-  /** Filter by the parent business process id. This is an exact match. */
+  /** Filter by the attachment classification id of the task. This is an exact match. */
+  @JsonProperty("attachment-classification-id")
+  private final String[] attachmentClassificationId;
+
+  /**
+   * Filter by the attachment classification id of the task. This results in a substring search (%
+   * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
+   */
+  @JsonProperty("attachment-classification-id-like")
+  private final String[] attachmentClassificationIdLike;
+
+  /** Filter by the attachment channel of the task. This is an exact match. */
+  @JsonProperty("attachment-channel")
+  private final String[] attachmentChannel;
+
+  /**
+   * Filter by the attachment channel of the task. This results in a substring search (% is appended
+   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * resolved correctly.
+   */
+  @JsonProperty("attachment-channel-like")
+  private final String[] attachmentChannelLike;
+
+  /** Filter by the attachment reference of the task. This is an exact match. */
+  @JsonProperty("attachment-reference")
+  private final String[] attachmentReference;
+
+  /**
+   * Filter by the attachment reference of the task. This results in a substring search (% is
+   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
+   * will be resolved correctly.
+   */
+  @JsonProperty("attachment-reference-like")
+  private final String[] attachmentReferenceLike;
+
+  /**
+   * Filter by a time interval within which the attachment of the task was received. To create an
+   * open interval you can just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   */
+  @JsonProperty("attachment-received")
+  private final Instant[] attachmentReceived;
+
+  /**
+   * Filter by a time interval within which the task was created. To create an open interval you can
+   * just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   */
+  private final Instant[] created;
+
+  /**
+   * Filter by a time interval within which the task was claimed. To create an open interval you can
+   * just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   */
+  private final Instant[] claimed;
+
+  /**
+   * Filter by a time interval within which the task was completed. To create an open interval you
+   * can just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   */
+  private final Instant[] completed;
+
+  /**
+   * Filter by a time interval within which the task was modified. To create an open interval you
+   * can just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   */
+  private final Instant[] modified;
+
+  /** Filter by the classification category of the task. This is an exact match. */
+  @JsonProperty("classification-category")
+  private final String[] classificationCategories;
+
+  /**
+   * Filter by the classification category of the task. This results in a substring search (% is
+   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
+   * will be resolved correctly.
+   */
+  @JsonProperty("classification-category-like")
+  private final String[] classificationCategoriesLike;
+
+  /** Filter by the classification name of the task. This is an exact match. */
+  @JsonProperty("classification-name")
+  private final String[] classificationNames;
+
+  /**
+   * Filter by the classification name of the task. This results in a substring search (% is
+   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
+   * will be resolved correctly.
+   */
+  @JsonProperty("classification-name-like")
+  private final String[] classificationNamesLike;
+
+  /** Filter by the attachment classification name of the task. This is an exact match. */
+  @JsonProperty("attachment-classification-name")
+  private final String[] attachmentClassificationNames;
+
+  /**
+   * Filter by the attachment classification name of the task. This results in a substring search (%
+   * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
+   */
+  @JsonProperty("attachment-classification-name-like")
+  private final String[] attachmentClassificationNamesLike;
+
+  /** Filter by the parent business process id of the task. This is an exact match. */
   @JsonProperty("parent-business-process-id")
   private final String[] parentBusinessProcessIds;
 
   /**
-   * Filter by the business process id of the task. This results in a substring search.. (% is
+   * Filter by the parent business process id of the task. This results in a substring search (% is
+   * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
+   * will be resolved correctly.
+   */
+  @JsonProperty("parent-business-process-id-like")
+  private final String[] parentBusinessProcessIdsLike;
+
+  /** Filter by the business process id of the task. This is an exact match. */
+  @JsonProperty("business-process-id")
+  private final String[] businessProcessIds;
+
+  /**
+   * Filter by the business process id of the task. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
   @JsonProperty("business-process-id-like")
   private final String[] businessProcessIdsLike;
 
-  /** Filter by the business process id. This is an exact match. */
-  @JsonProperty("business-process-id")
-  private final String[] businessProcessIds;
-
   /** Filter by task id. This is an exact match. */
   @JsonProperty("task-id")
   private final String[] taskIds;
 
-  /** Filter by workbasket id. This is an exact match. */
+  /** Filter by workbasket id of the task. This is an exact match. */
   @JsonProperty("workbasket-id")
   private final String[] workbasketIds;
 
-  /** Filter by workbasket keys. This parameter can only be used in combination with 'domain' */
+  /**
+   * Filter by workbasket keys of the task. This parameter can only be used in combination with
+   * 'domain'
+   */
   @JsonProperty("workbasket-key")
   private final String[] workbasketKeys;
 
-  /** Filter by domain. This is an exact match. */
+  /** Filter by domain of the task. This is an exact match. */
   private final String domain;
 
-  /** Filter by owner. This is an exact match. */
+  /** Filter by owner of the task. This is an exact match. */
   private final String[] owner;
 
   /**
-   * Filter by the owner of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
+   * Filter by the owner of the task. This results in a substring search (% is appended to the front
+   * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("owner-like")
   private final String[] ownerLike;
 
-  /** Filter by creator. This is an exact match. */
+  /** Filter by creator of the task. This is an exact match. */
   private final String[] creator;
 
   /**
-   * Filter by the creator of the task. This results in a substring search.. (% is appended to the
+   * Filter by the creator of the task. This results in a substring search (% is appended to the
    * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
@@ -147,76 +265,79 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] creatorLike;
 
   /**
-   * Filter by the note of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
+   * Filter by the note of the task. This results in a substring search (% is appended to the front
+   * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
   @JsonProperty("note-like")
   private final String[] noteLike;
 
-  /** Filter by the company of the primary object reference. This is an exact match. */
+  /** Filter by the company of the primary object reference of the task. This is an exact match. */
   @JsonProperty("por.company")
   private final String[] porCompany;
 
   /**
-   * Filter by the porCompany of the task. This results in a substring search.. (% is appended to
-   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
+   * Filter by the company of the primary object reference of the task. This results in a substring
+   * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
    */
-  @JsonProperty("por.company-like")
+  @JsonProperty("por-company-like")
   private final String[] porCompanyLike;
 
-  /** Filter by the system of the primary object reference. This is an exact match. */
+  /** Filter by the system of the primary object reference of the task. This is an exact match. */
   @JsonProperty("por.system")
   private final String[] porSystem;
 
   /**
-   * Filter by the porSystem of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
-   * correctly.
+   * Filter by the he system of the primary object reference of the task. This results in a
+   * substring search (% is appended to the front and end of the requested value). Further SQL
+   * "LIKE" wildcard characters will be resolved correctly.
    */
-  @JsonProperty("por.system-like")
+  @JsonProperty("por-system-like")
   private final String[] porSystemLike;
 
-  /** Filter by the system instance of the primary object reference. This is an exact match. */
+  /**
+   * Filter by the system instance of the primary object reference of the task. This is an exact
+   * match.
+   */
   @JsonProperty("por.instance")
   private final String[] porInstance;
 
   /**
-   * Filter by the porInstance of the task. This results in a substring search.. (% is appended to
-   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
+   * Filter by the system instance of the primary object reference of the task. This results in a
+   * substring search (% is appended to the front and end of the requested value). Further SQL
+   * "LIKE" wildcard characters will be resolved correctly.
    */
-  @JsonProperty("por.instance-like")
+  @JsonProperty("por-instance-like")
   private final String[] porInstanceLike;
 
-  /** Filter by the type of the primary object reference. This is an exact match. */
+  /** Filter by the type of the primary object reference of the task. This is an exact match. */
   @JsonProperty("por.type")
   private final String[] porType;
 
   /**
-   * Filter by the porType of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
-   * correctly.
+   * Filter by the type of the primary object reference of the task. This results in a substring
+   * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
    */
-  @JsonProperty("por.type-like")
+  @JsonProperty("por-type-like")
   private final String[] porTypeLike;
 
-  /** Filter by the value of the primary object reference. This is an exact match. */
+  /** Filter by the value of the primary object reference of the task. This is an exact match. */
   @JsonProperty("por.value")
   private final String[] porValue;
 
   /**
-   * Filter by the porValue of the task. This results in a substring search.. (% is appended to the
-   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
-   * correctly.
+   * Filter by the value of the primary object reference of the task. This results in a substring
+   * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
    */
-  @JsonProperty("por.value-like")
+  @JsonProperty("por-value-like")
   private final String[] porValueLike;
 
   /**
-   * Filter by a planned time interval. The length of the provided values has to be even. To create
-   * an open interval you can either use 'null' or just leave it blank.
+   * Filter by a time interval within which the task was planned. To create an open interval you can
+   * just leave it blank.
    *
    * <p>The format is ISO-8601.
    *
@@ -245,8 +366,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant plannedUntil;
 
   /**
-   * Filter by a due time interval. The length of the provided values has to be even. To create an
-   * open interval you can either use 'null' or just leave it blank.
+   * Filter by a time interval within which the task was due. To create an open interval you can
+   * just leave it blank.
    *
    * <p>The format is ISO-8601.
    *
@@ -275,7 +396,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant dueUntil;
 
   /**
-   * Filter by wildcard search field.
+   * Filter by wildcard search field of the task.
    *
    * <p>This must be used in combination with 'wildcard-search-value'
    */
@@ -283,211 +404,211 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final WildcardSearchField[] wildcardSearchFields;
 
   /**
-   * Filter by wildcard search field. This is an exact match.
+   * Filter by wildcard search field of the task. This is an exact match.
    *
    * <p>This must be used in combination with 'wildcard-search-value'
    */
   @JsonProperty("wildcard-search-value")
   private final String wildcardSearchValue;
 
-  /** Filter by the external id. This is an exact match. */
+  /** Filter by the external id of the task. This is an exact match. */
   @JsonProperty("external-id")
   private final String[] externalIds;
   /**
-   * Filter by the externalId of the task. This results in a substring search.. (% is appended to
-   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
+   * Filter by the externalId of the task. This results in a substring search (% is appended to the
+   * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
+   * correctly.
    */
   @JsonProperty("external-id-like")
   private final String[] externalIdsLike;
 
-  /** Filter by the value of the field custom1. This is an exact match. */
+  /** Filter by the value of the field custom1 of the task. This is an exact match. */
   @JsonProperty("custom-1")
   private final String[] custom1;
 
   /**
-   * Filter by the custom1 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom1 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-1-like")
   private final String[] custom1Like;
 
-  /** Filter by the value of the field custom2. This is an exact match. */
+  /** Filter by the value of the field custom2 of the task. This is an exact match. */
   @JsonProperty("custom-2")
   private final String[] custom2;
 
   /**
-   * Filter by the custom2 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom2 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-2-like")
   private final String[] custom2Like;
 
-  /** Filter by the value of the field custom3. This is an exact match. */
+  /** Filter by the value of the field custom3 of the task. This is an exact match. */
   @JsonProperty("custom-3")
   private final String[] custom3;
 
   /**
-   * Filter by the custom3 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom3 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-3-like")
   private final String[] custom3Like;
 
-  /** Filter by the value of the field custom4. This is an exact match. */
+  /** Filter by the value of the field custom4 of the task. This is an exact match. */
   @JsonProperty("custom-4")
   private final String[] custom4;
 
   /**
-   * Filter by the custom4 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom4 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-4-like")
   private final String[] custom4Like;
 
-  /** Filter by the value of the field custom5. This is an exact match. */
+  /** Filter by the value of the field custom5 of the task. This is an exact match. */
   @JsonProperty("custom-5")
   private final String[] custom5;
 
   /**
-   * Filter by the custom5 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom5 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-5-like")
   private final String[] custom5Like;
 
-  /** Filter by the value of the field custom6. This is an exact match. */
+  /** Filter by the value of the field custom6 of the task. This is an exact match. */
   @JsonProperty("custom-6")
   private final String[] custom6;
 
   /**
-   * Filter by the custom6 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom6 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-6-like")
   private final String[] custom6Like;
 
-  /** Filter by the value of the field custom7. This is an exact match. */
+  /** Filter by the value of the field custom7 of the task. This is an exact match. */
   @JsonProperty("custom-7")
   private final String[] custom7;
 
   /**
-   * Filter by the custom7 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom7 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-7-like")
   private final String[] custom7Like;
 
-  /** Filter by the value of the field custom8. This is an exact match. */
+  /** Filter by the value of the field custom8 of the task. This is an exact match. */
   @JsonProperty("custom-8")
   private final String[] custom8;
 
   /**
-   * Filter by the custom8 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom8 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-8-like")
   private final String[] custom8Like;
 
-  /** Filter by the value of the field custom9. This is an exact match. */
+  /** Filter by the value of the field custom9 of the task. This is an exact match. */
   @JsonProperty("custom-9")
   private final String[] custom9;
 
   /**
-   * Filter by the custom9 field of the task. This results in a substring search.. (% is appended to
+   * Filter by the custom9 field of the task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-9-like")
   private final String[] custom9Like;
 
-  /** Filter by the value of the field custom10. This is an exact match. */
+  /** Filter by the value of the field custom10 of the task. This is an exact match. */
   @JsonProperty("custom-10")
   private final String[] custom10;
 
   /**
-   * Filter by the custom10 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom10 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-10-like")
   private final String[] custom10Like;
 
-  /** Filter by the value of the field custom11. This is an exact match. */
+  /** Filter by the value of the field custom11 of the task. This is an exact match. */
   @JsonProperty("custom-11")
   private final String[] custom11;
 
   /**
-   * Filter by the custom11 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom11 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-11-like")
   private final String[] custom11Like;
 
-  /** Filter by the value of the field custom12. This is an exact match. */
+  /** Filter by the value of the field custom12 of the task. This is an exact match. */
   @JsonProperty("custom-12")
   private final String[] custom12;
 
   /**
-   * Filter by the custom12 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom12 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-12-like")
   private final String[] custom12Like;
 
-  /** Filter by the value of the field custom13. This is an exact match. */
+  /** Filter by the value of the field custom13 of the task. This is an exact match. */
   @JsonProperty("custom-13")
   private final String[] custom13;
 
   /**
-   * Filter by the custom13 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom13 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-13-like")
   private final String[] custom13Like;
 
-  /** Filter by the value of the field custom14. This is an exact match. */
+  /** Filter by the value of the field custom14 of the task. This is an exact match. */
   @JsonProperty("custom-14")
   private final String[] custom14;
 
   /**
-   * Filter by the custom14 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom14 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-14-like")
   private final String[] custom14Like;
 
-  /** Filter by the value of the field custom15. This is an exact match. */
+  /** Filter by the value of the field custom15 of the task. This is an exact match. */
   @JsonProperty("custom-15")
   private final String[] custom15;
 
   /**
-   * Filter by the custom15 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom15 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-15-like")
   private final String[] custom15Like;
 
-  /** Filter by the value of the field custom16. This is an exact match. */
+  /** Filter by the value of the field custom16 of the task. This is an exact match. */
   @JsonProperty("custom-16")
   private final String[] custom16;
 
   /**
-   * Filter by the custom16 field of the task. This results in a substring search.. (% is appended
-   * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
+   * Filter by the custom16 field of the task. This results in a substring search (% is appended to
+   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("custom-16-like")
@@ -499,14 +620,33 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "name-like",
     "priority",
     "state",
+    "classification-id",
     "classification.key",
-    "classification.key-like",
-    "classification.category",
-    "classification.category-like",
-    "classification.name",
-    "classification.name-like",
-    "attachment.classification.name",
-    "attachment.classification.name-like",
+    "classification-key-like",
+    "classification-key-not-in",
+    "is-read",
+    "is-transferred",
+    "object-reference",
+    "callback-state",
+    "attachment-classification-key",
+    "attachment-classification-key-like",
+    "attachment-classification-id",
+    "attachment-classification-id-like",
+    "attachment-channel",
+    "attachment-channel-like",
+    "attachment-reference",
+    "attachment-reference-like",
+    "attachment-received",
+    "created",
+    "claimed",
+    "completed",
+    "modified",
+    "classification-category",
+    "classification-category-like",
+    "classification-name",
+    "classification-name-like",
+    "attachment-classification-name",
+    "attachment-classification-name-like",
     "parent-business-process-id",
     "parent-business-process-id-like",
     "business-process-id",
@@ -521,15 +661,15 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "creator-like",
     "note-like",
     "por.company",
-    "por.company-like",
+    "por-company-like",
     "por.system",
-    "por.system-like",
+    "por-system-like",
     "por.instance",
-    "por.instance-like",
+    "por-instance-like",
     "por.type",
-    "por.type-like",
+    "por-type-like",
     "por.value",
-    "por.value-like",
+    "por-value-like",
     "planned",
     "planned-from",
     "planned-until",
@@ -578,8 +718,27 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] nameLike,
       int[] priority,
       TaskState[] state,
+      String[] classificationId,
       String[] classificationKeys,
       String[] classificationKeysLike,
+      String[] classificationKeysNotIn,
+      Boolean isRead,
+      Boolean isTransferred,
+      ObjectReference[] objectReferences,
+      CallbackState[] callbackStates,
+      String[] attachmentClassificationKeys,
+      String[] attachmentClassificationKeysLike,
+      String[] attachmentClassificationId,
+      String[] attachmentClassificationIdLike,
+      String[] attachmentChannel,
+      String[] attachmentChannelLike,
+      String[] attachmentReference,
+      String[] attachmentReferenceLike,
+      Instant[] attachmentReceived,
+      Instant[] created,
+      Instant[] claimed,
+      Instant[] completed,
+      Instant[] modified,
       String[] classificationCategories,
       String[] classificationCategoriesLike,
       String[] classificationNames,
@@ -656,8 +815,27 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.nameLike = nameLike;
     this.priority = priority;
     this.state = state;
+    this.classificationId = classificationId;
     this.classificationKeys = classificationKeys;
     this.classificationKeysLike = classificationKeysLike;
+    this.classificationKeysNotIn = classificationKeysNotIn;
+    this.isRead = isRead;
+    this.isTransferred = isTransferred;
+    this.objectReferences = objectReferences;
+    this.callbackStates = callbackStates;
+    this.attachmentClassificationKeys = attachmentClassificationKeys;
+    this.attachmentClassificationKeysLike = attachmentClassificationKeysLike;
+    this.attachmentClassificationId = attachmentClassificationId;
+    this.attachmentClassificationIdLike = attachmentClassificationIdLike;
+    this.attachmentChannel = attachmentChannel;
+    this.attachmentChannelLike = attachmentChannelLike;
+    this.attachmentReference = attachmentReference;
+    this.attachmentReferenceLike = attachmentReferenceLike;
+    this.attachmentReceived = attachmentReceived;
+    this.created = created;
+    this.claimed = claimed;
+    this.completed = completed;
+    this.modified = modified;
     this.classificationCategories = classificationCategories;
     this.classificationCategoriesLike = classificationCategoriesLike;
     this.classificationNames = classificationNames;
@@ -739,10 +917,42 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     Optional.ofNullable(nameLike).map(this::wrapElementsInLikeStatement).ifPresent(query::nameLike);
     Optional.ofNullable(priority).ifPresent(query::priorityIn);
     Optional.ofNullable(state).ifPresent(query::stateIn);
+    Optional.ofNullable(classificationId).ifPresent(query::classificationIdIn);
     Optional.ofNullable(classificationKeys).ifPresent(query::classificationKeyIn);
     Optional.ofNullable(classificationKeysLike)
         .map(this::wrapElementsInLikeStatement)
         .ifPresent(query::classificationKeyLike);
+    Optional.ofNullable(classificationKeysNotIn).ifPresent(query::classificationKeyNotIn);
+    Optional.ofNullable(isRead).ifPresent(query::readEquals);
+    Optional.ofNullable(isTransferred).ifPresent(query::transferredEquals);
+    Optional.ofNullable(objectReferences).ifPresent(query::primaryObjectReferenceIn);
+    Optional.ofNullable(callbackStates).ifPresent(query::callbackStateIn);
+    Optional.ofNullable(attachmentClassificationKeys)
+        .ifPresent(query::attachmentClassificationKeyIn);
+    Optional.ofNullable(attachmentClassificationKeysLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::attachmentClassificationKeyLike);
+    Optional.ofNullable(attachmentClassificationId).ifPresent(query::attachmentClassificationIdIn);
+    Optional.ofNullable(attachmentClassificationIdLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::attachmentClassificationIdLike);
+    Optional.ofNullable(attachmentChannel).ifPresent(query::attachmentChannelIn);
+    Optional.ofNullable(attachmentChannelLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::attachmentChannelLike);
+    Optional.ofNullable(attachmentReference).ifPresent(query::attachmentReferenceValueIn);
+    Optional.ofNullable(attachmentReferenceLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::attachmentReferenceValueLike);
+    Optional.ofNullable(attachmentReceived)
+        .map(this::extractTimeIntervals)
+        .ifPresent(query::attachmentReceivedWithin);
+    Optional.ofNullable(created).map(this::extractTimeIntervals).ifPresent(query::createdWithin);
+    Optional.ofNullable(claimed).map(this::extractTimeIntervals).ifPresent(query::claimedWithin);
+    Optional.ofNullable(completed)
+        .map(this::extractTimeIntervals)
+        .ifPresent(query::completedWithin);
+    Optional.ofNullable(modified).map(this::extractTimeIntervals).ifPresent(query::modifiedWithin);
     Optional.ofNullable(classificationCategories).ifPresent(query::classificationCategoryIn);
     Optional.ofNullable(classificationCategoriesLike)
         .map(this::wrapElementsInLikeStatement)
@@ -803,10 +1013,10 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
         .map(this::wrapElementsInLikeStatement)
         .ifPresent(query::primaryObjectReferenceValueLike);
     Optional.ofNullable(planned).map(this::extractTimeIntervals).ifPresent(query::plannedWithin);
-    Optional.ofNullable(due).map(this::extractTimeIntervals).ifPresent(query::dueWithin);
     if (plannedFrom != null || plannedUntil != null) {
       query.plannedWithin(new TimeInterval(plannedFrom, plannedUntil));
     }
+    Optional.ofNullable(due).map(this::extractTimeIntervals).ifPresent(query::dueWithin);
     if (dueFrom != null || dueUntil != null) {
       query.dueWithin(new TimeInterval(dueFrom, dueUntil));
     }
@@ -859,11 +1069,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
         .forEach(
             pair ->
                 Optional.ofNullable(pair.getRight())
-                    .ifPresent(
-                        wrap(
-                            l ->
-                                query.customAttributeLike(
-                                    pair.getLeft(), wrapElementsInLikeStatement(l)))));
+                    .map(this::wrapElementsInLikeStatement)
+                    .ifPresent(wrap(l -> query.customAttributeLike(pair.getLeft(), l))));
     return null;
   }
 
@@ -897,6 +1104,31 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     if (due != null && due.length % 2 != 0) {
       throw new InvalidArgumentException(
           "provided length of the property 'due' is not dividable by 2");
+    }
+
+    if (modified != null && modified.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'modified' is not dividable by 2");
+    }
+
+    if (created != null && created.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'created' is not dividable by 2");
+    }
+
+    if (completed != null && completed.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'completed' is not dividable by 2");
+    }
+
+    if (claimed != null && claimed.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'claimed' is not dividable by 2");
+    }
+
+    if (attachmentReceived != null && attachmentReceived.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'attachmentReceived' is not dividable by 2");
     }
   }
 }
