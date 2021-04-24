@@ -13,18 +13,9 @@
 
     <!-- SIDE BY SIDE VIEW BUTTONS -->
     <div class="distribution-targets-list__action-buttons"  *ngIf="sideBySide">
-      <div class="distribution-targets-list__action-buttons--selected"
-           style="justify-content: flex-end; margin-right: 2%">
-        <button mat-flat-button color="warn"
-                class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
-                (click)="moveDistributionTargets(side.SELECTED)">
-          Remove selected distribution target
-          <mat-icon>remove</mat-icon>
-        </button>
-      </div>
-      <span style="flex-grow: 1"> </span>
+
       <div class="distribution-targets-list__action-buttons--chooser"
-           style="justify-content: flex-end;">
+           style="justify-content: flex-end; margin-right: 2%">
         <button mat-flat-button color="accent"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
                 (click)="moveDistributionTargets(side.AVAILABLE)">
@@ -32,6 +23,19 @@
           <mat-icon>add</mat-icon>
         </button>
       </div>
+
+      <span style="flex-grow: 1"> </span>
+
+      <div class="distribution-targets-list__action-buttons--selected"
+           style="justify-content: flex-end;">
+        <button mat-flat-button color="warn"
+                class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
+                (click)="moveDistributionTargets(side.SELECTED)">
+          Remove selected distribution target
+          <mat-icon>remove</mat-icon>
+        </button>
+      </div>
+
     </div>
 
     <!-- SINGLE VIEW BUTTONS WHEN DISPLAYING SELECTED DISTRIBUTION TARGETS -->
@@ -81,25 +85,23 @@
     <!-- DISTRIBUTION TABLE-->
     <taskana-administration-workbasket-distribution-targets-list
       [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
-      header="Selected distribution targets"
-      [distributionTargets]="selectedDistributionTargets"
-      [side]="side.SELECTED"
-      [allSelected]="selectAllLeft"
-      [hidden]="displayingDistributionTargetsPicker && !sideBySide"
-      [component]="'selectedDistributionTargets'"
-    >
-
-    </taskana-administration-workbasket-distribution-targets-list>
-
-    <taskana-administration-workbasket-distribution-targets-list
       header="Available distribution targets"
       [distributionTargets]="availableDistributionTargets"
       [side]="side.AVAILABLE"
-      [allSelected]="selectAllRight"
+      [allSelected]="selectAllLeft"
       *ngIf="displayingDistributionTargetsPicker"
       [component]="'availableDistributionTargets'"
     >
+    </taskana-administration-workbasket-distribution-targets-list>
 
+    <taskana-administration-workbasket-distribution-targets-list
+      header="Selected distribution targets"
+      [distributionTargets]="selectedDistributionTargets"
+      [side]="side.SELECTED"
+      [allSelected]="selectAllRight"
+      [hidden]="displayingDistributionTargetsPicker && !sideBySide"
+      [component]="'selectedDistributionTargets'"
+    >
     </taskana-administration-workbasket-distribution-targets-list>
   </div>
 </div>

@@ -42,8 +42,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   displayingDistributionTargetsPicker = true;
 
   side = Side;
-  selectAllLeft = false;
   selectAllRight = false;
+  selectAllLeft = false;
 
   availableDistributionTargets: WorkbasketSummary[] = [];
   availableDistributionTargetsUndoClone: WorkbasketSummary[];
@@ -281,8 +281,8 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
     }
     this.selectedDistributionTargetsFilterClone = this.selectedDistributionTargets;
     this.availableDistributionTargetsFilterClone = this.availableDistributionTargets;
-    this.selectAllRight = true;
     this.selectAllLeft = true;
+    this.selectAllRight = true;
     this.store.dispatch(new SetWorkbasketFilter(this.selectedDistributionTargetsFilter, 'selectedDistributionTargets'));
     this.store.dispatch(
       new SetWorkbasketFilter(this.availableDistributionTargetsFilter, 'availableDistributionTargets')
