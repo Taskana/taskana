@@ -66,7 +66,20 @@
     </mat-selection-list>
   </div>
 
-  <div class="distribution-targets-list__empty-list"  *ngIf="distributionTargets?.length == 0">
-    There is currently no distributed workbasket
+  <!-- EMPTY LIST -->
+  <div class="distribution-targets-list__empty-list" *ngIf="distributionTargets?.length == 0">
+
+    <!-- AVAILABLE SIDE -->
+    <div  *ngIf="side === 0" style="padding: 0 16px;">
+      There are currently no Workbaskets for distribution
+    </div>
+
+    <!-- SELECTED SIDE -->
+    <div *ngIf="side === 1" style="padding: 0 16px;">
+      There is currently no distributed Workbasket
+    </div>
+
   </div>
+
+
 </div>

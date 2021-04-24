@@ -154,8 +154,8 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   it('should set selectAll checkboxes to true when moving a workbasket', () => {
     [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
       component.moveDistributionTargets(side);
-      expect(component.selectAllLeft).toBeTruthy();
       expect(component.selectAllRight).toBeTruthy();
+      expect(component.selectAllLeft).toBeTruthy();
     });
   });
 
