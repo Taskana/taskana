@@ -7,29 +7,35 @@
   </section>
 
   <!-- WORKBASKET LIST -->
-  <div class="workbasket-list__workbaskets" *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
+  <div class="workbasket-list__list-items" *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <mat-selection-list #workbasket [multiple]="false">
-      <mat-list-option class="workbasket-list__workbaskets-item"
-                       *ngFor="let workbasket of (workbasketsSummary$ | async)"
+      <mat-list-option class="workbasket-list__list-item"
+                       *ngFor="let workbasket of (workbasketsSummary$ | async);"
                        (click)="selectWorkbasket(workbasket.workbasketId)"
                        [selected]="workbasket.workbasketId == selectedId"
                        [value]="workbasket.workbasketId">
-        <div class="workbaskets-item__wrapper">
 
-          <div class="workbaskets-item__icon" *ngIf="expanded">
+        <!-- WORKBASKET LIST ITEM -->
+        <div class="workbasket-list__list-item--wrapper">
+
+          <!-- ICON -->
+          <div class="workbasket-list__list-item--icon" *ngIf="expanded">
             <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
           </div>
 
-          <div class="workbaskets-item__info">
-            <p>
-              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}} </i>
-            </p>
-            <p style="max-height: 20px; overflow: hidden; text-overflow: ellipsis">{{workbasket.description}} &nbsp;</p>
-            <p>{{workbasket.owner}} &nbsp;</p>
-          </div>
+          <!-- INFORMATION -->
+          <div class="workbasket-list__list-item--info">
 
-          <div class="workbaskets-item__marked"  *ngIf="workbasket.markedForDeletion">
-            <span title="Marked for deletion" data-toggle="tooltip" class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+            <div class="workbasket-list__list-item--wrap">
+              <b>{{workbasket.name}}</b>, <i>{{workbasket.key}}</i>
+            </div>
+            <p class="workbasket-list__list-item--no-wrap">{{workbasket.description}}</p>
+            <p class="workbasket-list__list-item--no-wrap">{{workbasket.owner}}</p>
+
+            <div class="workbasket-list__list-item--marked" *ngIf="workbasket.markedForDeletion">
+              <span title="Marked for deletion" data-toggle="tooltip" class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+            </div>
+
           </div>
         </div>
 
