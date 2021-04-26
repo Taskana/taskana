@@ -60,7 +60,7 @@
     <version.wildfly>13.0.0.Final</version.wildfly>
 
     <!-- camunda dependencies -->
-    <version.camunda.dmn>7.14.0</version.camunda.dmn>
+    <version.camunda.dmn>7.15.0</version.camunda.dmn>
 
 
     <!-- java ee dependencies -->
