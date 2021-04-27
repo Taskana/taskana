@@ -13,4 +13,7 @@ public class FileLoaderUtil {
     return loadFromClasspath;
   }
 
+  private FileLoaderUtil() {
+    throw new IllegalStateException("Utility class");
+  }
 }

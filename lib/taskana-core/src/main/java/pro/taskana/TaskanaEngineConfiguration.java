@@ -1,6 +1,5 @@
 package pro.taskana;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -560,7 +559,6 @@ public class TaskanaEngineConfiguration {
     return readPropertiesFromFile(this.propertiesFileName);
   }
 
-
   private Properties readPropertiesFromFile(String propertiesFile) {
     Properties props = new Properties();
     boolean loadFromClasspath = FileLoaderUtil.loadFromClasspath(propertiesFile);
@@ -586,14 +584,5 @@ public class TaskanaEngineConfiguration {
           "internal System error when processing properties file " + propertiesFile, e.getCause());
     }
     return props;
-  }
-
-  private boolean loadFromClasspath(String propertiesFile) {
-    boolean loadFromClasspath = true;
-    File f = new File(propertiesFile);
-    if (f.exists() && !f.isDirectory()) {
-      loadFromClasspath = false;
-    }
-    return loadFromClasspath;
   }
 }
