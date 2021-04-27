@@ -1,10 +1,7 @@
 package pro.taskana;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -47,6 +44,7 @@ import pro.taskana.common.internal.util.Pair;
  * <br>
  * Security is enabled by default.
  */
+@SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
 public class TaskanaEngineConfiguration {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineConfiguration.class);
@@ -367,6 +365,10 @@ public class TaskanaEngineConfiguration {
     return true;
   }
 
+  public Properties readPropertiesFromFile() {
+    return readPropertiesFromFile(this.propertiesFileName);
+  }
+
   private <T> Optional<T> parseProperty(
       Properties props, String key, CheckedFunction<String, T> function) {
     String property = props.getProperty(key, "");
@@ -555,28 +557,12 @@ public class TaskanaEngineConfiguration {
         .collect(Collectors.toList());
   }
 
-  public Properties readPropertiesFromFile() {
-    return readPropertiesFromFile(this.propertiesFileName);
-  }
-
   private Properties readPropertiesFromFile(String propertiesFile) {
     Properties props = new Properties();
-    boolean loadFromClasspath = FileLoaderUtil.loadFromClasspath(propertiesFile);
     try {
-      if (loadFromClasspath) {
-        InputStream inputStream =
-            TaskanaEngineConfiguration.class.getResourceAsStream(propertiesFile);
-        if (inputStream == null) {
-          LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
-        } else {
-          props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          LOGGER.debug("Role properties were loaded from file {} from classpath.", propertiesFile);
-        }
-      } else {
-        try (FileInputStream stream = new FileInputStream(propertiesFile)) {
-          props.load(stream);
-        }
-        LOGGER.debug("Role properties were loaded from file {}.", propertiesFile);
+      try (InputStream stream =
+          FileLoaderUtil.openFileFromClasspathOrSystem(propertiesFile, getClass())) {
+        props.load(stream);
       }
     } catch (IOException e) {
       LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);

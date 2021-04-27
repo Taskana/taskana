@@ -1,10 +1,23 @@
 package pro.taskana.common.internal.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pro.taskana.common.api.exceptions.SystemException;
 
 public class FileLoaderUtil {
 
-  public static boolean loadFromClasspath(String fileToLoad) {
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileLoaderUtil.class);
+
+  private FileLoaderUtil() {
+    throw new IllegalStateException("Utility class");
+  }
+
+  public static boolean isInClasspath(String fileToLoad) {
     boolean loadFromClasspath = true;
     File f = new File(fileToLoad);
     if (f.exists() && !f.isDirectory()) {
@@ -13,7 +26,24 @@ public class FileLoaderUtil {
     return loadFromClasspath;
   }
 
-  private FileLoaderUtil() {
-    throw new IllegalStateException("Utility class");
+  public static InputStream openFileFromClasspathOrSystem(String fileToLoad, Class<?> clazz) {
+    if (isInClasspath(fileToLoad)) {
+      InputStream inputStream = clazz.getResourceAsStream(fileToLoad);
+      if (inputStream == null) {
+        throw new SystemException(
+            String.format("Could not find a file in the classpath %s", fileToLoad));
+      }
+      LOGGER.debug("Load file {} from classpath", fileToLoad);
+      return inputStream;
+    }
+
+    try {
+      FileInputStream inputStream = new FileInputStream(fileToLoad);
+      LOGGER.debug("Load file {} from path", fileToLoad);
+      return inputStream;
+    } catch (FileNotFoundException e) {
+      throw new SystemException(
+          String.format("Could not find a file with provided path %s", fileToLoad));
+    }
   }
 }

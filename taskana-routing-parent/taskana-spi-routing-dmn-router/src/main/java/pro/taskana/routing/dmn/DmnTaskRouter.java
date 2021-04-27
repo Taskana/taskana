@@ -1,6 +1,5 @@
 package pro.taskana.routing.dmn;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,22 +32,18 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 public class DmnTaskRouter implements TaskRoutingProvider {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DmnTaskRouter.class);
+  private static final String DMN_TABLE_PROPERTY = "taskana.routing.dmn";
+
   private static final String DECISION_ID = "workbasketRouting";
   private static final String DECISION_VARIABLE_MAP_NAME = "task";
   private static final String OUTPUT_WORKBASKET_KEY = "workbasketKey";
   private static final String OUTPUT_DOMAIN = "domain";
-  private static final String DMN_TABLE_PROPERTY = "taskana.routing.dmn";
   private TaskanaEngine taskanaEngine;
   private DmnEngine dmnEngine;
   private DmnDecision decision;
 
   @Override
   public void initialize(TaskanaEngine taskanaEngine) {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entering initialize()");
-    }
-
     this.taskanaEngine = taskanaEngine;
     dmnEngine = DmnEngineConfiguration.createDefaultDmnEngineConfiguration().buildEngine();
 
@@ -57,19 +52,10 @@ public class DmnTaskRouter implements TaskRoutingProvider {
     decision = dmnEngine.parseDecision(DECISION_ID, dmnModel);
 
     validateOutputs(dmnModel);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exiting initialize()");
-    }
   }
 
   @Override
   public String determineWorkbasketId(Task task) {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entering determineWorkbasketId(task = {})", task);
-    }
-
     VariableMap variables = Variables.putValue(DECISION_VARIABLE_MAP_NAME, task);
 
     DmnDecisionTableResult result = dmnEngine.evaluateDecisionTable(decision, variables);
@@ -83,13 +69,7 @@ public class DmnTaskRouter implements TaskRoutingProvider {
 
     try {
 
-      String determinedWorkbasketId =
-          taskanaEngine.getWorkbasketService().getWorkbasket(workbasketKey, domain).getId();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            String.format("Exiting determineWorkbasketId, returning %s", determinedWorkbasketId));
-      }
-      return determinedWorkbasketId;
+      return taskanaEngine.getWorkbasketService().getWorkbasket(workbasketKey, domain).getId();
     } catch (WorkbasketNotFoundException e) {
       throw new SystemException(
           String.format(
@@ -105,11 +85,6 @@ public class DmnTaskRouter implements TaskRoutingProvider {
   }
 
   protected Set<Pair<String, String>> getAllWorkbasketAndDomainOutputs(DmnModelInstance dmnModel) {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entering getAllWorkbasketAndDomainOutputs()");
-    }
-
     Set<Pair<String, String>> allWorkbasketAndDomainOutputs = new HashSet<>();
 
     for (Rule rule : dmnModel.getModelElementsByType(Rule.class)) {
@@ -120,67 +95,29 @@ public class DmnTaskRouter implements TaskRoutingProvider {
 
       allWorkbasketAndDomainOutputs.add(Pair.of(workbasketKey, domain));
     }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exiting getAllWorkbasketAndDomainOutputs()");
-    }
-
     return allWorkbasketAndDomainOutputs;
   }
 
   protected DmnModelInstance readModelFromDmnTable() {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entering readModelFromDmnTable()");
-    }
-
     String pathToDmn =
         taskanaEngine.getConfiguration().readPropertiesFromFile().getProperty(DMN_TABLE_PROPERTY);
-
-    if (FileLoaderUtil.loadFromClasspath(pathToDmn)) {
-      try (InputStream inputStream = DmnTaskRouter.class.getResourceAsStream(pathToDmn)) {
-        if (inputStream == null) {
-          LOGGER.error("dmn file {} was not found on classpath.", pathToDmn);
-        } else {
-          return Dmn.readModelFromStream(inputStream);
-        }
-      } catch (IOException e) {
-        LOGGER.error("caught IOException when processing dmn file");
-        throw new SystemException("Internal System error when processing dmn file", e.getCause());
-      }
-    }
-
-    try (FileInputStream inputStream = new FileInputStream(pathToDmn)) {
-      return Dmn.readModelFromStream(inputStream);
+    try (InputStream stream = FileLoaderUtil.openFileFromClasspathOrSystem(pathToDmn, getClass())) {
+      return Dmn.readModelFromStream(stream);
     } catch (IOException e) {
+      LOGGER.error("caught IOException when processing dmn file {}.", pathToDmn);
       throw new SystemException(
-          String.format("Could not find a dmn file with provided path %s", pathToDmn));
+          "internal System error when processing dmn file " + pathToDmn, e.getCause());
     }
   }
 
   private void validateOutputs(DmnModelInstance dmnModel) {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entering validateOutputs()");
-    }
-
     Set<Pair<String, String>> allWorkbasketAndDomainOutputs =
         getAllWorkbasketAndDomainOutputs(dmnModel);
 
     validate(allWorkbasketAndDomainOutputs);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exiting validateOutputs()");
-    }
   }
 
   private void validate(Set<Pair<String, String>> allWorkbasketAndDomainOutputs) {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entering validate(allWorkbasketAndDomainOutputs = {}", allWorkbasketAndDomainOutputs);
-    }
-
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
     for (Pair<String, String> pair : allWorkbasketAndDomainOutputs) {
@@ -202,10 +139,6 @@ public class DmnTaskRouter implements TaskRoutingProvider {
                   e);
             }
           });
-    }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exiting validate()");
     }
   }
 }
