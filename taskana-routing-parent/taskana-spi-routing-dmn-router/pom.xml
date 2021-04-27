@@ -2,14 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-spi-routing-dmn-router</artifactId>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>TaskRouter implementation using dmn tables.</description>
+
   <parent>
     <artifactId>taskana-routing-parent</artifactId>
     <groupId>pro.taskana</groupId>
     <version>4.5.2-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>taskana-spi-routing-dmn-router</artifactId>
 
   <dependencies>
     <dependency>
@@ -57,7 +61,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <!-- test dependencies end -->
 
 </project>
