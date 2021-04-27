@@ -6,96 +6,99 @@ import acceptance.TaskanaEngineTestConfiguration;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.TaskanaEngineConfiguration;
-import pro.taskana.common.internal.TaskanaEngineImpl;
 
 /** Test taskana configuration without roles. */
-class TaskanaConfigAccTest extends TaskanaEngineImpl {
+class TaskanaConfigAccTest {
 
   @TempDir Path tempDir;
+  private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  TaskanaConfigAccTest() throws Exception {
-    super(
+  @BeforeEach
+  void setup() {
+    taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
             TaskanaEngineTestConfiguration.getDataSource(),
             true,
-            TaskanaEngineTestConfiguration.getSchemaName()));
+            TaskanaEngineTestConfiguration.getSchemaName());
   }
 
   @Test
-  void testDomains() {
-    assertThat(getConfiguration().getDomains()).containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+  void should_ConfigureDomains_For_DefaultPropertiesFile() {
+    assertThat(taskanaEngineConfiguration.getDomains())
+        .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
   }
 
   @Test
-  void testClassificationTypes() {
-    assertThat(getConfiguration().getClassificationTypes())
+  void should_ConfigureClassificationTypes_For_DefaultPropertiesFile() {
+    assertThat(taskanaEngineConfiguration.getClassificationTypes())
         .containsExactlyInAnyOrder("TASK", "DOCUMENT");
   }
 
   @Test
-  void testClassificationCategories() {
-    assertThat(getConfiguration().getClassificationCategoriesByType("TASK"))
+  void should_ConfigureClassificationCategories_For_DefaultPropertiesFile() {
+    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByType("TASK"))
         .containsExactlyInAnyOrder("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS");
   }
 
   @Test
-  void testDoesNotExistPropertyClassificationTypeOrItIsEmpty() throws Exception {
-    taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
-    String propertiesFileName = createNewConfigFile("dummyTestConfig.properties", false, true);
+  void should_NotConfigureClassificationTypes_When_PropertiesAreNotDefined() throws Exception {
+    String propertiesFileName = createNewConfigFile("dummyTestConfig1.properties", false, true);
     String delimiter = ";";
-    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
+    taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            TaskanaEngineTestConfiguration.getDataSource(),
+            true,
+            true,
+            propertiesFileName,
+            delimiter,
+            TaskanaEngineTestConfiguration.getSchemaName());
     assertThat(taskanaEngineConfiguration.getClassificationTypes()).isEmpty();
   }
 
   @Test
-  void testDoesNotExistPropertyClassificationCategoryOrItIsEmpty() throws Exception {
-    taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
-    taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
-    String propertiesFileName = createNewConfigFile("dummyTestConfig.properties", true, false);
+  void should_NotConfigureClassificationCategories_When_PropertiesAreNotDefined() throws Exception {
+    String propertiesFileName = createNewConfigFile("dummyTestConfig2.properties", true, false);
     String delimiter = ";";
-    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
-    assertThat(
-            taskanaEngineConfiguration.getClassificationCategoriesByType(
-                taskanaEngineConfiguration.getClassificationTypes().get(0)))
-        .isEmpty();
+    taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            TaskanaEngineTestConfiguration.getDataSource(),
+            true,
+            true,
+            propertiesFileName,
+            delimiter,
+            TaskanaEngineTestConfiguration.getSchemaName());
+    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
+        .containsExactly(
+            Map.entry("TASK", Collections.emptyList()),
+            Map.entry("DOCUMENT", Collections.emptyList()));
   }
 
   @Test
-  void testWithCategoriesAndClassificationFilled() throws Exception {
-    taskanaEngineConfiguration.setClassificationTypes(new ArrayList<>());
-    taskanaEngineConfiguration.setClassificationCategoriesByType(new HashMap<>());
-    String propertiesFileName = createNewConfigFile("dummyTestConfig.properties", true, true);
+  void should_ApplyClassificationProperties_When_PropertiesAreDefined() throws Exception {
+    String propertiesFileName = createNewConfigFile("dummyTestConfig3.properties", true, true);
     String delimiter = ";";
-    getConfiguration().initTaskanaProperties(propertiesFileName, delimiter);
-    assertThat(taskanaEngineConfiguration.getClassificationTypes().isEmpty()).isFalse();
-    assertThat(
-            taskanaEngineConfiguration
-                .getClassificationCategoriesByType(
-                    taskanaEngineConfiguration.getClassificationTypes().get(0))
-                .isEmpty())
-        .isFalse();
-    assertThat(taskanaEngineConfiguration.getClassificationTypes()).hasSize(2);
-    assertThat(
-            taskanaEngineConfiguration
-                .getClassificationCategoriesByType(
-                    taskanaEngineConfiguration.getClassificationTypes().get(0))
-                .size())
-        .isEqualTo(4);
-    assertThat(
-            taskanaEngineConfiguration
-                .getClassificationCategoriesByType(
-                    taskanaEngineConfiguration.getClassificationTypes().get(1))
-                .size())
-        .isEqualTo(1);
+    taskanaEngineConfiguration =
+        new TaskanaEngineConfiguration(
+            TaskanaEngineTestConfiguration.getDataSource(),
+            true,
+            true,
+            propertiesFileName,
+            delimiter,
+            TaskanaEngineTestConfiguration.getSchemaName());
+    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
+        .containsExactly(
+            Map.entry("TASK", List.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
+            Map.entry("DOCUMENT", List.of("EXTERNAL")));
   }
 
   private String createNewConfigFile(
