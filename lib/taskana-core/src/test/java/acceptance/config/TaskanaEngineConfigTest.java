@@ -64,7 +64,7 @@ class TaskanaEngineConfigTest {
             ds,
             false,
             true,
-            "/custom_holiday_With_Wrong_format_taskana.properties",
+            "/custom_holiday_with_wrong_format_taskana.properties",
             "|",
             TaskanaEngineTestConfiguration.getSchemaName());
     assertThat(taskEngineConfiguration.getCustomHolidays()).isEmpty();

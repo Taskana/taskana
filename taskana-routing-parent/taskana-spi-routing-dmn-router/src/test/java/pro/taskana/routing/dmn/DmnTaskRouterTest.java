@@ -16,7 +16,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 
 @ExtendWith(JaasExtension.class)
-public class DmnTaskRouterTest extends AbstractAccTest {
+class DmnTaskRouterTest extends AbstractAccTest {
 
   private final TaskService taskService = taskanaEngine.getTaskService();
 

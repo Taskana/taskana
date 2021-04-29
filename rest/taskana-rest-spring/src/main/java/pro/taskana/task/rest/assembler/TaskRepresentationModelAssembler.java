@@ -112,12 +112,7 @@ public class TaskRepresentationModelAssembler
 
   public Task toEntityModel(TaskRepresentationModel repModel) throws InvalidArgumentException {
     verifyCorrectCustomAttributesFormat(repModel);
-    TaskImpl task;
-    if (repModel.getWorkbasketSummary() != null) {
-      task = (TaskImpl) taskService.newTask(repModel.getWorkbasketSummary().getWorkbasketId());
-    } else {
-      task = (TaskImpl) taskService.newTask();
-    }
+    TaskImpl task = (TaskImpl) taskService.newTask();
     task.setId(repModel.getTaskId());
     task.setExternalId(repModel.getExternalId());
     task.setCreated(repModel.getCreated());

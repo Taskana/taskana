@@ -161,59 +161,6 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     return canonical;
   }
 
-  /**
-   * Main to test version parsing and comparison.
-   *
-   * <p>To check how "1.2.7" compares to "1.2-SNAPSHOT", for example, you can issue
-   *
-   * <pre>
-   * java -jar ${maven.repo.local}/org/apache/maven/maven-artifact/
-   * ${maven.version}/maven-artifact-${maven.version}.jar "1.2.7" "1.2-SNAPSHOT"
-   * </pre>
-   *
-   * <p>command to command line. Result of given command will be something like this:
-   *
-   * <pre>
-   * Display parameters as parsed by Maven (in canonical form) and comparison result:
-   * 1. 1.2.7 == 1.2.7
-   *    1.2.7 &gt; 1.2-SNAPSHOT
-   * 2. 1.2-SNAPSHOT == 1.2-snapshot
-   * </pre>
-   *
-   * @param args the version strings to parse and compare. You can pass arbitrary number of version
-   *     strings and always two adjacent will be compared
-   */
-  // CHECKSTYLE_ON: LineLength
-  public static void main(String... args) {
-    /*   System.out.println(
-    "Display parameters as parsed by Maven (in canonical form) and comparison result:");*/
-    if (args.length == 0) {
-      return;
-    }
-
-    ComparableVersion prev = null;
-    int i = 1;
-    for (String version : args) {
-      ComparableVersion c = new ComparableVersion(version);
-
-      if (prev != null) {
-        int compare = prev.compareTo(c);
-        /*       System.out.println(
-              "   "
-                  + prev.toString()
-                  + ' '
-                  + ((compare == 0) ? "==" : ((compare < 0) ? "<" : ">"))
-                  + ' '
-                  + version);
-        }*/
-
-        // System.out.println(String.valueOf(i++) + ". " + version + " == " + c.getCanonical());
-
-        prev = c;
-      }
-    }
-  }
-
   private static Item parseItem(boolean isDigit, String buf) {
     if (isDigit) {
       buf = stripLeadingZeroes(buf);
@@ -303,7 +250,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
       switch (item.getType()) {
         case INT_ITEM:
           int itemValue = ((IntItem) item).value;
-          return (value < itemValue) ? -1 : ((value == itemValue) ? 0 : 1);
+          return Integer.compare(value, itemValue);
         case LONG_ITEM:
         case BIGINTEGER_ITEM:
           return -1;
@@ -373,7 +320,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
           return 1;
         case LONG_ITEM:
           long itemValue = ((LongItem) item).value;
-          return (value < itemValue) ? -1 : ((value == itemValue) ? 0 : 1);
+          return Long.compare(value, itemValue);
         case BIGINTEGER_ITEM:
           return -1;
 
@@ -642,7 +589,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
             Item r = right.hasNext() ? right.next() : null;
 
             // if this is shorter, then invert the compare and mul with -1
-            int result = l == null ? (r == null ? 0 : -1 * r.compareTo(l)) : l.compareTo(r);
+            int result = l == null ? (r == null ? 0 : -1 * r.compareTo(null)) : l.compareTo(r);
 
             if (result != 0) {
               return result;

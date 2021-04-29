@@ -2,7 +2,6 @@ package pro.taskana.common.test.config;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,8 +20,7 @@ public final class TaskanaEngineTestConfiguration {
   private static String schemaName = null;
 
   static {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    String propertiesFileName = System.getProperty("user.home") + "/taskanaUnitTest.properties";
     File f = new File(propertiesFileName);
     if (f.exists() && !f.isDirectory()) {
       DATA_SOURCE = createDataSourceFromProperties(propertiesFileName);
@@ -60,8 +58,7 @@ public final class TaskanaEngineTestConfiguration {
    */
   public static String getSchemaName() {
     if (schemaName == null) {
-      String userHomeDirectroy = System.getProperty("user.home");
-      String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+      String propertiesFileName = System.getProperty("user.home") + "/taskanaUnitTest.properties";
       File f = new File(propertiesFileName);
       if (f.exists() && !f.isDirectory()) {
         schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
@@ -117,13 +114,13 @@ public final class TaskanaEngineTestConfiguration {
         ((PooledDataSource) ds)
             .forceCloseAll(); // otherwise the MyBatis pool is not initialized correctly
       } else {
-        LOGGER.warn("propertiesFile " + propertiesFileName + " is incomplete" + warningMessage);
+        LOGGER.warn("propertiesFile {} is incomplete {}", propertiesFileName, warningMessage);
         LOGGER.warn("Using default Datasource for Test");
         ds = createDefaultDataSource();
       }
 
     } catch (IOException e) {
-      LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
+      LOGGER.warn("createDataSourceFromProperties caught Exception ", e);
       LOGGER.warn("Using default Datasource for Test");
       ds = createDefaultDataSource();
     }
@@ -145,33 +142,20 @@ public final class TaskanaEngineTestConfiguration {
       }
 
       if (!propertiesFileIsComplete) {
-        LOGGER.warn("propertiesFile " + propertiesFileName + " is incomplete" + warningMessage);
+        LOGGER.warn("propertiesFile {} is incomplete {}", propertiesFileName, warningMessage);
         LOGGER.warn("Using default Datasource for Test");
         schemaName = "TASKANA";
       }
 
-    } catch (FileNotFoundException e) {
-      LOGGER.warn("getSchemaNameFromPropertiesObject caught Exception " + e);
+    } catch (Exception e) {
+      LOGGER.warn("Caught Exception ", e);
       LOGGER.warn("Using default schemaName for Test");
-    } catch (IOException e) {
-      LOGGER.warn("createDataSourceFromProperties caught Exception " + e);
-      LOGGER.warn("Using default Datasource for Test");
     }
 
     return schemaName;
   }
 
-  /**
-   * create Default Datasource for in-memory database.
-   *
-   * @return the default datasource.
-   */
   private static DataSource createDefaultDataSource() {
-    // JdbcDataSource ds = new JdbcDataSource();
-    // ds.setURL("jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0");
-    // ds.setPassword("sa");
-    // ds.setUser("sa");
-
     String jdbcDriver = "org.h2.Driver";
     String jdbcUrl =
         "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
