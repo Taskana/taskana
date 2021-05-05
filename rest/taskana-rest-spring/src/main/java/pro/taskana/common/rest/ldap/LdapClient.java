@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +24,8 @@ import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Component;
 
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
@@ -34,6 +37,7 @@ public class LdapClient {
   private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
   private static final String CN = "cn";
 
+  private final TaskanaEngineConfiguration taskanaEngineConfiguration;
   private final Environment env;
   private final LdapTemplate ldapTemplate;
   private boolean active = false;
@@ -42,9 +46,13 @@ public class LdapClient {
   private String message;
 
   @Autowired
-  public LdapClient(Environment env, LdapTemplate ldapTemplate) {
+  public LdapClient(
+      Environment env,
+      LdapTemplate ldapTemplate,
+      TaskanaEngineConfiguration taskanaEngineConfiguration) {
     this.env = env;
     this.ldapTemplate = ldapTemplate;
+    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
   }
 
   /**
@@ -81,6 +89,49 @@ public class LdapClient {
         result);
 
     return result;
+  }
+
+  public List<AccessIdRepresentationModel> searchUsersByNameOrAccessIdInUserRole(
+      final String nameOrAccessId) throws InvalidArgumentException {
+
+    LOGGER.debug(
+        "entry to searchUsersByNameOrAccessIdInUserRoleGroups(nameOrAccessId = {}).",
+        nameOrAccessId);
+
+    isInitOrFail();
+    testMinSearchForLength(nameOrAccessId);
+
+    final OrFilter userDetailsOrFilter = new OrFilter();
+    userDetailsOrFilter.or(
+        new WhitespaceWildcardsFilter(getUserFirstnameAttribute(), nameOrAccessId));
+    userDetailsOrFilter.or(
+        new WhitespaceWildcardsFilter(getUserLastnameAttribute(), nameOrAccessId));
+    userDetailsOrFilter.or(
+        new WhitespaceWildcardsFilter(getUserFullnameAttribute(), nameOrAccessId));
+    userDetailsOrFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), nameOrAccessId));
+
+    Set<String> userGroups = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+
+    final OrFilter groupMembershipOrFilter = new OrFilter();
+    userGroups.forEach(
+        group ->
+            groupMembershipOrFilter.or(new EqualsFilter(getUserMemberOfGroupAttribute(), group)));
+
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(userDetailsOrFilter);
+    andFilter.and(groupMembershipOrFilter);
+
+    final List<AccessIdRepresentationModel> accessIds =
+        ldapTemplate.search(
+            getUserSearchBase(),
+            andFilter.encode(),
+            SearchControls.SUBTREE_SCOPE,
+            getLookUpUserAttributesToReturn(),
+            new UserContextMapper());
+    LOGGER.debug(
+        "exit from searchUsersByNameOrAccessIdInUserRoleGroups. Retrieved the following users: {}.",
+        accessIds);
+    return accessIds;
   }
 
   public List<AccessIdRepresentationModel> searchUsersByNameOrAccessId(final String name)
@@ -276,6 +327,10 @@ public class LdapClient {
 
   public String getUserIdAttribute() {
     return LdapSettings.TASKANA_LDAP_USER_ID_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserMemberOfGroupAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_MEMBER_OF_GROUP_ATTRIBUTE.getValueFromEnv(env);
   }
 
   public String getGroupSearchBase() {

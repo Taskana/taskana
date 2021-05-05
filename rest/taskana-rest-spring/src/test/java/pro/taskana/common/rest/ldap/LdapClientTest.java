@@ -11,7 +11,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -23,6 +26,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
@@ -32,6 +37,8 @@ class LdapClientTest {
   @Mock Environment environment;
 
   @Mock LdapTemplate ldapTemplate;
+
+  @Mock TaskanaEngineConfiguration taskanaEngineConfiguration;
 
   @InjectMocks LdapClient cut;
 
@@ -88,6 +95,27 @@ class LdapClientTest {
     assertThat(accessIds.get(1).getAccessId()).isEqualTo("user-2");
     assertThat(accessIds.get(2).getAccessId()).isEqualTo("user-4");
     assertThat(accessIds.get(3).getAccessId()).isNull();
+  }
+
+  @Test
+  void should_ReturnAllUsersAndMembersOfGroupsWithTaskanaUserRole() throws Exception {
+
+    setUpEnvMock();
+    cut.init();
+
+    AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
+
+    Set<String> groupsOfUserRole = new HashSet<>();
+    Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
+    roleMap.put(TaskanaRole.USER, groupsOfUserRole);
+
+    when(taskanaEngineConfiguration.getRoleMap()).thenReturn(roleMap);
+
+    when(ldapTemplate.search(
+            any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
+        .thenReturn(List.of(user));
+
+    assertThat(cut.searchUsersByNameOrAccessIdInUserRole("test")).hasSize(1).containsExactly(user);
   }
 
   @Test
@@ -159,6 +187,7 @@ class LdapClientTest {
               {"taskana.ldap.groupSearchFilterName", "objectclass"},
               {"taskana.ldap.groupSearchBase", "ou=groups"},
               {"taskana.ldap.userIdAttribute", "uid"},
+              {"taskana.ldap.userMemberOfGroupAttribute", "memberOf"},
               {"taskana.ldap.userLastnameAttribute", "sn"},
               {"taskana.ldap.userFirstnameAttribute", "givenName"},
               {"taskana.ldap.userFullnameAttribute", "cn"},
