@@ -17,6 +17,7 @@ public final class RestEndpoints {
 
   // access id endpoints
   public static final String URL_ACCESS_ID = API_V1 + "access-ids";
+  public static final String URL_USER = API_V1 + "users";
   public static final String URL_ACCESS_ID_GROUPS = API_V1 + "access-ids/groups";
 
   // import / export endpoints
