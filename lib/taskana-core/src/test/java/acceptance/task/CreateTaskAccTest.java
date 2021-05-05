@@ -30,6 +30,7 @@ import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.AttachmentMapper;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -672,12 +673,13 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateTaskAlreadyExisting() throws Exception {
+  void should_ThrowException_When_CreatingTaskWithNonEmptyId() {
 
-    Task existingTask = taskService.getTask("TKI:000000000000000000000000000000000000");
+    Task newTask = taskService.newTask();
+    ((TaskImpl) newTask).setId("TKI:000000000000000000000000000000000000");
 
-    ThrowingCallable call = () -> taskService.createTask(existingTask);
-    assertThatThrownBy(call).isInstanceOf(TaskAlreadyExistException.class);
+    ThrowingCallable call = () -> taskService.createTask(newTask);
+    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "user-1-1")

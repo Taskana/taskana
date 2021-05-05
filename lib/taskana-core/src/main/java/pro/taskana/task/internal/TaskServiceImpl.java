@@ -170,8 +170,8 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
 
-      if (task.getId() != null && !task.getId().equals("")) {
-        throw new TaskAlreadyExistException(task.getId());
+      if (task.getId() != null && !task.getId().isEmpty()) {
+        throw new InvalidArgumentException("taskId must be empty when creating a task");
       }
 
       LOGGER.debug("Task {} cannot be found, so it can be created.", task.getId());
@@ -902,12 +902,14 @@ public class TaskServiceImpl implements TaskService {
         serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
             tasks, serviceLevelChanged, priorityChanged);
       } else {
-        taskanaEngine.getEngine().runAsAdmin(
-            () -> {
-              serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
-                  tasks, serviceLevelChanged, priorityChanged);
-              return null;
-            });
+        taskanaEngine
+            .getEngine()
+            .runAsAdmin(
+                () -> {
+                  serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
+                      tasks, serviceLevelChanged, priorityChanged);
+                  return null;
+                });
       }
     } finally {
       LOGGER.debug("exit from refreshPriorityAndDueDateOfTasks");
