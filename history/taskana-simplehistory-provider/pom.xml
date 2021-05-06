@@ -18,6 +18,11 @@
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
       <artifactId>taskana-core</artifactId>
       <version>${project.version}</version>
     </dependency>

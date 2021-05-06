@@ -66,7 +66,7 @@ public interface ClassificationService {
       throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
 
   /**
-   * Inserts  a new Classification after adding default values. <br>
+   * Inserts a new Classification after adding default values. <br>
    * The Classification will be added to master-domain, too - if not already existing. <br>
    * The default values are:
    *

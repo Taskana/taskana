@@ -30,10 +30,14 @@ public class CurrentUserContextImpl implements CurrentUserContext {
     this.shouldUseLowerCaseForAccessIds = shouldUseLowerCaseForAccessIds;
     try {
       Class.forName(WSSUBJECT_CLASSNAME);
-      LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
+      }
       runningOnWebSphere = true;
     } catch (ClassNotFoundException e) {
-      LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
+      }
       runningOnWebSphere = false;
     }
   }
@@ -79,10 +83,14 @@ public class CurrentUserContextImpl implements CurrentUserContext {
       Method getCallerSubjectMethod =
           wsSubjectClass.getMethod(GET_CALLER_SUBJECT_METHOD, (Class<?>[]) null);
       Subject callerSubject = (Subject) getCallerSubjectMethod.invoke(null, (Object[]) null);
-      LOGGER.debug("Subject of caller: {}", callerSubject);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Subject of caller: {}", callerSubject);
+      }
       if (callerSubject != null) {
         Set<Object> publicCredentials = callerSubject.getPublicCredentials();
-        LOGGER.debug("Public credentials of caller: {}", publicCredentials);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Public credentials of caller: {}", publicCredentials);
+        }
         return publicCredentials.stream()
             .map(
                 // we could use CheckedFunction#wrap here, but this either requires a dependency

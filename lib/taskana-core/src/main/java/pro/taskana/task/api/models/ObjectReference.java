@@ -1,14 +1,11 @@
 package pro.taskana.task.api.models;
 
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 /** ObjectReference entity. */
 public class ObjectReference {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReference.class);
   private String id;
   private String company;
   private String system;
@@ -28,7 +25,6 @@ public class ObjectReference {
 
   public static void validate(ObjectReference objectReference, String objRefType, String objName)
       throws InvalidArgumentException {
-    LOGGER.debug("entry to validateObjectReference()");
     // check that all values in the ObjectReference are set correctly
     if (objectReference == null) {
       throw new InvalidArgumentException(
@@ -43,7 +39,6 @@ public class ObjectReference {
       throw new InvalidArgumentException(
           String.format("Value of %s of %s must not be empty", objRefType, objName));
     }
-    LOGGER.debug("exit from validateObjectReference()");
   }
 
   public String getId() {

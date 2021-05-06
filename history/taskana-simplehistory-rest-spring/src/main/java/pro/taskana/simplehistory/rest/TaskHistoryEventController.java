@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -37,8 +35,6 @@ import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundExcepti
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class TaskHistoryEventController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskHistoryEventController.class);
 
   private final SimpleHistoryServiceImpl simpleHistoryService;
   private final TaskHistoryEventRepresentationModelAssembler assembler;
@@ -91,10 +87,6 @@ public class TaskHistoryEventController {
     ResponseEntity<TaskHistoryEventPagedRepresentationModel> response =
         ResponseEntity.ok(pagedResources);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTaskHistoryEvents(), returning {}", response);
-    }
-
     return response;
   }
 
@@ -111,21 +103,9 @@ public class TaskHistoryEventController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskHistoryEventRepresentationModel> getTaskHistoryEvent(
       @PathVariable String historyEventId) throws TaskanaHistoryEventNotFoundException {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskHistoryEvent(historyEventId= {})", historyEventId);
-    }
-
     TaskHistoryEvent resultEvent = simpleHistoryService.getTaskHistoryEvent(historyEventId);
 
     TaskHistoryEventRepresentationModel taskEventResource = assembler.toModel(resultEvent);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Exit from getTaskHistoryEvent, returning {}",
-          new ResponseEntity<>(taskEventResource, HttpStatus.OK));
-    }
-
     return new ResponseEntity<>(taskEventResource, HttpStatus.OK);
   }
 

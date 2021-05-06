@@ -26,8 +26,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_DeleteHistoryEvents_When_TaskIsDeleted_With_HistoryDeletionEnabled()
-      throws Exception {
+  void should_DeleteHistoryEvents_When_TaskIsDeletedWithHistoryDeletionEnabled() throws Exception {
 
     final String taskid = "TKI:000000000000000000000000000000000036";
     taskanaEngineConfiguration.setDeleteHistoryOnTaskDeletionEnabled(true);
@@ -57,7 +56,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_DeleteHistoryEvents_When_TasksAreDeleted_With_HistoryDeletionEnabled()
+  void should_DeleteHistoryEvents_When_TasksAreDeletedWithHistoryDeletionEnabled()
       throws Exception {
 
     final String taskId_1 = "TKI:000000000000000000000000000000000037";
@@ -97,7 +96,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_NotDeleteHistoryEvents_When_TaskIsDeleted_With_HistoryDeletionDisabled()
+  void should_NotDeleteHistoryEvents_When_TaskIsDeletedWithHistoryDeletionDisabled()
       throws Exception {
 
     final String taskId = "TKI:000000000000000000000000000000000039";
@@ -129,7 +128,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_NotDeleteHistoryEvents_When_TasksAreDeleted_With_HistoryDeletionDisabled()
+  void should_NotDeleteHistoryEvents_When_TasksAreDeletedWithHistoryDeletionDisabled()
       throws Exception {
     final String taskId_1 = "TKI:000000000000000000000000000000000040";
     final String taskId_2 = "TKI:000000000000000000000000000000000068";

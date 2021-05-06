@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-common-logging</artifactId>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>The global trace logging implementation</description>
+
+  <parent>
+    <artifactId>taskana-common-parent</artifactId>
+    <groupId>pro.taskana</groupId>
+    <version>4.6.1-SNAPSHOT</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>${version.aspectj}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.lidalia</groupId>
+      <artifactId>slf4j-test</artifactId>
+      <version>${version.slf4j-test}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.nickwongdev</groupId>
+        <artifactId>aspectj-maven-plugin</artifactId>
+        <version>${version.aspectj-maven-plugin}</version>
+        <configuration>
+          <aspectLibraries combine.self="override"/>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

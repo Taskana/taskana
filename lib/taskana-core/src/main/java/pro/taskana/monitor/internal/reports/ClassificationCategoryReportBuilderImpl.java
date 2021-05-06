@@ -2,8 +2,6 @@ package pro.taskana.monitor.internal.reports;
 
 import java.time.Instant;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -22,9 +20,6 @@ public class ClassificationCategoryReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements ClassificationCategoryReport.Builder {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClassificationCategoryReportBuilderImpl.class);
-
   public ClassificationCategoryReportBuilderImpl(
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     super(taskanaEngine, monitorMapper);
@@ -39,7 +34,6 @@ public class ClassificationCategoryReportBuilderImpl
   @Override
   public ClassificationCategoryReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
       this.taskanaEngine.openConnection();
@@ -62,7 +56,6 @@ public class ClassificationCategoryReportBuilderImpl
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildReport().");
     }
   }
 

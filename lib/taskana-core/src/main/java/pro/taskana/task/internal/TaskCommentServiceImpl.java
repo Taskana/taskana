@@ -37,12 +37,8 @@ class TaskCommentServiceImpl {
 
   TaskComment newTaskComment(String taskId) {
 
-    LOGGER.debug("entry to newTaskComment (taskId = {})", taskId);
-
     TaskCommentImpl taskComment = new TaskCommentImpl();
     taskComment.setTaskId(taskId);
-
-    LOGGER.debug("exit from newTaskComment(), returning {}", taskComment);
 
     return taskComment;
   }
@@ -50,8 +46,6 @@ class TaskCommentServiceImpl {
   TaskComment updateTaskComment(TaskComment taskCommentToUpdate)
       throws NotAuthorizedException, ConcurrencyException, TaskCommentNotFoundException,
           TaskNotFoundException, InvalidArgumentException {
-
-    LOGGER.debug("entry to updateTaskComment (taskComment = {})", taskCommentToUpdate);
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
@@ -73,10 +67,12 @@ class TaskCommentServiceImpl {
 
         taskCommentMapper.update(taskCommentImplToUpdate);
 
-        LOGGER.debug(
-            "Method updateTaskComment() updated taskComment '{}' for user '{}'.",
-            taskCommentImplToUpdate.getId(),
-            userId);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug(
+              "Method updateTaskComment() updated taskComment '{}' for user '{}'.",
+              taskCommentImplToUpdate.getId(),
+              userId);
+        }
 
       } else {
         throw new NotAuthorizedException(
@@ -88,7 +84,6 @@ class TaskCommentServiceImpl {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from updateTaskComment()");
     }
 
     return taskCommentImplToUpdate;
@@ -96,8 +91,6 @@ class TaskCommentServiceImpl {
 
   TaskComment createTaskComment(TaskComment taskCommentToCreate)
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
-
-    LOGGER.debug("entry to setTaskComment (taskCommentToCreate = {})", taskCommentToCreate);
 
     TaskCommentImpl taskCommentImplToCreate = (TaskCommentImpl) taskCommentToCreate;
 
@@ -114,10 +107,7 @@ class TaskCommentServiceImpl {
       taskCommentMapper.insert(taskCommentImplToCreate);
 
     } finally {
-
       taskanaEngine.returnConnection();
-
-      LOGGER.debug("exit from setTaskComment()");
     }
 
     return taskCommentImplToCreate;
@@ -126,8 +116,6 @@ class TaskCommentServiceImpl {
   void deleteTaskComment(String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException {
-
-    LOGGER.debug("entry to deleteTaskComment (taskComment = {}", taskCommentId);
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
@@ -143,7 +131,9 @@ class TaskCommentServiceImpl {
 
         taskCommentMapper.delete(taskCommentId);
 
-        LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());
+        }
 
       } else {
         throw new NotAuthorizedException(
@@ -156,14 +146,11 @@ class TaskCommentServiceImpl {
 
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from deleteTaskComment()");
     }
   }
 
   List<TaskComment> getTaskComments(String taskId)
       throws NotAuthorizedException, TaskNotFoundException {
-
-    LOGGER.debug("entry to getTaskComments (taskId = {})", taskId);
 
     try {
 
@@ -173,25 +160,20 @@ class TaskCommentServiceImpl {
 
       List<TaskComment> taskComments = new ArrayList<>(taskCommentMapper.findByTaskId(taskId));
 
-      if (taskComments.isEmpty()) {
+      if (taskComments.isEmpty() && LOGGER.isDebugEnabled()) {
         LOGGER.debug("getTaskComments() found no comments for the provided taskId");
       }
 
       return taskComments;
 
     } finally {
-
       taskanaEngine.returnConnection();
-
-      LOGGER.debug("exit from getTaskComments()");
     }
   }
 
   TaskComment getTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException {
-
-    LOGGER.debug("entry to getTaskComment (taskCommentId = {})", taskCommentId);
 
     TaskCommentImpl result;
 
@@ -214,10 +196,7 @@ class TaskCommentServiceImpl {
       return result;
 
     } finally {
-
       taskanaEngine.returnConnection();
-
-      LOGGER.debug("exit from getTaskComment()");
     }
   }
 

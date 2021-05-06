@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -30,8 +28,6 @@ public class ClassificationReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements ClassificationReport.Builder {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClassificationReportBuilderImpl.class);
   private final ClassificationService classificationService;
 
   public ClassificationReportBuilderImpl(
@@ -49,7 +45,6 @@ public class ClassificationReportBuilderImpl
   @Override
   public ClassificationReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
@@ -86,7 +81,6 @@ public class ClassificationReportBuilderImpl
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildReport().");
     }
   }
 
@@ -99,7 +93,6 @@ public class ClassificationReportBuilderImpl
   @Override
   public DetailedClassificationReport buildDetailedReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    LOGGER.debug("entry to buildDetailedReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
@@ -141,7 +134,6 @@ public class ClassificationReportBuilderImpl
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildDetailedReport().");
     }
   }
 

@@ -466,7 +466,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public List<WorkbasketHistoryEvent> list() {
-    LOGGER.debug("entry to list(), this = {}", this);
     List<WorkbasketHistoryEvent> result = new ArrayList<>();
     try {
       taskanaHistoryEngine.openConnection();
@@ -477,16 +476,11 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public List<WorkbasketHistoryEvent> list(int offset, int limit) {
-    LOGGER.debug("entry to list({},{}), this = {}", offset, limit, this);
     List<WorkbasketHistoryEvent> result = new ArrayList<>();
     try {
       taskanaHistoryEngine.openConnection();
@@ -498,23 +492,12 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(
       WorkbasketHistoryQueryColumnName dbColumnName, SortDirection sortDirection) {
-    LOGGER.debug(
-        "entry to listValues() of column {} with sortDirection {}, this {}",
-        dbColumnName,
-        sortDirection,
-        this);
     List<String> result = new ArrayList<>();
     this.columnName = dbColumnName;
     List<String> cacheOrderBy = this.orderBy;
@@ -533,16 +516,11 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       this.columnName = null;
       this.orderColumns.remove(orderColumns.size() - 1);
       taskanaHistoryEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public WorkbasketHistoryEvent single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     WorkbasketHistoryEvent result = null;
     try {
       taskanaHistoryEngine.openConnection();
@@ -554,13 +532,11 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", result);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaHistoryEngine.openConnection();
@@ -571,7 +547,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       return -1;
     } finally {
       taskanaHistoryEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 

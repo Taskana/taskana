@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
@@ -28,7 +26,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.classification.internal.ClassificationQueryMapper."
           + "queryClassificationColumnValues";
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationQueryImpl.class);
+
   private final InternalTaskanaEngine taskanaEngine;
   private final List<String> orderBy;
   private final List<String> orderColumns;
@@ -325,7 +323,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public List<ClassificationSummary> list() {
-    LOGGER.debug("entry to list(), this = {}", this);
     List<ClassificationSummary> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -333,16 +330,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public List<ClassificationSummary> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<ClassificationSummary> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -360,19 +352,12 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       throw e;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(
       ClassificationQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
     List<String> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -383,16 +368,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public ClassificationSummary single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     ClassificationSummary result = null;
     try {
       taskanaEngine.openConnection();
@@ -400,13 +380,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", result);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
@@ -414,7 +392,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 

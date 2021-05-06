@@ -22,6 +22,11 @@
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
       <artifactId>taskana-rest-spring</artifactId>
       <version>${project.version}</version>
     </dependency>

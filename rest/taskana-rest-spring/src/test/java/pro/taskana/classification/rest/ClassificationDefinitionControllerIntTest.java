@@ -383,7 +383,9 @@ class ClassificationDefinitionControllerIntTest {
     ResponseEntity<Void> response = importRequest(clList);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     Thread.sleep(10);
-    LOGGER.debug("Wait 10 ms to give the system a chance to update");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Wait 10 ms to give the system a chance to update");
+    }
 
     ClassificationRepresentationModel childWithNewParent =
         this.getClassificationWithKeyAndDomain("L110105", "DOMAIN_A");
@@ -415,7 +417,9 @@ class ClassificationDefinitionControllerIntTest {
 
   private ResponseEntity<Void> importRequest(ClassificationCollectionRepresentationModel clList)
       throws Exception {
-    LOGGER.debug("Start Import");
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Start Import");
+    }
     File tmpFile = File.createTempFile("test", ".tmp");
     try (FileOutputStream out = new FileOutputStream(tmpFile);
         OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {

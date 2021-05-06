@@ -2,8 +2,6 @@ package pro.taskana.monitor.internal.reports;
 
 import java.time.Instant;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -22,9 +20,6 @@ import pro.taskana.task.api.TaskCustomField;
 public class TaskCustomFieldValueReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements TaskCustomFieldValueReport.Builder {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(TaskCustomFieldValueReportBuilderImpl.class);
 
   private final TaskCustomField taskCustomField;
 
@@ -45,7 +40,6 @@ public class TaskCustomFieldValueReportBuilderImpl
   @Override
   public TaskCustomFieldValueReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    LOGGER.debug("entry to buildReport(taskCustomField = {}), this = {}", taskCustomField, this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
       this.taskanaEngine.openConnection();
@@ -70,7 +64,6 @@ public class TaskCustomFieldValueReportBuilderImpl
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildReport().");
     }
   }
 

@@ -21,5 +21,6 @@
     <module>taskana-common-security</module>
     <module>taskana-common-data</module>
     <module>taskana-common-test</module>
+    <module>taskana-common-logging</module>
   </modules>
 </project>

@@ -61,7 +61,6 @@ public class ClassificationServiceImpl implements ClassificationService {
   @Override
   public Classification getClassification(String key, String domain)
       throws ClassificationNotFoundException {
-    LOGGER.debug("entry to getClassification(key = {}, domain = {})", key, domain);
     if (key == null) {
       throw new ClassificationNotFoundException(
           null, domain, "Classification for null key and domain " + domain + " was not found.");
@@ -81,7 +80,6 @@ public class ClassificationServiceImpl implements ClassificationService {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from getClassification(). Returning result {} ", result);
     }
   }
 
@@ -90,7 +88,6 @@ public class ClassificationServiceImpl implements ClassificationService {
     if (id == null) {
       throw new ClassificationNotFoundException(null, "Classification for null id is invalid.");
     }
-    LOGGER.debug("entry to getClassification(id = {})", id);
     Classification result = null;
     try {
       taskanaEngine.openConnection();
@@ -102,14 +99,12 @@ public class ClassificationServiceImpl implements ClassificationService {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from getClassification(). Returning result {} ", result);
     }
   }
 
   @Override
   public void deleteClassification(String classificationId)
       throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
-    LOGGER.debug("entry to deleteClassification(id = {})", classificationId);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
@@ -166,14 +161,12 @@ public class ClassificationServiceImpl implements ClassificationService {
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from deleteClassification()");
     }
   }
 
   @Override
   public void deleteClassification(String classificationKey, String domain)
       throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
-    LOGGER.debug("entry to deleteClassification(key = {}, domain = {})", classificationKey, domain);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
@@ -191,7 +184,6 @@ public class ClassificationServiceImpl implements ClassificationService {
       deleteClassification(classification.getId());
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from deleteClassification(key,domain)");
     }
   }
 
@@ -199,7 +191,6 @@ public class ClassificationServiceImpl implements ClassificationService {
   public Classification createClassification(Classification classification)
       throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
           InvalidArgumentException {
-    LOGGER.debug("entry to createClassification(classification = {})", classification);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     if (!taskanaEngine.domainExists(classification.getDomain())
         && !"".equals(classification.getDomain())) {
@@ -239,14 +230,15 @@ public class ClassificationServiceImpl implements ClassificationService {
                 details));
       }
 
-      LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
+      }
 
       if (!classification.getDomain().isEmpty()) {
         addClassificationToMasterDomain(classificationImpl);
       }
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from createClassification()");
     }
     return classificationImpl;
   }
@@ -255,7 +247,6 @@ public class ClassificationServiceImpl implements ClassificationService {
   public Classification updateClassification(Classification classification)
       throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException,
           InvalidArgumentException {
-    LOGGER.debug("entry to updateClassification(Classification = {})", classification);
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     ClassificationImpl classificationImpl;
     try {
@@ -291,12 +282,13 @@ public class ClassificationServiceImpl implements ClassificationService {
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
-      LOGGER.debug(
-          "Method updateClassification() updated the classification {}.", classificationImpl);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Method updateClassification() updated the classification {}.", classificationImpl);
+      }
       return classification;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from updateClassification().");
     }
   }
 
@@ -402,10 +394,12 @@ public class ClassificationServiceImpl implements ClassificationService {
         throw new ClassificationAlreadyExistException(masterClassification);
       } catch (ClassificationNotFoundException e) {
         doesExist = false;
-        LOGGER.debug(
-            "Method createClassification: Classification does not "
-                + "exist in master domain. Classification {}.",
-            masterClassification);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug(
+              "Method createClassification: Classification does not "
+                  + "exist in master domain. Classification {}.",
+              masterClassification);
+        }
       } catch (ClassificationAlreadyExistException ex) {
         LOGGER.warn(
             "Method createClassification: Classification does already exist "
@@ -414,10 +408,12 @@ public class ClassificationServiceImpl implements ClassificationService {
       } finally {
         if (!doesExist) {
           classificationMapper.insert(masterClassification);
-          LOGGER.debug(
-              "Method createClassification: Classification created in "
-                  + "master-domain, too. Classification {}.",
-              masterClassification);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "Method createClassification: Classification created in "
+                    + "master-domain, too. Classification {}.",
+                masterClassification);
+          }
         }
       }
     }

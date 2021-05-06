@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
@@ -32,7 +30,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbaskets";
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues";
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketQueryImpl.class);
   private WorkbasketQueryColumnName columnName;
   private String[] accessId;
   private String[] idIn;
@@ -362,7 +359,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public List<WorkbasketSummary> list() {
-    LOGGER.debug("entry to list(), this = {}", this);
     List<WorkbasketSummary> workbaskets = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -371,19 +367,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       return workbaskets;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        int numberOfResultObjects = workbaskets == null ? 0 : workbaskets.size();
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ",
-            numberOfResultObjects,
-            workbaskets);
-      }
     }
   }
 
   @Override
   public List<WorkbasketSummary> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<WorkbasketSummary> workbaskets = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -402,18 +390,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       throw e;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            workbaskets.size(),
-            workbaskets);
-      }
     }
   }
 
   public List<String> listValues(
       WorkbasketQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
     List<String> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -424,16 +405,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public WorkbasketSummary single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     WorkbasketSummary workbasket = null;
     try {
       taskanaEngine.openConnection();
@@ -442,13 +418,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       return workbasket;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", workbasket);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
@@ -457,7 +431,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 
@@ -669,7 +642,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         lowercaseAccessIds(this.accessId);
       }
     }
-    LOGGER.debug("exit from handleCallerRolesAndAccessIds, now this is {}", this);
   }
 
   private WorkbasketQuery addOrderCriteria(String colName, SortDirection sortDirection) {

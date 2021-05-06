@@ -41,7 +41,7 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
 
     Runnable test = getRunnableTest(selectedAndClaimedTasks, accessIds);
 
-    Thread[] threads = new Thread[4];
+    Thread[] threads = new Thread[accessIds.size()];
     for (int i = 0; i < threads.length; i++) {
       threads[i] = new Thread(test);
       threads[i].start();

@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaClass.Predicates;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
@@ -32,6 +33,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+
+import pro.taskana.common.internal.logging.LoggingAspect;
 
 /**
  * Test architecture of classes in taskana. For more info and examples see
@@ -75,8 +78,9 @@ class ArchitectureTest {
             .and()
             .resideInAPackage("..api..")
             .should()
-            .onlyDependOnClassesThat()
-            .resideOutsideOfPackage("..internal..");
+            .onlyDependOnClassesThat(
+                Predicates.resideOutsideOfPackage("..pro.taskana..internal..")
+                    .or(Predicates.assignableTo(LoggingAspect.class)));
     myRule.check(importedClasses);
   }
 
