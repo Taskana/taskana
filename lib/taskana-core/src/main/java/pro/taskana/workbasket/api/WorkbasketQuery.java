@@ -4,149 +4,169 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** WorkitemQuery for generating dynamic sql. */
+/**
+ * The ClassificationQuery allows for a custom search across all {@linkplain Workbasket
+ * Workbaskets}.
+ */
 public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, WorkbasketQueryColumnName> {
 
   /**
-   * Add your ids to your query. The ids are compared to the ids of workbaskets with the IN
-   * operator.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getId()}
+   * value that is equal to any of the passed values.
    *
-   * @param id the id as Strings
+   * @param id the values of interest
    * @return the query
    */
   WorkbasketQuery idIn(String... id);
 
   /**
-   * Add your keys to your query. The keys are compared case-insensitively to the keys of
-   * workbaskets with the IN operator.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getKey()}
+   * value that is equal to any of the passed values.
    *
-   * @param key the keys as Strings
+   * @param key the values of interest
    * @return the query
    */
   WorkbasketQuery keyIn(String... key);
 
   /**
-   * Add keys to your query. The keys are compared case-insensitively to the keys of workbaskets
-   * with the SQL LIKE operator. You may add a wildcard like '%' to search generically. If you
-   * specify multiple keys they are connected with an OR operator, this is, the query searches
-   * workbaskets whose keys are like key1 or like key2, etc.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getKey()}
+   * value that contains any of the passed patterns.
    *
-   * @param key the keys as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param key the patterns of interest
    * @return the query
    */
   WorkbasketQuery keyLike(String... key);
 
   /**
-   * Add your names to your query. The names are compared case-insensitively to the names of
-   * workbaskets
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getName()}
+   * value that is equal to any of the passed values.
    *
-   * @param name the names as Strings
+   * @param name the values of interest
    * @return the query
    */
   WorkbasketQuery nameIn(String... name);
 
   /**
-   * Add names to your query. The names are compared case-insensitively to the names of workbaskets
-   * with the SQL LIKE operator. You may add a wildcard like '%' to search generically. If you
-   * specify multiple names, they are connected with an OR operator, this is, the query searches
-   * workbaskets whose names are like name1 or like name2, etc.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getName()}
+   * value that contains any of the passed patterns.
    *
-   * @param name the names as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param name the patterns of interest
    * @return the query
    */
   WorkbasketQuery nameLike(String... name);
 
   /**
-   * Add search strings to your query that are searched case-insensitively in the key and name
-   * fields of workbaskets. You may add a wildcard like '%' to search generically. If you specify
-   * multiple keys they are connected with an OR operator, this is, the query searches workbaskets
-   * whose keys are like string1 or whose names are like string1 or whose keys are like string2 or
-   * whose names are like string2, etc...
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getKey()}
+   * or {@linkplain Workbasket#getName()} value that contains any of the passed patterns.
    *
-   * @param searchString the seach strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param searchString the patterns of interest
    * @return the query
    */
   WorkbasketQuery keyOrNameLike(String... searchString);
 
   /**
-   * Add your domains to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getDomain()} value that is equal to any of the passed values.
    *
-   * @param domain the domains as Strings
+   * @param domain the values of interest
    * @return the query
    */
   WorkbasketQuery domainIn(String... domain);
 
   /**
-   * Add your types to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain Workbasket#getType()}
+   * value that is equal to any of the passed values.
    *
-   * @param type the types
+   * @param type the values of interest
    * @return the query
    */
   WorkbasketQuery typeIn(WorkbasketType... type);
 
   /**
-   * Add the time intervals within which the workbasket was created to your query. For each time
-   * interval, the database query will search for workbaskets whose created timestamp is after or at
-   * the interval's begin and before or at the interval's end. If more than one interval is
-   * specified, the query will connect them with the OR keyword. If either begin or end of an
-   * interval are null, these values will not be specified in the query.
+   * Selects only {@linkplain Workbasket Workbaskets} whose {@linkplain Workbasket#getCreated()} is
+   * after or at the passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the workbasket was created
+   * @param intervals the intervals of interest
    * @return the query
    */
   WorkbasketQuery createdWithin(TimeInterval... intervals);
 
   /**
-   * Add the time intervals within which the workbasket was modified to your query. For each time
-   * interval, the database query will search for workbaskets whose created timestamp is after or at
-   * the interval's begin and before or at the interval's end. If more than one interval is
-   * specified, the query will connect them with the OR keyword. If either begin or end of an
-   * interval are null, these values will not be specified in the query.
+   * Selects only {@linkplain Workbasket Workbaskets} whose {@linkplain Workbasket#getModified()} is
+   * after or at the passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the workbasket was created
+   * @param intervals the intervals of interest
    * @return the query
    */
   WorkbasketQuery modifiedWithin(TimeInterval... intervals);
 
   /**
-   * Add your description to your query. It will be compared case-insensitively to the descriptions
-   * of workbaskets using the LIKE operator. You may use a wildcard like '%' to search generically.
-   * If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getDescription()} value that contains any of the passed patterns.
    *
-   * @param description your description
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param description the patterns of interest
    * @return the query
    */
   WorkbasketQuery descriptionLike(String... description);
 
   /**
-   * Add the owners to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOwner()} value that is equal to any of the passed values.
    *
-   * @param owners the owners as String
+   * @param owners the values of interest
    * @return the query
    */
   WorkbasketQuery ownerIn(String... owners);
 
   /**
-   * Add the owners for pattern matching to your query. It will be compared in SQL with the LIKE
-   * operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOwner()} value that contains any of the passed patterns.
    *
-   * @param owners the owners as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param owners the patterns of interest
    * @return the query
    */
   WorkbasketQuery ownerLike(String... owners);
 
   /**
-   * Setting up the permission which should be granted on the result workbaskets and the users which
-   * should be checked. READ permission will always be checked by default.<br>
-   * The AccessIds and the given permission will throw a Exception if they would be NULL.
+   * Sets up the permission which should be granted on the result {@linkplain Workbasket} and the
+   * users which should be checked.
    *
-   * @param permission which should be used for results.
-   * @param accessIds Users which sould be checked for given permissions on workbaskets.
-   * @return the current query object.
-   * @throws InvalidArgumentException if permission OR the accessIds are NULL.
+   * <p>READ permission will always be checked by default. <br>
+   * The accessIds and the given permission will throw an exception if they would be NULL.
+   *
+   * @param permission which should be used for results
+   * @param accessIds users which should be checked for given permissions on {@linkplain Workbasket
+   *     Workbaskets}
+   * @return the current query object
+   * @throws InvalidArgumentException if permission OR the accessIds are NULL
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    */
@@ -154,221 +174,254 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
       throws InvalidArgumentException, NotAuthorizedException;
 
   /**
-   * Add condition to query if the caller (one of the accessIds of the caller) has the given
-   * permission on the workbasket.
+   * Selects only {@linkplain Workbasket Workbaskets} to which the caller (one of the accessIds of
+   * the caller) has permission to access.
    *
-   * @param permission the permission for the query condition.
-   * @return the updated query.
+   * @param permission the values of interest
+   * @return the query
    */
   WorkbasketQuery callerHasPermission(WorkbasketPermission permission);
 
   /**
-   * Sort the query result by name.
+   * Sorts the query result by {@linkplain Workbasket#getName()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByName(SortDirection sortDirection);
 
   /**
-   * Sort the query result by key.
+   * Sorts the query result by {@linkplain Workbasket#getKey()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by description.
+   * Sorts the query result by {@linkplain Workbasket#getDescription()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByDescription(SortDirection sortDirection);
 
   /**
-   * Sort the query result by owner.
+   * Sorts the query result by {@linkplain Workbasket#getOwner()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByOwner(SortDirection sortDirection);
 
   /**
-   * Sort the query result by type.
+   * Sorts the query result by {@linkplain Workbasket#getType()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByType(SortDirection sortDirection);
 
   /**
-   * Sort the query result by domain.
+   * Sorts the query result by {@linkplain Workbasket#getDomain()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByDomain(SortDirection sortDirection);
 
   /**
-   * Add the domains for pattern matching to your query. It will be compared in SQL with the LIKE
-   * operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getDomain()} value that contains any of the passed patterns.
    *
-   * @param domain the domains of workbaskets as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param domain the patterns of interest
    * @return the query
    */
   WorkbasketQuery domainLike(String... domain);
 
   /**
-   * This method sorts the query result according to the value of a custom field.
+   * Sorts the query result according to the value of a {@linkplain
+   * Workbasket#getCustomAttribute(WorkbasketCustomField)}.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param customField identifies which custom attribute is affected
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByCustomAttribute(
       WorkbasketCustomField customField, SortDirection sortDirection);
 
   /**
-   * Sort the query result by organization level 1.
+   * Sorts the query result by {@linkplain Workbasket#getOrgLevel1()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel1(SortDirection sortDirection);
 
   /**
-   * Sort the query result by organization level 2.
+   * Sorts the query result by {@linkplain Workbasket#getOrgLevel2()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel2(SortDirection sortDirection);
 
   /**
-   * Sort the query result by organization level 3.
+   * Sorts the query result by {@linkplain Workbasket#getOrgLevel3()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel3(SortDirection sortDirection);
 
   /**
-   * Sort the query result by organization level 4.
+   * Sorts the query result by {@linkplain Workbasket#getOrgLevel4()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection);
 
   /**
-   * Add the values of custom attributes for exact matching to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getCustomAttribute(WorkbasketCustomField)} value that is equal to any of the passed
+   * values.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched for tasks
+   * @param customField identifies which custom attribute is affected
+   * @param searchArguments the values of interest
    * @return the query
    */
   WorkbasketQuery customAttributeIn(WorkbasketCustomField customField, String... searchArguments);
 
   /**
-   * Add the values of custom attributes for pattern matching to your query. They will be compared
-   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getCustomAttribute(WorkbasketCustomField)} value that contains any of the passed
+   * patterns.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched-for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param customField identifies which custom attribute is affected
+   * @param searchArguments the patterns of interest
    * @return the query
    */
   WorkbasketQuery customAttributeLike(WorkbasketCustomField customField, String... searchArguments);
 
   /**
-   * Add the 1st organization level to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel1()} value that is equal to any of the passed values.
    *
-   * @param orgLevel1 the 1st organization level as String
+   * @param orgLevel1 the values of interest
    * @return the query
    */
   WorkbasketQuery orgLevel1In(String... orgLevel1);
 
   /**
-   * Add the 1st organization level for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel1()} value that contains any of the passed patterns.
    *
-   * @param orgLevel1 the 1st organization level as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param orgLevel1 the patterns of interest
    * @return the query
    */
   WorkbasketQuery orgLevel1Like(String... orgLevel1);
 
   /**
-   * Add the 2nd organization level to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel2()} value that is equal to any of the passed values.
    *
-   * @param orgLevel2 the 2nd organization level as String
+   * @param orgLevel2 the values of interest
    * @return the query
    */
   WorkbasketQuery orgLevel2In(String... orgLevel2);
 
   /**
-   * Add the 2nd organization level for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel2()} value that contains any of the passed patterns.
    *
-   * @param orgLevel2 the 2nd organization level as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param orgLevel2 the patterns of interest
    * @return the query
    */
   WorkbasketQuery orgLevel2Like(String... orgLevel2);
 
   /**
-   * Add the 3rd organization level to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel3()} value that is equal to any of the passed values.
    *
-   * @param orgLevel3 the 3rd organization level as String
+   * @param orgLevel3 the values of interest
    * @return the query
    */
   WorkbasketQuery orgLevel3In(String... orgLevel3);
 
   /**
-   * Add the 3rd organization level for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel3()} value that contains any of the passed patterns.
    *
-   * @param orgLevel3 the 3rd organization level as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param orgLevel3 the patterns of interest
    * @return the query
    */
   WorkbasketQuery orgLevel3Like(String... orgLevel3);
 
   /**
-   * Add the 4th organization level to your query.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel4()} value that is equal to any of the passed values.
    *
-   * @param orgLevel4 the 4th organization level as String
+   * @param orgLevel4 the values of interest
    * @return the query
    */
   WorkbasketQuery orgLevel4In(String... orgLevel4);
 
   /**
-   * Add the 4th organization level for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#getOrgLevel4()} value that contains any of the passed patterns.
    *
-   * @param orgLevel4 the 4th organization level as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param orgLevel4 the patterns of interest
    * @return the query
    */
   WorkbasketQuery orgLevel4Like(String... orgLevel4);
 
   /**
-   * Add to your query if the Workbasket shall be marked for deletion.
+   * Selects only {@linkplain Workbasket Workbaskets} which have a {@linkplain
+   * Workbasket#isMarkedForDeletion()} flag that is equal to the passed flag.
    *
-   * @param markedForDeletion a simple flag showing if the workbasket is marked for deletion
+   * @param markedForDeletion the flag of interest
    * @return the query
    */
   WorkbasketQuery markedForDeletion(boolean markedForDeletion);

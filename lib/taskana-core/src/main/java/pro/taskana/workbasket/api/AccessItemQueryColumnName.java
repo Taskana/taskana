@@ -3,8 +3,8 @@ package pro.taskana.workbasket.api;
 import pro.taskana.common.api.QueryColumnName;
 
 /**
- * Enum containing the column names for {@link
- * pro.taskana.workbasket.internal.WorkbasketQueryMapper#queryWorkbasketAccessItemColumnValues}.
+ * This Enum contains the database column names for a {@linkplain
+ * pro.taskana.workbasket.api.models.WorkbasketAccessItem WorkbasketAccessItem}.
  */
 public enum AccessItemQueryColumnName implements QueryColumnName {
   ID("id"),

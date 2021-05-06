@@ -3,8 +3,11 @@ package pro.taskana.monitor.api;
 import java.util.Objects;
 
 /**
- * An item that contains information of a selected item of a Report. It is used to get the task ids
- * of the selected item of the Report.
+ * An Item that contains information of a selected Item of a {@linkplain
+ * pro.taskana.monitor.api.reports.Report Report}.
+ *
+ * <p>It is used to get the taskIds of the selected Item of the {@linkplain
+ * pro.taskana.monitor.api.reports.Report Report}.
  */
 public class SelectedItem {
 

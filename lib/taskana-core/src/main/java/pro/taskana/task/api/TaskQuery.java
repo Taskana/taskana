@@ -1,27 +1,34 @@
 package pro.taskana.task.api;
 
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.models.Workbasket;
 
-/** TaskQuery for generating dynamic sql. */
+/** The TaskQuery allows for a custom search across all {@linkplain Task Tasks}. */
 public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
 
   /**
-   * Add your names to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getName()} value that is
+   * equal to any of the passed values.
    *
-   * @param names the names as Strings
+   * @param names the values of interest
    * @return the query
    */
   TaskQuery nameIn(String... names);
 
   /**
-   * Add your name for pattern matching to your query. It will be compared in SQL with the LIKE
-   * operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getName()} value that
+   * contains any of the passed patterns.
+   *
+   * <p>It will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
+   * the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param names your names
    * @return the query
@@ -29,17 +36,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery nameLike(String... names);
 
   /**
-   * Add your external ids to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getExternalId()} value that
+   * is equal to any of the passed values.
    *
-   * @param externalIds the external ids as Strings
+   * @param externalIds the values of interest
    * @return the query
    */
   TaskQuery externalIdIn(String... externalIds);
 
   /**
-   * Add your external id for pattern matching to your query. It will be compared in SQL with the
-   * LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getExternalId()} value that
+   * contains any of the passed patterns.
+   *
+   * <p>It will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
+   * the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param externalIds your external ids
    * @return the query
@@ -47,17 +57,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery externalIdLike(String... externalIds);
 
   /**
-   * Add the UserIds of the creator to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getCreator()} value that is
+   * equal to any of the passed values.
    *
-   * @param creators of the queried tasks
+   * @param creators the values of interest
    * @return the query
    */
   TaskQuery creatorIn(String... creators);
 
   /**
-   * Add the UserIds of the creator for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getCreator()} value that
+   * contains any of the passed patterns.
+   *
+   * <p>It will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
+   * the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param creators of the queried tasks
    * @return the query
@@ -65,9 +78,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery creatorLike(String... creators);
 
   /**
-   * Add your description for pattern matching to your query. It will be compared in SQL with the
-   * LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getDescription()} value that
+   * contains any of the passed patterns.
+   *
+   * <p>It will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
+   * the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param description your description
    * @return the query
@@ -75,9 +90,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery descriptionLike(String... description);
 
   /**
-   * Add your custom note for pattern matching to your query. It will be compared in SQL with the
-   * LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple
-   * arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getNote()} value that
+   * contains any of the passed patterns.
+   *
+   * <p>It will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
+   * the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
    * @param note your custom note
    * @return the query
@@ -85,546 +102,616 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery noteLike(String... note);
 
   /**
-   * Add your priorities to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getPriority()} value that is
+   * equal to any of the passed values.
    *
-   * @param priorities as a integer
+   * @param priorities the values of interest
    * @return the query
    */
   TaskQuery priorityIn(int... priorities);
 
   /**
-   * Add your state to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getState()} value that is
+   * equal to any of the passed values.
    *
-   * @param states the states as {@link TaskState}
+   * @param states the values of interest
    * @return the query
    */
   TaskQuery stateIn(TaskState... states);
 
   /**
-   * Exclude these states from your query.
+   * Selects only {@linkplain Task Tasks} which do not have a {@linkplain Task#getState()} value
+   * that is equal to any of the passed values.
    *
-   * @param states the states as {@link TaskState}
+   * @param states the values of interest
    * @return the query
    */
   TaskQuery stateNotIn(TaskState... states);
 
   /**
-   * Add your classificationKey to your query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Classification} has a {@linkplain
+   * Classification#getKey()} value that is equal to any of the passed values.
    *
-   * @param classificationKeys the classification key
+   * @param classificationKeys the values of interest
    * @return the query
    */
   TaskQuery classificationKeyIn(String... classificationKeys);
 
   /**
-   * Exlude these classificationKeys from your query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Classification} does not have a
+   * {@linkplain Classification#getKey()} value that is equal to any of the passed values.
    *
-   * @param classificationKeys the classification key
+   * @param classificationKeys the values of interest
    * @return the query
    */
   TaskQuery classificationKeyNotIn(String... classificationKeys);
 
   /**
-   * Add your classificationKey for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Classification} has a {@linkplain
+   * Classification#getKey()} value that contains any of the passed patterns.
    *
-   * @param classificationKeys the classification key
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param classificationKeys the patterns of interest
    * @return the query
    */
   TaskQuery classificationKeyLike(String... classificationKeys);
 
   /**
-   * Add your classificationId to your query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Classification} has a {@linkplain
+   * Classification#getId()} value that is equal to any of the passed values.
    *
-   * @param classificationIds the classification Ids
+   * @param classificationIds the values of interest
    * @return the query
    */
   TaskQuery classificationIdIn(String... classificationIds);
 
   /**
-   * Add your classificationCategory to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getClassificationCategory()}
+   * value that is equal to any of the passed values.
    *
-   * @param classificationCategories the classification category for filtering
+   * @param classificationCategories the values of interest
    * @return the query
    */
   TaskQuery classificationCategoryIn(String... classificationCategories);
 
   /**
-   * Add your classificationCategory for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getClassificationCategory()}
+   * value that contains any of the passed patterns.
    *
-   * @param classificationCategories the classification categories for filtering
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param classificationCategories the patterns of interest
    * @return the query
    */
   TaskQuery classificationCategoryLike(String... classificationCategories);
 
   /**
-   * Add your classificationName to your query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Classification} has a {@linkplain
+   * Classification#getName()} value that is equal to any of the passed values.
    *
-   * @param classificationNames the classification name
+   * @param classificationNames the values of interest
    * @return the query
    */
   TaskQuery classificationNameIn(String... classificationNames);
 
   /**
-   * Add your classificationName for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword. *
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Classification} has a {@linkplain
+   * Classification#getName()} value that contains any of the passed patterns.
    *
-   * @param classificationNames the classification name
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param classificationNames the patterns of interest
    * @return the query
    */
   TaskQuery classificationNameLike(String... classificationNames);
 
   /**
-   * Add your workbasket key to the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Workbasket} has a {@linkplain
+   * Workbasket#getKey()} and {@linkplain Workbasket#getDomain()} value equal to any of the passed
+   * values.
    *
-   * @param workbasketIdentifiers the key - domain combinations that identify workbaskets
+   * @param workbasketIdentifiers the values of interest
    * @return the query
    */
   TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers);
 
   /**
-   * Add your workbasket id to the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Workbasket} has a {@linkplain
+   * Workbasket#getId()} value equal to any of the passed values.
    *
-   * @param workbasketIds the ids of workbaskets
+   * @param workbasketIds the ids of {@linkplain Workbasket Workbaskets}
    * @return the query
    */
   TaskQuery workbasketIdIn(String... workbasketIds);
 
   /**
-   * Add the owners to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getOwner()} value that is
+   * equal to any of the passed values.
    *
-   * @param owners the owners as String
+   * @param owners the values of interest
    * @return the query
    */
   TaskQuery ownerIn(String... owners);
 
   /**
-   * Add the owner for pattern matching to your query. It will be compared in SQL with the LIKE
-   * operator. You may use a wildcard like % to specify the pattern.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getOwner()} value that
+   * contains any of the passed patterns.
    *
-   * <p>If you specify multiple arguments they are combined with the OR keyword.
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
    *
-   * @param owners the owners of the searched tasks
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param owners the patterns of interest
    * @return the query
    */
   TaskQuery ownerLike(String... owners);
 
   /**
-   * Add the {@link ObjectReference} to exact match to your query. Each individual value has to
-   * match. Fields with the value 'null' will be ignored. The id of each ObjectReference will be
-   * ignored
+   * Selects only {@linkplain Task Tasks} which have a primary {@linkplain Task#getPrimaryObjRef()}
+   * value that is equal to any of the passed values.
    *
-   * <p>If you specify multiple arguments they are combined with the OR keyword.
-   *
-   * @param objectReferences the combined values which are searched together.
+   * @param objectReferences the values of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceIn(ObjectReference... objectReferences);
 
   /**
-   * Add the companies of the primary object reference for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getCompany()} value that is equal to any of the passed values.
    *
-   * @param companies the companies of your primary object reference
+   * @param companies the values of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceCompanyIn(String... companies);
 
   /**
-   * Add the company of the primary object reference for pattern matching to your query. It will be
-   * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
-   * If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getCompany()} value that contains any of the passed patterns.
    *
-   * @param company the company of your primary object reference
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param company the patterns of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceCompanyLike(String... company);
 
   /**
-   * Add the systems of the primary object reference for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getSystem()} value that is equal to any of the passed values.
    *
-   * @param systems the systems of your primary object reference
+   * @param systems the values of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceSystemIn(String... systems);
 
   /**
-   * Add the system of the primary object reference for pattern matching to your query. It will be
-   * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
-   * If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getSystem()} value that contains any of the passed patterns.
    *
-   * @param systems the system of your primary object reference
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param systems the patterns of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceSystemLike(String... systems);
 
   /**
-   * Add the system instances of the primary object reference for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getSystemInstance()} value that is equal to any of the passed
+   * values.
    *
-   * @param systemInstances the system instances of your primary object reference
+   * @param systemInstances the values of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceSystemInstanceIn(String... systemInstances);
 
   /**
-   * Add the system instance of the primary object reference for pattern matching to your query. It
-   * will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify the
-   * pattern. If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getSystemInstance()} value that contains any of the passed
+   * patterns.
    *
-   * @param systemInstances the system instances of your primary object reference
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param systemInstances the patterns of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstances);
 
   /**
-   * Add the types of the primary object reference for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getType()} value that is equal to any of the passed values.
    *
-   * @param types the types your primary object reference
+   * @param types the values of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceTypeIn(String... types);
 
   /**
-   * Add the type of the primary object reference for pattern matching to your query. It will be
-   * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
-   * If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getType()} value that contains any of the passed patterns.
    *
-   * @param types the types of your primary object reference
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param types the patterns of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceTypeLike(String... types);
 
   /**
-   * Add the value of the primary object reference for pattern matching to your query. It will be
-   * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
-   * If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getValue()} that contains any of the passed patterns.
    *
-   * @param values the values of your primary object reference
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param values the patterns of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceValueLike(String... values);
 
   /**
-   * Add the values of the primary object reference for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} whose primary {@linkplain ObjectReference} has a
+   * {@linkplain ObjectReference#getValue()} that is equal to any of the passed values.
    *
-   * @param values the values of your primary object reference
+   * @param values the values of interest
    * @return the query
    */
   TaskQuery primaryObjectReferenceValueIn(String... values);
 
   /**
-   * Add the time intervals within which the task was created to your query. For each time interval,
-   * the database query will search for tasks whose created timestamp is after or at the interval's
-   * begin and before or at the interval's end. If more than one interval is specified, the query
-   * will connect them with the OR keyword. If either begin or end of an interval are null, these
-   * values will not be specified in the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Task#getCreated()} is after or at the
+   * passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the task was created
+   * @param intervals the intervals of interest
    * @return the query
    */
   TaskQuery createdWithin(TimeInterval... intervals);
 
   /**
-   * Add the time intervals within which the task was claimed to your query. For each time interval,
-   * the database query will search for tasks whose claimed timestamp is after or at the interval's
-   * begin and before or at the interval's end. If more than one interval is specified, the query
-   * will connect them with the OR keyword. If either begin or end of an interval are null, these
-   * values will not be specified in the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Task#getClaimed() } is after or at the
+   * passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the task was claimed
+   * @param intervals the intervals of interest
    * @return the query
    */
   TaskQuery claimedWithin(TimeInterval... intervals);
 
   /**
-   * Add the time intervals within which the task was completed to your query. For each time
-   * interval, the database query will search for tasks whose completed timestamp is after or at the
-   * interval's begin and before or at the interval's end. If more than one interval is specified,
-   * the query will connect them with the OR keyword. If either begin or end of an interval are
-   * null, these values will not be specified in the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Task#getCompleted()} is after or at the
+   * passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the task was completed
+   * @param intervals the intervals of interest
    * @return the query
    */
   TaskQuery completedWithin(TimeInterval... intervals);
 
   /**
-   * Add the time intervals within which the task was modified to your query. For each time
-   * interval, the database query will search for tasks whose modified timestamp is after or at the
-   * interval's begin and before or at the interval's end. If more than one interval is specified,
-   * the query will connect them with the OR keyword. If either begin or end of an interval are
-   * null, these values will not be specified in the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Task#getModified()} is after or at the
+   * passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the task was modified
+   * @param intervals the intervals of interest
    * @return the query
    */
   TaskQuery modifiedWithin(TimeInterval... intervals);
 
   /**
-   * Add the time intervals within which the task is planned to your query. For each time interval,
-   * the database query will search for tasks whose planned timestamp is after or at the interval's
-   * begin and before or at the interval's end. If more than one interval is specified, the query
-   * will connect them with the OR keyword. If either begin or end of an interval are null, these
-   * values will not be specified in the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Task#getPlanned()} is after or at the
+   * passed interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the task is planned
+   * @param intervals the intervals of interest
    * @return the query
    */
   TaskQuery plannedWithin(TimeInterval... intervals);
 
   /**
-   * Add the time intervals within which the task is due to your query. For each time interval, the
-   * database query will search for tasks whose due timestamp is after or at the interval's begin
-   * and before or at the interval's end. If more than one interval is specified, the query will
-   * connect them with the OR keyword. If either begin or end of an interval are null, these values
-   * will not be specified in the query.
+   * Selects only {@linkplain Task Tasks} whose {@linkplain Task#getDue()} is after or at the passed
+   * interval's begin and before or at the passed interval's end.
    *
-   * @param intervals - the TimeIntervals within which the task is due
+   * @param intervals the intervals of interest
    * @return the query
    */
   TaskQuery dueWithin(TimeInterval... intervals);
 
   /**
-   * Add the isRead flag to the query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#isRead()} flag equal to the
+   * passed flag.
    *
-   * @param isRead as Boolean. If null, it won't be integrated into the statement. You have to set
-   *     false.
+   * @param isRead the flag of interest
    * @return the query
    */
   TaskQuery readEquals(Boolean isRead);
 
   /**
-   * Add the isTransferred flag to the query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#isTransferred()} flag equal
+   * to the passed flag.
    *
-   * @param isTransferred as Boolean. If null, it won't be integrated into the statement. You have
-   *     to set false.
+   * @param isTransferred the flag of interest
    * @return the query
    */
   TaskQuery transferredEquals(Boolean isTransferred);
 
   /**
-   * Add the parent business process ids for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain
+   * Task#getParentBusinessProcessId()} value that is equal to the passed values.
    *
-   * @param parentBusinessProcessIds the parent businessProcessIds of the searched for tasks
+   * @param parentBusinessProcessIds the values of interest
    * @return the query
    */
   TaskQuery parentBusinessProcessIdIn(String... parentBusinessProcessIds);
 
   /**
-   * Add the parent business process id for pattern matching to your query. It will be compared in
-   * SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain
+   * Task#getParentBusinessProcessId()} value that contains any of the passed patterns.
    *
-   * @param parentBusinessProcessIds the parent businessprocess ids of the searched for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param parentBusinessProcessIds the patterns of interest
    * @return the query
    */
   TaskQuery parentBusinessProcessIdLike(String... parentBusinessProcessIds);
 
   /**
-   * Add the business process ids for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getBusinessProcessId()}
+   * value that is equal to the passed values.
    *
-   * @param businessProcessIds the businessProcessIds of the searched for tasks
+   * @param businessProcessIds the values of interest
    * @return the query
    */
   TaskQuery businessProcessIdIn(String... businessProcessIds);
 
   /**
-   * Add the business process id for pattern matching to your query. It will be compared in SQL with
-   * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getBusinessProcessId()}
+   * value that contains any of the passed patterns.
    *
-   * @param businessProcessIds the business process ids of the searched-for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param businessProcessIds the patterns of interest
    * @return the query
    */
   TaskQuery businessProcessIdLike(String... businessProcessIds);
 
   /**
-   * Add the values of custom attributes for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain
+   * Task#getCustomAttribute(TaskCustomField)} value equal to any of the passed values.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched for tasks
+   * @param customField identifies which custom attribute is affected
+   * @param searchArguments the value of interest
    * @return the query
-   * @throws InvalidArgumentException if searchArguments are not given
+   * @throws InvalidArgumentException if searchArguments is empty or null
    */
   TaskQuery customAttributeIn(TaskCustomField customField, String... searchArguments)
       throws InvalidArgumentException;
 
   /**
-   * Add the values of custom attributes for pattern matching to your query. They will be compared
-   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain
+   * Task#getCustomAttribute(TaskCustomField)} value that contains any of the passed patterns.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched-for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param customField identifies which custom attribute is affected
+   * @param searchArguments the patterns of interest
    * @return the query
-   * @throws InvalidArgumentException if searchArguments is not given
+   * @throws InvalidArgumentException if searchArguments is empty or null
    */
   TaskQuery customAttributeLike(TaskCustomField customField, String... searchArguments)
       throws InvalidArgumentException;
 
   /**
-   * Add the attachment classification keys for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Classification#getKey()} value that contains any of the passed values.
    *
-   * @param attachmentClassificationKeys the attachmentClassificationKeys values of the searched for
-   *     tasks
+   * @param attachmentClassificationKeys the values of interest
    * @return the query
    */
   TaskQuery attachmentClassificationKeyIn(String... attachmentClassificationKeys);
 
   /**
-   * Add the attachment classification Keys for pattern matching to your query. It will be compared
-   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Classification#getKey()} value that contains any of the passed patterns.
    *
-   * @param attachmentClassificationKey the attachmentClassificationKeys values of the searched for
-   *     tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param attachmentClassificationKey the patterns of interest
    * @return the query
    */
   TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey);
 
   /**
-   * Add the attachment classification Ids for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Classification#getId()} value that contains any of the passed values.
    *
-   * @param attachmentClassificationId the attachmentClassificationId values of the searched for
-   *     tasks
+   * @param attachmentClassificationId the values of interest
    * @return the query
    */
   TaskQuery attachmentClassificationIdIn(String... attachmentClassificationId);
 
   /**
-   * Add the values of attachment classification ids for pattern matching to your query. They will
-   * be compared in SQL with the LIKE operator. You may use a wildcard like % to specify the
-   * pattern. If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Classification#getKey()} value that contains any of the passed patterns.
    *
-   * @param attachmentClassificationId the attachmentClassificationId values of the searched-for
-   *     tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param attachmentClassificationId the patterns of interest
    * @return the query
    */
   TaskQuery attachmentClassificationIdLike(String... attachmentClassificationId);
 
   /**
-   * Add the attachment classification names for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Classification#getName()} value that contains any of the passed values.
    *
-   * @param attachmentClassificationName the attachmentClassificationName values of the searched for
-   *     tasks
+   * @param attachmentClassificationName the values of interest
    * @return the query
    */
   TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName);
 
   /**
-   * Add the values of attachment classification names for pattern matching to your query. They will
-   * be compared in SQL with the LIKE operator. You may use a wildcard like % to specify the
-   * pattern. If you specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Classification#getKey()} value that contains any of the passed patterns.
    *
-   * @param attachmentClassificationName the attachmentClassificationName values of the searched-for
-   *     tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param attachmentClassificationName the patterns of interest
    * @return the query
    */
   TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName);
 
   /**
-   * Add the values of attachment channel for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Attachment#getChannel()} value that contains any of the passed values.
    *
-   * @param attachmentChannel the attachmentChannel values of the searched for tasks
+   * @param attachmentChannel the values of interest
    * @return the query
    */
   TaskQuery attachmentChannelIn(String... attachmentChannel);
 
   /**
-   * Add the values of attachment channel for pattern matching to your query. They will be compared
-   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Attachment#getChannel()} value that contains any of the passed patterns.
    *
-   * @param attachmentChannel the attachmentChannel values of the searched-for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param attachmentChannel the patterns of interest
    * @return the query
    */
   TaskQuery attachmentChannelLike(String... attachmentChannel);
 
   /**
-   * Add the values of reference values for exact matching to your query.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain ObjectReference#getValue()} that contains any of the passed values.
    *
-   * @param referenceValue the referenceValue values of the searched for tasks
+   * @param referenceValue the values of interest
    * @return the query
    */
   TaskQuery attachmentReferenceValueIn(String... referenceValue);
 
   /**
-   * Add the values of reference values for pattern matching to your query. They will be compared in
-   * SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain ObjectReference#getValue()} that contains any of the passed patterns.
    *
-   * @param referenceValue the referenceValue values of the searched-for tasks
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param referenceValue the patterns of interest
    * @return the query
    */
   TaskQuery attachmentReferenceValueLike(String... referenceValue);
 
   /**
-   * Add your received-dates to your query.
+   * Selects only {@linkplain Task Tasks} which have an {@linkplain Attachment} that has a
+   * {@linkplain Attachment#getReceived()} value that is after or at the passed interval's begin and
+   * before or at the passed interval's end.
    *
-   * @param receivedIn the {@link TimeInterval} within which the searched-for tasks attachment were
-   *     received the last time.
+   * @param receivedIn the intervals of interest
    * @return the query
    */
   TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn);
 
   /**
-   * Add your callbackState to your query.
+   * Selects only {@linkplain Task Tasks} which have a {@linkplain Task#getCallbackInfo()} value
+   * that is equal to any of the passed values.
    *
-   * @param states the callback states as {@link CallbackState}
+   * @param states the values of interest
    * @return the query
    */
   TaskQuery callbackStateIn(CallbackState... states);
 
   /**
-   * This method provides a query builder for quering the database.
+   * Provides a query builder for querying the database.
    *
-   * @return a {@link ObjectReferenceQuery}
+   * @return a {@linkplain ObjectReferenceQuery}
    */
   ObjectReferenceQuery createObjectReferenceQuery();
 
   /**
-   * This method sorts the query result according to the business process id.
+   * Sorts the query result according to the {@linkplain Task#getBusinessProcessId()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByBusinessProcessId(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the claimed timestamp.
+   * Sorts the query result according to the {@linkplain Task#getClaimed()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByClaimed(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the classification key.
+   * Sorts the query result according to the {@linkplain Classification#getKey()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByClassificationKey(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the classification name.
+   * Sorts the query result according to the {@linkplain Classification#getName()}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByClassificationName(SortDirection sortDirection);
 
   /**
-   * Add your wildcard search value for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. Must be used in
-   * combination with the wilcardSearchFieldIn parameter
+   * Adds your wildcard search value for pattern matching to your query.
+   *
+   * <p>It will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
+   * the pattern. Must be used in combination with the wilcardSearchFieldIn parameter
    *
    * @param wildcardSearchValue the wildcard search value
    * @return the query
@@ -632,287 +719,310 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery wildcardSearchValueLike(String wildcardSearchValue);
 
   /**
-   * Add the Task fields for which the wildcard search should be performed as an exact match to your
-   * query. Must be used in combination with the wildcardSearchValueLike parameter
+   * Adds the {@linkplain Task} fields for which the wildcard search should be performed as an exact
+   * match to your query.
    *
-   * @param wildcardSearchFields the Task fields of your wildcard search
+   * <p>Must be used in combination with the wildcardSearchValueLike parameter
+   *
+   * @param wildcardSearchFields the {@linkplain Task} fields of your wildcard search
    * @return the query
    */
   TaskQuery wildcardSearchFieldsIn(WildcardSearchField... wildcardSearchFields);
 
   /**
-   * This method sorts the query result according to the completed timestamp.
+   * Sorts the query result according to the {@linkplain Task#getCompleted()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByCompleted(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the created timestamp.
+   * Sorts the query result according to the {@linkplain Task#getCreated()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByCreated(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the domain.
+   * Sorts the query result according to the {@linkplain Task#getDomain()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByDomain(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the due timestamp.
+   * Sorts the query result according to the {@linkplain Task#getDue()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByDue(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the primary task id.
+   * Sorts the query result according to the {@linkplain Task#getId()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByTaskId(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the modified timestamp.
+   * Sorts the query result according to the {@linkplain Task#getModified()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByModified(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to name.
+   * Sorts the query result according to {@linkplain Task#getName()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByName(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to creators name.
+   * Sorts the query result according to {@linkplain Task#getCreator()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByCreator(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the note.
+   * Sorts the query result according to the {@linkplain Task#getNote()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByNote(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the owner.
+   * Sorts the query result according to the {@linkplain Task#getOwner()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByOwner(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the parent business process id.
+   * Sorts the query result according to the {@linkplain Task#getParentBusinessProcessId()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByParentBusinessProcessId(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the planned timestamp.
+   * Sorts the query result according to the {@linkplain Task#getPlanned()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPlanned(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the company of the primary object reference.
+   * Sorts the query result according to the {@linkplain ObjectReference#getCompany()}} of the
+   * {@linkplain Task#getPrimaryObjRef()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPrimaryObjectReferenceCompany(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the system of the primary object reference.
+   * Sorts the query result according to the {@linkplain ObjectReference#getSystem()} of the
+   * {@linkplain Task#getPrimaryObjRef()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPrimaryObjectReferenceSystem(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the system instance of the primary object
-   * reference.
+   * Sorts the query result according to the {@linkplain ObjectReference#getSystemInstance()} of the
+   * {@linkplain Task#getPrimaryObjRef()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPrimaryObjectReferenceSystemInstance(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the type of the primary object reference.
+   * Sorts the query result according to the type of the {@linkplain Task#getPrimaryObjRef()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPrimaryObjectReferenceType(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the value of the primary object reference.
+   * Sorts the query result according to the {@linkplain ObjectReference#getValue()} of the
+   * {@linkplain Task#getPrimaryObjRef()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPrimaryObjectReferenceValue(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the priority.
+   * Sorts the query result according to the {@linkplain Task#getPriority()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByPriority(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the state.
+   * Sorts the query result according to the {@linkplain Task#getState()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByState(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the workbasket key.
+   * Sorts the query result according to the {@linkplain Task#getWorkbasketKey()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByWorkbasketKey(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the value of a custom field.
+   * Sorts the query result according to the value of a {@linkplain
+   * Task#getCustomAttribute(TaskCustomField)}.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param customField identifies which custom attribute is affected
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByCustomAttribute(TaskCustomField customField, SortDirection sortDirection);
 
   /**
-   * Filter for summaries which are containing one of the given taskIds.
+   * Filters for summaries which are containing one of the given {@linkplain Task#getId()}.
    *
-   * @param taskIds The ids of the searched-for tasks.
+   * @param taskIds the ids of the searched-for {@linkplain Task Tasks}
    * @return the taskQuery
    */
   TaskQuery idIn(String... taskIds);
 
   /**
-   * This method sorts the query result according to the workbasket-Id of the tasks.
+   * Sorts the query result according to the {@linkplain Workbasket#getId()} of the {@linkplain Task
+   * Tasks}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByWorkbasketId(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the workbasket name of the tasks.
+   * Sorts the query result according to the {@linkplain Workbasket#getName()} of the {@linkplain
+   * Task Tasks}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByWorkbasketName(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the attachment classification key. (Should only
-   * be used if there is one attachment per task in other case the result would be wrong.)
+   * Sorts the query result according to the {@linkplain Classification#getKey()} of the {@linkplain
+   * Attachment#getClassificationSummary()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * <p>Should only be used if there is one {@linkplain Attachment} per {@linkplain Task} in other
+   * case the result would be wrong.)
+   *
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the attachment classification name. (Should
-   * only be used if there is one attachment per task in other case the result would be wrong.)
+   * Sorts the query result according to the {@linkplain Classification#getName()} of the
+   * {@linkplain Attachment#getClassificationSummary()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * <p>Should only be used if there is one attachment per task in other case the result would be
+   * wrong.
+   *
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the attachment classification id. (Should only
-   * be used if there is one attachment per task in other case the result would be wrong.)
+   * Sorts the query result according to the {@linkplain Classification#getId()} of the {@linkplain
+   * Attachment#getClassificationSummary()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * <p>Should only be used if there is one attachment per task in other case the result would be
+   * wrong.
+   *
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the attachment channel. (Should only be used if
-   * there is one attachment per task in other case the result would be wrong.)
+   * Sorts the query result according to the {@linkplain Attachment#getChannel()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * <p>Should only be used if there is one attachment per task in other case the result would be
+   * wrong.
+   *
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByAttachmentChannel(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the attachment reference value. (Should only be
-   * used if there is one attachment per task in other case the result would be wrong.)
+   * Sorts the query result according to the {@linkplain Attachment#getObjectReference()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * <p>Should only be used if there is one attachment per task in other case the result would be
+   * wrong.
+   *
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByAttachmentReference(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the attachment received. (Should only be used
-   * if there is one attachment per task in other case the result would be wrong.)
+   * Sorts the query result according to the {@linkplain Attachment#getReceived()}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * <p>Should only be used if there is one attachment per task in other case the result would be
+   * wrong.
+   *
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   TaskQuery orderByAttachmentReceived(SortDirection sortDirection);

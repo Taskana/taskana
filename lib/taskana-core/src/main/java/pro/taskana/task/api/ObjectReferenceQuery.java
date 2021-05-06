@@ -3,46 +3,54 @@ package pro.taskana.task.api;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** ObjectReferenceQuery for generating dynamic sql. */
+/**
+ * The ObjectReferenceQuery allows for a custom search across all {@linkplain
+ * pro.taskana.task.api.models.ObjectReference ObjectReferences}.
+ */
 public interface ObjectReferenceQuery
     extends BaseQuery<ObjectReference, ObjectReferenceQueryColumnName> {
 
   /**
-   * Add your company to your query.
+   * Selects only {@linkplain ObjectReference ObjectReferences} which have a {@linkplain
+   * ObjectReference#getCompany()} value that is equal to any of the passed values.
    *
-   * @param companies as Strings
+   * @param companies the values of interest
    * @return the query
    */
   ObjectReferenceQuery companyIn(String... companies);
 
   /**
-   * Add your system to your query.
+   * Selects only {@linkplain ObjectReference ObjectReferences} which have a {@linkplain
+   * ObjectReference#getSystem()} value that is equal to any of the passed values.
    *
-   * @param systems as Strings
+   * @param systems the values of interest
    * @return the query
    */
   ObjectReferenceQuery systemIn(String... systems);
 
   /**
-   * Add your systemInstance to your query.
+   * Selects only {@linkplain ObjectReference ObjectReferences} which have a {@linkplain
+   * ObjectReference#getSystemInstance()} value that is equal to any of the passed values.
    *
-   * @param systemInstances as Strings
+   * @param systemInstances the values of interest
    * @return the query
    */
   ObjectReferenceQuery systemInstanceIn(String... systemInstances);
 
   /**
-   * Add your type to your query.
+   * Selects only {@linkplain ObjectReference ObjectReferences} which have a {@linkplain
+   * ObjectReference#getType()} value that is equal to any of the passed values.
    *
-   * @param types as Strings
+   * @param types the values of interest
    * @return the query
    */
   ObjectReferenceQuery typeIn(String... types);
 
   /**
-   * Add your value to your query.
+   * Selects only {@linkplain ObjectReference ObjectReferences} which have a {@linkplain
+   * ObjectReference#getValue()} that is equal to any of the passed values.
    *
-   * @param values as Strings
+   * @param values the values of interest
    * @return the query
    */
   ObjectReferenceQuery valueIn(String... values);

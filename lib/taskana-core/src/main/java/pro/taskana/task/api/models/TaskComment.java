@@ -6,56 +6,56 @@ import java.time.Instant;
 public interface TaskComment {
 
   /**
-   * Gets the id of the task comment.
+   * Returns the ID of this TaskComment.
    *
    * @return taskId
    */
   String getId();
 
   /**
-   * Gets the id of the associated task.
+   * Returns the ID of the associated {@linkplain Task}.
    *
    * @return taskId
    */
   String getTaskId();
 
   /**
-   * Gets the name of the task comment-creator.
+   * Returns the name of the creator of this TaskComment.
    *
    * @return creator
    */
   String getCreator();
 
   /**
-   * Gets the text field of the task comment.
+   * Returns the text field of this TaskComment.
    *
    * @return textField
    */
   String getTextField();
 
   /**
-   * Sets the text field of the task comment.
+   * Sets the text field of this TaskComment.
    *
    * @param textField the text field
    */
   void setTextField(String textField);
 
   /**
-   * Gets the time when the task comment was created.
+   * Returns the time when this TaskComment was created.
    *
-   * @return the created Instant
+   * @return the created {@linkplain Instant}
    */
   Instant getCreated();
 
   /**
-   * Gets the time when the task comment was last modified.
+   * Returns the time when this TaskComment was last modified.
    *
-   * @return the last modified Instant
+   * @return the last modified {@linkplain Instant}
    */
   Instant getModified();
 
   /**
-   * Duplicates this TaskComment without the id.
+   * Duplicates this TaskComment without the ID.
    *
    * @return a copy of this TaskComment
    */

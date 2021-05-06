@@ -10,9 +10,12 @@ import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.task.api.TaskState;
 
 /**
- * A TaskStatusReport contains the total number of tasks, clustered in their task status.
- * Furthermore the report contains a sum line that contains the total numbers of the different
- * clusters and the total number of all tasks.
+ * A TaskStatusReport contains the total number of {@linkplain pro.taskana.task.api.models.Task
+ * Tasks}, clustered in their {@linkplain pro.taskana.task.api.models.Task Task} status.
+ *
+ * <p>Furthermore the TaskStatusReport contains a sum line that contains the total numbers of the
+ * different clusters and the total number of all {@linkplain pro.taskana.task.api.models.Task
+ * Tasks}.
  */
 public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHeader> {
 
@@ -24,15 +27,17 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
         new String[] {"DOMAINS"});
   }
 
-  /** Builder for {@link TaskStatusReport}. */
+  /** Builder for {@linkplain TaskStatusReport}. */
   public interface Builder extends Report.Builder<TaskQueryItem, TaskStatusColumnHeader> {
 
     @Override
     TaskStatusReport buildReport() throws NotAuthorizedException;
 
     /**
-     * Adds a list of states to the builder. The created report contains only tasks with a state in
-     * this list.
+     * Adds a list of states to the Builder.
+     *
+     * <p>The created TaskStatusReport contains only {@linkplain pro.taskana.task.api.models.Task
+     * Tasks} with a state in this list.
      *
      * @param states a list of states
      * @return the Builder
@@ -40,8 +45,10 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     Builder stateIn(List<TaskState> states);
 
     /**
-     * Adds a priority Integer to the builder. The created report contains only Tasks with a
-     * priority greater or equal than this provided Integer.
+     * Adds a priority Integer to the Builder.
+     *
+     * <p>The created TaskStatusReport contains only {@linkplain pro.taskana.task.api.models.Task
+     * Tasks} with a priority greater or equal than this provided Integer.
      *
      * @param priority an Integer for the minimum priority
      * @return the Builder
@@ -49,8 +56,10 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     Builder priorityMinimum(Integer priority);
 
     /**
-     * Adds a list of domains to the builder. The created report contains only tasks with a domain
-     * in this list.
+     * Adds a list of domains to the Builder.
+     *
+     * <p>The created TaskStatusReport contains only {@linkplain pro.taskana.task.api.models.Task
+     * Tasks} with a domain in this list.
      *
      * @param domains a list of domains
      * @return the Builder
@@ -58,8 +67,11 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     Builder domainIn(List<String> domains);
 
     /**
-     * Adds a list of workbasketIds to the builder. The created report contains only tasks from a
-     * workbakset in this list
+     * Adds a list of workbasketIds to the Builder.
+     *
+     * <p>The created TaskStatusReport contains only {@linkplain pro.taskana.task.api.models.Task
+     * Tasks} from a {@linkplain pro.taskana.workbasket.api.models.Workbasket Workbasket} in this
+     * list
      *
      * @param workbasketIds a list of workbasketIds
      * @return the Builder

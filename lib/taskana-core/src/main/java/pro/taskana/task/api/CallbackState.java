@@ -1,7 +1,7 @@
 package pro.taskana.task.api;
 
 /**
- * This enum contains all status of synchronization between a taskana task and a task in a remote
+ * This Enum contains all states of synchronization between a Taskana task and a task in a remote
  * system.
  */
 public enum CallbackState {

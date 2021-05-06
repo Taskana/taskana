@@ -3,8 +3,8 @@ package pro.taskana.workbasket.api;
 import pro.taskana.common.api.QueryColumnName;
 
 /**
- * Enum containing the column names for
- * pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues.
+ * This Enum contains the database column names for a {@linkplain
+ * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
  */
 public enum WorkbasketQueryColumnName implements QueryColumnName {
   OWNER("w.owner"),

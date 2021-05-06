@@ -48,15 +48,21 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
       TaskStatusReport report = new TaskStatusReport(this.states);
       report.addItems(tasks);
       Map<String, String> displayMap =
-          taskanaEngine.getEngine().runAsAdmin(
-              () ->
-                  workbasketService.createWorkbasketQuery()
-                      .keyIn(report.getRows().keySet().toArray(new String[0]))
-                      .domainIn(domains != null ? domains.toArray(new String[0]) : null).list()
-                      .stream()
-                      .collect(
-                          Collectors.toMap(
-                              WorkbasketSummary::getKey, WorkbasketSummary::getName, (a, b) -> a)));
+          taskanaEngine
+              .getEngine()
+              .runAsAdmin(
+                  () ->
+                      workbasketService
+                          .createWorkbasketQuery()
+                          .keyIn(report.getRows().keySet().toArray(new String[0]))
+                          .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+                          .list()
+                          .stream()
+                          .collect(
+                              Collectors.toMap(
+                                  WorkbasketSummary::getKey,
+                                  WorkbasketSummary::getName,
+                                  (a, b) -> a)));
       report.augmentDisplayNames(displayMap);
       return report;
     } finally {

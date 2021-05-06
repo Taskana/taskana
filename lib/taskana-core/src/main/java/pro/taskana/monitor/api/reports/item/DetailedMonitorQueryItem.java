@@ -1,8 +1,11 @@
 package pro.taskana.monitor.api.reports.item;
 
 /**
- * The DetailedMonitorQueryItem extends the {@link MonitorQueryItem}. The additional attachment key
- * is used for the detailed classification report.
+ * The DetailedMonitorQueryItem extends the {@linkplain MonitorQueryItem}.
+ *
+ * <p>The additional attachmentKey is used for the {@linkplain
+ * pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport
+ * DetailedClassificationReport}.
  */
 public class DetailedMonitorQueryItem extends MonitorQueryItem {
 
