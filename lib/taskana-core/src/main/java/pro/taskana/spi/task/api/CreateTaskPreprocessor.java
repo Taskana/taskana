@@ -5,9 +5,9 @@ import pro.taskana.task.api.models.Task;
 public interface CreateTaskPreprocessor {
 
   /**
-   * Processes a task before its creation.
+   * Processes a {@linkplain Task} before its creation.
    *
-   * @param taskToProcess {@link Task} The Task to preprocess.
+   * @param taskToProcess the {@linkplain Task} to preprocess
    */
   void processTaskBeforeCreation(Task taskToProcess);
 }

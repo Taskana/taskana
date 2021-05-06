@@ -1,6 +1,9 @@
 package pro.taskana.workbasket.api;
 
-/** This enum contains all permission values for the workbaskets. */
+/**
+ * This Enum contains all permission values for the {@linkplain
+ * pro.taskana.workbasket.api.models.Workbasket Workbaskets}.
+ */
 public enum WorkbasketPermission {
   READ,
   OPEN,

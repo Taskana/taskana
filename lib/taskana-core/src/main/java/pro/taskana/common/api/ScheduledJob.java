@@ -162,13 +162,13 @@ public class ScheduledJob {
         + "]";
   }
 
-  /** This enum tracks the state of a job. */
+  /** This enum tracks the state of a Job. */
   public enum State {
     READY,
     FAILED
   }
 
-  /** This enum controls the type of a job. */
+  /** This enum controls the type of a Job. */
   public enum Type {
     CLASSIFICATIONCHANGEDJOB(ClassificationChangedJob.class.getName()),
     UPDATETASKSJOB(TaskRefreshJob.class.getName()),

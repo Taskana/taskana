@@ -15,177 +15,178 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 public interface TaskSummary {
 
   /**
-   * Gets the id of the task.
+   * Returns the id of the {@linkplain Task}.
    *
    * @return taskId
    */
   String getId();
 
   /**
-   * Gets the external id of the task.
+   * Returns the external id of the this {@linkplain Task}.
    *
-   * @return the external Id
+   * @return the externalId
    */
   String getExternalId();
 
   /**
-   * Gets the name of the task-creator.
+   * Returns the name of the creator of the {@linkplain Task}.
    *
    * @return creator
    */
   String getCreator();
 
   /**
-   * Gets the time when the task was created.
+   * Returns the time when the {@linkplain Task} was created.
    *
-   * @return the created Instant
+   * @return the created {@linkplain Instant}
    */
   Instant getCreated();
 
   /**
-   * Gets the time when the task was claimed.
+   * Returns the time when the {@linkplain Task} was claimed.
    *
-   * @return the claimed Instant
+   * @return the claimed {@linkplain Instant}
    */
   Instant getClaimed();
 
   /**
-   * Gets the time when the task was completed.
+   * Returns the time when the {@linkplain Task} was completed.
    *
-   * @return the completed Instant
+   * @return the completed {@linkplain Instant}
    */
   Instant getCompleted();
 
   /**
-   * Gets the time when the task was last modified.
+   * Returns the time when the {@linkplain Task} was last modified.
    *
-   * @return the last modified Instant
+   * @return the last modified {@linkplain Instant}
    */
   Instant getModified();
 
   /**
-   * Gets the time when the task is planned to be executed.
+   * Returns the time when the {@linkplain Task} is planned to be executed.
    *
-   * @return the planned Instant
+   * @return the planned {@linkplain Instant}
    */
   Instant getPlanned();
 
   /**
-   * Gets the time when the task is due.
+   * Returns the time when the {@linkplain Task} is due.
    *
-   * @return the due Instant
+   * @return the due {@linkplain Instant}
    */
   Instant getDue();
 
   /**
-   * Gets the name of the task.
+   * Returns the name of the {@linkplain Task}.
    *
-   * @return the task's name
+   * @return the {@linkplain Task}'s name
    */
   String getName();
 
   /**
-   * Gets the note attached to the task.
+   * Returns the note attached to the {@linkplain Task}.
    *
-   * @return the task's note
+   * @return the {@linkplain Task}'s note
    */
   String getNote();
 
   /**
-   * Gets the description of the task.
+   * Returns the description of the {@linkplain Task}.
    *
-   * @return the task's description
+   * @return the {@linkplain Task}'s description
    */
   String getDescription();
 
   /**
-   * Gets the priority of the task.
+   * Returns the priority of the {@linkplain Task}.
    *
-   * @return the task's priority
+   * @return the {@linkplain Task}'s priority
    */
   int getPriority();
 
   /**
-   * Gets the state of the task.
+   * Returns the state of the {@linkplain Task}.
    *
-   * @return the task's state
+   * @return the {@linkplain Task}'s state
    */
   TaskState getState();
 
   /**
-   * Gets the classification summary of the task.
+   * Returns the {@linkplain ClassificationSummary} of the {@linkplain Task}.
    *
-   * @return the task's classificationSummary
+   * @return the {@linkplain Task}'s {@linkplain ClassificationSummary}
    */
   ClassificationSummary getClassificationSummary();
 
   /**
-   * Gets the workbasket summary of the task.
+   * Returns the {@linkplain pro.taskana.workbasket.api.models.WorkbasketSummary WorkbasketSummary}
+   * of the {@linkplain Task}.
    *
-   * @return the task's workbasketSummary
+   * @return the {@linkplain Task}'s {@linkplain WorkbasketSummary}
    */
   WorkbasketSummary getWorkbasketSummary();
 
   /**
-   * Gets the attachment summaries of the task.
+   * Returns the {@linkplain AttachmentSummary AttachmentSummaries} of the {@linkplain Task}.
    *
-   * @return the task's attachment summaries
+   * @return the {@linkplain Task}'s {@linkplain AttachmentSummary AttachmentSummaries}
    */
   List<AttachmentSummary> getAttachmentSummaries();
 
   /**
-   * Gets the domain of the task.
+   * Returns the domain of the {@linkplain Task}.
    *
-   * @return the task's domain
+   * @return the {@linkplain Task}'s domain
    */
   String getDomain();
 
   /**
-   * Gets the businessProcessId of the task.
+   * Returns the businessProcessId of the {@linkplain Task}.
    *
-   * @return the task's businessProcessId
+   * @return the {@linkplain Task}'s businessProcessId
    */
   String getBusinessProcessId();
 
   /**
-   * Gets the parentBusinessProcessId of the task.
+   * Returns the parentBusinessProcessId of the {@linkplain Task}.
    *
-   * @return the task's parentBusinessProcessId
+   * @return the {@linkplain Task}'s parentBusinessProcessId
    */
   String getParentBusinessProcessId();
 
   /**
-   * Gets the owner of the task.
+   * Returns the owner of the {@linkplain Task}.
    *
-   * @return the task's owner
+   * @return the {@linkplain Task}'s owner
    */
   String getOwner();
 
   /**
-   * Gets the primary ObjectReference of the task.
+   * Returns the primary {@linkplain ObjectReference} of the {@linkplain Task}.
    *
-   * @return the task's primary ObjectReference
+   * @return the {@linkplain Task}'s primary {@linkplain ObjectReference}
    */
   ObjectReference getPrimaryObjRef();
 
   /**
-   * Gets the isRead flag of the task.
+   * Returns the isRead flag of the {@linkplain Task}.
    *
-   * @return the task's isRead flag
+   * @return the {@linkplain Task}'s isRead flag
    */
   boolean isRead();
 
   /**
-   * Gets the isTransferred flag of the task.
+   * Returns the isTransferred flag of the {@linkplain Task}.
    *
-   * @return the task's isTransferred flag.
+   * @return the {@linkplain Task}'s isTransferred flag.
    */
   boolean isTransferred();
 
   /**
-   * Gets the custom attribute of the task.
+   * Returns the custom attribute of the {@linkplain Task}.
    *
-   * @param customField identifies which custom attribute is requested.
+   * @param customField identifies which custom attribute is requested
    * @return the value for the given customField
    */
   String getCustomAttribute(TaskCustomField customField);

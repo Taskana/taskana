@@ -13,8 +13,10 @@ import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
 
 /**
- * The ClassificationReport extends the Report. The {@link Row}s of the ClassificationReport are
- * grouped by classifications.
+ * The ClassificationReport extends the {@linkplain Report}.
+ *
+ * <p>The {@linkplain Row Rows} of the ClassificationReport are grouped by {@linkplain
+ * pro.taskana.classification.api.models.Classification Classifications}.
  */
 public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
@@ -22,7 +24,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
     super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION"});
   }
 
-  /** Builder for {@link ClassificationReport}. */
+  /** Builder for {@linkplain ClassificationReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
@@ -34,13 +36,20 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
         throws NotAuthorizedException, InvalidArgumentException;
 
     /**
-     * Returns a {@link DetailedClassificationReport} containing all tasks after applying the
-     * filters. If the column headers are set the report is subdivided into clusters. Its {@link
-     * FoldableRow}s contain an additional list of {@link Row}s for the classifications of the
-     * attachments of the tasks.
+     * Returns a {@linkplain DetailedClassificationReport DetailedClassificationReport} containing
+     * all {@linkplain pro.taskana.task.api.models.Task Tasks} after applying the filters.
      *
-     * @return the DetailedClassificationReport
-     * @throws InvalidArgumentException if the column headers are not initialized
+     * <p>If the {@linkplain pro.taskana.monitor.api.reports.header.ColumnHeader ColumnHeaders} are
+     * set the {@linkplain DetailedClassificationReport DetailedClassificationReport} is subdivided
+     * into clusters. Its {@linkplain FoldableRow FoldableRows} contain an additional list of
+     * {@linkplain Row Rows} for the {@linkplain
+     * pro.taskana.classification.api.models.Classification Classifications} of the {@linkplain
+     * pro.taskana.task.api.models.Attachment Attachments} of the {@linkplain
+     * pro.taskana.task.api.models.Task Tasks}.
+     *
+     * @return the {@linkplain DetailedClassificationReport DetailedClassificationReport}
+     * @throws InvalidArgumentException if the {@linkplain
+     *     pro.taskana.monitor.api.reports.header.ColumnHeader ColumnHeads} are not initialized
      * @throws NotAuthorizedException if the user has no rights to access the monitor
      */
     DetailedClassificationReport buildDetailedReport()
@@ -51,9 +60,13 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
   }
 
   /**
-   * The DetailedClassificationReport is a functional extension of the {@link ClassificationReport}.
-   * Its {@link FoldableRow}s contain an additional list of {@link Row}s for the classifications of
-   * the attachments of the tasks.
+   * The DetailedClassificationReport is a functional extension of the {@linkplain
+   * ClassificationReport}.
+   *
+   * <p>Its {@linkplain FoldableRow FoldableRows} contain an additional list of {@linkplain Row
+   * Rows} for the {@linkplain pro.taskana.classification.api.models.Classification Classifications}
+   * of the {@linkplain pro.taskana.task.api.models.Attachment Attachments} of the {@linkplain
+   * pro.taskana.task.api.models.Task Tasks}.
    */
   public static class DetailedClassificationReport
       extends Report<DetailedMonitorQueryItem, TimeIntervalColumnHeader> {

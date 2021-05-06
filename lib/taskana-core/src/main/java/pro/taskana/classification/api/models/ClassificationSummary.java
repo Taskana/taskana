@@ -3,99 +3,101 @@ package pro.taskana.classification.api.models;
 import pro.taskana.classification.api.ClassificationCustomField;
 
 /**
- * Interface for ClassificationSummaries. This is a specific short model-object which only requieres
+ * Interface for ClassificationSummaries. This is a specific short model-object which only requires
  * the most important information. Specific ones can be load afterwards via ID.
  */
 public interface ClassificationSummary {
 
   /**
-   * Gets the id of the classification.
+   * Returns the ID of the {@linkplain Classification}.
    *
    * @return classificationId
    */
   String getId();
 
   /**
-   * Gets the key of the classification.
+   * Returns the key of the {@linkplain Classification}.
    *
    * @return classificationKey
    */
   String getKey();
 
   /**
-   * Gets the category of the classification.
+   * Returns the category of the {@linkplain Classification}.
    *
    * @return classificationCategory
    */
   String getCategory();
 
   /**
-   * Gets the type of the classification.
+   * Returns the type of the {@linkplain Classification}.
    *
    * @return classificationType
    */
   String getType();
 
   /**
-   * Gets the domain of the classification.
+   * Returns the domain of the {@linkplain Classification}.
    *
    * @return classificationDomain
    */
   String getDomain();
 
   /**
-   * Gets the name of the classification.
+   * Returns the name of the {@linkplain Classification}.
    *
    * @return classificationName
    */
   String getName();
 
   /**
-   * Gets the ID of the parent classification.
+   * Returns the ID of the Parent-{@linkplain Classification}.
    *
    * @return parentId
    */
   String getParentId();
 
   /**
-   * Gets the key of the parent classification.
+   * Returns the key of the Parent-{@linkplain Classification}.
    *
    * @return parentKey
    */
   String getParentKey();
 
   /**
-   * Gets the service level of the classification. It is a String in ISO-8601 duration format. See
-   * the parse() method of {@code Duration} for details.
+   * Returns the service level of the {@linkplain Classification}.
+   *
+   * <p>It is a String in ISO-8601 duration format. See {@linkplain java.time.Duration#parse
+   * Duration.parse()} for details.
    *
    * @return the service level
    */
   String getServiceLevel();
 
   /**
-   * Gets the application entry point of the classification.
+   * Returns the application entry point of the {@linkplain Classification}.
    *
    * @return the application entry point
    */
   String getApplicationEntryPoint();
 
   /**
-   * Gets the priority of the classification.
+   * Returns the priority of the {@linkplain Classification}.
    *
    * @return the priority
    */
   int getPriority();
 
   /**
-   * Gets the custom attribute of the classification.
+   * Returns the custom attribute of the {@linkplain Classification}.
    *
-   * @param customField identifies which custom attribute is requested.
+   * @param customField identifies which custom attribute is requested
    * @return the value for the given customField
    */
   String getCustomAttribute(ClassificationCustomField customField);
 
   /**
-   * Duplicates this ClassificationSummary without the id.
+   * Duplicates this ClassificationSummary without the ID.
    *
    * @return a copy of this ClassificationSummary
    */

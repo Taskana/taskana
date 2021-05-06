@@ -9,12 +9,20 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 
 /**
- * A CategoryReport contains the total numbers of tasks of the respective category as well as the
- * total number of all tasks. The tasks of the report can be filtered by workbaskets, states,
- * categories, domains, classifications and values of a custom field. Classifications can also be
- * excluded from the report. If the {@link TimeIntervalColumnHeader}s are set, the report contains
- * also the number of tasks of the respective cluster. The age of the tasks can be counted in days
- * or in working days. Tasks with Timestamp DUE = null are not considered.
+ * A ClassificationCategoryReport contains the total numbers of {@linkplain
+ * pro.taskana.task.api.models.Task Taks} of the respective category as well as the total number of
+ * all {@linkplain pro.taskana.task.api.models.Task Tasks}.
+ *
+ * <p>The {@linkplain pro.taskana.task.api.models.Task Tasks} of the ClassificationCategoryReport
+ * can be filtered by {@linkplain pro.taskana.workbasket.api.models.Workbasket Workbaskets}, states,
+ * categories, domains, {@linkplain pro.taskana.classification.api.models.Classification
+ * Classifications} and values of a custom field. {@linkplain
+ * pro.taskana.classification.api.models.Classification Classifications} can also be excluded from
+ * the ClassificationCategoryReport. If the {@linkplain TimeIntervalColumnHeader
+ * TimerIntervalColumsHeaders} are set, the ClassificationCategoryReport contains also the number of
+ * {@linkplain pro.taskana.task.api.models.Task Tasks} of the respective cluster. The age of the
+ * {@linkplain pro.taskana.task.api.models.Task Tasks} can be counted in days or in working days.
+ * {@linkplain pro.taskana.task.api.models.Task Tasks} with Timestamp DUE = null are not considered.
  */
 public class ClassificationCategoryReport
     extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
@@ -23,7 +31,7 @@ public class ClassificationCategoryReport
     super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION CATEGORIES"});
   }
 
-  /** Builder for {@link ClassificationCategoryReport}. */
+  /** Builder for {@linkplain ClassificationCategoryReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
