@@ -731,6 +731,35 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_ForceCancelClaim_When_TaskIsClaimedByDifferentOwner() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000027");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> getTaskResponse =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+    assertThat(getTaskResponse.getBody()).isNotNull();
+    TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
+    assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
+
+    // force cancel claim
+    String url2 =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASKS_ID_CLAIM_FORCE, "TKI:000000000000000000000000000000000027");
+    ResponseEntity<TaskRepresentationModel> cancelClaimResponse =
+        TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+    assertThat(cancelClaimResponse.getBody()).isNotNull();
+    assertThat(cancelClaimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+    TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
+    assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isNull();
+    assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
+    assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+  }
+
+  @Test
   void testCancelClaimOfClaimedTaskByAnotherUserShouldThrowException() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000026");

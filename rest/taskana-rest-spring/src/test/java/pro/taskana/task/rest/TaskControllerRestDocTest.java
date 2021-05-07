@@ -69,6 +69,17 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
   }
 
   @Test
+  void forceCancelClaimTaskDocTest() throws Exception {
+    mockMvc
+        .perform(
+            delete(
+                    RestEndpoints.URL_TASKS_ID_CLAIM_FORCE,
+                    "TKI:000000000000000000000000000000000035")
+                .headers(restHelper.getHeadersUser_1_2()))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   void selectAndClaimTaskDocTest() throws Exception {
     mockMvc
         .perform(post(RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM + "?custom14=abc"))

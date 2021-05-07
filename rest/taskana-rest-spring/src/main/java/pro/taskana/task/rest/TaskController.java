@@ -276,6 +276,36 @@ public class TaskController {
   }
 
   /**
+   * This endpoint force cancels the claim of an existing Task.
+   *
+   * @param taskId the Id of the requested Task.
+   * @return the unclaimed Task.
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the Task is already in an end state.
+   * @throws InvalidOwnerException if the Task is claimed by a different user.
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Force cancel a claimed Task
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+
+    LOGGER.debug("Entry to forceCancelClaimTask(taskId= {}", taskId);
+
+    Task updatedTask = taskService.forceCancelClaim(taskId);
+
+    ResponseEntity<TaskRepresentationModel> result =
+        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Exit from forceCancelClaimTask(), returning {}", result);
+    }
+    return result;
+  }
+
+  /**
    * This endpoint completes a Task.
    *
    * @param taskId Id of the requested Task to complete.

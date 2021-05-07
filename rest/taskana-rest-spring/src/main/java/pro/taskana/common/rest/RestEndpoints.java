@@ -42,6 +42,7 @@ public final class RestEndpoints {
   public static final String URL_TASKS = API_V1 + "tasks";
   public static final String URL_TASKS_ID = API_V1 + "tasks/{taskId}";
   public static final String URL_TASKS_ID_CLAIM = API_V1 + "tasks/{taskId}/claim";
+  public static final String URL_TASKS_ID_CLAIM_FORCE = API_V1 + "tasks/{taskId}/claim/force";
   public static final String URL_TASKS_ID_SELECT_AND_CLAIM = API_V1 + "tasks/select-and-claim";
   public static final String URL_TASKS_ID_COMPLETE = API_V1 + "tasks/{taskId}/complete";
   public static final String URL_TASKS_ID_CANCEL = API_V1 + "tasks/{taskId}/cancel";
