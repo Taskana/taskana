@@ -58,6 +58,7 @@
 
   &__task-name {
     font-size: 1.5rem;
+    font-weight: 500;
     padding: 0 0.5rem 0.5rem 0.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -65,6 +66,7 @@
     grid-area: 2/1;
     grid-column-start: 1;
     grid-column-end: 2;
+    margin: 0;
   }
 
   &__tab-group-wrapper {

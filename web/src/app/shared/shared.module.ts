@@ -126,6 +126,7 @@ const DECLARATIONS = [
     AccessIdsService,
     ClassificationsService,
     WorkbasketService
-  ]
+  ],
+  entryComponents: [DialogPopUpComponent, ToastComponent]
 })
 export class SharedModule {}
