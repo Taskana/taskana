@@ -71,6 +71,7 @@ objectclass: person
 objectclass: top
 givenName: Business
 description: desc
+memberOf: cn=business-admins,cn=groups,OU=Test,O=TASKANA
 uid: businessadmin
 sn: Admin
 ou: Organisationseinheit/Organisationseinheit IT
@@ -87,6 +88,10 @@ objectclass: person
 objectclass: top
 givenName: Titus
 description: desc
+memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+memberOf: cn=monitor-users,cn=groups,OU=Test,O=TASKANA
+memberOf: cn=business-admins,cn=groups,OU=Test,O=TASKANA
+memberOf: cn=ksc-teamleads,cn=groups,OU=Test,O=TASKANA
 uid: teamlead-1
 sn: Toll
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
@@ -100,6 +105,8 @@ objectclass: person
 objectclass: top
 givenName: Max
 description: desc
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
+memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-1-1
 sn: Mustermann
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
@@ -113,6 +120,8 @@ objectclass: person
 objectclass: top
 givenName: Elena
 description: desc
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
+memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-1-2
 sn: Eifrig
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
@@ -142,6 +151,10 @@ objectclass: person
 objectclass: top
 givenName: Frauke
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+memberOf: cn=monitor-users,cn=groups,OU=Test,O=TASKANA
+memberOf: cn=business-admins,cn=groups,OU=Test,O=TASKANA
+memberOf: cn=ksc-teamleads,cn=groups,OU=Test,O=TASKANA
 uid: teamlead-2
 sn: Faul
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -155,6 +168,8 @@ objectclass: person
 objectclass: top
 givenName: Simone
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
 uid: user-2-1
 sn: Müller
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -168,6 +183,8 @@ objectclass: person
 objectclass: top
 givenName: Tim
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
 uid: user-2-2
 sn:: U2NobMOkZnJpZw==
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -181,6 +198,7 @@ objectclass: person
 objectclass: top
 givenName: Thomas
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-3
 sn: Bach
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -194,6 +212,7 @@ objectclass: person
 objectclass: top
 givenName: Rolf
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-4
 sn: Wieland
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -207,6 +226,7 @@ objectclass: person
 objectclass: top
 givenName: Heike
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-5
 sn: Schmidt
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -220,6 +240,7 @@ objectclass: person
 objectclass: top
 givenName: Kurt
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-6
 sn: Maier
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -233,6 +254,7 @@ objectclass: person
 objectclass: top
 givenName: Wiebke
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-7
 sn: Meyer
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -246,6 +268,7 @@ objectclass: person
 objectclass: top
 givenName: Jana
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-8
 sn: Heeg
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -259,6 +282,7 @@ objectclass: person
 objectclass: top
 givenName: Nathalie
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-9
 sn: Fuchs
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -272,6 +296,7 @@ objectclass: person
 objectclass: top
 givenName: Johannes
 description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-2-10
 sn: Renz
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -380,4 +405,3 @@ dn: cn=Organisationseinheit B,cn=organisation,OU=Test,O=TASKANA
 cn: Organisationseinheit B
 objectclass: groupofuniquenames
 objectclass: top
-

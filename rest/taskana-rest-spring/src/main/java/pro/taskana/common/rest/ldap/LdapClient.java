@@ -120,6 +120,7 @@ public class LdapClient {
     final AndFilter andFilter = new AndFilter();
     andFilter.and(userDetailsOrFilter);
     andFilter.and(groupMembershipOrFilter);
+    andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
 
     final List<AccessIdRepresentationModel> accessIds =
         ldapTemplate.search(

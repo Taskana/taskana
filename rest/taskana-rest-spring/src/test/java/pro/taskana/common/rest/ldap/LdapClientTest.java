@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ class LdapClientTest {
     accessIds.add(model2);
     accessIds.add(model1);
 
-    LdapClient ldapClient = new LdapClient(environment, ldapTemplate);
+    LdapClient ldapClient = new LdapClient(environment, ldapTemplate, taskanaEngineConfiguration);
     ldapClient.sortListOfAccessIdResources(accessIds);
 
     assertThat(accessIds.get(0).getAccessId()).isEqualTo("user-1");
