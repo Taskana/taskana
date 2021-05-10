@@ -74,6 +74,7 @@ include::{snippets}/MonitorControllerRestDocTest/getTimestampReportDocTest/auto-
 
 include::{snippets}/AccessIdControllerRestDocTest/searchForAccessIdDocTest/auto-section.adoc[]
 include::{snippets}/AccessIdControllerRestDocTest/getGroupsForAccessIdDocTest/auto-section.adoc[]
+include::{snippets}/AccessIdControllerRestDocTest/searchUsersByNameOrAccessIdForRoleTest/auto-section.adoc[]
 
 == Configuration Resources
 

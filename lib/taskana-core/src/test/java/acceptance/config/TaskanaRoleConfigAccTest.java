@@ -18,9 +18,8 @@ import pro.taskana.common.api.TaskanaRole;
 /** Test taskana's role configuration. */
 class TaskanaRoleConfigAccTest {
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   @TempDir Path tempDir;
+  private TaskanaEngineConfiguration taskanaEngineConfiguration;
 
   @BeforeEach
   void setup() {
@@ -39,6 +38,7 @@ class TaskanaRoleConfigAccTest {
     Set<String> users = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
     assertThat(users)
         .containsExactlyInAnyOrder(
+            "cn=ksc-users,cn=groups,ou=test,o=taskana",
             "teamlead-1",
             "teamlead-2",
             "user-1-1",
