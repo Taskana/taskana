@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output, Pipe, PipeTransform } from '@angular/core';
+import { Component, DebugElement, Input, Pipe, PipeTransform } from '@angular/core';
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
@@ -67,13 +67,6 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   it('should set sideNumber to 0 when side is Side.AVAILABLE', () => {
     fixture.detectChanges();
     expect(component.side).toBe(Side.AVAILABLE);
-  });
-
-  it('should select all distribution targets', () => {
-    component.selectAll(true);
-    component.distributionTargets.forEach((element) => {
-      expect(element['selected']).toBe(true);
-    });
   });
 
   it('should change toolbar state', () => {
