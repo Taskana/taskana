@@ -10,6 +10,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -63,6 +64,30 @@ class LdapClientTest {
         .thenReturn(List.of(user));
 
     assertThat(cut.searchUsersAndGroups("test")).hasSize(2).containsExactlyInAnyOrder(user, group);
+  }
+
+  @Test
+  void should_CorrectlySortAccessIds_When_ContainingNullAccessId() throws Exception {
+
+    List<AccessIdRepresentationModel> accessIds = new ArrayList<>();
+    AccessIdRepresentationModel model1 = new AccessIdRepresentationModel("name1", "user-1");
+    AccessIdRepresentationModel model2 = new AccessIdRepresentationModel("name2", "user-2");
+    AccessIdRepresentationModel model3 = new AccessIdRepresentationModel("name3", null);
+    AccessIdRepresentationModel model4 = new AccessIdRepresentationModel("name4", "user-4");
+
+    // Can't use List.of because it returns an ImmutableCollection
+    accessIds.add(model4);
+    accessIds.add(model3);
+    accessIds.add(model2);
+    accessIds.add(model1);
+
+    LdapClient ldapClient = new LdapClient(environment, ldapTemplate);
+    ldapClient.sortListOfAccessIdResources(accessIds);
+
+    assertThat(accessIds.get(0).getAccessId()).isEqualTo("user-1");
+    assertThat(accessIds.get(1).getAccessId()).isEqualTo("user-2");
+    assertThat(accessIds.get(2).getAccessId()).isEqualTo("user-4");
+    assertThat(accessIds.get(3).getAccessId()).isNull();
   }
 
   @Test
