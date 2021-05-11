@@ -351,7 +351,8 @@ public class LdapClient {
   void sortListOfAccessIdResources(List<AccessIdRepresentationModel> accessIds) {
     accessIds.sort(
         Comparator.comparing(
-            AccessIdRepresentationModel::getAccessId, String.CASE_INSENSITIVE_ORDER));
+            AccessIdRepresentationModel::getAccessId,
+            Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
   }
 
   String getNameWithoutBaseDn(String name) {
