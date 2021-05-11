@@ -11,7 +11,7 @@
     width: 100%;
     display: grid;
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr ;
+    grid-template-columns: 1fr;
   }
 
   &__badge-message {
@@ -94,4 +94,8 @@
   > .mat-tab-label {
   min-width: 0 !important;
   height: 36px !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+  margin-top: 0.7em;
 }

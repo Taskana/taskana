@@ -1,7 +1,6 @@
 @import 'src/theme/_colors.scss';
 
 .task-attribute-value {
-
   &__button--primary {
     background-color: $aquamarine;
     color: white;
@@ -58,9 +57,12 @@
   padding: 0;
 }
 
-::ng-deep .task-attribute-value__column--inputs > .mat-form-field-appearance-outline > div.mat-form-field-wrapper > div.mat-form-field-flex > div.mat-form-field-infix  {
+::ng-deep
+  .task-attribute-value__column--inputs
+  > .mat-form-field-appearance-outline
+  > div.mat-form-field-wrapper
+  > div.mat-form-field-flex
+  > div.mat-form-field-infix {
   border-top-width: 0;
   height: 40px;
 }
-
-

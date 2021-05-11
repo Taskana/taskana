@@ -1,0 +1,43 @@
+/* * * * * * * * IMPORTANT * * * * * *
+
+          PLEASE DO NOT USE
+This CSS was created to easily get rid of bootstrap while keeping most of the layout intact
+These classes should be replaced and migrated to either component level or global styling
+
+* * * * * * * * * * * * * * * * * * */
+
+h3 {
+  font-size: 1.75rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+h4 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+  line-height: 1.2;
+}
+
+h6 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.mr-1,
+.mx-1 {
+  margin-right: 0.25rem !important;
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+
+img,
+svg {
+  vertical-align: middle;
+}

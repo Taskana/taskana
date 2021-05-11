@@ -94,6 +94,7 @@
 .required-header {
   width: 200px;
 }
+
 .required-header:after {
   content: ' *';
   color: red;
@@ -112,4 +113,8 @@
 
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
   margin-top: 0.7em;
+}
+
+table {
+  border-collapse: collapse;
 }
