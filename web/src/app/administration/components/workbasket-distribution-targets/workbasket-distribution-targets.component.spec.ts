@@ -151,12 +151,14 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     expect(removeSelectedItems).toHaveBeenCalled();
   });
 
-  it('should set selectAll checkboxes to true when moving a workbasket', () => {
-    [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
-      component.moveDistributionTargets(side);
-      expect(component.selectAllRight).toBeTruthy();
-      expect(component.selectAllLeft).toBeTruthy();
-    });
+  it('should set selectAll checkboxes to false when moving a workbasket', () => {
+    component.selectAllRight = true;
+    component.moveDistributionTargets(Side.SELECTED);
+    expect(component.selectAllRight).toBeFalsy();
+
+    component.selectAllLeft = true;
+    component.moveDistributionTargets(Side.AVAILABLE);
+    expect(component.selectAllLeft).toBeFalsy();
   });
 
   it('should call unselectItems() when moving a workbasket', () => {

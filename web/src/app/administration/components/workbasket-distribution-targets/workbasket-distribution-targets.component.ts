@@ -28,6 +28,12 @@ export enum Side {
   AVAILABLE,
   SELECTED
 }
+
+export interface AllSelected {
+  value: boolean;
+  side?: Side;
+}
+
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets',
   templateUrl: './workbasket-distribution-targets.component.html',
@@ -88,15 +94,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
    * would be ideal to completely redo whole components using drag and drop angular components and clearer logics
    */
   ngOnInit() {
-    this.selectedWorkbasket$
-      .pipe(
-        filter((selectedWorkbasket) => typeof selectedWorkbasket !== 'undefined'),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((selectedWorkbasket) => {
-        this.workbasket = selectedWorkbasket;
-      });
-
     if (this.workbasket?.workbasketId) {
       this.store.dispatch(new GetWorkbasketDistributionTargets(this.workbasket._links.distributionTargets.href));
       this.store.dispatch(new GetAvailableDistributionTargets());
@@ -163,8 +160,16 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.workbasket.currentValue !== changes.workbasket.previousValue) {
+      this.setAllSelected({ value: false });
       this.getAvailableDistributionTargets();
     }
+  }
+
+  setAllSelected(allSelected: AllSelected) {
+    const side = allSelected.side;
+    const value = allSelected.value;
+    this.selectAllLeft = side === Side.AVAILABLE || typeof side === 'undefined' ? value : this.selectAllLeft;
+    this.selectAllRight = side === Side.SELECTED || typeof side === 'undefined' ? value : this.selectAllRight;
   }
 
   filterWorkbasketsByWorkbasketIDs(workbaskets: WorkbasketSummary[], IDs: WorkbasketSummary[]): WorkbasketSummary[] {
@@ -279,10 +284,9 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
       this.availableDistributionTargets = this.availableDistributionTargets.concat(itemsSelected);
       this.unselectItems(itemsSelected);
     }
+    this.setAllSelected({ value: false, side: side });
     this.selectedDistributionTargetsFilterClone = this.selectedDistributionTargets;
     this.availableDistributionTargetsFilterClone = this.availableDistributionTargets;
-    this.selectAllLeft = true;
-    this.selectAllRight = true;
     this.store.dispatch(new SetWorkbasketFilter(this.selectedDistributionTargetsFilter, 'selectedDistributionTargets'));
     this.store.dispatch(
       new SetWorkbasketFilter(this.availableDistributionTargetsFilter, 'availableDistributionTargets')

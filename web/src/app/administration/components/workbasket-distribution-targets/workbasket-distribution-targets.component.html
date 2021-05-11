@@ -91,6 +91,7 @@
       [allSelected]="selectAllLeft"
       *ngIf="displayingDistributionTargetsPicker"
       [component]="'availableDistributionTargets'"
+      (allSelectedEmitter)="setAllSelected($event)"
     >
     </taskana-administration-workbasket-distribution-targets-list>
 
@@ -101,6 +102,7 @@
       [allSelected]="selectAllRight"
       [hidden]="displayingDistributionTargetsPicker && !sideBySide"
       [component]="'selectedDistributionTargets'"
+      (allSelectedEmitter)="setAllSelected($event)"
     >
     </taskana-administration-workbasket-distribution-targets-list>
   </div>

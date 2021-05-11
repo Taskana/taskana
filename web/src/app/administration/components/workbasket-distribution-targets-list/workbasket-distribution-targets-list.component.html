@@ -18,9 +18,9 @@
     <span style="flex: 1 1 auto"> </span>
 
     <!-- SELECT ALL BUTTON -->
-    <button mat-flat-button class="distribution-targets-list__action-button" (click)="selectAll(allSelected);">
-      <mat-icon class="button-icon" *ngIf="!allSelected" matTooltip="Deselect all items">check_box</mat-icon>
-      <mat-icon class="button-icon" *ngIf="allSelected" matTooltip="Select all items">check_box_outline_blank</mat-icon>
+    <button mat-flat-button class="distribution-targets-list__action-button" (click)="selectAll(!allSelected);">
+      <mat-icon class="button-icon" *ngIf="allSelected" matTooltip="Deselect all items">check_box</mat-icon>
+      <mat-icon class="button-icon" *ngIf="!allSelected" matTooltip="Select all items">check_box_outline_blank</mat-icon>
     </button>
   </mat-toolbar>
 
