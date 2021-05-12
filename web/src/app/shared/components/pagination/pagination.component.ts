@@ -110,8 +110,17 @@ export class PaginationComponent implements OnInit, OnChanges {
     this.changePage.emit(page);
   }
 
-  filter(filterVal) {
-    const filterValue = filterVal.toString();
-    this.filteredPages = this.pageNumbers.map(String).filter((value) => value.includes(filterValue));
+  filter(filterValue) {
+    const pageNumbers = this.pageNumbers.map(String);
+    this.filteredPages = pageNumbers.filter((value) => value.includes(filterValue.toString()));
+    if (this.filteredPages.length === 0) {
+      this.filteredPages = pageNumbers;
+    }
+  }
+
+  onSelectText() {
+    const input = document.getElementById('inputTypeAhead') as HTMLInputElement;
+    input.focus();
+    input.select();
   }
 }
