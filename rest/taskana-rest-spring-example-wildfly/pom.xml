@@ -1,6 +1,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>taskana-rest-spring-example-wildfly</artifactId>
   <packaging>war</packaging>
@@ -24,19 +24,20 @@
       <dependency>
         <groupId>org.wildfly.bom</groupId>
         <artifactId>wildfly-javaee7</artifactId>
+        <version>${version.wildfly}</version>
         <scope>import</scope>
         <type>pom</type>
-        <version>${version.wildfly}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
         <version>${version.arquillian}</version>
-        <type>pom</type>
         <scope>import</scope>
+        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

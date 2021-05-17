@@ -147,14 +147,8 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     taskService.deleteTasks(List.of(taskId_1, taskId_2));
 
     // make sure the tasks got deleted
-    ThrowingCallable getDeletedTaskCall =
-        () -> {
-          taskService.getTask(taskId_1);
-        };
-    ThrowingCallable getDeletedTaskCall2 =
-        () -> {
-          taskService.getTask(taskId_2);
-        };
+    ThrowingCallable getDeletedTaskCall = () -> taskService.getTask(taskId_1);
+    ThrowingCallable getDeletedTaskCall2 = () -> taskService.getTask(taskId_2);
 
     assertThatThrownBy(getDeletedTaskCall).isInstanceOf(TaskNotFoundException.class);
     assertThatThrownBy(getDeletedTaskCall2).isInstanceOf(TaskNotFoundException.class);

@@ -75,27 +75,21 @@ class LdapClientTest {
   }
 
   @Test
-  void should_CorrectlySortAccessIds_When_ContainingNullAccessId() throws Exception {
+  void should_CorrectlySortAccessIds_When_ContainingNullAccessId() {
 
-    List<AccessIdRepresentationModel> accessIds = new ArrayList<>();
     AccessIdRepresentationModel model1 = new AccessIdRepresentationModel("name1", "user-1");
     AccessIdRepresentationModel model2 = new AccessIdRepresentationModel("name2", "user-2");
     AccessIdRepresentationModel model3 = new AccessIdRepresentationModel("name3", null);
     AccessIdRepresentationModel model4 = new AccessIdRepresentationModel("name4", "user-4");
-
     // Can't use List.of because it returns an ImmutableCollection
-    accessIds.add(model4);
-    accessIds.add(model3);
-    accessIds.add(model2);
-    accessIds.add(model1);
+    List<AccessIdRepresentationModel> accessIds =
+        new ArrayList<>(List.of(model1, model2, model3, model4));
 
     LdapClient ldapClient = new LdapClient(environment, ldapTemplate, taskanaEngineConfiguration);
     ldapClient.sortListOfAccessIdResources(accessIds);
-
-    assertThat(accessIds.get(0).getAccessId()).isEqualTo("user-1");
-    assertThat(accessIds.get(1).getAccessId()).isEqualTo("user-2");
-    assertThat(accessIds.get(2).getAccessId()).isEqualTo("user-4");
-    assertThat(accessIds.get(3).getAccessId()).isNull();
+    assertThat(accessIds)
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .containsExactly("user-1", "user-2", "user-4", null);
   }
 
   @Test

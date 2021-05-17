@@ -1,6 +1,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>taskana-sonar-test-coverage</artifactId>
   <packaging>pom</packaging>
@@ -16,6 +16,7 @@
   </parent>
 
   <dependencies>
+    <!-- all common dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
       <artifactId>taskana-common</artifactId>
@@ -26,7 +27,18 @@
       <artifactId>taskana-common-data</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-security</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-test</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
+    <!-- all lib dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
       <artifactId>taskana-core</artifactId>
@@ -43,14 +55,19 @@
       <version>${project.version}</version>
     </dependency>
 
-
+    <!-- all rest dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
       <artifactId>taskana-rest-spring</artifactId>
       <version>${project.version}</version>
     </dependency>
 
-
+    <!-- all SPI dependencies -->
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-spi-routing-dmn-router</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>pro.taskana.history</groupId>
       <artifactId>taskana-simplehistory-provider</artifactId>

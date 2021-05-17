@@ -5,8 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -15,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -32,53 +37,33 @@ class AccessIdControllerIntTest {
     this.restHelper = restHelper;
   }
 
-  @Test
-  void testQueryGroupsByDn() {
-    String url =
-        restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
-            + "?search-for=cn=ksc-users,cn=groups,OU=Test,O=TASKANA";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+  @TestFactory
+  Stream<DynamicTest> should_ResolveAccessId_When_SearchingForDnOrCn() {
+    List<Pair<String, String>> list =
+        List.of(
+            Pair.of(
+                "cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
+                "cn=ksc-users,cn=groups,OU=Test,O=TASKANA"),
+            Pair.of("uid=teamlead-1,cn=users,OU=Test,O=TASKANA", "teamlead-1"),
+            Pair.of("ksc-use", "cn=ksc-users,cn=groups,OU=Test,O=TASKANA"));
 
-    ResponseEntity<List<AccessIdRepresentationModel>> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
+    ThrowingConsumer<Pair<String, String>> test =
+        pair -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=" + pair.getLeft();
+          HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
-    assertThat(response.getBody())
-        .isNotNull()
-        .extracting(AccessIdRepresentationModel::getAccessId)
-        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactly("cn=ksc-users,cn=groups,OU=Test,O=TASKANA");
-  }
+          ResponseEntity<List<AccessIdRepresentationModel>> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
-  @Test
-  void testQueryUserByDn() {
-    String url =
-        restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
-            + "?search-for=uid=teamlead-1,cn=users,OU=Test,O=TASKANA";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+          assertThat(response.getBody())
+              .isNotNull()
+              .extracting(AccessIdRepresentationModel::getAccessId)
+              .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
+              .containsExactly(pair.getRight());
+        };
 
-    ResponseEntity<List<AccessIdRepresentationModel>> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
-
-    assertThat(response.getBody())
-        .isNotNull()
-        .extracting(AccessIdRepresentationModel::getAccessId)
-        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactly("teamlead-1");
-  }
-
-  @Test
-  void testQueryGroupsByCn() {
-    String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=ksc-use";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
-
-    ResponseEntity<List<AccessIdRepresentationModel>> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
-
-    assertThat(response.getBody())
-        .isNotNull()
-        .extracting(AccessIdRepresentationModel::getAccessId)
-        .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactly("cn=ksc-users,cn=groups,OU=Test,O=TASKANA");
+    return DynamicTest.stream(list.iterator(), pair -> "search for: " + pair.getLeft(), test);
   }
 
   @Test

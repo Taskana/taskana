@@ -65,9 +65,9 @@ import java.util.Properties;
  * @author <a href="mailto:hboutemy@apache.org">Hervé Boutemy</a>
  */
 public class ComparableVersion implements Comparable<ComparableVersion> {
-  private static final int MAX_INTITEM_LENGTH = 9;
+  private static final int MAX_INT_ITEM_LENGTH = 9;
 
-  private static final int MAX_LONGITEM_LENGTH = 18;
+  private static final int MAX_LONG_ITEM_LENGTH = 18;
 
   private String value;
 
@@ -79,7 +79,6 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     parseVersion(version);
   }
 
-  @SuppressWarnings("checkstyle:innerassignment")
   public final void parseVersion(String version) {
     this.value = version;
 
@@ -164,10 +163,10 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
   private static Item parseItem(boolean isDigit, String buf) {
     if (isDigit) {
       buf = stripLeadingZeroes(buf);
-      if (buf.length() <= MAX_INTITEM_LENGTH) {
+      if (buf.length() <= MAX_INT_ITEM_LENGTH) {
         // lower than 2^31
         return new IntItem(buf);
-      } else if (buf.length() <= MAX_LONGITEM_LENGTH) {
+      } else if (buf.length() <= MAX_LONG_ITEM_LENGTH) {
         // lower than 2^63
         return new LongItem(buf);
       }
@@ -545,8 +544,6 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     }
   }
 
-  // CHECKSTYLE_OFF: LineLength
-
   /**
    * Represents a version list item. This class is used both for the global item list and for
    * sub-lists (which start with '-(number)' in the version specification).
@@ -589,7 +586,12 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
             Item r = right.hasNext() ? right.next() : null;
 
             // if this is shorter, then invert the compare and mul with -1
-            int result = l == null ? (r == null ? 0 : -1 * r.compareTo(null)) : l.compareTo(r);
+            int result;
+            if (l == null) {
+              result = r == null ? 0 : -1 * r.compareTo(null);
+            } else {
+              result = l.compareTo(r);
+            }
 
             if (result != 0) {
               return result;
