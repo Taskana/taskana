@@ -17,33 +17,32 @@ public class FileLoaderUtil {
     throw new IllegalStateException("Utility class");
   }
 
-  public static boolean isInClasspath(String fileToLoad) {
-    boolean loadFromClasspath = true;
+  public static boolean fileExistsOnSystem(String fileToLoad) {
+    boolean loadFromClasspath = false;
     File f = new File(fileToLoad);
     if (f.exists() && !f.isDirectory()) {
-      loadFromClasspath = false;
+      loadFromClasspath = true;
     }
     return loadFromClasspath;
   }
 
   public static InputStream openFileFromClasspathOrSystem(String fileToLoad, Class<?> clazz) {
-    if (isInClasspath(fileToLoad)) {
-      InputStream inputStream = clazz.getResourceAsStream(fileToLoad);
-      if (inputStream == null) {
+    if (fileExistsOnSystem(fileToLoad)) {
+      try {
+        InputStream inputStream = new FileInputStream(fileToLoad);
+        LOGGER.debug("Load file {} from path", fileToLoad);
+        return inputStream;
+      } catch (FileNotFoundException e) {
         throw new SystemException(
-            String.format("Could not find a file in the classpath %s", fileToLoad));
+            String.format("Could not find a file with provided path '%s'", fileToLoad));
       }
-      LOGGER.debug("Load file {} from classpath", fileToLoad);
-      return inputStream;
     }
-
-    try {
-      FileInputStream inputStream = new FileInputStream(fileToLoad);
-      LOGGER.debug("Load file {} from path", fileToLoad);
-      return inputStream;
-    } catch (FileNotFoundException e) {
+    InputStream inputStream = clazz.getResourceAsStream(fileToLoad);
+    if (inputStream == null) {
       throw new SystemException(
-          String.format("Could not find a file with provided path %s", fileToLoad));
+          String.format("Could not find a file in the classpath '%s'", fileToLoad));
     }
+    LOGGER.debug("Load file {} from classpath", fileToLoad);
+    return inputStream;
   }
 }

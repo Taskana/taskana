@@ -404,6 +404,14 @@ public class LdapClient {
     }
   }
 
+  /**
+   * Sorts a list of AccessIds by their accessId, null values last.
+   *
+   * <p>IMPORTANT: The passed list has to implement the optional {@link List#sort} operation.
+   * Otherwise an exception is thrown.
+   *
+   * @param accessIds the list which should be sorted
+   */
   void sortListOfAccessIdResources(List<AccessIdRepresentationModel> accessIds) {
     accessIds.sort(
         Comparator.comparing(

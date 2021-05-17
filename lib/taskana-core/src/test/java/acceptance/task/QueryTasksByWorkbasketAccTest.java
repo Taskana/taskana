@@ -51,12 +51,11 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     ThrowingCallable call =
-        () -> {
-          taskService
-              .createTaskQuery()
-              .workbasketKeyDomainIn(new KeyDomain("USER-2-1", "DOMAIN_A"))
-              .list();
-        };
+        () ->
+            taskService
+                .createTaskQuery()
+                .workbasketKeyDomainIn(new KeyDomain("USER-2-1", "DOMAIN_A"))
+                .list();
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 
@@ -65,13 +64,12 @@ class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
   void testThrowsExceptionIfNoOpenerPermissionOnAtLeastOneQueriedWorkbasket() {
     TaskService taskService = taskanaEngine.getTaskService();
     ThrowingCallable call =
-        () -> {
-          taskService
-              .createTaskQuery()
-              .workbasketKeyDomainIn(
-                  new KeyDomain("USER-1-1", "DOMAIN_A"), new KeyDomain("USER-2-1", "DOMAIN_A"))
-              .list();
-        };
+        () ->
+            taskService
+                .createTaskQuery()
+                .workbasketKeyDomainIn(
+                    new KeyDomain("USER-1-1", "DOMAIN_A"), new KeyDomain("USER-2-1", "DOMAIN_A"))
+                .list();
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
   }
 }

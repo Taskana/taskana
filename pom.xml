@@ -1,6 +1,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>pro.taskana</groupId>
   <artifactId>taskana-parent</artifactId>
@@ -11,15 +11,27 @@
   <description>This pom is parent to all taskana modules and serves the common build.</description>
   <url>http://taskana.pro</url>
 
-  <modules>
-    <module>common</module>
-    <module>lib</module>
-    <module>rest</module>
-    <!-- History is an optional module. -->
-    <module>history</module>
-    <module>ci/taskana-sonar-test-coverage</module>
-    <module>taskana-routing-parent</module>
-  </modules>
+  <developers>
+    <developer>
+      <name>Holger Hagen</name>
+      <email>holger.hagen@novatec-gmbh.de</email>
+      <organization>Novatec Consulting GmbH</organization>
+      <organizationUrl>https://www.novatec-gmbh.de</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/taskana/taskana/tree/master</url>
+    <connection>scm:git:git://github.com/taskana/taskana.git</connection>
+    <developerConnection>scm:git:ssh://github.com:taskana/taskana.git</developerConnection>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
 
   <properties>
     <java.version>11</java.version>
@@ -62,7 +74,6 @@
     <!-- camunda dependencies -->
     <version.camunda.dmn>7.15.0</version.camunda.dmn>
 
-
     <!-- java ee dependencies -->
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.thorntail>2.7.0.Final</version.thorntail>
@@ -95,14 +106,24 @@
     <sonar.sources>src/main/java</sonar.sources>
   </properties>
 
+  <modules>
+    <module>common</module>
+    <module>lib</module>
+    <module>rest</module>
+    <!-- History is an optional module. -->
+    <module>history</module>
+    <module>ci/taskana-sonar-test-coverage</module>
+    <module>routing</module>
+  </modules>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${version.spring.boot}</version>
-        <type>pom</type>
         <scope>import</scope>
+        <type>pom</type>
       </dependency>
       <!-- Only necessary to automatically update the version for the pre-commit hook -->
       <dependency>
@@ -112,28 +133,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <developers>
-    <developer>
-      <name>Holger Hagen</name>
-      <email>holger.hagen@novatec-gmbh.de</email>
-      <organization>Novatec Consulting GmbH</organization>
-      <organizationUrl>https://www.novatec-gmbh.de</organizationUrl>
-    </developer>
-  </developers>
-
-  <scm>
-    <url>http://github.com/taskana/taskana/tree/master</url>
-    <connection>scm:git:git://github.com/taskana/taskana.git</connection>
-    <developerConnection>scm:git:ssh://github.com:taskana/taskana.git</developerConnection>
-  </scm>
-
-  <licenses>
-    <license>
-      <name>The Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
 
   <profiles>
     <profile>
