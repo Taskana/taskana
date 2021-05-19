@@ -303,6 +303,20 @@ ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn: Johannes Renz
 userPassword: user-2-10
 
+dn: uid=das_ist_eine_sehr_sehr_sehr_sehr_sehr_lange_user_id,cn=users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Max
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
+uid: das_ist_eine_sehr_sehr_sehr_sehr_sehr_lange_user_id
+sn: Renz
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Max Renz
+userPassword: user-2-11
+
 ########################
 # Users Domäne B
 ########################
