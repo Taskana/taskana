@@ -13,7 +13,7 @@ CACHE_DIR=".java-format-cache"
 mkdir -p "$CACHE_DIR"
 [[ ! -f "$CACHE_DIR/$JAR_NAME" ]] && curl -LJf "$JAR_DOWNLOAD_URL" -o "$CACHE_DIR/$JAR_NAME"
 
-changed_java_files=$(git diff --cached --name-only --diff-filter=ACMR | grep ".*java$" || true)
+changed_java_files=$(git diff --cached --name-only --diff-filter=ACMR | grep ".*\.java$" | grep -v ".*Mapper.java$" || true)
 if [ -n "$changed_java_files" ]
 then
   java -jar "$CACHE_DIR/$JAR_NAME" --replace --skip-sorting-imports $changed_java_files;
