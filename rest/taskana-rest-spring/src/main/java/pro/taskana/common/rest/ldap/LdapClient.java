@@ -245,7 +245,7 @@ public class LdapClient {
             LdapNameBuilder.newInstance()
                 .add(getBaseDn())
                 .add(getUserSearchBase())
-                .add("uid", accessId)
+                .add(getUserIdAttribute(), accessId)
                 .build()
                 .toString()));
     andFilter.and(orFilter);
