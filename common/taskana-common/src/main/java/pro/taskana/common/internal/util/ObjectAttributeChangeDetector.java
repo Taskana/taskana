@@ -57,7 +57,7 @@ public class ObjectAttributeChangeDetector {
             .peek(field -> field.setAccessible(true))
             .map(
                 CheckedFunction.wrap(
-                    field -> new Triplet<>(field, field.get(oldObject), field.get(newObject))))
+                    field -> Triplet.of(field, field.get(oldObject), field.get(newObject))))
             .filter(areFieldsNotEqual.and(isFieldNotCustomAttributes))
             .map(
                 fieldAndValuePairTriplet -> {

@@ -276,23 +276,22 @@ class QueryTasksAccTest extends AbstractAccTest {
   Stream<DynamicTest> testQueryForCustomX() {
     List<Triplet<TaskCustomField, String[], Integer>> list =
         List.of(
-            new Triplet<>(
-                TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_2, new String[] {"custom%", "a%"}, 2),
-            new Triplet<>(TaskCustomField.CUSTOM_3, new String[] {"ffg"}, 1),
-            new Triplet<>(TaskCustomField.CUSTOM_4, new String[] {"%ust%", "%ty"}, 2),
-            new Triplet<>(TaskCustomField.CUSTOM_5, new String[] {"ew", "al"}, 6),
-            new Triplet<>(TaskCustomField.CUSTOM_6, new String[] {"%custom6%", "%vvg%", "11%"}, 5),
-            new Triplet<>(TaskCustomField.CUSTOM_7, new String[] {"%"}, 2),
-            new Triplet<>(TaskCustomField.CUSTOM_8, new String[] {"%"}, 2),
-            new Triplet<>(TaskCustomField.CUSTOM_9, new String[] {"%"}, 2),
-            new Triplet<>(TaskCustomField.CUSTOM_10, new String[] {"%"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_11, new String[] {"%"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_12, new String[] {"%"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_13, new String[] {"%"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_14, new String[] {"%"}, 88),
-            new Triplet<>(TaskCustomField.CUSTOM_15, new String[] {"%"}, 3),
-            new Triplet<>(TaskCustomField.CUSTOM_16, new String[] {"%"}, 3));
+            Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
+            Triplet.of(TaskCustomField.CUSTOM_2, new String[] {"custom%", "a%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"ffg"}, 1),
+            Triplet.of(TaskCustomField.CUSTOM_4, new String[] {"%ust%", "%ty"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al"}, 6),
+            Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"%custom6%", "%vvg%", "11%"}, 5),
+            Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"%"}, 3),
+            Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"%"}, 3),
+            Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"%"}, 3),
+            Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"%"}, 3),
+            Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"%"}, 88),
+            Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"%"}, 3),
+            Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"%"}, 3));
     assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
     return DynamicTest.stream(

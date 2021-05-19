@@ -3,6 +3,7 @@ package pro.taskana.task.internal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -18,7 +19,6 @@ import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /** This class is the mybatis mapping of task. */
 @SuppressWarnings("checkstyle:LineLength")
@@ -146,8 +146,7 @@ public interface TaskMapper {
           + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
           + "</script>")
   void updateTransfered(
-      @Param("taskIds") List<String> taskIds,
-      @Param("referencetask") TaskSummaryImpl referencetask);
+      @Param("taskIds") Set<String> taskIds, @Param("referencetask") TaskImpl referencetask);
 
   @Update(
       "<script>"
