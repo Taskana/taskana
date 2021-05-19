@@ -1,13 +1,18 @@
 package pro.taskana.spi.history.api.events.task;
 
-import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Event fired if a task is transferred. */
 public class TaskTransferredEvent extends TaskHistoryEvent {
 
   public TaskTransferredEvent(
-      String id, Task task, String oldWorkbasketId, String newWorkbasketId, String userId) {
-    super(id, task, userId, null);
+      String id,
+      TaskSummary task,
+      String oldWorkbasketId,
+      String newWorkbasketId,
+      String userId,
+      String details) {
+    super(id, task, userId, details);
     eventType = TaskHistoryEventType.TRANSFERRED.getName();
     created = task.getModified();
     this.oldValue = oldWorkbasketId;

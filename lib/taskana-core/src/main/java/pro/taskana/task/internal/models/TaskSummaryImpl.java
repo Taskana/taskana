@@ -17,7 +17,7 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** Entity which contains the most important informations about a Task. */
+/** Entity which contains the most important information about a Task. */
 public class TaskSummaryImpl implements TaskSummary {
 
   protected String id;

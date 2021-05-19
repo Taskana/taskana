@@ -884,7 +884,7 @@ public class TaskServiceImpl implements TaskService {
     Pair<List<MinimalTaskSummary>, BulkLog> filteredPair =
         filterTasksAuthorizedForAndLogErrorsForNotAuthorized(minimalTaskSummaries);
     bulkLog.addAllErrors(filteredPair.getRight());
-    return new Pair<>(filteredPair.getLeft(), bulkLog);
+    return Pair.of(filteredPair.getLeft(), bulkLog);
   }
 
   Pair<List<MinimalTaskSummary>, BulkLog> filterTasksAuthorizedForAndLogErrorsForNotAuthorized(
@@ -892,7 +892,7 @@ public class TaskServiceImpl implements TaskService {
     BulkLog bulkLog = new BulkLog();
     // check authorization only for non-admin or task-admin users
     if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
-      return new Pair<>(existingTasks, bulkLog);
+      return Pair.of(existingTasks, bulkLog);
     } else {
       List<String> taskIds =
           existingTasks.stream().map(MinimalTaskSummary::getTaskId).collect(Collectors.toList());
@@ -911,7 +911,7 @@ public class TaskServiceImpl implements TaskService {
           existingTasks.stream()
               .filter(t -> taskIds.contains(t.getTaskId()))
               .collect(Collectors.toList());
-      return new Pair<>(tasksAuthorizedFor, bulkLog);
+      return Pair.of(tasksAuthorizedFor, bulkLog);
     }
   }
 
@@ -932,16 +932,12 @@ public class TaskServiceImpl implements TaskService {
 
   List<TaskSummary> augmentTaskSummariesByContainedSummariesWithPartitioning(
       List<TaskSummaryImpl> taskSummaries) {
-
     // splitting Augmentation into steps of maximal 32000 tasks
     // reason: DB2 has a maximum for parameters in a query
-    List<TaskSummary> result =
-        CollectionUtil.partitionBasedOnSize(taskSummaries, 32000).stream()
-            .map(this::augmentTaskSummariesByContainedSummariesWithoutPartitioning)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
-
-    return result;
+    return CollectionUtil.partitionBasedOnSize(taskSummaries, 32000).stream()
+        .map(this::augmentTaskSummariesByContainedSummariesWithoutPartitioning)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   private List<TaskSummaryImpl> augmentTaskSummariesByContainedSummariesWithoutPartitioning(
