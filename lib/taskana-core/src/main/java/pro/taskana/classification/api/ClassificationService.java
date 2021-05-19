@@ -9,39 +9,44 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 
-/** This class manages the classifications. */
+/** This class manages the {@linkplain Classification Classifications}. */
 public interface ClassificationService {
 
   /**
-   * Get the Classification for key and domain. If there's no Classification in the given domain,
-   * return the Classification from the master domain.
+   * Fetches the {@linkplain Classification} identified by the provided key and domain.
    *
-   * @param key the key of the searched-for classifications
-   * @param domain the domain of the searched-for classifications
-   * @return If exist: domain-specific classification, else master classification
-   * @throws ClassificationNotFoundException if no classification is found that matches the key
-   *     either in domain or in the master domain.
+   * <p>If there's no {@linkplain Classification} in the given domain, returns the {@linkplain
+   * Classification} from the master domain.
+   *
+   * @param key the key of the searched-for {@linkplain Classification}
+   * @param domain the domain of the searched-for {@linkplain Classification}
+   * @return If exist: domain-specific {@linkplain Classification}, else Master-{@linkplain
+   *     Classification}
+   * @throws ClassificationNotFoundException if no {@linkplain Classification} is found that matches
+   *     the key either in domain or in the master domain
    */
   Classification getClassification(String key, String domain)
       throws ClassificationNotFoundException;
 
   /**
-   * Get the Classification by id.
+   * Returns the {@linkplain Classification} by ID.
    *
-   * @param id the id of the searched-for classifications
-   * @return the classification identified by id
-   * @throws ClassificationNotFoundException if no classification is found that matches the id.
+   * @param id the ID of the searched-for {@linkplain Classification}
+   * @return the {@linkplain Classification} identified by ID
+   * @throws ClassificationNotFoundException if no {@linkplain Classification} is found that matches
+   *     the ID
    */
   Classification getClassification(String id) throws ClassificationNotFoundException;
 
   /**
-   * Delete a classification with all child classifications.
+   * Deletes a {@linkplain Classification} with all Child-{@linkplain Classification
+   * Classifications}.
    *
-   * @param id the id of the searched-for classifications
-   * @throws ClassificationInUseException if there are Task existing, which refer to this
-   *     classification.
-   * @throws ClassificationNotFoundException if for an domain no classification specification is
-   *     found.
+   * @param id the ID of the searched-for {@linkplain Classification}
+   * @throws ClassificationInUseException if there are {@linkplain pro.taskana.task.api.models.Task
+   *     Tasks} existing, which refer to this {@linkplain Classification}
+   * @throws ClassificationNotFoundException if for an domain no {@linkplain Classification}
+   *     specification is found
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    */
@@ -49,16 +54,17 @@ public interface ClassificationService {
       throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
 
   /**
-   * Delete a classification with all child classifications.
+   * Deletes a {@linkplain Classification} with all Child-{@linkplain Classification
+   * Classifications}.
    *
-   * @param classificationKey the key of the classification you want to delete.
-   * @param domain the domains for which you want to delete the classification. if "", the function
-   *     tries to delete the "master domain" classification and any other classification with this
-   *     key.
-   * @throws ClassificationInUseException if there are Task existing, which refer to this
-   *     classification.
-   * @throws ClassificationNotFoundException if for an domain no classification specification is
-   *     found.
+   * @param classificationKey the key of the {@linkplain Classification} you want to delete
+   * @param domain the domains for which you want to delete the {@linkplain Classification}. If the
+   *     method tries to delete the Master-Domain-{@linkplain Classification} and any other
+   *     {@linkplain Classification} with this key
+   * @throws ClassificationInUseException if there are {@linkplain pro.taskana.task.api.models.Task
+   *     Tasks} existing, which refer to this {@linkplain Classification}
+   * @throws ClassificationNotFoundException if for an domain no {@linkplain Classification}
+   *     specification is found
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    */
@@ -66,9 +72,12 @@ public interface ClassificationService {
       throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
 
   /**
-   * Inserts  a new Classification after adding default values. <br>
-   * The Classification will be added to master-domain, too - if not already existing. <br>
-   * The default values are:
+   * Inserts a new {@linkplain Classification} after adding default values.
+   *
+   * <p>The {@linkplain Classification} will be added to master-domain, too - if not already
+   * existing.
+   *
+   * <p>The default values are:
    *
    * <ul>
    *   <li><b>id</b> - generated by {@linkplain pro.taskana.common.internal.util.IdGenerator
@@ -77,33 +86,34 @@ public interface ClassificationService {
    *   <li><b>parentKey</b> - ""
    *   <li><b>serviceLevel</b> - "P0D"
    *   <li><b>isValidInDomain</b> - {@code true} <br>
-   *       if {@code domain} an empty string than {@code false}
+   *       if domain is an empty string then {@code false}
    * </ul>
    *
-   * @param classification the Classification to insert
-   * @return Classification which is equipped with unique ID.
-   * @throws ClassificationAlreadyExistException if the Classification does already exists at the
-   *     given domain.
+   * @param classification the {@linkplain Classification} to insert
+   * @return {@linkplain Classification} which is equipped with unique ID
+   * @throws ClassificationAlreadyExistException if the {@linkplain Classification} does already
+   *     exists at the given domain
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
-   * @throws DomainNotFoundException if the {@code domain} does not exist in the configuration
-   * @throws InvalidArgumentException if the {@code serviceLevel} property does not comply with the
-   *     ISO 8601 specification
+   * @throws DomainNotFoundException if the domain does not exist in the configuration
+   * @throws InvalidArgumentException if the serviceLevel property does not comply with the ISO 8601
+   *     specification
    */
   Classification createClassification(Classification classification)
       throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
           InvalidArgumentException;
 
   /**
-   * Updates a Classification.
+   * Updates a {@linkplain Classification}.
    *
-   * @param classification the Classification to update
-   * @return the updated Classification.
-   * @throws ClassificationNotFoundException if the classification OR it´s parent does not exist.
-   * @throws NotAuthorizedException if the caller got no ADMIN or BUSINESS_ADMIN permissions.
-   * @throws ConcurrencyException If the classification was modified in the meantime and is not the
-   *     most up to date anymore.
-   * @throws InvalidArgumentException if the ServiceLevel property does not comply with the ISO 8601
+   * @param classification the {@linkplain Classification} to update
+   * @return the updated {@linkplain Classification}
+   * @throws ClassificationNotFoundException if the {@linkplain Classification} OR it´s parent does
+   *     not exist
+   * @throws NotAuthorizedException if the caller got no ADMIN or BUSINESS_ADMIN permissions
+   * @throws ConcurrencyException if the {@linkplain Classification} was modified in the meantime
+   *     and is not the most up to date anymore
+   * @throws InvalidArgumentException if the serviceLevel property does not comply with the ISO 8601
    *     specification
    */
   Classification updateClassification(Classification classification)
@@ -111,20 +121,21 @@ public interface ClassificationService {
           InvalidArgumentException;
 
   /**
-   * This method provides a query builder for querying the database.
+   * Provides a query builder for querying the database.
    *
-   * @return a {@link ClassificationQuery}
+   * @return a {@linkplain ClassificationQuery}
    */
   ClassificationQuery createClassificationQuery();
 
   /**
-   * Creating a new {@link Classification} with unchangeable default values. It will be only
-   * generated and is not inserted until CREATE-call.
+   * Creates a new {@linkplain Classification} with unchangeable default values.
    *
-   * @param key the key of the classification
-   * @param domain the domain of the new classification
-   * @param type the type of the new classification
-   * @return classification to specify
+   * <p>It will be only generated and is not inserted until CREATE-call.
+   *
+   * @param key the key of the {@linkplain Classification}
+   * @param domain the domain of the new {@linkplain Classification}
+   * @param type the type of the new {@linkplain Classification}
+   * @return {@linkplain Classification} to specify
    */
   Classification newClassification(String key, String domain, String type);
 }

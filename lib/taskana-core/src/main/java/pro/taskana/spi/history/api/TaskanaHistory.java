@@ -13,39 +13,41 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 public interface TaskanaHistory {
 
   /**
-   * Initialize TaskanaHistory service.
+   * Initializes TaskanaHistory service.
    *
-   * @param taskanaEngine {@link TaskanaEngine} The Taskana engine for needed initialization.
+   * @param taskanaEngine the {@linkplain TaskanaEngine} for needed initialization
    */
   void initialize(TaskanaEngine taskanaEngine);
 
   /**
-   * Create a new task history event.
+   * Creates a new {@linkplain TaskHistoryEvent}.
    *
-   * @param event {@link TaskHistoryEvent} The event to be created.
+   * @param event the {@linkplain TaskHistoryEvent} to be created
    */
   void create(TaskHistoryEvent event);
 
   /**
-   * Create a new workbasket history event.
+   * Creates a new {@linkplain WorkbasketHistoryEvent}.
    *
-   * @param event {@link WorkbasketHistoryEvent} The event to be created.
+   * @param event the {@linkplain WorkbasketHistoryEvent} to be created
    */
   void create(WorkbasketHistoryEvent event);
 
   /**
-   * Create a new classification history event.
+   * Creates a new {@linkplain ClassificationHistoryEvent}.
    *
-   * @param event {@link ClassificationHistoryEvent} The event to be created.
+   * @param event the {@linkplain ClassificationHistoryEvent} to be created
    */
   void create(ClassificationHistoryEvent event);
 
   /**
-   * Delete history events by taskIds. Invalid/non-existing taskIds will be ignored
+   * Deletes History Events by taskIds.
    *
-   * @param taskIds the task ids for which all history events must be deleted
+   * <p>Invalid/non-existing taskIds will be ignored
+   *
+   * @param taskIds the task ids for which all History Events must be deleted
    * @throws InvalidArgumentException If the list of taskIds is null
-   * @throws NotAuthorizedException If the user has no permission to delete events
+   * @throws NotAuthorizedException If the user has no permission to delete Events
    */
   void deleteHistoryEventsByTaskIds(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException;

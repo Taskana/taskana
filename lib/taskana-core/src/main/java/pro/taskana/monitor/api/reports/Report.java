@@ -15,15 +15,17 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 
 /**
- * A Report represents an abstract table that consists of {@link Row}s and a list of
- * &lt;ColumnHeader&gt;s. Since a report does not specify &lt;Item&gt; and &lt;ColumnHeader&gt; it
+ * A Report represents an abstract table that consists of {@linkplain Row Rows} and a list of
+ * {@linkplain ColumnHeader ColumnHeaders}.
+ *
+ * <p>Since a Report does not specify {@linkplain QueryItem Item} and {@linkplain ColumnHeader} it
  * does not contain functional logic. Due to readability implicit definition of functional logic is
  * prevented and thus prevent initialization of an abstract Report. In order to create a specific
  * Report a subclass has to be created.
  *
- * @param <I> {@link QueryItem} whose value is relevant for this report.
- * @param <H> {@link ColumnHeader} which can determine if an &lt;Item&gt; belongs into that column
- *     or not.
+ * @param <I> {@linkplain QueryItem} whose value is relevant for this Report
+ * @param <H> {@linkplain ColumnHeader} which can determine if an {@linkplain QueryItem Item}
+ *     belongs into that column or not
  */
 public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super I>> {
 
@@ -111,11 +113,11 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
   }
 
   /**
-   * Builder for {@link Report}.
+   * Builder for {@linkplain Report}.
    *
-   * @param <I> {@link QueryItem} whose value is relevant for this report.
-   * @param <H> {@link ColumnHeader} which can determine if an &lt;Item&gt; belongs into that column
-   *     or not.
+   * @param <I> {@linkplain QueryItem} whose value is relevant for this Report
+   * @param <H> {@linkplain ColumnHeader} which can determine if an {@linkplain QueryItem Item}
+   *     belongs into that column or not
    */
   public interface Builder<I extends QueryItem, H extends ColumnHeader<? super I>> {
 

@@ -3,7 +3,9 @@ package pro.taskana.monitor.api.reports.item;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TimestampReport;
 
-/** The TimestampQueryItem contains the necessary information for the {@link TimestampReport}. */
+/**
+ * The TimestampQueryItem contains the necessary information for the {@linkplain TimestampReport}.
+ */
 public class TimestampQueryItem implements AgeQueryItem {
 
   private static final String N_A = "N/A";

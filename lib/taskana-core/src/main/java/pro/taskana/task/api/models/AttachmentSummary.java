@@ -11,65 +11,67 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 public interface AttachmentSummary {
 
   /**
-   * Gets the id of the attachment.
+   * Returns the id of the {@linkplain Attachment}.
    *
    * @return attachmentId
    */
   String getId();
 
   /**
-   * Gets the id of the associated task.
+   * Returns the id of the associated {@linkplain Task}.
    *
    * @return taskId
    */
   String getTaskId();
 
   /**
-   * Gets the time when the attachment was created.
+   * Returns the time when the {@linkplain Attachment} was created.
    *
-   * @return the created Instant
+   * @return the created {@linkplain Instant}
    */
   Instant getCreated();
 
   /**
-   * Gets the time when the attachment was last modified.
+   * Returns the time when the {@linkplain Attachment} was last modified.
    *
-   * @return the last modified Instant
+   * @return the last modified {@linkplain Instant}
    */
   Instant getModified();
 
   /**
-   * Gets the {@link ObjectReference primaryObjectReference} of the attachment.
+   * Returns the primary {@linkplain ObjectReference ObjectReference} of the {@linkplain
+   * Attachment}.
    *
-   * @return {@link ObjectReference primaryObjectReference} of the attachment
+   * @return primary {@linkplain ObjectReference} of the {@linkplain Attachment}
    */
   ObjectReference getObjectReference();
 
   /**
-   * Gets the Channel on which the attachment was received.
+   * Returns the {@linkplain java.nio.channels.Channel Channel} on which the {@linkplain Attachment}
+   * was received.
    *
-   * @return the channel
+   * @return the {@linkplain java.nio.channels.Channel Channel}
    */
   String getChannel();
 
   /**
-   * Gets the classificationSummary of the attachment.
+   * Returns the {@linkplain ClassificationSummary} of the {@linkplain Attachment}.
    *
-   * @return the classification summary
+   * @return the {@linkplain ClassificationSummary}
    */
   ClassificationSummary getClassificationSummary();
 
   /**
-   * Gets the time when the attachment was received.
+   * Returns the time when the {@linkplain Attachment} was received.
    *
-   * @return received Instant
+   * @return received {@linkplain Instant}
    */
   Instant getReceived();
 
   /**
-   * Duplicates this AttachmentSummary without the id and taskId.
+   * Duplicates this {@linkplain AttachmentSummary} without the id and taskId.
    *
-   * @return a copy of this AttachmentSummary
+   * @return a copy of this {@linkplain AttachmentSummary}
    */
   AttachmentSummary copy();
 }

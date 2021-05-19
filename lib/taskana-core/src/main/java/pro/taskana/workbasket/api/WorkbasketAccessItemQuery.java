@@ -3,96 +3,112 @@ package pro.taskana.workbasket.api;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** WorkbasketAccessItemQuery for generating dynamic SQL. */
+/**
+ * The WorkbasketAccessItemQuery allows for a custom search across all {@linkplain
+ * WorkbasketAccessItem WorkbasketAccessItems}.
+ */
 public interface WorkbasketAccessItemQuery
     extends BaseQuery<WorkbasketAccessItem, AccessItemQueryColumnName> {
 
   /**
-   * Add your unique entry id to your query as filter.
+   * Selects only {@linkplain WorkbasketAccessItem WorkbasketAccessItems} which have a {@linkplain
+   * WorkbasketAccessItem#getId() id} value that is equal to any of the passed values.
    *
-   * @param ids the unique entry IDs
+   * @param ids the values of interest
    * @return the query
    */
   WorkbasketAccessItemQuery idIn(String... ids);
 
   /**
-   * Add your workbasket id to your query.
+   * Selects only {@linkplain WorkbasketAccessItem WorkbasketAccessItems} which have a {@linkplain
+   * WorkbasketAccessItem#getWorkbasketId() workbasket id}value that is equal to any of the passed
+   * values.
    *
-   * @param workbasketId the workbasket Id
+   * @param workbasketId the values of interest
    * @return the query
    */
   WorkbasketAccessItemQuery workbasketIdIn(String... workbasketId);
 
   /**
-   * Add your unique entry workbasket key to your query as filter.
+   * Selects only {@linkplain WorkbasketAccessItem WorkbasketAccessItems} which have a {@linkplain
+   * WorkbasketAccessItem#getWorkbasketKey() workbasket key} value that is equal to any of the
+   * passed values.
    *
-   * @param keys the unique entry Keys
+   * @param keys the values of interest
    * @return the query
    */
   WorkbasketAccessItemQuery workbasketKeyIn(String... keys);
 
   /**
-   * Add keys to your query. The keys are compared case-insensitively to the keys of access items
-   * with the SQL LIKE operator. You may add a wildcard like '%' to search generically. If you
-   * specify multiple keys they are connected with an OR operator, this is, the query searches
-   * access items workbaskets whose keys are like key1 or like key2, etc.
+   * Selects only {@linkplain WorkbasketAccessItem WorkbasketAccessItems} which have a {@linkplain
+   * WorkbasketAccessItem#getWorkbasketKey() workbasket key} value that contains any of the passed
+   * patterns.
    *
-   * @param key the keys as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param key the patterns of interest
    * @return the query
    */
   WorkbasketAccessItemQuery workbasketKeyLike(String... key);
 
   /**
-   * Add your accessIds to your query.
+   * Selects only {@linkplain WorkbasketAccessItem WorkbasketAccessItems} which have a {@linkplain
+   * WorkbasketAccessItem#getAccessId() access id} value that is equal to any of the passed values.
    *
-   * @param accessId as access Ids
+   * @param accessId the values of interest
    * @return the query
    */
   WorkbasketAccessItemQuery accessIdIn(String... accessId);
 
   /**
-   * Add keys to your query. The keys are compared case-insensitively to the keys of access items
-   * with the SQL LIKE operator. You may add a wildcard like '%' to search generically. If you
-   * specify multiple keys they are connected with an OR operator, this is, the query searches
-   * access items whose ids are like id1 or like id2, etc.
+   * Selects only {@linkplain WorkbasketAccessItem WorkbasketAccessItem} which have a {@linkplain
+   * WorkbasketAccessItem#getAccessId() access id} value that contains any of the passed patterns.
    *
-   * @param ids the ids as Strings
+   * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
+   * resolved correctly.
+   *
+   * <p>Not using any wildcard will compute an exact match.
+   *
+   * @param ids the patterns of interest
    * @return the query
    */
   WorkbasketAccessItemQuery accessIdLike(String... ids);
 
   /**
-   * Sort the query result by workbasket id.
+   * Sorts the query result by {@linkplain WorkbasketAccessItem#getWorkbasketId() workbasket id}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketAccessItemQuery orderByWorkbasketId(SortDirection sortDirection);
 
   /**
-   * Sort the query result by workbasket key.
+   * Sorts the query result by {@linkplain WorkbasketAccessItem#getWorkbasketKey() workbasket key}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketAccessItemQuery orderByWorkbasketKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by access Id.
+   * Sorts the query result by {@linkplain WorkbasketAccessItem#getAccessId() access id}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketAccessItemQuery orderByAccessId(SortDirection sortDirection);
 
   /**
-   * Sort the query result by Id.
+   * Sorts the query result by {@linkplain WorkbasketAccessItem#getId() id}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order.
    * @return the query
    */
   WorkbasketAccessItemQuery orderById(SortDirection sortDirection);

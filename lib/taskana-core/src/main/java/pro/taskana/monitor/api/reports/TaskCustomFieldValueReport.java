@@ -9,12 +9,20 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 
 /**
- * A CustomFieldValueReport contains the total numbers of tasks of the respective custom field as
- * well as the total number of all tasks. The tasks of the report can be filtered by workbaskets,
- * states, categories, domains, classifications and values of a custom field. Classifications can
- * also be excluded from the report. If the {@link TimeIntervalColumnHeader}s are set, the report
- * contains also the number of tasks of the respective cluster. The age of the tasks can be counted
- * in days or in working days. Tasks with Timestamp DUE = null are not considered.
+ * A TaskCustomFieldValueReport contains the total numbers of {@linkplain
+ * pro.taskana.task.api.models.Task Tasks} of the respective custom field as well as the total
+ * number of all {@linkplain pro.taskana.task.api.models.Task Tasks}.
+ *
+ * <p>The {@linkplain pro.taskana.task.api.models.Task Tasks} of the TaskCustomFieldValueReport can
+ * be filtered by {@linkplain pro.taskana.workbasket.api.models.Workbasket Workbaskets}, states,
+ * categories, domains, {@linkplain pro.taskana.classification.api.models.Classification
+ * Classifications} and values of a custom field. {@linkplain
+ * pro.taskana.classification.api.models.Classification Classifications} can also be excluded from
+ * the TaskCustomFieldValueReport. If the {@linkplain TimeIntervalColumnHeader
+ * TimeIntervalColumnHeaders} are set, the TaskCustomFieldValueRepor} contains also the number of
+ * {@linkplain pro.taskana.task.api.models.Task Tasks} of the respective cluster. The age of the
+ * {@linkplain pro.taskana.task.api.models.Task Tasks} can be counted in days or in working days.
+ * {@linkplain pro.taskana.task.api.models.Task Tasks} with Timestamp DUE = null are not considered.
  */
 public class TaskCustomFieldValueReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
@@ -22,7 +30,7 @@ public class TaskCustomFieldValueReport extends Report<MonitorQueryItem, TimeInt
     super(timeIntervalColumnHeaders, new String[] {"TASK CUSTOM FIELDS"});
   }
 
-  /** Builder for {@link TaskCustomFieldValueReport}. */
+  /** Builder for {@linkplain TaskCustomFieldValueReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 

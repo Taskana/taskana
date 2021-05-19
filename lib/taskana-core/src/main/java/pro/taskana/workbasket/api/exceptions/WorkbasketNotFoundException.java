@@ -2,7 +2,10 @@ package pro.taskana.workbasket.api.exceptions;
 
 import pro.taskana.common.api.exceptions.NotFoundException;
 
-/** This exception will be thrown if a specific workbasket is not in the database. */
+/**
+ * Thrown if a specific {@linkplain pro.taskana.workbasket.api.models.Workbasket Workbasket} is not
+ * in the database.
+ */
 public class WorkbasketNotFoundException extends NotFoundException {
 
   private String key;

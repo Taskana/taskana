@@ -2,7 +2,10 @@ package pro.taskana.task.api;
 
 import pro.taskana.common.api.QueryColumnName;
 
-/** Enum containing the column names for TaskQueryMapper.queryTaskColumnValues. */
+/**
+ * This Enum contains the database column names for a {@linkplain pro.taskana.task.api.models.Task
+ * Task}.
+ */
 public enum TaskQueryColumnName implements QueryColumnName {
   ID("t.id"),
   EXTERNAL_ID("t.external_id"),

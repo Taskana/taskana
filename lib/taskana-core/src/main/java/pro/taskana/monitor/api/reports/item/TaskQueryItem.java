@@ -3,7 +3,8 @@ package pro.taskana.monitor.api.reports.item;
 import pro.taskana.task.api.TaskState;
 
 /**
- * The TaskQueryItem entity contains the number of tasks for a domain which have a specific state.
+ * The TaskQueryItem entity contains the number of {@linkplain pro.taskana.task.api.models.Task
+ * Tasks} for a domain which have a specific state.
  */
 public class TaskQueryItem implements QueryItem {
 
