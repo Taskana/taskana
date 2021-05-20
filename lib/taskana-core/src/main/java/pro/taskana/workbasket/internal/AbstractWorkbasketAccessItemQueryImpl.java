@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -27,8 +25,6 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
   private static final String LINK_TO_COUNTER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbasketAccessItems";
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(AbstractWorkbasketAccessItemQueryImpl.class);
   private AccessItemQueryColumnName columnName;
   private String[] accessIdIn;
   private String[] workbasketIdIn;
@@ -80,7 +76,6 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
 
   @Override
   public List<T> list() {
-    LOGGER.debug("entry to list(), this = {}", _this());
     List<T> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -90,16 +85,11 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public List<T> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, _this());
     List<T> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -119,19 +109,12 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
       throw e;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(
       AccessItemQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, _this());
     List<String> result = null;
     try {
       taskanaEngine.openConnection();
@@ -142,19 +125,11 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        int numberOfResultObjects = result == null ? 0 : result.size();
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ",
-            numberOfResultObjects,
-            result);
-      }
     }
   }
 
   @Override
   public T single() {
-    LOGGER.debug("entry to single(), this = {}", _this());
     T accessItem = null;
     try {
       taskanaEngine.openConnection();
@@ -162,13 +137,11 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
       return accessItem;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", accessItem);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", _this());
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
@@ -176,7 +149,6 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 

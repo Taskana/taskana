@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -29,7 +27,6 @@ public class TimestampReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, TimestampQueryItem, TimeIntervalColumnHeader>
     implements TimestampReport.Builder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TimestampReportBuilderImpl.class);
   private List<TaskTimestamp> status =
       Arrays.asList(TaskTimestamp.CREATED, TaskTimestamp.COMPLETED);
 
@@ -64,7 +61,6 @@ public class TimestampReportBuilderImpl
 
   @Override
   public TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("entry to buildDetailedReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
@@ -84,7 +80,6 @@ public class TimestampReportBuilderImpl
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildDetailedReport().");
     }
   }
 

@@ -113,13 +113,7 @@ public class WorkbasketController {
         workbasketSummaryRepresentationModelAssembler.toPagedModel(
             workbasketSummaries, pagingParameter.getPageMetadata());
 
-    ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        ResponseEntity.ok(pagedModels);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getWorkbaskets(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(pagedModels);
   }
 
   /**
@@ -137,15 +131,9 @@ public class WorkbasketController {
   public ResponseEntity<WorkbasketRepresentationModel> getWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedException {
-    LOGGER.debug("Entry to getWorkbasket(workbasketId= {})", workbasketId);
-    ResponseEntity<WorkbasketRepresentationModel> result;
     Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
-    result = ResponseEntity.ok(workbasketRepresentationModelAssembler.toModel(workbasket));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getWorkbasket(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(workbasketRepresentationModelAssembler.toModel(workbasket));
   }
 
   /**
@@ -174,22 +162,21 @@ public class WorkbasketController {
       @PathVariable(value = "workbasketId") String workbasketId)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketInUseException {
-    LOGGER.debug("Entry to markWorkbasketForDeletion(workbasketId= {})", workbasketId);
-    ResponseEntity<WorkbasketRepresentationModel> response;
 
     boolean workbasketDeleted = workbasketService.deleteWorkbasket(workbasketId);
 
     if (workbasketDeleted) {
-      LOGGER.debug("Workbasket successfully deleted.");
-      response = ResponseEntity.noContent().build();
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Workbasket successfully deleted.");
+      }
+      return ResponseEntity.noContent().build();
     } else {
-      LOGGER.debug(
-          "Workbasket was only marked for deletion and will be physically deleted later on.");
-      response = ResponseEntity.accepted().build();
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Workbasket was only marked for deletion and will be physically deleted later on.");
+      }
+      return ResponseEntity.accepted().build();
     }
-
-    LOGGER.debug("Exit from markWorkbasketForDeletion(), returning {}", response);
-    return response;
   }
 
   /**
@@ -210,22 +197,12 @@ public class WorkbasketController {
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
       throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to createWorkbasket(workbasketResource= {})", workbasketRepresentationModel);
-    }
-
     Workbasket workbasket =
         workbasketRepresentationModelAssembler.toEntityModel(workbasketRepresentationModel);
     workbasket = workbasketService.createWorkbasket(workbasket);
-    ResponseEntity<WorkbasketRepresentationModel> response =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(workbasketRepresentationModelAssembler.toModel(workbasket));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from createWorkbasket(), returning {}", response);
-    }
 
-    return response;
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(workbasketRepresentationModelAssembler.toModel(workbasket));
   }
 
   /**
@@ -249,7 +226,6 @@ public class WorkbasketController {
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
       throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException,
           ConcurrencyException {
-    LOGGER.debug("Entry to updateWorkbasket(workbasketId= {})", workbasketId);
     if (!workbasketId.equals(workbasketRepresentationModel.getWorkbasketId())) {
       throw new InvalidWorkbasketException(
           "Target-WB-ID('"
@@ -261,14 +237,8 @@ public class WorkbasketController {
     Workbasket workbasket =
         workbasketRepresentationModelAssembler.toEntityModel(workbasketRepresentationModel);
     workbasket = workbasketService.updateWorkbasket(workbasket);
-    ResponseEntity<WorkbasketRepresentationModel> result =
-        ResponseEntity.ok(workbasketRepresentationModelAssembler.toModel(workbasket));
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from updateWorkbasket(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.ok(workbasketRepresentationModelAssembler.toModel(workbasket));
   }
 
   /**
@@ -288,19 +258,12 @@ public class WorkbasketController {
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> getWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId)
       throws NotAuthorizedException, WorkbasketNotFoundException {
-    LOGGER.debug("Entry to getWorkbasketAccessItems(workbasketId= {})", workbasketId);
-
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
-    final ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> result =
-        ResponseEntity.ok(
-            workbasketAccessItemRepresentationModelAssembler
-                .toTaskanaCollectionModelForSingleWorkbasket(workbasketId, accessItems));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(
+        workbasketAccessItemRepresentationModelAssembler
+            .toTaskanaCollectionModelForSingleWorkbasket(workbasketId, accessItems));
   }
 
   /**
@@ -325,7 +288,6 @@ public class WorkbasketController {
       @RequestBody WorkbasketAccessItemCollectionRepresentationModel workbasketAccessItemRepModels)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketAccessItemAlreadyExistException {
-    LOGGER.debug("Entry to setWorkbasketAccessItems(workbasketId= {})", workbasketId);
     if (workbasketAccessItemRepModels == null) {
       throw new InvalidArgumentException("Can´t create something with NULL body-value.");
     }
@@ -338,15 +300,9 @@ public class WorkbasketController {
     List<WorkbasketAccessItem> updatedWbAccessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
 
-    ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> response =
-        ResponseEntity.ok(
-            workbasketAccessItemRepresentationModelAssembler
-                .toTaskanaCollectionModelForSingleWorkbasket(workbasketId, updatedWbAccessItems));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from setWorkbasketAccessItems(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(
+        workbasketAccessItemRepresentationModelAssembler
+            .toTaskanaCollectionModelForSingleWorkbasket(workbasketId, updatedWbAccessItems));
   }
 
   /**
@@ -366,19 +322,12 @@ public class WorkbasketController {
   public ResponseEntity<DistributionTargetsCollectionRepresentationModel> getDistributionTargets(
       @PathVariable(value = "workbasketId") String workbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedException {
-
-    LOGGER.debug("Entry to getDistributionTargets(workbasketId= {})", workbasketId);
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
     DistributionTargetsCollectionRepresentationModel distributionTargetRepModels =
         workbasketSummaryRepresentationModelAssembler.toTaskanaCollectionModel(distributionTargets);
-    ResponseEntity<DistributionTargetsCollectionRepresentationModel> result =
-        ResponseEntity.ok(distributionTargetRepModels);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getDistributionTargets(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(distributionTargetRepModels);
   }
 
   /**
@@ -399,26 +348,14 @@ public class WorkbasketController {
           @PathVariable(value = "workbasketId") String sourceWorkbasketId,
           @RequestBody List<String> targetWorkbasketIds)
           throws WorkbasketNotFoundException, NotAuthorizedException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to getTasksStatusReport(workbasketId= {}, targetWorkbasketIds´= {})",
-          sourceWorkbasketId,
-          targetWorkbasketIds);
-    }
-
     workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
 
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(sourceWorkbasketId);
-    ResponseEntity<DistributionTargetsCollectionRepresentationModel> response =
-        ResponseEntity.ok(
-            workbasketSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
-                distributionTargets));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTasksStatusReport(), returning {}", response);
-    }
 
-    return response;
+    return ResponseEntity.ok(
+        workbasketSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
+            distributionTargets));
   }
 
   /**
@@ -435,18 +372,13 @@ public class WorkbasketController {
   public ResponseEntity<Void> removeDistributionTargetForWorkbasketId(
       @PathVariable(value = "workbasketId") String targetWorkbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedException {
-    LOGGER.debug(
-        "Entry to removeDistributionTargetForWorkbasketId(workbasketId= {})", targetWorkbasketId);
-
     List<WorkbasketSummary> sourceWorkbaskets =
         workbasketService.getDistributionSources(targetWorkbasketId);
     for (WorkbasketSummary source : sourceWorkbaskets) {
       workbasketService.removeDistributionTarget(source.getId(), targetWorkbasketId);
     }
 
-    ResponseEntity<Void> response = ResponseEntity.noContent().build();
-    LOGGER.debug("Exit from removeDistributionTargetForWorkbasketId(), returning {}", response);
-    return response;
+    return ResponseEntity.noContent().build();
   }
 
   public enum WorkbasketQuerySortBy implements QuerySortBy<WorkbasketQuery> {

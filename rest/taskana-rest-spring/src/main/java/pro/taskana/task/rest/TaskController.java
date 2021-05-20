@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -53,8 +51,6 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class TaskController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
 
   private final TaskService taskService;
   private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
@@ -104,12 +100,7 @@ public class TaskController {
     TaskSummaryPagedRepresentationModel pagedModels =
         taskSummaryRepresentationModelAssembler.toPagedModel(
             taskSummaries, pagingParameter.getPageMetadata());
-    ResponseEntity<TaskSummaryPagedRepresentationModel> response = ResponseEntity.ok(pagedModels);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTasks(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(pagedModels);
   }
 
   /**
@@ -144,14 +135,9 @@ public class TaskController {
             .filter(summary -> !result.getFailedIds().contains(summary.getId()))
             .collect(Collectors.toList());
 
-    ResponseEntity<TaskSummaryCollectionRepresentationModel> response =
-        ResponseEntity.ok(
-            taskSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
-                successfullyDeletedTaskSummaries));
-
-    LOGGER.debug("Exit from deleteTasks(), returning {}", response);
-
-    return response;
+    return ResponseEntity.ok(
+        taskSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
+            successfullyDeletedTaskSummaries));
   }
 
   /**
@@ -167,15 +153,9 @@ public class TaskController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> getTask(@PathVariable String taskId)
       throws TaskNotFoundException, NotAuthorizedException {
-    LOGGER.debug("Entry to getTask(taskId= {})", taskId);
     Task task = taskService.getTask(taskId);
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTask(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
   }
 
   /**
@@ -197,17 +177,10 @@ public class TaskController {
       @PathVariable String taskId, @RequestBody(required = false) String userName)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
-    LOGGER.debug("Entry to claimTask(taskId= {}, userName= {})", taskId, userName);
     // TODO verify user
     taskService.claim(taskId);
     Task updatedTask = taskService.getTask(taskId);
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from claimTask(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
@@ -226,8 +199,6 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
       TaskQueryFilterParameter filterParameter, TaskQuerySortParameter sortParameter)
       throws InvalidOwnerException, NotAuthorizedException {
-    LOGGER.debug("Entry to selectAndClaimTask");
-
     TaskQuery query = taskService.createTaskQuery();
 
     filterParameter.applyToQuery(query);
@@ -235,13 +206,7 @@ public class TaskController {
 
     Task selectedAndClaimedTask = taskService.selectAndClaim(query);
 
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(selectedAndClaimedTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from selectAndClaimTask(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(selectedAndClaimedTask));
   }
 
   /**
@@ -262,17 +227,9 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
-
-    LOGGER.debug("Entry to cancelClaimTask(taskId= {}", taskId);
-
     Task updatedTask = taskService.cancelClaim(taskId);
 
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from cancelClaimTask(), returning {}", result);
-    }
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
@@ -292,17 +249,8 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
-
-    LOGGER.debug("Entry to forceCancelClaimTask(taskId= {}", taskId);
-
     Task updatedTask = taskService.forceCancelClaim(taskId);
-
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from forceCancelClaimTask(), returning {}", result);
-    }
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
@@ -322,16 +270,10 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> completeTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
-    LOGGER.debug("Entry to completeTask(taskId= {})", taskId);
 
     Task updatedTask = taskService.forceCompleteTask(taskId);
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from completeTask(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
@@ -349,11 +291,9 @@ public class TaskController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-    LOGGER.debug("Entry to deleteTask(taskId= {})", taskId);
     taskService.forceDeleteTask(taskId);
-    ResponseEntity<TaskRepresentationModel> result = ResponseEntity.noContent().build();
-    LOGGER.debug("Exit from deleteTask(), returning {}", result);
-    return result;
+
+    return ResponseEntity.noContent().build();
   }
 
   /**
@@ -372,16 +312,10 @@ public class TaskController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> cancelTask(@PathVariable String taskId)
       throws TaskNotFoundException, NotAuthorizedException, InvalidStateException {
-    LOGGER.debug("Entry to cancelTask(taskId= {})", taskId);
 
     Task cancelledTask = taskService.cancelTask(taskId);
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(cancelledTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from cancelTask(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(cancelledTask));
   }
 
   /**
@@ -403,21 +337,11 @@ public class TaskController {
       @RequestBody TaskRepresentationModel taskRepresentationModel)
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to createTask(params= {})", taskRepresentationModel);
-    }
-
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(taskRepresentationModelAssembler.toModel(createdTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from createTask(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(taskRepresentationModelAssembler.toModel(createdTask));
   }
 
   /**
@@ -441,17 +365,10 @@ public class TaskController {
       @RequestBody(required = false) Boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
-    LOGGER.debug("Entry to transferTask(taskId= {}, workbasketId= {})", taskId, workbasketId);
-
     Task updatedTask =
         taskService.transfer(taskId, workbasketId, setTransferFlag == null || setTransferFlag);
-    ResponseEntity<TaskRepresentationModel> result =
-        ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from transferTask(), returning {}", result);
-    }
 
-    return result;
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
@@ -480,26 +397,16 @@ public class TaskController {
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
           InvalidStateException {
-    LOGGER.debug(
-        "Entry to updateTask(taskId= {}, taskResource= {})", taskId, taskRepresentationModel);
-    ResponseEntity<TaskRepresentationModel> result;
-    if (taskId.equals(taskRepresentationModel.getTaskId())) {
-      Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
-      task = taskService.updateTask(task);
-      result = ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
-    } else {
+    if (!taskId.equals(taskRepresentationModel.getTaskId())) {
       throw new InvalidArgumentException(
           String.format(
               "TaskId ('%s') is not identical with the taskId of to "
                   + "object in the payload which should be updated. ID=('%s')",
               taskId, taskRepresentationModel.getTaskId()));
     }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from updateTask(), returning {}", result);
-    }
-
-    return result;
+    Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
+    task = taskService.updateTask(task);
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
   }
 
   public enum TaskQuerySortBy implements QuerySortBy<TaskQuery> {

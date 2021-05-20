@@ -2,8 +2,6 @@ package pro.taskana.common.rest;
 
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +18,6 @@ import pro.taskana.common.rest.models.VersionRepresentationModel;
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class TaskanaEngineController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineController.class);
 
   private final TaskanaEngineConfiguration taskanaEngineConfiguration;
 
@@ -40,12 +36,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_DOMAIN)
   public ResponseEntity<List<String>> getDomains() {
-    ResponseEntity<List<String>> response =
-        ResponseEntity.ok(taskanaEngineConfiguration.getDomains());
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getDomains(), returning {}", response);
-    }
-    return response;
+    return ResponseEntity.ok(taskanaEngineConfiguration.getDomains());
   }
 
   /**
@@ -59,21 +50,11 @@ public class TaskanaEngineController {
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES)
   public ResponseEntity<List<String>> getClassificationCategories(
       @RequestParam(required = false) String type) {
-    LOGGER.debug("Entry to getClassificationCategories(type = {})", type);
     ResponseEntity<List<String>> response;
     if (type != null) {
-      response =
-          ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByType(type));
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Exit from getClassificationCategories(), returning {}", response);
-      }
-      return response;
+      return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByType(type));
     }
-    response = ResponseEntity.ok(taskanaEngineConfiguration.getAllClassificationCategories());
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getClassificationCategories(), returning {}", response);
-    }
-    return response;
+    return ResponseEntity.ok(taskanaEngineConfiguration.getAllClassificationCategories());
   }
 
   /**
@@ -83,12 +64,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_TYPES)
   public ResponseEntity<List<String>> getClassificationTypes() {
-    ResponseEntity<List<String>> response =
-        ResponseEntity.ok(taskanaEngineConfiguration.getClassificationTypes());
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getClassificationTypes(), returning {}", response);
-    }
-    return response;
+    return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationTypes());
   }
 
   /**
@@ -99,12 +75,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
   public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
-    ResponseEntity<Map<String, List<String>>> response =
-        ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap());
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getClassificationCategoriesByTypeMap(), returning {}", response);
-    }
-    return response;
+    return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap());
   }
 
   /**
@@ -114,7 +85,6 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CURRENT_USER)
   public ResponseEntity<TaskanaUserInfoRepresentationModel> getCurrentUserInfo() {
-    LOGGER.debug("Entry to getCurrentUserInfo()");
     TaskanaUserInfoRepresentationModel resource = new TaskanaUserInfoRepresentationModel();
     resource.setUserId(taskanaEngine.getCurrentUserContext().getUserid());
     resource.setGroupIds(taskanaEngine.getCurrentUserContext().getGroupIds());
@@ -123,12 +93,7 @@ public class TaskanaEngineController {
         resource.getRoles().add(role);
       }
     }
-    ResponseEntity<TaskanaUserInfoRepresentationModel> response = ResponseEntity.ok(resource);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getCurrentUserInfo(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(resource);
   }
 
   /**
@@ -138,9 +103,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_HISTORY_ENABLED)
   public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
-    ResponseEntity<Boolean> response = ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
-    LOGGER.debug("Exit from getIsHistoryProviderEnabled(), returning {}", response);
-    return response;
+    return ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
   }
 
   /**
@@ -150,11 +113,8 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_VERSION)
   public ResponseEntity<VersionRepresentationModel> currentVersion() {
-    LOGGER.debug("Entry to currentVersion()");
     VersionRepresentationModel resource = new VersionRepresentationModel();
     resource.setVersion(TaskanaEngineConfiguration.class.getPackage().getImplementationVersion());
-    ResponseEntity<VersionRepresentationModel> response = ResponseEntity.ok(resource);
-    LOGGER.debug("Exit from currentVersion(), returning {}", response);
-    return response;
+    return ResponseEntity.ok(resource);
   }
 }

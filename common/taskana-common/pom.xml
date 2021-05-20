@@ -17,6 +17,11 @@
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
       <artifactId>taskana-common-security</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -36,6 +41,11 @@
     </dependency>
 
     <!-- test dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>

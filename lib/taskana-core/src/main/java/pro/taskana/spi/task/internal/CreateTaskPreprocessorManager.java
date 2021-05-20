@@ -40,7 +40,9 @@ public class CreateTaskPreprocessorManager {
   }
 
   public Task processTaskBeforeCreation(Task taskToProcess) {
-    LOGGER.debug("Sending task to CreateTaskPreprocessor providers: {}", taskToProcess);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Sending task to CreateTaskPreprocessor providers: {}", taskToProcess);
+    }
     serviceLoader.forEach(
         createTaskPreprocessorProvider -> {
           try {

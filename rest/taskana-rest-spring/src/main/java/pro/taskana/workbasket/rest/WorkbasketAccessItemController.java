@@ -4,8 +4,6 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +31,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketAccessItemPagedRepresentatio
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class WorkbasketAccessItemController {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(WorkbasketAccessItemController.class);
 
   private final LdapClient ldapClient;
   private final WorkbasketService workbasketService;
@@ -85,13 +80,7 @@ public class WorkbasketAccessItemController {
     WorkbasketAccessItemPagedRepresentationModel pagedResources =
         modelAssembler.toPagedModel(workbasketAccessItems, pagingParameter.getPageMetadata());
 
-    ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
-        ResponseEntity.ok(pagedResources);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getWorkbasketAccessItems(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(pagedResources);
   }
 
   /**
@@ -107,7 +96,6 @@ public class WorkbasketAccessItemController {
   public ResponseEntity<Void> removeWorkbasketAccessItems(
       @RequestParam("access-id") String accessId)
       throws NotAuthorizedException, InvalidArgumentException {
-    LOGGER.debug("Entry to removeWorkbasketAccessItems(access-id= {})", accessId);
     if (ldapClient.isUser(accessId)) {
       List<WorkbasketAccessItem> workbasketAccessItemList =
           workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).list();
@@ -122,9 +110,7 @@ public class WorkbasketAccessItemController {
               accessId));
     }
 
-    ResponseEntity<Void> response = ResponseEntity.noContent().build();
-    LOGGER.debug("Exit from removeWorkbasketAccessItems(), returning {}", response);
-    return response;
+    return ResponseEntity.noContent().build();
   }
 
   public enum WorkbasketAccessItemSortBy implements QuerySortBy<WorkbasketAccessItemQuery> {

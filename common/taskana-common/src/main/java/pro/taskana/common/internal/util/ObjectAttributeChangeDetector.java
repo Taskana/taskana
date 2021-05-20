@@ -9,14 +9,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.SystemException;
 
 public class ObjectAttributeChangeDetector {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ObjectAttributeChangeDetector.class);
 
   private ObjectAttributeChangeDetector() {}
 
@@ -30,11 +26,6 @@ public class ObjectAttributeChangeDetector {
    * @throws SystemException when any parameter is null
    */
   public static <T> String determineChangesInAttributes(T oldObject, T newObject) {
-    LOGGER.debug(
-        "Entry to determineChangesInAttributes (oldObject = {}, newObject = {}",
-        oldObject,
-        newObject);
-
     List<Field> fields = new ArrayList<>();
 
     if (Objects.isNull(oldObject) || Objects.isNull(newObject)) {
@@ -85,10 +76,6 @@ public class ObjectAttributeChangeDetector {
     JSONObject changes = new JSONObject();
     changes.put("changes", changedAttributes);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from determineChangesInAttributes(), returning {}", changes);
-    }
-
     return changes.toString();
   }
 
@@ -100,12 +87,6 @@ public class ObjectAttributeChangeDetector {
   }
 
   private static <T> String compareLists(T oldObject, T newObject) {
-
-    LOGGER.debug(
-        "Entry to determineChangesInAttributes (oldObject = {}, newObject = {}",
-        oldObject,
-        newObject);
-
     if (!oldObject.equals(newObject)) {
       JSONObject changedAttribute = new JSONObject();
 
@@ -116,16 +97,8 @@ public class ObjectAttributeChangeDetector {
 
       changes.put("changes", changedAttribute);
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Exit from determineChangesInAttributes(), returning {}", changes);
-      }
       return changes.toString();
     }
-
-    LOGGER.debug(
-        "Exit from determineChangesInAttributes(), "
-            + "returning empty String because there are no changed attributes");
-
     return "";
   }
 }

@@ -3,8 +3,6 @@ package pro.taskana.task.rest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -39,8 +37,6 @@ import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class TaskCommentController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentController.class);
-
   private final TaskService taskService;
   private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
 
@@ -69,23 +65,12 @@ public class TaskCommentController {
       @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskComment(taskCommentId= {})", taskCommentId);
-    }
-
     TaskComment taskComment = taskService.getTaskComment(taskCommentId);
 
     TaskCommentRepresentationModel taskCommentRepresentationModel =
         taskCommentRepresentationModelAssembler.toModel(taskComment);
 
-    ResponseEntity<TaskCommentRepresentationModel> response =
-        ResponseEntity.ok(taskCommentRepresentationModel);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTaskComment(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(taskCommentRepresentationModel);
   }
 
   /**
@@ -113,11 +98,6 @@ public class TaskCommentController {
       @RequestParam(name = "sort-by", required = false) List<TaskCommentsSortBy> sortBy,
       @RequestParam(required = false) List<SortDirection> order)
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getTaskComments(taskId= {})", taskId);
-    }
-
     Optional<Comparator<TaskComment>> comparator = getTaskCommentComparator(sortBy, order);
     List<TaskComment> taskComments = taskService.getTaskComments(taskId);
     comparator.ifPresent(taskComments::sort);
@@ -125,14 +105,7 @@ public class TaskCommentController {
     TaskCommentCollectionRepresentationModel taskCommentListResource =
         taskCommentRepresentationModelAssembler.toTaskanaCollectionModel(taskComments);
 
-    ResponseEntity<TaskCommentCollectionRepresentationModel> response =
-        ResponseEntity.ok(taskCommentListResource);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getTaskComments(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(taskCommentListResource);
   }
 
   /**
@@ -153,19 +126,9 @@ public class TaskCommentController {
       @PathVariable String taskCommentId)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to deleteTaskComment(taskCommentId= {})", taskCommentId);
-    }
-
     taskService.deleteTaskComment(taskCommentId);
 
-    ResponseEntity<TaskCommentRepresentationModel> result = ResponseEntity.noContent().build();
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from deleteTaskComment(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.noContent().build();
   }
 
   /**
@@ -189,12 +152,6 @@ public class TaskCommentController {
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
           InvalidArgumentException, ConcurrencyException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to updateTaskComment(taskCommentId= {}, taskCommentResource= {})",
-          taskCommentId,
-          taskCommentRepresentationModel);
-    }
     if (!taskCommentId.equals(taskCommentRepresentationModel.getTaskCommentId())) {
       throw new InvalidArgumentException(
           String.format(
@@ -207,14 +164,8 @@ public class TaskCommentController {
         taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
 
     taskComment = taskService.updateTaskComment(taskComment);
-    ResponseEntity<TaskCommentRepresentationModel> result =
-        ResponseEntity.ok(taskCommentRepresentationModelAssembler.toModel(taskComment));
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from updateTaskComment(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.ok(taskCommentRepresentationModelAssembler.toModel(taskComment));
   }
 
   /**
@@ -234,31 +185,14 @@ public class TaskCommentController {
       @PathVariable String taskId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to createTaskComment(taskId= {}, taskCommentResource= {})",
-          taskId,
-          taskCommentRepresentationModel);
-    }
-
     taskCommentRepresentationModel.setTaskId(taskId);
 
     TaskComment taskCommentFromResource =
         taskCommentRepresentationModelAssembler.toEntityModel(taskCommentRepresentationModel);
     TaskComment createdTaskComment = taskService.createTaskComment(taskCommentFromResource);
 
-    ResponseEntity<TaskCommentRepresentationModel> result;
-
-    result =
-        ResponseEntity.status(HttpStatus.CREATED)
-            .body(taskCommentRepresentationModelAssembler.toModel(createdTaskComment));
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from createTaskComment(), returning {}", result);
-    }
-
-    return result;
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(taskCommentRepresentationModelAssembler.toModel(createdTaskComment));
   }
 
   private Optional<Comparator<TaskComment>> getTaskCommentComparator(

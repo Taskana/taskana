@@ -3,8 +3,6 @@ package pro.taskana.monitor.internal.reports;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -20,7 +18,6 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 /** The implementation of TaskStatusReportBuilder. */
 public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskStatusReportBuilderImpl.class);
   private final InternalTaskanaEngine taskanaEngine;
   private final MonitorMapper monitorMapper;
   private final WorkbasketService workbasketService;
@@ -38,7 +35,6 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
   @Override
   public TaskStatusReport buildReport() throws NotAuthorizedException {
-    LOGGER.debug("entry to buildReport(), this = {}", this);
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
@@ -48,20 +44,25 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
       TaskStatusReport report = new TaskStatusReport(this.states);
       report.addItems(tasks);
       Map<String, String> displayMap =
-          taskanaEngine.getEngine().runAsAdmin(
-              () ->
-                  workbasketService.createWorkbasketQuery()
-                      .keyIn(report.getRows().keySet().toArray(new String[0]))
-                      .domainIn(domains != null ? domains.toArray(new String[0]) : null).list()
-                      .stream()
-                      .collect(
-                          Collectors.toMap(
-                              WorkbasketSummary::getKey, WorkbasketSummary::getName, (a, b) -> a)));
+          taskanaEngine
+              .getEngine()
+              .runAsAdmin(
+                  () ->
+                      workbasketService
+                          .createWorkbasketQuery()
+                          .keyIn(report.getRows().keySet().toArray(new String[0]))
+                          .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+                          .list()
+                          .stream()
+                          .collect(
+                              Collectors.toMap(
+                                  WorkbasketSummary::getKey,
+                                  WorkbasketSummary::getName,
+                                  (a, b) -> a)));
       report.augmentDisplayNames(displayMap);
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
-      LOGGER.debug("exit from buildReport().");
     }
   }
 

@@ -17,6 +17,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
@@ -41,9 +46,6 @@
   <profiles>
     <profile>
       <id>history.plugin</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
       <dependencies>
         <dependency>
           <groupId>pro.taskana.history</groupId>
@@ -84,9 +86,6 @@
     </profile>
     <profile>
       <id>historyLogging.plugin</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
       <dependencies>
         <dependency>
           <groupId>pro.taskana.history</groupId>

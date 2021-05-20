@@ -105,8 +105,10 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getWorkbasketService().deleteWorkbaskets(workbasketsToBeDeleted);
-    LOGGER.debug(
-        "{} workbasket deleted.", workbasketsToBeDeleted.size() - results.getFailedIds().size());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "{} workbasket deleted.", workbasketsToBeDeleted.size() - results.getFailedIds().size());
+    }
     for (String failedId : results.getFailedIds()) {
       LOGGER.warn(
           "Workbasket with id {} could not be deleted. Reason:",
@@ -117,11 +119,9 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   }
 
   private void scheduleNextCleanupJob() {
-    LOGGER.debug("Entry to scheduleNextCleanupJob.");
     ScheduledJob job = new ScheduledJob();
     job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
     job.setDue(getNextDueForCleanupJob());
     taskanaEngineImpl.getJobService().createJob(job);
-    LOGGER.debug("Exit from scheduleNextCleanupJob.");
   }
 }

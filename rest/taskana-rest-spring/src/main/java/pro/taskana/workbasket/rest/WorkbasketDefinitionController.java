@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,8 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -56,9 +53,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class WorkbasketDefinitionController {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(WorkbasketDefinitionController.class);
-
   private final WorkbasketService workbasketService;
   private final WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler;
   private final WorkbasketRepresentationModelAssembler workbasketAssembler;
@@ -91,9 +85,6 @@ public class WorkbasketDefinitionController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> exportWorkbaskets(
       @RequestParam(required = false) String[] domain) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to exportWorkbaskets(domain= {})", Arrays.toString(domain));
-    }
     WorkbasketQuery query = workbasketService.createWorkbasketQuery();
     Optional.ofNullable(domain).ifPresent(query::domainIn);
 
@@ -107,13 +98,7 @@ public class WorkbasketDefinitionController {
                 Collectors.collectingAndThen(
                     Collectors.toList(), workbasketDefinitionAssembler::toTaskanaCollectionModel));
 
-    ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> response =
-        ResponseEntity.ok(pageModel);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from exportWorkbaskets(), returning {}", response);
-    }
-
-    return response;
+    return ResponseEntity.ok(pageModel);
   }
 
   /**
@@ -147,7 +132,6 @@ public class WorkbasketDefinitionController {
           InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
           InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
           ConcurrencyException {
-    LOGGER.debug("Entry to importWorkbaskets()");
     WorkbasketDefinitionCollectionRepresentationModel definitions =
         mapper.readValue(
             file.getInputStream(),
@@ -228,9 +212,7 @@ public class WorkbasketDefinitionController {
           // no verification necessary since the workbasket was already imported in step 1.
           idConversion.get(definition.getWorkbasket().getWorkbasketId()), distributionTargets);
     }
-    ResponseEntity<Void> response = ResponseEntity.noContent().build();
-    LOGGER.debug("Exit from importWorkbaskets(), returning {}", response);
-    return response;
+    return ResponseEntity.noContent().build();
   }
 
   private Workbasket removeId(Workbasket importedWb) {

@@ -49,7 +49,9 @@ public class TaskanaProducers {
       dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
       try (Connection connection = dataSource.getConnection()) {
         DatabaseMetaData metaData = connection.getMetaData();
-        LOGGER.debug("---------------> {}", metaData);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("---------------> {}", metaData);
+        }
       }
       this.taskanaEngineConfiguration =
           new TaskanaEngineConfiguration(dataSource, true, false, "TASKANA");

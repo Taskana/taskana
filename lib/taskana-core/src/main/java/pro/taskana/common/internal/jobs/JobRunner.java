@@ -37,7 +37,6 @@ public class JobRunner {
   }
 
   public void runJobs() {
-    LOGGER.info("entry to runJobs()");
     try {
       List<ScheduledJob> jobsToRun = findAndLockJobsToRun();
       for (ScheduledJob scheduledJob : jobsToRun) {
@@ -45,8 +44,6 @@ public class JobRunner {
       }
     } catch (Exception e) {
       LOGGER.error("Error occurred while running jobs: ", e);
-    } finally {
-      LOGGER.info("exit from runJobs().");
     }
   }
 
@@ -66,7 +63,9 @@ public class JobRunner {
     } else {
       lockedJob = lockJob(job);
     }
-    LOGGER.debug("Locked job: {}", lockedJob);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Locked job: {}", lockedJob);
+    }
     return lockedJob;
   }
 
@@ -103,7 +102,6 @@ public class JobRunner {
   }
 
   private void runScheduledJob(ScheduledJob scheduledJob) {
-    LOGGER.debug("entry to runScheduledJob(job = {})", scheduledJob);
 
     if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
       // we run already as admin
@@ -125,7 +123,6 @@ public class JobRunner {
         LOGGER.warn("Attempt to run job {} failed.", scheduledJob, e);
       }
     }
-    LOGGER.debug("exit from runScheduledJob");
   }
 
   private void runScheduledJobImpl(ScheduledJob scheduledJob) {

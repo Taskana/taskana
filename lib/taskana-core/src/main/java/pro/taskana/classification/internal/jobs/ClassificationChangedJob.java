@@ -53,12 +53,14 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
   private void scheduleTaskRefreshJobs(List<String> affectedTaskIds) {
     int batchSize = taskanaEngineImpl.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
     List<List<String>> affectedTaskBatches = partition(affectedTaskIds, batchSize);
-    LOGGER.debug(
-        "Creating {} TaskRefreshJobs out of {} affected tasks "
-            + "with a maximum number of {} tasks each. ",
-        affectedTaskBatches.size(),
-        affectedTaskIds.size(),
-        batchSize);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Creating {} TaskRefreshJobs out of {} affected tasks "
+              + "with a maximum number of {} tasks each. ",
+          affectedTaskBatches.size(),
+          affectedTaskIds.size(),
+          batchSize);
+    }
     for (List<String> taskIdBatch : affectedTaskBatches) {
       Map<String, String> args = new HashMap<>();
       if (!taskIdBatch.isEmpty()) {

@@ -919,7 +919,6 @@ public class TaskQueryImpl implements TaskQuery {
   public List<TaskSummary> list() {
     List<TaskSummary> result = new ArrayList<>();
     try {
-      LOGGER.debug("entry to list(), this = {}", this);
       taskanaEngine.openConnection();
       checkForIllegalParamCombinations();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
@@ -927,23 +926,16 @@ public class TaskQueryImpl implements TaskQuery {
       setupAccessIds();
       List<TaskSummaryImpl> tasks =
           taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("mapper returned {} resulting Objects: {} ", tasks.size(), tasks);
-      }
+
       result = taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(). Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public List<TaskSummary> list(int offset, int limit) {
-    LOGGER.debug("entry to list(offset = {}, limit = {}), this = {}", offset, limit, this);
     List<TaskSummary> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -967,18 +959,11 @@ public class TaskQueryImpl implements TaskQuery {
       throw e;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "exit from list(offset,limit). Returning {} resulting Objects: {} ",
-            result.size(),
-            result);
-      }
     }
   }
 
   @Override
   public List<String> listValues(TaskQueryColumnName columnName, SortDirection sortDirection) {
-    LOGGER.debug("Entry to listValues(dbColumnName={}) this = {}", columnName, this);
     List<String> result = new ArrayList<>();
     try {
       taskanaEngine.openConnection();
@@ -1006,16 +991,11 @@ public class TaskQueryImpl implements TaskQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Exit from listValues. Returning {} resulting Objects: {} ", result.size(), result);
-      }
     }
   }
 
   @Override
   public TaskSummary single() {
-    LOGGER.debug("entry to single(), this = {}", this);
     TaskSummary result = null;
     try {
       taskanaEngine.openConnection();
@@ -1036,13 +1016,11 @@ public class TaskQueryImpl implements TaskQuery {
       return result;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from single(). Returning result {} ", result);
     }
   }
 
   @Override
   public long count() {
-    LOGGER.debug("entry to count(), this = {}", this);
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
@@ -1053,7 +1031,6 @@ public class TaskQueryImpl implements TaskQuery {
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
-      LOGGER.debug("exit from count(). Returning result {} ", rowCount);
     }
   }
 
@@ -1627,7 +1604,9 @@ public class TaskQueryImpl implements TaskQuery {
 
   private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
     if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
-      LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
+      }
       return;
     }
     try {

@@ -196,12 +196,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteHistoryEventsTransactionally(List<String> taskIdsToDeleteHistoryEventsFor) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to deleteHistoryEventsTransactionally(taskIdsToDeleteHistoryEventsFor = {})",
-          taskIdsToDeleteHistoryEventsFor);
-    }
-
     int deletedEventsCount = 0;
     if (txProvider != null) {
       int count =
@@ -215,7 +209,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
                       return 0;
                     }
                   });
-      LOGGER.debug("exit from deleteHistoryEventsTransactionally(), returning {}", count);
       return count;
     } else {
       try {
@@ -224,19 +217,11 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
         LOGGER.warn("Could not delete history events.", e);
       }
     }
-    LOGGER.debug(
-        "exit from deleteHistoryEventsTransactionally()(), returning {}", deletedEventsCount);
     return deletedEventsCount;
   }
 
   private int deleteEvents(List<String> taskIdsToDeleteHistoryEventsFor)
       throws InvalidArgumentException, NotAuthorizedException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "entry to deleteEvents(taskIdsToDeleteHistoryEventsFor = {})",
-          taskIdsToDeleteHistoryEventsFor);
-    }
-
     SimpleHistoryServiceImpl simpleHistoryService =
         (SimpleHistoryServiceImpl) taskanaHistoryEngine.getTaskanaHistoryService();
 
@@ -250,19 +235,18 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
     simpleHistoryService.deleteHistoryEventsByTaskIds(taskIdsToDeleteHistoryEventsFor);
 
-    LOGGER.debug("{} events deleted.", deletedTasksCount);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{} events deleted.", deletedTasksCount);
+    }
 
-    LOGGER.debug("exit from deleteEvents(), returning {}", taskIdsToDeleteHistoryEventsFor.size());
     return deletedTasksCount;
   }
 
   private void scheduleNextCleanupJob() {
-    LOGGER.debug("Entry to scheduleNextCleanupJob.");
     ScheduledJob job = new ScheduledJob();
     job.setType(Type.HISTORYCLEANUPJOB);
     job.setDue(getNextDueForCleanupJob());
     taskanaEngineImpl.getJobService().createJob(job);
-    LOGGER.debug("Exit from scheduleNextCleanupJob.");
   }
 
   private void initJobParameters(Properties props) {
@@ -294,11 +278,13 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       }
     }
 
-    LOGGER.debug("Configured number of history events per transaction: {}", batchSize);
-    LOGGER.debug("HistoryCleanupJob configuration: runs every {}", runEvery);
-    LOGGER.debug(
-        "HistoryCleanupJob configuration: minimum age of history events to be cleanup up is {}",
-        minimumAge);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Configured number of history events per transaction: {}", batchSize);
+      LOGGER.debug("HistoryCleanupJob configuration: runs every {}", runEvery);
+      LOGGER.debug(
+          "HistoryCleanupJob configuration: minimum age of history events to be cleanup up is {}",
+          minimumAge);
+    }
   }
 
   private Properties readPropertiesFromFile(String propertiesFile) {
@@ -312,13 +298,17 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
           LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
         } else {
           props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          LOGGER.debug(
-              "taskana properties were loaded from file {} from classpath.", propertiesFile);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "taskana properties were loaded from file {} from classpath.", propertiesFile);
+          }
         }
       } else {
         try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
           props.load(fileInputStream);
-          LOGGER.debug("taskana properties were loaded from file {}.", propertiesFile);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("taskana properties were loaded from file {}.", propertiesFile);
+          }
         }
       }
     } catch (IOException e) {

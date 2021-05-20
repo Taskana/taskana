@@ -45,7 +45,9 @@ public final class HistoryEventManager {
   }
 
   public void createEvent(TaskHistoryEvent event) {
-    LOGGER.debug("Sending event to history service providers: {}", event);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Sending event to history service providers: {}", event);
+    }
     serviceLoader.forEach(
         historyProvider -> {
           try {
@@ -62,7 +64,9 @@ public final class HistoryEventManager {
   }
 
   public void createEvent(WorkbasketHistoryEvent event) {
-    LOGGER.debug("Sending event to history service providers: {}", event);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Sending event to history service providers: {}", event);
+    }
     serviceLoader.forEach(
         historyProvider -> {
           try {
@@ -79,7 +83,9 @@ public final class HistoryEventManager {
   }
 
   public void createEvent(ClassificationHistoryEvent event) {
-    LOGGER.debug("Sending event to history service providers: {}", event);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Sending event to history service providers: {}", event);
+    }
     serviceLoader.forEach(
         historyProvider -> {
           try {
@@ -97,7 +103,9 @@ public final class HistoryEventManager {
   }
 
   public void deleteEvents(List<String> taskIds) {
-    LOGGER.debug("Sending taskIds to history service providers: {}", taskIds);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Sending taskIds to history service providers: {}", taskIds);
+    }
     serviceLoader.forEach(
         historyProvider -> {
           try {

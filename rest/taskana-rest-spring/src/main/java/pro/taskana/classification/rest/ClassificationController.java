@@ -4,8 +4,6 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -47,8 +45,6 @@ import pro.taskana.common.rest.util.QueryParamsValidator;
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class ClassificationController {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationController.class);
 
   private final ClassificationService classificationService;
   private final ClassificationRepresentationModelAssembler modelAssembler;
@@ -97,10 +93,6 @@ public class ClassificationController {
         ResponseEntity.ok(
             summaryModelAssembler.toPagedModel(
                 classificationSummaries, pagingParameter.getPageMetadata()));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getClassifications(), returning {}", response);
-    }
-
     return response;
   }
 
@@ -116,17 +108,9 @@ public class ClassificationController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> getClassification(
       @PathVariable String classificationId) throws ClassificationNotFoundException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to getClassification(classificationId= {})", classificationId);
-    }
-
     Classification classification = classificationService.getClassification(classificationId);
     ResponseEntity<ClassificationRepresentationModel> response =
         ResponseEntity.ok(modelAssembler.toModel(classification));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from getClassification(), returning {}", response);
-    }
-
     return response;
   }
 
@@ -149,17 +133,11 @@ public class ClassificationController {
       @RequestBody ClassificationRepresentationModel repModel)
       throws NotAuthorizedException, ClassificationAlreadyExistException, DomainNotFoundException,
           InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Entry to createClassification(repModel= {})", repModel);
-    }
     Classification classification = modelAssembler.toEntityModel(repModel);
     classification = classificationService.createClassification(classification);
 
     ResponseEntity<ClassificationRepresentationModel> response =
         ResponseEntity.status(HttpStatus.CREATED).body(modelAssembler.toModel(classification));
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from createClassification(), returning {}", response);
-    }
 
     return response;
   }
@@ -184,12 +162,6 @@ public class ClassificationController {
       @RequestBody ClassificationRepresentationModel resource)
       throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
           InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Entry to updateClassification(classificationId= {}, resource= {})",
-          classificationId,
-          resource);
-    }
     if (!classificationId.equals(resource.getClassificationId())) {
       throw new InvalidArgumentException(
           String.format(
@@ -201,10 +173,6 @@ public class ClassificationController {
     classification = classificationService.updateClassification(classification);
     ResponseEntity<ClassificationRepresentationModel> result =
         ResponseEntity.ok(modelAssembler.toModel(classification));
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exit from updateClassification(), returning {}", result);
-    }
 
     return result;
   }
@@ -225,10 +193,8 @@ public class ClassificationController {
   public ResponseEntity<ClassificationRepresentationModel> deleteClassification(
       @PathVariable String classificationId)
       throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
-    LOGGER.debug("Entry to deleteClassification(classificationId= {})", classificationId);
     classificationService.deleteClassification(classificationId);
     ResponseEntity<ClassificationRepresentationModel> response = ResponseEntity.noContent().build();
-    LOGGER.debug("Exit from deleteClassification(), returning {}", response);
     return response;
   }
 
