@@ -143,10 +143,12 @@ public interface TaskService {
    * @throws ClassificationNotFoundException thrown if the Classification referenced by the task is
    *     not found
    * @throws InvalidArgumentException thrown if the primary ObjectReference is invalid
+   * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
+   *     without using the task-methods
    */
   Task createTask(Task taskToCreate)
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException;
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException;
 
   /**
    * Gets the details of a task by Id without checking permissions.

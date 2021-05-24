@@ -158,7 +158,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task createTask(Task taskToCreate)
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException {
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException {
 
     if (CreateTaskPreprocessorManager.isCreateTaskPreprocessorEnabled()) {
       taskToCreate = createTaskPreprocessorManager.processTaskBeforeCreation(taskToCreate);
@@ -216,7 +216,7 @@ public class TaskServiceImpl implements TaskService {
           this.classificationService.getClassification(classificationKey, workbasket.getDomain());
       task.setClassificationSummary(classification.asSummary());
       ObjectReference.validate(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
-      standardSettings(task, classification);
+      standardSettingsOnTaskCreation(task, classification);
       setCallbackStateOnTaskCreation(task);
       try {
         this.taskMapper.insert(task);
@@ -1417,54 +1417,48 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private void standardSettings(TaskImpl task, Classification classification)
-      throws InvalidArgumentException {
-    TaskImpl task1 = task;
+  private void standardSettingsOnTaskCreation(TaskImpl task, Classification classification)
+      throws InvalidArgumentException, ClassificationNotFoundException,
+          AttachmentPersistenceException {
     final Instant now = Instant.now();
-    task1.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK));
-    if (task1.getExternalId() == null) {
-      task1.setExternalId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_EXT_TASK));
+    task.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK));
+    if (task.getExternalId() == null) {
+      task.setExternalId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_EXT_TASK));
     }
-    task1.setState(TaskState.READY);
-    task1.setCreated(now);
-    task1.setModified(now);
-    task1.setRead(false);
-    task1.setTransferred(false);
+    task.setState(TaskState.READY);
+    task.setCreated(now);
+    task.setModified(now);
+    task.setRead(false);
+    task.setTransferred(false);
 
     String creator = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     if (taskanaEngine.getEngine().getConfiguration().isSecurityEnabled() && creator == null) {
       throw new SystemException(
           "TaskanaSecurity is enabled, but the current UserId is NULL while creating a Task.");
     }
-    task1.setCreator(creator);
+    task.setCreator(creator);
 
     // if no business process id is provided, a unique id is created.
-    if (task1.getBusinessProcessId() == null) {
-      task1.setBusinessProcessId(
+    if (task.getBusinessProcessId() == null) {
+      task.setBusinessProcessId(
           IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_BUSINESS_PROCESS));
     }
-
     // null in case of manual tasks
-    if (task1.getPlanned() == null && (classification == null || task1.getDue() == null)) {
-      task1.setPlanned(now);
+    if (task.getPlanned() == null && (classification == null || task.getDue() == null)) {
+      task.setPlanned(now);
     }
-    if (classification != null) {
-      task1 = serviceLevelHandler.updatePrioPlannedDueOfTask(task1, null, false);
+    if (task.getName() == null && classification != null) {
+      task.setName(classification.getName());
+    }
+    if (task.getDescription() == null && classification != null) {
+      task.setDescription(classification.getDescription());
     }
 
-    if (task1.getName() == null && classification != null) {
-      task1.setName(classification.getName());
-    }
-
-    if (task1.getDescription() == null && classification != null) {
-      task1.setDescription(classification.getDescription());
-    }
-    try {
-      attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
-    } catch (AttachmentPersistenceException e) {
-      throw new SystemException(
-          "Internal error when trying to insert new Attachments on Task Creation.", e);
-    }
+    attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
+    // This has to be called after the AttachmentHandler because the AttachmentHandler fetches
+    // the Classifications of the Attachments.
+    // This is necessary to guarantee that the following calculation is correct.
+    serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, false);
   }
 
   private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {

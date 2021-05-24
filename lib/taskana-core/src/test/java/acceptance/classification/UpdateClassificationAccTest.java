@@ -190,7 +190,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000054",
             "TKI:000000000000000000000000000000000055",
             "TKI:000000000000000000000000000000000000",
-            "TKI:000000000000000000000000000000000011",
             "TKI:000000000000000000000000000000000053");
     validateTaskPropertiesAfterClassificationChange(
         before, tasksWithP1D, taskService, converter, 1, 1000);
@@ -414,7 +413,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     Classification updatedClassification =
         classificationService.getClassification("CLI:100000000000000000000000000000000003");
     assertThat(updatedClassification).isNotNull();
-    assertThat(modifiedBefore.isAfter(updatedClassification.getModified())).isFalse();
+    assertThat(updatedClassification.getModified()).isAfter(modifiedBefore);
     // TODO - resume old behaviour after attachment query is possible.
     TaskService taskService = taskanaEngine.getTaskService();
     List<String> tasksWithPD12 =
@@ -465,7 +464,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     List<String> tasksWithPD1 =
         List.of(
             "TKI:000000000000000000000000000000000000",
-            "TKI:000000000000000000000000000000000011",
             "TKI:000000000000000000000000000000000052",
             "TKI:000000000000000000000000000000000053",
             "TKI:000000000000000000000000000000000054",

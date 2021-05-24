@@ -13,6 +13,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
@@ -40,7 +41,7 @@ public class ExampleBootstrap {
           ClassificationNotFoundException, InvalidStateException, InvalidOwnerException,
           TaskAlreadyExistException, InvalidArgumentException, DomainNotFoundException,
           InvalidWorkbasketException, WorkbasketAlreadyExistException,
-          ClassificationAlreadyExistException {
+          ClassificationAlreadyExistException, AttachmentPersistenceException {
     System.out.println("---------------------------> Start App");
 
     Workbasket wb = taskanaEngine.getWorkbasketService().newWorkbasket("workbasket", "DOMAIN_A");

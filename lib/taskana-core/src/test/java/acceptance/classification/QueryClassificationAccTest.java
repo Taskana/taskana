@@ -288,7 +288,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
   void testQueryForServiceLevelIn() {
     List<ClassificationSummary> results =
         classificationService.createClassificationQuery().serviceLevelIn("P2D").list();
-    assertThat(results).hasSize(5);
+    assertThat(results).hasSize(6);
   }
 
   @Test

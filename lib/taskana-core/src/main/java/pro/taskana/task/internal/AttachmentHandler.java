@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.ibatis.exceptions.PersistenceException;
@@ -76,18 +77,70 @@ public class AttachmentHandler {
   }
 
   void insertAndDeleteAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
-      throws AttachmentPersistenceException {
-
+      throws AttachmentPersistenceException, InvalidArgumentException,
+          ClassificationNotFoundException {
     List<Attachment> newAttachments =
         newTaskImpl.getAttachments().stream().filter(Objects::nonNull).collect(Collectors.toList());
     newTaskImpl.setAttachments(newAttachments);
+
+    for (Attachment attachment : newAttachments) {
+      verifyAttachment((AttachmentImpl) attachment, newTaskImpl.getDomain());
+      initAttachment((AttachmentImpl) attachment, newTaskImpl);
+    }
 
     deleteRemovedAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
     insertNewAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
     updateModifiedAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
   }
 
-  void updateModifiedAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
+  void insertNewAttachmentsOnTaskCreation(TaskImpl task)
+      throws InvalidArgumentException, AttachmentPersistenceException,
+          ClassificationNotFoundException {
+    List<Attachment> attachments = task.getAttachments();
+
+    if (attachments != null) {
+      for (Attachment attachment : attachments) {
+        AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
+        verifyAttachment(attachmentImpl, task.getDomain());
+        initAttachment(attachmentImpl, task);
+
+        try {
+          attachmentMapper.insert(attachmentImpl);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                "TaskService.createTask() for TaskId={} INSERTED an Attachment={}.",
+                task.getId(),
+                attachmentImpl);
+          }
+        } catch (PersistenceException e) {
+          throw new AttachmentPersistenceException(
+              String.format(
+                  "Cannot insert the Attachement %s for Task %s  because it already exists.",
+                  attachmentImpl.getId(), task.getId()),
+              e.getCause());
+        }
+      }
+    }
+  }
+
+  private void insertNewAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
+      throws AttachmentPersistenceException {
+    Set<String> oldAttachmentIds =
+        oldTaskImpl.getAttachments().stream()
+            .map(AttachmentSummary::getId)
+            .collect(Collectors.toSet());
+
+    List<Attachment> newAttachments =
+        newTaskImpl.getAttachments().stream()
+            .filter(a -> !oldAttachmentIds.contains(a.getId()))
+            .collect(Collectors.toList());
+
+    for (Attachment attachment : newAttachments) {
+      insertNewAttachmentOnTaskUpdate(newTaskImpl, attachment);
+    }
+  }
+
+  private void updateModifiedAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
     List<Attachment> newAttachments = newTaskImpl.getAttachments();
     List<Attachment> oldAttachments = oldTaskImpl.getAttachments();
     if (newAttachments != null
@@ -107,43 +160,7 @@ public class AttachmentHandler {
     }
   }
 
-  void insertNewAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
-      throws AttachmentPersistenceException {
-    List<String> oldAttachmentIds =
-        oldTaskImpl.getAttachments().stream()
-            .map(AttachmentSummary::getId)
-            .collect(Collectors.toList());
-    List<AttachmentPersistenceException> exceptions = new ArrayList<>();
-    newTaskImpl
-        .getAttachments()
-        .forEach(
-            a -> {
-              if (!oldAttachmentIds.contains(a.getId())) {
-                try {
-                  insertNewAttachmentOnTaskUpdate(newTaskImpl, a);
-                } catch (AttachmentPersistenceException excpt) {
-                  exceptions.add(excpt);
-                  LOGGER.warn("attempted to insert attachment {} and caught exception", a, excpt);
-                }
-              }
-            });
-    if (!exceptions.isEmpty()) {
-      throw exceptions.get(0);
-    }
-  }
-
-  void insertNewAttachmentsOnTaskCreation(TaskImpl task)
-      throws InvalidArgumentException, AttachmentPersistenceException {
-    List<Attachment> attachments = task.getAttachments();
-    if (attachments != null) {
-      for (Attachment attachment : attachments) {
-        AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
-        initializeAndInsertAttachment(task, attachmentImpl);
-      }
-    }
-  }
-
-  void deleteRemovedAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
+  private void deleteRemovedAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
 
     final List<Attachment> newAttachments = newTaskImpl.getAttachments();
     List<String> newAttachmentIds = new ArrayList<>();
@@ -169,10 +186,9 @@ public class AttachmentHandler {
     }
   }
 
-  void insertNewAttachmentOnTaskUpdate(TaskImpl newTaskImpl, Attachment attachment)
+  private void insertNewAttachmentOnTaskUpdate(TaskImpl newTaskImpl, Attachment attachment)
       throws AttachmentPersistenceException {
     AttachmentImpl attachmentImpl = (AttachmentImpl) attachment;
-    initAttachment(attachmentImpl, newTaskImpl);
 
     try {
       attachmentMapper.insert(attachmentImpl);
@@ -191,7 +207,7 @@ public class AttachmentHandler {
     }
   }
 
-  void initAttachment(AttachmentImpl attachment, Task newTask) {
+  private void initAttachment(AttachmentImpl attachment, Task newTask) {
     if (attachment.getId() == null) {
       attachment.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_ATTACHMENT));
     }
@@ -206,25 +222,22 @@ public class AttachmentHandler {
     }
   }
 
-  private void initializeAndInsertAttachment(TaskImpl task, AttachmentImpl attachmentImpl)
-      throws AttachmentPersistenceException, InvalidArgumentException {
-    initAttachment(attachmentImpl, task);
-    ObjectReference objRef = attachmentImpl.getObjectReference();
-    ObjectReference.validate(objRef, "ObjectReference", "Attachment");
-    try {
-      attachmentMapper.insert(attachmentImpl);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
-            task.getId(),
-            attachmentImpl);
-      }
-    } catch (PersistenceException e) {
-      throw new AttachmentPersistenceException(
-          String.format(
-              "Cannot insert the Attachement %s for Task %s  because it already exists.",
-              attachmentImpl.getId(), task.getId()),
-          e.getCause());
+  private void verifyAttachment(AttachmentImpl attachment, String domain)
+      throws InvalidArgumentException, ClassificationNotFoundException {
+    ClassificationSummary classification = attachment.getClassificationSummary();
+    if (classification == null) {
+      throw new InvalidArgumentException("Classification of Attachment must not be null.");
     }
+    if (classification.getKey() == null || classification.getKey().length() == 0) {
+      throw new InvalidArgumentException("ClassificationKey of Attachment must not be empty.");
+    }
+
+    ObjectReference.validate(attachment.getObjectReference(), "ObjectReference", "Attachment");
+
+    classification =
+        classificationService
+            .getClassification(attachment.getClassificationSummary().getKey(), domain)
+            .asSummary();
+    attachment.setClassificationSummary(classification);
   }
 }

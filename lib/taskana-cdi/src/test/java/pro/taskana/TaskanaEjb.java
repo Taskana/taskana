@@ -8,6 +8,7 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
@@ -37,7 +38,7 @@ public class TaskanaEjb {
 
   public void triggerRollback()
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException {
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException {
     final Task task = taskService.newTask(null);
     ObjectReference objRef = new ObjectReference();
     objRef.setCompany("aCompany");

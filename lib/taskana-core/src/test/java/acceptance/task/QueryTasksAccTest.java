@@ -123,7 +123,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .createTaskQuery()
             .orderByAttachmentClassificationId(DESCENDING)
             .listValues(A_CLASSIFICATION_ID, null);
-    assertThat(columnValueList).hasSize(12);
+    assertThat(columnValueList).hasSize(11);
 
     columnValueList =
         TASK_SERVICE
@@ -529,13 +529,13 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForAttachmentclassificationIdIn() {
+  void testQueryForAttachmentClassificationIdIn() {
     List<TaskSummary> results =
         TASK_SERVICE
             .createTaskQuery()
-            .attachmentClassificationIdIn("CLI:000000000000000000000000000000000002")
+            .attachmentClassificationIdIn("CLI:100000000000000000000000000000000002")
             .list();
-    assertThat(results).hasSize(1);
+    assertThat(results).hasSize(2);
     assertThat(results.get(0).getId()).isEqualTo("TKI:000000000000000000000000000000000001");
   }
 
