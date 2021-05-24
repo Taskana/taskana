@@ -329,6 +329,8 @@ public class TaskController {
    *     referenced Workbasket
    * @throws TaskAlreadyExistException if the requested Task already exists.
    * @throws InvalidArgumentException if any input is semantically wrong.
+   * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
+   *     without using the task-methods
    * @title Create a new Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS)
@@ -336,7 +338,7 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> createTask(
       @RequestBody TaskRepresentationModel taskRepresentationModel)
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException {
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException {
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 

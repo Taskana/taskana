@@ -28,7 +28,7 @@ public class ObjectReference {
     // check that all values in the ObjectReference are set correctly
     if (objectReference == null) {
       throw new InvalidArgumentException(
-          String.format("ObectReferenc %s of %s must not be null.", objRefType, objName));
+          String.format("%s of %s must not be null.", objRefType, objName));
     } else if (objectReference.getCompany() == null || objectReference.getCompany().length() == 0) {
       throw new InvalidArgumentException(
           String.format("Company of %s of %s must not be empty", objRefType, objName));

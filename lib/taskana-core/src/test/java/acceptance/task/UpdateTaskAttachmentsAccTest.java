@@ -13,8 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -35,11 +39,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   private Task task;
   private Attachment attachment;
   private TaskService taskService;
+  private ClassificationService classificationService;
 
   @BeforeEach
   @WithAccessId(user = "admin")
   void setUp() throws Exception {
     taskService = taskanaEngine.getTaskService();
+    classificationService = taskanaEngine.getClassificationService();
     task =
         taskService.getTask(
             "TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
@@ -71,6 +77,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
+
     assertThat(task.getAttachments())
         .hasSize(attachmentCount + 1)
         .contains(attachment)
@@ -136,14 +143,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     Classification newClassification =
         taskanaEngine
             .getClassificationService()
-            .getClassification("CLI:000000000000000000000000000000000001"); // Prio 999, SL PT5H
+            .getClassification("CLI:100000000000000000000000000000000013"); // Prio 99, P2000D
     updatedAttachment.setClassificationSummary(newClassification.asSummary());
     task.addAttachment(updatedAttachment);
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
     assertThat(task.getAttachments()).hasSize(attachmentCount2);
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
-    assertThat(task.getPriority()).isEqualTo(999);
+    assertThat(task.getPriority()).isEqualTo(99);
 
     Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
     assertThat(task.getDue()).isEqualTo(expDue);
@@ -261,13 +268,13 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     Classification newClassification =
         taskanaEngine
             .getClassificationService()
-            .getClassification("CLI:000000000000000000000000000000000001"); // Prio 999, SL PT5H
+            .getClassification("CLI:100000000000000000000000000000000013"); // Prio 99, P2000D
     task.getAttachments().get(0).setClassificationSummary(newClassification.asSummary());
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
     assertThat(task.getAttachments()).hasSize(attachmentCount);
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
-    assertThat(task.getPriority()).isEqualTo(999);
+    assertThat(task.getPriority()).isEqualTo(99);
     Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
 
     assertThat(task.getDue()).isEqualTo(expDue);
@@ -497,5 +504,104 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(updatedAttachment).isNotNull();
     assertThat(updatedTask.getModified()).isEqualTo(updatedAttachment.getModified());
     assertThat(updatedAttachment.getCustomAttributeMap().get("TEST_KEY")).isEqualTo("TEST_VALUE");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UpdatingTaskWithNewAttachmentClassificationNull() {
+    attachment.setClassificationSummary(null);
+    task.addAttachment(attachment);
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage("Classification of Attachment must not be null.");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UpdatingTaskWithChangedAttachmentClassificationNull()
+      throws Exception {
+    task.addAttachment(attachment);
+    taskService.updateTask(task);
+    attachment.setClassificationSummary(null);
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage("Classification of Attachment must not be null.");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UpdatingTaskWithNewAttachmentObjectReferenceNull()
+      throws Exception {
+    task.addAttachment(attachment);
+    taskService.updateTask(task);
+
+    task.removeAttachment(attachment.getId());
+    attachment.setObjectReference(null);
+    task.addAttachment(attachment);
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage("ObjectReference of Attachment must not be null.");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UpdatingTaskWithChangedAttachmentObjectReferenceNull()
+      throws Exception {
+    task.addAttachment(attachment);
+    taskService.updateTask(task);
+
+    task.removeAttachment(attachment.getId());
+    attachment.setObjectReference(null);
+    task.addAttachment(attachment);
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage("ObjectReference of Attachment must not be null.");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UpdatingTaskWithMissingAttachmentClassificationKey() {
+    ClassificationSummaryImpl classification = new ClassificationSummaryImpl();
+    attachment.setClassificationSummary(classification);
+    task.addAttachment(attachment);
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessageContaining("ClassificationKey of Attachment must not be empty.");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UpdatingTaskWithNotExistingAttachmentClassification() {
+    Classification classification =
+        classificationService.newClassification("NOT_EXISTING", "DOMAIN_A", "");
+    attachment.setClassificationSummary(classification);
+    task.addAttachment(attachment);
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(ClassificationNotFoundException.class);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_FetchAttachmentClassification_When_UpdatingTaskWithAttachments()
+      throws Exception {
+    ClassificationSummary classification =
+        classificationService.newClassification("T2000", "DOMAIN_A", "").asSummary();
+    attachment.setClassificationSummary(classification);
+    task.addAttachment(attachment);
+
+    assertThat(classification.getServiceLevel()).isNull();
+
+    TaskImpl updatedTask = (TaskImpl) taskService.updateTask(task);
+    classification = updatedTask.getAttachments().get(0).getClassificationSummary();
+
+    assertThat(classification.getId()).isNotNull();
+    assertThat(classification.getDomain()).isNotNull();
+    assertThat(classification.getServiceLevel()).isNotNull();
   }
 }
