@@ -5,7 +5,6 @@ import { BrowserModule, By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-engine.mock.service';
-import { of } from 'rxjs/internal/observable/of';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 jest.mock('angular-svg-icon');
