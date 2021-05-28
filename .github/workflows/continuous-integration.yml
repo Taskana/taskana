@@ -47,7 +47,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Cache maven dependencies
         id: cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -89,13 +89,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
         id: web-cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: web/node_modules
           key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}
       - name: Cache maven dependencies (for web)
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.OS }}-${{ env.CACHE_MAVEN_FOR_WEB_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -140,7 +140,7 @@ jobs:
           distribution: adopt
           java-version: 8
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -174,7 +174,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
         id: web-cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: web/node_modules
           key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package-lock.json') }}
@@ -186,7 +186,7 @@ jobs:
         working-directory: web
         run: npm ci
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -261,7 +261,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -303,7 +303,7 @@ jobs:
           distribution: adopt
           java-version: 8
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -347,7 +347,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -405,7 +405,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
@@ -462,13 +462,13 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Cache SonarCloud packages
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-${{ env.CACHE_SONAR_NAME }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_SONAR_NAME }}
       - name: Cache maven dependencies
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
