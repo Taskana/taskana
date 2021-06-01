@@ -1,6 +1,8 @@
 @import 'src/theme/_colors.scss';
 
 .task-attribute-value {
+  line-height: 1.5;
+
   &__button--primary {
     background-color: $aquamarine;
     color: white;

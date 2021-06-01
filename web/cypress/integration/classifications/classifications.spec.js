@@ -44,10 +44,7 @@ context('TASKANA Classifications', () => {
     cy.get('button').contains('Save').click({ force: true });
 
     // assure that its process now
-    cy.get('ng-form')
-      .find('mat-form-field mat-select[required]')
-      .contains('PROCESS')
-      .should('be.visible');
+    cy.get('ng-form').find('mat-form-field mat-select[required]').contains('PROCESS').should('be.visible');
 
     // change back to external
     cy.get('ng-form').find('mat-form-field mat-select[required]').click({ force: true });
@@ -81,7 +78,9 @@ context('TASKANA Classifications', () => {
   it('should be possible to edit the application entry point', () => {
     cy.visitTestClassification();
 
-    cy.get('#classification-application-entry-point').clear({ force: true }).type(Cypress.env('testValueClassifications'));
+    cy.get('#classification-application-entry-point')
+      .clear({ force: true })
+      .type(Cypress.env('testValueClassifications'));
     cy.get('button').contains('Save').click({ force: true });
 
     cy.get('#classification-application-entry-point').should('have.value', Cypress.env('testValueClassifications'));

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from '@circlon/angular-tree-component';
@@ -10,8 +10,6 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { AccordionModule } from 'ngx-bootstrap/accordion';
-import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
-import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 
 /**
  * Components
@@ -45,7 +43,6 @@ import { DateTimeZonePipe } from './pipes/date-time-zone.pipe';
  * Services
  */
 import { HttpClientInterceptor } from './services/http-client-interceptor/http-client-interceptor.service';
-import { AccessIdsService } from './services/access-ids/access-ids.service';
 import { ToastComponent } from './components/toast/toast.component';
 import { DialogPopUpComponent } from './components/popup/dialog-pop-up.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -59,7 +56,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WorkbasketFilterComponent } from './components/workbasket-filter/workbasket-filter.component';
 import { TaskFilterComponent } from './components/task-filter/task-filter.component';
-import { ClassificationCategoriesService } from './services/classification-categories/classification-categories.service';
 
 const MODULES = [
   CommonModule,
@@ -122,10 +118,7 @@ const DECLARATIONS = [
       provide: HTTP_INTERCEPTORS,
       useClass: HttpClientInterceptor,
       multi: true
-    },
-    AccessIdsService,
-    ClassificationsService,
-    WorkbasketService
+    }
   ],
   entryComponents: [DialogPopUpComponent, ToastComponent]
 })

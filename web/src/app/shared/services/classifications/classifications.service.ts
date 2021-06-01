@@ -12,7 +12,9 @@ import { asUrlQueryString } from '../../util/query-parameters-v2';
 import { ClassificationQueryFilterParameter } from '../../models/classification-query-filter-parameter';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ClassificationsService {
   constructor(
     private httpClient: HttpClient,

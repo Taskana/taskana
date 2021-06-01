@@ -63,7 +63,9 @@ export class AppComponent implements OnInit, OnDestroy {
       .getRequestInProgress()
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: boolean) => {
-        this.requestInProgress = value;
+        setTimeout(() => {
+          this.requestInProgress = value;
+        });
       });
 
     this.selectedRouteService

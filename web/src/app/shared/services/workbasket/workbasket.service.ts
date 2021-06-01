@@ -16,7 +16,9 @@ import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-fi
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
 import { asUrlQueryString } from '../../util/query-parameters-v2';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkbasketService {
   public workBasketSelected = new Subject<string>();
   public workBasketSaved = new Subject<number>();
