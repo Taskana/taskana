@@ -95,7 +95,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
             .wildcardSearchValueLike("%wid%")
             .list();
 
-    assertThat(foundTasksCaseSensitive).hasSize(80);
+    assertThat(foundTasksCaseSensitive).hasSize(81);
     assertThat(foundTasksCaseInsensitive).containsExactlyElementsOf(foundTasksCaseSensitive);
   }
 

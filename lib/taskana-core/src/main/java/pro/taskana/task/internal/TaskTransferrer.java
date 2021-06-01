@@ -2,13 +2,9 @@ package pro.taskana.task.internal;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -24,24 +20,23 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
-import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
-/** This class is responsible for the transfer of tasks. */
-class TaskTransferrer {
+/** This class is responsible for the transfer of Tasks to another Workbasket. */
+final class TaskTransferrer {
 
-  private static final String WAS_NOT_FOUND2 = " was not found.";
-  private static final String TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED =
-      "Task in end state with id %s cannot be transferred.";
-  private static final String TASK_WITH_ID = "Task with id ";
-  private static final String WAS_MARKED_FOR_DELETION = " was marked for deletion";
-  private static final String THE_WORKBASKET = "The workbasket ";
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskTransferrer.class);
+  private static final String TASK_ID_LIST_NULL_OR_EMPTY = "TaskIds must not be null or empty.";
+  private static final String TASK_IN_END_STATE =
+      "Task '%s' is in end state and cannot be transferred.";
+  private static final String TASK_NOT_FOUND = "Task '%s' was not found.";
+  private static final String WORKBASKET_MARKED_FOR_DELETION =
+      "Workbasket '%s' was marked for deletion.";
+  private static final String WORKBASKET_WITHOUT_TRANSFER_PERMISSION =
+      "Workbasket of Task '%s' got no TRANSFER permission.";
   private final InternalTaskanaEngine taskanaEngine;
   private final WorkbasketService workbasketService;
   private final TaskServiceImpl taskService;
@@ -57,300 +52,226 @@ class TaskTransferrer {
     this.historyEventManager = taskanaEngine.getHistoryEventManager();
   }
 
-  Task transfer(
-      String taskId, String destinationWorkbasketKey, String domain, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
-          InvalidStateException {
-    TaskImpl task = null;
-    WorkbasketSummary oldWorkbasketSummary = null;
-    try {
-      taskanaEngine.openConnection();
-      task = (TaskImpl) taskService.getTask(taskId);
-
-      if (task.getState().isEndState()) {
-        throw new InvalidStateException(
-            String.format(TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED, task.getId()));
-      }
-
-      // Save previous workbasket id before transfer it.
-      oldWorkbasketSummary = task.getWorkbasketSummary();
-
-      // transfer requires TRANSFER in source and APPEND on destination workbasket
-      workbasketService.checkAuthorization(
-          destinationWorkbasketKey, domain, WorkbasketPermission.APPEND);
-      workbasketService.checkAuthorization(
-          task.getWorkbasketSummary().getId(), WorkbasketPermission.TRANSFER);
-
-      Workbasket destinationWorkbasket =
-          workbasketService.getWorkbasket(destinationWorkbasketKey, domain);
-
-      task.setRead(false);
-      task.setTransferred(setTransferFlag);
-
-      // transfer task from source to destination workbasket
-      if (!destinationWorkbasket.isMarkedForDeletion()) {
-        task.setWorkbasketSummary(destinationWorkbasket.asSummary());
-      } else {
-        throw new WorkbasketNotFoundException(
-            destinationWorkbasket.getId(),
-            THE_WORKBASKET + destinationWorkbasket.getId() + WAS_MARKED_FOR_DELETION);
-      }
-
-      task.setModified(Instant.now());
-      task.setState(TaskState.READY);
-      task.setOwner(null);
-      taskMapper.update(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Method transfer() transferred Task '{}' to destination workbasket {}",
-            taskId,
-            destinationWorkbasket.getId());
-      }
-      if (HistoryEventManager.isHistoryEnabled()) {
-        createTaskTransferredEvent(
-            task, oldWorkbasketSummary.getId(), destinationWorkbasket.asSummary().getId());
-      }
-      return task;
-    } finally {
-      taskanaEngine.returnConnection();
-    }
-  }
-
   Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketId);
+    return transferSingleTask(taskId, destinationWorkbasket, setTransferFlag);
+  }
 
-    TaskImpl task = null;
-    WorkbasketSummary oldWorkbasketSummary = null;
+  Task transfer(
+      String taskId,
+      String destinationWorkbasketKey,
+      String destinationDomain,
+      boolean setTransferFlag)
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
+          InvalidStateException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain);
+    return transferSingleTask(taskId, destinationWorkbasket, setTransferFlag);
+  }
+
+  BulkOperationResults<String, TaskanaException> transfer(
+      List<String> taskIds, String destinationWorkbasketId, boolean setTransferFlag)
+      throws NotAuthorizedException, WorkbasketNotFoundException, InvalidArgumentException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketId);
+    checkDestinationWorkbasket(destinationWorkbasket);
+
+    return transferMultipleTasks(taskIds, destinationWorkbasket, setTransferFlag);
+  }
+
+  BulkOperationResults<String, TaskanaException> transfer(
+      List<String> taskIds,
+      String destinationWorkbasketKey,
+      String destinationDomain,
+      boolean setTransferFlag)
+      throws NotAuthorizedException, WorkbasketNotFoundException, InvalidArgumentException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain);
+    checkDestinationWorkbasket(destinationWorkbasket);
+
+    return transferMultipleTasks(taskIds, destinationWorkbasket, setTransferFlag);
+  }
+
+  private Task transferSingleTask(
+      String taskId, WorkbasketSummary destinationWorkbasket, boolean setTransferFlag)
+      throws NotAuthorizedException, TaskNotFoundException, WorkbasketNotFoundException,
+          InvalidStateException {
+    TaskImpl task = new TaskImpl();
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) taskService.getTask(taskId);
+      WorkbasketSummary originWorkbasket = task.getWorkbasketSummary();
+      checkPreconditionsForTransferTask(task, destinationWorkbasket, originWorkbasket);
 
-      if (task.getState().isEndState()) {
-        throw new InvalidStateException(
-            String.format(TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED, task.getId()));
-      }
-      oldWorkbasketSummary = task.getWorkbasketSummary();
-
-      // transfer requires TRANSFER in source and APPEND on destination workbasket
-      workbasketService.checkAuthorization(destinationWorkbasketId, WorkbasketPermission.APPEND);
-      workbasketService.checkAuthorization(
-          task.getWorkbasketSummary().getId(), WorkbasketPermission.TRANSFER);
-
-      Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
-
-      task.setRead(false);
-      task.setTransferred(setTransferFlag);
-
-      // transfer task from source to destination workbasket
-      if (!destinationWorkbasket.isMarkedForDeletion()) {
-        task.setWorkbasketSummary(destinationWorkbasket.asSummary());
-      } else {
-        throw new WorkbasketNotFoundException(
-            destinationWorkbasket.getId(),
-            THE_WORKBASKET + destinationWorkbasket.getId() + WAS_MARKED_FOR_DELETION);
-      }
-
-      task.setModified(Instant.now());
-      task.setState(TaskState.READY);
-      task.setOwner(null);
+      modifyTaskParameters(task, destinationWorkbasket, setTransferFlag);
       taskMapper.update(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Method transfer() transferred Task '{}' to destination workbasket {}",
-            taskId,
-            destinationWorkbasketId);
-      }
       if (HistoryEventManager.isHistoryEnabled()) {
-        createTaskTransferredEvent(task, oldWorkbasketSummary.getId(), destinationWorkbasketId);
+        createTransferredEvent(task, originWorkbasket.getId(), destinationWorkbasket.getId());
       }
+
       return task;
     } finally {
       taskanaEngine.returnConnection();
     }
   }
 
-  BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketKey,
-      String destinationWorkbasketDomain,
-      List<String> taskIds,
+  private BulkOperationResults<String, TaskanaException> transferMultipleTasks(
+      List<String> taskToBeTransferred,
+      WorkbasketSummary destinationWorkbasket,
       boolean setTransferFlag)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
+      throws InvalidArgumentException {
+    if (taskToBeTransferred == null || taskToBeTransferred.isEmpty()) {
+      throw new InvalidArgumentException(TASK_ID_LIST_NULL_OR_EMPTY);
+    }
+    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+    List<String> taskIds = new ArrayList<>(taskToBeTransferred);
+
     try {
       taskanaEngine.openConnection();
 
-      // Check pre-conditions with trowing Exceptions
-      if (destinationWorkbasketKey == null || destinationWorkbasketDomain == null) {
-        throw new InvalidArgumentException(
-            "DestinationWorkbasketKey or domain can´t be used as NULL-Parameter.");
-      }
-      Workbasket destinationWorkbasket =
-          workbasketService.getWorkbasket(destinationWorkbasketKey, destinationWorkbasketDomain);
+      List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIds, null);
+      removeNotTransferableTasks(taskIds, taskSummaries, bulkLog);
+      updateTransferableTasks(taskIds, taskSummaries, destinationWorkbasket, setTransferFlag);
 
-      return transferTasks(taskIds, destinationWorkbasket, setTransferFlag);
+      return bulkLog;
     } finally {
       taskanaEngine.returnConnection();
     }
   }
 
-  BulkOperationResults<String, TaskanaException> transferTasks(
-      String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException {
-    try {
-      taskanaEngine.openConnection();
-
-      // Check pre-conditions with trowing Exceptions
-      if (destinationWorkbasketId == null || destinationWorkbasketId.isEmpty()) {
-        throw new InvalidArgumentException("DestinationWorkbasketId must not be null or empty.");
-      }
-      Workbasket destinationWorkbasket = workbasketService.getWorkbasket(destinationWorkbasketId);
-
-      return transferTasks(taskIds, destinationWorkbasket, setTransferFlag);
-    } finally {
-      taskanaEngine.returnConnection();
+  private void checkPreconditionsForTransferTask(
+      Task task, WorkbasketSummary destinationWorkbasket, WorkbasketSummary originWorkbasket)
+      throws NotAuthorizedException, WorkbasketNotFoundException, InvalidStateException {
+    if (task.getState().isEndState()) {
+      throw new InvalidStateException(String.format(TASK_IN_END_STATE, task.getId()));
     }
+    workbasketService.checkAuthorization(originWorkbasket.getId(), WorkbasketPermission.TRANSFER);
+    checkDestinationWorkbasket(destinationWorkbasket);
   }
 
-  private BulkOperationResults<String, TaskanaException> transferTasks(
-      List<String> taskIdsToBeTransferred,
-      Workbasket destinationWorkbasket,
-      boolean setTransferFlag)
-      throws InvalidArgumentException, WorkbasketNotFoundException, NotAuthorizedException {
-
+  private void checkDestinationWorkbasket(WorkbasketSummary destinationWorkbasket)
+      throws NotAuthorizedException, WorkbasketNotFoundException {
     workbasketService.checkAuthorization(
         destinationWorkbasket.getId(), WorkbasketPermission.APPEND);
 
-    if (taskIdsToBeTransferred == null) {
-      throw new InvalidArgumentException("TaskIds must not be null.");
+    if (destinationWorkbasket.isMarkedForDeletion()) {
+      throw new WorkbasketNotFoundException(
+          destinationWorkbasket.getId(),
+          String.format(WORKBASKET_MARKED_FOR_DELETION, destinationWorkbasket.getId()));
     }
-    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
-    List<String> taskIds = new ArrayList<>(taskIdsToBeTransferred);
-    taskService.removeNonExistingTasksFromTaskIdList(taskIds, bulkLog);
-
-    if (taskIds.isEmpty()) {
-      throw new InvalidArgumentException("TaskIds must not contain only invalid arguments.");
-    }
-
-    List<MinimalTaskSummary> taskSummaries;
-    taskSummaries = taskMapper.findExistingTasks(taskIds, null);
-    checkIfTransferConditionsAreFulfilled(taskIds, taskSummaries, bulkLog);
-    updateTasksToBeTransferred(taskIds, taskSummaries, destinationWorkbasket, setTransferFlag);
-    return bulkLog;
   }
 
-  private void checkIfTransferConditionsAreFulfilled(
+  private void removeNotTransferableTasks(
       List<String> taskIds,
       List<MinimalTaskSummary> taskSummaries,
       BulkOperationResults<String, TaskanaException> bulkLog) {
+    List<WorkbasketSummary> sourceWorkbaskets =
+        getSourceWorkbasketsWithTransferPermission(taskSummaries);
 
-    Set<String> workbasketIds = new HashSet<>();
-    taskSummaries.forEach(t -> workbasketIds.add(t.getWorkbasketId()));
+    taskIds.removeIf(id -> !taskIsTransferable(id, taskSummaries, sourceWorkbaskets, bulkLog));
+    taskSummaries.removeIf(task -> !taskIds.contains(task.getTaskId()));
+  }
+
+  private List<WorkbasketSummary> getSourceWorkbasketsWithTransferPermission(
+      List<MinimalTaskSummary> taskSummaries) {
+    Set<String> workbasketIds =
+        taskSummaries.stream().map(MinimalTaskSummary::getWorkbasketId).collect(Collectors.toSet());
+
     WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
     query.setUsedToAugmentTasks(true);
-    List<WorkbasketSummary> sourceWorkbaskets;
-    if (taskSummaries.isEmpty()) {
-      sourceWorkbaskets = new ArrayList<>();
-    } else {
-      sourceWorkbaskets =
+
+    List<WorkbasketSummary> sourceWorkbaskets = new ArrayList<>();
+    if (!workbasketIds.isEmpty()) {
+      sourceWorkbaskets.addAll(
           query
               .callerHasPermission(WorkbasketPermission.TRANSFER)
               .idIn(workbasketIds.toArray(new String[0]))
-              .list();
+              .list());
     }
-    checkIfTasksMatchTransferCriteria(taskIds, taskSummaries, sourceWorkbaskets, bulkLog);
+    return sourceWorkbaskets;
   }
 
-  private void checkIfTasksMatchTransferCriteria(
-      List<String> taskIds,
+  private boolean taskIsTransferable(
+      String currentTaskId,
       List<MinimalTaskSummary> taskSummaries,
       List<WorkbasketSummary> sourceWorkbaskets,
       BulkOperationResults<String, TaskanaException> bulkLog) {
+    if (currentTaskId == null || currentTaskId.isEmpty()) {
+      return false;
+    }
+    MinimalTaskSummary currentTaskSummary =
+        taskSummaries.stream()
+            .filter(t -> currentTaskId.equals(t.getTaskId()))
+            .findFirst()
+            .orElse(null);
 
-    Iterator<String> taskIdIterator = taskIds.iterator();
-    while (taskIdIterator.hasNext()) {
-      String currentTaskId = taskIdIterator.next();
-      MinimalTaskSummary taskSummary =
-          taskSummaries.stream()
-              .filter(t -> currentTaskId.equals(t.getTaskId()))
-              .findFirst()
-              .orElse(null);
-      if (taskSummary == null) {
-        bulkLog.addError(
-            currentTaskId,
-            new TaskNotFoundException(
-                currentTaskId, TASK_WITH_ID + currentTaskId + WAS_NOT_FOUND2));
-        taskIdIterator.remove();
-      } else if (taskSummary.getTaskState().isEndState()) {
-        bulkLog.addError(
-            currentTaskId,
-            new InvalidStateException(
-                String.format(TASK_IN_END_STATE_WITH_ID_CANNOT_BE_TRANSFERRED, currentTaskId)));
-        taskIdIterator.remove();
-      } else if (sourceWorkbaskets.stream()
-          .noneMatch(wb -> taskSummary.getWorkbasketId().equals(wb.getId()))) {
-        bulkLog.addError(
-            currentTaskId,
-            new NotAuthorizedException(
-                "The workbasket of this task got not TRANSFER permissions. TaskId=" + currentTaskId,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
-        taskIdIterator.remove();
+    if (currentTaskSummary == null) {
+      bulkLog.addError(
+          currentTaskId,
+          new TaskNotFoundException(currentTaskId, String.format(TASK_NOT_FOUND, currentTaskId)));
+      return false;
+    } else if (currentTaskSummary.getTaskState().isEndState()) {
+      bulkLog.addError(
+          currentTaskId,
+          new InvalidStateException(String.format(TASK_IN_END_STATE, currentTaskId)));
+      return false;
+    } else if (sourceWorkbaskets.stream()
+        .noneMatch(wb -> currentTaskSummary.getWorkbasketId().equals(wb.getId()))) {
+      bulkLog.addError(
+          currentTaskId,
+          new NotAuthorizedException(
+              String.format(WORKBASKET_WITHOUT_TRANSFER_PERMISSION, currentTaskId),
+              taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
+      return false;
+    }
+    return true;
+  }
+
+  private void updateTransferableTasks(
+      List<String> taskIds,
+      List<MinimalTaskSummary> taskSummaries,
+      WorkbasketSummary destinationWorkbasket,
+      boolean setTransferFlag) {
+    if (!taskIds.isEmpty()) {
+      TaskImpl updateObject = new TaskImpl();
+      modifyTaskParameters(updateObject, destinationWorkbasket, setTransferFlag);
+      taskMapper.updateTransfered(taskIds, updateObject);
+
+      if (HistoryEventManager.isHistoryEnabled()) {
+        taskSummaries.forEach(
+            task -> {
+              updateObject.setId(task.getTaskId());
+              createTransferredEvent(
+                  updateObject,
+                  task.getWorkbasketId(),
+                  updateObject.getWorkbasketSummary().getId());
+            });
       }
     }
   }
 
-  private void createTaskTransferredEvent(
-      Task task, String oldWorkbasketId, String newWorkbasketId) {
+  private void modifyTaskParameters(
+      TaskImpl task, WorkbasketSummary workbasket, boolean setTransferFlag) {
+    task.setRead(false);
+    task.setTransferred(setTransferFlag);
+    task.setState(TaskState.READY);
+    task.setOwner(null);
+    task.setWorkbasketSummary(workbasket);
+    task.setDomain(workbasket.getDomain());
+    task.setModified(Instant.now());
+  }
+
+  private void createTransferredEvent(
+      Task task, String originWorkbasketId, String destinationWorkbasketId) {
     historyEventManager.createEvent(
         new TaskTransferredEvent(
             IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
             task,
-            oldWorkbasketId,
-            newWorkbasketId,
+            originWorkbasketId,
+            destinationWorkbasketId,
             taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
-  }
-
-  private void updateTasksToBeTransferred(
-      List<String> taskIds,
-      List<MinimalTaskSummary> taskSummaries,
-      Workbasket destinationWorkbasket,
-      boolean setTransferFlag) {
-
-    taskSummaries =
-        taskSummaries.stream()
-            .filter(ts -> taskIds.contains(ts.getTaskId()))
-            .collect(Collectors.toList());
-    if (!taskSummaries.isEmpty()) {
-      Instant now = Instant.now();
-      TaskSummaryImpl updateObject = new TaskSummaryImpl();
-      updateObject.setRead(false);
-      updateObject.setTransferred(setTransferFlag);
-      updateObject.setWorkbasketSummary(destinationWorkbasket.asSummary());
-      updateObject.setDomain(destinationWorkbasket.getDomain());
-      updateObject.setModified(now);
-      updateObject.setState(TaskState.READY);
-      updateObject.setOwner(null);
-      taskMapper.updateTransfered(taskIds, updateObject);
-      if (HistoryEventManager.isHistoryEnabled()) {
-        createTasksTransferredEvents(taskSummaries, updateObject);
-      }
-    }
-  }
-
-  private void createTasksTransferredEvents(
-      List<MinimalTaskSummary> taskSummaries, TaskSummaryImpl updateObject) {
-    taskSummaries.forEach(
-        task -> {
-          TaskImpl transferredTask = (TaskImpl) taskService.newTask(task.getWorkbasketId());
-          transferredTask.setId(task.getTaskId());
-          transferredTask.setRead(updateObject.isRead());
-          transferredTask.setTransferred(updateObject.isTransferred());
-          transferredTask.setWorkbasketSummary(updateObject.getWorkbasketSummary());
-          transferredTask.setDomain(updateObject.getDomain());
-          transferredTask.setModified(updateObject.getModified());
-          transferredTask.setState(updateObject.getState());
-          transferredTask.setOwner(updateObject.getOwner());
-          createTaskTransferredEvent(
-              transferredTask, task.getWorkbasketId(), updateObject.getWorkbasketSummary().getId());
-        });
   }
 }
