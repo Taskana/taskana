@@ -148,20 +148,24 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
     TaskHistoryEvent event = historyService.getTaskHistoryEvent(eventId);
     assertThat(event.getDetails()).isNotNull();
     JSONArray changes = new JSONObject(event.getDetails()).getJSONArray("changes");
-
     assertThat(changes.length()).isPositive();
-    for (int i = 0; i < changes.length(); i++) {
+    boolean foundField = false;
+    for (int i = 0; i < changes.length() && !foundField; i++) {
       JSONObject change = changes.getJSONObject(i);
       if (change.get("fieldName").equals("workbasketSummary")) {
-        String oldWorkbasketStr = (String) change.get("oldValue");
-        String newWorkbasketStr = (String) change.get("newValue");
+        foundField = true;
+        String oldWorkbasketStr = change.get("oldValue").toString();
+        String newWorkbasketStr = change.get("newValue").toString();
         WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
         Workbasket oldWorkbasket = workbasketService.getWorkbasket(expectedOldValue);
-        assertThat(oldWorkbasket.asSummary()).hasToString(oldWorkbasketStr);
+        assertThat(oldWorkbasketStr)
+            .isEqualTo(JSONObject.wrap(oldWorkbasket.asSummary()).toString());
         Workbasket newWorkbasket = workbasketService.getWorkbasket(expectedNewValue);
-        assertThat(newWorkbasket.asSummary()).hasToString(newWorkbasketStr);
+        assertThat(newWorkbasketStr)
+            .isEqualTo(JSONObject.wrap(newWorkbasket.asSummary()).toString());
       }
     }
+    assertThat(foundField).describedAs("changes do not contain field 'workbasketSummary'").isTrue();
 
     assertThat(event.getId()).startsWith("THI:");
     assertThat(event.getOldValue()).isEqualTo(expectedOldValue);
