@@ -917,21 +917,17 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public List<TaskSummary> list() {
-    List<TaskSummary> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      checkForIllegalParamCombinations();
-      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
-      setupJoinAndOrderParameters();
-      setupAccessIds();
-      List<TaskSummaryImpl> tasks =
-          taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
+    return taskanaEngine.openAndReturnConnection(
+        () -> {
+          checkForIllegalParamCombinations();
+          checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+          setupJoinAndOrderParameters();
+          setupAccessIds();
+          List<TaskSummaryImpl> tasks =
+              taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
 
-      result = taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-    }
+          return taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
+        });
   }
 
   @Override

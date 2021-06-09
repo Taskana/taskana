@@ -62,8 +62,10 @@ public class AttachmentRepresentationModelAssembler
     attachment.setClassificationSummary(
         classificationSummaryAssembler.toEntityModel(
             attachmentRepresentationModel.getClassificationSummary()));
-    attachment.setObjectReference(
-        objectReferenceAssembler.toEntity(attachmentRepresentationModel.getObjectReference()));
+    if (attachmentRepresentationModel.getObjectReference() != null) {
+      attachment.setObjectReference(
+          objectReferenceAssembler.toEntity(attachmentRepresentationModel.getObjectReference()));
+    }
     attachment.setChannel(attachmentRepresentationModel.getChannel());
     attachment.setCustomAttributeMap(attachmentRepresentationModel.getCustomAttributes());
     return attachment;

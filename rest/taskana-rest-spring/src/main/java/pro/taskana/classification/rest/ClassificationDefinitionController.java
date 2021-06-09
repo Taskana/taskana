@@ -83,10 +83,7 @@ public class ClassificationDefinitionController {
                 Collectors.collectingAndThen(
                     Collectors.toList(), assembler::toTaskanaCollectionModel));
 
-    ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
-        ResponseEntity.ok(collectionModel);
-
-    return response;
+    return ResponseEntity.ok(collectionModel);
   }
 
   /**
@@ -119,8 +116,7 @@ public class ClassificationDefinitionController {
         mapChildrenToParentKeys(collection.getContent(), systemIds);
     insertOrUpdateClassificationsWithoutParent(collection.getContent(), systemIds);
     updateParentChildrenRelations(childrenInFile);
-    ResponseEntity<Void> response = ResponseEntity.noContent().build();
-    return response;
+    return ResponseEntity.noContent().build();
   }
 
   private Map<String, String> getSystemIds() {
@@ -150,7 +146,7 @@ public class ClassificationDefinitionController {
     }
     if (!duplicates.isEmpty()) {
       throw new DuplicateKeyException(
-          "The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
+          "The 'key|domain'-identifier is not unique for the value(s): " + duplicates);
     }
   }
 

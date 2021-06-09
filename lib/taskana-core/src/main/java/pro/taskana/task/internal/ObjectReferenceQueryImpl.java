@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 
-import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.ObjectReferenceQueryColumnName;
@@ -67,19 +67,13 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   @Override
   public List<ObjectReference> list() {
-    List<ObjectReference> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-    }
+    return taskanaEngine.openAndReturnConnection(
+        () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 
   @Override
   public List<ObjectReference> list(int offset, int limit) {
-    List<ObjectReference> result = new ArrayList<>();
+    List<ObjectReference> result;
     try {
       taskanaEngine.openConnection();
       RowBounds rowBounds = new RowBounds(offset, limit);
@@ -87,8 +81,8 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
       return result;
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
-        TaskanaRuntimeException ex =
-            new TaskanaRuntimeException(
+        SystemException ex =
+            new SystemException(
                 "The offset beginning was set over the amount of result-rows.", e.getCause());
         ex.setStackTrace(e.getStackTrace());
         throw ex;
@@ -102,7 +96,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
   @Override
   public List<String> listValues(
       ObjectReferenceQueryColumnName columnName, SortDirection sortDirection) {
-    List<String> result = new ArrayList<>();
+    List<String> result;
     try {
       taskanaEngine.openConnection();
       this.columnName = columnName;

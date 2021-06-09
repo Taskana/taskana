@@ -359,15 +359,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public List<WorkbasketSummary> list() {
-    List<WorkbasketSummary> workbaskets = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      handleCallerRolesAndAccessIds();
-      workbaskets = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
-      return workbaskets;
-    } finally {
-      taskanaEngine.returnConnection();
-    }
+    handleCallerRolesAndAccessIds();
+    return taskanaEngine.openAndReturnConnection(
+        () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 
   @Override

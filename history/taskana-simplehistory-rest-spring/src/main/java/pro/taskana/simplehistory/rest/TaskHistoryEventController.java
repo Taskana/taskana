@@ -84,10 +84,7 @@ public class TaskHistoryEventController {
     TaskHistoryEventPagedRepresentationModel pagedResources =
         assembler.toPagedModel(historyEvents, pagingParameter.getPageMetadata());
 
-    ResponseEntity<TaskHistoryEventPagedRepresentationModel> response =
-        ResponseEntity.ok(pagedResources);
-
-    return response;
+    return ResponseEntity.ok(pagedResources);
   }
 
   /**
