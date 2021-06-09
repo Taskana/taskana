@@ -89,11 +89,9 @@ public class ClassificationController {
     sortParameter.applyToQuery(query);
     List<ClassificationSummary> classificationSummaries = pagingParameter.applyToQuery(query);
 
-    ResponseEntity<ClassificationSummaryPagedRepresentationModel> response =
-        ResponseEntity.ok(
-            summaryModelAssembler.toPagedModel(
-                classificationSummaries, pagingParameter.getPageMetadata()));
-    return response;
+    return ResponseEntity.ok(
+        summaryModelAssembler.toPagedModel(
+            classificationSummaries, pagingParameter.getPageMetadata()));
   }
 
   /**
@@ -109,9 +107,7 @@ public class ClassificationController {
   public ResponseEntity<ClassificationRepresentationModel> getClassification(
       @PathVariable String classificationId) throws ClassificationNotFoundException {
     Classification classification = classificationService.getClassification(classificationId);
-    ResponseEntity<ClassificationRepresentationModel> response =
-        ResponseEntity.ok(modelAssembler.toModel(classification));
-    return response;
+    return ResponseEntity.ok(modelAssembler.toModel(classification));
   }
 
   /**
@@ -136,10 +132,7 @@ public class ClassificationController {
     Classification classification = modelAssembler.toEntityModel(repModel);
     classification = classificationService.createClassification(classification);
 
-    ResponseEntity<ClassificationRepresentationModel> response =
-        ResponseEntity.status(HttpStatus.CREATED).body(modelAssembler.toModel(classification));
-
-    return response;
+    return ResponseEntity.status(HttpStatus.CREATED).body(modelAssembler.toModel(classification));
   }
 
   /**
@@ -171,10 +164,8 @@ public class ClassificationController {
     }
     Classification classification = modelAssembler.toEntityModel(resource);
     classification = classificationService.updateClassification(classification);
-    ResponseEntity<ClassificationRepresentationModel> result =
-        ResponseEntity.ok(modelAssembler.toModel(classification));
 
-    return result;
+    return ResponseEntity.ok(modelAssembler.toModel(classification));
   }
 
   /**
@@ -194,8 +185,7 @@ public class ClassificationController {
       @PathVariable String classificationId)
       throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
     classificationService.deleteClassification(classificationId);
-    ResponseEntity<ClassificationRepresentationModel> response = ResponseEntity.noContent().build();
-    return response;
+    return ResponseEntity.noContent().build();
   }
 
   enum ClassificationQuerySortBy implements QuerySortBy<ClassificationQuery> {

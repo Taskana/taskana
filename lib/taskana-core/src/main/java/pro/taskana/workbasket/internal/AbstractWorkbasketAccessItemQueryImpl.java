@@ -76,16 +76,8 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
 
   @Override
   public List<T> list() {
-    List<T> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      List<T> foundAccessItms =
-          taskanaEngine.getSqlSession().selectList(getLinkToMapper(), _this());
-      result.addAll(foundAccessItms);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-    }
+    return taskanaEngine.openAndReturnConnection(
+        () -> taskanaEngine.getSqlSession().selectList(getLinkToMapper(), _this()));
   }
 
   @Override

@@ -323,14 +323,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public List<ClassificationSummary> list() {
-    List<ClassificationSummary> result = new ArrayList<>();
-    try {
-      taskanaEngine.openConnection();
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this);
-      return result;
-    } finally {
-      taskanaEngine.returnConnection();
-    }
+    return taskanaEngine.openAndReturnConnection(
+        () -> taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this));
   }
 
   @Override

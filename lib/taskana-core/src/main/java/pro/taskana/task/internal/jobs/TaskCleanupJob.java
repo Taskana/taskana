@@ -133,18 +133,16 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
     int deletedTaskCount = 0;
     if (txProvider != null) {
-      int count =
-          (Integer)
-              txProvider.executeInTransaction(
-                  () -> {
-                    try {
-                      return deleteTasks(tasksToBeDeleted);
-                    } catch (Exception e) {
-                      LOGGER.warn("Could not delete tasks.", e);
-                      return 0;
-                    }
-                  });
-      return count;
+      return (int)
+          txProvider.executeInTransaction(
+              () -> {
+                try {
+                  return deleteTasks(tasksToBeDeleted);
+                } catch (Exception e) {
+                  LOGGER.warn("Could not delete tasks.", e);
+                  return 0;
+                }
+              });
     } else {
       try {
         deletedTaskCount = deleteTasks(tasksToBeDeleted);

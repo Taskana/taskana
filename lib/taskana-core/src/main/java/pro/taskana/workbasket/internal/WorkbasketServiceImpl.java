@@ -78,7 +78,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public Workbasket getWorkbasket(String workbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedException {
-    Workbasket result = null;
+    Workbasket result;
     try {
       taskanaEngine.openConnection();
       result = workbasketMapper.findById(workbasketId);
@@ -100,7 +100,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public Workbasket getWorkbasket(String workbasketKey, String domain)
       throws WorkbasketNotFoundException, NotAuthorizedException {
-    Workbasket result = null;
+    Workbasket result;
     try {
       taskanaEngine.openConnection();
       result = workbasketMapper.findByKeyAndDomain(workbasketKey, domain);
@@ -382,7 +382,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public void checkAuthorization(String workbasketId, WorkbasketPermission... requestedPermissions)
       throws NotAuthorizedException, WorkbasketNotFoundException {
-    boolean isAuthorized = true;
     try {
       taskanaEngine.openConnection();
 
@@ -413,7 +412,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       for (WorkbasketPermission perm : requestedPermissions) {
         if (!grantedPermissions.contains(perm)) {
-          isAuthorized = false;
           throw new NotAuthorizedException(
               "Not authorized. Permission '"
                   + perm.name()
@@ -432,7 +430,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public void checkAuthorization(
       String workbasketKey, String domain, WorkbasketPermission... requestedPermissions)
       throws NotAuthorizedException, WorkbasketNotFoundException {
-    boolean isAuthorized = true;
     try {
       taskanaEngine.openConnection();
 
@@ -465,7 +462,6 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       for (WorkbasketPermission perm : requestedPermissions) {
         if (!grantedPermissions.contains(perm)) {
-          isAuthorized = false;
           throw new NotAuthorizedException(
               "Not authorized. Permission '"
                   + perm.name()
@@ -998,7 +994,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       throw new ConcurrencyException(
           "The current Workbasket has been modified while editing. "
               + "The values can not be updated. Workbasket "
-              + workbasketImplToUpdate.toString());
+              + workbasketImplToUpdate);
     }
   }
 

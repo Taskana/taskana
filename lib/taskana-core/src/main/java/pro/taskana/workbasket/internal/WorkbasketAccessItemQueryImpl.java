@@ -99,10 +99,8 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
   @Override
   public List<WorkbasketAccessItem> list() {
-    List<WorkbasketAccessItem> result =
-        taskanaEngine.openAndReturnConnection(
-            () -> new ArrayList<>(taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this)));
-    return result;
+    return taskanaEngine.openAndReturnConnection(
+        () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 
   @Override

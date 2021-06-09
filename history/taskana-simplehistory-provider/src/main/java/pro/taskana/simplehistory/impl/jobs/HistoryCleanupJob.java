@@ -198,18 +198,16 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   private int deleteHistoryEventsTransactionally(List<String> taskIdsToDeleteHistoryEventsFor) {
     int deletedEventsCount = 0;
     if (txProvider != null) {
-      int count =
-          (Integer)
-              txProvider.executeInTransaction(
-                  () -> {
-                    try {
-                      return deleteEvents(taskIdsToDeleteHistoryEventsFor);
-                    } catch (Exception e) {
-                      LOGGER.warn("Could not delete history events.", e);
-                      return 0;
-                    }
-                  });
-      return count;
+      return (int)
+          txProvider.executeInTransaction(
+              () -> {
+                try {
+                  return deleteEvents(taskIdsToDeleteHistoryEventsFor);
+                } catch (Exception e) {
+                  LOGGER.warn("Could not delete history events.", e);
+                  return 0;
+                }
+              });
     } else {
       try {
         deletedEventsCount = deleteEvents(taskIdsToDeleteHistoryEventsFor);
