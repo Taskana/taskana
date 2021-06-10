@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,15 +27,18 @@ public class BootWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
   private final String ldapUserDnPatterns;
 
   private final boolean devMode;
+  private final boolean enableCsrf;
 
   public BootWebSecurityConfigurer(
       @Value("${taskana.ldap.serverUrl:ldap://localhost:10389}") String ldapServerUrl,
       @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}") String ldapBaseDn,
       @Value("${taskana.ldap.groupSearchBase:cn=groups}") String ldapGroupSearchBase,
       @Value("${taskana.ldap.userDnPatterns:uid={0},cn=users}") String ldapUserDnPatterns,
+      @Value("${enableCsrf:false}") boolean enableCsrf,
       LdapAuthoritiesPopulator ldapAuthoritiesPopulator,
       GrantedAuthoritiesMapper grantedAuthoritiesMapper,
       @Value("${devMode:false}") boolean devMode) {
+    this.enableCsrf = enableCsrf;
     this.ldapAuthoritiesPopulator = ldapAuthoritiesPopulator;
     this.grantedAuthoritiesMapper = grantedAuthoritiesMapper;
     this.ldapServerUrl = ldapServerUrl;
@@ -60,21 +64,25 @@ public class BootWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    HttpSecurity httpSecurity =
+        http.authorizeRequests()
+            .antMatchers("/css/**", "/img/**")
+            .permitAll()
+            .and()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/docs/**")
+            .permitAll()
+            .and()
+            .addFilter(jaasApiIntegrationFilter())
+            .addFilterAfter(new SpringSecurityToJaasFilter(), JaasApiIntegrationFilter.class);
 
-    http.authorizeRequests()
-        .antMatchers("/css/**", "/img/**")
-        .permitAll()
-        .and()
-        .csrf()
-        .disable()
-        .httpBasic()
-        .and()
-        .authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/docs/**")
-        .permitAll()
-        .and()
-        .addFilter(jaasApiIntegrationFilter())
-        .addFilterAfter(new SpringSecurityToJaasFilter(), JaasApiIntegrationFilter.class);
+    if (enableCsrf) {
+      CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+      csrfTokenRepository.setCookiePath("/");
+      httpSecurity.csrf().csrfTokenRepository(csrfTokenRepository);
+    } else {
+      httpSecurity.csrf().disable().httpBasic();
+    }
 
     if (devMode) {
       http.headers()

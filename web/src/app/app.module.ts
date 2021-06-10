@@ -4,7 +4,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AlertModule } from 'ngx-bootstrap';
@@ -82,7 +82,8 @@ const MODULES = [
   MatIconModule,
   MatSelectModule,
   NgxsModule.forRoot(STATES, { developmentMode: !environment.production }),
-  NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 })
+  NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 }),
+  HttpClientXsrfModule
 ];
 
 const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent, SidenavListComponent];
