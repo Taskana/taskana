@@ -208,7 +208,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     // verify that the database content is as expected
     TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     try {
-      SqlSession session = engineProxy.getSqlSession();
+      SqlSession session = taskanaEngine.getSqlSession();
       Configuration config = session.getConfiguration();
       if (!config.hasMapper(TaskTestMapper.class)) {
         config.addMapper(TaskTestMapper.class);
@@ -271,7 +271,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     // verify that the database content is as expected
     TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     try {
-      SqlSession session = engineProxy.getSqlSession();
+      SqlSession session = taskanaEngine.getSqlSession();
       AttachmentMapper mapper = session.getMapper(AttachmentMapper.class);
       engineProxy.openConnection();
       String customProperties =

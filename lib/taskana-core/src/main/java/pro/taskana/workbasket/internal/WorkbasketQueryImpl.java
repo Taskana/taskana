@@ -361,7 +361,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   public List<WorkbasketSummary> list() {
     handleCallerRolesAndAccessIds();
     return taskanaEngine.openAndReturnConnection(
-        () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
+        () -> taskanaEngine.getEngine().getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 
   @Override
@@ -371,7 +371,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       taskanaEngine.openConnection();
       RowBounds rowBounds = new RowBounds(offset, limit);
       handleCallerRolesAndAccessIds();
-      workbaskets = taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
+      workbaskets =
+          taskanaEngine.getEngine().getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
       return workbaskets;
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
@@ -395,7 +396,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       this.columnName = columnName;
       handleCallerRolesAndAccessIds();
       this.orderBy.clear();
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+      result = taskanaEngine.getEngine().getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
       return result;
     } finally {
       taskanaEngine.returnConnection();
@@ -408,7 +409,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     try {
       taskanaEngine.openConnection();
       handleCallerRolesAndAccessIds();
-      workbasket = taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+      workbasket = taskanaEngine.getEngine().getSqlSession().selectOne(LINK_TO_MAPPER, this);
       return workbasket;
     } finally {
       taskanaEngine.returnConnection();
@@ -421,7 +422,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     try {
       taskanaEngine.openConnection();
       handleCallerRolesAndAccessIds();
-      rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+      rowCount = taskanaEngine.getEngine().getSqlSession().selectOne(LINK_TO_COUNTER, this);
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import acceptance.TaskanaEngineProxy;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,9 +35,8 @@ class TaskEngineAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isTrue();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
 
-    new TaskanaEngineProxy(taskanaEngine)
-        .getEngine().getEngine()
-        .runAsAdmin(() -> assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue());
+    taskanaEngine.runAsAdmin(
+        () -> assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isTrue());
 
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
   }

@@ -36,11 +36,12 @@ public interface JobMapper {
   Integer insertJob(@Param("job") ScheduledJob job);
 
   @Select(
-      "<script> SELECT   JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS "
+      "<script> SELECT JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS "
           + "FROM SCHEDULED_JOB "
           + "WHERE STATE IN ( 'READY') AND (DUE is null OR DUE &lt; #{now}) AND (LOCK_EXPIRES is null OR LOCK_EXPIRES &lt; #{now}) AND RETRY_COUNT > 0 "
           + "ORDER BY PRIORITY DESC "
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+          + "FOR UPDATE "
+          + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS</if> "
           + "</script>")
   @Result(property = "jobId", column = "JOB_ID")
   @Result(property = "priority", column = "PRIORITY")

@@ -53,12 +53,12 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     workbasketService.deleteWorkbasket(workbaskets.get(0).getId());
 
     // Run taskCleanupJob for deleting completing tasks before running workbasketCleanupJob
-    TaskCleanupJob taskCleanupJob = new TaskCleanupJob(taskanaEngine, null, null);
+    TaskCleanupJob taskCleanupJob = new TaskCleanupJob(taskanaEngine, null);
     taskCleanupJob.run();
 
     assertThat(getNumberTaskCompleted(workbaskets.get(0).getId())).isZero();
 
-    WorkbasketCleanupJob workbasketCleanupJob = new WorkbasketCleanupJob(taskanaEngine, null, null);
+    WorkbasketCleanupJob workbasketCleanupJob = new WorkbasketCleanupJob(taskanaEngine, null);
     workbasketCleanupJob.run();
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
@@ -82,7 +82,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     // Workbasket with completed task will be marked for deletion.
     workbasketService.deleteWorkbasket(workbaskets.get(0).getId());
 
-    WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null, null);
+    WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null);
     job.run();
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
@@ -95,11 +95,11 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
+      job.setType(ScheduledJob.Type.WORKBASKET_CLEANUP_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.UPDATETASKSJOB);
+      job.setType(Type.TASK_REFRESH_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -109,7 +109,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> workbasketCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.WORKBASKETCLEANUPJOB))
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.WORKBASKET_CLEANUP_JOB))
             .collect(Collectors.toList());
 
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);

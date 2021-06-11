@@ -20,7 +20,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
-import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
@@ -30,42 +29,16 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
 
-  private static final SortDirection ASCENDING = SortDirection.ASCENDING;
-
-  // Parameter
   private final Duration minimumAge;
   private final int batchSize;
   private final boolean allCompletedSameParentBusiness;
 
-  public TaskCleanupJob(
-      TaskanaEngine taskanaEngine,
-      TaskanaTransactionProvider<Object> txProvider,
-      ScheduledJob scheduledJob) {
-    super(taskanaEngine, txProvider, scheduledJob);
+  public TaskCleanupJob(TaskanaEngine taskanaEngine, ScheduledJob scheduledJob) {
+    super(taskanaEngine, scheduledJob, true);
     minimumAge = taskanaEngine.getConfiguration().getCleanupJobMinimumAge();
     batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
     allCompletedSameParentBusiness =
         taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
-  }
-
-  @Override
-  public void run() throws TaskanaException {
-    Instant completedBefore = Instant.now().minus(minimumAge);
-    LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore);
-    try {
-      List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
-
-      int totalNumberOfTasksDeleted =
-          CollectionUtil.partitionBasedOnSize(tasksCompletedBefore, batchSize).stream()
-              .mapToInt(this::deleteTasksTransactionally)
-              .sum();
-
-      LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
-    } catch (Exception e) {
-      throw new TaskanaException("Error while processing TaskCleanupJob.", e);
-    } finally {
-      scheduleNextCleanupJob();
-    }
   }
 
   /**
@@ -76,19 +49,50 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    jobService.deleteJobs(Type.TASKCLEANUPJOB);
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
+    jobService.deleteJobs(job.getJobType());
     job.scheduleNextCleanupJob();
+  }
+
+  @Override
+  protected Type getJobType() {
+    return Type.TASK_CLEANUP_JOB;
+  }
+
+  @Override
+  protected void executeJob() throws TaskanaException {
+    Instant completedBefore = Instant.now().minus(minimumAge);
+    LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore);
+    try {
+      List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
+
+      int totalNumberOfTasksDeleted =
+          CollectionUtil.partitionBasedOnSize(tasksCompletedBefore, batchSize).stream()
+              .mapToInt(
+                  tasksToBeDeleted -> {
+                    try {
+                      return deleteTasks(tasksToBeDeleted);
+                    } catch (Exception e) {
+                      LOGGER.warn("Could not delete tasks.", e);
+                      return 0;
+                    }
+                  })
+              .sum();
+
+      LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
+    } catch (Exception e) {
+      throw new TaskanaException("Error while processing TaskCleanupJob.", e);
+    }
   }
 
   private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
 
     List<TaskSummary> tasksToDelete =
-        taskanaEngineImpl
+        taskanaEngine
             .getTaskService()
             .createTaskQuery()
             .completedWithin(new TimeInterval(null, untilDate))
-            .orderByBusinessProcessId(ASCENDING)
+            .orderByBusinessProcessId(SortDirection.ASCENDING)
             .list();
 
     if (allCompletedSameParentBusiness) {
@@ -100,7 +104,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             if (!numberParentTasksShouldHave.containsKey(task.getParentBusinessProcessId())) {
               numberParentTasksShouldHave.put(
                   task.getParentBusinessProcessId(),
-                  taskanaEngineImpl
+                  taskanaEngine
                       .getTaskService()
                       .createTaskQuery()
                       .parentBusinessProcessIdIn(task.getParentBusinessProcessId())
@@ -129,37 +133,13 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     return tasksToDelete;
   }
 
-  private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
-
-    int deletedTaskCount = 0;
-    if (txProvider != null) {
-      return (int)
-          txProvider.executeInTransaction(
-              () -> {
-                try {
-                  return deleteTasks(tasksToBeDeleted);
-                } catch (Exception e) {
-                  LOGGER.warn("Could not delete tasks.", e);
-                  return 0;
-                }
-              });
-    } else {
-      try {
-        deletedTaskCount = deleteTasks(tasksToBeDeleted);
-      } catch (Exception e) {
-        LOGGER.warn("Could not delete tasks.", e);
-      }
-    }
-    return deletedTaskCount;
-  }
-
   private int deleteTasks(List<TaskSummary> tasksToBeDeleted)
       throws InvalidArgumentException, NotAuthorizedException {
 
     List<String> tasksIdsToBeDeleted =
         tasksToBeDeleted.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
+        taskanaEngine.getTaskService().deleteTasks(tasksIdsToBeDeleted);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
     }
@@ -174,10 +154,14 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     return tasksIdsToBeDeleted.size() - results.getFailedIds().size();
   }
 
-  private void scheduleNextCleanupJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
-    job.setDue(getNextDueForCleanupJob());
-    taskanaEngineImpl.getJobService().createJob(job);
+  @Override
+  public String toString() {
+    return "TaskCleanupJob [minimumAge="
+        + minimumAge
+        + ", batchSize="
+        + batchSize
+        + ", allCompletedSameParentBusiness="
+        + allCompletedSameParentBusiness
+        + "]";
   }
 }

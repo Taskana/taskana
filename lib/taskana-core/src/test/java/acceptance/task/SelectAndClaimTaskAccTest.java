@@ -39,16 +39,7 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
             Stream.of("admin", "teamlead-1", "teamlead-2", "taskadmin")
                 .collect(Collectors.toList()));
 
-    Runnable test = getRunnableTest(selectedAndClaimedTasks, accessIds);
-
-    Thread[] threads = new Thread[accessIds.size()];
-    for (int i = 0; i < threads.length; i++) {
-      threads[i] = new Thread(test);
-      threads[i].start();
-    }
-    for (Thread thread : threads) {
-      thread.join();
-    }
+    runInThread(getRunnableTest(selectedAndClaimedTasks, accessIds), accessIds.size());
 
     assertThat(selectedAndClaimedTasks)
         .extracting(Task::getId)
@@ -76,6 +67,17 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
                 + "task query returned nothing!");
   }
 
+  private void runInThread(Runnable runnable, int threadCount) throws InterruptedException {
+    Thread[] threads = new Thread[threadCount];
+    for (int i = 0; i < threads.length; i++) {
+      threads[i] = new Thread(runnable);
+      threads[i].start();
+    }
+    for (Thread thread : threads) {
+      thread.join();
+    }
+  }
+
   private Runnable getRunnableTest(List<Task> selectedAndClaimedTasks, List<String> accessIds) {
     return () -> {
       Subject subject = new Subject();
@@ -87,6 +89,7 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
                 Task task = taskService.selectAndClaim(getTaskQuery());
                 selectedAndClaimedTasks.add(task);
               });
+
       PrivilegedAction<Void> action =
           () -> {
             consumer.accept(taskanaEngine.getTaskService());

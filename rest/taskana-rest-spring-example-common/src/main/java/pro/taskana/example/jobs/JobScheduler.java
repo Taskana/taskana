@@ -28,12 +28,12 @@ import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 public class JobScheduler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
-  private final TaskanaTransactionProvider<Object> springTransactionProvider;
+  private final TaskanaTransactionProvider springTransactionProvider;
   private final TaskanaEngine taskanaEngine;
 
   @Autowired
   public JobScheduler(
-      TaskanaTransactionProvider<Object> springTransactionProvider, TaskanaEngine taskanaEngine) {
+      TaskanaTransactionProvider springTransactionProvider, TaskanaEngine taskanaEngine) {
     this.springTransactionProvider = springTransactionProvider;
     this.taskanaEngine = taskanaEngine;
   }
@@ -48,7 +48,7 @@ public class JobScheduler {
     if (taskanaEngine.isHistoryEnabled()) {
       Thread.currentThread()
           .getContextClassLoader()
-          .loadClass(Type.HISTORYCLEANUPJOB.getClazz())
+          .loadClass(Type.HISTORY_CLEANUP_JOB.getClazz())
           .getDeclaredMethod("initializeSchedule", TaskanaEngine.class)
           .invoke(null, taskanaEngine);
     }

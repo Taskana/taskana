@@ -2,20 +2,14 @@ package pro.taskana.common.internal.jobs;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
 import java.util.List;
-import javax.security.auth.Subject;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
@@ -25,138 +19,60 @@ public class JobRunner {
   private static final Logger LOGGER = LoggerFactory.getLogger(JobRunner.class);
   private final TaskanaEngine taskanaEngine;
   private final JobServiceImpl jobService;
-  private TaskanaTransactionProvider<Object> txProvider;
+  private TaskanaTransactionProvider txProvider;
 
   public JobRunner(TaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
     jobService = (JobServiceImpl) taskanaEngine.getJobService();
   }
 
-  public void registerTransactionProvider(TaskanaTransactionProvider<Object> txProvider) {
+  public void registerTransactionProvider(TaskanaTransactionProvider txProvider) {
     this.txProvider = txProvider;
   }
 
   public void runJobs() {
-    try {
-      List<ScheduledJob> jobsToRun = findAndLockJobsToRun();
-      for (ScheduledJob scheduledJob : jobsToRun) {
-        runJobTransactionally(scheduledJob);
-      }
-    } catch (Exception e) {
-      LOGGER.error("Error occurred while running jobs: ", e);
-    }
+    findAndLockJobsToRun().forEach(this::runJobTransactionally);
   }
 
   private List<ScheduledJob> findAndLockJobsToRun() {
-    List<ScheduledJob> availableJobs = jobService.findJobsToRun();
-    List<ScheduledJob> lockedJobs = new ArrayList<>();
-    for (ScheduledJob job : availableJobs) {
-      lockedJobs.add(lockJobTransactionally(job));
-    }
-    return lockedJobs;
+    return TaskanaTransactionProvider.executeInTransactionIfPossible(
+        txProvider,
+        () -> jobService.findJobsToRun().stream().map(this::lockJob).collect(Collectors.toList()));
   }
 
-  private ScheduledJob lockJobTransactionally(ScheduledJob job) {
-    ScheduledJob lockedJob;
-    if (txProvider != null) {
-      lockedJob = (ScheduledJob) txProvider.executeInTransaction(() -> lockJob(job));
-    } else {
-      lockedJob = lockJob(job);
-    }
+  private void runJobTransactionally(ScheduledJob scheduledJob) {
+    TaskanaTransactionProvider.executeInTransactionIfPossible(
+        txProvider, () -> taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob)));
+    jobService.deleteJob(scheduledJob);
+  }
+
+  private ScheduledJob lockJob(ScheduledJob job) {
+    String hostAddress = getHostAddress();
+    String owner = hostAddress + " - " + Thread.currentThread().getName();
+    job.setLockedBy(owner);
+    ScheduledJob lockedJob = jobService.lockJob(job, owner);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Locked job: {}", lockedJob);
     }
     return lockedJob;
   }
 
-  private ScheduledJob lockJob(ScheduledJob job) {
-    String hostAddress = "UNKNOWN_ADDRESS";
+  private String getHostAddress() {
+    String hostAddress;
     try {
       hostAddress = InetAddress.getLocalHost().getHostAddress();
     } catch (UnknownHostException e) {
-      // ignore
+      hostAddress = "UNKNOWN_ADDRESS";
     }
-    job.setLockedBy(hostAddress + " - " + Thread.currentThread().getName());
-    String owner = hostAddress + " - " + Thread.currentThread().getName();
-    return jobService.lockJob(job, owner);
-  }
-
-  private void runJobTransactionally(ScheduledJob scheduledJob) {
-    try {
-      if (txProvider != null) {
-        txProvider.executeInTransaction(
-            () -> {
-              runScheduledJob(scheduledJob);
-              return null;
-            });
-      } else {
-        runScheduledJob(scheduledJob);
-      }
-      jobService.deleteJob(scheduledJob);
-    } catch (Exception e) {
-      LOGGER.error(
-          "Processing of job {} failed. Trying to split it up into two pieces...",
-          scheduledJob.getJobId(),
-          e);
-    }
+    return hostAddress;
   }
 
   private void runScheduledJob(ScheduledJob scheduledJob) {
-
-    if (taskanaEngine.isUserInRole(TaskanaRole.ADMIN)) {
-      // we run already as admin
-      runScheduledJobImpl(scheduledJob);
-    } else {
-      // we must establish admin context
-      try {
-        PrivilegedExceptionAction<Void> action =
-            () -> {
-              try {
-                runScheduledJobImpl(scheduledJob);
-              } catch (Exception e) {
-                throw new SystemException(String.format("could not run Job %s.", scheduledJob), e);
-              }
-              return null;
-            };
-        Subject.doAs(getAdminSubject(), action);
-      } catch (PrivilegedActionException e) {
-        LOGGER.warn("Attempt to run job {} failed.", scheduledJob, e);
-      }
-    }
-  }
-
-  private void runScheduledJobImpl(ScheduledJob scheduledJob) {
     try {
-      TaskanaJob job =
-          AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, txProvider, scheduledJob);
-      job.run();
+      AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, scheduledJob).run();
     } catch (Exception e) {
       LOGGER.error("Error running job: {} ", scheduledJob.getType(), e);
-      throw new SystemException(
-          "When attempting to load class "
-              + scheduledJob.getType()
-              + " caught Exception "
-              + e.getMessage(),
-          e);
+      throw new SystemException(String.format("Error running job '%s'", scheduledJob.getType()), e);
     }
-  }
-
-  private Subject getAdminSubject() {
-    Subject subject = new Subject();
-    List<Principal> principalList = new ArrayList<>();
-    try {
-      principalList.add(
-          new UserPrincipal(
-              taskanaEngine
-                  .getConfiguration()
-                  .getRoleMap()
-                  .get(TaskanaRole.ADMIN)
-                  .iterator()
-                  .next()));
-    } catch (Exception t) {
-      LOGGER.warn("Could not determine a configured admin user.", t);
-    }
-    subject.getPrincipals().addAll(principalList);
-    return subject;
   }
 }

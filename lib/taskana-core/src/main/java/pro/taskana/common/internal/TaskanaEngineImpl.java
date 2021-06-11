@@ -115,12 +115,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public TaskService getTaskService() {
-    SqlSession session = this.sessionManager;
     return new TaskServiceImpl(
         internalTaskanaEngineImpl,
-        session.getMapper(TaskMapper.class),
-        session.getMapper(TaskCommentMapper.class),
-        session.getMapper(AttachmentMapper.class));
+        sessionManager.getMapper(TaskMapper.class),
+        sessionManager.getMapper(TaskCommentMapper.class),
+        sessionManager.getMapper(AttachmentMapper.class));
   }
 
   @Override
@@ -157,7 +156,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public TaskanaEngineConfiguration getConfiguration() {
-    return this.taskanaEngineConfiguration;
+    return taskanaEngineConfiguration;
   }
 
   @Override
@@ -181,6 +180,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       connection = null;
     }
     this.mode = mode;
+  }
+
+  @Override
+  public ConnectionManagementMode getConnectionManagementMode() {
+    return mode;
   }
 
   @Override
@@ -251,7 +255,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public <T> T runAsAdmin(Supplier<T> supplier) {
-
+    if (isUserInRole(TaskanaRole.ADMIN)) {
+      return supplier.get();
+    }
     String adminName =
         this.getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
             .findFirst()
@@ -261,6 +267,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     subject.getPrincipals().add(new UserPrincipal(adminName));
 
     return Subject.doAs(subject, (PrivilegedAction<T>) supplier::get);
+  }
+
+  @Override
+  public SqlSession getSqlSession() {
+    return sessionManager;
   }
 
   /**
@@ -445,11 +456,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public boolean domainExists(String domain) {
       return getConfiguration().getDomains().contains(domain);
-    }
-
-    @Override
-    public SqlSession getSqlSession() {
-      return sessionManager;
     }
 
     @Override

@@ -57,7 +57,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
     job.run();
 
     totalTasksCount = taskService.createTaskQuery().count();
@@ -83,7 +83,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         });
     taskService.deleteTasks(ids);
 
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
     job.run();
 
     totalTasksCount = taskService.createTaskQuery().count();
@@ -97,7 +97,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     taskService.claim(taskId);
     taskService.completeTask(taskId);
 
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
     job.run();
 
     Task completedCreatedTask = taskService.getTask(taskId);
@@ -110,11 +110,11 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
+      job.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.UPDATETASKSJOB);
+      job.setType(Type.TASK_REFRESH_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -124,7 +124,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> taskCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.TASKCLEANUPJOB))
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.TASK_CLEANUP_JOB))
             .collect(Collectors.toList());
 
     TaskCleanupJob.initializeSchedule(taskanaEngine);
@@ -142,7 +142,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
     taskanaEngine.getConfiguration().setCleanupJobMinimumAge(Duration.ZERO);
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
+    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null);
 
     ThrowingConsumer<String> test =
         parentBusinessId -> {
@@ -172,7 +172,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     Instant firstDue = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     ScheduledJob scheduledJob = new ScheduledJob();
-    scheduledJob.setType(ScheduledJob.Type.TASKCLEANUPJOB);
+    scheduledJob.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
     scheduledJob.setDue(firstDue);
 
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();

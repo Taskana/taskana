@@ -118,7 +118,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
-    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null);
     job.run();
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
@@ -157,7 +157,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
 
-    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null);
     job.run();
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
@@ -211,7 +211,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
-    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null);
     job.run();
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
@@ -277,7 +277,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
-    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null);
     job.run();
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
@@ -366,7 +366,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
-    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null);
     job.run();
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
@@ -378,11 +378,11 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.HISTORYCLEANUPJOB);
+      job.setType(ScheduledJob.Type.HISTORY_CLEANUP_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.UPDATETASKSJOB);
+      job.setType(Type.TASK_REFRESH_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -392,7 +392,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> historyCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.HISTORYCLEANUPJOB))
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.HISTORY_CLEANUP_JOB))
             .collect(Collectors.toList());
 
     HistoryCleanupJob.initializeSchedule(taskanaEngine);
@@ -427,7 +427,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
             .collect(Collectors.toList());
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
-    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null);
 
     ThrowingConsumer<String> test =
         parentBusinessId -> {

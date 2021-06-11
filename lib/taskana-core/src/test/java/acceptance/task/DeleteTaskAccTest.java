@@ -51,7 +51,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
 
     TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     AttachmentMapper attachmentMapper =
-        engineProxy.getEngine().getSqlSession().getMapper(AttachmentMapper.class);
+        taskanaEngine.getSqlSession().getMapper(AttachmentMapper.class);
 
     try {
 
@@ -88,21 +88,18 @@ class DeleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_DeleteAttachments_When_SingleTaskIsDeleted() throws Exception {
-
     TaskService taskService = taskanaEngine.getTaskService();
 
     TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     AttachmentMapper attachmentMapper =
-        engineProxy.getSqlSession().getMapper(AttachmentMapper.class);
+        taskanaEngine.getSqlSession().getMapper(AttachmentMapper.class);
 
     try {
-
       engineProxy.openConnection();
 
       assertThat(
               attachmentMapper.findAttachmentsByTaskId("TKI:000000000000000000000000000000000069"))
           .hasSize(1);
-
     } finally {
       engineProxy.returnConnection();
     }
@@ -110,7 +107,6 @@ class DeleteTaskAccTest extends AbstractAccTest {
     taskService.deleteTask("TKI:000000000000000000000000000000000069");
 
     try {
-
       assertThat(
               attachmentMapper.findAttachmentsByTaskId("TKI:000000000000000000000000000000000069"))
           .isEmpty();
