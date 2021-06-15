@@ -5,7 +5,7 @@ import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -45,31 +45,25 @@ class SpinnerStub {
   @Input() positionClass: string;
 }
 
-const requestInProgressServiceSpy = jest.fn().mockImplementation(
-  (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn()
-  })
-);
+const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
+  setRequestInProgress: jest.fn()
+};
 
 const showDialogFn = jest.fn().mockReturnValue(true);
-const notificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<NotificationService> => ({
-    triggerError: showDialogFn,
-    showToast: showDialogFn
-  })
-);
+const notificationServiceSpy: Partial<NotificationService> = {
+  triggerError: showDialogFn,
+  showToast: showDialogFn
+};
 
 const validateFormInformationFn = jest.fn().mockImplementation((): Promise<any> => Promise.resolve(true));
-const formValidatorServiceSpy = jest.fn().mockImplementation(
-  (): Partial<FormsValidatorService> => ({
-    isFieldValid: jest.fn().mockReturnValue(true),
-    validateInputOverflow: jest.fn(),
-    validateFormInformation: validateFormInformationFn,
-    get inputOverflowObservable(): Observable<Map<string, boolean>> {
-      return of(new Map<string, boolean>());
-    }
-  })
-);
+const formValidatorServiceSpy: Partial<FormsValidatorService> = {
+  isFieldValid: jest.fn().mockReturnValue(true),
+  validateInputOverflow: jest.fn(),
+  validateFormInformation: validateFormInformationFn,
+  get inputOverflowObservable(): Observable<Map<string, boolean>> {
+    return of(new Map<string, boolean>());
+  }
+};
 
 describe('WorkbasketAccessItemsComponent', () => {
   let fixture: ComponentFixture<WorkbasketAccessItemsComponent>;
@@ -99,9 +93,9 @@ describe('WorkbasketAccessItemsComponent', () => {
       ],
       declarations: [WorkbasketAccessItemsComponent, TypeAheadComponent, SpinnerStub],
       providers: [
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
-        { provide: FormsValidatorService, useClass: formValidatorServiceSpy },
-        { provide: NotificationService, useClass: notificationServiceSpy },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+        { provide: FormsValidatorService, useValue: formValidatorServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy },
         ClassificationCategoriesService,
         WorkbasketService,
         DomainService,

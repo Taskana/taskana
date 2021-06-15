@@ -21,3 +21,7 @@
     justify-content: space-between;
   }
 }
+
+::ng-deep .task-information .mat-form-field {
+  margin-top: 0.7rem;
+}

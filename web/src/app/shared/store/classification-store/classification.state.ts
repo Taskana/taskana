@@ -25,11 +25,13 @@ import { Classification } from '../../models/classification';
 import { ClassificationSummary } from '../../models/classification-summary';
 import { ClassificationQueryFilterParameter } from '../../models/classification-query-filter-parameter';
 import { ClassificationQuerySortParameter, Direction, Sorting } from '../../models/sorting';
+import { Injectable } from '@angular/core';
 
 class InitializeStore {
   static readonly type = '[ClassificationState] Initializing state';
 }
 
+@Injectable()
 @State<ClassificationStateModel>({ name: 'classification' })
 export class ClassificationState implements NgxsAfterBootstrap {
   constructor(

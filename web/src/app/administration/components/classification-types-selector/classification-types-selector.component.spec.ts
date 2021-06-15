@@ -32,9 +32,9 @@ describe('ClassificationTypesSelectorComponent', () => {
       ],
       declarations: [ClassificationTypesSelectorComponent],
       providers: [
-        { provide: ClassificationsService, useClass: classificationServiceSpy },
-        { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
-        { provide: DomainService, useClass: domainServiceSpy }
+        { provide: ClassificationsService, useValue: classificationServiceSpy },
+        { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy }
       ]
     }).compileComponents();
 

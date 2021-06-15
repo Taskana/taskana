@@ -4,8 +4,8 @@
     <mat-icon>cloud_upload</mat-icon>
   </button>
 
-  <form class="hidden" enctype="multipart/form-data" method="post">
-    <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hide" />
+  <form class="hide" enctype="multipart/form-data" method="post">
+    <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hidden" />
   </form>
 
   <button mat-stroked-button class="mr-1" matTooltip="Export {{parentComponent}}" [matMenuTriggerFor]="menu" [ngClass]="{disabled: uploadService?.isInUse}" title="Export">

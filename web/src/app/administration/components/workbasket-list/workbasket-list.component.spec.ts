@@ -28,45 +28,34 @@ const workbasketSavedTriggeredFn = jest.fn().mockReturnValue(of(1));
 const workbasketSummaryFn = jest.fn().mockReturnValue(of({}));
 const getWorkbasketFn = jest.fn().mockReturnValue(of(selectedWorkbasketMock));
 const getWorkbasketActionToolbarExpansionFn = jest.fn().mockReturnValue(of(false));
-const workbasketServiceMock = jest.fn().mockImplementation(
-  (): Partial<WorkbasketService> => ({
-    workbasketSavedTriggered: workbasketSavedTriggeredFn,
-    getWorkBasketsSummary: workbasketSummaryFn,
-    getWorkBasket: getWorkbasketFn,
-    getWorkbasketActionToolbarExpansion: getWorkbasketActionToolbarExpansionFn,
-    getWorkBasketAccessItems: jest.fn().mockReturnValue(of({})),
-    getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of({}))
-  })
-);
+const workbasketServiceMock: Partial<WorkbasketService> = {
+  workbasketSavedTriggered: workbasketSavedTriggeredFn,
+  getWorkBasketsSummary: workbasketSummaryFn,
+  getWorkBasket: getWorkbasketFn,
+  getWorkbasketActionToolbarExpansion: getWorkbasketActionToolbarExpansionFn,
+  getWorkBasketAccessItems: jest.fn().mockReturnValue(of({})),
+  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of({}))
+};
 
 const getOrientationFn = jest.fn().mockReturnValue(of('landscape'));
-const orientationServiceMock = jest.fn().mockImplementation(
-  (): Partial<OrientationService> => ({
-    getOrientation: getOrientationFn,
-    calculateNumberItemsList: jest.fn().mockReturnValue(1920)
-  })
-);
+const orientationServiceMock: Partial<OrientationService> = {
+  getOrientation: getOrientationFn,
+  calculateNumberItemsList: jest.fn().mockReturnValue(1920)
+};
 
-const getImportingFinishedFn = jest.fn().mockReturnValue(of(true));
-const importExportServiceMock = jest.fn().mockImplementation(
-  (): Partial<ImportExportService> => ({
-    getImportingFinished: getImportingFinishedFn
-  })
-);
+const importExportServiceMock: Partial<ImportExportService> = {
+  getImportingFinished: jest.fn().mockReturnValue(of(true))
+};
 
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
-    getSelectedDomain: jest.fn().mockReturnValue(of())
-  })
-);
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getSelectedDomain: jest.fn().mockReturnValue(of())
+};
 
-const requestInProgressServiceSpy = jest.fn().mockImplementation(
-  (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn().mockReturnValue(of()),
-    getRequestInProgress: jest.fn().mockReturnValue(of(false))
-  })
-);
+const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
+  setRequestInProgress: jest.fn().mockReturnValue(of()),
+  getRequestInProgress: jest.fn().mockReturnValue(of(false))
+};
 
 @Component({ selector: 'taskana-administration-workbasket-list-toolbar', template: '' })
 class WorkbasketListToolbarStub {
@@ -115,11 +104,11 @@ describe('WorkbasketListComponent', () => {
       ],
       declarations: [WorkbasketListComponent, WorkbasketListToolbarStub, IconTypeStub, PaginationStub, SvgIconStub],
       providers: [
-        { provide: WorkbasketService, useClass: workbasketServiceMock },
-        { provide: OrientationService, useClass: orientationServiceMock },
-        { provide: ImportExportService, useClass: importExportServiceMock },
-        { provide: DomainService, useClass: domainServiceSpy },
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy }
+        { provide: WorkbasketService, useValue: workbasketServiceMock },
+        { provide: OrientationService, useValue: orientationServiceMock },
+        { provide: ImportExportService, useValue: importExportServiceMock },
+        { provide: DomainService, useValue: domainServiceSpy },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy }
       ]
     }).compileComponents();
 

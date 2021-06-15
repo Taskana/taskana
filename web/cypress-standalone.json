@@ -1,4 +1,4 @@
-{ 
+{
   "retries": 2,
   "env": {
     "loginUrl": "http://localhost:8080/taskana",

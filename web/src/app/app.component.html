@@ -24,7 +24,7 @@
     <div (window:resize)="onResize()">
       <div class="taskana-main">
         <div class="taskana-main__progress-bar">
-          <mat-progress-bar [hidden]="!requestInProgress" mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar *ngIf="requestInProgress" mode="indeterminate"></mat-progress-bar>
         </div>
         <router-outlet></router-outlet>
         <taskana-shared-progress-spinner

@@ -6,8 +6,8 @@ context('TASKANA Classifications', () => {
 
     cy.visitTestClassification();
 
-    cy.get('#classification-service-level').clear().type(editedValue);
-    cy.get('button').contains('Save').click();
+    cy.get('#classification-service-level').clear({ force: true }).type(editedValue);
+    cy.get('button').contains('Save').click({ force: true });
 
     cy.get('#classification-service-level').should('have.value', editedValue);
   });
@@ -17,7 +17,7 @@ context('TASKANA Classifications', () => {
     cy.verifyPageLoad('/classifications');
 
     cy.get('button[mattooltip="Filter Category"]')
-      .click()
+      .click({ force: true })
       .then(() => {
         cy.get('.mat-menu-content').contains('MANUAL').click();
         cy.get('tree-node-collection').find('tree-node').should('have.length', 8);
@@ -29,7 +29,7 @@ context('TASKANA Classifications', () => {
 
     cy.visitTestClassification();
 
-    cy.get('#classification-name').clear().type(editedValue);
+    cy.get('#classification-name').scrollIntoView().clear().type(editedValue);
     cy.get('button').contains('Save').click();
 
     cy.get('#classification-name').should('have.value', editedValue);
@@ -38,24 +38,20 @@ context('TASKANA Classifications', () => {
   it('should be possible to edit the category of a classification', () => {
     cy.visitTestClassification();
 
-    cy.get('ng-form').find('mat-form-field').find('mat-select[role="listbox"]').click();
+    cy.get('ng-form').find('mat-form-field mat-select[required]').click({ force: true });
     cy.wait(Cypress.env('dropdownWait'));
-    cy.get('mat-option').contains('PROCESS').click();
-    cy.get('button').contains('Save').click();
+    cy.get('mat-option').contains('PROCESS').click({ force: true });
+    cy.get('button').contains('Save').click({ force: true });
 
     // assure that its process now
-    cy.get('ng-form')
-      .find('mat-form-field')
-      .find('mat-select[role="listbox"]')
-      .contains('PROCESS')
-      .should('be.visible');
+    cy.get('ng-form').find('mat-form-field mat-select[required]').contains('PROCESS').should('be.visible');
 
     // change back to external
-    cy.get('ng-form').find('mat-form-field').find('mat-select[role="listbox"]').click();
+    cy.get('ng-form').find('mat-form-field mat-select[required]').click({ force: true });
     cy.wait(Cypress.env('dropdownWait'));
-    cy.get('mat-option').contains('EXTERNAL').should('be.visible').click();
+    cy.get('mat-option').contains('EXTERNAL').should('be.visible').click({ force: true });
 
-    cy.get('button').contains('Save').click();
+    cy.get('button').contains('Save').click({ force: true });
   });
 
   it('should be possible to edit the description of a classification', () => {
@@ -63,8 +59,8 @@ context('TASKANA Classifications', () => {
 
     cy.visitTestClassification();
 
-    cy.get('#classification-description').clear().type(editedValue);
-    cy.get('button').contains('Save').click();
+    cy.get('#classification-description').clear({ force: true }).type(editedValue);
+    cy.get('button').contains('Save').click({ force: true });
 
     cy.get('#classification-description').should('have.value', editedValue);
   });
@@ -72,9 +68,9 @@ context('TASKANA Classifications', () => {
   it('should be possible to edit the custom classification', () => {
     cy.visitTestClassification();
 
-    cy.get('#classification-custom-1').clear().type(Cypress.env('testValueClassifications'));
+    cy.get('#classification-custom-1').clear({ force: true }).type(Cypress.env('testValueClassifications'));
 
-    cy.get('button').contains('Save').click();
+    cy.get('button').contains('Save').click({ force: true });
 
     cy.get('#classification-custom-1').should('have.value', Cypress.env('testValueClassifications'));
   });
@@ -82,8 +78,10 @@ context('TASKANA Classifications', () => {
   it('should be possible to edit the application entry point', () => {
     cy.visitTestClassification();
 
-    cy.get('#classification-application-entry-point').clear().type(Cypress.env('testValueClassifications'));
-    cy.get('button').contains('Save').click();
+    cy.get('#classification-application-entry-point')
+      .clear({ force: true })
+      .type(Cypress.env('testValueClassifications'));
+    cy.get('button').contains('Save').click({ force: true });
 
     cy.get('#classification-application-entry-point').should('have.value', Cypress.env('testValueClassifications'));
   });

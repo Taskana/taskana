@@ -9,17 +9,15 @@ import { of } from 'rxjs/internal/observable/of';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
-const SidenavServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SidenavService> => ({
-    toggleSidenav: jest.fn().mockReturnValue(of())
-  })
-);
+jest.mock('angular-svg-icon');
 
-const SelectedRouteServiceSpy = jest.fn().mockImplementation(
-  (): Partial<SelectedRouteService> => ({
-    getSelectedRoute: jest.fn().mockReturnValue(of())
-  })
-);
+const SidenavServiceSpy: Partial<SidenavService> = {
+  toggleSidenav: jest.fn().mockReturnValue(of())
+};
+
+const SelectedRouteServiceSpy: Partial<SelectedRouteService> = {
+  getSelectedRoute: jest.fn().mockReturnValue(of())
+};
 
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {}
@@ -28,15 +26,15 @@ describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
   let debugElement: DebugElement;
-  var route = '';
+  let route = '';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [NavBarComponent, SvgIconStub],
       imports: [MatIconModule, HttpClientTestingModule, MatToolbarModule],
       providers: [
-        { provide: SidenavService, useClass: SidenavServiceSpy },
-        { provide: SelectedRouteService, useClass: SelectedRouteServiceSpy }
+        { provide: SidenavService, useValue: SidenavServiceSpy },
+        { provide: SelectedRouteService, useValue: SelectedRouteServiceSpy }
       ]
     }).compileComponents();
   }));

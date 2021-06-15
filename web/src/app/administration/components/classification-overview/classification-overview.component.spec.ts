@@ -31,18 +31,14 @@ const activatedRouteMock = {
 };
 
 const classificationCategoriesServiceSpy = jest.fn();
-const classificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ClassificationsService> => ({
-    getClassification: jest.fn().mockReturnValue(of()),
-    getClassifications: jest.fn().mockReturnValue(of())
-  })
-);
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
-    getSelectedDomain: jest.fn().mockReturnValue(of('A'))
-  })
-);
+const classificationServiceSpy: Partial<ClassificationsService> = {
+  getClassification: jest.fn().mockReturnValue(of()),
+  getClassifications: jest.fn().mockReturnValue(of())
+};
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getSelectedDomain: jest.fn().mockReturnValue(of('A'))
+};
 
 describe('ClassificationOverviewComponent', () => {
   let fixture: ComponentFixture<ClassificationOverviewComponent>;
@@ -56,9 +52,9 @@ describe('ClassificationOverviewComponent', () => {
       imports: [NgxsModule.forRoot([ClassificationState])],
       declarations: [ClassificationOverviewComponent, ClassificationDetailsStub, ClassificationListStub, SvgIconStub],
       providers: [
-        { provide: ClassificationsService, useClass: classificationServiceSpy },
-        { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
-        { provide: DomainService, useClass: domainServiceSpy },
+        { provide: ClassificationsService, useValue: classificationServiceSpy },
+        { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteMock }
       ]
     }).compileComponents();

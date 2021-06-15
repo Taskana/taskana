@@ -39,7 +39,13 @@
   }
 }
 
-::ng-deep .task-list-toolbar > .mat-tab-group > .mat-tab-header > .mat-tab-label-container > .mat-tab-list > .mat-tab-labels {
+::ng-deep
+  .task-list-toolbar
+  > .mat-tab-group
+  > .mat-tab-header
+  > .mat-tab-label-container
+  > .mat-tab-list
+  > .mat-tab-labels {
   background-color: $light-grey;
 }
 

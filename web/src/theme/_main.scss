@@ -1,5 +1,4 @@
-@import '../../node_modules/angular-tree-component/dist/angular-tree-component.css';
-@import 'bootstrap-3-backward-compatibility';
+@import '../../node_modules/@circlon/angular-tree-component/css/angular-tree-component.css';
 
 @import 'variables';
 @import 'material_styles';
@@ -14,3 +13,5 @@
 @import 'mixin/colors';
 @import 'progress-bar';
 @import 'shameful';
+
+@import 'bootstrap-replacement';

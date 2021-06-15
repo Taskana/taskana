@@ -1,7 +1,6 @@
 @import 'src/theme/_colors.scss';
 
 .task-list {
-
   &__task {
     display: flex;
   }
@@ -18,12 +17,11 @@
   }
 }
 
-
-
 p {
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.5;
 }
 
 .mat-list-item {
@@ -48,4 +46,3 @@ p {
   right: 16px;
   background-color: $green;
 }
-

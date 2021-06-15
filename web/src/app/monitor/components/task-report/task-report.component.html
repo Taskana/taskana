@@ -3,7 +3,7 @@
       <h4>{{reportData.meta.name}} ({{reportData.meta.date | dateTimeZone}})</h4>
   </div>
   <div class="panel-body">
-    <div style="display: block" class =" col-xs-12 col-md-7 col-md-offset-2">
+    <div style="display: block">
       <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"></canvas>
     </div>
     <taskana-monitor-report-table [reportData]="reportData"></taskana-monitor-report-table>

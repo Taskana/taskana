@@ -4,6 +4,13 @@
   width: 100%;
   overflow: hidden;
   align-items: stretch;
+
+  &__empty-page {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 taskana-administration-classification-list {
   min-width: 500px;

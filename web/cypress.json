@@ -1,4 +1,4 @@
-{ 
+{
   "retries": 2,
   "env": {
     "appUrl": "http://localhost:4200/#/taskana",

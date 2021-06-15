@@ -50,13 +50,11 @@ class WorkbasketDistributionTargetsStub {
   @Input() active: string;
 }
 
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of()),
-    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
-    getDomains: jest.fn().mockReturnValue(of())
-  })
-);
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getDomains: jest.fn().mockReturnValue(of())
+};
 
 export const workbasketCopyState = {
   selectedWorkbasket: selectedWorkbasketMock,
@@ -102,7 +100,7 @@ describe('WorkbasketDetailsComponent', () => {
         WorkbasketInformationStub
       ],
       providers: [
-        { provide: DomainService, useClass: domainServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy },
         ImportExportService,
         WorkbasketService,
         RequestInProgressService,

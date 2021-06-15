@@ -55,59 +55,45 @@ class TextareaStub {
   @Input() ngModel;
 }
 
-const classificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ClassificationsService> => ({
-    getClassification: jest.fn().mockReturnValue(of()),
-    getClassifications: jest.fn().mockReturnValue(of()),
-    postClassification: jest.fn().mockReturnValue(of()),
-    putClassification: jest.fn().mockReturnValue(of()),
-    deleteClassification: jest.fn().mockReturnValue(of())
-  })
-);
-const classificationCategoriesServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ClassificationCategoriesService> => ({
-    getCustomisation: jest.fn().mockReturnValue(of())
-  })
-);
-const domainServiceSpy = jest.fn().mockImplementation(
-  (): Partial<DomainService> => ({
-    getSelectedDomainValue: jest.fn().mockReturnValue(of('A')),
-    getSelectedDomain: jest.fn().mockReturnValue(of())
-  })
-);
+const classificationServiceSpy: Partial<ClassificationsService> = {
+  getClassification: jest.fn().mockReturnValue(of()),
+  getClassifications: jest.fn().mockReturnValue(of()),
+  postClassification: jest.fn().mockReturnValue(of()),
+  putClassification: jest.fn().mockReturnValue(of()),
+  deleteClassification: jest.fn().mockReturnValue(of())
+};
+const classificationCategoriesServiceSpy: Partial<ClassificationCategoriesService> = {
+  getCustomisation: jest.fn().mockReturnValue(of())
+};
+const domainServiceSpy: Partial<DomainService> = {
+  getSelectedDomainValue: jest.fn().mockReturnValue(of('A')),
+  getSelectedDomain: jest.fn().mockReturnValue(of())
+};
 const getImportingFinishedFn = jest.fn().mockReturnValue(of(true));
-const importExportServiceSpy = jest.fn().mockImplementation(
-  (): Partial<ImportExportService> => ({
-    getImportingFinished: getImportingFinishedFn
-  })
-);
+const importExportServiceSpy: Partial<ImportExportService> = {
+  getImportingFinished: getImportingFinishedFn
+};
 
-const requestInProgressServiceSpy = jest.fn().mockImplementation(
-  (): Partial<RequestInProgressService> => ({
-    setRequestInProgress: jest.fn().mockReturnValue(of()),
-    getRequestInProgress: jest.fn().mockReturnValue(of(false))
-  })
-);
+const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
+  setRequestInProgress: jest.fn().mockReturnValue(of()),
+  getRequestInProgress: jest.fn().mockReturnValue(of(false))
+};
 
 const validateFormInformationFn = jest.fn().mockImplementation((): Promise<any> => Promise.resolve(true));
-const formsValidatorServiceSpy = jest.fn().mockImplementation(
-  (): Partial<FormsValidatorService> => ({
-    isFieldValid: jest.fn().mockReturnValue(true),
-    validateInputOverflow: jest.fn(),
-    validateFormInformation: validateFormInformationFn,
-    get inputOverflowObservable(): Observable<Map<string, boolean>> {
-      return of(new Map<string, boolean>());
-    }
-  })
-);
+const formsValidatorServiceSpy: Partial<FormsValidatorService> = {
+  isFieldValid: jest.fn().mockReturnValue(true),
+  validateInputOverflow: jest.fn(),
+  validateFormInformation: validateFormInformationFn,
+  get inputOverflowObservable(): Observable<Map<string, boolean>> {
+    return of(new Map<string, boolean>());
+  }
+};
 
-const notificationServiceSpy = jest.fn().mockImplementation(
-  (): Partial<NotificationService> => ({
-    showToast: jest.fn().mockReturnValue(of()),
-    showDialog: jest.fn().mockReturnValue(of()),
-    triggerError: jest.fn().mockReturnValue(of())
-  })
-);
+const notificationServiceSpy: Partial<NotificationService> = {
+  showToast: jest.fn().mockReturnValue(of()),
+  showDialog: jest.fn().mockReturnValue(of()),
+  triggerError: jest.fn().mockReturnValue(of())
+};
 
 describe('ClassificationDetailsComponent', () => {
   let fixture: ComponentFixture<ClassificationDetailsComponent>;
@@ -135,13 +121,13 @@ describe('ClassificationDetailsComponent', () => {
       ],
       declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
       providers: [
-        { provide: ClassificationsService, useClass: classificationServiceSpy },
-        { provide: ClassificationCategoriesService, useClass: classificationCategoriesServiceSpy },
-        { provide: DomainService, useClass: domainServiceSpy },
-        { provide: ImportExportService, useClass: importExportServiceSpy },
-        { provide: RequestInProgressService, useClass: requestInProgressServiceSpy },
-        { provide: FormsValidatorService, useClass: formsValidatorServiceSpy },
-        { provide: NotificationService, useClass: notificationServiceSpy }
+        { provide: ClassificationsService, useValue: classificationServiceSpy },
+        { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy },
+        { provide: ImportExportService, useValue: importExportServiceSpy },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+        { provide: FormsValidatorService, useValue: formsValidatorServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();
 
