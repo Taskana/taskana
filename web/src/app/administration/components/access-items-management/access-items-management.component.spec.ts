@@ -49,10 +49,6 @@ const notificationServiceSpy: Partial<NotificationService> = {
   showDialog: showDialogFn
 };
 
-const mockDialogRef = {
-  close: jasmine.createSpy('close')
-};
-
 @Component({ selector: 'svg-icon', template: '' })
 class SvgIconStub {}
 
@@ -109,7 +105,6 @@ describe('AccessItemsManagementComponent', () => {
       providers: [
         { provide: FormsValidatorService, useValue: formValidatorServiceSpy },
         { provide: NotificationService, useValue: notificationServiceSpy },
-        { provide: MatDialogRef, useValue: { mockDialogRef } },
         RequestInProgressService,
         ClassificationCategoriesService,
         StartupService,

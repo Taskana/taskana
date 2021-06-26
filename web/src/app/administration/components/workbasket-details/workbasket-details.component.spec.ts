@@ -134,7 +134,7 @@ describe('WorkbasketDetailsComponent', () => {
     expect(information).toBeTruthy();
   });
 
-  it('should render new workbasket when action is CREATE', async (done) => {
+  it('should render new workbasket when action is CREATE', (done) => {
     store
       .dispatch(new CreateWorkbasket())
       .pipe(take(1))

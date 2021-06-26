@@ -7,17 +7,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs/internal/observable/of';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { EMPTY } from 'rxjs';
 
 const AccessIdsServiceSpy: Partial<AccessIdsService> = {
-  getAccessItems: jest.fn().mockReturnValue(of()),
-  searchForAccessId: jest.fn().mockReturnValue(of())
+  getAccessItems: jest.fn().mockReturnValue(EMPTY),
+  searchForAccessId: jest.fn().mockReturnValue(EMPTY)
 };
 
 describe('TypeAheadComponent', () => {

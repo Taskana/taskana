@@ -1,5 +1,6 @@
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const { compilerOptions } = require('./tsconfig');
+require('jest-preset-angular/ngcc-jest-processor');
 
 module.exports = {
   preset: 'jest-preset-angular',

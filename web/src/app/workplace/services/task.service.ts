@@ -29,7 +29,7 @@ export class TaskService {
   }
 
   publishTaskDeletion() {
-    this.taskDeletedSource.next();
+    this.taskDeletedSource.next(null);
   }
 
   selectTask(task?: Task) {
