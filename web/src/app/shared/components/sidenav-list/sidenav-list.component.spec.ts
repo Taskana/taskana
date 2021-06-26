@@ -9,21 +9,22 @@ import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-engine.mock.service';
-import { of } from 'rxjs/internal/observable/of';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { EMPTY, of } from 'rxjs';
 
 const SidenavServiceSpy: Partial<SidenavService> = {
-  toggleSidenav: jest.fn().mockReturnValue(of())
+  toggleSidenav: jest.fn().mockReturnValue(EMPTY)
 };
 
 const TaskanaEngineServiceSpy: Partial<TaskanaEngineServiceMock> = {
-  hasRole: jest.fn().mockReturnValue(of()),
-  isHistoryProviderEnabled: jest.fn().mockReturnValue(of())
+  hasRole: jest.fn().mockReturnValue(EMPTY),
+  isHistoryProviderEnabled: jest.fn().mockReturnValue(EMPTY)
 };
 
 describe('SidenavListComponent', () => {

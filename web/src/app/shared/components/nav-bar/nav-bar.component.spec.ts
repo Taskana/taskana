@@ -5,18 +5,18 @@ import { SelectedRouteService } from '../../services/selected-route/selected-rou
 import { SidenavService } from '../../services/sidenav/sidenav.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs/internal/observable/of';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { EMPTY } from 'rxjs';
 
 jest.mock('angular-svg-icon');
 
 const SidenavServiceSpy: Partial<SidenavService> = {
-  toggleSidenav: jest.fn().mockReturnValue(of())
+  toggleSidenav: jest.fn().mockReturnValue(EMPTY)
 };
 
 const SelectedRouteServiceSpy: Partial<SelectedRouteService> = {
-  getSelectedRoute: jest.fn().mockReturnValue(of())
+  getSelectedRoute: jest.fn().mockReturnValue(EMPTY)
 };
 
 @Component({ selector: 'svg-icon', template: '' })

@@ -92,7 +92,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: web/node_modules
-          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/yarn-lock.json') }}
           restore-keys: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}
       - name: Cache maven dependencies (for web)
         uses: actions/cache@v2.1.6
@@ -177,7 +177,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: web/node_modules
-          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/yarn-lock.json') }}
           restore-keys: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}
       # Theoretically this is not necessary because we reuse the cache from the 'compile_frontend' job.
       # Sometimes the cache is not created, therefore this is a fallback.

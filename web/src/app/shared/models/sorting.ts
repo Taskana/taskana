@@ -47,13 +47,11 @@ export enum WorkbasketAccessItemQuerySortParameter {
   ACCESS_ID = 'ACCESS_ID'
 }
 
-export const WORKBASKET_ACCESS_ITEM_SORT_PARAMETER_NAMING: Map<
-  WorkbasketAccessItemQuerySortParameter,
-  string
-> = new Map([
-  [WorkbasketAccessItemQuerySortParameter.ACCESS_ID, 'Access id'],
-  [WorkbasketAccessItemQuerySortParameter.WORKBASKET_KEY, 'Workbasket Key']
-]);
+export const WORKBASKET_ACCESS_ITEM_SORT_PARAMETER_NAMING: Map<WorkbasketAccessItemQuerySortParameter, string> =
+  new Map([
+    [WorkbasketAccessItemQuerySortParameter.ACCESS_ID, 'Access id'],
+    [WorkbasketAccessItemQuerySortParameter.WORKBASKET_KEY, 'Workbasket Key']
+  ]);
 
 export enum ClassificationQuerySortParameter {
   DOMAIN = 'DOMAIN',

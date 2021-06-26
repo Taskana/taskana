@@ -53,6 +53,7 @@ node_modules/
 npm-debug.log
 testem.log
 /typings
+/web/package-lock.json
 
 # e2e
 /web/cypress/screenshots/

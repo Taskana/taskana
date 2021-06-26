@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['prettier/@typescript-eslint', 'plugin:prettier/recommended'],
+  extends: ['prettier', 'plugin:prettier/recommended'],
   env: {
     browser: true,
     node: true
