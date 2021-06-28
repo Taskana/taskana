@@ -48,13 +48,13 @@ public class MonitorController {
    * grouped by Workbaskets. Each row represents a Workbasket while each column represents a Task
    * State.
    *
+   * @title Get a Task Status Report
    * @param domains Filter the report values by domains.
    * @param states Filter the report values by Task states.
    * @param workbasketIds Filter the report values by Workbasket Ids.
    * @param priorityMinimum Filter the report values by a minimum priority.
    * @return the computed TaskStatusReport
    * @throws NotAuthorizedException if the current user is not authorized to compute the report
-   * @title Get a Task Status Report
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -87,12 +87,12 @@ public class MonitorController {
    * date range and grouped by Workbaskets. Each row represents a Workbasket while each column
    * represents a date range.
    *
+   * @title Get a Workbasket Report
    * @param states Filter the report by task states
    * @param taskTimestamp determine which task timestamp should be used for comparison
    * @return the computed report
    * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown ...
-   * @title Get a Workbasket Report
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -145,8 +145,8 @@ public class MonitorController {
    * column represents a date range.
    *
    * @title Get a Classification Report
-   * @return the computed report
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
+   * @return the computed report
    * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
