@@ -32,7 +32,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testDomains() {
     String url = restHelper.toUrl(RestEndpoints.URL_DOMAIN);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
@@ -43,7 +43,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testClassificationTypes() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
@@ -54,7 +54,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testClassificationCategories() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
@@ -66,7 +66,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testGetCurrentUserInfo() {
     String url = restHelper.toUrl(RestEndpoints.URL_CURRENT_USER);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskanaUserInfoRepresentationModel> response =
         TEMPLATE.exchange(

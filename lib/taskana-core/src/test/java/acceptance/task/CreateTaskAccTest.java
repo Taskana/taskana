@@ -276,24 +276,16 @@ class CreateTaskAccTest extends AbstractAccTest {
       engineProxy.openConnection();
       String customProperties =
           mapper.getCustomAttributesAsString(createdTask.getAttachments().get(0).getId());
-      assertThat(customProperties.contains("\"Property_26\":\"Property Value of Property_26\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_25\":\"Property Value of Property_25\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_21\":\"Property Value of Property_21\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_19\":\"Property Value of Property_19\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_16\":\"Property Value of Property_16\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_12\":\"Property Value of Property_12\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_11\":\"Property Value of Property_11\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_7\":\"Property Value of Property_7\""))
-          .isTrue();
-      assertThat(customProperties.contains("\"Property_6\":\"Property Value of Property_6\""))
-          .isTrue();
+      assertThat(customProperties)
+          .contains("\"Property_26\":\"Property Value of Property_26\"")
+          .contains("\"Property_25\":\"Property Value of Property_25\"")
+          .contains("\"Property_21\":\"Property Value of Property_21\"")
+          .contains("\"Property_19\":\"Property Value of Property_19\"")
+          .contains("\"Property_16\":\"Property Value of Property_16\"")
+          .contains("\"Property_12\":\"Property Value of Property_12\"")
+          .contains("\"Property_11\":\"Property Value of Property_11\"")
+          .contains("\"Property_7\":\"Property Value of Property_7\"")
+          .contains("\"Property_6\":\"Property Value of Property_6\"");
     } finally {
       engineProxy.returnConnection();
     }

@@ -47,7 +47,7 @@ class WorkbasketAccessItemControllerIntTest {
   @Test
   void testGetAllWorkbasketAccessItems() {
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         TEMPLATE.exchange(
@@ -61,7 +61,7 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters =
         "?sort-by=WORKBASKET_KEY&order=ASCENDING&page-size=9&access-id=user-1-1&page=1";
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters;
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         TEMPLATE.exchange(
@@ -82,7 +82,7 @@ class WorkbasketAccessItemControllerIntTest {
     String parameters =
         "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=2&page-size=9&access-id=user-1-1";
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters;
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
         TEMPLATE.exchange(
@@ -111,7 +111,7 @@ class WorkbasketAccessItemControllerIntTest {
   void should_DeleteAllAccessItemForUser_ifValidAccessIdOfUserIsSupplied() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + "?access-id=teamlead-2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<Void> response =
         TEMPLATE.exchange(
@@ -128,7 +128,7 @@ class WorkbasketAccessItemControllerIntTest {
             + "&illegalParam=illegal"
             + "&anotherIllegalParam=stillIllegal"
             + "&sort-by=WORKBASKET_KEY&order=DESCENDING&page-size=5&page=2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -157,7 +157,8 @@ class WorkbasketAccessItemControllerIntTest {
               restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
                   + "?access-id="
                   + accessId;
-          HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
           ThrowingCallable httpCall =
               () -> {

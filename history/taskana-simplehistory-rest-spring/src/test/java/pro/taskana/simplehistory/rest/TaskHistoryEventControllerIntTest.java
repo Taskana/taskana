@@ -56,7 +56,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(45);
@@ -68,7 +68,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
@@ -86,7 +86,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
@@ -104,7 +104,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
@@ -119,7 +119,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
@@ -137,7 +137,7 @@ class TaskHistoryEventControllerIntTest {
                 restHelper.toUrl(
                     HistoryRestEndpoints.URL_HISTORY_EVENTS + "?created=" + currentTime),
                 HttpMethod.GET,
-                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+                new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
                 TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -154,7 +154,7 @@ class TaskHistoryEventControllerIntTest {
             restHelper.toUrl(
                 HistoryRestEndpoints.URL_HISTORY_EVENTS + "?created=" + now + "&created="),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -174,7 +174,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS + parameters),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
@@ -229,7 +229,7 @@ class TaskHistoryEventControllerIntTest {
         TEMPLATE.exchange(
             restHelper.toUrl(HistoryRestEndpoints.URL_HISTORY_EVENTS_ID, id),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
@@ -248,7 +248,7 @@ class TaskHistoryEventControllerIntTest {
                 HistoryRestEndpoints.URL_HISTORY_EVENTS_ID,
                 "THI:000000000000000000000000000000000000"),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             TASK_HISTORY_EVENT_REPRESENTATION_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
@@ -267,7 +267,7 @@ class TaskHistoryEventControllerIntTest {
                     + "&anotherIllegalParam=stillIllegal"
                     + "&sort-by=TASK_ID&order=DESCENDING&page-size=5&page=2",
                 HttpMethod.GET,
-                new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+                new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
                 TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)

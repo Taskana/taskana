@@ -22,7 +22,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
   private static final String GET_CALLER_SUBJECT_METHOD = "getCallerSubject";
   private static final String WSSUBJECT_CLASSNAME = "com.ibm.websphere.security.auth.WSSubject";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CurrentUserContext.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CurrentUserContextImpl.class);
   private final boolean shouldUseLowerCaseForAccessIds;
   private boolean runningOnWebSphere;
 

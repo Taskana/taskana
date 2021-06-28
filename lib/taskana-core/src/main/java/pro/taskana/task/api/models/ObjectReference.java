@@ -29,7 +29,7 @@ public class ObjectReference {
     if (objectReference == null) {
       throw new InvalidArgumentException(
           String.format("%s of %s must not be null.", objRefType, objName));
-    } else if (objectReference.getCompany() == null || objectReference.getCompany().length() == 0) {
+    } else if (objectReference.getCompany() == null || objectReference.getCompany().isEmpty()) {
       throw new InvalidArgumentException(
           String.format("Company of %s of %s must not be empty", objRefType, objName));
     } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {

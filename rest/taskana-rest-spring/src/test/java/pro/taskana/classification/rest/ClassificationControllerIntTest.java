@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
@@ -48,7 +49,7 @@ class ClassificationControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000002");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
@@ -61,7 +62,7 @@ class ClassificationControllerIntTest {
   @Test
   void testGetAllClassifications() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -74,7 +75,7 @@ class ClassificationControllerIntTest {
   void testGetAllClassificationsFilterByCustomAttribute() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS) + "?domain=DOMAIN_A&custom-1-like=RVNR";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -89,7 +90,7 @@ class ClassificationControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
             + "?domain=DOMAIN_A&sort-by=KEY&order=ASCENDING";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -107,7 +108,7 @@ class ClassificationControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS)
             + "?domain=DOMAIN_A&sort-by=KEY&order=ASCENDING&page-size=5&page=2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
@@ -129,25 +130,25 @@ class ClassificationControllerIntTest {
   @Test
   @DirtiesContext
   void testCreateClassification() {
-    String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
-            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\", \"serviceLevel\":\"P1D\"}";
+    ClassificationRepresentationModel newClassification = new ClassificationRepresentationModel();
+    newClassification.setType("TASK");
+    newClassification.setCategory("MANUAL");
+    newClassification.setDomain("DOMAIN_A");
+    newClassification.setKey("NEW_CLASS");
+    newClassification.setServiceLevel("P1D");
+    newClassification.setName("new classification");
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
-    HttpEntity<String> auth =
-        new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1());
+    HttpEntity<?> auth =
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         TEMPLATE.exchange(url, HttpMethod.POST, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
     assertThat(responseEntity).isNotNull();
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-    newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
-            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS_2\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\", \"serviceLevel\":\"P1D\"}";
-    HttpEntity<String> auth2 =
-        new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1());
+    newClassification.setKey("NEW_CLASS_2");
+    HttpEntity<?> auth2 =
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("teamlead-1"));
 
     responseEntity =
         TEMPLATE.exchange(url, HttpMethod.POST, auth2, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
@@ -157,35 +158,42 @@ class ClassificationControllerIntTest {
   @Test
   @DirtiesContext
   void should_ThrowNotAuthorized_WhenUserIsNotInRoleAdminOrBusinessAdmin_whileCreating() {
-    String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
-            + "\"domain\":\"DOMAIN_A\",\"key\":\"NEW_CLASS\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\"}";
+    ClassificationRepresentationModel newClassification = new ClassificationRepresentationModel();
+    newClassification.setType("TASK");
+    newClassification.setCategory("MANUAL");
+    newClassification.setDomain("DOMAIN_A");
+    newClassification.setKey("NEW_CLASS");
+    newClassification.setName("new classification");
+
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
-    HttpEntity<String> auth = new HttpEntity<>(newClassification, restHelper.getHeadersUser_1_1());
+    HttpEntity<?> auth =
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.POST, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
-        };
+        () ->
+            TEMPLATE.exchange(url, HttpMethod.POST, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
   @Test
   @DirtiesContext
   void testCreateClassificationWithParentId() {
-    String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\","
-            + "\"domain\":\"DOMAIN_B\",\"key\":\"NEW_CLASS_P1\","
-            + "\"name\":\"new classification\",\"type\":\"TASK\",\"serviceLevel\":\"P1D\","
-            + "\"parentId\":\"CLI:200000000000000000000000000000000015\"}";
+    ClassificationRepresentationModel newClassification = new ClassificationRepresentationModel();
+    newClassification.setType("TASK");
+    newClassification.setCategory("MANUAL");
+    newClassification.setDomain("DOMAIN_B");
+    newClassification.setKey("NEW_CLASS_P1");
+    newClassification.setName("new classification");
+    newClassification.setServiceLevel("P1D");
+    newClassification.setParentId("CLI:200000000000000000000000000000000015");
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
-    HttpEntity<String> auth =
-        new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1());
+    HttpEntity<?> auth =
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         TEMPLATE.exchange(url, HttpMethod.POST, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
@@ -196,15 +204,18 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
-  @SuppressWarnings("checkstyle:LineLength")
   void testCreateClassificationWithParentKey() {
-    String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_B\","
-            + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
-            + "\"type\":\"TASK\",\"parentKey\":\"T2100\",\"serviceLevel\":\"P1D\"}";
+    ClassificationRepresentationModel newClassification = new ClassificationRepresentationModel();
+    newClassification.setType("TASK");
+    newClassification.setCategory("MANUAL");
+    newClassification.setDomain("DOMAIN_B");
+    newClassification.setKey("NEW_CLASS_P1");
+    newClassification.setName("new classification");
+    newClassification.setParentKey("T2100");
+    newClassification.setServiceLevel("P1D");
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
-    HttpEntity<String> auth =
-        new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1());
+    HttpEntity<?> auth =
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         TEMPLATE.exchange(url, HttpMethod.POST, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
@@ -216,20 +227,24 @@ class ClassificationControllerIntTest {
   @Test
   @DirtiesContext
   void testCreateClassificationWithParentKeyInDomain_aShouldCreateAClassificationInRootDomain() {
-    String newClassification =
-        "{\"classificationId\":\"\",\"category\":\"MANUAL\",\"domain\":\"DOMAIN_A\","
-            + "\"key\":\"NEW_CLASS_P2\",\"name\":\"new classification\","
-            + "\"type\":\"TASK\",\"parentKey\":\"T2100\",\"serviceLevel\":\"P1D\"}";
+    ClassificationRepresentationModel newClassification = new ClassificationRepresentationModel();
+    newClassification.setType("TASK");
+    newClassification.setCategory("MANUAL");
+    newClassification.setDomain("DOMAIN_A");
+    newClassification.setKey("NEW_CLASS_P2");
+    newClassification.setName("new classification");
+    newClassification.setParentKey("T2100");
+    newClassification.setServiceLevel("P1D");
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
-    HttpEntity<String> auth =
-        new HttpEntity<>(newClassification, restHelper.getHeadersTeamlead_1());
+    HttpEntity<?> auth =
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationRepresentationModel> responseEntity =
         TEMPLATE.exchange(url, HttpMethod.POST, auth, CLASSIFICATION_REPRESENTATION_MODEL_TYPE);
     assertThat(responseEntity).isNotNull();
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-    HttpEntity<Object> auth2 = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<?> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
     ResponseEntity<ClassificationSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth2, CLASSIFICATION_SUMMARY_PAGE_MODEL_TYPE);
 
@@ -259,7 +274,7 @@ class ClassificationControllerIntTest {
             + "\"parentKey\":\"T2000\",\"serviceLevel\":\"P1D\"}";
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
     HttpEntity<String> auth =
-        new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin());
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("businessadmin"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -281,7 +296,7 @@ class ClassificationControllerIntTest {
             + "\"name\":\"new classification\",\"type\":\"TASK\",\"serviceLevel\":\"P1D\"}";
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS);
     HttpEntity<String> auth =
-        new HttpEntity<>(newClassification, restHelper.getHeadersBusinessAdmin());
+        new HttpEntity<>(newClassification, RestHelper.generateHeadersForUser("businessadmin"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -299,7 +314,7 @@ class ClassificationControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:100000000000000000000000000000000009");
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<ClassificationSummaryRepresentationModel> response =
         TEMPLATE.exchange(
@@ -315,7 +330,7 @@ class ClassificationControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:200000000000000000000000000000000004");
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersBusinessAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("businessadmin"));
 
     ResponseEntity<ClassificationSummaryRepresentationModel> response =
         TEMPLATE.exchange(
@@ -337,7 +352,7 @@ class ClassificationControllerIntTest {
             + "&illegalParam=illegal"
             + "&anotherIllegalParam=stillIllegal"
             + "&sort-by=NAME&order=DESCENDING&page-size=5&page=2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {

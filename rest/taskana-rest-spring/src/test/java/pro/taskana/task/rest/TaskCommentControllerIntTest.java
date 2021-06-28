@@ -43,7 +43,7 @@ class TaskCommentControllerIntTest {
   @Test
   void should_FailToReturnTaskComment_When_TaskCommentIsNotExisting() {
     String url = restHelper.toUrl(RestEndpoints.URL_TASK_COMMENT, "Non existing task comment Id");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -60,7 +60,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -77,7 +77,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     String url1 = url + "?sort-by=MODIFIED&order=DESCENDING";
     ResponseEntity<TaskCommentCollectionRepresentationModel>
@@ -125,7 +125,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -146,7 +146,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000012");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -168,7 +168,8 @@ class TaskCommentControllerIntTest {
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000000");
     HttpEntity<TaskCommentRepresentationModel> auth =
-        new HttpEntity<>(taskCommentRepresentationModelToCreate, restHelper.getHeadersUser_b_1());
+        new HttpEntity<>(
+            taskCommentRepresentationModelToCreate, RestHelper.generateHeadersForUser("user-b-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -188,7 +189,8 @@ class TaskCommentControllerIntTest {
     taskCommentRepresentationModelToCreate.setTextField("newly created task comment");
     String url = restHelper.toUrl(RestEndpoints.URL_TASK_COMMENTS, "DefinatelyNotExistingId");
     HttpEntity<TaskCommentRepresentationModel> auth =
-        new HttpEntity<>(taskCommentRepresentationModelToCreate, restHelper.getHeadersAdmin());
+        new HttpEntity<>(
+            taskCommentRepresentationModelToCreate, RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -205,7 +207,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_TYPE);
@@ -217,7 +219,7 @@ class TaskCommentControllerIntTest {
 
     taskCommentToUpdate.setModified(Instant.now());
     HttpEntity<TaskCommentRepresentationModel> auth2 =
-        new HttpEntity<>(taskCommentToUpdate, restHelper.getHeadersUser_1_1());
+        new HttpEntity<>(taskCommentToUpdate, RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -233,7 +235,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_TYPE);
@@ -245,7 +247,7 @@ class TaskCommentControllerIntTest {
 
     taskComment.setTextField("updated textfield");
     HttpEntity<TaskCommentRepresentationModel> auth2 =
-        new HttpEntity<>(taskComment, restHelper.getHeadersUser_1_2());
+        new HttpEntity<>(taskComment, RestHelper.generateHeadersForUser("user-1-2"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -261,7 +263,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_TYPE);
@@ -275,7 +277,8 @@ class TaskCommentControllerIntTest {
     taskCommentRepresentationModelToUpdate.setTextField("updated text");
     taskCommentRepresentationModelToUpdate.setTaskCommentId("DifferentTaskCommentId");
     HttpEntity<TaskCommentRepresentationModel> auth2 =
-        new HttpEntity<>(taskCommentRepresentationModelToUpdate, restHelper.getHeadersUser_1_1());
+        new HttpEntity<>(
+            taskCommentRepresentationModelToUpdate, RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -291,7 +294,7 @@ class TaskCommentControllerIntTest {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000001");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     ResponseEntity<TaskCommentCollectionRepresentationModel>
         getTaskCommentsBeforeDeleteionResponse =
@@ -316,7 +319,7 @@ class TaskCommentControllerIntTest {
   void should_FailToDeleteTaskComment_When_TaskCommentIsNotExisting() {
 
     String url = restHelper.toUrl(RestEndpoints.URL_TASK_COMMENT, "NotExistingTaskComment");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () -> {

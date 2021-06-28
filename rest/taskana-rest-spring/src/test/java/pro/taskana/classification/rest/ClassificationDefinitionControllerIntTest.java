@@ -80,7 +80,7 @@ class ClassificationDefinitionControllerIntTest {
   void should_ExportAllClassifications_When_ExportIsRequested() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_DEFINITION_COLLECTION);
 
@@ -101,7 +101,7 @@ class ClassificationDefinitionControllerIntTest {
   void should_NotContainAnyLinks_When_ExportIsRequested() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=DOMAIN_B";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_DEFINITION_COLLECTION);
@@ -119,7 +119,7 @@ class ClassificationDefinitionControllerIntTest {
   @Test
   void should_ExportNothing_When_DomainIsUnknown() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_DEFINITIONS) + "?domain=ADdfe";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<ClassificationDefinitionCollectionRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, CLASSIFICATION_DEFINITION_COLLECTION);
@@ -428,7 +428,7 @@ class ClassificationDefinitionControllerIntTest {
     MultiValueMap<String, FileSystemResource> body = new LinkedMultiValueMap<>();
     body.add("file", new FileSystemResource(tmpFile));
 
-    HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
+    HttpHeaders headers = RestHelper.generateHeadersForUser("businessadmin");
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
     HttpEntity<?> requestEntity = new HttpEntity<>(body, headers);

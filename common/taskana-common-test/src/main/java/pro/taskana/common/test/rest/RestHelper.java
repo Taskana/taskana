@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.MediaTypes;
@@ -20,15 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 /** Helps to simplify rest api testing. */
 @Component
 public class RestHelper {
-
-  public static final String AUTHORIZATION_TEAMLEAD_1 = "Basic dGVhbWxlYWQtMTp0ZWFtbGVhZC0x";
-  public static final String AUTHORIZATION_ADMIN = "Basic YWRtaW46YWRtaW4=";
-  public static final String AUTHORIZATION_BUSINESSADMIN =
-      "Basic YnVzaW5lc3NhZG1pbjpidXNpbmVzc2FkbWlu";
-  public static final String AUTHORIZATION_USER_1_1 = "Basic dXNlci0xLTE6dXNlci0xLTE=";
-  public static final String AUTHORIZATION_USER_1_2 = "Basic dXNlci0xLTI6dXNlci0xLTI=";
-  public static final String AUTHORIZATION_USER_2_1 = "Basic dXNlci0yLTE6dXNlci0yLTE=";
-  public static final String AUTHORIZATION_USER_B_1 = "Basic dXNlci1iLTE6dXNlci1iLTE=";
 
   public static final RestTemplate TEMPLATE = getRestTemplate();
 
@@ -54,60 +48,22 @@ public class RestHelper {
         .toString();
   }
 
-  public HttpHeaders getHeadersTeamlead_1() {
+  public static HttpHeaders generateHeadersForUser(String user) {
     HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_TEAMLEAD_1);
-    headers.add("Content-Type", "application/json");
+    headers.add("Authorization", encodeUserAndPasswordAsBasicAuth(user));
+    headers.add("Content-Type", MediaTypes.HAL_JSON_VALUE);
     return headers;
   }
 
-  public HttpHeaders getHeadersAdmin() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_ADMIN);
-    headers.add("Content-Type", "application/hal+json");
-    return headers;
-  }
-
-  public HttpHeaders getHeadersBusinessAdmin() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_BUSINESSADMIN);
-    headers.add("Content-Type", "application/hal+json");
-    return headers;
-  }
-
-  public HttpHeaders getHeadersUser_1_2() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_USER_1_2);
-    headers.add("Content-Type", "application/json");
-    return headers;
-  }
-
-  public HttpHeaders getHeadersUser_1_1() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_USER_1_1);
-    headers.add("Content-Type", "application/json");
-    return headers;
-  }
-
-  public HttpHeaders getHeadersUser_2_1() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_USER_2_1);
-    headers.add("Content-Type", "application/json");
-    return headers;
-  }
-
-  public HttpHeaders getHeadersUser_b_1() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", AUTHORIZATION_USER_B_1);
-    headers.add("Content-Type", "application/json");
-    return headers;
+  public static String encodeUserAndPasswordAsBasicAuth(String user) {
+    String toEncode = user + ":" + user;
+    return "Basic " + Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));
   }
 
   private int getPort() {
-    if (environment != null) {
-      return environment.getRequiredProperty("local.server.port", int.class);
-    }
-    return port;
+    return Optional.ofNullable(environment)
+        .map(e -> e.getRequiredProperty("local.server.port", int.class))
+        .orElse(port);
   }
 
   /**
@@ -116,14 +72,14 @@ public class RestHelper {
    * @return RestTemplate
    */
   private static RestTemplate getRestTemplate() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    mapper.registerModule(new Jackson2HalModule());
-    mapper
-        .registerModule(new ParameterNamesModule())
-        .registerModule(new Jdk8Module())
-        .registerModule(new JavaTimeModule());
+    ObjectMapper mapper =
+        new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+            .registerModule(new Jackson2HalModule())
+            .registerModule(new ParameterNamesModule())
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
     MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
     converter.setSupportedMediaTypes(Collections.singletonList(MediaTypes.HAL_JSON));
     converter.setObjectMapper(mapper);

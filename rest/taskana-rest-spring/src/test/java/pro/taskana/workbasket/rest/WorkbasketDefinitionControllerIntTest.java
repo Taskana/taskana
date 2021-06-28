@@ -272,7 +272,7 @@ class WorkbasketDefinitionControllerIntTest {
   private ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel>
       executeExportRequestForDomain(String domain) {
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_DEFINITIONS) + "?domain=" + domain;
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     return TEMPLATE.exchange(
         url,
@@ -302,7 +302,7 @@ class WorkbasketDefinitionControllerIntTest {
     MultiValueMap<String, FileSystemResource> body = new LinkedMultiValueMap<>();
     body.add("file", new FileSystemResource(tmpFile));
 
-    HttpHeaders headers = restHelper.getHeadersBusinessAdmin();
+    HttpHeaders headers = RestHelper.generateHeadersForUser("businessadmin");
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
     HttpEntity<?> requestEntity = new HttpEntity<>(body, headers);

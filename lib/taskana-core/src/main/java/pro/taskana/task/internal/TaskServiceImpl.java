@@ -62,6 +62,7 @@ import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
@@ -1029,12 +1030,12 @@ public class TaskServiceImpl implements TaskService {
         .map(id -> Pair.of(id, taskSummaryMap.get(id)))
         .filter(
             pair -> {
-              if (pair.getRight() == null) {
-                String taskId = pair.getLeft();
-                bulkLog.addError(taskId, new TaskNotFoundException(taskId));
-                return false;
+              if (pair.getRight() != null) {
+                return true;
               }
-              return true;
+              String taskId = pair.getLeft();
+              bulkLog.addError(taskId, new TaskNotFoundException(taskId));
+              return false;
             })
         .map(Pair::getRight);
   }
@@ -1541,34 +1542,26 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private List<ClassificationSummary> findClassificationsForTasksAndAttachments(
-      List<TaskSummaryImpl> taskSummaries, List<AttachmentSummaryImpl> attachmentSummaries) {
+      List<? extends TaskSummaryImpl> taskSummaries,
+      List<? extends AttachmentSummaryImpl> attachmentSummaries) {
     if (taskSummaries == null || taskSummaries.isEmpty()) {
       return new ArrayList<>();
     }
 
     Set<String> classificationIdSet =
-        taskSummaries.stream()
-            .map(t -> t.getClassificationSummary().getId())
+        Stream.concat(
+                taskSummaries.stream().map(TaskSummary::getClassificationSummary),
+                attachmentSummaries.stream().map(AttachmentSummary::getClassificationSummary))
+            .map(ClassificationSummary::getId)
             .collect(Collectors.toSet());
 
-    if (attachmentSummaries != null && !attachmentSummaries.isEmpty()) {
-      for (AttachmentSummaryImpl att : attachmentSummaries) {
-        classificationIdSet.add(att.getClassificationSummary().getId());
-      }
-    }
     return queryClassificationsForTasksAndAttachments(classificationIdSet);
   }
 
   private List<ClassificationSummary> findClassificationForTaskImplAndAttachments(
       TaskImpl task, List<AttachmentImpl> attachmentImpls) {
-    Set<String> classificationIdSet =
-        new HashSet<>(Collections.singletonList(task.getClassificationSummary().getId()));
-    if (attachmentImpls != null && !attachmentImpls.isEmpty()) {
-      for (AttachmentImpl att : attachmentImpls) {
-        classificationIdSet.add(att.getClassificationSummary().getId());
-      }
-    }
-    return queryClassificationsForTasksAndAttachments(classificationIdSet);
+    return findClassificationsForTasksAndAttachments(
+        Collections.singletonList(task), attachmentImpls);
   }
 
   private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(

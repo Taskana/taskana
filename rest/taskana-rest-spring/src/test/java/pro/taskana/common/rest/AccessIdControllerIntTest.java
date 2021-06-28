@@ -51,7 +51,8 @@ class AccessIdControllerIntTest {
         pair -> {
           String url =
               restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=" + pair.getLeft();
-          HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
           ResponseEntity<List<AccessIdRepresentationModel>> response =
               TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -70,7 +71,7 @@ class AccessIdControllerIntTest {
   void should_ReturnEmptyResults_ifInvalidCharacterIsUsedInCondition() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=ksc-teamleads,cn=groups";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -81,7 +82,7 @@ class AccessIdControllerIntTest {
   @Test
   void testGetMatches() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=rig";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -95,7 +96,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_ReturnAccessIdWithUmlauten_ifBased64EncodedUserIsLookedUp() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=läf";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -109,7 +110,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_ThrowException_When_SearchForIsTooShort() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=al";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -127,7 +128,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_ReturnAccessIdsOfGroupsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -147,7 +148,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_ValidateAccessIdWithEqualsFilterAndReturnAccessIdsOfGroupsTheAccessIdIsMemberOf() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=user-2-1";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -166,7 +167,7 @@ class AccessIdControllerIntTest {
   void should_ReturnBadRequest_ifAccessIdOfUserContainsInvalidCharacter() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2,cn=users";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
@@ -183,7 +184,7 @@ class AccessIdControllerIntTest {
         restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS)
             + "?access-id=cn=Organisationseinheit KSC 1,"
             + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
@@ -198,7 +199,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_ThrowNotAuthorizedException_ifCallerOfGroupRetrievalIsNotAdminOrBusinessAdmin() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
@@ -211,7 +212,7 @@ class AccessIdControllerIntTest {
   @Test
   void should_ThrowNotAuthorizedException_ifCallerOfValidationIsNotAdminOrBusinessAdmin() {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=al";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 

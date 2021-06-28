@@ -100,7 +100,8 @@ public class BaseRestDocTest {
       public RequestPostProcessor beforeMockMvcCreated(
           @NonNull ConfigurableMockMvcBuilder<?> builder, @NonNull WebApplicationContext cxt) {
         builder.defaultRequest(
-            MockMvcRequestBuilders.post("/test").headers(restHelper.getHeadersAdmin()));
+            MockMvcRequestBuilders.post("/test")
+                .headers(RestHelper.generateHeadersForUser("admin")));
         return super.beforeMockMvcCreated(builder, cxt);
       }
     };
