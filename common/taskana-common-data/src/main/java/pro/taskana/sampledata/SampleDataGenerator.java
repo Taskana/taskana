@@ -102,6 +102,8 @@ public class SampleDataGenerator {
 
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace(outWriter.toString());
+      }
+      if (LOGGER.isErrorEnabled()) {
         String trimmedErrorString = errorWriter.toString().trim();
         if (!trimmedErrorString.isEmpty()) {
           LOGGER.error(trimmedErrorString);

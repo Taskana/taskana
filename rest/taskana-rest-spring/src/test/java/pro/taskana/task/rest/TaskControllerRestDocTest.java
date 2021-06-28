@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.BaseRestDocTest;
+import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -64,7 +65,7 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
     mockMvc
         .perform(
             delete(RestEndpoints.URL_TASKS_ID_CLAIM, "TKI:000000000000000000000000000000000002")
-                .headers(restHelper.getHeadersUser_1_1()))
+                .headers(RestHelper.generateHeadersForUser("user-1-1")))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
@@ -75,7 +76,7 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
             delete(
                     RestEndpoints.URL_TASKS_ID_CLAIM_FORCE,
                     "TKI:000000000000000000000000000000000035")
-                .headers(restHelper.getHeadersUser_1_2()))
+                .headers(RestHelper.generateHeadersForUser("user-1-2")))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 

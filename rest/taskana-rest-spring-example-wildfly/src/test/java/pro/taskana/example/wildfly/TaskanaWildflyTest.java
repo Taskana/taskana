@@ -73,7 +73,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_CURRENT_USER),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
@@ -90,7 +90,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
             new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {});
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).hasSize(2);
@@ -105,7 +105,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
                 "/taskana" + RestEndpoints.URL_TASKS_ID,
                 "TKI:000000000000000000000000000000000001"),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.getHeadersTeamlead_1()),
+            new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
             ParameterizedTypeReference.forType(TaskRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();

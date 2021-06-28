@@ -42,7 +42,7 @@ class GeneralExceptionHandlingTest {
   @Test
   void testDeleteNonExisitingClassificationExceptionIsLogged() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATIONS_ID, "non-existing-id");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () ->
@@ -61,7 +61,7 @@ class GeneralExceptionHandlingTest {
   @Test
   void should_ThrowExpressiveError_When_AQueryParameterIsInvalid() throws Exception {
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=GROU";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () ->
@@ -96,7 +96,7 @@ class GeneralExceptionHandlingTest {
   void should_CombineErrors_When_SameQueryParameterDeclarationsAreInvalidMultipleTimes()
       throws Exception {
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROU&type=invalid";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () ->
@@ -133,7 +133,7 @@ class GeneralExceptionHandlingTest {
   void should_FilterOutValidQueryParameters_When_OnlySomeQueryParametersDeclarationsAreInvalid()
       throws Exception {
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROUP&type=invalid";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () ->
@@ -168,7 +168,7 @@ class GeneralExceptionHandlingTest {
   void should_CombineErrors_When_DifferentQueryParametersAreInvalid() throws Exception {
     String url =
         restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROU&required-permission=invalid";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ThrowingCallable httpCall =
         () ->

@@ -84,7 +84,7 @@ class TaskControllerIntTest {
   @Test
   void testGetAllTasks() {
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -99,7 +99,7 @@ class TaskControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?workbasket-id=WBI:100000000000000000000000000000000001";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -124,7 +124,7 @@ class TaskControllerIntTest {
                     + "&planned=&planned=%s"
                     + "&sort-by=PLANNED",
                 firstInstant, secondInstant, thirdInstant, fourthInstant);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -146,7 +146,7 @@ class TaskControllerIntTest {
             + "&planned-until="
             + plannedToInstant
             + "&sort-by=PLANNED";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -165,7 +165,7 @@ class TaskControllerIntTest {
             + "&planned-from="
             + plannedFromInstant
             + "&sort-by=PLANNED";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -185,7 +185,7 @@ class TaskControllerIntTest {
             + ",2020-01-18T09:44:47.453Z"
             + "&planned-from=2020-01-19T07:44:47.453Z"
             + "&sort-by=planned";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -212,7 +212,7 @@ class TaskControllerIntTest {
                     + "&due=&due=%s"
                     + "&sort-by=DUE",
                 firstInstant, secondInstant, thirdInstant, fourthInstant);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -230,7 +230,7 @@ class TaskControllerIntTest {
             + "&wildcard-search-fields=NAME"
             + "&wildcard-search-fields=CUSTOM_3"
             + "&wildcard-search-fields=CUSTOM_4";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -255,7 +255,8 @@ class TaskControllerIntTest {
           taskRepresentationModel.setCustomAttributes(List.of(customAttribute));
           String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
           HttpEntity<TaskRepresentationModel> auth =
-              new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1());
+              new HttpEntity<>(
+                  taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
 
           ThrowingCallable httpCall =
               () -> {
@@ -279,7 +280,7 @@ class TaskControllerIntTest {
             + "&task-id=TKI:000000000000000000000000000000000037"
             + "&task-id=TKI:000000000000000000000000000000000038"
             + "&custom14=abc";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskSummaryCollectionRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.DELETE, auth, TASK_SUMMARY_COLLECTION_MODEL_TYPE);
@@ -292,7 +293,7 @@ class TaskControllerIntTest {
   @Test
   void should_ThrowException_When_ProvidingInvalidWildcardSearchParameters() {
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?wildcard-search-value=%rt%";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -330,7 +331,7 @@ class TaskControllerIntTest {
             + "&due-until="
             + dueToInstant
             + "&sort-by=DUE";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -349,7 +350,7 @@ class TaskControllerIntTest {
             + "&due-until="
             + dueToInstant
             + "&sort-by=DUE";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -369,7 +370,7 @@ class TaskControllerIntTest {
             + ",2020-01-18T09:44:47.453Z"
             + "&due-from=2020-01-19T07:44:47.453Z"
             + "&sort-by=planned";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -386,7 +387,7 @@ class TaskControllerIntTest {
   void testGetAllTasksByWorkbasketKeyAndDomain() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS) + "?workbasket-key=USER-1-2&domain=DOMAIN_A";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -402,7 +403,7 @@ class TaskControllerIntTest {
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?external-id=ETI:000000000000000000000000000000000003"
             + "&external-id=ETI:000000000000000000000000000000000004";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -415,7 +416,7 @@ class TaskControllerIntTest {
   @Test
   void testExceptionIfKeyIsSetButDomainIsMissing() {
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?workbasket-key=USER-1-2";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -430,7 +431,7 @@ class TaskControllerIntTest {
   @Test
   void testGetAllTasksWithAdminRole() {
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -445,7 +446,7 @@ class TaskControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?por.type=VNR&por.value=22334455&sort-by=POR_VALUE&order=DESCENDING";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -464,7 +465,7 @@ class TaskControllerIntTest {
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?state=READY&state=CLAIMED&sort-by=POR_VALUE"
             + "&order=DESCENDING&page-size=5&page=16";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -492,7 +493,7 @@ class TaskControllerIntTest {
     // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
     // tasks and this test depends on the tasks as they are in sampledata
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?sort-by=DUE&order=DESCENDING";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -529,7 +530,7 @@ class TaskControllerIntTest {
             + "?por.company=00&por.system=PASystem&por.instance=00&"
             + "por.type=VNR&por.value=22334455&sort-by=POR_TYPE&"
             + "order=ASCENDING&page-size=5&page=2";
-    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -553,7 +554,7 @@ class TaskControllerIntTest {
   void should_NotGetEmptyAttachmentList_When_GettingTaskWithAttachment() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000002");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
@@ -568,14 +569,14 @@ class TaskControllerIntTest {
   void should_ChangeValueOfModified_When_UpdatingTask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskRepresentationModel> responseGet =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
     final TaskRepresentationModel originalTask = responseGet.getBody();
     HttpEntity<TaskRepresentationModel> auth2 =
-        new HttpEntity<>(originalTask, restHelper.getHeadersTeamlead_1());
+        new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskRepresentationModel> responseUpdate =
         TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
@@ -591,7 +592,7 @@ class TaskControllerIntTest {
     TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
     HttpEntity<TaskRepresentationModel> auth =
-        new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersTeamlead_1());
+        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskRepresentationModel> responseCreate =
         TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
@@ -603,7 +604,7 @@ class TaskControllerIntTest {
     assertThat(taskIdOfCreatedTask).startsWith("TKI:");
 
     String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);
-    HttpEntity<Object> auth2 = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskRepresentationModel> responseDeleted =
         TEMPLATE.exchange(
@@ -623,7 +624,7 @@ class TaskControllerIntTest {
     taskRepresentationModel.setDue(now);
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
     HttpEntity<TaskRepresentationModel> auth =
-        new HttpEntity<>(taskRepresentationModel, restHelper.getHeadersUser_1_1());
+        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -646,7 +647,7 @@ class TaskControllerIntTest {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("POST");
     con.setDoOutput(true);
-    con.setRequestProperty("Authorization", RestHelper.AUTHORIZATION_TEAMLEAD_1);
+    con.setRequestProperty("Authorization", RestHelper.encodeUserAndPasswordAsBasicAuth("admin"));
     con.setRequestProperty("Content-Type", "application/json");
     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(taskToCreateJson);
@@ -666,7 +667,7 @@ class TaskControllerIntTest {
     con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("POST");
     con.setDoOutput(true);
-    con.setRequestProperty("Authorization", RestHelper.AUTHORIZATION_TEAMLEAD_1);
+    con.setRequestProperty("Authorization", RestHelper.encodeUserAndPasswordAsBasicAuth("admin"));
     con.setRequestProperty("Content-Type", "application/json");
     out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
     out.write(taskToCreateJson2);
@@ -681,7 +682,7 @@ class TaskControllerIntTest {
   void should_CancelTask_when_CallingCancelEndpoint() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000026");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> responseGet =
@@ -705,7 +706,7 @@ class TaskControllerIntTest {
   void testCancelClaimTask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000027");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> getTaskResponse =
@@ -734,7 +735,7 @@ class TaskControllerIntTest {
   void should_ForceCancelClaim_When_TaskIsClaimedByDifferentOwner() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000027");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> getTaskResponse =
@@ -763,7 +764,7 @@ class TaskControllerIntTest {
   void testCancelClaimOfClaimedTaskByAnotherUserShouldThrowException() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000026");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> responseGet =
@@ -791,7 +792,7 @@ class TaskControllerIntTest {
   @Test
   void testUpdateTaskOwnerOfReadyTaskSucceeds() {
     final String url = restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000025");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> responseGet =
@@ -805,7 +806,7 @@ class TaskControllerIntTest {
     // set Owner and update Task
     theTaskRepresentationModel.setOwner("dummyUser");
     HttpEntity<TaskRepresentationModel> auth2 =
-        new HttpEntity<>(theTaskRepresentationModel, restHelper.getHeadersUser_1_2());
+        new HttpEntity<>(theTaskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
 
     ResponseEntity<TaskRepresentationModel> responseUpdate =
         TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
@@ -819,7 +820,7 @@ class TaskControllerIntTest {
   @Test
   void testUpdateTaskOwnerOfClaimedTaskFails() {
     final String url = restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000026");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_2());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     // retrieve task from Rest Api
     ResponseEntity<TaskRepresentationModel> responseGet =
@@ -833,7 +834,7 @@ class TaskControllerIntTest {
     // set Owner and update Task
     theTaskRepresentationModel.setOwner("dummyuser");
     HttpEntity<TaskRepresentationModel> auth2 =
-        new HttpEntity<>(theTaskRepresentationModel, restHelper.getHeadersUser_1_2());
+        new HttpEntity<>(theTaskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -849,7 +850,7 @@ class TaskControllerIntTest {
   void should_ThrowNotAuthorized_When_UserHasNoAuthorizationOnTask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000000");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_b_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-b-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -873,7 +874,7 @@ class TaskControllerIntTest {
             + "&illegalParam=illegal"
             + "&anotherIllegalParam=stillIllegal"
             + "&sort-by=NAME&order=DESCENDING&page-size=5&page=2";
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
         () -> {
@@ -900,7 +901,8 @@ class TaskControllerIntTest {
     ThrowingConsumer<Boolean> test =
         setTransferFlag -> {
           HttpEntity<String> auth =
-              new HttpEntity<>(setTransferFlag.toString(), restHelper.getHeadersAdmin());
+              new HttpEntity<>(
+                  setTransferFlag.toString(), RestHelper.generateHeadersForUser("admin"));
           ResponseEntity<TaskRepresentationModel> response =
               TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
@@ -920,7 +922,7 @@ class TaskControllerIntTest {
             RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
             "TKI:000000000000000000000000000000000003",
             "WBI:100000000000000000000000000000000006");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
