@@ -177,17 +177,23 @@ jobs:
         with:
           path: web/node_modules
           key: ${{ runner.OS }}-${{ env.CACHE_WEB_NAME }}-${{ hashFiles('**/yarn.lock') }}
-      # Theoretically this is not necessary because we reuse the cache from the 'compile_frontend' job.
+      # Theoretically this step below not necessary because we reuse the cache from the 'compile_frontend' job.
       # Sometimes the cache is not created, therefore this is a fallback.
       - name: Install Dependencies
         if: steps.web-cache.outputs.cache-hit != 'true'
         working-directory: web
         run: yarn ci
       - name: Cache maven dependencies
+        id: maven-cache
         uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
+      # Theoretically this step below not necessary because we reuse the cache from the 'compile_frontend' job.
+      # Sometimes the cache is not created, therefore this is a fallback.
+      - name: Populate cache
+        run: ./mvnw -B dependency:go-offline -pl :taskana-rest-spring-example-boot -am
+        if: steps.maven-cache.outputs.cache-hit != 'true'
       - name: Download taskana artifacts
         uses: actions/download-artifact@v2
         with:
