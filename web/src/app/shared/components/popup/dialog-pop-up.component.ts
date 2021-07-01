@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { notifications } from '../../models/notifications';
+import { ObtainMessageService } from '../../services/obtain-message/obtain-message.service';
+import { messageTypes } from '../../services/obtain-message/message-types';
 
 @Component({
   selector: 'taskana-shared-dialog-pop-up',
@@ -8,43 +9,19 @@ import { notifications } from '../../models/notifications';
   styleUrls: ['./dialog-pop-up.component.scss']
 })
 export class DialogPopUpComponent implements OnInit {
-  title: string;
   message: string;
-  isDialog: false;
   callback: Function;
+  isDataSpecified: boolean;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) private data: any, private obtainMessageService: ObtainMessageService) {}
 
   ngOnInit() {
-    if (this.data) {
-      this.isDialog = this.data.isDialog;
-      if (this.isDialog) {
-        this.initDialog();
-      } else {
-        this.initError();
-      }
+    this.isDataSpecified = this.data?.message && this.data?.callback;
+    if (this.isDataSpecified) {
+      this.message = this.data.message;
+      this.callback = this.data.callback;
     } else {
-      this.message = 'There was an error with this PopUp. \nPlease contact your administrator.';
+      this.message = this.obtainMessageService.getMessage('POPUP_CONFIGURATION', {}, messageTypes.DIALOG);
     }
-  }
-
-  initError() {
-    this.title = notifications.get(this.data.key).left || '';
-    this.message =
-      notifications.get(this.data.key).right || (this.data && this.data.passedError && this.data.passedError.error)
-        ? this.data.passedError.error.message
-        : '';
-    if (this.data.additions) {
-      this.data.additions.forEach((value: string, replacementKey: string) => {
-        this.message = this.message.replace(`{${replacementKey}}`, value);
-        this.title = this.title.replace(`{${replacementKey}}`, value);
-      });
-    }
-  }
-
-  initDialog() {
-    this.message = this.data.message;
-    this.title = 'Please confirm your action';
-    this.callback = this.data.callback;
   }
 }

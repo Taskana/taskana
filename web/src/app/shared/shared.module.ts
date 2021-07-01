@@ -8,7 +8,7 @@ import { TreeModule } from '@circlon/angular-tree-component';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-
+import { HotToastModule } from '@ngneat/hot-toast';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 /**
@@ -20,7 +20,6 @@ import { TaskanaTreeComponent } from 'app/administration/components/tree/tree.co
 import { TypeAheadComponent } from 'app/shared/components/type-ahead/type-ahead.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/components/field-error-display/field-error-display.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
@@ -43,7 +42,6 @@ import { DateTimeZonePipe } from './pipes/date-time-zone.pipe';
  * Services
  */
 import { HttpClientInterceptor } from './services/http-client-interceptor/http-client-interceptor.service';
-import { ToastComponent } from './components/toast/toast.component';
 import { DialogPopUpComponent } from './components/popup/dialog-pop-up.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -56,6 +54,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WorkbasketFilterComponent } from './components/workbasket-filter/workbasket-filter.component';
 import { TaskFilterComponent } from './components/task-filter/task-filter.component';
+import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
+import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
+import { ObtainMessageService } from './services/obtain-message/obtain-message.service';
+import { AccessIdsService } from './services/access-ids/access-ids.service';
 
 const MODULES = [
   CommonModule,
@@ -66,12 +68,16 @@ const MODULES = [
   BsDatepickerModule.forRoot(),
   AngularSvgIconModule,
   HttpClientModule,
-  MatSnackBarModule,
   MatDialogModule,
   MatButtonModule,
   RouterModule,
   TreeModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  HotToastModule.forRoot({
+    style: {
+      'max-width': '520px'
+    }
+  })
 ];
 
 const DECLARATIONS = [
@@ -91,7 +97,6 @@ const DECLARATIONS = [
   FieldErrorDisplayComponent,
   PaginationComponent,
   ProgressSpinnerComponent,
-  ToastComponent,
   DialogPopUpComponent,
   WorkbasketFilterComponent,
   TaskFilterComponent
@@ -118,8 +123,12 @@ const DECLARATIONS = [
       provide: HTTP_INTERCEPTORS,
       useClass: HttpClientInterceptor,
       multi: true
-    }
+    },
+    AccessIdsService,
+    ClassificationsService,
+    WorkbasketService,
+    ObtainMessageService
   ],
-  entryComponents: [DialogPopUpComponent, ToastComponent]
+  entryComponents: [DialogPopUpComponent]
 })
 export class SharedModule {}

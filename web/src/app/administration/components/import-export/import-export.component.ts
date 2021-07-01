@@ -6,8 +6,6 @@ import { TaskanaType } from 'app/shared/models/taskana-type';
 import { environment } from 'environments/environment';
 import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
@@ -23,15 +21,13 @@ export class ImportExportComponent implements OnInit {
   selectedFileInput;
 
   domains: string[] = [];
-  errorWhileUploadingText: string;
 
   constructor(
     private domainService: DomainService,
     private workbasketDefinitionService: WorkbasketDefinitionService,
     private classificationDefinitionService: ClassificationDefinitionService,
-    private notificationsService: NotificationService,
     public uploadService: UploadService,
-    private errorsService: NotificationService,
+    private notificationService: NotificationService,
     private importExportService: ImportExportService
   ) {}
 
@@ -85,7 +81,7 @@ export class ImportExportComponent implements OnInit {
       check = true;
     } else {
       file.value = '';
-      this.errorsService.triggerError(NOTIFICATION_TYPES.FILE_ERR);
+      this.notificationService.showError('IMPORT_EXPORT_UPLOAD_FILE_FORMAT');
     }
     return check;
   }
@@ -98,32 +94,32 @@ export class ImportExportComponent implements OnInit {
 
   private onReadyStateChangeHandler(event) {
     if (event.readyState === 4 && event.status >= 400) {
-      let title;
-      let key: NOTIFICATION_TYPES;
+      let key = 'FALLBACK';
+
       if (event.status === 401) {
-        key = NOTIFICATION_TYPES.IMPORT_ERR_1;
-        title = 'Import was not successful, you have no access to apply this operation.';
+        key = 'IMPORT_EXPORT_UPLOAD_FAILED_AUTH';
       } else if (event.status === 404) {
-        key = NOTIFICATION_TYPES.IMPORT_ERR_2;
+        key = 'IMPORT_EXPORT_UPLOAD_FAILED_NOT_FOUND';
       } else if (event.status === 409) {
-        key = NOTIFICATION_TYPES.IMPORT_ERR_3;
+        key = 'IMPORT_EXPORT_UPLOAD_FAILED_CONFLICTS';
       } else if (event.status === 413) {
-        key = NOTIFICATION_TYPES.IMPORT_ERR_4;
+        key = 'IMPORT_EXPORT_UPLOAD_FAILED_SIZE';
       }
-      this.errorHandler(key, event);
-    } else if (event.readyState === 4 && event.status === 200) {
-      this.notificationsService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_6);
+      this.errorHandler(key);
+    } else if (event.readyState === 4 && event.status === 204) {
+      const message = this.currentSelection === TaskanaType.WORKBASKETS ? 'WORKBASKET_IMPORT' : 'CLASSIFICATION_IMPORT';
+      this.notificationService.showSuccess(message);
       this.importExportService.setImportingFinished(true);
       this.resetProgress();
     }
   }
 
   private onFailedResponse() {
-    this.errorHandler(NOTIFICATION_TYPES.UPLOAD_ERR);
+    this.errorHandler('IMPORT_EXPORT_UPLOAD_FAILED');
   }
 
-  private errorHandler(key: NOTIFICATION_TYPES, passedError?: HttpErrorResponse) {
-    this.errorsService.triggerError(key, passedError);
+  private errorHandler(key: string) {
+    this.notificationService.showError(key);
     delete this.selectedFileInput.files;
     this.resetProgress();
   }

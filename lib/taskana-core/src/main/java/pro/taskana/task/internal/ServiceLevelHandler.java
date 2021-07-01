@@ -43,12 +43,13 @@ class ServiceLevelHandler {
   ServiceLevelHandler(
       InternalTaskanaEngine taskanaEngine,
       TaskMapper taskMapper,
-      AttachmentMapper attachmentMapper) {
+      AttachmentMapper attachmentMapper,
+      TaskServiceImpl taskServiceImpl) {
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
     converter = taskanaEngine.getEngine().getWorkingDaysToDaysConverter();
-    taskServiceImpl = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
+    this.taskServiceImpl = taskServiceImpl;
   }
 
   // use the same algorithm as setPlannedPropertyOfTasksImpl to refresh

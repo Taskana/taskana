@@ -1,17 +1,7 @@
-<h4 class="modal-title" mat-dialog-title id="errorModalLabel">{{title}}</h4>
-<div mat-dialog-content class="modal-body">
-  <div class="alert alert-danger" role="alert">
-    <span class="material-icons md-20" data-toggle="tooltip">error</span>
-    <span *ngIf="!isDialog" class="sr-only">Error:</span>
-    {{message}}
-  </div>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-dialog-close mat-stroked-button data-dismiss="modal" type="button">
-    <span data-toggle="tooltip" class="material-icons md-20 red">cancel</span>
-  </button>
-  <button *ngIf="isDialog" [mat-dialog-close]="callback" mat-raised-button color="primary"
-          data-dismiss="modal" type="button">
-    <span data-toggle="tooltip" class="material-icons md-20 white">done</span>
-  </button>
-</div>
+<mat-dialog-content class="mat-typography">
+  <h4> {{message}} </h4>
+</mat-dialog-content>
+<mat-dialog-actions style="justify-content: flex-end">
+  <button mat-dialog-close mat-stroked-button> Cancel </button>
+  <button *ngIf="isDataSpecified" [mat-dialog-close]="callback" mat-raised-button color="primary"> Delete </button>
+</mat-dialog-actions>

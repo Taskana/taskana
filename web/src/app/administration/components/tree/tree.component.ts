@@ -19,7 +19,6 @@ import { Select, Store } from '@ngxs/store';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 
 import { Location } from '@angular/common';
-import { NOTIFICATION_TYPES } from 'app/shared/models/notifications';
 import { NotificationService } from 'app/shared/services/notifications/notification.service';
 import { Classification } from '../../../shared/models/classification';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
@@ -246,10 +245,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private updateClassification(classification: Classification) {
     this.store.dispatch(new UpdateClassification(classification)).subscribe(() => {
-      this.notificationsService.showToast(
-        NOTIFICATION_TYPES.SUCCESS_ALERT_5,
-        new Map<string, string>([['classificationKey', classification.key]])
-      );
+      this.notificationsService.showSuccess('CLASSIFICATION_MOVE', { classificationKey: classification.key });
       this.switchTaskanaSpinner(false);
     });
   }

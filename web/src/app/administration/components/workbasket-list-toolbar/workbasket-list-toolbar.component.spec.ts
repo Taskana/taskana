@@ -13,7 +13,6 @@ import { Direction, Sorting, WorkbasketQuerySortParameter } from '../../../share
 import { ACTION } from '../../../shared/models/action';
 import { TaskanaType } from '../../../shared/models/taskana-type';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
@@ -59,7 +58,6 @@ describe('WorkbasketListToolbarComponent', () => {
         NgxsModule.forRoot([WorkbasketState]),
         BrowserAnimationsModule,
         MatIconModule,
-        MatSnackBarModule,
         MatDialogModule
       ],
       declarations: [WorkbasketListToolbarComponent, ImportExportStub, SortStub, FilterStub],

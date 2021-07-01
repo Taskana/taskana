@@ -47,7 +47,7 @@ const workbasketServiceSpy: Partial<WorkbasketService> = {
 };
 
 const notificationsServiceSpy: Partial<NotificationService> = {
-  showToast: jest.fn().mockReturnValue(true)
+  showSuccess: jest.fn().mockReturnValue(true)
 };
 const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
   setRequestInProgress: jest.fn().mockReturnValue(of())

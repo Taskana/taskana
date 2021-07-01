@@ -55,6 +55,7 @@ context('TASKANA Workbaskets', () => {
     cy.wait(Cypress.env('dropdownWait'));
     cy.get('mat-option').contains('Clearance').click();
     cy.saveWorkbaskets();
+    cy.wait(3050); //wait for toasts to disappear
 
     // assure that its Clearance now
     cy.get('mat-form-field').contains('mat-form-field', 'Type').contains('Clearance').should('be.visible');

@@ -5,7 +5,6 @@ import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OrientationService } from '../../../shared/services/orientation/orientation.service';
 import { ImportExportService } from '../../services/import-export.service';
@@ -95,7 +94,6 @@ describe('WorkbasketListComponent', () => {
       imports: [
         NgxsModule.forRoot([WorkbasketState]),
         RouterTestingModule,
-        MatSnackBarModule,
         MatDialogModule,
         FormsModule,
         MatProgressBarModule,

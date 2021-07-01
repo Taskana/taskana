@@ -113,7 +113,8 @@ public class TaskServiceImpl implements TaskService {
     this.createTaskPreprocessorManager = taskanaEngine.getCreateTaskPreprocessorManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService = new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, this);
-    this.serviceLevelHandler = new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper);
+    this.serviceLevelHandler =
+        new ServiceLevelHandler(taskanaEngine, taskMapper, attachmentMapper, this);
     this.attachmentHandler = new AttachmentHandler(attachmentMapper, classificationService);
   }
 

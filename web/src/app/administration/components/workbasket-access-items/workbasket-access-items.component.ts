@@ -22,7 +22,6 @@ import { FormsValidatorService } from 'app/shared/services/forms-validator/forms
 import { AccessIdDefinition } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import {
@@ -272,7 +271,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     this.AccessItemsForm.reset();
     this.setAccessItemsGroups(this.accessItemsResetClone);
     this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
-    this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationsService.showSuccess('WORKBASKET_ACCESS_ITEM_RESTORE');
   }
 
   isFieldValid(field: string, index: number): boolean {

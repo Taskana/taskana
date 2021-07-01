@@ -90,9 +90,9 @@ const formsValidatorServiceSpy: Partial<FormsValidatorService> = {
 };
 
 const notificationServiceSpy: Partial<NotificationService> = {
-  showToast: jest.fn().mockReturnValue(of()),
-  showDialog: jest.fn().mockReturnValue(of()),
-  triggerError: jest.fn().mockReturnValue(of())
+  showWarning: jest.fn().mockReturnValue(of()),
+  showSuccess: jest.fn().mockReturnValue(of()),
+  showDialog: jest.fn().mockReturnValue(of())
 };
 
 describe('ClassificationDetailsComponent', () => {
@@ -157,9 +157,9 @@ describe('ClassificationDetailsComponent', () => {
   it('should show warning when onCopy() is called and isCreatingNewClassification is true', () => {
     component.isCreatingNewClassification = true;
     const notificationService = TestBed.inject(NotificationService);
-    const showToastSpy = jest.spyOn(notificationService, 'showToast');
+    const showWarningSpy = jest.spyOn(notificationService, 'showWarning');
     component.onCopy();
-    expect(showToastSpy).toHaveBeenCalled();
+    expect(showWarningSpy).toHaveBeenCalled();
   });
 
   it('should dispatch action when onCopy() is called and isCreatingNewClassification is false', async () => {
@@ -201,22 +201,6 @@ describe('ClassificationDetailsComponent', () => {
     actions$.pipe(ofActionDispatched(SaveModifiedClassification)).subscribe(() => (isActionDispatched = true));
     await component.onSave();
     expect(isActionDispatched).toBe(true);
-  });
-
-  it('should trigger an error in removeClassificationConfirmation() when classification does not exist', () => {
-    component.classification = undefined;
-    const notificationService = TestBed.inject(NotificationService);
-    const triggerErrorSpy = jest.spyOn(notificationService, 'triggerError');
-    component.removeClassificationConfirmation();
-    expect(triggerErrorSpy).toHaveBeenCalled();
-  });
-
-  it('should trigger an error in removeClassificationConfirmation() when classificationId does not exist', () => {
-    component.classification = { key: 'Key01' };
-    const notificationService = TestBed.inject(NotificationService);
-    const triggerErrorSpy = jest.spyOn(notificationService, 'triggerError');
-    component.removeClassificationConfirmation();
-    expect(triggerErrorSpy).toHaveBeenCalled();
   });
 
   it('should dispatch action in removeClassificationConfirmation() when classification and classificationId exist', () => {
@@ -296,6 +280,16 @@ describe('ClassificationDetailsComponent', () => {
     fixture.detectChanges();
     const buttonsInDropdown = debugElement.queryAll(By.css('.action-toolbar__dropdown'));
     expect(buttonsInDropdown.length).toEqual(3);
+  });
+
+  it('should not show delete button when creating or copying a Classification', () => {
+    component.classification.classificationId = null;
+    const button = debugElement.nativeElement.querySelector('#action-toolbar__more-buttons');
+    expect(button).toBeTruthy();
+    button.click();
+    fixture.detectChanges();
+    const buttonsInDropdown = debugElement.queryAll(By.css('.action-toolbar__dropdown'));
+    expect(buttonsInDropdown.length).toEqual(2);
   });
 
   it('should call onCopy() when button is clicked', () => {
