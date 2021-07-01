@@ -1,34 +1,71 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ErrorModel } from '../../models/error-model';
-import { NOTIFICATION_TYPES } from '../../models/notifications';
-import { ToastComponent } from '../../components/toast/toast.component';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogPopUpComponent } from '../../components/popup/dialog-pop-up.component';
+import { HotToastService } from '@ngneat/hot-toast';
+import { ObtainMessageService } from '../obtain-message/obtain-message.service';
+import { messageTypes } from '../obtain-message/message-types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  constructor(private matSnack: MatSnackBar, private popup: MatDialog) {}
+  constructor(
+    private popup: MatDialog,
+    private toastService: HotToastService,
+    private obtainMessageService: ObtainMessageService
+  ) {}
 
-  triggerError(key: NOTIFICATION_TYPES, passedError?: HttpErrorResponse, additions?: Map<String, String>): void {
-    this.popup.open(DialogPopUpComponent, {
-      data: { key, passedError, additions, isDialog: false },
-      backdropClass: 'backdrop',
-      position: { top: '3em' },
-      autoFocus: true,
-      maxWidth: '50em'
+  generateToastId(errorKey: string, messageVariables: object): string {
+    let id = errorKey;
+    for (const [replacementKey, value] of Object.entries(messageVariables)) {
+      id = id.concat(replacementKey, value);
+    }
+    return id;
+  }
+
+  showError(errorKey: string, messageVariables: object = {}) {
+    this.toastService.error(this.obtainMessageService.getMessage(errorKey, messageVariables, messageTypes.ERROR), {
+      dismissible: true,
+      autoClose: false,
+      id: this.generateToastId(errorKey, messageVariables)
     });
   }
 
-  showDialog(message: string, callback?: Function): MatDialogRef<DialogPopUpComponent> {
+  showSuccess(successKey: string, messageVariables: object = {}) {
+    this.toastService.success(
+      this.obtainMessageService.getMessage(successKey, messageVariables, messageTypes.SUCCESS),
+      {
+        duration: 5000
+      }
+    );
+  }
+
+  showWarning(warningKey: string, messageVariables: object = {}) {
+    this.toastService.warning(this.obtainMessageService.getMessage(warningKey, messageVariables, messageTypes.WARNING));
+  }
+
+  showInformation(informationKey: string, messageVariables: object = {}) {
+    this.toastService.show(
+      `
+    <span class="material-icons">info</span> ${this.obtainMessageService.getMessage(
+      informationKey,
+      messageVariables,
+      messageTypes.INFORMATION
+    )}
+  `,
+      // prevents duplicated toast because of double call in task-master
+      // TODO: delete while frontend refactoring
+      { id: 'empty-workbasket' }
+    );
+  }
+
+  showDialog(key: string, messageVariables: object = {}, callback: Function) {
+    const message = this.obtainMessageService.getMessage(key, messageVariables, messageTypes.DIALOG);
+
     const ref = this.popup.open(DialogPopUpComponent, {
-      data: { isDialog: true, message, callback },
+      data: { message: message, callback },
       backdropClass: 'backdrop',
-      position: { top: '3em' },
+      position: { top: '5em' },
       autoFocus: true,
       maxWidth: '50em'
     });
@@ -38,31 +75,5 @@ export class NotificationService {
       }
     });
     return ref;
-  }
-
-  showToast(key: NOTIFICATION_TYPES, additions?: Map<string, string>) {
-    let colorClass: string[];
-    const type = NOTIFICATION_TYPES[key].split('_')[0].toLowerCase();
-    switch (type) {
-      case 'danger':
-        colorClass = ['red', 'background-white'];
-        break;
-      case 'success':
-        colorClass = ['white', 'background-bluegreen'];
-        break;
-      case 'info':
-        colorClass = ['white', 'background-darkgreen'];
-        break;
-      case 'warning':
-        colorClass = ['brown', 'background-white'];
-        break;
-      default:
-        colorClass = ['white', 'background-darkgreen'];
-    }
-    return this.matSnack.openFromComponent(ToastComponent, {
-      duration: 5000,
-      data: { key, additions },
-      panelClass: colorClass
-    });
   }
 }

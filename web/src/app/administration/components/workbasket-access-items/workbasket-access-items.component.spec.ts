@@ -51,8 +51,7 @@ const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
 
 const showDialogFn = jest.fn().mockReturnValue(true);
 const notificationServiceSpy: Partial<NotificationService> = {
-  triggerError: showDialogFn,
-  showToast: showDialogFn
+  showSuccess: showDialogFn
 };
 
 const validateFormInformationFn = jest.fn().mockImplementation((): Promise<any> => Promise.resolve(true));

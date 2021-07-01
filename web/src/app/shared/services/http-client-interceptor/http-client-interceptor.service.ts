@@ -12,14 +12,13 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { environment } from 'environments/environment';
 import { tap } from 'rxjs/operators';
 import { NotificationService } from '../notifications/notification.service';
-import { NOTIFICATION_TYPES } from '../../models/notifications';
 
 @Injectable()
 export class HttpClientInterceptor implements HttpInterceptor {
   constructor(
     private requestInProgressService: RequestInProgressService,
-    private errorsService: NotificationService,
-    private tokenExtractor: HttpXsrfTokenExtractor
+    private tokenExtractor: HttpXsrfTokenExtractor,
+    private notificationService: NotificationService
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -36,22 +35,16 @@ export class HttpClientInterceptor implements HttpInterceptor {
         () => {},
         (error) => {
           this.requestInProgressService.setRequestInProgress(false);
-          if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
-            this.errorsService.triggerError(NOTIFICATION_TYPES.ACCESS_ERR, error);
-          } else if (
-            error instanceof HttpErrorResponse &&
-            error.status === 404 &&
-            error.url.indexOf('environment-information.json')
+          if (
+            error.status !== 404 ||
+            !(error instanceof HttpErrorResponse) ||
+            error.url.indexOf('environment-information.json') === -1
           ) {
-            // ignore this error
-          } else if (
-            (error.status === 409 && error.error.exception.endsWith('WorkbasketAccessItemAlreadyExistException')) ||
-            error.error.exception.endsWith('WorkbasketAlreadyExistException') ||
-            error.error.exception.endsWith('ClassificationAlreadyExistException')
-          ) {
-            return;
-          } else {
-            this.errorsService.triggerError(NOTIFICATION_TYPES.GENERAL_ERR, error);
+            const { key, messageVariables } = error.error.error || {
+              key: 'FALLBACK',
+              messageVariables: {}
+            };
+            this.notificationService.showError(key, messageVariables);
           }
         }
       )

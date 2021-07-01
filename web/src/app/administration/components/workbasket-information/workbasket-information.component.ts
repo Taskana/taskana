@@ -10,7 +10,6 @@ import { RequestInProgressService } from 'app/shared/services/request-in-progres
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { CustomField, getCustomFields, WorkbasketsCustomisation } from '../../../shared/models/customisation';
 import {
@@ -136,13 +135,14 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   onUndo() {
     this.formsValidatorService.formSubmitAttempt = false;
-    this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationService.showSuccess('WORKBASKET_RESTORE');
     this.workbasket = { ...this.workbasketClone };
   }
 
   removeWorkbasket() {
     this.notificationService.showDialog(
-      `You are going to delete workbasket: ${this.workbasket.key}. Can you confirm this action?`,
+      'WORKBASKET_DELETE',
+      { workbasketKey: this.workbasket.key },
       this.onRemoveConfirmed.bind(this)
     );
   }

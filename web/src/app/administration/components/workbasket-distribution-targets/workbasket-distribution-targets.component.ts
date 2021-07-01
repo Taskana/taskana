@@ -8,7 +8,6 @@ import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-dist
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import {
   GetAvailableDistributionTargets,
@@ -294,7 +293,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   }
 
   onClear() {
-    this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationsService.showSuccess('WORKBASKET_DISTRIBUTION_TARGET_RESTORE');
     this.availableDistributionTargets = Object.assign([], this.availableDistributionTargetsUndoClone);
     this.availableDistributionTargetsFilterClone = Object.assign([], this.availableDistributionTargetsUndoClone);
     this.selectedDistributionTargets = Object.assign([], this.selectedDistributionTargetsUndoClone);

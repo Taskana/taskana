@@ -14,7 +14,6 @@ import { map, take, takeUntil } from 'rxjs/operators';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { Location } from '@angular/common';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { ClassificationCategoryImages, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { Classification } from '../../../shared/models/classification';
@@ -121,13 +120,13 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       .dispatch(new RestoreSelectedClassification(this.classification.classificationId))
       .pipe(take(1))
       .subscribe(() => {
-        this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+        this.notificationsService.showSuccess('CLASSIFICATION_RESTORE');
       });
   }
 
   onCopy() {
     if (this.isCreatingNewClassification) {
-      this.notificationsService.showToast(NOTIFICATION_TYPES.WARNING_CANT_COPY);
+      this.notificationsService.showWarning('CLASSIFICATION_COPY_NOT_CREATED');
     } else {
       this.store.dispatch(new CopyClassification());
     }
@@ -165,27 +164,20 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
       this.store
         .dispatch(new SaveCreatedClassification(this.classification))
         .pipe(take(1))
-        .subscribe(
-          (store) => {
-            this.notificationsService.showToast(
-              NOTIFICATION_TYPES.SUCCESS_ALERT_2,
-              new Map<string, string>([['classificationKey', store.classification.selectedClassification.key]])
-            );
-            this.location.go(
-              this.location
-                .path()
-                .replace(
-                  /(classifications).*/g,
-                  `classifications/(detail:${store.classification.selectedClassification.classificationId})`
-                )
-            );
-            this.afterRequest();
-          },
-          (error) => {
-            this.notificationsService.triggerError(NOTIFICATION_TYPES.CREATE_ERR, error);
-            this.afterRequest();
-          }
-        );
+        .subscribe((store) => {
+          this.notificationsService.showSuccess('CLASSIFICATION_CREATE', {
+            classificationKey: store.classification.selectedClassification.key
+          });
+          this.location.go(
+            this.location
+              .path()
+              .replace(
+                /(classifications).*/g,
+                `classifications/(detail:${store.classification.selectedClassification.classificationId})`
+              )
+          );
+          this.afterRequest();
+        });
     } else {
       try {
         this.store
@@ -193,13 +185,11 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
           .pipe(take(1))
           .subscribe(() => {
             this.afterRequest();
-            this.notificationsService.showToast(
-              NOTIFICATION_TYPES.SUCCESS_ALERT_3,
-              new Map<string, string>([['classificationKey', this.classification.key]])
-            );
+            this.notificationsService.showSuccess('CLASSIFICATION_UPDATE', {
+              classificationKey: this.classification.key
+            });
           });
       } catch (error) {
-        this.notificationsService.triggerError(NOTIFICATION_TYPES.SAVE_ERR, error);
         this.afterRequest();
       }
     }
@@ -207,26 +197,20 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onRemoveClassification() {
     this.notificationsService.showDialog(
-      `You are going to delete classification: ${this.classification.key}. Can you confirm this action?`,
+      'CLASSIFICATION_DELETE',
+      { classificationKey: this.classification.key },
       this.removeClassificationConfirmation.bind(this)
     );
   }
 
   removeClassificationConfirmation() {
-    if (!this.classification || !this.classification.classificationId) {
-      this.notificationsService.triggerError(NOTIFICATION_TYPES.SELECT_ERR);
-      return;
-    }
     this.requestInProgressService.setRequestInProgress(true);
 
     this.store
       .dispatch(new RemoveSelectedClassification())
       .pipe(take(1))
       .subscribe(() => {
-        this.notificationsService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_4,
-          new Map<string, string>([['classificationKey', this.classification.key]])
-        );
+        this.notificationsService.showSuccess('CLASSIFICATION_REMOVE', { classificationKey: this.classification.key });
         this.afterRequest();
       });
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));

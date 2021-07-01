@@ -145,7 +145,8 @@ export class AccessItemsManagementComponent implements OnInit {
 
   revokeAccess() {
     this.notificationService.showDialog(
-      `You are going to delete all access related: ${this.accessId.accessId}. Can you confirm this action?`,
+      'ACCESS_ITEM_MANAGEMENT_REVOKE_ACCESS',
+      { accessId: this.accessId.accessId },
       () => {
         this.store
           .dispatch(new RemoveAccessItemsPermissions(this.accessId.accessId))

@@ -9,7 +9,6 @@ import { Observable, of } from 'rxjs';
 import { AccessIdsService } from '../../services/access-ids/access-ids.service';
 import { take, tap } from 'rxjs/operators';
 import { AccessIdDefinition } from '../../models/access-id';
-import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
@@ -50,9 +49,8 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
             groups
           });
         },
-        (error) => {
+        () => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR, error);
         }
       )
     );
@@ -72,9 +70,8 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
               accessItemsResource
             });
           },
-          (error) => {
+          () => {
             this.requestInProgressService.setRequestInProgress(false);
-            this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_2, error);
           }
         )
       );
@@ -91,14 +88,12 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
       tap(
         () => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT,
-            new Map<string, string>([['accessId', action.accessId]])
-          );
+          this.notificationService.showSuccess('WORKBASKET_ACCESS_ITEM_REMOVE_PERMISSION', {
+            accessId: action.accessId
+          });
         },
-        (error) => {
+        () => {
           this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR, error);
         }
       )
     );

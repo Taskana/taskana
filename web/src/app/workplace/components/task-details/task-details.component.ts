@@ -10,9 +10,8 @@ import { ObjectReference } from 'app/workplace/models/object-reference';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-task-details',
@@ -75,7 +74,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.task.customAttributes = this.taskClone.customAttributes.slice(0);
     this.task.callbackInfo = this.taskClone.callbackInfo.slice(0);
     this.task.primaryObjRef = { ...this.taskClone.primaryObjRef };
-    this.notificationService.showToast(NOTIFICATION_TYPES.INFO_ALERT);
+    this.notificationService.showSuccess('TASK_RESTORE');
   }
 
   getTask(): void {
@@ -91,8 +90,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
           this.cloneTask();
           this.taskService.selectTask(task);
         },
-        (error) => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.FETCH_ERR_7, error);
+        () => {
+          this.requestInProgressService.setRequestInProgress(false);
         }
       );
     }
@@ -111,22 +110,22 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   deleteTask(): void {
     this.notificationService.showDialog(
-      `You are going to delete Task: ${this.currentId}. Can you confirm this action?`,
+      'TASK_DELETE',
+      { taskId: this.currentId },
       this.deleteTaskConfirmation.bind(this)
     );
   }
 
   deleteTaskConfirmation(): void {
-    this.deleteTaskSubscription = this.taskService.deleteTask(this.task).subscribe(
-      () => {
+    this.deleteTaskSubscription = this.taskService
+      .deleteTask(this.task)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.notificationService.showSuccess('TASK_DELETE', { taskName: this.task.name });
         this.taskService.publishTaskDeletion();
         this.task = null;
         this.router.navigate(['taskana/workplace/tasks'], { queryParamsHandling: 'merge' });
-      },
-      (error) => {
-        this.notificationService.triggerError(NOTIFICATION_TYPES.DELETE_ERR_2, error);
-      }
-    );
+      });
   }
 
   selectTab(tab: string): void {
@@ -169,11 +168,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task = task;
         this.cloneTask();
         this.taskService.publishUpdatedTask(task);
-        this.notificationService.showToast(NOTIFICATION_TYPES.SUCCESS_ALERT_14);
+        this.notificationService.showSuccess('TASK_UPDATE', { taskName: task.name });
       },
       () => {
         this.requestInProgressService.setRequestInProgress(false);
-        this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT);
       }
     );
   }
@@ -184,10 +182,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.createTask(this.task).subscribe(
       (task) => {
         this.requestInProgressService.setRequestInProgress(false);
-        this.notificationService.showToast(
-          NOTIFICATION_TYPES.SUCCESS_ALERT_13,
-          new Map<string, string>([['taskId', task.name]])
-        );
+        this.notificationService.showSuccess('TASK_CREATE', { taskName: task.name });
         this.task = task;
         this.taskService.selectTask(this.task);
         this.taskService.publishUpdatedTask(task);
@@ -195,7 +190,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       },
       () => {
         this.requestInProgressService.setRequestInProgress(false);
-        this.notificationService.showToast(NOTIFICATION_TYPES.DANGER_ALERT_2);
       }
     );
   }

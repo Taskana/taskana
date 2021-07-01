@@ -22,8 +22,7 @@ import { take } from 'rxjs/operators';
 
 const showDialogFn = jest.fn().mockReturnValue(true);
 const NotificationServiceSpy: Partial<NotificationService> = {
-  triggerError: showDialogFn,
-  showToast: showDialogFn
+  showSuccess: showDialogFn
 };
 
 const domainServiceSpy: Partial<DomainService> = {

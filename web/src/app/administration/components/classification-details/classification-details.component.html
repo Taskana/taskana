@@ -36,7 +36,7 @@
           <mat-icon class="action-toolbar__aquamarine-button">content_copy</mat-icon>
           <span>Copy</span>
         </button>
-        <button mat-menu-item class="action-toolbar__dropdown" matTooltip="Delete this classification" (click)="onRemoveClassification()">
+        <button *ngIf="this.classification?.classificationId" mat-menu-item class="action-toolbar__dropdown" matTooltip="Delete this classification" (click)="onRemoveClassification()">
           <mat-icon class="action-toolbar__red-button">delete</mat-icon>
           <span>Delete</span>
         </button>

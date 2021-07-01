@@ -7,7 +7,6 @@ import { RequestInProgressService } from './shared/services/request-in-progress/
 import { OrientationService } from './shared/services/orientation/orientation.service';
 import { SelectedRouteService } from './shared/services/selected-route/selected-route';
 import { UploadService } from './shared/services/upload/upload.service';
-import { ErrorModel } from './shared/models/error-model';
 import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { environment } from 'environments/environment';
@@ -26,7 +25,6 @@ export class AppComponent implements OnInit, OnDestroy {
   requestInProgress = false;
   currentProgressValue = 0;
 
-  error: ErrorModel;
   version: string;
   toggle: boolean = false;
 

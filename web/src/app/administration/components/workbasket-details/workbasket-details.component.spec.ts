@@ -13,7 +13,6 @@ import { WorkbasketService } from '../../../shared/services/workbasket/workbaske
 import { RouterTestingModule } from '@angular/router/testing';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { selectedWorkbasketMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { StartupService } from '../../../shared/services/startup/startup.service';
@@ -83,7 +82,6 @@ describe('WorkbasketDetailsComponent', () => {
         NgxsModule.forRoot([WorkbasketState]),
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([]),
-        MatSnackBarModule,
         MatDialogModule,
         MatIconModule,
         MatProgressBarModule,

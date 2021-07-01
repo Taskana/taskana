@@ -10,7 +10,6 @@ import { Page } from 'app/shared/models/page';
 import { take, takeUntil } from 'rxjs/operators';
 import { Search } from '../task-list-toolbar/task-list-toolbar.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { NOTIFICATION_TYPES } from '../../../shared/models/notifications';
 import { QueryPagingParameter } from '../../../shared/models/query-paging-parameter';
 import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
 import { Select, Store } from '@ngxs/store';
@@ -144,7 +143,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
           } else {
             this.tasks = [];
             if (this.selectedSearchType === Search.byWorkbasket) {
-              this.notificationsService.showToast(NOTIFICATION_TYPES.INFO_ALERT_2);
+              this.notificationsService.showInformation('EMPTY_WORKBASKET');
             }
           }
           this.tasksPageInformation = taskResource.page;

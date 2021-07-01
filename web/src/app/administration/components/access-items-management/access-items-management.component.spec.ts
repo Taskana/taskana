@@ -12,7 +12,6 @@ import { ClassificationCategoriesService } from '../../../shared/services/classi
 import { AccessItemsManagementState } from '../../../shared/store/access-items-management-store/access-items-management.state';
 import { Observable } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -78,7 +77,6 @@ describe('AccessItemsManagementComponent', () => {
         NgxsModule.forRoot([EngineConfigurationState, AccessItemsManagementState]),
         FormsModule,
         ReactiveFormsModule,
-        MatSnackBarModule,
         MatDialogModule,
         TypeaheadModule.forRoot(),
         BrowserAnimationsModule,

@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 
 declare let $: any;
@@ -29,7 +28,7 @@ export class SpinnerComponent implements OnDestroy {
   @ViewChild('spinnerModal', { static: true })
   private modal;
 
-  constructor(private errorsService: NotificationService) {}
+  constructor(private notificationService: NotificationService) {}
 
   set isDelayedRunning(value: boolean) {
     this.showSpinner = value;
@@ -62,7 +61,7 @@ export class SpinnerComponent implements OnDestroy {
       this.isDelayedRunning = value;
       this.cancelTimeout();
       this.requestTimeout = setTimeout(() => {
-        this.errorsService.triggerError(NOTIFICATION_TYPES.TIMEOUT_ERR);
+        this.notificationService.showError('SPINNER_TIMEOUT');
         this.cancelTimeout();
         this.isRunning = false;
       }, this.maxRequestTimeout);

@@ -42,8 +42,7 @@ xdescribe('ImportExportComponent', () => {
   const notificationServiceSpy = jest.fn().mockImplementation(
     (): Partial<NotificationService> => ({
       showDialog: showDialogFn,
-      showToast: showDialogFn,
-      triggerError: showDialogFn
+      showSuccess: showDialogFn
     })
   );
 

@@ -12,7 +12,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from '../../../shared/services/forms-validator/forms-validator.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EngineConfigurationState } from '../../../shared/store/engine-configuration-store/engine-configuration.state';
 import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
@@ -79,8 +78,7 @@ const formValidatorServiceMock: Partial<FormsValidatorService> = {
 const showDialogFn = jest.fn().mockReturnValue(true);
 const notificationServiceMock: Partial<NotificationService> = {
   showDialog: showDialogFn,
-  showToast: showDialogFn,
-  triggerError: showDialogFn
+  showSuccess: showDialogFn
 };
 
 describe('WorkbasketInformationComponent', () => {
@@ -95,7 +93,6 @@ describe('WorkbasketInformationComponent', () => {
       imports: [
         FormsModule,
         HttpClientTestingModule,
-        MatSnackBarModule,
         MatDialogModule,
         NgxsModule.forRoot([EngineConfigurationState, WorkbasketState]),
         TypeaheadModule.forRoot(),
@@ -171,9 +168,9 @@ describe('WorkbasketInformationComponent', () => {
   it('should reset workbasket information when onUndo is called', () => {
     component.workbasketClone = selectedWorkbasketMock;
     const notificationService = TestBed.inject(NotificationService);
-    const toastSpy = jest.spyOn(notificationService, 'showToast');
+    const showSuccessSpy = jest.spyOn(notificationService, 'showSuccess');
     component.onUndo();
-    expect(toastSpy).toHaveBeenCalled();
+    expect(showSuccessSpy).toHaveBeenCalled();
     expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 

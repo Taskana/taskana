@@ -25,7 +25,6 @@ import {
 } from './workbasket.actions';
 import { WorkbasketSummaryRepresentation } from '../../models/workbasket-summary-representation';
 import { ACTION } from '../../models/action';
-import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { WorkbasketDistributionTargets } from '../../models/workbasket-distribution-targets';
@@ -195,19 +194,11 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.createWorkbasket(action.workbasket).pipe(
       take(1),
-      tap(
-        (workbasketUpdated) => {
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_11,
-            new Map<string, string>([['workbasketKey', workbasketUpdated.key]])
-          );
+      tap((workbasketUpdated) => {
+        this.notificationService.showSuccess('WORKBASKET_CREATE', { workbasketKey: workbasketUpdated.key });
 
-          this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
-        },
-        (error) => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.CREATE_ERR_2, error);
-        }
-      ),
+        this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets'));
+      }),
       concatMap((workbasketUpdated) => ctx.dispatch(new SelectWorkbasket(workbasketUpdated.workbasketId)))
     );
   }
@@ -276,27 +267,19 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.updateWorkbasket(action.url, action.workbasket).pipe(
       take(1),
-      tap(
-        (updatedWorkbasket) => {
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_10,
-            new Map<string, string>([['workbasketKey', updatedWorkbasket.key]])
-          );
+      tap((updatedWorkbasket) => {
+        this.notificationService.showSuccess('WORKBASKET_UPDATE', { workbasketKey: updatedWorkbasket.key });
 
-          const paginatedWorkbasketSummary = { ...ctx.getState().paginatedWorkbasketsSummary };
-          paginatedWorkbasketSummary.workbaskets = updateWorkbasketSummaryRepresentation(
-            paginatedWorkbasketSummary.workbaskets,
-            action.workbasket
-          );
-          ctx.patchState({
-            selectedWorkbasket: updatedWorkbasket,
-            paginatedWorkbasketsSummary: paginatedWorkbasketSummary
-          });
-        },
-        (error) => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_4, error);
-        }
-      )
+        const paginatedWorkbasketSummary = { ...ctx.getState().paginatedWorkbasketsSummary };
+        paginatedWorkbasketSummary.workbaskets = updateWorkbasketSummaryRepresentation(
+          paginatedWorkbasketSummary.workbaskets,
+          action.workbasket
+        );
+        ctx.patchState({
+          selectedWorkbasket: updatedWorkbasket,
+          paginatedWorkbasketsSummary: paginatedWorkbasketSummary
+        });
+      })
     );
   }
 
@@ -305,21 +288,11 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ctx.dispatch(new OnButtonPressed(undefined));
     return this.workbasketService.removeDistributionTarget(action.url).pipe(
       take(1),
-      tap(
-        () => {
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_9,
-            new Map<string, string>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
-          );
-        },
-        (error) => {
-          this.notificationService.triggerError(
-            NOTIFICATION_TYPES.REMOVE_ERR_2,
-            error,
-            new Map<String, String>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
-          );
-        }
-      )
+      tap(() => {
+        this.notificationService.showSuccess('WORKBASKET_DISTRIBUTION_TARGET_REMOVE', {
+          workbasketKey: ctx.getState().selectedWorkbasket.key
+        });
+      })
     );
   }
 
@@ -329,17 +302,10 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return this.workbasketService.markWorkbasketForDeletion(action.url).pipe(
       take(1),
       tap((response) => {
-        if (response.status === 202) {
-          this.notificationService.triggerError(
-            NOTIFICATION_TYPES.MARK_ERR,
-            undefined,
-            new Map<String, String>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
-          );
-        } else {
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_12,
-            new Map<string, string>([['workbasketId', ctx.getState().selectedWorkbasket.workbasketId]])
-          );
+        if (response.status !== 202) {
+          this.notificationService.showSuccess('WORKBASKET_REMOVE', {
+            workbasketKey: ctx.getState().selectedWorkbasket.key
+          });
 
           ctx.dispatch(new DeselectWorkbasket());
         }
@@ -369,21 +335,15 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       .updateWorkBasketAccessItem(action.url, { accessItems: action.workbasketAccessItems })
       .pipe(
         take(1),
-        tap(
-          (workbasketAccessItems) => {
-            ctx.patchState({
-              workbasketAccessItems
-            });
-            this.notificationService.showToast(
-              NOTIFICATION_TYPES.SUCCESS_ALERT_7,
-              new Map<string, string>([['workbasketKey', ctx.getState().selectedWorkbasket.key]])
-            );
-            return of(null);
-          },
-          (error) => {
-            this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_2, error);
-          }
-        )
+        tap((workbasketAccessItems) => {
+          ctx.patchState({
+            workbasketAccessItems
+          });
+          this.notificationService.showSuccess('WORKBASKET_ACCESS_ITEM_SAVE', {
+            workbasketKey: ctx.getState().selectedWorkbasket.key
+          });
+          return of(null);
+        })
       );
   }
 
@@ -440,15 +400,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             });
           }
           this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.showToast(
-            NOTIFICATION_TYPES.SUCCESS_ALERT_8,
-            new Map<string, string>([['workbasketName', ctx.getState().selectedWorkbasket.name]])
-          );
+          this.notificationService.showSuccess('WORKBASKET_DISTRIBUTION_TARGET_SAVE', {
+            workbasketName: ctx.getState().selectedWorkbasket.name
+          });
 
           return of(null);
         },
-        (error) => {
-          this.notificationService.triggerError(NOTIFICATION_TYPES.SAVE_ERR_3, error);
+        () => {
           this.requestInProgressService.setRequestInProgress(false);
         }
       )

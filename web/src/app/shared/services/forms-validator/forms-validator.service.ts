@@ -1,7 +1,6 @@
 import { FormArray, NgForm, NgModel } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { NOTIFICATION_TYPES } from '../../models/notifications';
 import { NotificationService } from '../notifications/notification.service';
 import { Observable, Subject, Subscription, timer } from 'rxjs';
 
@@ -54,12 +53,9 @@ export class FormsValidatorService {
     const responseOwner = new ResponseOwner(values[1]);
     if (!(values[0] && responseOwner.valid)) {
       if (!responseOwner.valid) {
-        this.notificationsService.showToast(
-          NOTIFICATION_TYPES.WARNING_ALERT_2,
-          new Map<string, string>([['owner', responseOwner.field]])
-        );
+        this.notificationsService.showWarning('OWNER_NOT_VALID', { owner: responseOwner.field });
       } else {
-        this.notificationsService.showToast(NOTIFICATION_TYPES.WARNING_ALERT);
+        this.notificationsService.showWarning('EMPTY_FIELDS');
       }
     }
     return values[0] && responseOwner.valid;
@@ -88,10 +84,9 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     });
     if (!result) {
-      this.notificationsService.showToast(
-        NOTIFICATION_TYPES.WARNING_ALERT_2,
-        new Map<string, string>([['owner', responseOwner ? responseOwner.field : 'owner']])
-      );
+      this.notificationsService.showWarning('OWNER_NOT_VALID', {
+        owner: responseOwner ? responseOwner.field : 'owner'
+      });
     }
     return result;
   }
