@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
@@ -189,10 +190,23 @@ public class ClassificationController {
   }
 
   enum ClassificationQuerySortBy implements QuerySortBy<ClassificationQuery> {
+    APPLICATION_ENTRY_POINT(ClassificationQuery::orderByApplicationEntryPoint),
     DOMAIN(ClassificationQuery::orderByDomain),
     KEY(ClassificationQuery::orderByKey),
     CATEGORY(ClassificationQuery::orderByCategory),
-    NAME(ClassificationQuery::orderByName);
+    CUSTOM_1((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_1, sort)),
+    CUSTOM_2((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_2, sort)),
+    CUSTOM_3((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_3, sort)),
+    CUSTOM_4((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_4, sort)),
+    CUSTOM_5((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_5, sort)),
+    CUSTOM_6((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_6, sort)),
+    CUSTOM_7((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_7, sort)),
+    CUSTOM_8((q, sort) -> q.orderByCustomAttribute(ClassificationCustomField.CUSTOM_8, sort)),
+    NAME(ClassificationQuery::orderByName),
+    PARENT_ID(ClassificationQuery::orderByParentId),
+    PARENT_KEY(ClassificationQuery::orderByParentKey),
+    PRIORITY(ClassificationQuery::orderByPriority),
+    SERVICE_LEVEL(ClassificationQuery::orderByServiceLevel);
 
     private final BiConsumer<ClassificationQuery, SortDirection> consumer;
 

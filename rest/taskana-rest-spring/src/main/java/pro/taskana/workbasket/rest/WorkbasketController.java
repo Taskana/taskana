@@ -32,6 +32,7 @@ import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.util.QueryParamsValidator;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
@@ -386,7 +387,16 @@ public class WorkbasketController {
     KEY(WorkbasketQuery::orderByKey),
     OWNER(WorkbasketQuery::orderByOwner),
     TYPE(WorkbasketQuery::orderByType),
-    DESCRIPTION(WorkbasketQuery::orderByDescription);
+    DESCRIPTION(WorkbasketQuery::orderByDescription),
+    CUSTOM_1((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_1, sort)),
+    CUSTOM_2((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_2, sort)),
+    CUSTOM_3((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_3, sort)),
+    CUSTOM_4((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_4, sort)),
+    DOMAIN(WorkbasketQuery::orderByDomain),
+    ORG_LEVEL_1(WorkbasketQuery::orderByOrgLevel1),
+    ORG_LEVEL_2(WorkbasketQuery::orderByOrgLevel2),
+    ORG_LEVEL_3(WorkbasketQuery::orderByOrgLevel3),
+    ORG_LEVEL_4(WorkbasketQuery::orderByOrgLevel4);
 
     private final BiConsumer<WorkbasketQuery, SortDirection> consumer;
 

@@ -127,7 +127,8 @@ public class TaskHistoryEventController {
     CUSTOM_1((query, sort) -> query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_1, sort)),
     CUSTOM_2((query, sort) -> query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_2, sort)),
     CUSTOM_3((query, sort) -> query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_3, sort)),
-    CUSTOM_4((query, sort) -> query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_4, sort));
+    CUSTOM_4((query, sort) -> query.orderByCustomAttribute(TaskHistoryCustomField.CUSTOM_4, sort)),
+    OLD_VALUE(TaskHistoryQuery::orderByOldValue);
 
     private final BiConsumer<TaskHistoryQuery, SortDirection> consumer;
 
