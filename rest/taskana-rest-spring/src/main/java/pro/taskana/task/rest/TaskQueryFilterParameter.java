@@ -141,6 +141,26 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant[] created;
 
   /**
+   * Filter since a given created timestamp.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'created'.
+   */
+  @JsonProperty("created-from")
+  private final Instant createdFrom;
+
+  /**
+   * Filter until a given created timestamp.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'created'.
+   */
+  @JsonProperty("created-until")
+  private final Instant createdUntil;
+
+  /**
    * Filter by a time interval within which the task was claimed. To create an open interval you can
    * just leave it blank.
    *
@@ -155,6 +175,26 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * <p>The format is ISO-8601.
    */
   private final Instant[] completed;
+
+  /**
+   * Filter since a given completed timestamp.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'completed'.
+   */
+  @JsonProperty("completed-from")
+  private final Instant completedFrom;
+
+  /**
+   * Filter until a given completed timestamp.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'completed'.
+   */
+  @JsonProperty("completed-until")
+  private final Instant completedUntil;
 
   /**
    * Filter by a time interval within which the task was modified. To create an open interval you
@@ -638,8 +678,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "attachment-reference-like",
     "attachment-received",
     "created",
+    "created-from",
+    "created-until",
     "claimed",
     "completed",
+    "completed-from",
+    "complete-until",
     "modified",
     "classification-category",
     "classification-category-like",
@@ -736,8 +780,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] attachmentReferenceLike,
       Instant[] attachmentReceived,
       Instant[] created,
+      Instant createdFrom,
+      Instant createdUntil,
       Instant[] claimed,
       Instant[] completed,
+      Instant completedFrom,
+      Instant completedUntil,
       Instant[] modified,
       String[] classificationCategories,
       String[] classificationCategoriesLike,
@@ -833,8 +881,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.attachmentReferenceLike = attachmentReferenceLike;
     this.attachmentReceived = attachmentReceived;
     this.created = created;
+    this.createdFrom = createdFrom;
+    this.createdUntil = createdUntil;
     this.claimed = claimed;
     this.completed = completed;
+    this.completedFrom = completedFrom;
+    this.completedUntil = completedUntil;
     this.modified = modified;
     this.classificationCategories = classificationCategories;
     this.classificationCategoriesLike = classificationCategoriesLike;
@@ -948,10 +1000,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
         .map(this::extractTimeIntervals)
         .ifPresent(query::attachmentReceivedWithin);
     Optional.ofNullable(created).map(this::extractTimeIntervals).ifPresent(query::createdWithin);
+    if (createdFrom != null || createdUntil != null) {
+      query.createdWithin(new TimeInterval(createdFrom, createdUntil));
+    }
     Optional.ofNullable(claimed).map(this::extractTimeIntervals).ifPresent(query::claimedWithin);
     Optional.ofNullable(completed)
         .map(this::extractTimeIntervals)
         .ifPresent(query::completedWithin);
+    if (completedFrom != null || completedUntil != null) {
+      query.completedWithin(new TimeInterval(completedFrom, completedUntil));
+    }
     Optional.ofNullable(modified).map(this::extractTimeIntervals).ifPresent(query::modifiedWithin);
     Optional.ofNullable(classificationCategories).ifPresent(query::classificationCategoryIn);
     Optional.ofNullable(classificationCategoriesLike)
@@ -1083,8 +1141,20 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
     if (due != null && (dueFrom != null || dueUntil != null)) {
       throw new IllegalArgumentException(
-          "It is prohibited to use the param 'due' in combination "
-              + "with the params 'due-from'  and / or 'due-until'");
+          "It is prohibited to use the param 'due' in combination with the params "
+              + "'due-from'  and / or 'due-until'");
+    }
+
+    if (created != null && (createdFrom != null || createdUntil != null)) {
+      throw new IllegalArgumentException(
+          "It is prohibited to use the param 'created' in combination with the params "
+              + "'created-from'  and / or 'created-until'");
+    }
+
+    if (completed != null && (completedFrom != null || completedUntil != null)) {
+      throw new IllegalArgumentException(
+          "It is prohibited to use the param 'completed' in combination with the params "
+              + "'completed-from'  and / or 'completed-until'");
     }
 
     if (wildcardSearchFields == null ^ wildcardSearchValue == null) {
