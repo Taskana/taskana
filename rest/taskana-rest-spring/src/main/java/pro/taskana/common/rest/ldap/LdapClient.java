@@ -28,6 +28,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 /** Class for Ldap access. */
@@ -40,6 +41,7 @@ public class LdapClient {
   private final TaskanaEngineConfiguration taskanaEngineConfiguration;
   private final Environment env;
   private final LdapTemplate ldapTemplate;
+  private final boolean useLowerCaseForAccessIds;
   private boolean active = false;
   private int minSearchForLength;
   private int maxNumberOfReturnedAccessIds;
@@ -53,6 +55,7 @@ public class LdapClient {
     this.env = env;
     this.ldapTemplate = ldapTemplate;
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+    this.useLowerCaseForAccessIds = TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds();
   }
 
   /**
@@ -141,6 +144,8 @@ public class LdapClient {
     orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
     andFilter.and(orFilter);
 
+    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
+
     return ldapTemplate.search(
         getUserSearchBase(),
         andFilter.encode(),
@@ -159,6 +164,8 @@ public class LdapClient {
     String[] userAttributesToReturn = {
       getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
     };
+
+    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
 
     return ldapTemplate.search(
         getUserSearchBase(),
@@ -181,6 +188,8 @@ public class LdapClient {
       orFilter.or(new WhitespaceWildcardsFilter(CN, name));
     }
     andFilter.and(orFilter);
+
+    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
 
     return ldapTemplate.search(
         getGroupSearchBase(),
@@ -210,22 +219,24 @@ public class LdapClient {
     isInitOrFail();
     testMinSearchForLength(accessId);
 
+    String dn = searchDnForAccessId(accessId);
+    if (dn == null || dn.isEmpty()) {
+      throw new InvalidArgumentException("The AccessId is invalid");
+    }
+
     final AndFilter andFilter = new AndFilter();
     andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
     final OrFilter orFilter = new OrFilter();
     orFilter.or(new EqualsFilter(getGroupsOfUser(), accessId));
-    orFilter.or(
-        new EqualsFilter(
-            getGroupsOfUser(),
-            LdapNameBuilder.newInstance()
-                .add(getBaseDn())
-                .add(getUserSearchBase())
-                .add(getUserIdAttribute(), accessId)
-                .build()
-                .toString()));
+    orFilter.or(new EqualsFilter(getGroupsOfUser(), dn));
     andFilter.and(orFilter);
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
+
+    LOGGER.debug(
+        "Using filter '{}' for LDAP query with group search base {}.",
+        andFilter,
+        getGroupSearchBase());
 
     return ldapTemplate.search(
         getGroupSearchBase(),
@@ -233,6 +244,53 @@ public class LdapClient {
         SearchControls.SUBTREE_SCOPE,
         userAttributesToReturn,
         new GroupContextMapper());
+  }
+
+  /**
+   * Performs a lookup to retrieve correct DN for the given accessId.
+   *
+   * @param accessId The AccessId to lookup
+   * @return the LDAP Distinguished Name for the AccessId
+   * @throws TaskanaRuntimeException thrown if the given AccessId is ambiguous.
+   */
+  public String searchDnForAccessId(String accessId) throws TaskanaRuntimeException {
+    isInitOrFail();
+
+    if (nameIsDn(accessId)) {
+      AccessIdRepresentationModel groupByDn = searchAccessIdByDn(accessId);
+      return groupByDn.getAccessId();
+    } else {
+      final AndFilter andFilter = new AndFilter();
+      andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
+      final OrFilter orFilter = new OrFilter();
+      orFilter.or(new EqualsFilter(getUserIdAttribute(), accessId));
+      andFilter.and(orFilter);
+
+      LOGGER.debug(
+          "Using filter '{}' for LDAP query with user search base {}.",
+          andFilter,
+          getUserSearchBase());
+
+      final List<String> distinguishedNames =
+          ldapTemplate.search(
+              getUserSearchBase(),
+              andFilter.encode(),
+              SearchControls.SUBTREE_SCOPE,
+              null,
+              new AbstractContextMapper<String>() {
+                public String doMapFromContext(DirContextOperations ctx) {
+                  return getDnFromContext(ctx);
+                }
+              });
+
+      if (distinguishedNames == null || distinguishedNames.isEmpty()) {
+        return null;
+      } else if (distinguishedNames.size() > 1) {
+        throw new TaskanaRuntimeException("Ambiguous AccessId found: " + accessId);
+      } else {
+        return distinguishedNames.get(0);
+      }
+    }
   }
 
   /**
@@ -444,16 +502,17 @@ public class LdapClient {
     }
   }
 
-  String getDnWithBaseDn(final String givenDn) {
-    String dn = givenDn;
-    if (!dn.toLowerCase().endsWith(getBaseDn().toLowerCase())) {
-      dn = dn + "," + getBaseDn();
-    }
-    return dn;
-  }
-
   private String getUserFullnameAttribute() {
     return LdapSettings.TASKANA_LDAP_USER_FULLNAME_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  private String getDnFromContext(final DirContextOperations context) {
+    String dn = LdapNameBuilder.newInstance(getBaseDn()).add(context.getDn()).build().toString();
+    if (useLowerCaseForAccessIds) {
+      return dn.toLowerCase();
+    } else {
+      return dn;
+    }
   }
 
   /** Context Mapper for user entries. */
@@ -462,8 +521,7 @@ public class LdapClient {
     @Override
     public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
       final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
-      String dn = getDnWithBaseDn(context.getDn().toString());
-      accessId.setAccessId(dn); // fully qualified dn
+      accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       return accessId;
     }
@@ -496,8 +554,7 @@ public class LdapClient {
         String lastName = context.getStringAttribute(getUserLastnameAttribute());
         accessId.setName(String.format("%s, %s", lastName, firstName));
       } else {
-        String dn = getDnWithBaseDn(context.getDn().toString());
-        accessId.setAccessId(dn); // fully qualified dn
+        accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
         accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       }
       return accessId;

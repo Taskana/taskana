@@ -168,14 +168,11 @@ class AccessIdControllerIntTest {
         restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2,cn=users";
     HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
-    ThrowingCallable call =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
-        };
+    ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("The accessId is invalid")
+        .hasMessageContaining("The AccessId is invalid")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -203,10 +200,7 @@ class AccessIdControllerIntTest {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_GROUPS) + "?access-id=teamlead-2";
     HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
 
-    ThrowingCallable call =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
-        };
+    ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)
@@ -219,10 +213,7 @@ class AccessIdControllerIntTest {
     String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID) + "?search-for=al";
     HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersUser_1_1());
 
-    ThrowingCallable call =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
-        };
+    ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpClientErrorException.class)

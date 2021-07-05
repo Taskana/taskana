@@ -16,6 +16,11 @@ cn: users
 objectclass: top
 objectclass: container
 
+dn: cn=other-users,OU=Test,O=TASKANA
+cn: users
+objectclass: top
+objectclass: container
+
 dn: cn=organisation,OU=Test,O=TASKANA
 cn: organisation
 objectclass: top
@@ -331,6 +336,22 @@ sn: Bio
 ou: Organisationseinheit/Organisationseinheit B
 cn: Brunhilde Bio
 userPassword: user-b-2
+
+########################
+# Users in other cn
+########################
+dn: uid=otheruser,cn=other-users,OU=Test,O=TASKANA
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Other
+description: User in other cn than search root
+uid: otheruser
+sn: User
+ou: Other
+cn: Other User
+userPassword: otheruser
 
 
 ########################

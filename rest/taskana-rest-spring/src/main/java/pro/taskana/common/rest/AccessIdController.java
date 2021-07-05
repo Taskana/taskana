@@ -33,12 +33,12 @@ public class AccessIdController {
   /**
    * This endpoint searches a provided access Id in the configured ldap.
    *
-   * @title Search for Access Id (users and groups)
    * @param searchFor the Access Id which should be searched for.
    * @return a list of all found Access Ids
    * @throws InvalidArgumentException if the provided search for Access Id is shorter than the
    *     configured one.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
+   * @title Search for Access Id (users and groups)
    */
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID)
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroups(
@@ -56,7 +56,6 @@ public class AccessIdController {
    * will only work if the users in the configured LDAP have an attribute that shows their group
    * memberships, e.g. "memberOf"
    *
-   * @title Search for Access Id (users) in TASKANA user role
    * @param nameOrAccessId the name or Access Id which should be searched for.
    * @param role the role for which all users should be searched for
    * @return a list of all found Access Ids (users)
@@ -64,6 +63,7 @@ public class AccessIdController {
    *     configured one.
    * @throws NotAuthorizedException if the current user is not member of role USER, BUSINESS_ADMIN
    *     or ADMIN
+   * @title Search for Access Id (users) in TASKANA user role
    */
   @GetMapping(path = RestEndpoints.URL_USER)
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersByNameOrAccessIdForRole(
@@ -85,21 +85,17 @@ public class AccessIdController {
   /**
    * This endpoint retrieves all groups a given Access Id belongs to.
    *
-   * @title Get groups for Access Id
    * @param accessId the Access Id whose groups should be determined.
    * @return a list of the group Access Ids the requested Access Id belongs to
    * @throws InvalidArgumentException if the requested Access Id does not exist or is not unique.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
+   * @title Get groups for Access Id
    */
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID_GROUPS)
   public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
       @RequestParam("access-id") String accessId)
       throws InvalidArgumentException, NotAuthorizedException {
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
-
-    if (!ldapClient.validateAccessId(accessId)) {
-      throw new InvalidArgumentException("The accessId is invalid");
-    }
 
     List<AccessIdRepresentationModel> accessIds =
         ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
