@@ -10,17 +10,14 @@ import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 
-/**
- * Test Ldap attachment.
- */
+/** Test Ldap attachment. */
 @TaskanaSpringBootTest
 class LdapTest {
 
-  @Autowired
-  LdapClient ldapClient;
+  @Autowired LdapClient ldapClient;
 
   @Test
-  void testFindUsers() throws Exception {
+  void should_FindAllUsersAndGroup_When_SearchWithSubstringOfName() throws Exception {
     List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("lead");
     assertThat(usersAndGroups)
         .extracting(AccessIdRepresentationModel::getAccessId)
@@ -29,7 +26,7 @@ class LdapTest {
   }
 
   @Test
-  void should_findUserByWholeName_WhenSearchingWithLdapClient() throws Exception {
+  void should_FindUser_When_SearchingWithFirstAndLastname() throws Exception {
     List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("Elena");
     assertThat(usersAndGroups).hasSize(2);
 
@@ -38,19 +35,17 @@ class LdapTest {
   }
 
   @Test
-  void should_findGroupsForUser_When_UserIdIsProvided() throws Exception {
-    List<AccessIdRepresentationModel> groups = ldapClient
-                                                   .searchGroupsAccessIdIsMemberOf("user-2-2");
+  void should_FindGroupsForUser_When_UserIdIsProvided() throws Exception {
+    List<AccessIdRepresentationModel> groups =
+        ldapClient.searchGroupsAccessIdIsMemberOf("user-2-2");
     assertThat(groups)
         .extracting(AccessIdRepresentationModel::getAccessId)
-        .containsExactlyInAnyOrder(
-            "cn=ksc-users,cn=groups,ou=test,o=taskana");
+        .containsExactlyInAnyOrder("cn=ksc-users,cn=groups,ou=test,o=taskana");
   }
 
   @Test
-  void should_returnFullDnForUser_When_AccessIdOfUserIsGiven() {
+  void should_FeturnFullDnForUser_When_AccessIdOfUserIsGiven() {
     String dn = ldapClient.searchDnForAccessId("user-2-2");
     assertThat(dn).isEqualTo("uid=user-2-2,cn=users,ou=test,o=taskana");
   }
-
 }
