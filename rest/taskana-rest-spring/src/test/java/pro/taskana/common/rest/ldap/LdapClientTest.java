@@ -35,17 +35,13 @@ import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 @ExtendWith(MockitoExtension.class)
 class LdapClientTest {
 
-  @Mock
-  Environment environment;
+  @Mock Environment environment;
 
-  @Mock
-  LdapTemplate ldapTemplate;
+  @Mock LdapTemplate ldapTemplate;
 
-  @Mock
-  TaskanaEngineConfiguration taskanaEngineConfiguration;
+  @Mock TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  @InjectMocks
-  LdapClient cut;
+  @InjectMocks LdapClient cut;
 
   @Test
   void testLdap_searchGroupByDn() {
@@ -69,10 +65,10 @@ class LdapClientTest {
     AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
 
     when(ldapTemplate.search(
-        any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
+            any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
         .thenReturn(List.of(group));
     when(ldapTemplate.search(
-        any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
+            any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
         .thenReturn(List.of(user));
 
     assertThat(cut.searchUsersAndGroups("test")).hasSize(2).containsExactlyInAnyOrder(user, group);
@@ -111,7 +107,7 @@ class LdapClientTest {
     when(taskanaEngineConfiguration.getRoleMap()).thenReturn(roleMap);
 
     when(ldapTemplate.search(
-        any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
+            any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
         .thenReturn(List.of(user));
 
     assertThat(cut.searchUsersByNameOrAccessIdInUserRole("test")).hasSize(1).containsExactly(user);
@@ -165,24 +161,24 @@ class LdapClientTest {
   private void setUpEnvMock() {
 
     Stream.of(
-        new String[][]{
-            {"taskana.ldap.minSearchForLength", "3"},
-            {"taskana.ldap.maxNumberOfReturnedAccessIds", "50"},
-            {"taskana.ldap.baseDn", "o=TaskanaTest"},
-            {"taskana.ldap.userSearchBase", "ou=people"},
-            {"taskana.ldap.userSearchFilterName", "objectclass"},
-            {"taskana.ldap.groupsOfUser", "memberUid"},
-            {"taskana.ldap.groupNameAttribute", "cn"},
-            {"taskana.ldap.groupSearchFilterValue", "groupOfUniqueNames"},
-            {"taskana.ldap.groupSearchFilterName", "objectclass"},
-            {"taskana.ldap.groupSearchBase", "ou=groups"},
-            {"taskana.ldap.userIdAttribute", "uid"},
-            {"taskana.ldap.userMemberOfGroupAttribute", "memberOf"},
-            {"taskana.ldap.userLastnameAttribute", "sn"},
-            {"taskana.ldap.userFirstnameAttribute", "givenName"},
-            {"taskana.ldap.userFullnameAttribute", "cn"},
-            {"taskana.ldap.userSearchFilterValue", "person"}
-        })
+            new String[][] {
+              {"taskana.ldap.minSearchForLength", "3"},
+              {"taskana.ldap.maxNumberOfReturnedAccessIds", "50"},
+              {"taskana.ldap.baseDn", "o=TaskanaTest"},
+              {"taskana.ldap.userSearchBase", "ou=people"},
+              {"taskana.ldap.userSearchFilterName", "objectclass"},
+              {"taskana.ldap.groupsOfUser", "memberUid"},
+              {"taskana.ldap.groupNameAttribute", "cn"},
+              {"taskana.ldap.groupSearchFilterValue", "groupOfUniqueNames"},
+              {"taskana.ldap.groupSearchFilterName", "objectclass"},
+              {"taskana.ldap.groupSearchBase", "ou=groups"},
+              {"taskana.ldap.userIdAttribute", "uid"},
+              {"taskana.ldap.userMemberOfGroupAttribute", "memberOf"},
+              {"taskana.ldap.userLastnameAttribute", "sn"},
+              {"taskana.ldap.userFirstnameAttribute", "givenName"},
+              {"taskana.ldap.userFullnameAttribute", "cn"},
+              {"taskana.ldap.userSearchFilterValue", "person"}
+            })
         .forEach(
             strings ->
                 lenient().when(this.environment.getProperty(strings[0])).thenReturn(strings[1]));

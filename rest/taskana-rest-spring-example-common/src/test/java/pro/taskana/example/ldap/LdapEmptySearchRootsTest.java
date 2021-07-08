@@ -15,7 +15,7 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 class LdapEmptySearchRootsTest extends LdapTest {
 
   @Test
-  void should_findGroupsForUser_When_UserIdIsProvided() throws Exception {
+  void should_FindGroupsForUser_When_UserIdIsProvided() throws Exception {
     List<AccessIdRepresentationModel> groups =
         ldapClient.searchGroupsAccessIdIsMemberOf("user-2-2");
     assertThat(groups)
@@ -27,7 +27,7 @@ class LdapEmptySearchRootsTest extends LdapTest {
   }
 
   @Test
-  void should_returnFullDnForUser_When_AccessIdOfUserIsGiven() {
+  void should_ReturnFullDnForUser_When_AccessIdOfUserIsGiven() {
     String dn = ldapClient.searchDnForAccessId("otheruser");
     assertThat(dn).isEqualTo("uid=otheruser,cn=other-users,ou=test,o=taskana");
   }
