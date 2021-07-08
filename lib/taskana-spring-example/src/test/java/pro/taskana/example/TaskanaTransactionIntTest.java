@@ -209,13 +209,12 @@ class TaskanaTransactionIntTest {
       taskCleanupJob.run();
 
       ThrowingCallable httpCall =
-          () -> {
-            workbasketService.deleteWorkbasket(
-                workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
-          };
+          () ->
+              workbasketService.deleteWorkbasket(
+                  workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
       assertThatThrownBy(httpCall)
           .isInstanceOf(WorkbasketInUseException.class)
-          .hasMessageContaining("contains 1 non-completed tasks");
+          .hasMessageContaining("contains non-completed Tasks");
 
       WorkbasketCleanupJob job =
           new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);

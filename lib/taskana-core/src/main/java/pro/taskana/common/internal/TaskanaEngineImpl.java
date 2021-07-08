@@ -36,9 +36,9 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.configuration.DB;
@@ -239,15 +239,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             currentUserContext.getAccessIds(),
             rolesAsString);
       }
-      throw new NotAuthorizedException(
-          "current user is not member of role(s) " + Arrays.toString(roles),
-          currentUserContext.getUserid());
+      throw new MismatchedRoleException(currentUserContext.getUserid(), roles);
     }
-  }
-
-  @Override
-  public CurrentUserContext getCurrentUserContext() {
-    return currentUserContext;
   }
 
   public <T> T runAsAdmin(Supplier<T> supplier) {
@@ -255,12 +248,17 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     String adminName =
         this.getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
             .findFirst()
-            .orElseThrow(() -> new TaskanaRuntimeException("There is no admin configured"));
+            .orElseThrow(() -> new SystemException("There is no admin configured"));
 
     Subject subject = new Subject();
     subject.getPrincipals().add(new UserPrincipal(adminName));
 
     return Subject.doAs(subject, (PrivilegedAction<T>) supplier::get);
+  }
+
+  @Override
+  public CurrentUserContext getCurrentUserContext() {
+    return currentUserContext;
   }
 
   /**

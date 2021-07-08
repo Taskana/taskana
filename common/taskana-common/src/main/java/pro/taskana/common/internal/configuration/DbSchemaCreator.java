@@ -96,8 +96,8 @@ public class DbSchemaCreator {
 
       Map<String, Object> queryResult = runner.selectOne(query);
 
-      ComparableVersion actualVersion = new ComparableVersion((String) queryResult.get("VERSION"));
-      ComparableVersion minVersion = new ComparableVersion(expectedMinVersion);
+      ComparableVersion actualVersion = ComparableVersion.of((String) queryResult.get("VERSION"));
+      ComparableVersion minVersion = ComparableVersion.of(expectedMinVersion);
 
       if (actualVersion.compareTo(minVersion) < 0) {
         LOGGER.error(

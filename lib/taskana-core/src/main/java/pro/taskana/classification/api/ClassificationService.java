@@ -3,6 +3,7 @@ package pro.taskana.classification.api;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -87,28 +88,30 @@ public interface ClassificationService {
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws DomainNotFoundException if the {@code domain} does not exist in the configuration
-   * @throws InvalidArgumentException if the {@code serviceLevel} property does not comply with the
-   *     ISO 8601 specification
+   * @throws MalformedServiceLevelException if the {@code serviceLevel} property does not comply
+   *     with the ISO 8601 specification
+   * @throws InvalidArgumentException if the {@linkplain Classification} contains invalid properties
    */
   Classification createClassification(Classification classification)
       throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
-          InvalidArgumentException;
+          InvalidArgumentException, MalformedServiceLevelException;
 
   /**
    * Updates a Classification.
    *
    * @param classification the Classification to update
    * @return the updated Classification.
-   * @throws ClassificationNotFoundException if the classification OR it´s parent does not exist.
+   * @throws ClassificationNotFoundException if the classification OR it's parent does not exist.
    * @throws NotAuthorizedException if the caller got no ADMIN or BUSINESS_ADMIN permissions.
    * @throws ConcurrencyException If the classification was modified in the meantime and is not the
    *     most up to date anymore.
-   * @throws InvalidArgumentException if the ServiceLevel property does not comply with the ISO 8601
-   *     specification
+   * @throws MalformedServiceLevelException if the {@code serviceLevel} property does not comply
+   *     with the ISO 8601 specification
+   * @throws InvalidArgumentException if the {@linkplain Classification} contains invalid properties
    */
   Classification updateClassification(Classification classification)
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException;
+          InvalidArgumentException, MalformedServiceLevelException;
 
   /**
    * This method provides a query builder for querying the database.

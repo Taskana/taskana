@@ -108,9 +108,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
     try {
       taskanaHistoryEngine.openConnection();
-
       taskHistoryEventMapper.deleteMultipleByTaskIds(taskIds);
-
     } catch (SQLException e) {
       LOGGER.error("Caught exception while trying to delete history events", e);
     } finally {
@@ -126,9 +124,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       resultEvent = taskHistoryEventMapper.findById(historyEventId);
 
       if (resultEvent == null) {
-        throw new TaskanaHistoryEventNotFoundException(
-            historyEventId,
-            String.format("TaskHistoryEvent for id %s was not found", historyEventId));
+        throw new TaskanaHistoryEventNotFoundException(historyEventId);
       }
 
       return resultEvent;

@@ -90,7 +90,6 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
 
   @Override
   public void deleteHistoryEventsByTaskIds(List<String> taskIds) {
-
     throw new UnsupportedOperationException("HistoryLogger is not supposed to delete events");
   }
 

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
@@ -21,9 +22,9 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
   public static final String PRIORITY_CHANGED = "priorityChanged";
   public static final String SERVICE_LEVEL_CHANGED = "serviceLevelChanged";
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationChangedJob.class);
-  private String classificationId;
-  private boolean priorityChanged;
-  private boolean serviceLevelChanged;
+  private final String classificationId;
+  private final boolean priorityChanged;
+  private final boolean serviceLevelChanged;
 
   public ClassificationChangedJob(
       TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider, ScheduledJob job) {
@@ -46,7 +47,7 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
       }
       LOGGER.info("ClassificationChangedJob ended successfully.");
     } catch (Exception e) {
-      throw new TaskanaException("Error while processing ClassificationChangedJob.", e);
+      throw new SystemException("Error while processing ClassificationChangedJob.", e);
     }
   }
 

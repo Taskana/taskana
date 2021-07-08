@@ -3,24 +3,18 @@ package pro.taskana.common.api.exceptions;
 /** common base class for TASKANA's checked exceptions. */
 public class TaskanaException extends Exception {
 
-  public TaskanaException() {
-    super();
+  private final ErrorCode errorCode;
+
+  protected TaskanaException(String message, ErrorCode errorCode) {
+    this(message, errorCode, null);
   }
 
-  public TaskanaException(String message) {
-    super(message);
-  }
-
-  public TaskanaException(Throwable cause) {
-    super(cause);
-  }
-
-  public TaskanaException(String message, Throwable cause) {
+  protected TaskanaException(String message, ErrorCode errorCode, Throwable cause) {
     super(message, cause);
+    this.errorCode = errorCode;
   }
 
-  public TaskanaException(
-      String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
+  public ErrorCode getErrorCode() {
+    return errorCode;
   }
 }

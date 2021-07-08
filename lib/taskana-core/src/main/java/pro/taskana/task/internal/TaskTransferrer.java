@@ -16,12 +16,14 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.util.EnumUtil;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.spi.history.api.events.task.TaskTransferredEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
@@ -29,6 +31,7 @@ import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
@@ -154,8 +157,8 @@ final class TaskTransferrer {
       Task task, WorkbasketSummary destinationWorkbasket, WorkbasketSummary originWorkbasket)
       throws NotAuthorizedException, WorkbasketNotFoundException, InvalidStateException {
     if (task.getState().isEndState()) {
-      throw new InvalidStateException(
-          String.format("Task '%s' is in end state and cannot be transferred.", task.getId()));
+      throw new InvalidTaskStateException(
+          task.getId(), task.getState(), EnumUtil.allValuesExceptFor(TaskState.END_STATES));
     }
     workbasketService.checkAuthorization(originWorkbasket.getId(), WorkbasketPermission.TRANSFER);
     checkDestinationWorkbasket(destinationWorkbasket);
@@ -167,9 +170,7 @@ final class TaskTransferrer {
         destinationWorkbasket.getId(), WorkbasketPermission.APPEND);
 
     if (destinationWorkbasket.isMarkedForDeletion()) {
-      throw new WorkbasketNotFoundException(
-          destinationWorkbasket.getId(),
-          String.format("Workbasket '%s' was marked for deletion.", destinationWorkbasket.getId()));
+      throw new WorkbasketNotFoundException(destinationWorkbasket.getId());
     }
   }
 
@@ -204,18 +205,17 @@ final class TaskTransferrer {
     if (taskId == null || taskId.isEmpty()) {
       error = new InvalidArgumentException("TaskId should not be null or empty");
     } else if (taskSummary == null) {
-      error =
-          new TaskNotFoundException(
-              taskId, String.format("Task with id '%s' was not found.", taskId));
+      error = new TaskNotFoundException(taskId);
     } else if (taskSummary.getState().isEndState()) {
       error =
-          new InvalidStateException(
-              String.format("Task in end state with id '%s' cannot be transferred.", taskId));
+          new InvalidTaskStateException(
+              taskId, taskSummary.getState(), EnumUtil.allValuesExceptFor(TaskState.END_STATES));
     } else if (!sourceWorkbasketIds.contains(taskSummary.getWorkbasketSummary().getId())) {
       error =
-          new NotAuthorizedException(
-              "The workbasket of this task got not TRANSFER permissions. TaskId=" + taskId,
-              taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+          new MismatchedWorkbasketPermissionException(
+              taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+              taskSummary.getWorkbasketSummary().getId(),
+              WorkbasketPermission.TRANSFER);
     }
     return Optional.ofNullable(error);
   }

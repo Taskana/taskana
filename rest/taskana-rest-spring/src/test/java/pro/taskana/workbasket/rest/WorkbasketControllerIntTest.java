@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
@@ -301,10 +302,10 @@ class WorkbasketControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpServerErrorException.class)
         .hasMessageContaining(
             "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

@@ -83,5 +83,4 @@ public interface InternalTaskanaEngine {
    * @return the CreateTaskPreprocessorManager instance.
    */
   CreateTaskPreprocessorManager getCreateTaskPreprocessorManager();
-
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -146,7 +147,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
     classification.setServiceLevel("P-1D");
 
     assertThatThrownBy(() -> CLASSIFICATION_SERVICE.createClassification(classification))
-        .isInstanceOf(InvalidArgumentException.class);
+        .isInstanceOf(MalformedServiceLevelException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -166,7 +167,7 @@ class CreateClassificationAccTest extends AbstractAccTest {
         CLASSIFICATION_SERVICE.newClassification("Key2", "DOMAIN_B", "TASK");
     classification2.setServiceLevel("abc");
     assertThatThrownBy(() -> CLASSIFICATION_SERVICE.createClassification(classification2))
-        .isInstanceOf(InvalidArgumentException.class);
+        .isInstanceOf(MalformedServiceLevelException.class);
   }
 
   @WithAccessId(user = "businessadmin")

@@ -17,6 +17,7 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.util.EnumUtil;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -362,7 +363,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id);
     assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
     assertThat(results.getErrorForId(id))
-        .hasMessage("Task with Id %s has to be claimed before.", id);
+        .hasMessage(
+            "Task with id '%s' is in state: '%s', but must be in one of these states: '[%s]'",
+            id, TaskState.READY, TaskState.CLAIMED);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -371,6 +374,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
     String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
     List<String> taskIdList = List.of(id1, id2);
+    TaskState[] requiredStates =
+        EnumUtil.allValuesExceptFor(TaskState.TERMINATED, TaskState.CANCELLED);
 
     BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
 
@@ -378,9 +383,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
     assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
     assertThat(results.getErrorForId(id1))
-        .hasMessage("Cannot complete task %s because it is in state CANCELLED.", id1);
+        .hasMessage(
+            "Task with id '%s' is in state: '%s', but must be in one of these states: '%s'",
+            id1, TaskState.CANCELLED, Arrays.toString(requiredStates));
     assertThat(results.getErrorForId(id2))
-        .hasMessage("Cannot complete task %s because it is in state TERMINATED.", id2);
+        .hasMessage(
+            "Task with id '%s' is in state: '%s', but must be in one of these states: '%s'",
+            id2, TaskState.TERMINATED, Arrays.toString(requiredStates));
   }
 
   @WithAccessId(user = "user-1-2")
@@ -483,6 +492,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id1 = "TKI:300000000000000000000000000000000000"; // task is canceled
     String id2 = "TKI:300000000000000000000000000000000010"; // task is terminated
     List<String> taskIdList = List.of(id1, id2);
+    TaskState[] requiredStates =
+        EnumUtil.allValuesExceptFor(TaskState.TERMINATED, TaskState.CANCELLED);
 
     BulkOperationResults<String, TaskanaException> results =
         TASK_SERVICE.forceCompleteTasks(taskIdList);
@@ -491,9 +502,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
     assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
     assertThat(results.getErrorForId(id1))
-        .hasMessage("Cannot complete task %s because it is in state CANCELLED.", id1);
+        .hasMessage(
+            "Task with id '%s' is in state: '%s', but must be in one of these states: '%s'",
+            id1, TaskState.CANCELLED, Arrays.toString(requiredStates));
     assertThat(results.getErrorForId(id2))
-        .hasMessage("Cannot complete task %s because it is in state TERMINATED.", id2);
+        .hasMessage(
+            "Task with id '%s' is in state: '%s', but must be in one of these states: '%s'",
+            id2, TaskState.TERMINATED, Arrays.toString(requiredStates));
   }
 
   @WithAccessId(user = "user-1-2")

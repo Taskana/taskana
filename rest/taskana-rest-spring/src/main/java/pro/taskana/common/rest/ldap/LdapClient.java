@@ -28,7 +28,6 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
 /** Class for Ldap access. */
@@ -247,13 +246,13 @@ public class LdapClient {
   }
 
   /**
-   * Performs a lookup to retrieve correct DN for the given accessId.
+   * Performs a lookup to retrieve correct DN for the given access id.
    *
-   * @param accessId The AccessId to lookup
-   * @return the LDAP Distinguished Name for the AccessId
-   * @throws TaskanaRuntimeException thrown if the given AccessId is ambiguous.
+   * @param accessId The access id to lookup
+   * @return the LDAP Distinguished Name for the access id
+   * @throws InvalidArgumentException thrown if the given access id is ambiguous.
    */
-  public String searchDnForAccessId(String accessId) throws TaskanaRuntimeException {
+  public String searchDnForAccessId(String accessId) throws InvalidArgumentException {
     isInitOrFail();
 
     if (nameIsDn(accessId)) {
@@ -286,7 +285,7 @@ public class LdapClient {
       if (distinguishedNames == null || distinguishedNames.isEmpty()) {
         return null;
       } else if (distinguishedNames.size() > 1) {
-        throw new TaskanaRuntimeException("Ambiguous AccessId found: " + accessId);
+        throw new InvalidArgumentException("Ambiguous access id found: " + accessId);
       } else {
         return distinguishedNames.get(0);
       }

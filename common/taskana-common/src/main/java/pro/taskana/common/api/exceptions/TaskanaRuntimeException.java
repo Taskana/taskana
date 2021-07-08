@@ -1,26 +1,25 @@
 package pro.taskana.common.api.exceptions;
 
-/** Common base class for Taskana's runtime exceptions. */
+/** The common base class for TASKANA's runtime exceptions. */
 public class TaskanaRuntimeException extends RuntimeException {
 
-  public TaskanaRuntimeException() {
-    super();
+  private final ErrorCode errorCode;
+
+  protected TaskanaRuntimeException(String message, ErrorCode errorCode) {
+    this(message, errorCode, null);
   }
 
-  public TaskanaRuntimeException(String message) {
-    super(message);
-  }
-
-  public TaskanaRuntimeException(Throwable cause) {
-    super(cause);
-  }
-
-  public TaskanaRuntimeException(String message, Throwable cause) {
+  protected TaskanaRuntimeException(String message, ErrorCode errorCode, Throwable cause) {
     super(message, cause);
+    this.errorCode = errorCode;
   }
 
-  public TaskanaRuntimeException(
-      String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
+  public ErrorCode getErrorCode() {
+    return errorCode;
+  }
+
+  @Override
+  public String toString() {
+    return "TaskanaRuntimeException [errorCode=" + errorCode + "]";
   }
 }

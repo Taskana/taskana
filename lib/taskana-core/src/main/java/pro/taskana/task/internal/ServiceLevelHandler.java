@@ -21,7 +21,7 @@ import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
-import pro.taskana.task.api.exceptions.UpdateFailedException;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
@@ -38,6 +38,7 @@ class ServiceLevelHandler {
   private final TaskMapper taskMapper;
   private final AttachmentMapper attachmentMapper;
   private final WorkingDaysToDaysConverter converter;
+  private final TaskServiceImpl taskServiceImpl;
 
   ServiceLevelHandler(
       InternalTaskanaEngine taskanaEngine,
@@ -47,6 +48,7 @@ class ServiceLevelHandler {
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
     converter = taskanaEngine.getEngine().getWorkingDaysToDaysConverter();
+    taskServiceImpl = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
   }
 
   // use the same algorithm as setPlannedPropertyOfTasksImpl to refresh
@@ -351,7 +353,7 @@ class ServiceLevelHandler {
   private BulkOperationResults<String, TaskanaException>
       updateDuePropertyOfTasksWithIdenticalDueDate(
           InstantDurationHolder durationHolder, List<TaskDuration> taskDurationList) {
-    BulkLog bulkLog = new BulkLog();
+    final BulkLog bulkLog = new BulkLog();
     TaskImpl referenceTask = new TaskImpl();
     referenceTask.setPlanned(durationHolder.getPlanned());
     referenceTask.setModified(Instant.now());
@@ -359,61 +361,30 @@ class ServiceLevelHandler {
         getFollowingWorkingDays(referenceTask.getPlanned(), durationHolder.getDuration()));
     List<String> taskIdsToUpdate =
         taskDurationList.stream().map(TaskDuration::getTaskId).collect(Collectors.toList());
-    long numTasksUpdated = taskMapper.updateTaskDueDates(taskIdsToUpdate, referenceTask);
-    if (numTasksUpdated != taskIdsToUpdate.size()) {
-      BulkLog checkResult =
-          checkResultsOfTasksUpdateAndAddErrorsToBulkLog(
-              taskIdsToUpdate, referenceTask, numTasksUpdated);
-      bulkLog.addAllErrors(checkResult);
-    }
+    Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
+        taskServiceImpl.getMinimalTaskSummaries(taskIdsToUpdate);
+    bulkLog.addAllErrors(existingAndAuthorizedTasks.getRight());
+
+    taskMapper.updateTaskDueDates(existingAndAuthorizedTasks.getLeft(), referenceTask);
     return bulkLog;
   }
 
   private BulkLog updatePlannedPropertyOfAffectedTasks(
-      Instant planned, Map<Duration, List<String>> durationToTaskIdsMap) {
-    BulkLog bulkLog = new BulkLog();
+      Instant planned, Map<Duration, List<String>> taskIdsByDueDuration) {
+    final BulkLog bulkLog = new BulkLog();
     TaskImpl referenceTask = new TaskImpl();
     referenceTask.setPlanned(planned);
     referenceTask.setModified(Instant.now());
-    for (Map.Entry<Duration, List<String>> entry : durationToTaskIdsMap.entrySet()) {
-      List<String> taskIdsToUpdate = entry.getValue();
-      referenceTask.setDue(getFollowingWorkingDays(referenceTask.getPlanned(), entry.getKey()));
-      long numTasksUpdated = taskMapper.updateTaskDueDates(taskIdsToUpdate, referenceTask);
-      if (numTasksUpdated != taskIdsToUpdate.size()) {
-        BulkLog checkResult =
-            checkResultsOfTasksUpdateAndAddErrorsToBulkLog(
-                taskIdsToUpdate, referenceTask, numTasksUpdated);
-        bulkLog.addAllErrors(checkResult);
-      }
-    }
-    return bulkLog;
-  }
 
-  private BulkLog checkResultsOfTasksUpdateAndAddErrorsToBulkLog(
-      List<String> taskIdsToUpdate, TaskImpl referenceTask, long numTasksUpdated) {
-    BulkLog bulkLog = new BulkLog();
-    long numErrors = taskIdsToUpdate.size() - numTasksUpdated;
-    long numErrorsLogged = 0;
-    if (numErrors > 0) {
-      List<MinimalTaskSummary> taskSummaries = taskMapper.findExistingTasks(taskIdsToUpdate, null);
-      for (MinimalTaskSummary task : taskSummaries) {
-        if (referenceTask.getDue() != task.getDue()) {
-          bulkLog.addError(
-              task.getTaskId(),
-              new UpdateFailedException(
-                  String.format("Could not set Due Date of Task with Id %s. ", task.getTaskId())));
-          numErrorsLogged++;
-        }
-      }
-      long numErrorsNotLogged = numErrors - numErrorsLogged;
-      if (numErrorsNotLogged != 0) {
-        for (int i = 1; i <= numErrorsNotLogged; i++) {
-          bulkLog.addError(
-              String.format("UnknownTaskId: %d", i),
-              new UpdateFailedException("Update of unknown task failed"));
-        }
-      }
-    }
+    taskIdsByDueDuration.forEach(
+        (duration, taskIds) -> {
+          referenceTask.setDue(getFollowingWorkingDays(planned, duration));
+          Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
+              taskServiceImpl.getMinimalTaskSummaries(taskIds);
+          bulkLog.addAllErrors(existingAndAuthorizedTasks.getRight());
+          taskMapper.updateTaskDueDates(existingAndAuthorizedTasks.getLeft(), referenceTask);
+        });
+
     return bulkLog;
   }
 
@@ -641,17 +612,12 @@ class ServiceLevelHandler {
         && newClassificationIds.containsAll(oldClassificationIds);
   }
 
-  static class BulkLog extends BulkOperationResults<String, TaskanaException> {
-
-    BulkLog() {
-      super();
-    }
-  }
+  static class BulkLog extends BulkOperationResults<String, TaskanaException> {}
 
   static final class DurationPrioHolder {
 
-    private Duration duration;
-    private int priority;
+    private final Duration duration;
+    private final int priority;
 
     DurationPrioHolder(Duration duration, int priority) {
       this.duration = duration;

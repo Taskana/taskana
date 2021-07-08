@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -34,46 +33,6 @@ public class AttachmentHandler {
       AttachmentMapper attachmentMapper, ClassificationService classificationService) {
     this.attachmentMapper = attachmentMapper;
     this.classificationService = classificationService;
-  }
-
-  List<Attachment> augmentAttachmentsByClassification(
-      List<AttachmentImpl> attachmentImpls, BulkOperationResults<String, Exception> bulkLog) {
-    List<Attachment> result = new ArrayList<>();
-    if (attachmentImpls == null || attachmentImpls.isEmpty()) {
-      return result;
-    }
-    List<ClassificationSummary> classifications =
-        classificationService
-            .createClassificationQuery()
-            .idIn(
-                attachmentImpls.stream()
-                    .map(t -> t.getClassificationSummary().getId())
-                    .distinct()
-                    .toArray(String[]::new))
-            .list();
-    for (AttachmentImpl att : attachmentImpls) {
-      ClassificationSummary classificationSummary =
-          classifications.stream()
-              .filter(cl -> cl.getId().equals(att.getClassificationSummary().getId()))
-              .findFirst()
-              .orElse(null);
-      if (classificationSummary == null) {
-        String id = att.getClassificationSummary().getId();
-        bulkLog.addError(
-            att.getClassificationSummary().getId(),
-            new ClassificationNotFoundException(
-                id,
-                String.format(
-                    "When processing task updates due to change "
-                        + "of classification, the classification with id %s was not found",
-                    id)));
-      } else {
-        att.setClassificationSummary(classificationSummary);
-        result.add(att);
-      }
-    }
-
-    return result;
   }
 
   void insertAndDeleteAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
@@ -113,11 +72,7 @@ public class AttachmentHandler {
                 attachmentImpl);
           }
         } catch (PersistenceException e) {
-          throw new AttachmentPersistenceException(
-              String.format(
-                  "Cannot insert the Attachement %s for Task %s  because it already exists.",
-                  attachmentImpl.getId(), task.getId()),
-              e.getCause());
+          throw new AttachmentPersistenceException(attachmentImpl.getId(), task.getId(), e);
         }
       }
     }
@@ -199,11 +154,7 @@ public class AttachmentHandler {
             attachmentImpl);
       }
     } catch (PersistenceException e) {
-      throw new AttachmentPersistenceException(
-          String.format(
-              "Cannot insert the Attachement %s for Task %s  because it already exists.",
-              attachmentImpl.getId(), newTaskImpl.getId()),
-          e.getCause());
+      throw new AttachmentPersistenceException(attachmentImpl.getId(), newTaskImpl.getId(), e);
     }
   }
 

@@ -15,7 +15,9 @@ import pro.taskana.common.api.exceptions.SystemException;
 
 public class ObjectAttributeChangeDetector {
 
-  private ObjectAttributeChangeDetector() {}
+  private ObjectAttributeChangeDetector() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
    * Determines changes in fields between two objects.

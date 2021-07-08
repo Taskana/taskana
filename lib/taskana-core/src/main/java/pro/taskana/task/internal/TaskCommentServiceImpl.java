@@ -13,6 +13,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
@@ -75,12 +76,7 @@ class TaskCommentServiceImpl {
         }
 
       } else {
-        throw new NotAuthorizedException(
-            String.format(
-                "Not authorized, TaskComment creator and current user must match. "
-                    + "TaskComment creator is %s but current user is %s",
-                taskCommentImplToUpdate.getCreator(), userId),
-            userId);
+        throw new MismatchedTaskCommentCreatorException(userId, taskCommentImplToUpdate.getId());
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -136,12 +132,7 @@ class TaskCommentServiceImpl {
         }
 
       } else {
-        throw new NotAuthorizedException(
-            String.format(
-                "Not authorized, TaskComment creator and current user must match. "
-                    + "TaskComment creator is %s but current user is %s",
-                taskCommentToDelete.getCreator(), userId),
-            userId);
+        throw new MismatchedTaskCommentCreatorException(userId, taskCommentToDelete.getId());
       }
 
     } finally {
@@ -186,9 +177,7 @@ class TaskCommentServiceImpl {
       result = taskCommentMapper.findById(taskCommentId);
 
       if (result == null) {
-        throw new TaskCommentNotFoundException(
-            taskCommentId,
-            String.format("TaskComment for taskCommentId '%s' was not found", taskCommentId));
+        throw new TaskCommentNotFoundException(taskCommentId);
       }
 
       taskService.getTask(result.getTaskId());
@@ -204,11 +193,7 @@ class TaskCommentServiceImpl {
       TaskComment oldTaskComment, TaskComment taskCommentImplToUpdate) throws ConcurrencyException {
 
     if (!oldTaskComment.getModified().equals(taskCommentImplToUpdate.getModified())) {
-
-      throw new ConcurrencyException(
-          "The current TaskComment has been modified while editing. "
-              + "The values can not be updated. TaskComment "
-              + taskCommentImplToUpdate.toString());
+      throw new ConcurrencyException();
     }
   }
 

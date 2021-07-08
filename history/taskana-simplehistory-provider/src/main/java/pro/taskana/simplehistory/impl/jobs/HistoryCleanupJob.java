@@ -135,7 +135,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       LOGGER.info(
           "Job ended successfully. {} history events deleted.", totalNumberOfHistoryEventsDeleted);
     } catch (Exception e) {
-      throw new TaskanaException("Error while processing HistoryCleanupJob.", e);
+      throw new SystemException("Error while processing HistoryCleanupJob.", e);
     } finally {
       scheduleNextCleanupJob();
     }

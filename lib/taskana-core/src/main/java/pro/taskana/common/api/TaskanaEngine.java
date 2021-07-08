@@ -83,11 +83,11 @@ public interface TaskanaEngine {
   void setConnectionManagementMode(ConnectionManagementMode mode);
 
   /**
-   * Set the connection to be used by taskana in mode CONNECTION_MANAGED_EXTERNALLY. If this Api is
-   * called, taskana uses the connection passed by the client for all subsequent API calls until the
-   * client resets this connection. Control over commit and rollback of the connection is the
-   * responsibility of the client. In order to close the connection, closeConnection() or
-   * setConnection(null) has to be called.
+   * Set the connection to be used by TASKANA in mode {@linkplain
+   * ConnectionManagementMode#EXPLICIT}. If this Api is called, taskana uses the connection passed
+   * by the client for all subsequent API calls until the client resets this connection. Control
+   * over commit and rollback of the connection is the responsibility of the client. In order to
+   * close the connection, closeConnection() or setConnection(null) has to be called.
    *
    * @param connection - The java.sql.Connection that is controlled by the client
    * @throws SQLException if a database access error occurs
@@ -125,7 +125,6 @@ public interface TaskanaEngine {
    * @return output from supplier
    */
   <T> T runAsAdmin(Supplier<T> supplier);
-
 
   /**
    * Returns the CurrentUserContext class.

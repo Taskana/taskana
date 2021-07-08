@@ -24,9 +24,11 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -140,8 +142,8 @@ class TransferTaskAccTest extends AbstractAccTest {
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
-            "Not authorized. Permission 'TRANSFER' on workbasket "
-                + "'WBI:100000000000000000000000000000000005' is needed.");
+            "Not authorized. The current user 'teamlead-1' has no '[TRANSFER]' permission(s) "
+                + "for Workbasket 'WBI:100000000000000000000000000000000005'.");
   }
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
@@ -156,8 +158,8 @@ class TransferTaskAccTest extends AbstractAccTest {
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
-            "Not authorized. Permission 'APPEND' on workbasket "
-                + "'WBI:100000000000000000000000000000000008' is needed.");
+            "Not authorized. The current user 'user-1-1' has no '[APPEND]' permission(s) "
+                + "for Workbasket 'WBI:100000000000000000000000000000000008'.");
   }
 
   @WithAccessId(user = "teamlead-1")
@@ -229,13 +231,13 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap().values()).hasSize(6);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000041").getClass())
-        .isEqualTo(NotAuthorizedException.class);
+        .isEqualTo(MismatchedWorkbasketPermissionException.class);
     assertThat(results.getErrorForId("TKI:200000000000000000000000000000000008").getClass())
-        .isEqualTo(NotAuthorizedException.class);
+        .isEqualTo(MismatchedWorkbasketPermissionException.class);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000099").getClass())
         .isEqualTo(TaskNotFoundException.class);
     assertThat(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass())
-        .isEqualTo(InvalidStateException.class);
+        .isEqualTo(InvalidTaskStateException.class);
     assertThat(results.getErrorForId("").getClass()).isEqualTo(InvalidArgumentException.class);
     assertThat(results.getErrorForId(null).getClass()).isEqualTo(InvalidArgumentException.class);
 

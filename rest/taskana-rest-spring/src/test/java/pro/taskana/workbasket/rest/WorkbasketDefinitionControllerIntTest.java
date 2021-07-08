@@ -195,7 +195,7 @@ class WorkbasketDefinitionControllerIntTest {
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .extracting(e -> (HttpClientErrorException) e)
+        .extracting(HttpClientErrorException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
 
@@ -203,7 +203,7 @@ class WorkbasketDefinitionControllerIntTest {
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .extracting(e -> (HttpClientErrorException) e)
+        .extracting(HttpClientErrorException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -219,7 +219,7 @@ class WorkbasketDefinitionControllerIntTest {
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .extracting(e -> (HttpClientErrorException) e)
+        .extracting(HttpClientErrorException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.CONFLICT);
   }

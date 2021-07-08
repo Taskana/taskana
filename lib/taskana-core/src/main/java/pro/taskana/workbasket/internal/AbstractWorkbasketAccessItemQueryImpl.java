@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.workbasket.api.AbstractWorkbasketAccessItemQuery;
@@ -93,7 +94,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
         TaskanaRuntimeException ex =
-            new TaskanaRuntimeException(
+            new SystemException(
                 "The offset beginning was set over the amount of result-rows.", e.getCause());
         ex.setStackTrace(e.getStackTrace());
         throw ex;

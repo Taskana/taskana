@@ -21,9 +21,11 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 /** Acceptance test for all "set owner" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -85,11 +87,12 @@ class SetOwnerAccTest extends AbstractAccTest {
     String anyUserName = "TestUser3";
 
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
     BulkOperationResults<String, TaskanaException> results =
         taskService.setOwnerOfTasks(anyUserName, List.of(taskReadyId));
     assertThat(results.containsErrors()).isTrue();
-    assertThat(results.getErrorForId(taskReadyId)).isInstanceOf(NotAuthorizedException.class);
+    assertThat(results.getErrorForId(taskReadyId))
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-b-2")
@@ -156,7 +159,8 @@ class SetOwnerAccTest extends AbstractAccTest {
     resetDb(false);
     List<TaskSummary> allTaskSummaries =
         new TaskanaEngineProxy(taskanaEngine)
-            .getEngine().getEngine()
+            .getEngine()
+            .getEngine()
             .runAsAdmin(() -> taskanaEngine.getTaskService().createTaskQuery().list());
     List<String> allTaskIds =
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
@@ -165,17 +169,19 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThat(allTaskSummaries).hasSize(88);
     assertThat(results.containsErrors()).isTrue();
 
-    Condition<Object> invalidStateException =
-        new Condition<>(c -> c.getClass() == InvalidStateException.class, "InvalidStateException");
-    Condition<Object> notAuthorizedException =
+    Condition<Object> invalidTaskStateException =
         new Condition<>(
-            c -> c.getClass() == NotAuthorizedException.class, "NotAuthorizedException");
+            c -> c.getClass() == InvalidTaskStateException.class, "InvalidStateException");
+    Condition<Object> mismatchedWorkbasketPermissionException =
+        new Condition<>(
+            c -> c.getClass() == MismatchedWorkbasketPermissionException.class,
+            "MismatchedWorkbasketPermissionException");
     assertThat(results.getErrorMap())
         .hasSize(86)
         .extractingFromEntries(Entry::getValue)
-        .hasOnlyElementsOfTypes(InvalidStateException.class, NotAuthorizedException.class)
-        .areExactly(28, invalidStateException)
-        .areExactly(58, notAuthorizedException);
+        .hasOnlyElementsOfTypes(InvalidTaskStateException.class, NotAuthorizedException.class)
+        .areExactly(28, invalidTaskStateException)
+        .areExactly(58, mismatchedWorkbasketPermissionException);
   }
 
   @WithAccessId(user = "admin")

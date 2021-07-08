@@ -778,8 +778,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_FetchAttachmentClassification_When_CreatingTaskWithAttachments()
-      throws Exception {
+  void should_FetchAttachmentClassification_When_CreatingTaskWithAttachments() throws Exception {
     Attachment attachment = taskService.newAttachment();
     attachment.setObjectReference(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));

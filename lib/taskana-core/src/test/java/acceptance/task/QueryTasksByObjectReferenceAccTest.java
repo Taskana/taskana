@@ -115,8 +115,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     objectReference.setSystemInstance("00");
     objectReference.setType("VNR");
     objectReference.setValue("67890123");
-    long count =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).count();
+    long count = TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).count();
     assertThat(count).isEqualTo(1);
   }
 

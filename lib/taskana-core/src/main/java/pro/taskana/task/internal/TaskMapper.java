@@ -1,6 +1,7 @@
 package pro.taskana.task.internal;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -131,10 +132,9 @@ public interface TaskMapper {
 
   @Update(
       "<script>UPDATE TASK SET OWNER = #{owner}, MODIFIED = #{modified} "
-          + "WHERE STATE = 'READY' "
-          + "AND ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach> "
+          + "WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach> "
           + "</script>")
-  int setOwnerOfTasks(
+  void setOwnerOfTasks(
       @Param("owner") String owner,
       @Param("taskIds") List<String> taskIds,
       @Param("modified") Instant modified);
@@ -184,7 +184,7 @@ public interface TaskMapper {
   @Result(property = "planned", column = "PLANNED")
   @Result(property = "callbackState", column = "CALLBACK_STATE")
   List<MinimalTaskSummary> findExistingTasks(
-      @Param("taskIds") List<String> taskIds, @Param("externalIds") List<String> externalIds);
+      @Param("taskIds") Collection<String> taskIds, @Param("externalIds") List<String> externalIds);
 
   @Update(
       "<script>"
@@ -222,14 +222,15 @@ public interface TaskMapper {
 
   @Update(
       "<script>"
-          + "<if test='taskIds != null'> "
-          + "UPDATE TASK SET  MODIFIED = #{referenceTask.modified}, "
+          + "<if test='taskSummaries != null'> "
+          + "UPDATE TASK SET MODIFIED = #{referenceTask.modified}, "
           + "PLANNED = #{referenceTask.planned}, DUE = #{referenceTask.due} "
-          + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
+          + "WHERE ID IN(<foreach item='taskSummary' collection='taskSummaries' separator=',' >#{taskSummary.taskId}</foreach>) "
           + "</if> "
           + "</script>")
-  long updateTaskDueDates(
-      @Param("taskIds") List<String> taskIds, @Param("referenceTask") TaskImpl referenceTask);
+  void updateTaskDueDates(
+      @Param("taskSummaries") List<MinimalTaskSummary> taskSummaries,
+      @Param("referenceTask") TaskImpl referenceTask);
 
   @Update(
       "<script>"
@@ -239,7 +240,7 @@ public interface TaskMapper {
           + "WHERE ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>) "
           + "</if> "
           + "</script>")
-  long updatePriorityOfTasks(
+  void updatePriorityOfTasks(
       @Param("taskIds") List<String> taskIds, @Param("referenceTask") TaskImpl referenceTask);
 
   @Select(
@@ -261,10 +262,10 @@ public interface TaskMapper {
       "<script> "
           + "<choose>"
           + "<when  test='accessIds == null'>"
-          + "SELECT t.ID FROM TASK t WHERE 1 = 2 "
+          + "SELECT NULL LIMIT 0 "
           + "</when>"
           + "<otherwise>"
-          + "SELECT t.ID FROM TASK t WHERE t.ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)"
+          + "SELECT t.ID, t.WORKBASKET_ID FROM TASK t WHERE t.ID IN(<foreach item='taskSummary' collection='taskSummaries' separator=',' >#{taskSummary.taskId}</foreach>)"
           + "AND NOT (t.WORKBASKET_ID IN ( "
           + "<choose>"
           + "<when test=\"_databaseId == 'db2'\">"
@@ -279,7 +280,9 @@ public interface TaskMapper {
           + "</otherwise>"
           + "</choose>"
           + "</script>")
-  @Result(property = "id", column = "ID")
-  List<String> filterTaskIdsNotAuthorizedFor(
-      @Param("taskIds") List<String> taskIds, @Param("accessIds") List<String> accessIds);
+  @Result(property = "left", column = "ID")
+  @Result(property = "right", column = "WORKBASKET_ID")
+  List<Pair<String, String>> getTaskAndWorkbasketIdsNotAuthorizedFor(
+      @Param("taskSummaries") List<MinimalTaskSummary> taskSummaries,
+      @Param("accessIds") List<String> accessIds);
 }

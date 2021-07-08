@@ -13,7 +13,7 @@ public enum TaskState {
   public static final TaskState[] END_STATES = {COMPLETED, CANCELLED, TERMINATED};
 
   public boolean in(TaskState... states) {
-    return Arrays.stream(states).anyMatch(state -> state == this);
+    return Arrays.asList(states).contains(this);
   }
 
   public boolean isEndState() {

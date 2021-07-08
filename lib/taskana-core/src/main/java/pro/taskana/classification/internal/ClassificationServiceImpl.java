@@ -18,6 +18,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
@@ -62,19 +63,17 @@ public class ClassificationServiceImpl implements ClassificationService {
   public Classification getClassification(String key, String domain)
       throws ClassificationNotFoundException {
     if (key == null) {
-      throw new ClassificationNotFoundException(
-          null, domain, "Classification for null key and domain " + domain + " was not found.");
+      throw new ClassificationNotFoundException(null, domain);
     }
 
-    Classification result = null;
+    Classification result;
     try {
       taskanaEngine.openConnection();
       result = classificationMapper.findByKeyAndDomain(key, domain);
       if (result == null) {
         result = classificationMapper.findByKeyAndDomain(key, "");
         if (result == null) {
-          throw new ClassificationNotFoundException(
-              key, domain, "Classification for key = " + key + " and master domain was not found");
+          throw new ClassificationNotFoundException(key, domain);
         }
       }
       return result;
@@ -86,15 +85,14 @@ public class ClassificationServiceImpl implements ClassificationService {
   @Override
   public Classification getClassification(String id) throws ClassificationNotFoundException {
     if (id == null) {
-      throw new ClassificationNotFoundException(null, "Classification for null id is invalid.");
+      throw new ClassificationNotFoundException(null);
     }
-    Classification result = null;
+    Classification result;
     try {
       taskanaEngine.openConnection();
       result = classificationMapper.findById(id);
       if (result == null) {
-        throw new ClassificationNotFoundException(
-            id, "Classification for id " + id + " was not found");
+        throw new ClassificationNotFoundException(id);
       }
       return result;
     } finally {
@@ -110,8 +108,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       taskanaEngine.openConnection();
       Classification classification = this.classificationMapper.findById(classificationId);
       if (classification == null) {
-        throw new ClassificationNotFoundException(
-            classificationId, "The classification \"" + classificationId + "\" wasn't found");
+        throw new ClassificationNotFoundException(classificationId);
       }
 
       if (classification.getDomain().equals("")) {
@@ -150,13 +147,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
       } catch (PersistenceException e) {
         if (isReferentialIntegrityConstraintViolation(e)) {
-          throw new ClassificationInUseException(
-              String.format(
-                  "The classification id = \"%s\" and key = \"%s\" in domain = \"%s\" "
-                      + "is in use and cannot be deleted. There are either tasks or "
-                      + "attachments associated with the classification.",
-                  classificationId, classification.getKey(), classification.getDomain()),
-              e.getCause());
+          throw new ClassificationInUseException(classification, e);
         }
       }
     } finally {
@@ -173,13 +164,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       Classification classification =
           this.classificationMapper.findByKeyAndDomain(classificationKey, domain);
       if (classification == null) {
-        throw new ClassificationNotFoundException(
-            classificationKey,
-            domain,
-            "The classification \""
-                + classificationKey
-                + "\" wasn't found in the domain "
-                + domain);
+        throw new ClassificationNotFoundException(classificationKey, domain);
       }
       deleteClassification(classification.getId());
     } finally {
@@ -190,13 +175,11 @@ public class ClassificationServiceImpl implements ClassificationService {
   @Override
   public Classification createClassification(Classification classification)
       throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
-          InvalidArgumentException {
+          InvalidArgumentException, MalformedServiceLevelException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     if (!taskanaEngine.domainExists(classification.getDomain())
         && !"".equals(classification.getDomain())) {
-      throw new DomainNotFoundException(
-          classification.getDomain(),
-          "Domain " + classification.getDomain() + " does not exist in the configuration.");
+      throw new DomainNotFoundException(classification.getDomain());
     }
     ClassificationImpl classificationImpl;
     final boolean isClassificationExisting;
@@ -246,14 +229,16 @@ public class ClassificationServiceImpl implements ClassificationService {
   @Override
   public Classification updateClassification(Classification classification)
       throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException,
-          InvalidArgumentException {
+          InvalidArgumentException, MalformedServiceLevelException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     ClassificationImpl classificationImpl;
     try {
       taskanaEngine.openConnection();
       if (classification.getKey().equals(classification.getParentKey())) {
         throw new InvalidArgumentException(
-            "The classification " + classification.getName() + " has the same key and parentKey");
+            String.format(
+                "The Classification '%s' has the same key and parent key",
+                classification.getName()));
       }
 
       classificationImpl = (ClassificationImpl) classification;
@@ -306,36 +291,26 @@ public class ClassificationServiceImpl implements ClassificationService {
     return classification;
   }
 
-  private static void validateServiceLevel(String serviceLevel) throws InvalidArgumentException {
+  private static void validateServiceLevel(Classification classification)
+      throws MalformedServiceLevelException {
+    String serviceLevel = classification.getServiceLevel();
     Duration duration;
 
     try {
       duration = Duration.parse(serviceLevel);
     } catch (Exception e) {
-      throw new InvalidArgumentException(
-          String.format(
-              "Invalid service level %s. "
-                  + "The formats accepted are based on the ISO-8601 duration format "
-                  + "PnDTnHnMn.nS with days considered to be exactly 24 hours. "
-                  + "For example: \"P2D\" represents a period of \"two days.\" ",
-              serviceLevel),
-          e.getCause());
+      throw new MalformedServiceLevelException(
+          serviceLevel, classification.getKey(), classification.getDomain());
     }
 
     if (duration.isNegative()) {
-      throw new InvalidArgumentException(
-          String.format(
-              "Invalid service level %s. Taskana does not support a negative service level.",
-              serviceLevel));
+      throw new MalformedServiceLevelException(
+          serviceLevel, classification.getKey(), classification.getDomain());
     }
     // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
     if (!serviceLevel.toLowerCase().startsWith("p") || !serviceLevel.toLowerCase().endsWith("d")) {
-      throw new InvalidArgumentException(
-          String.format(
-              "Invalid service level %s. Taskana only supports service "
-                  + "levels that contain a number of whole days "
-                  + "specified according to the format ''PnD'' where n is the number of days",
-              serviceLevel));
+      throw new MalformedServiceLevelException(
+          serviceLevel, classification.getKey(), classification.getDomain());
     }
   }
 
@@ -423,11 +398,13 @@ public class ClassificationServiceImpl implements ClassificationService {
    * Fill missing values and validate classification before saving the classification.
    *
    * @param classification the classification which will be verified.
-   * @throws InvalidArgumentException if the given classification has no key, the service level is
-   *     null, the type is not valid or the category for the provided type is invalid.
+   * @throws InvalidArgumentException if the given classification has no key, the type is not valid
+   *     or the category for the provided type is invalid.
+   * @throws MalformedServiceLevelException if the given service level of the {@linkplain
+   *     Classification} is invalid
    */
   private void initDefaultClassificationValues(ClassificationImpl classification)
-      throws InvalidArgumentException {
+      throws InvalidArgumentException, MalformedServiceLevelException {
     Instant now = Instant.now();
     if (classification.getId() == null || "".equals(classification.getId())) {
       classification.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION));
@@ -448,7 +425,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     if (classification.getServiceLevel() == null || classification.getServiceLevel().isEmpty()) {
       classification.setServiceLevel("P0D");
     } else {
-      validateServiceLevel(classification.getServiceLevel());
+      validateServiceLevel(classification);
     }
 
     if (classification.getKey() == null) {
@@ -538,10 +515,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     Classification oldClassification =
         this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
     if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
-      throw new ConcurrencyException(
-          "The current Classification has been modified while editing. "
-              + "The values can not be updated. Classification "
-              + classificationImpl.toString());
+      throw new ConcurrencyException();
     }
     return oldClassification;
   }

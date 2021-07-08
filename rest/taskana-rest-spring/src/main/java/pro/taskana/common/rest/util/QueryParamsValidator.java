@@ -14,8 +14,7 @@ public class QueryParamsValidator {
     throw new IllegalStateException("Utility class");
   }
 
-  public static void validateParams(HttpServletRequest request, Class... filterOrSortingClazz) {
-
+  public static void validateParams(HttpServletRequest request, Class<?>... filterOrSortingClazz) {
     Set<String> allowedParams =
         Stream.of(filterOrSortingClazz)
             .flatMap(clazz -> Stream.of(clazz.getDeclaredFields()))

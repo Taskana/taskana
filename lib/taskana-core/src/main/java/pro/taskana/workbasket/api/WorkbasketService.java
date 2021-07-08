@@ -8,7 +8,6 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -56,14 +55,14 @@ public interface WorkbasketService {
    *
    * @param workbasket The Workbasket to create
    * @return the created and inserted Workbasket
-   * @throws InvalidWorkbasketException If a required property of the Workbasket is not set.
+   * @throws InvalidArgumentException If a required property of the Workbasket is not set.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketAlreadyExistException if the Workbasket exists already
    * @throws DomainNotFoundException if the domain does not exist in the configuration.
    */
   Workbasket createWorkbasket(Workbasket workbasket)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException;
 
   /**
@@ -71,20 +70,21 @@ public interface WorkbasketService {
    *
    * @param workbasket The Workbasket to update
    * @return the updated Workbasket
-   * @throws InvalidWorkbasketException if workbasket name or type is invalid
-   * @throws NotAuthorizedException if the current user is not authorized to update the work basket
-   * @throws WorkbasketNotFoundException if the workbasket cannot be found.
-   * @throws ConcurrencyException if an attempt is made to update the workbasket and another user
-   *     updated it already
+   * @throws InvalidArgumentException if workbasket name or type is invalid
+   * @throws NotAuthorizedException if the current user is not authorized to update the {@linkplain
+   *     Workbasket}
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found.
+   * @throws ConcurrencyException if an attempt is made to update the {@linkplain Workbasket} and
+   *     another user updated it already
    */
   Workbasket updateWorkbasket(Workbasket workbasket)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketNotFoundException,
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
           ConcurrencyException;
 
   /**
    * Returns a new WorkbasketAccessItem which is not inserted.
    *
-   * @param workbasketId the workbasket id used to identify the referenced workbasket
+   * @param workbasketId the workbasket id used to identify the referenced {@linkplain Workbasket}
    * @param accessId the group id or user id for which access is controlled
    * @return new WorkbasketAccessItem
    */
@@ -138,7 +138,8 @@ public interface WorkbasketService {
    *     specified, the current user needs all of them.
    * @throws NotAuthorizedException if the current user has not the requested authorization for the
    *     specified workbasket
-   * @throws WorkbasketNotFoundException if the workbasket cannot be found for the given ID.
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
+   *     given {@linkplain Workbasket#getId() id}.
    */
   void checkAuthorization(String workbasketId, WorkbasketPermission... permission)
       throws NotAuthorizedException, WorkbasketNotFoundException;
@@ -159,21 +160,24 @@ public interface WorkbasketService {
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Get all {@link WorkbasketAccessItem s} for a Workbasket.
+   * Get all {@link WorkbasketAccessItem s} for a {@linkplain Workbasket}.
    *
-   * @param workbasketId the id of the Workbasket
-   * @return List of WorkbasketAccessItems for the Workbasket with workbasketKey
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket}
+   * @return List of {@linkplain WorkbasketAccessItem}s for the {@linkplain Workbasket}
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN}
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
+   *     given {@linkplain Workbasket#getId() id}.
    */
   List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId)
-      throws NotAuthorizedException;
+      throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
    * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be
    * completely replaced by the current ones.
    *
-   * <p>Preconditions for each {@link WorkbasketAccessItem} in {@code wbAccessItems}:
+   * <p>Preconditions for each {@link WorkbasketAccessItem} then {@code wbAccessItems}:
    *
    * <ul>
    *   <li>{@link WorkbasketAccessItem#getWorkbasketId()} is not null
@@ -189,10 +193,12 @@ public interface WorkbasketService {
    *     ADMIN
    * @throws WorkbasketAccessItemAlreadyExistException if {@code wbAccessItems} contains multiple
    *     accessItems with the same accessId.
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
+   *     given {@linkplain Workbasket#getId() id}.
    */
   void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
       throws InvalidArgumentException, NotAuthorizedException,
-          WorkbasketAccessItemAlreadyExistException;
+          WorkbasketAccessItemAlreadyExistException, WorkbasketNotFoundException;
 
   /**
    * This method provides a query builder for querying the database.

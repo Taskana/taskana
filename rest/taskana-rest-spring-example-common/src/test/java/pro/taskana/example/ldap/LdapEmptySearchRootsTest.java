@@ -27,7 +27,7 @@ class LdapEmptySearchRootsTest extends LdapTest {
   }
 
   @Test
-  void should_ReturnFullDnForUser_When_AccessIdOfUserIsGiven() {
+  void should_ReturnFullDnForUser_When_AccessIdOfUserIsGiven() throws Exception {
     String dn = ldapClient.searchDnForAccessId("otheruser");
     assertThat(dn).isEqualTo("uid=otheruser,cn=other-users,ou=test,o=taskana");
   }

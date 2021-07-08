@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -21,7 +22,6 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -37,11 +37,11 @@ public class ExampleBootstrap {
 
   @PostConstruct
   public void test()
-      throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, InvalidStateException, InvalidOwnerException,
-          TaskAlreadyExistException, InvalidArgumentException, DomainNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException,
-          ClassificationAlreadyExistException, AttachmentPersistenceException {
+      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          NotAuthorizedException, ClassificationAlreadyExistException,
+          MalformedServiceLevelException, TaskAlreadyExistException, WorkbasketNotFoundException,
+          ClassificationNotFoundException, AttachmentPersistenceException, TaskNotFoundException,
+          InvalidOwnerException, InvalidStateException {
     System.out.println("---------------------------> Start App");
 
     Workbasket wb = taskanaEngine.getWorkbasketService().newWorkbasket("workbasket", "DOMAIN_A");
