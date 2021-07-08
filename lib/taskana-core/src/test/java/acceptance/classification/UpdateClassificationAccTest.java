@@ -141,7 +141,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     Thread.sleep(20); // to avoid identity of modified timestamps between classification and base
     classificationService.updateClassification(base);
 
-    classification.setName("NOW IT´S MY TURN");
+    classification.setName("NOW IT'S MY TURN");
     classification.setDescription("IT SHOULD BE TO LATE...");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
     assertThatThrownBy(call).isInstanceOf(ConcurrencyException.class);

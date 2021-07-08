@@ -1,23 +1,23 @@
 package pro.taskana.common.rest.models;
 
-import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.WebRequest;
 
-/** This class holds error data. */
-public class TaskanaErrorData {
+import pro.taskana.common.api.exceptions.ErrorCode;
 
-  private final Date timestamp;
+/** This class holds error data. */
+public class ExceptionRepresentationModel {
+
+  private final ErrorCode error;
   private final int status;
-  private final String error;
   private final String exception;
   private final String message;
   private String path;
 
-  public TaskanaErrorData(HttpStatus stat, Throwable ex, WebRequest req) {
-    this.timestamp = new Date();
+  public ExceptionRepresentationModel(
+      ErrorCode errorCode, HttpStatus stat, Throwable ex, WebRequest req) {
+    this.error = errorCode;
     this.status = stat.value();
-    this.error = stat.name();
     this.exception = ex.getClass().getName();
     this.message = ex.getMessage();
     this.path = req.getDescription(false);
@@ -26,16 +26,12 @@ public class TaskanaErrorData {
     }
   }
 
-  public Date getTimestamp() {
-    return timestamp;
+  public ErrorCode getError() {
+    return error;
   }
 
   public int getStatus() {
     return status;
-  }
-
-  public String getError() {
-    return error;
   }
 
   public String getException() {
@@ -52,12 +48,10 @@ public class TaskanaErrorData {
 
   @Override
   public String toString() {
-    return "TaskanaErrorData [timestamp="
-        + timestamp
+    return "ExceptionRepresentationModel [error="
+        + error
         + ", status="
         + status
-        + ", error="
-        + error
         + ", exception="
         + exception
         + ", message="

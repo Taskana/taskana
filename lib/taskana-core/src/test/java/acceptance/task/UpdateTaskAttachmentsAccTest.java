@@ -588,8 +588,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_FetchAttachmentClassification_When_UpdatingTaskWithAttachments()
-      throws Exception {
+  void should_FetchAttachmentClassification_When_UpdatingTaskWithAttachments() throws Exception {
     ClassificationSummary classification =
         classificationService.newClassification("T2000", "DOMAIN_A", "").asSummary();
     attachment.setClassificationSummary(classification);

@@ -307,7 +307,7 @@ class TaskCommentControllerIntTest {
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("TaskComment creator and current user must match.")
+        .hasMessageContaining("TASK_COMMENT_CREATOR_MISMATCHED")
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
         .isEqualTo(HttpStatus.FORBIDDEN);
   }

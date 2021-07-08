@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
@@ -344,10 +345,10 @@ class ClassificationControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpServerErrorException.class)
         .hasMessageContaining(
             "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

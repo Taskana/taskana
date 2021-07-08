@@ -338,7 +338,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
         TaskanaRuntimeException ex =
-            new TaskanaRuntimeException(
+            new SystemException(
                 "The offset beginning was set over the amount of result-rows.", e.getCause());
         ex.setStackTrace(e.getStackTrace());
         throw ex;

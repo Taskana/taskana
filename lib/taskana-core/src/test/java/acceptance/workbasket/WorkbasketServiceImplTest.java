@@ -137,8 +137,7 @@ class WorkbasketServiceImplTest {
     verify(taskanaEngine, times(2)).checkRoleMembership(any());
     verify(internalTaskanaEngineMock, times(2)).getEngine();
     verify(internalTaskanaEngineMock, times(1)).domainExists(any());
-    verify(distributionTargetMapperMock)
-        .deleteAllDistributionTargetsBySourceId(expectedWb.getId());
+    verify(distributionTargetMapperMock).deleteAllDistributionTargetsBySourceId(expectedWb.getId());
     verify(workbasketMapperMock).update(expectedWb);
     verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
 

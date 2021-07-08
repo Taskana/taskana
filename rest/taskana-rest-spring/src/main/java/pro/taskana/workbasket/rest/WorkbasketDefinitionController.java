@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
@@ -114,24 +112,22 @@ public class WorkbasketDefinitionController {
    * @throws IOException if multipart file cannot be parsed.
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws DomainNotFoundException if domain information is incorrect.
-   * @throws InvalidWorkbasketException if any Workbasket has invalid information.
    * @throws WorkbasketAlreadyExistException if any Workbasket already exists when trying to create
    *     a new one.
-   * @throws WorkbasketNotFoundException if do not exists a workbasket in the system with the used
-   *     id.
-   * @throws InvalidArgumentException if authorization information in workbaskets definitions is
-   *     incorrect.
+   * @throws WorkbasketNotFoundException if do not exists a {@linkplain Workbasket} in the system
+   *     with the used id.
+   * @throws InvalidArgumentException if any Workbasket has invalid information or authorization
+   *     information in {@linkplain Workbasket}s' definitions is incorrect.
    * @throws WorkbasketAccessItemAlreadyExistException if a WorkbasketAccessItem for the same
-   *     workbasket and access_id already exists.
-   * @throws ConcurrencyException if workbasket was updated by an other user
+   *     Workbasket and access id already exists.
+   * @throws ConcurrencyException if Workbasket was updated by an other user
    */
   @PostMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
-      throws IOException, NotAuthorizedException, DomainNotFoundException,
-          InvalidWorkbasketException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
-          InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
-          ConcurrencyException {
+      throws IOException, NotAuthorizedException, DomainNotFoundException, InvalidArgumentException,
+          WorkbasketAlreadyExistException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException, ConcurrencyException {
     WorkbasketDefinitionCollectionRepresentationModel definitions =
         mapper.readValue(
             file.getInputStream(),
@@ -174,7 +170,7 @@ public class WorkbasketDefinitionController {
                       (access.getWorkbasketId().equals(importedWb.getId()))
                           && (access.getWorkbasketKey().equals(importedWb.getKey())));
       if (!authenticated && !definition.getAuthorizations().isEmpty()) {
-        throw new InvalidWorkbasketException(
+        throw new InvalidArgumentException(
             "The given Authentications for Workbasket "
                 + importedWb.getId()
                 + " don't match in WorkbasketId and WorkbasketKey. "
@@ -201,7 +197,7 @@ public class WorkbasketDefinitionController {
         } else if (systemIds.containsValue(oldId)) {
           distributionTargets.add(oldId);
         } else {
-          throw new InvalidWorkbasketException(
+          throw new InvalidArgumentException(
               String.format(
                   "invalid import state: Workbasket '%s' does not exist in the given import list",
                   oldId));
@@ -221,28 +217,20 @@ public class WorkbasketDefinitionController {
     return workbasketAssembler.toEntityModel(wbRes);
   }
 
-  private void checkForDuplicates(Collection<WorkbasketDefinitionRepresentationModel> definitions) {
-    List<String> identifiers = new ArrayList<>();
-    Set<String> duplicates = new HashSet<>();
+  private void checkForDuplicates(Collection<WorkbasketDefinitionRepresentationModel> definitions)
+      throws WorkbasketAlreadyExistException {
+    Set<String> identifiers = new HashSet<>();
     for (WorkbasketDefinitionRepresentationModel definition : definitions) {
       String identifier = logicalId(workbasketAssembler.toEntityModel(definition.getWorkbasket()));
       if (identifiers.contains(identifier)) {
-        duplicates.add(identifier);
-      } else {
-        identifiers.add(identifier);
+        throw new WorkbasketAlreadyExistException(
+            definition.getWorkbasket().getKey(), definition.getWorkbasket().getDomain());
       }
-    }
-    if (!duplicates.isEmpty()) {
-      throw new DuplicateKeyException(
-          "The 'key|domain'-identifier is not unique for the value(s): " + duplicates.toString());
+      identifiers.add(identifier);
     }
   }
 
   private String logicalId(WorkbasketSummary workbasket) {
-    return logicalId(workbasket.getKey(), workbasket.getDomain());
-  }
-
-  private String logicalId(Workbasket workbasket) {
     return logicalId(workbasket.getKey(), workbasket.getDomain());
   }
 

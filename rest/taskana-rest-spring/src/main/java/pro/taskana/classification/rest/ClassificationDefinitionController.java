@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +27,7 @@ import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.assembler.ClassificationDefinitionCollectionRepresentationModel;
@@ -62,9 +62,9 @@ public class ClassificationDefinitionController {
   /**
    * This endpoint exports all configured Classifications.
    *
+   * @title Export Classifications
    * @param domain Filter the export by domain
    * @return the configured Classifications.
-   * @title Export Classifications
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -100,13 +100,15 @@ public class ClassificationDefinitionController {
    * @throws ClassificationAlreadyExistException TODO: this makes no sense
    * @throws DomainNotFoundException if the domain for a specific Classification does not exist
    * @throws IOException if the import file could not be parsed
+   * @throws MalformedServiceLevelException if the {@code serviceLevel} property does not comply *
+   *     with the ISO 8601 specification
    */
   @PostMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importClassifications(@RequestParam("file") MultipartFile file)
       throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException,
           ClassificationNotFoundException, ClassificationAlreadyExistException,
-          DomainNotFoundException, IOException {
+          DomainNotFoundException, IOException, MalformedServiceLevelException {
     Map<String, String> systemIds = getSystemIds();
     ClassificationDefinitionCollectionRepresentationModel collection =
         extractClassificationResourcesFromFile(file);
@@ -132,21 +134,17 @@ public class ClassificationDefinitionController {
   }
 
   private void checkForDuplicates(
-      Collection<ClassificationDefinitionRepresentationModel> definitionList) {
+      Collection<ClassificationDefinitionRepresentationModel> definitionList)
+      throws ClassificationAlreadyExistException {
     List<String> identifiers = new ArrayList<>();
-    Set<String> duplicates = new HashSet<>();
     for (ClassificationDefinitionRepresentationModel definition : definitionList) {
       ClassificationRepresentationModel classification = definition.getClassification();
       String identifier = classification.getKey() + "|" + classification.getDomain();
       if (identifiers.contains(identifier)) {
-        duplicates.add(identifier);
-      } else {
-        identifiers.add(identifier);
+        throw new ClassificationAlreadyExistException(
+            definition.getClassification().getKey(), definition.getClassification().getDomain());
       }
-    }
-    if (!duplicates.isEmpty()) {
-      throw new DuplicateKeyException(
-          "The 'key|domain'-identifier is not unique for the value(s): " + duplicates);
+      identifiers.add(identifier);
     }
   }
 
@@ -188,7 +186,8 @@ public class ClassificationDefinitionController {
       Collection<ClassificationDefinitionRepresentationModel> definitionList,
       Map<String, String> systemIds)
       throws ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException,
-          ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException {
+          ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException,
+          MalformedServiceLevelException {
     for (ClassificationDefinitionRepresentationModel definition : definitionList) {
       ClassificationRepresentationModel classificationRepModel = definition.getClassification();
       classificationRepModel.setParentKey(null);
@@ -209,7 +208,7 @@ public class ClassificationDefinitionController {
 
   private void updateParentChildrenRelations(Map<Classification, String> childrenInFile)
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException {
+          InvalidArgumentException, MalformedServiceLevelException {
     for (Map.Entry<Classification, String> entry : childrenInFile.entrySet()) {
       Classification childRes = entry.getKey();
       String parentKey = entry.getValue();
@@ -232,7 +231,7 @@ public class ClassificationDefinitionController {
 
   private void updateExistingClassification(Classification newClassification, String systemId)
       throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException {
+          InvalidArgumentException, MalformedServiceLevelException {
     Classification currentClassification = classificationService.getClassification(systemId);
     if (newClassification.getType() != null
         && !newClassification.getType().equals(currentClassification.getType())) {

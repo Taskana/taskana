@@ -1,6 +1,7 @@
 package acceptance;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
 import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS;
@@ -29,12 +30,17 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.common.api.exceptions.ErrorCode;
+import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.logging.LoggingAspect;
+import pro.taskana.common.internal.util.MapCreator;
 
 /**
  * Test architecture of classes in taskana. For more info and examples see
@@ -80,7 +86,42 @@ class ArchitectureTest {
             .should()
             .onlyDependOnClassesThat(
                 Predicates.resideOutsideOfPackage("..pro.taskana..internal..")
-                    .or(Predicates.assignableTo(LoggingAspect.class)));
+                    .or(
+                        Predicates.assignableTo(LoggingAspect.class)
+                            .or(Predicates.assignableTo(MapCreator.class))));
+    myRule.check(importedClasses);
+  }
+
+  @Test
+  void utilityClassesShouldNotBeInitializable() {
+    ArchRule myRule =
+        classes()
+            .that()
+            .resideInAPackage("..util..")
+            .and()
+            .areNotNestedClasses()
+            .should()
+            .haveOnlyPrivateConstructors();
+
+    myRule.check(importedClasses);
+  }
+
+  @Test
+  @Disabled("until we have renamed all tests")
+  void testMethodNamesShouldMatchAccordingToOurGuidelines() {
+    ArchRule myRule =
+        methods()
+            .that()
+            .areAnnotatedWith(Test.class)
+            .or()
+            .areAnnotatedWith(TestFactory.class)
+            .and()
+            .areNotDeclaredIn(ArchitectureTest.class)
+            .should()
+            .bePackagePrivate()
+            .andShould()
+            .haveNameMatching("^should_[A-Z][^_]+_(For|When)_[A-Z][^_]+$");
+
     myRule.check(importedClasses);
   }
 
@@ -99,7 +140,19 @@ class ArchitectureTest {
   @Test
   void onlyExceptionsShouldResideInExceptionPackage() {
     ArchRule myRule =
-        classes().that().resideInAPackage("..exceptions").should().beAssignableTo(Throwable.class);
+        classes()
+            .that()
+            .resideInAPackage("..exceptions")
+            .and()
+            .doNotBelongToAnyOf(ErrorCode.class)
+            .should()
+            .beAssignableTo(
+                Predicates.assignableTo(TaskanaException.class)
+                    .or(Predicates.assignableTo(TaskanaRuntimeException.class)))
+            .andShould()
+            .bePublic()
+            .andShould()
+            .haveSimpleNameEndingWith("Exception");
     myRule.check(importedClasses);
   }
 

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.exceptions.InvalidCallbackStateException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
@@ -64,37 +66,42 @@ class CallbackStateAccTest extends AbstractAccTest {
         .isEqualTo(CallbackState.CALLBACK_PROCESSING_REQUIRED);
 
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
-    String endOfMessage = " cannot be deleted because its callback is not yet processed";
 
-    ThrowingCallable call =
-        () -> {
-          taskService.forceDeleteTask(createdTask.getId());
-        };
+    ThrowingCallable call = () -> taskService.forceDeleteTask(createdTask.getId());
+    CallbackState[] expectedCallbackStates = {
+      CallbackState.NONE, CallbackState.CLAIMED, CallbackState.CALLBACK_PROCESSING_COMPLETED
+    };
     assertThatThrownBy(call)
         .isInstanceOf(InvalidStateException.class)
-        .hasMessageEndingWith(endOfMessage);
+        .hasMessage(
+            "Expected callback state of Task with id '%s' to be: '%s', but found '%s'",
+            createdTask.getId(),
+            Arrays.toString(expectedCallbackStates),
+            createdTask.getCallbackState());
 
     final TaskImpl createdTask2 = (TaskImpl) taskService.claim(createdTask.getId());
 
     assertThat(createdTask2.getState()).isEqualTo(TaskState.CLAIMED);
 
-    call =
-        () -> {
-          taskService.forceDeleteTask(createdTask2.getId());
-        };
+    call = () -> taskService.forceDeleteTask(createdTask2.getId());
     assertThatThrownBy(call)
         .isInstanceOf(InvalidStateException.class)
-        .hasMessageEndingWith(endOfMessage);
+        .hasMessage(
+            "Expected callback state of Task with id '%s' to be: '%s', but found '%s'",
+            createdTask2.getId(),
+            Arrays.toString(expectedCallbackStates),
+            createdTask2.getCallbackState());
 
     final TaskImpl createdTask3 = (TaskImpl) taskService.completeTask(createdTask.getId());
 
-    call =
-        () -> {
-          taskService.forceDeleteTask(createdTask3.getId());
-        };
+    call = () -> taskService.forceDeleteTask(createdTask3.getId());
     assertThatThrownBy(call)
         .isInstanceOf(InvalidStateException.class)
-        .hasMessageEndingWith(endOfMessage);
+        .hasMessage(
+            "Expected callback state of Task with id '%s' to be: '%s', but found '%s'",
+            createdTask3.getId(),
+            Arrays.toString(expectedCallbackStates),
+            createdTask3.getCallbackState());
   }
 
   @WithAccessId(user = "admin")
@@ -143,13 +150,9 @@ class CallbackStateAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> bulkResult1 = taskService.deleteTasks(taskIds);
 
     assertThat(bulkResult1.containsErrors()).isTrue();
-    List<String> failedTaskIds = bulkResult1.getFailedIds();
 
-    assertThat(failedTaskIds).hasSize(3);
-    for (String taskId : failedTaskIds) {
-      TaskanaException excpt = bulkResult1.getErrorForId(taskId);
-      assertThat(excpt.getClass().getName()).isEqualTo(InvalidStateException.class.getName());
-    }
+    assertThat(bulkResult1.getErrorMap().values())
+        .hasOnlyElementsOfType(InvalidCallbackStateException.class);
     List<String> externalIds =
         List.of(
             createdTask1.getExternalId(),

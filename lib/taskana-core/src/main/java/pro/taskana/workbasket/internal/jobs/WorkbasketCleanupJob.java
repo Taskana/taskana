@@ -11,6 +11,7 @@ import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
@@ -49,7 +50,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
       LOGGER.info(
           "Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
     } catch (Exception e) {
-      throw new TaskanaException("Error while processing WorkbasketCleanupJob.", e);
+      throw new SystemException("Error while processing WorkbasketCleanupJob.", e);
     } finally {
       scheduleNextCleanupJob();
     }

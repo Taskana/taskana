@@ -1,13 +1,7 @@
 package pro.taskana.example.jobs;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
@@ -57,49 +49,18 @@ public class JobScheduler {
   @Scheduled(cron = "${taskana.jobscheduler.async.cron}")
   public void triggerJobs() {
     LOGGER.info("AsyncJobs started.");
-    try {
-      runAsyncJobsAsAdmin();
-      LOGGER.info("AsyncJobs completed.");
-    } catch (PrivilegedActionException e) {
-      LOGGER.info("AsyncJobs failed.", e);
-    }
+    runAsyncJobsAsAdmin();
+    LOGGER.info("AsyncJobs completed.");
   }
 
-  /*
-   * Creates an admin subject and runs the job using the subject.
-   */
-  private void runAsyncJobsAsAdmin() throws PrivilegedActionException {
-    PrivilegedExceptionAction<Object> jobs =
+  private void runAsyncJobsAsAdmin() {
+    taskanaEngine.runAsAdmin(
         () -> {
-          try {
-            JobRunner runner = new JobRunner(taskanaEngine);
-            runner.registerTransactionProvider(springTransactionProvider);
-            LOGGER.info("Running Jobs");
-            runner.runJobs();
-            return "Successful";
-          } catch (Throwable e) {
-            throw new Exception(e);
-          }
-        };
-    Subject.doAs(getAdminSubject(), jobs);
-  }
-
-  private Subject getAdminSubject() {
-    Subject subject = new Subject();
-    List<Principal> principalList = new ArrayList<>();
-    try {
-      principalList.add(
-          new UserPrincipal(
-              taskanaEngine
-                  .getConfiguration()
-                  .getRoleMap()
-                  .get(TaskanaRole.ADMIN)
-                  .iterator()
-                  .next()));
-    } catch (Throwable t) {
-      LOGGER.warn("Could not determine a configured admin user.", t);
-    }
-    subject.getPrincipals().addAll(principalList);
-    return subject;
+          JobRunner runner = new JobRunner(taskanaEngine);
+          runner.registerTransactionProvider(springTransactionProvider);
+          LOGGER.info("Running Jobs");
+          runner.runJobs();
+          return "Successful";
+        });
   }
 }

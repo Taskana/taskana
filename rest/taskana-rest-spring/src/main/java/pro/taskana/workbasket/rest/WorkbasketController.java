@@ -35,7 +35,6 @@ import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -186,7 +185,7 @@ public class WorkbasketController {
    * @title Create a new Workbasket
    * @param workbasketRepresentationModel the Workbasket which should be created.
    * @return the created Workbasket
-   * @throws InvalidWorkbasketException if some required properties of the Workbasket are not set.
+   * @throws InvalidArgumentException if some required properties of the Workbasket are not set.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketAlreadyExistException if the Workbasket exists already
@@ -196,7 +195,7 @@ public class WorkbasketController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> createWorkbasket(
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
     Workbasket workbasket =
         workbasketRepresentationModelAssembler.toEntityModel(workbasketRepresentationModel);
@@ -213,7 +212,7 @@ public class WorkbasketController {
    * @param workbasketId the Id of the Workbasket which should be updated.
    * @param workbasketRepresentationModel the new Workbasket for the requested id.
    * @return the updated Workbasket
-   * @throws InvalidWorkbasketException if the requested Id and the Id within the new Workbasket do
+   * @throws InvalidArgumentException if the requested Id and the Id within the new Workbasket do
    *     not match.
    * @throws WorkbasketNotFoundException if the requested workbasket does not
    * @throws NotAuthorizedException if the current user is not authorized to update the Workbasket
@@ -225,10 +224,10 @@ public class WorkbasketController {
   public ResponseEntity<WorkbasketRepresentationModel> updateWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
-      throws InvalidWorkbasketException, WorkbasketNotFoundException, NotAuthorizedException,
-          ConcurrencyException {
+      throws WorkbasketNotFoundException, NotAuthorizedException, ConcurrencyException,
+          InvalidArgumentException {
     if (!workbasketId.equals(workbasketRepresentationModel.getWorkbasketId())) {
-      throw new InvalidWorkbasketException(
+      throw new InvalidArgumentException(
           "Target-WB-ID('"
               + workbasketId
               + "') is not identical with the WB-ID of to object which should be updated. ID=('"
@@ -290,7 +289,7 @@ public class WorkbasketController {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
           WorkbasketAccessItemAlreadyExistException {
     if (workbasketAccessItemRepModels == null) {
-      throw new InvalidArgumentException("Can´t create something with NULL body-value.");
+      throw new InvalidArgumentException("Can't create something with NULL body-value.");
     }
 
     List<WorkbasketAccessItem> wbAccessItems =

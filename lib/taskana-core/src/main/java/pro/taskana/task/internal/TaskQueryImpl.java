@@ -2,7 +2,6 @@ package pro.taskana.task.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
@@ -18,6 +17,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.configuration.DB;
+import pro.taskana.common.internal.util.EnumUtil;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskCustomField;
@@ -231,8 +231,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery stateNotIn(TaskState... states) {
-    this.stateIn =
-        EnumSet.complementOf(EnumSet.copyOf(Arrays.asList(states))).toArray(new TaskState[0]);
+    this.stateIn = EnumUtil.allValuesExceptFor(states);
     return this;
   }
 
@@ -947,7 +946,7 @@ public class TaskQueryImpl implements TaskQuery {
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
         TaskanaRuntimeException ex =
-            new TaskanaRuntimeException(
+            new SystemException(
                 "The offset beginning was set over the amount of result-rows.", e.getCause());
         ex.setStackTrace(e.getStackTrace());
         throw ex;
@@ -1619,7 +1618,7 @@ public class TaskQueryImpl implements TaskQuery {
         }
       }
     } catch (NotAuthorizedException e) {
-      throw new NotAuthorizedToQueryWorkbasketException(e.getMessage(), e.getCause());
+      throw new NotAuthorizedToQueryWorkbasketException(e.getMessage(), e.getErrorCode(), e);
     }
   }
 

@@ -40,7 +40,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteWorkbasket() throws Exception {
+  void should_ThrowWorkbasketNotFoundException_When_TheWorkbasketHasAlreadyBeenDeleted()
+      throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("USER-2-2", "DOMAIN_A");
 
     ThrowingCallable call =
@@ -75,17 +76,19 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testGetWorkbasketNotAuthorized() {
+  void should_ThrowNotAuthorizedException_When_UnauthorizedTryingToGetWorkbaskets() {
     assertThatThrownBy(() -> workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A"))
         .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteWorkbasketAlsoAsDistributionTarget() throws Exception {
+  void should_RemoveWorkbasketsFromDistributionTargets_WhenWorkbasketIsDeleted() throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
     int distTargets =
-        workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001").size();
+        workbasketService
+            .getDistributionTargets("GPK_KSC", "DOMAIN_A")
+            .size(); // has GPK_KSC_1 as a distribution target (+ 3 other Workbaskets)
 
     ThrowingCallable call =
         () -> {
@@ -97,14 +100,13 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
         .describedAs("There should be no result for a deleted Workbasket.")
         .isInstanceOf(WorkbasketNotFoundException.class);
 
-    int newDistTargets =
-        workbasketService.getDistributionTargets("WBI:100000000000000000000000000000000001").size();
+    int newDistTargets = workbasketService.getDistributionTargets("GPK_KSC", "DOMAIN_A").size();
     assertThat(newDistTargets).isEqualTo(3).isLessThan(distTargets);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteWorkbasketWithNullOrEmptyParam() {
+  void should_ThrowInvalidArgumentException_When_TryingToDeleteNullOrEmptyWorkbasket() {
     // Test Null-Value
     assertThatThrownBy(() -> workbasketService.deleteWorkbasket(null))
         .describedAs(
@@ -122,14 +124,15 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testDeleteWorkbasketButNotExisting() {
+  void should_ThrowWorkbasketNotFoundException_When_TryingToDeleteNonExistingWorkbasket() {
     assertThatThrownBy(() -> workbasketService.deleteWorkbasket("SOME NOT EXISTING ID"))
         .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(user = "user-1-2", groups = "businessadmin")
   @Test
-  void testDeleteWorkbasketWhichIsUsed() throws Exception {
+  void should_ThrowWorkbasketInUseException_When_TryingToDeleteWorkbasketWhichIsInUse()
+      throws Exception {
     Workbasket wb =
         workbasketService.getWorkbasket("user-1-2", "DOMAIN_A"); // all rights, DOMAIN_A with Tasks
     assertThatThrownBy(() -> workbasketService.deleteWorkbasket(wb.getId()))
@@ -138,7 +141,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testCascadingDeleteOfAccessItems() throws Exception {
+  void should_DeleteWorkbasketAccessItems_When_WorkbasketIsDeleted() throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("WBI:100000000000000000000000000000000008");
     String wbId = wb.getId();
     // create 2 access Items
@@ -170,7 +173,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testMarkWorkbasketForDeletion() throws Exception {
+  void should_MarkWorkbasketForDeletion_When_TryingToDeleteWorkbasketWithTasks() throws Exception {
     final Workbasket wb =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000006");
 
@@ -183,8 +186,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000066");
     taskService.forceCompleteTask(task.getId());
 
-    boolean markedForDeletion = workbasketService.deleteWorkbasket(wb.getId());
-    assertThat(markedForDeletion).isFalse();
+    boolean canBeDeletedNow = workbasketService.deleteWorkbasket(wb.getId());
+    assertThat(canBeDeletedNow).isFalse();
 
     Workbasket wb2 = workbasketService.getWorkbasket(wb.getId());
     assertThat(wb2.isMarkedForDeletion()).isTrue();

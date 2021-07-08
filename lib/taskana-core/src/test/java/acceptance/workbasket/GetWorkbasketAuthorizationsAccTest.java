@@ -19,7 +19,7 @@ class GetWorkbasketAuthorizationsAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin() {
+  void should_ThrowNotAuthorizedException_When_UserRoleIsNotAdminOrBusinessAdmin() {
 
     final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

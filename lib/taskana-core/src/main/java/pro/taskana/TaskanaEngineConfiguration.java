@@ -551,11 +551,7 @@ public class TaskanaEngineConfiguration {
     if (parts.size() == 2) {
       return CustomHoliday.of(Integer.valueOf(parts.get(0)), Integer.valueOf(parts.get(1)));
     }
-    throw new WrongCustomHolidayFormatException(
-        String.format(
-            "Wrong format for custom holiday entry %s! The format should be 'dd.MM' "
-                + "i.e. 01.05 for the first of may. The value will be ignored!",
-            customHolidayEntry));
+    throw new WrongCustomHolidayFormatException(customHolidayEntry);
   }
 
   private List<String> splitStringAndTrimElements(String str, String separator) {

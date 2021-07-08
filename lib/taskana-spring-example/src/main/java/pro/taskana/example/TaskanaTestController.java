@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -51,7 +51,7 @@ public class TaskanaTestController {
   @GetMapping(path = "/transaction")
   public @ResponseBody String transaction(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
@@ -67,7 +67,7 @@ public class TaskanaTestController {
   @GetMapping(path = "/transaction-many")
   public @ResponseBody String transactionMany(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
@@ -84,7 +84,7 @@ public class TaskanaTestController {
   @GetMapping(path = "/customdb")
   public @ResponseBody String transactionCustomdb(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-      throws InvalidWorkbasketException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));

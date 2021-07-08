@@ -44,7 +44,7 @@ class LdapTest {
   }
 
   @Test
-  void should_FeturnFullDnForUser_When_AccessIdOfUserIsGiven() {
+  void should_ReturnFullDnForUser_When_AccessIdOfUserIsGiven() throws Exception {
     String dn = ldapClient.searchDnForAccessId("user-2-2");
     assertThat(dn).isEqualTo("uid=user-2-2,cn=users,ou=test,o=taskana");
   }

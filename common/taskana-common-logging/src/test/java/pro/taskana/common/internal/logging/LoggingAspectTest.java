@@ -136,11 +136,6 @@ class LoggingAspectTest {
     public void logInternalMethod() {}
 
     @SuppressWarnings("UnusedReturnValue")
-    String logInternalMethodWithReturnValue() {
-      return "test string";
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
     public String logInternalMethodWithReturnValueNull() {
       return null;
     }
@@ -164,6 +159,11 @@ class LoggingAspectTest {
 
     @NoLogging
     public void doNotLogInternalMethod() {}
+
+    @SuppressWarnings("UnusedReturnValue")
+    String logInternalMethodWithReturnValue() {
+      return "test string";
+    }
 
     private void logInternalMethodPrivate() {}
   }

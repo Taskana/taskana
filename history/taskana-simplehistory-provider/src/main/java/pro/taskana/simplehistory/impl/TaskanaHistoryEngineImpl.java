@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
@@ -91,9 +92,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
             taskanaEngine.getCurrentUserContext().getAccessIds(),
             Arrays.toString(roles));
       }
-      throw new NotAuthorizedException(
-          "current user is not member of role(s) " + Arrays.toString(roles),
-          taskanaEngine.getCurrentUserContext().getUserid());
+      throw new MismatchedRoleException(taskanaEngine.getCurrentUserContext().getUserid(), roles);
     }
   }
 

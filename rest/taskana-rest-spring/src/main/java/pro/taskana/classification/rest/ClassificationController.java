@@ -25,6 +25,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
@@ -123,13 +124,15 @@ public class ClassificationController {
    * @throws DomainNotFoundException if the domain within the new Classification does not exist.
    * @throws InvalidArgumentException if the new Classification does not contain all relevant
    *     information.
+   * @throws MalformedServiceLevelException if the {@code serviceLevel} property does not comply *
+   *     with the ISO 8601 specification
    */
   @PostMapping(path = RestEndpoints.URL_CLASSIFICATIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> createClassification(
       @RequestBody ClassificationRepresentationModel repModel)
       throws NotAuthorizedException, ClassificationAlreadyExistException, DomainNotFoundException,
-          InvalidArgumentException {
+          InvalidArgumentException, MalformedServiceLevelException {
     Classification classification = modelAssembler.toEntityModel(repModel);
     classification = classificationService.createClassification(classification);
 
@@ -148,6 +151,8 @@ public class ClassificationController {
    * @throws ConcurrencyException if the requested Classification Id has been modified in the
    *     meantime by a different process.
    * @throws InvalidArgumentException if the Id in the path and in the request body does not match
+   * @throws MalformedServiceLevelException if the {@code serviceLevel} property does not comply *
+   *     with the ISO 8601 specification
    */
   @PutMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(rollbackFor = Exception.class)
@@ -155,7 +160,7 @@ public class ClassificationController {
       @PathVariable(value = "classificationId") String classificationId,
       @RequestBody ClassificationRepresentationModel resource)
       throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-          InvalidArgumentException {
+          InvalidArgumentException, MalformedServiceLevelException {
     if (!classificationId.equals(resource.getClassificationId())) {
       throw new InvalidArgumentException(
           String.format(

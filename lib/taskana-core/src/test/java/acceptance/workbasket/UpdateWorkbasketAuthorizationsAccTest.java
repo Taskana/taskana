@@ -25,6 +25,7 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
@@ -43,10 +44,25 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
         workbasketService.newWorkbasketAccessItem(
             "WBI:100000000000000000000000000000000008", "newAccessIdForUpdate");
 
-    workbasketAccessItem.setPermission(WorkbasketPermission.CUSTOM_1, true);
-
     assertThatThrownBy(() -> workbasketService.updateWorkbasketAccessItem(workbasketAccessItem))
         .isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @Test
+  @WithAccessId(user = "admin")
+  void
+      should_ThrowWorkbasketNotFoundException_When_TryingToSetAccessItemsOfNonExistingWorkbasket() {
+
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketAccessItem workbasketAccessItem =
+        workbasketService.newWorkbasketAccessItem("WBI:1337gibtEsNicht007", "newAccessIdForUpdate");
+
+    assertThatThrownBy(
+            () ->
+                workbasketService.setWorkbasketAccessItems(
+                    "WBI:1337gibtEsNicht007", List.of(workbasketAccessItem)))
+        .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(user = "businessadmin")

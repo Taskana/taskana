@@ -3,6 +3,11 @@ package pro.taskana.common.rest;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +18,25 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
+import pro.taskana.common.api.exceptions.ErrorCode;
+import pro.taskana.common.rest.TaskanaRestExceptionHandler.MalformedQueryParameter;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryPagedRepresentationModel;
 
 /** Test general Exception Handling. */
 @TaskanaSpringBootTest
 class GeneralExceptionHandlingTest {
 
-  private static final ParameterizedTypeReference<WorkbasketSummaryPagedRepresentationModel>
-      WORKBASKET_SUMMARY_PAGE_MODEL_TYPE =
-          new ParameterizedTypeReference<WorkbasketSummaryPagedRepresentationModel>() {};
-
   private final RestHelper restHelper;
+  private final ObjectMapper objectMapper;
 
   @Autowired
-  GeneralExceptionHandlingTest(RestHelper restHelper) {
+  GeneralExceptionHandlingTest(RestHelper restHelper, ObjectMapper objectMapper) {
     this.restHelper = restHelper;
+    this.objectMapper = objectMapper;
   }
 
   @Test
@@ -38,14 +45,13 @@ class GeneralExceptionHandlingTest {
     HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(
-              url,
-              HttpMethod.DELETE,
-              auth,
-              ParameterizedTypeReference.forType(
-                  ClassificationSummaryPagedRepresentationModel.class));
-        };
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.DELETE,
+                auth,
+                ParameterizedTypeReference.forType(
+                    ClassificationSummaryPagedRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
@@ -53,31 +59,151 @@ class GeneralExceptionHandlingTest {
   }
 
   @Test
-  void should_ThrowExpressiveError_When_InvalidEnumValueIsProvided() {
-    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROU";
+  void should_ThrowExpressiveError_When_AQueryParameterIsInvalid() throws Exception {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?required-permission=GROU";
     HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(
+                    WorkbasketSummaryPagedRepresentationModel.class));
 
-    // Inside the complete message of the exception, thrown when querying the REST controller with
-    // a wrong enum value (for example 'GROU' instead of 'GROUP'), there will be found following
-    // information about this issue:
-    //
-    //     nested exception is org.springframework.core.convert.ConversionFailedException: Failed to
-    //     convert from type [java.lang.String] to type [pro.taskana.workbasket.api.WorkbasketType]
-    //     for value 'GROU'; nested exception is java.lang.IllegalArgumentException: No enum
-    //     constant pro.taskana.workbasket.api.WorkbasketType.GROU
-    //
-    // Unfortunately the message of the exception thrown here is cut and thus there is no info
-    // about this problem. In case of querying the REST controller directly there will.
+    List<String> expectedValues =
+        Arrays.stream(WorkbasketPermission.values())
+            .map(Object::toString)
+            .collect(Collectors.toList());
+    ErrorCode errorCode =
+        ErrorCode.of(
+            "QUERY_PARAMETER_MALFORMED",
+            Map.of(
+                "malformedQueryParameters",
+                List.of(new MalformedQueryParameter("required-permission", "GROU", expectedValues))
+                    .toArray(new MalformedQueryParameter[0])));
+
     assertThatThrownBy(httpCall)
         .isInstanceOf(BadRequest.class)
-        .hasMessageContaining(
-            "\"status\":400,\"error\":\"BAD_REQUEST\",\"exception\":\"org.springframework.web."
-                + "method.annotation.ModelAttributeMethodProcessor$1\",\"message\":\"org."
-                + "springframework");
+        .extracting(BadRequest.class::cast)
+        .extracting(BadRequest::getResponseBodyAsString)
+        .asString()
+        .contains(objectMapper.writeValueAsString(errorCode));
+  }
+
+  @Test
+  void should_CombineErrors_When_SameQueryParameterDeclarationsAreInvalidMultipleTimes()
+      throws Exception {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROU&type=invalid";
+    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(
+                    WorkbasketSummaryPagedRepresentationModel.class));
+
+    List<String> expectedValuesForQueryParameterType =
+        Arrays.stream(WorkbasketType.values()).map(Object::toString).collect(Collectors.toList());
+    ErrorCode errorCode =
+        ErrorCode.of(
+            "QUERY_PARAMETER_MALFORMED",
+            Map.of(
+                "malformedQueryParameters",
+                List.of(
+                        new MalformedQueryParameter(
+                            "type", "GROU", expectedValuesForQueryParameterType),
+                        new MalformedQueryParameter(
+                            "type", "invalid", expectedValuesForQueryParameterType))
+                    .toArray(new MalformedQueryParameter[0])));
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(BadRequest.class)
+        .extracting(BadRequest.class::cast)
+        .extracting(BadRequest::getResponseBodyAsString)
+        .asString()
+        .contains(objectMapper.writeValueAsString(errorCode));
+  }
+
+  @Test
+  void should_FilterOutValidQueryParameters_When_OnlySomeQueryParametersDeclarationsAreInvalid()
+      throws Exception {
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROUP&type=invalid";
+    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(
+                    WorkbasketSummaryPagedRepresentationModel.class));
+
+    List<String> expectedValuesForQueryParameterType =
+        Arrays.stream(WorkbasketType.values()).map(Object::toString).collect(Collectors.toList());
+    ErrorCode errorCode =
+        ErrorCode.of(
+            "QUERY_PARAMETER_MALFORMED",
+            Map.of(
+                "malformedQueryParameters",
+                List.of(
+                        new MalformedQueryParameter(
+                            "type", "invalid", expectedValuesForQueryParameterType))
+                    .toArray(new MalformedQueryParameter[0])));
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(BadRequest.class)
+        .extracting(BadRequest.class::cast)
+        .extracting(BadRequest::getResponseBodyAsString)
+        .asString()
+        .contains(objectMapper.writeValueAsString(errorCode));
+  }
+
+  @Test
+  void should_CombineErrors_When_DifferentQueryParametersAreInvalid() throws Exception {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_WORKBASKET) + "?type=GROU&required-permission=invalid";
+    HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(
+                    WorkbasketSummaryPagedRepresentationModel.class));
+
+    List<String> expectedValuesForQueryParameterType =
+        Arrays.stream(WorkbasketType.values()).map(Object::toString).collect(Collectors.toList());
+    List<String> expectedValuesForQueryParameterRequiredPermission =
+        Arrays.stream(WorkbasketPermission.values())
+            .map(Object::toString)
+            .collect(Collectors.toList());
+    ErrorCode errorCode =
+        ErrorCode.of(
+            "QUERY_PARAMETER_MALFORMED",
+            Map.of(
+                "malformedQueryParameters",
+                List.of(
+                        new MalformedQueryParameter(
+                            "type", "GROU", expectedValuesForQueryParameterType),
+                        new MalformedQueryParameter(
+                            "required-permission",
+                            "invalid",
+                            expectedValuesForQueryParameterRequiredPermission))
+                    .toArray(new MalformedQueryParameter[0])));
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(BadRequest.class)
+        .extracting(BadRequest.class::cast)
+        .extracting(BadRequest::getResponseBodyAsString)
+        .asString()
+        .contains(objectMapper.writeValueAsString(errorCode));
   }
 }

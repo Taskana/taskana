@@ -75,8 +75,12 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
 
   private ListItem items;
 
-  public ComparableVersion(String version) {
+  private ComparableVersion(String version) {
     parseVersion(version);
+  }
+
+  public static ComparableVersion of(String version) {
+    return new ComparableVersion(version);
   }
 
   public final void parseVersion(String version) {
@@ -226,7 +230,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
       this.value = 0;
     }
 
-    IntItem(String str) {
+    private IntItem(String str) {
       this.value = Integer.parseInt(str);
     }
 
@@ -294,7 +298,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
   private static class LongItem implements Item {
     private final long value;
 
-    LongItem(String str) {
+    private LongItem(String str) {
       this.value = Long.parseLong(str);
     }
 
@@ -363,7 +367,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
   private static class BigIntegerItem implements Item {
     private final BigInteger value;
 
-    BigIntegerItem(String str) {
+    private BigIntegerItem(String str) {
       this.value = new BigInteger(str);
     }
 
@@ -447,7 +451,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
 
     private final String value;
 
-    StringItem(String value, boolean followedByDigit) {
+    private StringItem(String value, boolean followedByDigit) {
       if (followedByDigit && value.length() == 1) {
         // a1 = alpha-1, b1 = beta-1, m1 = milestone-1
         switch (value.charAt(0)) {
@@ -549,6 +553,9 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
    * sub-lists (which start with '-(number)' in the version specification).
    */
   private static class ListItem extends ArrayList<Item> implements Item {
+
+    private ListItem() {}
+
     @Override
     public int getType() {
       return LIST_ITEM;

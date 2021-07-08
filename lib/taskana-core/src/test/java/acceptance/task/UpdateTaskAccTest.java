@@ -136,7 +136,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
     // TODO flaky test ... if speed is too high,
     assertThatThrownBy(() -> taskService.updateTask(task2))
         .isInstanceOf(ConcurrencyException.class)
-        .hasMessage("The task has already been updated by another user");
+        .hasMessage(
+            "The current entity cannot be updated since it has been modified while editing.");
   }
 
   @WithAccessId(user = "admin")

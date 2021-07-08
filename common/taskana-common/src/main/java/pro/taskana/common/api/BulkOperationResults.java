@@ -19,7 +19,7 @@ public class BulkOperationResults<K, V extends Exception> {
   /**
    * Returning a list of current errors as map. If there are no errors the result will be empty.
    *
-   * @return map of errors which can´t be null.
+   * @return map of errors which can't be null.
    */
   public Map<K, V> getErrorMap() {
     return this.errorMap;
@@ -82,7 +82,7 @@ public class BulkOperationResults<K, V extends Exception> {
   /**
    * Map from any exception type to Exception.
    *
-   * @return map of errors which can´t be null.
+   * @return map of errors which can't be null.
    */
   public BulkOperationResults<K, Exception> mapBulkOperationResults() {
     BulkOperationResults<K, Exception> bulkLogMapped = new BulkOperationResults<>();

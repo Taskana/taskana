@@ -12,13 +12,13 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -67,11 +67,11 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
         (WorkbasketImpl) workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
     workbasket.setName(null);
     assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
 
     workbasket.setName("");
     assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -84,7 +84,7 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setType(null);
 
     assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -116,6 +116,20 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
 
     assertThatExceptionOfType(WorkbasketNotFoundException.class)
         .isThrownBy(() -> workbasketService.updateWorkbasket(workbasket));
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ThrowException_When_TryingToUpdateUnknownWorkbasket() {
+
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket workbasket = workbasketService.newWorkbasket("InvalidKey", "InvalidDomain");
+    workbasket.setName("bla bla");
+    workbasket.setType(WorkbasketType.PERSONAL);
+
+    assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
+        .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @WithAccessId(user = "user-1-1")

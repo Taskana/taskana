@@ -30,6 +30,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
@@ -192,8 +193,8 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("400");
+        .isInstanceOf(HttpServerErrorException.class)
+        .hasMessageContaining("500");
   }
 
   @Test
@@ -299,10 +300,9 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("400")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+        .isInstanceOf(HttpServerErrorException.class)
+        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
 
     String url2 =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
@@ -313,10 +313,9 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall2)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("400")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+        .isInstanceOf(HttpServerErrorException.class)
+        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @Test
@@ -378,8 +377,9 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("400");
+        .isInstanceOf(HttpServerErrorException.class)
+        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @Test
@@ -423,8 +423,8 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("400");
+        .isInstanceOf(HttpServerErrorException.class)
+        .hasMessageContaining("500");
   }
 
   @Test
@@ -652,7 +652,7 @@ class TaskControllerIntTest {
     out.write(taskToCreateJson);
     out.flush();
     out.close();
-    assertThat(con.getResponseCode()).isEqualTo(400);
+    assertThat(con.getResponseCode()).isEqualTo(500);
 
     con.disconnect();
     final String taskToCreateJson2 =
@@ -672,7 +672,7 @@ class TaskControllerIntTest {
     out.write(taskToCreateJson2);
     out.flush();
     out.close();
-    assertThat(con.getResponseCode()).isEqualTo(400);
+    assertThat(con.getResponseCode()).isEqualTo(500);
 
     con.disconnect();
   }
@@ -785,7 +785,7 @@ class TaskControllerIntTest {
 
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.CONFLICT);
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -842,7 +842,7 @@ class TaskControllerIntTest {
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpClientErrorException.class)
-        .hasMessageContaining("409");
+        .hasMessageContaining("400");
   }
 
   @Test
@@ -881,11 +881,11 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpServerErrorException.class)
         .hasMessageContaining(
             "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.BAD_REQUEST);
+        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @TestFactory

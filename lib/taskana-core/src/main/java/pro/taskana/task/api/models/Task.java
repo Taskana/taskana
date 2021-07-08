@@ -119,7 +119,7 @@ public interface Task extends TaskSummary {
   /**
    * Return the attachments for this task. <br>
    * Do not use List.add()/addAll() for adding Elements, because it can cause redundant data. Use
-   * addAttachment(). Clear() and remove() can be used, because it´s a controllable change.
+   * addAttachment(). Clear() and remove() can be used, because it's a controllable change.
    *
    * @return the {@link List list} of {@link Attachment attachments} for this task
    */

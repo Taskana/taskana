@@ -17,6 +17,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
@@ -62,7 +63,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
       LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
     } catch (Exception e) {
-      throw new TaskanaException("Error while processing TaskCleanupJob.", e);
+      throw new SystemException("Error while processing TaskCleanupJob.", e);
     } finally {
       scheduleNextCleanupJob();
     }

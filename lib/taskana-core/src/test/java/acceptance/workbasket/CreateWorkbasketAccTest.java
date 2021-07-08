@@ -11,13 +11,13 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.InvalidWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -111,21 +111,21 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
     // missing key
     assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
 
     Workbasket workbasket2 = workbasketService.newWorkbasket("key", "novatec");
     workbasket2.setType(WorkbasketType.GROUP);
     workbasket2.setOrgLevel1("company");
     // missing name
     assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket2))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
 
     Workbasket workbasket3 = workbasketService.newWorkbasket("key", "novatec");
     workbasket3.setName("Megabasket");
     workbasket3.setOrgLevel1("company");
     // missing type
     assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket3))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
 
     Workbasket workbasket4 = workbasketService.newWorkbasket("key", null);
     workbasket4.setName("Megabasket");
@@ -133,7 +133,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket4.setOrgLevel1("company");
     // missing domain
     assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket4))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
 
     Workbasket workbasket5 = workbasketService.newWorkbasket("", "novatec");
     workbasket5.setName("Megabasket");
@@ -141,7 +141,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket5.setOrgLevel1("company");
     // empty key
     assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket5))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
 
     Workbasket workbasket6 = workbasketService.newWorkbasket("key", "novatec");
     workbasket6.setName("");
@@ -149,7 +149,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket6.setOrgLevel1("company");
     // empty name
     assertThatThrownBy(() -> workbasketService.createWorkbasket(workbasket))
-        .isInstanceOf(InvalidWorkbasketException.class);
+        .isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "businessadmin")
