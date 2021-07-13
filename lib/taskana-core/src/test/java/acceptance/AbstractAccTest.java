@@ -62,7 +62,7 @@ public abstract class AbstractAccTest {
     sampleDataGenerator.generateTestData();
   }
 
-  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+  protected JobMapper getJobMapper() throws Exception {
 
     Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
     sessionManagerField.setAccessible(true);

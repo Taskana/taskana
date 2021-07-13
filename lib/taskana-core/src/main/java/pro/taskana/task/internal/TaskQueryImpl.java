@@ -924,7 +924,7 @@ public class TaskQueryImpl implements TaskQuery {
           setupJoinAndOrderParameters();
           setupAccessIds();
           List<TaskSummaryImpl> tasks =
-              taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this);
+              taskanaEngine.getEngine().getSqlSession().selectList(getLinkToMapperScript(), this);
 
           return taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
         });
@@ -941,7 +941,10 @@ public class TaskQueryImpl implements TaskQuery {
       setupJoinAndOrderParameters();
       RowBounds rowBounds = new RowBounds(offset, limit);
       List<TaskSummaryImpl> tasks =
-          taskanaEngine.getSqlSession().selectList(getLinkToMapperScript(), this, rowBounds);
+          taskanaEngine
+              .getEngine()
+              .getSqlSession()
+              .selectList(getLinkToMapperScript(), this, rowBounds);
       result = taskService.augmentTaskSummariesByContainedSummariesWithPartitioning(tasks);
       return result;
     } catch (PersistenceException e) {
@@ -983,7 +986,7 @@ public class TaskQueryImpl implements TaskQuery {
       }
 
       setupJoinAndOrderParameters();
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
+      result = taskanaEngine.getEngine().getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
       return result;
     } finally {
       taskanaEngine.returnConnection();
@@ -999,7 +1002,7 @@ public class TaskQueryImpl implements TaskQuery {
       setupAccessIds();
       setupJoinAndOrderParameters();
       TaskSummaryImpl taskSummaryImpl =
-          taskanaEngine.getSqlSession().selectOne(getLinkToMapperScript(), this);
+          taskanaEngine.getEngine().getSqlSession().selectOne(getLinkToMapperScript(), this);
       if (taskSummaryImpl == null) {
         return null;
       }
@@ -1023,7 +1026,8 @@ public class TaskQueryImpl implements TaskQuery {
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
       setupJoinAndOrderParameters();
-      rowCount = taskanaEngine.getSqlSession().selectOne(getLinkToCounterTaskScript(), this);
+      rowCount =
+          taskanaEngine.getEngine().getSqlSession().selectOne(getLinkToCounterTaskScript(), this);
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();
@@ -1553,7 +1557,7 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   private String getDatabaseId() {
-    return this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId();
+    return this.taskanaEngine.getEngine().getSqlSession().getConfiguration().getDatabaseId();
   }
 
   private void setupJoinAndOrderParameters() {

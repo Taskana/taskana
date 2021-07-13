@@ -171,7 +171,7 @@ public abstract class AbstractAccTest {
     return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
   }
 
-  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+  protected JobMapper getJobMapper() throws Exception {
 
     Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
     sessionManagerField.setAccessible(true);

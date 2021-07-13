@@ -1,15 +1,15 @@
 package pro.taskana.common.internal.transaction;
 
+import java.util.function.Supplier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/** TODO. */
 @Component
-public class SpringTransactionProvider implements TaskanaTransactionProvider<Object> {
+public class SpringTransactionProvider implements TaskanaTransactionProvider {
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public Object executeInTransaction(TaskanaCallable<Object> action) {
-    return action.call();
+  public <T> T executeInTransaction(Supplier<T> supplier) {
+    return supplier.get();
   }
 }

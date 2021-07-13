@@ -14,7 +14,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
-import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
 
@@ -25,33 +24,33 @@ import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
 public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketCleanupJob.class);
-
-  // Parameter
   private final int batchSize;
 
-  public WorkbasketCleanupJob(
-      TaskanaEngine taskanaEngine,
-      TaskanaTransactionProvider<Object> txProvider,
-      ScheduledJob job) {
-    super(taskanaEngine, txProvider, job);
+  public WorkbasketCleanupJob(TaskanaEngine taskanaEngine, ScheduledJob job) {
+    super(taskanaEngine, job, true);
     batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
   }
 
   @Override
-  public void run() throws TaskanaException {
+  public void executeJob() throws TaskanaException {
     LOGGER.info("Running job to delete all workbaskets marked for deletion");
     try {
       List<String> workbasketsMarkedForDeletion = getWorkbasketsMarkedForDeletion();
       int totalNumberOfWorkbasketDeleted =
           CollectionUtil.partitionBasedOnSize(workbasketsMarkedForDeletion, batchSize).stream()
-              .mapToInt(this::deleteWorkbasketsTransactionally)
+              .mapToInt(
+                  workbasketsToBeDeleted -> {
+                    try {
+                      return deleteWorkbaskets(workbasketsToBeDeleted);
+                    } catch (Exception e) {
+                      return 0;
+                    }
+                  })
               .sum();
       LOGGER.info(
           "Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
     } catch (Exception e) {
       throw new TaskanaException("Error while processing WorkbasketCleanupJob.", e);
-    } finally {
-      scheduleNextCleanupJob();
     }
   }
 
@@ -63,48 +62,29 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    jobService.deleteJobs(Type.WORKBASKETCLEANUPJOB);
-    WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null, null);
+    WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null);
+    jobService.deleteJobs(job.getJobType());
     job.scheduleNextCleanupJob();
   }
 
-  private List<String> getWorkbasketsMarkedForDeletion() {
+  @Override
+  protected Type getJobType() {
+    return Type.WORKBASKET_CLEANUP_JOB;
+  }
 
-    return taskanaEngineImpl
+  private List<String> getWorkbasketsMarkedForDeletion() {
+    return taskanaEngine
         .getWorkbasketService()
         .createWorkbasketQuery()
         .markedForDeletion(true)
         .listValues(WorkbasketQueryColumnName.ID, BaseQuery.SortDirection.ASCENDING);
   }
 
-  private int deleteWorkbasketsTransactionally(List<String> workbasketsToBeDeleted) {
-    int deletedWorkbasketsCount = 0;
-    if (txProvider != null) {
-      return (Integer)
-          txProvider.executeInTransaction(
-              () -> {
-                try {
-                  return deleteWorkbaskets(workbasketsToBeDeleted);
-                } catch (Exception e) {
-                  LOGGER.warn("Could not delete workbaskets.", e);
-                  return 0;
-                }
-              });
-    } else {
-      try {
-        deletedWorkbasketsCount = deleteWorkbaskets(workbasketsToBeDeleted);
-      } catch (Exception e) {
-        LOGGER.warn("Could not delete workbaskets.", e);
-      }
-    }
-    return deletedWorkbasketsCount;
-  }
-
   private int deleteWorkbaskets(List<String> workbasketsToBeDeleted)
       throws InvalidArgumentException, NotAuthorizedException {
 
     BulkOperationResults<String, TaskanaException> results =
-        taskanaEngineImpl.getWorkbasketService().deleteWorkbaskets(workbasketsToBeDeleted);
+        taskanaEngine.getWorkbasketService().deleteWorkbaskets(workbasketsToBeDeleted);
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "{} workbasket deleted.", workbasketsToBeDeleted.size() - results.getFailedIds().size());
@@ -118,10 +98,8 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     return workbasketsToBeDeleted.size() - results.getFailedIds().size();
   }
 
-  private void scheduleNextCleanupJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
-    job.setDue(getNextDueForCleanupJob());
-    taskanaEngineImpl.getJobService().createJob(job);
+  @Override
+  public String toString() {
+    return "WorkbasketCleanupJob [batchSize=" + batchSize + "]";
   }
 }

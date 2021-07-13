@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import acceptance.TaskanaEngineProxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -155,9 +154,7 @@ class SetOwnerAccTest extends AbstractAccTest {
   void testSetOwnerWithAllTasksAndVariousExceptions() throws Exception {
     resetDb(false);
     List<TaskSummary> allTaskSummaries =
-        new TaskanaEngineProxy(taskanaEngine)
-            .getEngine().getEngine()
-            .runAsAdmin(() -> taskanaEngine.getTaskService().createTaskQuery().list());
+        taskanaEngine.runAsAdmin(() -> taskanaEngine.getTaskService().createTaskQuery().list());
     List<String> allTaskIds =
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =

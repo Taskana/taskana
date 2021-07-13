@@ -362,7 +362,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     // query the task by custom attributes
     TaskanaEngineProxy engineProxy = new TaskanaEngineProxy(taskanaEngine);
     try {
-      SqlSession session = engineProxy.getSqlSession();
+      SqlSession session = taskanaEngine.getSqlSession();
       Configuration config = session.getConfiguration();
       if (!config.hasMapper(TaskTestMapper.class)) {
         config.addMapper(TaskTestMapper.class);

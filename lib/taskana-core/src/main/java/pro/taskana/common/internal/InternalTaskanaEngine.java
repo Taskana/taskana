@@ -1,7 +1,6 @@
 package pro.taskana.common.internal;
 
 import java.util.function.Supplier;
-import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.internal.HistoryEventManager;
@@ -30,13 +29,27 @@ public interface InternalTaskanaEngine {
   void returnConnection();
 
   /**
-   * Executes the supplier after openConnection is called and then returns the connection.
+   * Executes the given supplier after openConnection is called and then returns the connection.
    *
    * @param supplier a function that returns something of type T
    * @param <T> any type
    * @return the result of the supplier
    */
   <T> T openAndReturnConnection(Supplier<T> supplier);
+
+  /**
+   * Executes the given runnable after openConnection is called and then returns the connection.
+   *
+   * @see #openAndReturnConnection(Supplier)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default void openAndReturnConnection(Runnable runnable) {
+    openAndReturnConnection(
+        () -> {
+          runnable.run();
+          return null;
+        });
+  }
 
   /** Initializes the SqlSessionManager. */
   void initSqlSession();
@@ -48,13 +61,6 @@ public interface InternalTaskanaEngine {
    * @return <code>true</code> if the domain exists
    */
   boolean domainExists(String domain);
-
-  /**
-   * retrieve the SqlSession used by taskana.
-   *
-   * @return the myBatis SqlSession object used by taskana
-   */
-  SqlSession getSqlSession();
 
   /**
    * Retrieve TaskanaEngine.
@@ -83,5 +89,4 @@ public interface InternalTaskanaEngine {
    * @return the CreateTaskPreprocessorManager instance.
    */
   CreateTaskPreprocessorManager getCreateTaskPreprocessorManager();
-
 }

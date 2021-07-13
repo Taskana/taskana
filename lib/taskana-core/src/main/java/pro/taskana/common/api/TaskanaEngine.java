@@ -2,6 +2,7 @@ package pro.taskana.common.api;
 
 import java.sql.SQLException;
 import java.util.function.Supplier;
+import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
@@ -71,6 +72,13 @@ public interface TaskanaEngine {
   boolean isHistoryEnabled();
 
   /**
+   * gets the current connection management mode.
+   *
+   * @return the current connection management mode.
+   */
+  ConnectionManagementMode getConnectionManagementMode();
+
+  /**
    * sets the connection management mode.
    *
    * @param mode the connection management mode Valid values are:
@@ -117,8 +125,8 @@ public interface TaskanaEngine {
   void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
 
   /**
-   * This method is supposed to skip further permission checks if we are already in a secured
-   * environment. With great power comes great responsibility.
+   * Executes a given supplier with admin privileges and thus skips further permission checks. With
+   * great power comes great responsibility.
    *
    * @param supplier will be executed with admin privileges
    * @param <T> defined with the supplier return value
@@ -126,6 +134,28 @@ public interface TaskanaEngine {
    */
   <T> T runAsAdmin(Supplier<T> supplier);
 
+  /**
+   * Executes a given runnable with admin privileges and thus skips further permission checks. With
+   * great power comes great responsibility.
+   *
+   * @see #runAsAdmin(Supplier)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default void runAsAdmin(Runnable runnable) {
+    runAsAdmin(
+        () -> {
+          runnable.run();
+          return null;
+        });
+  }
+
+  /**
+   * retrieve the SqlSession used by taskana. This is necessary, when working in {@linkplain
+   * ConnectionManagementMode#EXPLICIT}.
+   *
+   * @return the myBatis SqlSession object used by taskana
+   */
+  SqlSession getSqlSession();
 
   /**
    * Returns the CurrentUserContext class.

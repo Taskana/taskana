@@ -11,7 +11,7 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 public class TransactionalJobsConfiguration {
 
   @Bean
-  public TaskanaTransactionProvider<Object> springTransactionProvider() {
+  public TaskanaTransactionProvider springTransactionProvider() {
     return new SpringTransactionProvider();
   }
 }

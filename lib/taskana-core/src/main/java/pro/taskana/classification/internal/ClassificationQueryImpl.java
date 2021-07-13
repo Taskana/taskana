@@ -324,7 +324,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   @Override
   public List<ClassificationSummary> list() {
     return taskanaEngine.openAndReturnConnection(
-        () -> taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this));
+        () -> taskanaEngine.getEngine().getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this));
   }
 
   @Override
@@ -333,7 +333,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     try {
       taskanaEngine.openConnection();
       RowBounds rowBounds = new RowBounds(offset, limit);
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_SUMMARYMAPPER, this, rowBounds);
+      result =
+          taskanaEngine
+              .getEngine()
+              .getSqlSession()
+              .selectList(LINK_TO_SUMMARYMAPPER, this, rowBounds);
       return result;
     } catch (PersistenceException e) {
       if (e.getMessage().contains("ERRORCODE=-4470")) {
@@ -358,7 +362,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
       this.columnName = columnName;
       this.orderBy.clear();
       this.addOrderCriteria(columnName.toString(), sortDirection);
-      result = taskanaEngine.getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
+      result = taskanaEngine.getEngine().getSqlSession().selectList(LINK_TO_VALUEMAPPER, this);
       return result;
     } finally {
       taskanaEngine.returnConnection();
@@ -370,7 +374,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     ClassificationSummary result = null;
     try {
       taskanaEngine.openConnection();
-      result = taskanaEngine.getSqlSession().selectOne(LINK_TO_SUMMARYMAPPER, this);
+      result = taskanaEngine.getEngine().getSqlSession().selectOne(LINK_TO_SUMMARYMAPPER, this);
       return result;
     } finally {
       taskanaEngine.returnConnection();
@@ -382,7 +386,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     Long rowCount = null;
     try {
       taskanaEngine.openConnection();
-      rowCount = taskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+      rowCount = taskanaEngine.getEngine().getSqlSession().selectOne(LINK_TO_COUNTER, this);
       return (rowCount == null) ? 0L : rowCount;
     } finally {
       taskanaEngine.returnConnection();

@@ -24,7 +24,6 @@ import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
-import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
@@ -50,7 +49,6 @@ class TaskanaTransactionIntTest {
 
   private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
   private static final String INTERNAL_SERVER_ERROR_STATUS = "500";
-  @Autowired TaskanaTransactionProvider<Object> springTransactionProvider;
   @Autowired private TestRestTemplate restTemplate;
   @Autowired private DataSource dataSource;
   @Autowired private JdbcTemplate jdbcTemplate;
@@ -204,8 +202,7 @@ class TaskanaTransactionIntTest {
           workbasketService.getWorkbasket("key2", "DOMAIN_A").getId());
 
       // Clean two tasks, key1 and key2.
-      TaskCleanupJob taskCleanupJob =
-          new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
+      TaskCleanupJob taskCleanupJob = new TaskCleanupJob(taskanaEngine, null);
       taskCleanupJob.run();
 
       ThrowingCallable httpCall =
@@ -217,8 +214,7 @@ class TaskanaTransactionIntTest {
           .isInstanceOf(WorkbasketInUseException.class)
           .hasMessageContaining("contains 1 non-completed tasks");
 
-      WorkbasketCleanupJob job =
-          new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
+      WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null);
       job.run();
 
       assertThat(workbasketService.getWorkbasket("key1", "DOMAIN_A")).isNull();
