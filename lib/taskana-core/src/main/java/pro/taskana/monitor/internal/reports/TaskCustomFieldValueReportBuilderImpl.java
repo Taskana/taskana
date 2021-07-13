@@ -47,15 +47,8 @@ public class TaskCustomFieldValueReportBuilderImpl
       List<MonitorQueryItem> monitorQueryItems =
           this.monitorMapper.getTaskCountOfTaskCustomFieldValues(
               Instant.now(),
-              this.taskCustomField,
-              this.workbasketIds,
-              this.states,
-              this.classificationCategory,
-              this.domains,
               timestamp,
-              this.classificationIds,
-              this.excludedClassificationIds,
-              this.customAttributeFilter);
+              this);
 
       report.addItems(
           monitorQueryItems,

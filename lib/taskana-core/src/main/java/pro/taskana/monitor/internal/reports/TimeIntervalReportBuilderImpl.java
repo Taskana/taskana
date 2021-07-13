@@ -3,15 +3,14 @@ package pro.taskana.monitor.internal.reports;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.SelectedItem;
@@ -48,7 +47,38 @@ abstract class TimeIntervalReportBuilderImpl<
   protected List<String> domains;
   protected List<String> classificationIds;
   protected List<String> excludedClassificationIds;
-  protected Map<TaskCustomField, String> customAttributeFilter;
+  protected String[] custom1In;
+  protected String[] custom1Like;
+  protected String[] custom2In;
+  protected String[] custom2Like;
+  protected String[] custom3In;
+  protected String[] custom3Like;
+  protected String[] custom4In;
+  protected String[] custom4Like;
+  protected String[] custom5In;
+  protected String[] custom5Like;
+  protected String[] custom6In;
+  protected String[] custom6Like;
+  protected String[] custom7In;
+  protected String[] custom7Like;
+  protected String[] custom8In;
+  protected String[] custom8Like;
+  protected String[] custom9In;
+  protected String[] custom9Like;
+  protected String[] custom10In;
+  protected String[] custom10Like;
+  protected String[] custom11In;
+  protected String[] custom11Like;
+  protected String[] custom12In;
+  protected String[] custom12Like;
+  protected String[] custom13In;
+  protected String[] custom13Like;
+  protected String[] custom14In;
+  protected String[] custom14Like;
+  protected String[] custom15In;
+  protected String[] custom15Like;
+  protected String[] custom16In;
+  protected String[] custom16Like;
   protected WorkingDaysToDaysConverter converter;
 
   TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
@@ -107,8 +137,129 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public B customAttributeFilterIn(Map<TaskCustomField, String> customAttributeFilter) {
-    this.customAttributeFilter = new HashMap<>(customAttributeFilter);
+  public B customAttributeIn(TaskCustomField customField, String... strings)
+      throws InvalidArgumentException {
+    if (strings.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one string has to be provided as a search parameter");
+    }
+    switch (customField) {
+      case CUSTOM_1:
+        this.custom1In = strings;
+        break;
+      case CUSTOM_2:
+        this.custom2In = strings;
+        break;
+      case CUSTOM_3:
+        this.custom3In = strings;
+        break;
+      case CUSTOM_4:
+        this.custom4In = strings;
+        break;
+      case CUSTOM_5:
+        this.custom5In = strings;
+        break;
+      case CUSTOM_6:
+        this.custom6In = strings;
+        break;
+      case CUSTOM_7:
+        this.custom7In = strings;
+        break;
+      case CUSTOM_8:
+        this.custom8In = strings;
+        break;
+      case CUSTOM_9:
+        this.custom9In = strings;
+        break;
+      case CUSTOM_10:
+        this.custom10In = strings;
+        break;
+      case CUSTOM_11:
+        this.custom11In = strings;
+        break;
+      case CUSTOM_12:
+        this.custom12In = strings;
+        break;
+      case CUSTOM_13:
+        this.custom13In = strings;
+        break;
+      case CUSTOM_14:
+        this.custom14In = strings;
+        break;
+      case CUSTOM_15:
+        this.custom15In = strings;
+        break;
+      case CUSTOM_16:
+        this.custom16In = strings;
+        break;
+      default:
+        throw new SystemException("Unknown custom attribute '" + customField + "'");
+    }
+
+    return _this();
+  }
+
+  @Override
+  public B customAttributeLike(TaskCustomField customField, String... strings)
+      throws InvalidArgumentException {
+    if (strings.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one string has to be provided as a search parameter");
+    }
+
+    switch (customField) {
+      case CUSTOM_1:
+        this.custom1Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_2:
+        this.custom2Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_3:
+        this.custom3Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_4:
+        this.custom4Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_5:
+        this.custom5Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_6:
+        this.custom6Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_7:
+        this.custom7Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_8:
+        this.custom8Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_9:
+        this.custom9Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_10:
+        this.custom10Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_11:
+        this.custom11Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_12:
+        this.custom12Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_13:
+        this.custom13Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_14:
+        this.custom14Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_15:
+        this.custom15Like = toUpperCopy(strings);
+        break;
+      case CUSTOM_16:
+        this.custom16Like = toUpperCopy(strings);
+        break;
+      default:
+        throw new SystemException("Unknown custom field '" + customField + "'");
+    }
+
     return _this();
   }
 
@@ -138,13 +289,7 @@ abstract class TimeIntervalReportBuilderImpl<
       }
       return this.monitorMapper.getTaskIdsForSelectedItems(
           Instant.now(),
-          this.workbasketIds,
-          this.states,
-          this.classificationCategory,
-          this.domains,
-          this.classificationIds,
-          this.excludedClassificationIds,
-          this.customAttributeFilter,
+          this,
           combinedClassificationFilter,
           determineGroupedBy(),
           timestamp,
@@ -162,13 +307,7 @@ abstract class TimeIntervalReportBuilderImpl<
     try {
       this.taskanaEngine.openConnection();
       return monitorMapper.getCustomAttributeValuesForReport(
-          this.workbasketIds,
-          this.states,
-          this.classificationCategory,
-          this.domains,
-          this.classificationIds,
-          this.excludedClassificationIds,
-          this.customAttributeFilter,
+          this,
           getCombinedClassificationFilter(),
           taskCustomField);
     } finally {
@@ -210,5 +349,20 @@ abstract class TimeIntervalReportBuilderImpl<
       }
     }
     return false;
+  }
+
+  private String[] toUpperCopy(String... source) {
+    if (source == null || source.length == 0) {
+      // we are currently aware that this is a code smell. Unfortunately the resolution of this
+      // would cause havoc in our queries, since we do not have a concept
+      // for a user input validation yet. As soon as that is done we can resolve this code smell.
+      return null;
+    } else {
+      String[] target = new String[source.length];
+      for (int i = 0; i < source.length; i++) {
+        target[i] = source[i].toUpperCase();
+      }
+      return target;
+    }
   }
 }

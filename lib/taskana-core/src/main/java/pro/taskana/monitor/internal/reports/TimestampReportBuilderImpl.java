@@ -97,10 +97,6 @@ public class TimestampReportBuilderImpl
     return monitorMapper.getTasksCountForStatusGroupedByOrgLevel(
         Instant.now(),
         s,
-        classificationCategory,
-        classificationIds,
-        excludedClassificationIds,
-        domains,
-        customAttributeFilter);
+        this);
   }
 }

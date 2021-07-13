@@ -50,16 +50,7 @@ public class ClassificationReportBuilderImpl
       this.taskanaEngine.openConnection();
       ClassificationReport report = new ClassificationReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
-          this.monitorMapper.getTaskCountOfClassifications(
-              Instant.now(),
-              this.workbasketIds,
-              this.states,
-              this.classificationCategory,
-              this.domains,
-              timestamp,
-              this.classificationIds,
-              this.excludedClassificationIds,
-              this.customAttributeFilter);
+          this.monitorMapper.getTaskCountOfClassifications(Instant.now(), timestamp, this);
       report.addItems(
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
@@ -98,16 +89,7 @@ public class ClassificationReportBuilderImpl
       this.taskanaEngine.openConnection();
       DetailedClassificationReport report = new DetailedClassificationReport(this.columnHeaders);
       List<DetailedMonitorQueryItem> detailedMonitorQueryItems =
-          this.monitorMapper.getTaskCountOfDetailedClassifications(
-              Instant.now(),
-              this.workbasketIds,
-              this.states,
-              this.classificationCategory,
-              this.domains,
-              timestamp,
-              this.classificationIds,
-              this.excludedClassificationIds,
-              this.customAttributeFilter);
+          this.monitorMapper.getTaskCountOfDetailedClassifications(Instant.now(), timestamp, this);
 
       report.addItems(
           detailedMonitorQueryItems,

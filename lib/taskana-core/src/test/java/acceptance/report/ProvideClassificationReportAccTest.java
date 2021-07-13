@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -363,16 +361,15 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfClassificationReportWithCustomFieldValueFilter() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnItemsOfClassificationReport_When_FilteringWithCustomAttributeIn()
+      throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationReport report =
         MONITOR_SERVICE
             .createClassificationReportBuilder()
             .withColumnHeaders(columnHeaders)
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .inWorkingDays()
             .buildReport();
 
@@ -393,6 +390,24 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
 
     int[] row5 = report.getRow("L50000").getCells();
     assertThat(row5).isEqualTo(new int[] {1, 2, 0, 2, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfClassificationReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    ClassificationReport report =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(5);
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnsHeaders() {
