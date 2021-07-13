@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -331,7 +332,8 @@ class ArchitectureTest {
         for (JavaMethod method : javaClass.getAllMethods()) {
           List<String> sqlStrings = getSqlStringsFromMethod.apply(method);
 
-          if (sqlStrings.isEmpty()) {
+          if (sqlStrings.isEmpty()
+              && !method.tryGetAnnotationOfType(SelectProvider.class).isPresent()) {
             String message =
                 String.format(
                     "Method '%s#%s' does not contain any MyBatis SQL annotation",
