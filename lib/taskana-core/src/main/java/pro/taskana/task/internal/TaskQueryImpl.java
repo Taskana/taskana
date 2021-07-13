@@ -97,36 +97,52 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] businessProcessIdLike;
   private CallbackState[] callbackStateIn;
   private String[] custom1In;
+  private String[] custom1NotIn;
   private String[] custom1Like;
   private String[] custom2In;
+  private String[] custom2NotIn;
   private String[] custom2Like;
   private String[] custom3In;
+  private String[] custom3NotIn;
   private String[] custom3Like;
   private String[] custom4In;
+  private String[] custom4NotIn;
   private String[] custom4Like;
   private String[] custom5In;
+  private String[] custom5NotIn;
   private String[] custom5Like;
   private String[] custom6In;
+  private String[] custom6NotIn;
   private String[] custom6Like;
   private String[] custom7In;
+  private String[] custom7NotIn;
   private String[] custom7Like;
   private String[] custom8In;
+  private String[] custom8NotIn;
   private String[] custom8Like;
   private String[] custom9In;
+  private String[] custom9NotIn;
   private String[] custom9Like;
   private String[] custom10In;
+  private String[] custom10NotIn;
   private String[] custom10Like;
   private String[] custom11In;
+  private String[] custom11NotIn;
   private String[] custom11Like;
   private String[] custom12In;
+  private String[] custom12NotIn;
   private String[] custom12Like;
   private String[] custom13In;
+  private String[] custom13NotIn;
   private String[] custom13Like;
   private String[] custom14In;
+  private String[] custom14NotIn;
   private String[] custom14Like;
   private String[] custom15In;
+  private String[] custom15NotIn;
   private String[] custom15Like;
   private String[] custom16In;
+  private String[] custom16NotIn;
   private String[] custom16Like;
   private String[] attachmentClassificationKeyIn;
   private String[] attachmentClassificationKeyLike;
@@ -541,6 +557,69 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery customAttributeNotIn(TaskCustomField customField, String... strings)
+      throws InvalidArgumentException {
+    if (strings.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one string has to be provided as a search parameter");
+    }
+    switch (customField) {
+      case CUSTOM_1:
+        this.custom1NotIn = strings;
+        break;
+      case CUSTOM_2:
+        this.custom2NotIn = strings;
+        break;
+      case CUSTOM_3:
+        this.custom3NotIn = strings;
+        break;
+      case CUSTOM_4:
+        this.custom4NotIn = strings;
+        break;
+      case CUSTOM_5:
+        this.custom5NotIn = strings;
+        break;
+      case CUSTOM_6:
+        this.custom6NotIn = strings;
+        break;
+      case CUSTOM_7:
+        this.custom7NotIn = strings;
+        break;
+      case CUSTOM_8:
+        this.custom8NotIn = strings;
+        break;
+      case CUSTOM_9:
+        this.custom9NotIn = strings;
+        break;
+      case CUSTOM_10:
+        this.custom10NotIn = strings;
+        break;
+      case CUSTOM_11:
+        this.custom11NotIn = strings;
+        break;
+      case CUSTOM_12:
+        this.custom12NotIn = strings;
+        break;
+      case CUSTOM_13:
+        this.custom13NotIn = strings;
+        break;
+      case CUSTOM_14:
+        this.custom14NotIn = strings;
+        break;
+      case CUSTOM_15:
+        this.custom15NotIn = strings;
+        break;
+      case CUSTOM_16:
+        this.custom16NotIn = strings;
+        break;
+      default:
+        throw new SystemException("Unknown custom attribute '" + customField + "'");
+    }
+
+    return this;
+  }
+
+  @Override
   public TaskQuery customAttributeLike(TaskCustomField customField, String... strings)
       throws InvalidArgumentException {
     if (strings.length == 0) {
@@ -550,7 +629,8 @@ public class TaskQueryImpl implements TaskQuery {
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1Like = toUpperCopy(strings);
+        this.custom1Like =
+            toUpperCopy(strings); // why are we doing this? the sql is always an upper?
         break;
       case CUSTOM_2:
         this.custom2Like = toUpperCopy(strings);
@@ -1225,12 +1305,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom1In;
   }
 
+  public String[] getCustom1NotIn() {
+    return custom1NotIn;
+  }
+
   public String[] getCustom1Like() {
     return custom1Like;
   }
 
   public String[] getCustom2In() {
     return custom2In;
+  }
+
+  public String[] getCustom2NotIn() {
+    return custom2NotIn;
   }
 
   public String[] getCustom2Like() {
@@ -1241,12 +1329,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom3In;
   }
 
+  public String[] getCustom3NotIn() {
+    return custom3NotIn;
+  }
+
   public String[] getCustom3Like() {
     return custom3Like;
   }
 
   public String[] getCustom4In() {
     return custom4In;
+  }
+
+  public String[] getCustom4NotIn() {
+    return custom4NotIn;
   }
 
   public String[] getCustom4Like() {
@@ -1257,12 +1353,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom5In;
   }
 
+  public String[] getCustom5NotIn() {
+    return custom5NotIn;
+  }
+
   public String[] getCustom5Like() {
     return custom5Like;
   }
 
   public String[] getCustom6In() {
     return custom6In;
+  }
+
+  public String[] getCustom6NotIn() {
+    return custom6NotIn;
   }
 
   public String[] getCustom6Like() {
@@ -1273,12 +1377,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom7In;
   }
 
+  public String[] getCustom7NotIn() {
+    return custom7NotIn;
+  }
+
   public String[] getCustom7Like() {
     return custom7Like;
   }
 
   public String[] getCustom8In() {
     return custom8In;
+  }
+
+  public String[] getCustom8NotIn() {
+    return custom8NotIn;
   }
 
   public String[] getCustom8Like() {
@@ -1289,12 +1401,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom9In;
   }
 
+  public String[] getCustom9NotIn() {
+    return custom9NotIn;
+  }
+
   public String[] getCustom9Like() {
     return custom9Like;
   }
 
   public String[] getCustom10In() {
     return custom10In;
+  }
+
+  public String[] getCustom10NotIn() {
+    return custom10NotIn;
   }
 
   public String[] getCustom10Like() {
@@ -1305,12 +1425,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom11In;
   }
 
+  public String[] getCustom11NotIn() {
+    return custom11NotIn;
+  }
+
   public String[] getCustom11Like() {
     return custom11Like;
   }
 
   public String[] getCustom12In() {
     return custom12In;
+  }
+
+  public String[] getCustom12NotIn() {
+    return custom12NotIn;
   }
 
   public String[] getCustom12Like() {
@@ -1321,12 +1449,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom13In;
   }
 
+  public String[] getCustom13NotIn() {
+    return custom13NotIn;
+  }
+
   public String[] getCustom13Like() {
     return custom13Like;
   }
 
   public String[] getCustom14In() {
     return custom14In;
+  }
+
+  public String[] getCustom14NotIn() {
+    return custom14NotIn;
   }
 
   public String[] getCustom14Like() {
@@ -1337,12 +1473,20 @@ public class TaskQueryImpl implements TaskQuery {
     return custom15In;
   }
 
+  public String[] getCustom15NotIn() {
+    return custom15NotIn;
+  }
+
   public String[] getCustom15Like() {
     return custom15Like;
   }
 
   public String[] getCustom16In() {
     return custom16In;
+  }
+
+  public String[] getCustom16NotIn() {
+    return custom16NotIn;
   }
 
   public String[] getCustom16Like() {
@@ -1760,66 +1904,98 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(callbackStateIn)
         + ", custom1In="
         + Arrays.toString(custom1In)
+        + ", custom1NotIn="
+        + Arrays.toString(custom1NotIn)
         + ", custom1Like="
         + Arrays.toString(custom1Like)
         + ", custom2In="
         + Arrays.toString(custom2In)
+        + ", custom2NotIn="
+        + Arrays.toString(custom2NotIn)
         + ", custom2Like="
         + Arrays.toString(custom2Like)
         + ", custom3In="
         + Arrays.toString(custom3In)
+        + ", custom3NotIn="
+        + Arrays.toString(custom3NotIn)
         + ", custom3Like="
         + Arrays.toString(custom3Like)
         + ", custom4In="
         + Arrays.toString(custom4In)
+        + ", custom4NotIn="
+        + Arrays.toString(custom4NotIn)
         + ", custom4Like="
         + Arrays.toString(custom4Like)
         + ", custom5In="
         + Arrays.toString(custom5In)
+        + ", custom5NotIn="
+        + Arrays.toString(custom5NotIn)
         + ", custom5Like="
         + Arrays.toString(custom5Like)
         + ", custom6In="
         + Arrays.toString(custom6In)
+        + ", custom6NotIn="
+        + Arrays.toString(custom6NotIn)
         + ", custom6Like="
         + Arrays.toString(custom6Like)
         + ", custom7In="
         + Arrays.toString(custom7In)
+        + ", custom7NotIn="
+        + Arrays.toString(custom7NotIn)
         + ", custom7Like="
         + Arrays.toString(custom7Like)
         + ", custom8In="
         + Arrays.toString(custom8In)
+        + ", custom8NotIn="
+        + Arrays.toString(custom8NotIn)
         + ", custom8Like="
         + Arrays.toString(custom8Like)
         + ", custom9In="
         + Arrays.toString(custom9In)
+        + ", custom9NotIn="
+        + Arrays.toString(custom9NotIn)
         + ", custom9Like="
         + Arrays.toString(custom9Like)
         + ", custom10In="
         + Arrays.toString(custom10In)
+        + ", custom10NotIn="
+        + Arrays.toString(custom10NotIn)
         + ", custom10Like="
         + Arrays.toString(custom10Like)
         + ", custom11In="
         + Arrays.toString(custom11In)
+        + ", custom11NotIn="
+        + Arrays.toString(custom11NotIn)
         + ", custom11Like="
         + Arrays.toString(custom11Like)
         + ", custom12In="
         + Arrays.toString(custom12In)
+        + ", custom12NotIn="
+        + Arrays.toString(custom12NotIn)
         + ", custom12Like="
         + Arrays.toString(custom12Like)
         + ", custom13In="
         + Arrays.toString(custom13In)
+        + ", custom13NotIn="
+        + Arrays.toString(custom13NotIn)
         + ", custom13Like="
         + Arrays.toString(custom13Like)
         + ", custom14In="
         + Arrays.toString(custom14In)
+        + ", custom14NotIn="
+        + Arrays.toString(custom14NotIn)
         + ", custom14Like="
         + Arrays.toString(custom14Like)
         + ", custom15In="
         + Arrays.toString(custom15In)
+        + ", custom15NotIn="
+        + Arrays.toString(custom15NotIn)
         + ", custom15Like="
         + Arrays.toString(custom15Like)
         + ", custom16In="
         + Arrays.toString(custom16In)
+        + ", custom16NotIn="
+        + Arrays.toString(custom16NotIn)
         + ", custom16Like="
         + Arrays.toString(custom16Like)
         + ", attachmentClassificationKeyIn="

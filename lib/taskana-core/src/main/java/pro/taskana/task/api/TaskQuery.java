@@ -453,12 +453,23 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
       throws InvalidArgumentException;
 
   /**
+   * Exclude these values of custom attributes from your query.
+   *
+   * @param customField identifies which custom attribute is affected.
+   * @param searchArguments the customField values of the searched for tasks
+   * @return the query
+   * @throws InvalidArgumentException if searchArguments are not given
+   */
+  TaskQuery customAttributeNotIn(TaskCustomField customField, String... searchArguments)
+      throws InvalidArgumentException;
+
+  /**
    * Add the values of custom attributes for pattern matching to your query. They will be compared
    * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
    * specify multiple arguments they are combined with the OR keyword.
    *
    * @param customField identifies which custom attribute is affected.
-   * @param searchArguments the customField values of the searched-for tasks
+   * @param searchArguments the customField values of the searched for tasks
    * @return the query
    * @throws InvalidArgumentException if searchArguments is not given
    */

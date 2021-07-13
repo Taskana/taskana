@@ -256,7 +256,7 @@ public interface TaskService {
       throws TaskNotFoundException, NotAuthorizedException;
 
   /**
-   * This method provides a query builder for quering the database.
+   * This method provides a query builder for querying the database.
    *
    * @return a {@link TaskQuery}
    */
@@ -394,7 +394,7 @@ public interface TaskService {
    * @param taskIds list of source {@linkplain Task Tasks} which will be moved
    * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
    *     flag or not
-   * @return Bulkresult with ID and Error in it for failed transactions.
+   * @return BulkResult with ID and Error in it for failed transactions.
    * @throws NotAuthorizedException if the caller has no permissions on target {@linkplain
    *     pro.taskana.workbasket.api.models.Workbasket Workbasket}.
    * @throws InvalidArgumentException if the method parameters are EMPTY or NULL.

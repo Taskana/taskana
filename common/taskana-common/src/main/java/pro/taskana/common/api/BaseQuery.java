@@ -1,5 +1,6 @@
 package pro.taskana.common.api;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -77,17 +78,12 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
 
   default String[] toUpperCopy(String... source) {
     if (source == null || source.length == 0) {
+      return null;
       // we are currently aware that this is a code smell. Unfortunately the resolution of this
       // would cause havoc in our queries, since we do not have a concept
       // for a user input validation yet. As soon as that is done we can resolve this code smell.
-      return null;
-    } else {
-      String[] target = new String[source.length];
-      for (int i = 0; i < source.length; i++) {
-        target[i] = source[i].toUpperCase();
-      }
-      return target;
     }
+    return Arrays.stream(source).map(String::toUpperCase).toArray(String[]::new);
   }
 
   /** Determines the sort direction. */

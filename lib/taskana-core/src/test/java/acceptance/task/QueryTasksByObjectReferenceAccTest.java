@@ -21,7 +21,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExcactValueOfObjectReference() {
+  void should_ApplyObjectReferenceFilter_When_ExactValueIsSet() {
     List<TaskSummary> results =
         TASK_SERVICE.createTaskQuery().primaryObjectReferenceValueIn("11223344", "22334455").list();
     assertThat(results).hasSize(33);
@@ -121,7 +121,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByExactValueAndTypeOfObjectReference() {
+  void should_ApplyObjectReferenceFilter_When_ExactValueAndTypeAreSet() {
     List<TaskSummary> results =
         TASK_SERVICE
             .createTaskQuery()
@@ -133,7 +133,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryTasksByValueLikeOfObjectReference() {
+  void should_ApplyObjectReferenceFilter_When_ValueLikeIsSet() {
     List<TaskSummary> results =
         TASK_SERVICE.createTaskQuery().primaryObjectReferenceValueLike("%567%").list();
     assertThat(results).hasSize(10);
