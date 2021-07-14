@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -43,6 +42,7 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.CollectionUtil;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -238,7 +238,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     Attachment attachment =
         createAttachment(
-            "DOCTYPE_DEFAULT", // prio 99, SL P2000D
+            "DOCTYPE_DEFAULT", // priority 99, SL P2000D
             createObjectReference(
                 "COMPANY_A",
                 "SYSTEM_B",
@@ -288,7 +288,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @TestFactory
-  Stream<DynamicTest> should_ReturnCorrectResults_When_QueryingForCustomXLikeInAndNotIn() {
+  Stream<DynamicTest> should_ReturnCorrectResults_When_QueryingForCustomXStatements() {
     List<Triplet<TaskCustomField, String[], Integer>> list =
         List.of(
             Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
@@ -312,10 +312,10 @@ class QueryTasksAccTest extends AbstractAccTest {
     return DynamicTest.stream(
         list.iterator(),
         t -> t.getLeft().name(),
-        t -> testQueryForCustomX(t.getLeft(), t.getMiddle(), t.getRight()));
+        t -> testQueryForCustomXLikeAndIn(t.getLeft(), t.getMiddle(), t.getRight()));
   }
 
-  void testQueryForCustomX(
+  void testQueryForCustomXLikeAndIn(
       TaskCustomField customField, String[] searchArguments, int expectedResult) throws Exception {
     List<TaskSummary> results =
         TASK_SERVICE.createTaskQuery().customAttributeLike(customField, searchArguments).list();
@@ -327,35 +327,43 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> result2 =
         TASK_SERVICE.createTaskQuery().customAttributeIn(customField, customAttributes).list();
     assertThat(result2).hasSize(expectedResult);
+  }
 
-    List<String> allCustomAttributesWithValues =
-        TASK_SERVICE.createTaskQuery().list().stream()
-            .map(t -> t.getCustomAttribute(customField))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+  @WithAccessId(user = "admin")
+  @TestFactory
+  Stream<DynamicTest> should_ReturnCorrectResults_When_QueryingForCustomXNotIn() {
+    // carefully constructed to always return exactly 2 results
+    List<Pair<TaskCustomField, String[]>> list =
+        List.of(
+            Pair.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}),
+            Pair.of(TaskCustomField.CUSTOM_2, new String[] {"%"}),
+            Pair.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}),
+            Pair.of(TaskCustomField.CUSTOM_4, new String[] {"%"}),
+            Pair.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}),
+            Pair.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}),
+            Pair.of(TaskCustomField.CUSTOM_7, new String[] {"%"}),
+            Pair.of(TaskCustomField.CUSTOM_8, new String[] {"%"}),
+            Pair.of(TaskCustomField.CUSTOM_9, new String[] {"%"}),
+            Pair.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}),
+            Pair.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}),
+            Pair.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}),
+            Pair.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}),
+            Pair.of(TaskCustomField.CUSTOM_14, new String[] {"abc"}),
+            Pair.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}),
+            Pair.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}));
+    assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
-    // NotIn with an empty String should return all Tasks with a value in the specified customField
-    List<TaskSummary> results3 =
-        TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, "").list();
+    return DynamicTest.stream(
+        list.iterator(),
+        t -> t.getLeft().name(),
+        t -> testQueryForCustomXNotIn(t.getLeft(), t.getRight()));
+  }
 
-    assertThat(results3)
-        .extracting(t -> t.getCustomAttribute(customField))
-        .isEqualTo(allCustomAttributesWithValues);
-
-    List<String> customAttributeList = Arrays.asList(customAttributes);
-    List<String> allCustomAttributesWithValuesExceptResult2 =
-        allCustomAttributesWithValues.stream()
-            .filter(s -> !customAttributeList.contains(s))
-            .collect(Collectors.toList());
-
-    /* NotIn with the already used customAttributes should result in all Tasks with values in the
-    specified customField, except the ones specified in customAttributes*/
-    List<TaskSummary> results4 =
-        TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, customAttributes).list();
-
-    assertThat(results4)
-        .extracting(t -> t.getCustomAttribute(customField))
-        .isEqualTo(allCustomAttributesWithValuesExceptResult2);
+  void testQueryForCustomXNotIn(TaskCustomField customField, String[] searchArguments)
+      throws Exception {
+    long results =
+        TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
+    assertThat(results).isEqualTo(2);
   }
 
   @WithAccessId(user = "admin")

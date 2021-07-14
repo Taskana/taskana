@@ -4,7 +4,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.SelectProvider;
 
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /** This class provides a mapper for all task queries. */
@@ -111,27 +110,12 @@ public interface TaskQueryMapper {
   @Result(property = "custom16", column = "CUSTOM_16")
   List<TaskSummaryImpl> queryTaskSummariesDb2(TaskQueryImpl taskQuery);
 
-  @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryObjectReferences")
-  @Result(property = "id", column = "ID")
-  @Result(property = "company", column = "COMPANY")
-  @Result(property = "system", column = "SYSTEM")
-  @Result(property = "systemInstance", column = "SYSTEM_INSTANCE")
-  @Result(property = "type", column = "TYPE")
-  @Result(property = "value", column = "VALUE")
-  List<ObjectReference> queryObjectReferences(ObjectReferenceQueryImpl objectReference);
-
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "countQueryTasks")
   Long countQueryTasks(TaskQueryImpl taskQuery);
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "countQueryTasksDb2")
   Long countQueryTasksDb2(TaskQueryImpl taskQuery);
 
-  @SelectProvider(type = TaskQuerySqlProvider.class, method = "countQueryObjectReferences")
-  Long countQueryObjectReferences(ObjectReferenceQueryImpl objectReference);
-
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryTaskColumnValues")
   List<String> queryTaskColumnValues(TaskQueryImpl taskQuery);
-
-  @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryObjectReferenceColumnValues")
-  List<String> queryObjectReferenceColumnValues(ObjectReferenceQueryImpl objectReference);
 }

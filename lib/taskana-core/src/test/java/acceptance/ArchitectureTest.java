@@ -26,10 +26,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
@@ -41,6 +44,7 @@ import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.logging.LoggingAspect;
+import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.MapCreator;
 
 /**
@@ -304,27 +308,60 @@ class ArchitectureTest {
 
   private static ArchCondition<JavaClass> notUseCurrentTimestampSqlFunction() {
     Function<JavaMethod, List<String>> getSqlStringsFromMethod =
-        (method) -> {
-          List<String> values = new ArrayList<>();
-          final Optional<Select> selectAnnotation = method.tryGetAnnotationOfType(Select.class);
-          final Optional<Update> updateAnnotation = method.tryGetAnnotationOfType(Update.class);
-          final Optional<Insert> insertAnnotation = method.tryGetAnnotationOfType(Insert.class);
-          final Optional<Delete> deleteAnnotation = method.tryGetAnnotationOfType(Delete.class);
+        CheckedFunction.wrap(
+            (method) -> {
+              List<String> values = new ArrayList<>();
+              final Optional<Select> selectAnnotation = method.tryGetAnnotationOfType(Select.class);
+              final Optional<Update> updateAnnotation = method.tryGetAnnotationOfType(Update.class);
+              final Optional<Insert> insertAnnotation = method.tryGetAnnotationOfType(Insert.class);
+              final Optional<Delete> deleteAnnotation = method.tryGetAnnotationOfType(Delete.class);
+              final Optional<SelectProvider> selectProviderAnnotation =
+                  method.tryGetAnnotationOfType(SelectProvider.class);
+              final Optional<UpdateProvider> updateProviderAnnotation =
+                  method.tryGetAnnotationOfType(UpdateProvider.class);
+              final Optional<InsertProvider> insertProviderAnnotation =
+                  method.tryGetAnnotationOfType(InsertProvider.class);
+              final Optional<DeleteProvider> deleteProviderAnnotation =
+                  method.tryGetAnnotationOfType(DeleteProvider.class);
 
-          if (selectAnnotation.isPresent()) {
-            values.addAll(Arrays.asList(selectAnnotation.get().value()));
-          }
-          if (updateAnnotation.isPresent()) {
-            values.addAll(Arrays.asList(updateAnnotation.get().value()));
-          }
-          if (insertAnnotation.isPresent()) {
-            values.addAll(Arrays.asList(insertAnnotation.get().value()));
-          }
-          if (deleteAnnotation.isPresent()) {
-            values.addAll(Arrays.asList(deleteAnnotation.get().value()));
-          }
-          return values;
-        };
+              if (selectAnnotation.isPresent()) {
+                values.addAll(Arrays.asList(selectAnnotation.get().value()));
+              }
+              if (updateAnnotation.isPresent()) {
+                values.addAll(Arrays.asList(updateAnnotation.get().value()));
+              }
+              if (insertAnnotation.isPresent()) {
+                values.addAll(Arrays.asList(insertAnnotation.get().value()));
+              }
+              if (deleteAnnotation.isPresent()) {
+                values.addAll(Arrays.asList(deleteAnnotation.get().value()));
+              }
+              if (selectProviderAnnotation.isPresent()) {
+                values.add(
+                    executeStaticProviderMethod(
+                        selectProviderAnnotation.get().type(),
+                        selectProviderAnnotation.get().method()));
+              }
+              if (updateProviderAnnotation.isPresent()) {
+                values.add(
+                    executeStaticProviderMethod(
+                        updateProviderAnnotation.get().type(),
+                        updateProviderAnnotation.get().method()));
+              }
+              if (insertProviderAnnotation.isPresent()) {
+                values.add(
+                    executeStaticProviderMethod(
+                        insertProviderAnnotation.get().type(),
+                        insertProviderAnnotation.get().method()));
+              }
+              if (deleteProviderAnnotation.isPresent()) {
+                values.add(
+                    executeStaticProviderMethod(
+                        deleteProviderAnnotation.get().type(),
+                        deleteProviderAnnotation.get().method()));
+              }
+              return values;
+            });
 
     return new ArchCondition<JavaClass>("not use the SQL function 'CURRENT_TIMESTAMP'") {
       @Override
@@ -351,5 +388,10 @@ class ArchitectureTest {
         }
       }
     };
+  }
+
+  private static String executeStaticProviderMethod(Class<?> clazz, String methodName)
+      throws Exception {
+    return clazz.getMethod(methodName).invoke(null).toString();
   }
 }
