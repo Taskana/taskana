@@ -11,25 +11,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskQuery;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 
 /** Acceptance test for all "query classifications with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)
-class QueryObjectreferencesWithPaginationAccTest extends AbstractAccTest {
+class QueryObjectReferencesWithPaginationAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-  private TaskQuery taskQuery;
   private ObjectReferenceQuery objRefQuery;
-
-  QueryObjectreferencesWithPaginationAccTest() {
-    super();
-  }
 
   @BeforeEach
   void before() {
-    taskService = taskanaEngine.getTaskService();
-    taskQuery = taskService.createTaskQuery();
+    TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
     objRefQuery = taskQuery.createObjectReferenceQuery();
   }
 

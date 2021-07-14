@@ -629,8 +629,7 @@ public class TaskQueryImpl implements TaskQuery {
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1Like =
-            toUpperCopy(strings); // why are we doing this? the sql is always an upper?
+        this.custom1Like = toUpperCopy(strings);
         break;
       case CUSTOM_2:
         this.custom2Like = toUpperCopy(strings);

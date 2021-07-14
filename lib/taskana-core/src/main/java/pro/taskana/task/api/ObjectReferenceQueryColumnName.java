@@ -4,7 +4,7 @@ import pro.taskana.common.api.QueryColumnName;
 
 /**
  * Enum containing the column names for {@link
- * pro.taskana.task.internal.TaskQueryMapper#queryObjectReferenceColumnValues}.
+ * pro.taskana.task.internal.ObjectReferenceMapper#queryObjectReferenceColumnValues}.
  */
 public enum ObjectReferenceQueryColumnName implements QueryColumnName {
   ID("id"),
@@ -14,7 +14,7 @@ public enum ObjectReferenceQueryColumnName implements QueryColumnName {
   TYPE("type"),
   VALUE("value");
 
-  private String name;
+  private final String name;
 
   ObjectReferenceQueryColumnName(String name) {
     this.name = name;

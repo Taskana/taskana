@@ -16,11 +16,11 @@ import pro.taskana.task.api.models.ObjectReference;
 public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   private static final String LINK_TO_MAPPER =
-      "pro.taskana.task.internal.TaskQueryMapper.queryObjectReferences";
+      "pro.taskana.task.internal.ObjectReferenceMapper.queryObjectReferences";
   private static final String LINK_TO_COUNTER =
-      "pro.taskana.task.internal.TaskQueryMapper.countQueryObjectReferences";
+      "pro.taskana.task.internal.ObjectReferenceMapper.countQueryObjectReferences";
   private static final String LINK_TO_VALUEMAPPER =
-      "pro.taskana.task.internal.TaskQueryMapper.queryObjectReferenceColumnValues";
+      "pro.taskana.task.internal.ObjectReferenceMapper.queryObjectReferenceColumnValues";
   private final InternalTaskanaEngine taskanaEngine;
   private final List<String> orderBy;
   private ObjectReferenceQueryColumnName columnName;
