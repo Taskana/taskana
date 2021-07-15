@@ -27,6 +27,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected Instant completed;
   protected Instant modified;
   protected Instant planned;
+  protected Instant received;
   protected Instant due;
   protected String name;
   protected String creator;
@@ -173,6 +174,15 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setPlanned(Instant planned) {
     this.planned = planned != null ? planned.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  @Override
+  public Instant getReceived() {
+    return received != null ? received.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  public void setReceived(Instant received) {
+    this.received = received != null ? received.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
   @Override
@@ -553,6 +563,7 @@ public class TaskSummaryImpl implements TaskSummary {
         completed,
         modified,
         planned,
+        received,
         due,
         name,
         creator,
@@ -609,6 +620,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(completed, other.completed)
         && Objects.equals(modified, other.modified)
         && Objects.equals(planned, other.planned)
+        && Objects.equals(received, other.received)
         && Objects.equals(due, other.due)
         && Objects.equals(name, other.name)
         && Objects.equals(creator, other.creator)
@@ -642,7 +654,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   @Override
   public String toString() {
-    return "TaskSummaryImpl [taskId="
+    return "TaskSummaryImpl [id="
         + id
         + ", externalId="
         + externalId
@@ -656,6 +668,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + modified
         + ", planned="
         + planned
+        + ", received="
+        + received
         + ", due="
         + due
         + ", name="
@@ -664,6 +678,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + creator
         + ", note="
         + note
+        + ", description="
+        + description
         + ", priority="
         + priority
         + ", state="

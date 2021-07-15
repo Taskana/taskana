@@ -42,7 +42,6 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.CollectionUtil;
-import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -166,16 +165,16 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ReturnCorrectResults_When_QueryingForDescriptionAndPriority() {
-    List<TaskSummary> results1 = TASK_SERVICE.createTaskQuery().descriptionLike("Lorem%").list();
-    assertThat(results1).extracting(TaskSummary::getDescription).hasSize(7);
+  void should_ReturnCorrectResults_When_QueryingForDescription() {
+    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().descriptionLike("Lorem%").list();
+    assertThat(results).extracting(TaskSummary::getDescription).hasSize(7);
+  }
 
-    List<TaskSummary> results2 = TASK_SERVICE.createTaskQuery().priorityIn(1).list();
-    assertThat(results2).extracting(TaskSummary::getPriority).hasSize(2);
-
-    List<TaskSummary> results3 =
-        TASK_SERVICE.createTaskQuery().descriptionLike("Lorem%").priorityIn(1).list();
-    assertThat(results3).hasSize(2);
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ReturnCorrectResults_When_QueryingForPriority() {
+    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().priorityIn(1).list();
+    assertThat(results).extracting(TaskSummary::getPriority).hasSize(2);
   }
 
   @WithAccessId(user = "admin")
@@ -333,37 +332,37 @@ class QueryTasksAccTest extends AbstractAccTest {
   @TestFactory
   Stream<DynamicTest> should_ReturnCorrectResults_When_QueryingForCustomXNotIn() {
     // carefully constructed to always return exactly 2 results
-    List<Pair<TaskCustomField, String[]>> list =
+    List<Triplet<TaskCustomField, String[], Integer>> list =
         List.of(
-            Pair.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}),
-            Pair.of(TaskCustomField.CUSTOM_2, new String[] {"%"}),
-            Pair.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}),
-            Pair.of(TaskCustomField.CUSTOM_4, new String[] {"%"}),
-            Pair.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}),
-            Pair.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}),
-            Pair.of(TaskCustomField.CUSTOM_7, new String[] {"%"}),
-            Pair.of(TaskCustomField.CUSTOM_8, new String[] {"%"}),
-            Pair.of(TaskCustomField.CUSTOM_9, new String[] {"%"}),
-            Pair.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}),
-            Pair.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}),
-            Pair.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}),
-            Pair.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}),
-            Pair.of(TaskCustomField.CUSTOM_14, new String[] {"abc"}),
-            Pair.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}),
-            Pair.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}));
+            Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_2, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_4, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"%"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"abc"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}, 2),
+            Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}, 2));
     assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
     return DynamicTest.stream(
         list.iterator(),
         t -> t.getLeft().name(),
-        t -> testQueryForCustomXNotIn(t.getLeft(), t.getRight()));
+        t -> testQueryForCustomXNotIn(t.getLeft(), t.getMiddle(), t.getRight()));
   }
 
-  void testQueryForCustomXNotIn(TaskCustomField customField, String[] searchArguments)
+  void testQueryForCustomXNotIn(TaskCustomField customField, String[] searchArguments, int expectedCount)
       throws Exception {
     long results =
         TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
-    assertThat(results).isEqualTo(2);
+    assertThat(results).isEqualTo(expectedCount);
   }
 
   @WithAccessId(user = "admin")

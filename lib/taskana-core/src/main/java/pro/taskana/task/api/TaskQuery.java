@@ -376,6 +376,18 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery plannedWithin(TimeInterval... intervals);
 
   /**
+   * Add the time intervals within which the task is received to your query. For each time interval,
+   * the database query will search for tasks whose received timestamp is after or at the interval's
+   * begin and before or at the interval's end. If more than one interval is specified, the query
+   * will connect them with the OR keyword. If either begin or end of an interval are null, these
+   * values will not be specified in the query.
+   *
+   * @param intervals - the TimeIntervals within which the task is received
+   * @return the query
+   */
+  TaskQuery receivedWithin(TimeInterval... intervals);
+
+  /**
    * Add the time intervals within which the task is due to your query. For each time interval, the
    * database query will search for tasks whose due timestamp is after or at the interval's begin
    * and before or at the interval's end. If more than one interval is specified, the query will
@@ -758,6 +770,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @return the query
    */
   TaskQuery orderByPlanned(SortDirection sortDirection);
+
+  /**
+   * This method sorts the query result according to the received timestamp.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByReceived(SortDirection sortDirection);
 
   /**
    * This method sorts the query result according to the company of the primary object reference.

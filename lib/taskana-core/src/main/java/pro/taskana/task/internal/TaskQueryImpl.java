@@ -162,11 +162,11 @@ public class TaskQueryImpl implements TaskQuery {
   private TimeInterval[] completedIn;
   private TimeInterval[] modifiedIn;
   private TimeInterval[] plannedIn;
+  private TimeInterval[] receivedIn;
   private TimeInterval[] dueIn;
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
   private boolean selectAndClaim;
-
   private boolean useDistinctKeyword = false;
   private boolean joinWithAttachments = false;
   private boolean joinWithClassifications = false;
@@ -438,6 +438,17 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery plannedWithin(TimeInterval... intervals) {
     this.plannedIn = intervals;
+    for (TimeInterval ti : intervals) {
+      if (!ti.isValid()) {
+        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
+      }
+    }
+    return this;
+  }
+
+  @Override
+  public TaskQuery receivedWithin(TimeInterval... intervals) {
+    this.receivedIn = intervals;
     for (TimeInterval ti : intervals) {
       if (!ti.isValid()) {
         throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
@@ -872,6 +883,11 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery orderByPlanned(SortDirection sortDirection) {
     return addOrderCriteria("PLANNED", sortDirection);
+  }
+
+  @Override
+  public TaskQuery orderByReceived(SortDirection sortDirection) {
+    return addOrderCriteria("RECEIVED", sortDirection);
   }
 
   @Override
@@ -1516,6 +1532,10 @@ public class TaskQueryImpl implements TaskQuery {
     return plannedIn;
   }
 
+  public TimeInterval[] getReceivedIn() {
+    return receivedIn;
+  }
+
   public TimeInterval[] getDueIn() {
     return dueIn;
   }
@@ -2033,6 +2053,8 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(modifiedIn)
         + ", plannedIn="
         + Arrays.toString(plannedIn)
+        + ", receivedIn="
+        + Arrays.toString(receivedIn)
         + ", dueIn="
         + Arrays.toString(dueIn)
         + ", wildcardSearchFieldIn="

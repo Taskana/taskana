@@ -71,6 +71,13 @@ public interface TaskSummary {
   Instant getPlanned();
 
   /**
+   * Gets the time when when the surrounding process was started.
+   *
+   * @return the received Instant
+   */
+  Instant getReceived();
+
+  /**
    * Gets the time when the task is due.
    *
    * @return the due Instant

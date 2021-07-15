@@ -409,10 +409,9 @@ public class TaskServiceImpl implements TaskService {
           ClassificationNotFoundException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     TaskImpl newTaskImpl = (TaskImpl) task;
-    TaskImpl oldTaskImpl;
     try {
       taskanaEngine.openConnection();
-      oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
+      TaskImpl oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
 
       checkConcurrencyAndSetModified(newTaskImpl, oldTaskImpl);
 
@@ -1451,12 +1450,23 @@ public class TaskServiceImpl implements TaskService {
     if (task.getDescription() == null && classification != null) {
       task.setDescription(classification.getDescription());
     }
+    setDefaultTaskReceivedDateFromAttachments(task);
 
     attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
     // This has to be called after the AttachmentHandler because the AttachmentHandler fetches
     // the Classifications of the Attachments.
     // This is necessary to guarantee that the following calculation is correct.
     serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, false);
+  }
+
+  private void setDefaultTaskReceivedDateFromAttachments(TaskImpl task) {
+    if (task.getReceived() == null) {
+      task.getAttachments().stream()
+          .map(AttachmentSummary::getReceived)
+          .sorted()
+          .findFirst()
+          .ifPresent(task::setReceived);
+    }
   }
 
   private void setCallbackStateOnTaskCreation(TaskImpl task) throws InvalidArgumentException {
@@ -1750,6 +1760,8 @@ public class TaskServiceImpl implements TaskService {
       newTaskImpl.setClassificationSummary(oldTaskImpl.getClassificationSummary());
     }
 
+    setDefaultTaskReceivedDateFromAttachments(newTaskImpl);
+
     updateClassificationSummary(newTaskImpl, oldTaskImpl);
 
     TaskImpl newTaskImpl1 =
@@ -1775,7 +1787,6 @@ public class TaskServiceImpl implements TaskService {
     if (newClassificationSummary == null) {
       newClassificationSummary = oldClassificationSummary;
     }
-
     if (!oldClassificationSummary.getKey().equals(newClassificationSummary.getKey())) {
       Classification newClassification =
           this.classificationService.getClassification(

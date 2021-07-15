@@ -37,6 +37,13 @@ public interface Task extends TaskSummary {
   void setPlanned(Instant planned);
 
   /**
+   * Sets the time when when the surrounding process started.
+   *
+   * @param received as exact {@link Instant}
+   */
+  void setReceived(Instant received);
+
+  /**
    * Sets the time when the work on this task should be finished.
    *
    * @param due as exact {@link Instant}

@@ -11,6 +11,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
   COMPLETED("t.completed"),
   MODIFIED("t.modified"),
   PLANNED("t.planned"),
+  RECEIVED("t.received"),
   DUE("t.due"),
   NAME("t.name"),
   CREATOR("t.creator"),
@@ -57,7 +58,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
   A_CHANNEL("a.channel"),
   A_REF_VALUE("a.ref_value");
 
-  private String name;
+  private final String name;
 
   TaskQueryColumnName(String name) {
     this.name = name;
