@@ -14,10 +14,22 @@
     flex-direction: column;
     width: 50%;
   }
+
+  &__field--group {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &__gap {
+    flex: 0 0 8px;
+  }
 }
 
 .task-status-details .mat-form-field {
   margin-top: 0.7rem;
+  flex-grow: 1;
 }
 
 .mat-input-element:disabled {

@@ -16,6 +16,7 @@ export class Task {
     public completed?: string, // ISO-8601
     public modified?: string, // ISO-8601
     public planned?: string, // ISO-8601
+    public received?: string, // ISO-8601
     public due?: string, // ISO-8601
     public name?: string,
     public creator?: string,
