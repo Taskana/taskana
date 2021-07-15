@@ -58,6 +58,7 @@ public class TaskRepresentationModelAssembler
     repModel.setCompleted(task.getCompleted());
     repModel.setModified(task.getModified());
     repModel.setPlanned(task.getPlanned());
+    repModel.setReceived(task.getReceived());
     repModel.setDue(task.getDue());
     repModel.setName(task.getName());
     repModel.setCreator(task.getCreator());
@@ -120,6 +121,7 @@ public class TaskRepresentationModelAssembler
     task.setCompleted(repModel.getCompleted());
     task.setModified(repModel.getModified());
     task.setPlanned(repModel.getPlanned());
+    task.setReceived(repModel.getReceived());
     task.setDue(repModel.getDue());
     task.setName(repModel.getName());
     task.setCreator(repModel.getCreator());

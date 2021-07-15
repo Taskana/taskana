@@ -358,8 +358,8 @@ class QueryTasksAccTest extends AbstractAccTest {
         t -> testQueryForCustomXNotIn(t.getLeft(), t.getMiddle(), t.getRight()));
   }
 
-  void testQueryForCustomXNotIn(TaskCustomField customField, String[] searchArguments, int expectedCount)
-      throws Exception {
+  void testQueryForCustomXNotIn(
+      TaskCustomField customField, String[] searchArguments, int expectedCount) throws Exception {
     long results =
         TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
     assertThat(results).isEqualTo(expectedCount);
