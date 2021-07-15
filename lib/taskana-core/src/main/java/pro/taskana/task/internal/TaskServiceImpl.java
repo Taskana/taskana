@@ -277,11 +277,10 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task getTask(String id) throws NotAuthorizedException, TaskNotFoundException {
-    TaskImpl resultTask;
     try {
       taskanaEngine.openConnection();
 
-      resultTask = taskMapper.findById(id);
+      TaskImpl resultTask = taskMapper.findById(id);
       if (resultTask != null) {
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
