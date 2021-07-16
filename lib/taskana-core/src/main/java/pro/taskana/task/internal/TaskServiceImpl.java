@@ -1462,6 +1462,7 @@ public class TaskServiceImpl implements TaskService {
     if (task.getReceived() == null) {
       task.getAttachments().stream()
           .map(AttachmentSummary::getReceived)
+          .filter(Objects::nonNull)
           .sorted()
           .findFirst()
           .ifPresent(task::setReceived);

@@ -4,8 +4,10 @@ import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -123,6 +125,18 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         .extracting(TaskSummary::getWorkbasketSummary)
         .extracting(WorkbasketSummary::getName)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SortByReceivedAsc_When_TaskQueryFilterIsApplied() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    List<TaskSummary> results = taskService.createTaskQuery().orderByReceived(asc).list();
+
+    assertThat(results)
+        .extracting(TaskSummary::getReceived)
+        .extracting(instant -> Optional.ofNullable(instant).map(Instant::toString).orElse(""))
+        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
   }
 
   @WithAccessId(user = "admin")

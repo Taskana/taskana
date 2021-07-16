@@ -19,6 +19,7 @@ import static pro.taskana.task.api.TaskQueryColumnName.STATE;
 import acceptance.AbstractAccTest;
 import acceptance.TaskTestMapper;
 import acceptance.TaskanaEngineProxy;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -459,6 +460,23 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(tasksp).hasSize(5);
     tasksp = taskQuery.orderByDue(DESCENDING).listPage(5, 5);
     assertThat(tasksp).hasSize(5);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ReturnCorrectResults_When_QueryingForReceivedWithin() {
+    List<TaskSummary> results =
+        TASK_SERVICE
+            .createTaskQuery()
+            .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")))
+            .list();
+    long resultCount =
+        TASK_SERVICE
+            .createTaskQuery()
+            .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:18Z")))
+            .count();
+    assertThat(results).hasSize(22);
+    assertThat(resultCount).isEqualTo(20);
   }
 
   @WithAccessId(user = "admin")

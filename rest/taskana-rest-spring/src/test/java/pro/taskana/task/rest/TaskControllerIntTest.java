@@ -566,6 +566,43 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_ReturnReceivedDate_When_GettingTask() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000024");
+    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+
+    ResponseEntity<TaskRepresentationModel> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+
+    TaskRepresentationModel repModel = response.getBody();
+    assertThat(repModel).isNotNull();
+    assertThat(repModel).extracting(TaskSummaryRepresentationModel::getReceived).isNotNull();
+  }
+
+  @Test
+  void should_ChangeValueOfReceived_When_UpdatingTask() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
+    HttpEntity<Object> httpEntityWithoutBody = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+
+    ResponseEntity<TaskRepresentationModel> responseGet =
+        TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
+
+    final TaskRepresentationModel originalTask = responseGet.getBody();
+    Instant expectedReceived = Instant.parse("2019-09-13T08:44:17.588Z");
+    originalTask.setReceived(expectedReceived);
+    HttpEntity<TaskRepresentationModel> httpEntity =
+        new HttpEntity<>(originalTask, restHelper.getHeadersTeamlead_1());
+
+    ResponseEntity<TaskRepresentationModel> responseUpdate =
+        TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
+
+    TaskRepresentationModel updatedTask = responseUpdate.getBody();
+    assertThat(updatedTask).isNotNull();
+    assertThat(updatedTask.getReceived()).isEqualTo(expectedReceived);
+  }
+
+  @Test
   void should_ChangeValueOfModified_When_UpdatingTask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
@@ -619,9 +656,9 @@ class TaskControllerIntTest {
   @Test
   void testCreateWithPlannedAndDueDate() {
     TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-    Instant now = Instant.now();
-    taskRepresentationModel.setPlanned(now);
-    taskRepresentationModel.setDue(now);
+    Instant plannedTime = Instant.parse("2019-09-13T08:44:17.588Z");
+    taskRepresentationModel.setPlanned(plannedTime);
+    taskRepresentationModel.setDue(plannedTime);
     String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
     HttpEntity<TaskRepresentationModel> auth =
         new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));

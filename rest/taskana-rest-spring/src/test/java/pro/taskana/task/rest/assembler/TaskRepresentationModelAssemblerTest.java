@@ -32,7 +32,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
 /** Test for {@link TaskRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
-class TaskRepresentationModelAssemberTest {
+class TaskRepresentationModelAssemblerTest {
 
   TaskService taskService;
   WorkbasketService workbasketService;
@@ -40,7 +40,7 @@ class TaskRepresentationModelAssemberTest {
   TaskRepresentationModelAssembler assembler;
 
   @Autowired
-  TaskRepresentationModelAssemberTest(
+  TaskRepresentationModelAssemblerTest(
       TaskService taskService,
       WorkbasketService workbasketService,
       ClassificationService classificationService,
@@ -76,6 +76,7 @@ class TaskRepresentationModelAssemberTest {
     repModel.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    repModel.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setName("name");
     repModel.setCreator("creator");
@@ -166,6 +167,7 @@ class TaskRepresentationModelAssemberTest {
     task.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setName("name");
     task.setCreator("creator");
@@ -228,6 +230,7 @@ class TaskRepresentationModelAssemberTest {
     task.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setName("name");
     task.setCreator("creator");

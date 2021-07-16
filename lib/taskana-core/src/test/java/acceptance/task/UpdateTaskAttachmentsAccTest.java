@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -26,6 +28,7 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
@@ -44,6 +47,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @BeforeEach
   @WithAccessId(user = "admin")
   void setUp() throws Exception {
+    resetDb(false);
     taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
     task =
@@ -83,6 +87,52 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .contains(attachment)
         .extracting(Attachment::getModified)
         .containsExactlyInAnyOrder(task.getModified());
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_UpdateTaskReceived_When_AddingAnAttachment() throws Exception {
+    task.addAttachment(attachment);
+    task = taskService.updateTask(task);
+    task = taskService.getTask(task.getId());
+    assertThat(task)
+        .extracting(TaskSummary::getReceived)
+        .isEqualTo(LocalDate.parse("2018-01-15").atStartOfDay().toInstant(ZoneOffset.UTC));
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotUpdateTaskReceived_When_TaskAlreadyHasAReceived() throws Exception {
+    task.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.addAttachment(attachment);
+    task = taskService.updateTask(task);
+    task = taskService.getTask(task.getId());
+    assertThat(task).extracting(TaskSummary::getReceived).isNotEqualTo(attachment.getReceived());
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_UpdateTaskReceived_When_AddingTwoAttachments() throws Exception {
+    task.addAttachment(attachment);
+    Attachment attachment2 =
+        createAttachment(
+            "L10303",
+            createObjectReference(
+                "COMPANY_B",
+                "SYSTEM_C",
+                "INSTANCE_C",
+                "ArchiveId",
+                "ABC45678901234567890123456789012345678901234567890"),
+            "ROHRPOST",
+            "2018-01-12",
+            createSimpleCustomPropertyMap(4));
+
+    task.addAttachment(attachment2);
+    task = taskService.updateTask(task);
+    task = taskService.getTask(task.getId());
+    assertThat(task)
+        .extracting(TaskSummary::getReceived)
+        .isEqualTo(LocalDate.parse("2018-01-12").atStartOfDay().toInstant(ZoneOffset.UTC));
   }
 
   @WithAccessId(user = "user-1-1")

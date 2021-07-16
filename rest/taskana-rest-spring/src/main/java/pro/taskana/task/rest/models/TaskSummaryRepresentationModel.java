@@ -36,7 +36,7 @@ public class TaskSummaryRepresentationModel
   protected Instant planned;
   /**
    * Timestamp when the task has been received. It notes when the surrounding process started and
-   * not just when my actual task was created
+   * not just when the actual task was created.
    */
   protected Instant received;
   /**

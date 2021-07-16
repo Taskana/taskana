@@ -167,7 +167,7 @@ public interface TaskMapper {
 
   @Select(
       "<script>SELECT ID, EXTERNAL_ID, STATE, WORKBASKET_ID, OWNER, MODIFIED, CLASSIFICATION_ID, "
-          + "PLANNED, RECEIVED, DUE, CALLBACK_STATE FROM TASK "
+          + "PLANNED, DUE, CALLBACK_STATE FROM TASK "
           + "<where> "
           + "<if test='taskIds != null'>ID IN(<foreach item='item' collection='taskIds' separator=',' >#{item}</foreach>)</if> "
           + "<if test='externalIds != null'>EXTERNAL_ID IN(<foreach item='item' collection='externalIds' separator=',' >#{item}</foreach>)</if> "
@@ -183,7 +183,6 @@ public interface TaskMapper {
   @Result(property = "modified", column = "MODIFIED")
   @Result(property = "due", column = "DUE")
   @Result(property = "planned", column = "PLANNED")
-  @Result(property = "received", column = "RECEIVED")
   @Result(property = "callbackState", column = "CALLBACK_STATE")
   List<MinimalTaskSummary> findExistingTasks(
       @Param("taskIds") Collection<String> taskIds, @Param("externalIds") List<String> externalIds);
