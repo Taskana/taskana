@@ -424,6 +424,7 @@ public class TaskController {
     NAME(TaskQuery::orderByName),
     DUE(TaskQuery::orderByDue),
     PLANNED(TaskQuery::orderByPlanned),
+    RECEIVED(TaskQuery::orderByReceived),
     PRIORITY(TaskQuery::orderByPriority),
     CREATED(TaskQuery::orderByCreated),
     CLAIMED(TaskQuery::orderByClaimed),
