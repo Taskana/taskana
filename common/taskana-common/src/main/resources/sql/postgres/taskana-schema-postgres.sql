@@ -295,8 +295,9 @@ CREATE SEQUENCE SCHEDULED_JOB_SEQ
   INCREMENT BY 1
   CACHE 10;
 
- SET search_path TO taskana;
 
+----------------------------------------------------------------------------------------------------
+-- LIST OF RECOMMENDED INDEXES
  CREATE INDEX IDX_CLASSIFICATION_1 ON CLASSIFICATION
    (ID ASC, CUSTOM_8, CUSTOM_7, CUSTOM_6, CUSTOM_5, CUSTOM_4,
    CUSTOM_3, CUSTOM_2, CUSTOM_1, APPLICATION_ENTRY_POINT,
