@@ -290,13 +290,12 @@ public class TaskQuerySqlProvider {
     return "<if test='accessIdIn != null'> AND t.WORKBASKET_ID IN ("
         + "SELECT WID "
         + "FROM ("
-        + "SELECT WORKBASKET_ID AS WID, MAX(PERM_READ) AS MAX_READ "
-        + "FROM WORKBASKET_ACCESS_LIST "
-        + "WHERE ACCESS_ID IN "
-        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>)"
-        + " group by WORKBASKET_ID) "
-        + "WHERE max_read = 1"
-        + ")</if> ";
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ "
+        + "FROM WORKBASKET_ACCESS_LIST AS s where ACCESS_ID IN "
+        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
+        + "GROUP by WORKBASKET_ID) as f "
+        + "WHERE MAX_READ = 1) "
+        + "</if>";
   }
 
   private static String commonTaskObjectReferenceWhereStatement() {

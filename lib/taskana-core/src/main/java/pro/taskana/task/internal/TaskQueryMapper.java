@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.SelectProvider;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /** This class provides a mapper for all task queries. */
-@SuppressWarnings({"checkstyle:LineLength", "checkstyle:Indentation"})
 public interface TaskQueryMapper {
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryTaskSummaries")

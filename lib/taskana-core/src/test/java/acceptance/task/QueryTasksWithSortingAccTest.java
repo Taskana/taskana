@@ -7,13 +7,13 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.KeyDomain;
+import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -25,8 +25,8 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @ExtendWith(JaasExtension.class)
 class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
-  private static SortDirection asc = SortDirection.ASCENDING;
-  private static SortDirection desc = SortDirection.DESCENDING;
+  private static final SortDirection ASC = SortDirection.ASCENDING;
+  private static final SortDirection DESC = SortDirection.DESCENDING;
 
   QueryTasksWithSortingAccTest() {
     super();
@@ -40,7 +40,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByModified(desc)
+            .orderByModified(DESC)
             .orderByDomain(null)
             .list();
 
@@ -62,7 +62,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByTaskId(desc)
+            .orderByTaskId(DESC)
             .list();
 
     // test is only valid with at least 2 results
@@ -105,7 +105,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   @Test
   void should_sortByWorkbasketNameAsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(asc).list();
+    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(ASC).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -118,7 +118,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   @Test
   void should_sortByWorkbasketNameDsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(desc).list();
+    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(DESC).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -131,12 +131,17 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   @Test
   void should_SortByReceivedAsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<TaskSummary> results = taskService.createTaskQuery().orderByReceived(asc).list();
+    // we filter between EPOCH and null,to avoid null as a received value
+    List<TaskSummary> results =
+        taskService
+            .createTaskQuery()
+            .receivedWithin(new TimeInterval(Instant.EPOCH, null))
+            .orderByReceived(ASC)
+            .list();
 
     assertThat(results)
         .extracting(TaskSummary::getReceived)
-        .extracting(instant -> Optional.ofNullable(instant).map(Instant::toString).orElse(""))
-        .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+        .isSortedAccordingTo(Instant::compareTo);
   }
 
   @WithAccessId(user = "admin")
@@ -146,8 +151,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .orderByDomain(asc)
-            .orderByName(asc)
+            .orderByDomain(ASC)
+            .orderByName(ASC)
             .orderByCreated(null)
             .list();
 
@@ -170,7 +175,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByPrimaryObjectReferenceSystem(SortDirection.DESCENDING)
             .orderByNote(null)
             .orderByDue(null)
-            .orderByOwner(asc)
+            .orderByOwner(ASC)
             .list();
 
     assertThat(results).hasSize(25);
@@ -197,10 +202,10 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByPrimaryObjectReferenceSystemInstance(desc)
-            .orderByParentBusinessProcessId(asc)
-            .orderByPlanned(asc)
-            .orderByState(asc)
+            .orderByPrimaryObjectReferenceSystemInstance(DESC)
+            .orderByParentBusinessProcessId(ASC)
+            .orderByPlanned(ASC)
+            .orderByState(ASC)
             .list();
 
     assertThat(results).hasSize(25);
@@ -227,8 +232,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByPrimaryObjectReferenceCompany(desc)
-            .orderByClaimed(asc)
+            .orderByPrimaryObjectReferenceCompany(DESC)
+            .orderByClaimed(ASC)
             .list();
 
     assertThat(results).hasSize(25);
@@ -260,9 +265,9 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .stateIn(TaskState.READY)
             .orderByWorkbasketKey(null)
             .workbasketIdIn("WBI:100000000000000000000000000000000015")
-            .orderByPriority(desc)
-            .orderByPrimaryObjectReferenceValue(asc)
-            .orderByCompleted(desc)
+            .orderByPriority(DESC)
+            .orderByPrimaryObjectReferenceValue(ASC)
+            .orderByCompleted(DESC)
             .list();
 
     assertThat(results).hasSize(22);
@@ -290,7 +295,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .createTaskQuery()
             .stateIn(TaskState.READY)
             .workbasketIdIn("WBI:100000000000000000000000000000000015")
-            .orderByBusinessProcessId(asc)
+            .orderByBusinessProcessId(ASC)
             .orderByClassificationKey(null)
             .orderByPrimaryObjectReferenceType(SortDirection.DESCENDING)
             .list();
