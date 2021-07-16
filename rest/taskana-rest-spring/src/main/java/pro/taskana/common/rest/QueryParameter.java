@@ -4,12 +4,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 
-public interface QueryParameter<Q extends BaseQuery<?, ?>, R> {
+public interface QueryParameter<E, R> {
 
-  R applyToQuery(Q query);
+  R apply(E entity);
 
   default String[] wrapElementsInLikeStatement(String[] list) {
     if (list != null) {

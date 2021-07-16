@@ -35,6 +35,6 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
     @Override
     TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
 
-    Builder withTimestamps(List<TaskTimestamp> statuses);
+    Builder withTimestamps(List<TaskTimestamp> taskTimestamps);
   }
 }

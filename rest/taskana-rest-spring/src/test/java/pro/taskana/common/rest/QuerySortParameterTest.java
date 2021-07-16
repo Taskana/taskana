@@ -22,7 +22,7 @@ class QuerySortParameterTest {
     QuerySortParameter<MockQuery, MockSortBy> sortByParameter =
         new QuerySortParameter<>(List.of(sortBy), List.of(SortDirection.ASCENDING));
 
-    sortByParameter.applyToQuery(query);
+    sortByParameter.apply(query);
 
     verify(sortBy).applySortByForQuery(query, SortDirection.ASCENDING);
   }
@@ -35,7 +35,7 @@ class QuerySortParameterTest {
     QuerySortParameter<MockQuery, MockSortBy> sortByParameter =
         new QuerySortParameter<>(List.of(sortBy), null);
 
-    sortByParameter.applyToQuery(query);
+    sortByParameter.apply(query);
 
     verify(sortBy).applySortByForQuery(query, SortDirection.ASCENDING);
   }
@@ -48,7 +48,7 @@ class QuerySortParameterTest {
     QuerySortParameter<MockQuery, MockSortBy> sortByParameter =
         new QuerySortParameter<>(List.of(sortBy), List.of());
 
-    sortByParameter.applyToQuery(query);
+    sortByParameter.apply(query);
 
     verify(sortBy).applySortByForQuery(query, SortDirection.ASCENDING);
   }
@@ -61,7 +61,7 @@ class QuerySortParameterTest {
     QuerySortParameter<MockQuery, MockSortBy> sortByParameter =
         new QuerySortParameter<>(List.of(sortBy), List.of(SortDirection.DESCENDING));
 
-    sortByParameter.applyToQuery(query);
+    sortByParameter.apply(query);
 
     verify(sortBy).applySortByForQuery(query, SortDirection.DESCENDING);
   }
@@ -76,7 +76,7 @@ class QuerySortParameterTest {
         new QuerySortParameter<>(
             List.of(sortBy1, sortBy2), List.of(SortDirection.ASCENDING, SortDirection.ASCENDING));
 
-    sortByParameter.applyToQuery(query);
+    sortByParameter.apply(query);
 
     verify(sortBy1).applySortByForQuery(query, SortDirection.ASCENDING);
     verify(sortBy2).applySortByForQuery(query, SortDirection.ASCENDING);

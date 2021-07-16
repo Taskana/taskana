@@ -1,4 +1,4 @@
-package pro.taskana.monitor.rest.models;
+package pro.taskana.monitor.rest.assembler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,11 +19,11 @@ import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
-import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
+import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 
 /** Test for {@link ReportRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
-class ReportRepresentationModelTest {
+class ReportRepresentationModelAssemblerTest {
 
   private final ReportRepresentationModelAssembler reportRepresentationModelAssembler;
   private int daysDiff;
@@ -31,7 +31,7 @@ class ReportRepresentationModelTest {
   private List<TimeIntervalColumnHeader> headers;
 
   @Autowired
-  ReportRepresentationModelTest(
+  ReportRepresentationModelAssemblerTest(
       ReportRepresentationModelAssembler reportRepresentationModelAssembler) {
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
   }

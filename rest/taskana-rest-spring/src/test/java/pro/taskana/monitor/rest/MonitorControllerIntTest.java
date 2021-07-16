@@ -28,7 +28,7 @@ class MonitorControllerIntTest {
   @Test
   void should_ReturnAllOpenTasksByState_When_QueryingForAWorkbasketAndReadyAndClaimedState() {
     String url =
-        restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT)
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT)
             + "?workbasket-ids=WBI:100000000000000000000000000000000007"
             + "&states=READY&states=CLAIMED";
     HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
@@ -48,7 +48,7 @@ class MonitorControllerIntTest {
 
   @Test
   void should_ReturnAllOpenTasksByState_When_QueryingForSpecificWbAndStateReadyAndMinimumPrio() {
-    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT);
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT);
     HttpEntity<String> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
 
     ResponseEntity<ReportRepresentationModel> response =

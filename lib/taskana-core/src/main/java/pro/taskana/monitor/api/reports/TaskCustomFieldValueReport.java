@@ -9,8 +9,8 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 
 /**
- * A CustomFieldValueReport contains the total numbers of tasks of the respective custom field as
- * well as the total number of all tasks. The tasks of the report can be filtered by workbaskets,
+ * A TaskCustomFieldValueReport contains the total numbers of tasks of the respective custom field
+ * as well as the total number of all tasks. The tasks of the report can be filtered by workbaskets,
  * states, categories, domains, classifications and values of a custom field. Classifications can
  * also be excluded from the report. If the {@link TimeIntervalColumnHeader}s are set, the report
  * contains also the number of tasks of the respective cluster. The age of the tasks can be counted

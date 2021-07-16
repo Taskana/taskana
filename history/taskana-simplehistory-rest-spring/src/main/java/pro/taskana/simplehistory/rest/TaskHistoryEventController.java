@@ -76,10 +76,10 @@ public class TaskHistoryEventController {
         QueryPagingParameter.class);
 
     TaskHistoryQuery query = simpleHistoryService.createTaskHistoryQuery();
-    filterParameter.applyToQuery(query);
-    sortParameter.applyToQuery(query);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
 
-    List<TaskHistoryEvent> historyEvents = pagingParameter.applyToQuery(query);
+    List<TaskHistoryEvent> historyEvents = pagingParameter.apply(query);
 
     TaskHistoryEventPagedRepresentationModel pagedResources =
         assembler.toPagedModel(historyEvents, pagingParameter.getPageMetadata());

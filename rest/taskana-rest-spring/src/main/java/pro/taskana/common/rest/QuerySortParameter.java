@@ -34,7 +34,7 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
   }
 
   @Override
-  public Void applyToQuery(Q query) {
+  public Void apply(Q query) {
     if (sortBy != null) {
       for (int i = 0; i < sortBy.size(); i++) {
         SortDirection sortDirection =

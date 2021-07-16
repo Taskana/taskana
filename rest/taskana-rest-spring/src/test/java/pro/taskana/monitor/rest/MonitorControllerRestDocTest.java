@@ -13,7 +13,7 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
   @Test
   void getTaskStatusReportDocTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT))
+        .perform(get(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
@@ -22,7 +22,7 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
     mockMvc
         .perform(
             get(
-                RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_REPORT
+                RestEndpoints.URL_MONITOR_WORKBASKET_REPORT
                     + "?daysInPast=4&states=READY,CLAIMED,COMPLETED"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
@@ -30,7 +30,7 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
   @Test
   void getClassificationReportDocTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION_REPORT))
+        .perform(get(RestEndpoints.URL_MONITOR_CLASSIFICATION_REPORT))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 

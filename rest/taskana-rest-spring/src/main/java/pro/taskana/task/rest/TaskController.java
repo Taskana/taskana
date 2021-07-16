@@ -93,10 +93,10 @@ public class TaskController {
 
     TaskQuery query = taskService.createTaskQuery();
 
-    filterParameter.applyToQuery(query);
-    sortParameter.applyToQuery(query);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
 
-    List<TaskSummary> taskSummaries = pagingParameter.applyToQuery(query);
+    List<TaskSummary> taskSummaries = pagingParameter.apply(query);
 
     TaskSummaryPagedRepresentationModel pagedModels =
         taskSummaryRepresentationModelAssembler.toPagedModel(
@@ -121,7 +121,7 @@ public class TaskController {
       TaskQueryFilterParameter filterParameter)
       throws InvalidArgumentException, NotAuthorizedException {
     TaskQuery query = taskService.createTaskQuery();
-    filterParameter.applyToQuery(query);
+    filterParameter.apply(query);
 
     List<TaskSummary> taskSummaries = query.list();
 
@@ -202,8 +202,8 @@ public class TaskController {
       throws InvalidOwnerException, NotAuthorizedException {
     TaskQuery query = taskService.createTaskQuery();
 
-    filterParameter.applyToQuery(query);
-    sortParameter.applyToQuery(query);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
 
     Task selectedAndClaimedTask = taskService.selectAndClaim(query);
 
