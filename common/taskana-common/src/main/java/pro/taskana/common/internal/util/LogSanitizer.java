@@ -13,6 +13,6 @@ public class LogSanitizer {
    * @return sanitized logging message
    */
   public static String stripLineBreakingChars(Object loggingMessage) {
-    return loggingMessage.toString().replaceAll("[\n|\r|\t]", "_");
+    return loggingMessage.toString().replaceAll("[\n\r\t]", "_");
   }
 }
