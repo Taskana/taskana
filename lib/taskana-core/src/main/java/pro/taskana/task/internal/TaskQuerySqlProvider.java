@@ -29,14 +29,7 @@ public class TaskQuerySqlProvider {
   public static String queryTaskSummaries() {
     return OPENING_SCRIPT_TAG
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
-        + "t.ID, t.EXTERNAL_ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, "
-        + "t.RECEIVED, t.DUE, t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, "
-        + "t.CLASSIFICATION_KEY, t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, "
-        + "t.DOMAIN, t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, "
-        + "t.OWNER, t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, "
-        + "t.IS_READ, t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5,"
-        + " t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10, t.CUSTOM_11, t.CUSTOM_12, "
-        + "t.CUSTOM_13, t.CUSTOM_14, t.CUSTOM_15, t.CUSTOM_16"
+        + commonSelectFields()
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
         + ", a.CLASSIFICATION_ID, a.CLASSIFICATION_KEY, a.CHANNEL, a.REF_VALUE, a.RECEIVED"
         + "</if>"
@@ -79,7 +72,7 @@ public class TaskQuerySqlProvider {
         + db2selectFields()
         + ") AS ("
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
-        + commonSelectFields(true)
+        + commonSelectFields()
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
         + ", a.CLASSIFICATION_ID, a.CLASSIFICATION_KEY, a.CHANNEL, a.REF_VALUE, a.RECEIVED"
         + "</if>"
@@ -245,14 +238,10 @@ public class TaskQuerySqlProvider {
   }
 
   private static String commonSelectFields() {
-    return commonSelectFields(false);
-  }
-
-  private static String commonSelectFields(boolean taskFieldsOnly) {
-    StringBuilder sb = new StringBuilder();
+    // includes only the names that start with a t, because other columns are conditional
     return Arrays.stream(TaskQueryColumnName.values())
         .map(TaskQueryColumnName::toString)
-        .filter(column -> taskFieldsOnly && column.startsWith("t"))
+        .filter(column -> column.startsWith("t"))
         .collect(Collectors.joining(", "));
   }
 

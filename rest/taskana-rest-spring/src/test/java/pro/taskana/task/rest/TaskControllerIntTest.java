@@ -569,7 +569,7 @@ class TaskControllerIntTest {
   void should_ReturnReceivedDate_When_GettingTask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000024");
-    HttpEntity<Object> auth = new HttpEntity<>(restHelper.getHeadersAdmin());
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<TaskRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
@@ -583,7 +583,8 @@ class TaskControllerIntTest {
   void should_ChangeValueOfReceived_When_UpdatingTask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
-    HttpEntity<Object> httpEntityWithoutBody = new HttpEntity<>(restHelper.getHeadersTeamlead_1());
+    HttpEntity<Object> httpEntityWithoutBody =
+        new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskRepresentationModel> responseGet =
         TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
@@ -592,7 +593,7 @@ class TaskControllerIntTest {
     Instant expectedReceived = Instant.parse("2019-09-13T08:44:17.588Z");
     originalTask.setReceived(expectedReceived);
     HttpEntity<TaskRepresentationModel> httpEntity =
-        new HttpEntity<>(originalTask, restHelper.getHeadersTeamlead_1());
+        new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskRepresentationModel> responseUpdate =
         TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);

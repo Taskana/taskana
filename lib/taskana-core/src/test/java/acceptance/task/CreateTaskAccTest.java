@@ -11,7 +11,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -282,16 +285,14 @@ class CreateTaskAccTest extends AbstractAccTest {
       engineProxy.openConnection();
       String customProperties =
           mapper.getCustomAttributesAsString(createdTask.getAttachments().get(0).getId());
-      assertThat(customProperties)
-          .contains("\"Property_26\":\"Property Value of Property_26\"")
-          .contains("\"Property_25\":\"Property Value of Property_25\"")
-          .contains("\"Property_21\":\"Property Value of Property_21\"")
-          .contains("\"Property_19\":\"Property Value of Property_19\"")
-          .contains("\"Property_16\":\"Property Value of Property_16\"")
-          .contains("\"Property_12\":\"Property Value of Property_12\"")
-          .contains("\"Property_11\":\"Property Value of Property_11\"")
-          .contains("\"Property_7\":\"Property Value of Property_7\"")
-          .contains("\"Property_6\":\"Property Value of Property_6\"");
+      Set<String> expectedPhrasesSet =
+          IntStream.rangeClosed(1, 27)
+              .mapToObj(Integer::toString)
+              .map(
+                  number ->
+                      "\"Property_" + number + "\":\"Property Value of Property_" + number + "\"")
+              .collect(Collectors.toSet());
+      assertThat(customProperties).contains(expectedPhrasesSet);
     } finally {
       engineProxy.returnConnection();
     }
