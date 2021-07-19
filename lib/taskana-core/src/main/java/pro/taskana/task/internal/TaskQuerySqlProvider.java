@@ -77,15 +77,9 @@ public class TaskQuerySqlProvider {
     return OPENING_SCRIPT_TAG
         + "WITH X ("
         + db2selectFields()
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED"
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
         + ") AS ("
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
-        + commonSelectFields()
+        + commonSelectFields(true)
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
         + ", a.CLASSIFICATION_ID, a.CLASSIFICATION_KEY, a.CHANNEL, a.REF_VALUE, a.RECEIVED"
         + "</if>"
@@ -112,21 +106,9 @@ public class TaskQuerySqlProvider {
         + CLOSING_WHERE_TAG
         + "), Y ("
         + db2selectFields()
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED"
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
         + ", FLAG ) AS ("
         + "SELECT "
         + db2selectFields()
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED"
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
         + ", ("
         + "SELECT 1 "
         + "FROM WORKBASKET_ACCESS_LIST s "
@@ -139,12 +121,6 @@ public class TaskQuerySqlProvider {
         + "FROM X )"
         + "SELECT "
         + db2selectFields()
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED "
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
         + "FROM Y "
         + "WHERE FLAG = 1 "
         + "<if test='!orderBy.isEmpty()'>"
@@ -269,21 +245,33 @@ public class TaskQuerySqlProvider {
   }
 
   private static String commonSelectFields() {
+    return commonSelectFields(false);
+  }
 
+  private static String commonSelectFields(boolean taskFieldsOnly) {
     StringBuilder sb = new StringBuilder();
     return Arrays.stream(TaskQueryColumnName.values())
         .map(TaskQueryColumnName::toString)
+        .filter(column -> taskFieldsOnly && column.startsWith("t"))
         .collect(Collectors.joining(", "));
   }
 
   private static String db2selectFields() {
+    // needs to be the same order as the commonSelectFields (TaskQueryColumnValue)
     return "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, "
-        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, TCLASSIFICATION_KEY, "
-        + "CLASSIFICATION_CATEGORY, CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, "
+        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, "
+        + "TCLASSIFICATION_KEY, CLASSIFICATION_ID, "
+        + "WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, "
         + "BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, "
         + "POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, "
         + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
-        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16";
+        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16"
+        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if>"
+        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME</if>"
+        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
+        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED"
+        + "</if>"
+        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if>";
   }
 
   private static String checkForAuthorization() {
