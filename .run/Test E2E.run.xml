@@ -1,0 +1,31 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Test E2E" type="CypressConfigurationType" factoryName="Cypress" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="envs">
+      <map />
+    </option>
+    <option name="passParentEnvs" value="true" />
+    <option name="programParameters" value="" />
+    <option name="projectPathOnTarget" />
+    <option name="selectedOptions">
+      <list />
+    </option>
+    <option name="workingDirectory" value="C:\Users\te\Documents\taskana\web" />
+    <option name="textRange" />
+    <option name="allNames" />
+    <option name="specsDir" value="C:\Users\te\Documents\taskana\web\cypress" />
+    <option name="specFile" />
+    <option name="testName" />
+    <option name="workingDirectory" value="file://$PROJECT_DIR$/web" />
+    <option name="envs">
+      <map />
+    </option>
+    <option name="additionalParams" value="" />
+    <option name="passParentEnvs" value="true" />
+    <option name="nodeJsRef" value="project" />
+    <option name="npmRef" value="Project" />
+    <option name="kind" value="DIRECTORY" />
+    <option name="interactive" value="false" />
+    <method v="2" />
+  </configuration>
+</component>
