@@ -2,8 +2,8 @@
   <configuration default="false" name="Postgres" type="ShConfigurationType">
     <option name="SCRIPT_TEXT" value="bash ./docker-databases/prepare_db.sh POSTGRES_10" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-    <option name="SCRIPT_PATH" value="./taskana/docker-databases/prepare_db.sh" />
-    <option name="SCRIPT_OPTIONS" value="POSTGRES_10" />
+    <option name="SCRIPT_PATH" value="" />
+    <option name="SCRIPT_OPTIONS" value="" />
     <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
     <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
