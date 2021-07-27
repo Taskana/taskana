@@ -99,6 +99,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
   getClassifications(ctx: StateContext<ClassificationStateModel>): Observable<any> {
     const { selectedClassificationType } = ctx.getState();
     return this.domainService.getSelectedDomain().pipe(
+      take(1),
       mergeMap((domain) => {
         const filter: ClassificationQueryFilterParameter = {
           domain: [domain],
