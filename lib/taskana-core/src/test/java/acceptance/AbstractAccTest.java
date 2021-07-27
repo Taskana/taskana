@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,7 +92,7 @@ public abstract class AbstractAccTest {
       String classificationKey,
       ObjectReference objRef,
       String channel,
-      String receivedDate,
+      Instant receivedTimestamp,
       Map<String, String> customAttributes)
       throws Exception {
     Attachment attachment = taskanaEngine.getTaskService().newAttachment();
@@ -105,14 +104,6 @@ public abstract class AbstractAccTest {
             .asSummary());
     attachment.setObjectReference(objRef);
     attachment.setChannel(channel);
-    final Instant receivedTimestamp;
-    if (receivedDate != null && receivedDate.length() < 11) {
-      // contains only the date, not the time
-      LocalDate date = LocalDate.parse(receivedDate);
-      receivedTimestamp = date.atStartOfDay().toInstant(ZoneOffset.UTC);
-    } else {
-      receivedTimestamp = Instant.parse(receivedDate);
-    }
     attachment.setReceived(receivedTimestamp);
     if (customAttributes != null) {
       attachment.setCustomAttributeMap(customAttributes);

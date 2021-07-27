@@ -562,7 +562,6 @@ class TaskControllerIntTest {
     TaskRepresentationModel repModel = response.getBody();
     assertThat(repModel).isNotNull();
     assertThat(repModel.getAttachments()).isNotEmpty();
-    assertThat(repModel.getAttachments()).isNotNull();
   }
 
   @Test
@@ -574,8 +573,7 @@ class TaskControllerIntTest {
     ResponseEntity<TaskRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
-    TaskRepresentationModel repModel = response.getBody();
-    assertThat(repModel)
+    assertThat(response.getBody())
         .isNotNull()
         .extracting(TaskSummaryRepresentationModel::getReceived)
         .isNotNull();

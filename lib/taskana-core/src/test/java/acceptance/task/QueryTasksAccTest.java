@@ -246,7 +246,7 @@ class QueryTasksAccTest extends AbstractAccTest {
                 "ArchivETI",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3));
 
     Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000000");
