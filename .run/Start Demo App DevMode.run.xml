@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Start DevMode ExampleRestApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="Start Demo App DevMode" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="taskana-rest-spring-example-boot" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="pro.taskana.example.boot.ExampleRestApplication" />
     <option name="ALTERNATIVE_JRE_PATH" />

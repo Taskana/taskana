@@ -137,7 +137,11 @@ public class ClassificationQueryFilterParameter
     this.nameLike = nameLike;
     this.key = key;
     this.category = category;
-    this.domain = domain;
+    if (domain != null && domain.length == 0) {
+      this.domain = new String[] {""};
+    } else {
+      this.domain = domain;
+    }
     this.type = type;
     this.custom1Like = custom1Like;
     this.custom2Like = custom2Like;
