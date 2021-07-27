@@ -46,8 +46,6 @@ public class TaskQueryImpl implements TaskQuery {
       "pro.taskana.task.internal.TaskQueryMapper.countQueryTasksDb2";
   private static final String LINK_TO_VALUE_MAPPER =
       "pro.taskana.task.internal.TaskQueryMapper.queryTaskColumnValues";
-  private static final String TIME_INTERVAL = "TimeInterval ";
-  private static final String IS_INVALID = " is invalid.";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
@@ -393,78 +391,50 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery createdWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.createdIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
   @Override
   public TaskQuery claimedWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.claimedIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
   @Override
   public TaskQuery completedWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.completedIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
   @Override
   public TaskQuery modifiedWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.modifiedIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
   @Override
   public TaskQuery plannedWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.plannedIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
   @Override
   public TaskQuery receivedWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.receivedIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
   @Override
   public TaskQuery dueWithin(TimeInterval... intervals) {
+    validateAllIntervals(intervals);
     this.dueIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
@@ -766,13 +736,9 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn) {
+    validateAllIntervals(receivedIn);
     joinWithAttachments = true;
     this.attachmentReceivedIn = receivedIn;
-    for (TimeInterval ti : receivedIn) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException(TIME_INTERVAL + ti + IS_INVALID);
-      }
-    }
     return this;
   }
 
@@ -1702,6 +1668,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   public String getWildcardSearchValueLike() {
     return wildcardSearchValueLike;
+  }
+
+  private void validateAllIntervals(TimeInterval[] intervals) {
+    for (TimeInterval ti : intervals) {
+      if (!ti.isValid()) {
+        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+      }
+    }
   }
 
   private void checkForIllegalParamCombinations() {

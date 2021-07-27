@@ -575,8 +575,10 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
     TaskRepresentationModel repModel = response.getBody();
-    assertThat(repModel).isNotNull();
-    assertThat(repModel).extracting(TaskSummaryRepresentationModel::getReceived).isNotNull();
+    assertThat(repModel)
+        .isNotNull()
+        .extracting(TaskSummaryRepresentationModel::getReceived)
+        .isNotNull();
   }
 
   @Test

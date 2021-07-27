@@ -168,14 +168,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_ReturnCorrectResults_When_QueryingForDescription() {
     List<TaskSummary> results = TASK_SERVICE.createTaskQuery().descriptionLike("Lorem%").list();
-    assertThat(results).extracting(TaskSummary::getDescription).hasSize(7);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnCorrectResults_When_QueryingForPriority() {
     List<TaskSummary> results = TASK_SERVICE.createTaskQuery().priorityIn(1).list();
-    assertThat(results).extracting(TaskSummary::getPriority).hasSize(2);
+    assertThat(results).hasSize(2);
   }
 
   @WithAccessId(user = "admin")
@@ -464,7 +464,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ReturnCorrectResults_When_QueryingForReceivedWithin() {
+  void should_ReturnCorrectResults_When_QueryingForReceivedWithUpperBoundTimeInterval() {
     List<TaskSummary> results =
         TASK_SERVICE
             .createTaskQuery()
@@ -473,10 +473,51 @@ class QueryTasksAccTest extends AbstractAccTest {
     long resultCount =
         TASK_SERVICE
             .createTaskQuery()
-            .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:18Z")))
+            .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")))
             .count();
     assertThat(results).hasSize(22);
-    assertThat(resultCount).isEqualTo(20);
+    assertThat(resultCount).isEqualTo(22);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ReturnCorrectResults_When_QueryingForReceivedWithLowerBoundTimeInterval() {
+    List<TaskSummary> results =
+        TASK_SERVICE
+            .createTaskQuery()
+            .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
+            .list();
+    long resultCount =
+        TASK_SERVICE
+            .createTaskQuery()
+            .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
+            .count();
+    assertThat(results).hasSize(41);
+    assertThat(resultCount).isEqualTo(41);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ReturnCorrectResults_When_QueryingForReceivedWithMultipleTimeIntervals() {
+    long resultCount =
+        TASK_SERVICE
+            .createTaskQuery()
+            .receivedWithin(
+                new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")),
+                new TimeInterval(Instant.parse("2018-01-29T15:55:22Z"), null))
+            .count();
+
+    long resultCount2 =
+        TASK_SERVICE
+            .createTaskQuery()
+            .receivedWithin(
+                new TimeInterval(
+                    Instant.parse("2018-01-29T15:55:25Z"), Instant.parse("2018-01-29T15:55:30Z")),
+                new TimeInterval(
+                    Instant.parse("2018-01-29T15:55:18Z"), Instant.parse("2018-01-29T15:55:21Z")))
+            .count();
+    assertThat(resultCount).isEqualTo(61);
+    assertThat(resultCount2).isEqualTo(4);
   }
 
   @WithAccessId(user = "admin")

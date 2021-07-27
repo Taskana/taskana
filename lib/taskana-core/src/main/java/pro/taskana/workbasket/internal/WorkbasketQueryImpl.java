@@ -130,24 +130,24 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery createdWithin(TimeInterval... intervals) {
+    validateAllTimeIntervals(intervals);
     this.createdIn = intervals;
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
-      }
-    }
     return this;
   }
 
   @Override
   public WorkbasketQuery modifiedWithin(TimeInterval... intervals) {
+    validateAllTimeIntervals(intervals);
     this.modifiedIn = intervals;
+    return this;
+  }
+
+  private void validateAllTimeIntervals(TimeInterval[] intervals) {
     for (TimeInterval ti : intervals) {
       if (!ti.isValid()) {
         throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
       }
     }
-    return this;
   }
 
   @Override

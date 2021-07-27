@@ -71,7 +71,7 @@ import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 public class TaskanaEngineImpl implements TaskanaEngine {
 
   // must match the VERSION value in table
-  private static final String TASKANA_SCHEMA_VERSION = "4.8.0";
+  private static final String MINIMAL_TASKANA_SCHEMA_VERSION = "4.8.0";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
   private final TaskRoutingManager taskRoutingManager;
@@ -316,10 +316,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
     dbSchemaCreator.run();
 
-    if (!dbSchemaCreator.isValidSchemaVersion(TASKANA_SCHEMA_VERSION)) {
+    if (!dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
       throw new SystemException(
           "The Database Schema Version doesn't match the expected minimal version "
-              + TASKANA_SCHEMA_VERSION);
+              + MINIMAL_TASKANA_SCHEMA_VERSION);
     }
     new SecurityVerifier(
             taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName())

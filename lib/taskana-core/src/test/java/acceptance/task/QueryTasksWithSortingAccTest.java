@@ -25,9 +25,6 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @ExtendWith(JaasExtension.class)
 class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
-  private static final SortDirection ASC = SortDirection.ASCENDING;
-  private static final SortDirection DESC = SortDirection.DESCENDING;
-
   QueryTasksWithSortingAccTest() {
     super();
   }
@@ -40,7 +37,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByModified(DESC)
+            .orderByModified(SortDirection.DESCENDING)
             .orderByDomain(null)
             .list();
 
@@ -62,7 +59,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByTaskId(DESC)
+            .orderByTaskId(SortDirection.DESCENDING)
             .list();
 
     // test is only valid with at least 2 results
@@ -105,7 +102,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   @Test
   void should_sortByWorkbasketNameAsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(ASC).list();
+    List<TaskSummary> results =
+        taskService.createTaskQuery().orderByWorkbasketName(SortDirection.ASCENDING).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -118,7 +116,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
   @Test
   void should_sortByWorkbasketNameDsc_When_TaskQueryFilterIsApplied() {
     TaskService taskService = taskanaEngine.getTaskService();
-    List<TaskSummary> results = taskService.createTaskQuery().orderByWorkbasketName(DESC).list();
+    List<TaskSummary> results =
+        taskService.createTaskQuery().orderByWorkbasketName(SortDirection.DESCENDING).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -136,7 +135,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .receivedWithin(new TimeInterval(Instant.EPOCH, null))
-            .orderByReceived(ASC)
+            .orderByReceived(SortDirection.ASCENDING)
             .list();
 
     assertThat(results)
@@ -151,8 +150,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         taskService
             .createTaskQuery()
-            .orderByDomain(ASC)
-            .orderByName(ASC)
+            .orderByDomain(SortDirection.ASCENDING)
+            .orderByName(SortDirection.ASCENDING)
             .orderByCreated(null)
             .list();
 
@@ -175,7 +174,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .orderByPrimaryObjectReferenceSystem(SortDirection.DESCENDING)
             .orderByNote(null)
             .orderByDue(null)
-            .orderByOwner(ASC)
+            .orderByOwner(SortDirection.ASCENDING)
             .list();
 
     assertThat(results).hasSize(25);
@@ -202,10 +201,10 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByPrimaryObjectReferenceSystemInstance(DESC)
-            .orderByParentBusinessProcessId(ASC)
-            .orderByPlanned(ASC)
-            .orderByState(ASC)
+            .orderByPrimaryObjectReferenceSystemInstance(SortDirection.DESCENDING)
+            .orderByParentBusinessProcessId(SortDirection.ASCENDING)
+            .orderByPlanned(SortDirection.ASCENDING)
+            .orderByState(SortDirection.ASCENDING)
             .list();
 
     assertThat(results).hasSize(25);
@@ -232,8 +231,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(new KeyDomain("USER-B-2", "DOMAIN_B"))
-            .orderByPrimaryObjectReferenceCompany(DESC)
-            .orderByClaimed(ASC)
+            .orderByPrimaryObjectReferenceCompany(SortDirection.DESCENDING)
+            .orderByClaimed(SortDirection.ASCENDING)
             .list();
 
     assertThat(results).hasSize(25);
@@ -265,9 +264,9 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .stateIn(TaskState.READY)
             .orderByWorkbasketKey(null)
             .workbasketIdIn("WBI:100000000000000000000000000000000015")
-            .orderByPriority(DESC)
-            .orderByPrimaryObjectReferenceValue(ASC)
-            .orderByCompleted(DESC)
+            .orderByPriority(SortDirection.DESCENDING)
+            .orderByPrimaryObjectReferenceValue(SortDirection.ASCENDING)
+            .orderByCompleted(SortDirection.DESCENDING)
             .list();
 
     assertThat(results).hasSize(22);
@@ -295,7 +294,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .createTaskQuery()
             .stateIn(TaskState.READY)
             .workbasketIdIn("WBI:100000000000000000000000000000000015")
-            .orderByBusinessProcessId(ASC)
+            .orderByBusinessProcessId(SortDirection.ASCENDING)
             .orderByClassificationKey(null)
             .orderByPrimaryObjectReferenceType(SortDirection.DESCENDING)
             .list();

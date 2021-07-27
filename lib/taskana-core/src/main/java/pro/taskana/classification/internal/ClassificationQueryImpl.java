@@ -122,24 +122,24 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public ClassificationQuery createdWithin(TimeInterval... createdIn) {
+    validateAllTimeIntervals(createdIn);
     this.createdIn = createdIn;
-    for (TimeInterval ti : createdIn) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
-      }
-    }
     return this;
   }
 
   @Override
   public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
+    validateAllTimeIntervals(modifiedIn);
     this.modifiedIn = modifiedIn;
-    for (TimeInterval ti : modifiedIn) {
+    return this;
+  }
+
+  private void validateAllTimeIntervals(TimeInterval[] createdIn) {
+    for (TimeInterval ti : createdIn) {
       if (!ti.isValid()) {
         throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
       }
     }
-    return this;
   }
 
   @Override

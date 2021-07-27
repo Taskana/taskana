@@ -8,8 +8,6 @@ import acceptance.TaskTestMapper;
 import acceptance.TaskanaEngineProxy;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -287,10 +285,11 @@ class CreateTaskAccTest extends AbstractAccTest {
           mapper.getCustomAttributesAsString(createdTask.getAttachments().get(0).getId());
       Set<String> expectedPhrasesSet =
           IntStream.rangeClosed(1, 27)
-              .mapToObj(Integer::toString)
+              .mapToObj(String::valueOf)
               .map(
                   number ->
-                      "\"Property_" + number + "\":\"Property Value of Property_" + number + "\"")
+                      String.format(
+                          "\"Property_%s\":\"Property Value of Property_%s\"", number, number))
               .collect(Collectors.toSet());
       assertThat(customProperties).contains(expectedPhrasesSet);
     } finally {
@@ -376,8 +375,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .isEqualTo(readTask.getAttachments().get(0).getCreated());
     // assertThat(readTask.getAttachments().get(0).getClassification()).isNotNull();
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
-    assertThat(readTask.getReceived())
-        .isEqualTo(LocalDate.parse("2018-01-12").atStartOfDay().toInstant(ZoneOffset.UTC));
+    assertThat(readTask.getReceived()).isEqualTo(Instant.parse("2018-01-12T00:00:00Z"));
   }
 
   @WithAccessId(user = "user-1-1")

@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -97,7 +95,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
     assertThat(task)
         .extracting(TaskSummary::getReceived)
-        .isEqualTo(LocalDate.parse("2018-01-15").atStartOfDay().toInstant(ZoneOffset.UTC));
+        .isEqualTo(Instant.parse("2018-01-15T00:00:00Z"));
   }
 
   @WithAccessId(user = "user-1-1")
@@ -132,7 +130,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
     assertThat(task)
         .extracting(TaskSummary::getReceived)
-        .isEqualTo(LocalDate.parse("2018-01-12").atStartOfDay().toInstant(ZoneOffset.UTC));
+        .isEqualTo(Instant.parse("2018-01-12T00:00:00Z"));
   }
 
   @WithAccessId(user = "user-1-1")

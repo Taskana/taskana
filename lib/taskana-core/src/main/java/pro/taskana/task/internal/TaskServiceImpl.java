@@ -1463,8 +1463,7 @@ public class TaskServiceImpl implements TaskService {
       task.getAttachments().stream()
           .map(AttachmentSummary::getReceived)
           .filter(Objects::nonNull)
-          .sorted()
-          .findFirst()
+          .min(Instant::compareTo)
           .ifPresent(task::setReceived);
     }
   }
