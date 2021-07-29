@@ -14,7 +14,8 @@ public class SecurityVerifier {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityVerifier.class);
   private static final String SECURITY_FLAG_COLUMN_NAME = "ENFORCE_SECURITY";
-  private static final String INSERT_SECURITY_FLAG = "INSERT INTO %s.CONFIGURATION VALUES (%b)";
+  private static final String INSERT_SECURITY_FLAG =
+      "INSERT INTO %s.CONFIGURATION VALUES (%b, null)";
   private static final String SELECT_SECURITY_FLAG = "SELECT %s FROM %s.CONFIGURATION";
   private final String schemaName;
   private final DataSource dataSource;
