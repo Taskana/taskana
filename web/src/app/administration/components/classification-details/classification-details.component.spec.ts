@@ -90,7 +90,7 @@ const formsValidatorServiceSpy: Partial<FormsValidatorService> = {
 };
 
 const notificationServiceSpy: Partial<NotificationService> = {
-  showWarning: jest.fn().mockReturnValue(of()),
+  showError: jest.fn().mockReturnValue(of()),
   showSuccess: jest.fn().mockReturnValue(of()),
   showDialog: jest.fn().mockReturnValue(of())
 };
@@ -157,9 +157,9 @@ describe('ClassificationDetailsComponent', () => {
   it('should show warning when onCopy() is called and isCreatingNewClassification is true', () => {
     component.isCreatingNewClassification = true;
     const notificationService = TestBed.inject(NotificationService);
-    const showWarningSpy = jest.spyOn(notificationService, 'showWarning');
+    const showErrorSpy = jest.spyOn(notificationService, 'showError');
     component.onCopy();
-    expect(showWarningSpy).toHaveBeenCalled();
+    expect(showErrorSpy).toHaveBeenCalled();
   });
 
   it('should dispatch action when onCopy() is called and isCreatingNewClassification is false', async () => {

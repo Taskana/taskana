@@ -40,10 +40,6 @@ export class NotificationService {
     );
   }
 
-  showWarning(warningKey: string, messageVariables: object = {}) {
-    this.toastService.warning(this.obtainMessageService.getMessage(warningKey, messageVariables, messageTypes.WARNING));
-  }
-
   showInformation(informationKey: string, messageVariables: object = {}) {
     this.toastService.show(
       `

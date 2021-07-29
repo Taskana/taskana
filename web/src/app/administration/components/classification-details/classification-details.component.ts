@@ -126,7 +126,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onCopy() {
     if (this.isCreatingNewClassification) {
-      this.notificationsService.showWarning('CLASSIFICATION_COPY_NOT_CREATED');
+      this.notificationsService.showError('CLASSIFICATION_COPY_NOT_CREATED');
     } else {
       this.store.dispatch(new CopyClassification());
     }
