@@ -12,7 +12,7 @@
     <mat-form-field appearance="legacy">
       <mat-select [value]="selectedDomain" matTooltip="Select domain">
         <mat-option *ngFor="let domain of domains" [value]="domain" (click)="switchDomain(domain)">
-          {{domain? domain: 'MASTER DOMAIN'}}
+          {{domain? domain : 'MASTER DOMAIN'}}
         </mat-option>
       </mat-select>
     </mat-form-field>

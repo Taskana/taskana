@@ -19,12 +19,15 @@ export const messageByErrorCode = {
       'The service level has to be a positive ISO-8601 duration format and only whole days are supported. ' +
       "The format must be 'PnD'.",
     INVALID_ARGUMENT: 'A method was called with an invalid argument.',
+    EMPTY_FIELDS: 'There are empty fields which are required',
+    OWNER_NOT_VALID: 'The {owner} introduced is not valid',
 
     CLASSIFICATION_IN_USE:
       'Classification with key {classificationKey} in domain {domain} cannot be deleted since there are Tasks associated with this Classification.',
     CLASSIFICATION_ALREADY_EXISTS:
       'Classification with key {classificationKey} cannot be saved since a Classification with the same key already exists in domain {domain}',
     CLASSIFICATION_WITH_ID_NOT_FOUND: 'Classification with id {classificationId} cannot be found',
+    CLASSIFICATION_COPY_NOT_CREATED: 'Cannot copy a not created Classification',
 
     WORKBASKET_WITH_ID_NOT_FOUND: 'Workbasket with id {workbasketId} cannot be found',
     WORKBASKET_WITH_KEY_NOT_FOUND: 'Workbasket with key {workbasketKey} cannot be found in domain {domain}',
@@ -83,12 +86,6 @@ export const messageByErrorCode = {
     TASK_UPDATE: 'Task with name {taskName} was updated',
     TASK_DELETE: 'Task with name {taskName} was deleted',
     TASK_RESTORE: 'Task restored'
-  },
-
-  [messageTypes.WARNING]: {
-    CLASSIFICATION_COPY_NOT_CREATED: 'Cannot copy a not created Classification',
-    EMPTY_FIELDS: 'There are empty fields which are required',
-    OWNER_NOT_VALID: 'The {owner} introduced is not valid'
   },
 
   [messageTypes.INFORMATION]: {

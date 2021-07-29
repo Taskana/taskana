@@ -53,9 +53,9 @@ export class FormsValidatorService {
     const responseOwner = new ResponseOwner(values[1]);
     if (!(values[0] && responseOwner.valid)) {
       if (!responseOwner.valid) {
-        this.notificationsService.showWarning('OWNER_NOT_VALID', { owner: responseOwner.field });
+        this.notificationsService.showError('OWNER_NOT_VALID', { owner: responseOwner.field });
       } else {
-        this.notificationsService.showWarning('EMPTY_FIELDS');
+        this.notificationsService.showError('EMPTY_FIELDS');
       }
     }
     return values[0] && responseOwner.valid;
@@ -84,7 +84,7 @@ export class FormsValidatorService {
       result = result && responseOwner.valid;
     });
     if (!result) {
-      this.notificationsService.showWarning('OWNER_NOT_VALID', {
+      this.notificationsService.showError('OWNER_NOT_VALID', {
         owner: responseOwner ? responseOwner.field : 'owner'
       });
     }
