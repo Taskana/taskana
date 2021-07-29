@@ -107,7 +107,7 @@ class TaskanaSecurityConfigAccTest {
 
       String sql =
           String.format(
-              "INSERT INTO %s.CONFIGURATION VALUES (%b)",
+              "INSERT INTO %s.CONFIGURATION VALUES (%b, null)",
               TaskanaEngineTestConfiguration.getSchemaName(), securityFlag);
 
       Statement statement = connection.createStatement();
