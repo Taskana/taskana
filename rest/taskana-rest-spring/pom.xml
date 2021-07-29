@@ -164,6 +164,12 @@
       <artifactId>spring-boot-starter-validation</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit</artifactId>
+      <version>0.20.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

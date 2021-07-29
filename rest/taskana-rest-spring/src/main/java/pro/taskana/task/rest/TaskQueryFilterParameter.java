@@ -424,6 +424,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'received-from' or 'received-until'.
    */
+  @JsonProperty("received")
   private final Instant[] received;
 
   /**

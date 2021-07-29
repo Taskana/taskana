@@ -13,6 +13,7 @@ public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     implements QueryParameter<Q, List<T>> {
 
   /** Request a specific page. Requires the definition of the 'page-size'. */
+  @JsonProperty("page")
   @Min(1)
   private final Integer page;
 
