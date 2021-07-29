@@ -12,6 +12,7 @@ import pro.taskana.workbasket.api.WorkbasketType;
 public class WorkbasketQueryFilterParameter implements QueryParameter<WorkbasketQuery, Void> {
 
   /** Filter by the name of the workbasket. This is an exact match. */
+  @JsonProperty("name")
   private final String[] name;
 
   /**
@@ -23,6 +24,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   private final String[] nameLike;
 
   /** Filter by the key of the workbasket. This is an exact match. */
+  @JsonProperty("key")
   private final String[] key;
 
   /**
@@ -34,6 +36,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   private final String[] keyLike;
 
   /** Filter by the owner of the workbasket. This is an exact match. */
+  @JsonProperty("owner")
   private final String[] owner;
 
   /**
@@ -53,9 +56,11 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   private final String[] descriptionLike;
 
   /** Filter by the domain of the workbasket. This is an exact match. */
+  @JsonProperty("domain")
   private final String[] domain;
 
   /** Filter by the type of the workbasket. This is an exact match. */
+  @JsonProperty("type")
   private final WorkbasketType[] type;
 
   /** Filter by the required permission for the workbasket. */

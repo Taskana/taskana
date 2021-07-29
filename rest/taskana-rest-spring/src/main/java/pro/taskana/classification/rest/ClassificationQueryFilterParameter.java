@@ -16,6 +16,7 @@ public class ClassificationQueryFilterParameter
     implements QueryParameter<ClassificationQuery, Void> {
 
   /** Filter by the name of the classification. This is an exact match. */
+  @JsonProperty("name")
   private final String[] name;
 
   /**
@@ -27,15 +28,19 @@ public class ClassificationQueryFilterParameter
   private final String[] nameLike;
 
   /** Filter by the key of the classification. This is an exact match. */
+  @JsonProperty("key")
   private final String[] key;
 
   /** Filter by the category of the classification. This is an exact match. */
+  @JsonProperty("category")
   private final String[] category;
 
   /** Filter by the domain of the classification. This is an exact match. */
+  @JsonProperty("domain")
   private final String[] domain;
 
   /** Filter by the type of the classification. This is an exact match. */
+  @JsonProperty("type")
   private final String[] type;
 
   /**
