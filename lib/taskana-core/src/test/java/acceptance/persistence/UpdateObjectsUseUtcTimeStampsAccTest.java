@@ -80,7 +80,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
 
     TimeZone originalZone = TimeZone.getDefault();

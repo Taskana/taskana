@@ -35,6 +35,11 @@ public class TaskSummaryRepresentationModel
    */
   protected Instant planned;
   /**
+   * Timestamp when the task has been received. It notes when the surrounding process started and
+   * not just when the actual task was created.
+   */
+  protected Instant received;
+  /**
    * Timestamp when the task is due. The actual completion of the task should be between PLANNED and
    * DUE.
    */
@@ -157,6 +162,14 @@ public class TaskSummaryRepresentationModel
 
   public void setPlanned(Instant planned) {
     this.planned = planned;
+  }
+
+  public Instant getReceived() {
+    return received;
+  }
+
+  public void setReceived(Instant received) {
+    this.received = received;
   }
 
   public Instant getDue() {

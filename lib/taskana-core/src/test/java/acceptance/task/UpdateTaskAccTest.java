@@ -34,6 +34,7 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 
 /** Acceptance test for all "update task" scenarios. */
@@ -324,4 +325,27 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     assertThat(retrievedUpdatedTask.getCallbackInfo()).isEqualTo(callbackInfo);
   }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_UpdateRetrieved_When_UpdateTaskIsCalled() throws Exception {
+
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+
+    Task createdTask = taskService.createTask(newTask);
+
+    Task retrievedTask = taskService.getTask(createdTask.getId());
+    Instant retrievedTime = Instant.parse("2019-09-13T08:44:17.588Z");
+    retrievedTask.setReceived(retrievedTime);
+    taskService.updateTask(retrievedTask);
+
+    Task retrievedUpdatedTask = taskService.getTask(createdTask.getId());
+
+    assertThat(retrievedUpdatedTask).extracting(TaskSummary::getReceived).isEqualTo(retrievedTime);
+  }
+
+
 }

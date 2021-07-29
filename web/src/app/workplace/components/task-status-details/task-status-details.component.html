@@ -28,12 +28,24 @@
              name="task.state">
     </mat-form-field>
 
+    <div class="task-status-details__field--group">
     <!-- TASK READ -->
     <mat-form-field appearance="outline">
       <mat-label>Task read</mat-label>
       <label for="task-read"></label>
       <input matInput type="text" disabled id="task-read" placeholder="Read" [(ngModel)]="task.read" name="task.read">
     </mat-form-field>
+
+      <span class="task-status-details__gap"></span>
+    <!-- TRANSFERRED -->
+    <mat-form-field appearance="outline">
+      <mat-label>Transferred</mat-label>
+      <label for="task-transferred"></label>
+      <input matInput type="text" disabled id="task-transferred" placeholder="Transferred" [(ngModel)]="task.transferred"
+             name="task.transferred">
+    </mat-form-field>
+
+    </div>
 
   </div>
 
@@ -64,12 +76,12 @@
              name="task.created">
     </mat-form-field>
 
-    <!-- TRANSFERRED -->
+    <!-- RECEIVED -->
     <mat-form-field appearance="outline">
-      <mat-label>Transferred</mat-label>
-      <label for="task-transferred"></label>
-      <input matInput type="text" disabled id="task-transferred" placeholder="Transferred" [(ngModel)]="task.transferred"
-             name="task.transferred">
+      <mat-label>Received</mat-label>
+      <label for="task-received"></label>
+      <input matInput type="text" disabled id="task-received" placeholder="Received" [(ngModel)]="task.received"
+             name="task.received">
     </mat-form-field>
 
   </div>

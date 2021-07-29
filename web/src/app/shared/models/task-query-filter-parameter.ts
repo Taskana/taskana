@@ -23,6 +23,9 @@ export interface TaskQueryFilterParameter {
   due?: string[];
   'due-from'?: string[];
   'due-until'?: string[];
+  received?: string[];
+  'received-from'?: string[];
+  'received-until'?: string[];
   'wildcard-search-fields'?: string[];
   'wildcard-search-value'?: string[];
   'external-id'?: string[];

@@ -9,7 +9,10 @@ import acceptance.TaskanaEngineProxy;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -89,6 +92,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getCompleted()).isNull();
     assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
     assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
+    assertThat(createdTask.getReceived()).isNull();
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
@@ -187,6 +191,8 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     Map<String, String> customAttributesForCreate = createSimpleCustomPropertyMap(13);
     newTask.setCustomAttributeMap(customAttributesForCreate);
+    Instant expectedReceived = Instant.parse("2019-09-13T08:44:17.588Z");
+    newTask.setReceived(expectedReceived);
     Task createdTask = taskService.createTask(newTask);
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
@@ -200,6 +206,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getCompleted()).isNull();
     assertThat(createdTask.getModified()).isEqualTo(createdTask.getCreated());
     assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
+    assertThat(createdTask.getReceived()).isEqualTo(expectedReceived);
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(2);
@@ -259,7 +266,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             customAttributesForCreate));
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
@@ -276,16 +283,15 @@ class CreateTaskAccTest extends AbstractAccTest {
       engineProxy.openConnection();
       String customProperties =
           mapper.getCustomAttributesAsString(createdTask.getAttachments().get(0).getId());
-      assertThat(customProperties)
-          .contains("\"Property_26\":\"Property Value of Property_26\"")
-          .contains("\"Property_25\":\"Property Value of Property_25\"")
-          .contains("\"Property_21\":\"Property Value of Property_21\"")
-          .contains("\"Property_19\":\"Property Value of Property_19\"")
-          .contains("\"Property_16\":\"Property Value of Property_16\"")
-          .contains("\"Property_12\":\"Property Value of Property_12\"")
-          .contains("\"Property_11\":\"Property Value of Property_11\"")
-          .contains("\"Property_7\":\"Property Value of Property_7\"")
-          .contains("\"Property_6\":\"Property Value of Property_6\"");
+      Set<String> expectedPhrasesSet =
+          IntStream.rangeClosed(1, 27)
+              .mapToObj(String::valueOf)
+              .map(
+                  number ->
+                      String.format(
+                          "\"Property_%s\":\"Property Value of Property_%s\"", number, number))
+              .collect(Collectors.toSet());
+      assertThat(customProperties).contains(expectedPhrasesSet);
     } finally {
       engineProxy.returnConnection();
     }
@@ -323,6 +329,8 @@ class CreateTaskAccTest extends AbstractAccTest {
   @Test
   void testCreateExternalTaskWithMultipleAttachments() throws Exception {
 
+    Instant earlierInstant = Instant.parse("2018-01-12T00:00:00Z");
+    Instant laterInstant = Instant.parse("2018-01-15T00:00:00Z");
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
     newTask.setPrimaryObjRef(
@@ -337,7 +345,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            laterInstant,
             createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
         createAttachment(
@@ -349,7 +357,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            earlierInstant,
             createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
 
@@ -369,6 +377,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .isEqualTo(readTask.getAttachments().get(0).getCreated());
     // assertThat(readTask.getAttachments().get(0).getClassification()).isNotNull();
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
+    assertThat(readTask.getReceived()).isEqualTo(earlierInstant);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -390,7 +399,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
         createAttachment(
@@ -402,7 +411,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
 
@@ -448,14 +457,18 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     testCreateTask.accept(
         createAttachment(
-            "DOCTYPE_DEFAULT", null, "E-MAIL", "2018-01-15", createSimpleCustomPropertyMap(3)));
+            "DOCTYPE_DEFAULT",
+            null,
+            "E-MAIL",
+            Instant.parse("2018-01-15T00:00:00Z"),
+            createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
         createAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
@@ -468,7 +481,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 null,
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
@@ -481,7 +494,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
   }
 
@@ -616,7 +629,7 @@ class CreateTaskAccTest extends AbstractAccTest {
                 "ArchiveId",
                 "12345678901234567890123456789012345678901234567890"),
             "E-MAIL",
-            "2018-01-15",
+            Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
     Task createdTask = taskService.createTask(newTask);
     Task readTask = taskService.getTask(createdTask.getId());
@@ -762,7 +775,6 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     TaskImpl task = (TaskImpl) makeNewTask(taskService);
     task.addAttachment(attachment);
-
     assertThatThrownBy(() -> taskService.createTask(task))
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessageContaining("ClassificationKey of Attachment must not be empty.");

@@ -12,10 +12,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.common.api.exceptions.SystemException;
 
+@DisabledOnOs(
+    value = OS.WINDOWS,
+    disabledReason = "Deleting Windows temp dir is a junit bug. Fixed with Junit 5.8.0")
 class FileLoaderUtilTest {
   @TempDir Path tempDir;
 

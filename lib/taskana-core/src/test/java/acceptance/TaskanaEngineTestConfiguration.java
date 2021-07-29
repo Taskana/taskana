@@ -21,8 +21,8 @@ public final class TaskanaEngineTestConfiguration {
   private static String schemaName = null;
 
   static {
-    String userHomeDirectroy = System.getProperty("user.home");
-    String propertiesFileName = userHomeDirectroy + "/taskanaUnitTest.properties";
+    String userHomeDirectory = System.getProperty("user.home");
+    String propertiesFileName = userHomeDirectory + "/taskanaUnitTest.properties";
     File f = new File(propertiesFileName);
     if (f.exists() && !f.isDirectory()) {
       DATA_SOURCE = createDataSourceFromProperties(propertiesFileName);

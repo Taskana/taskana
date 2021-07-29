@@ -5,7 +5,11 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.whereInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import pro.taskana.task.api.TaskQueryColumnName;
 
 public class TaskQuerySqlProvider {
   private static final String OPENING_SCRIPT_TAG = "<script>";
@@ -25,14 +29,7 @@ public class TaskQuerySqlProvider {
   public static String queryTaskSummaries() {
     return OPENING_SCRIPT_TAG
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
-        + "t.ID, t.EXTERNAL_ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, "
-        + "t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, "
-        + "t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, t.DOMAIN, "
-        + "t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, "
-        + "t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, "
-        + "t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, "
-        + "t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10, t.CUSTOM_11, t.CUSTOM_12, "
-        + "t.CUSTOM_13, t.CUSTOM_14, t.CUSTOM_15, t.CUSTOM_16"
+        + commonSelectFields()
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
         + ", a.CLASSIFICATION_ID, a.CLASSIFICATION_KEY, a.CHANNEL, a.REF_VALUE, a.RECEIVED"
         + "</if>"
@@ -53,17 +50,7 @@ public class TaskQuerySqlProvider {
         + "LEFT JOIN WORKBASKET AS w ON t.WORKBASKET_ID = w.ID "
         + "</if>"
         + OPENING_WHERE_TAG
-        + "<if test='accessIdIn != null'> "
-        + "AND t.WORKBASKET_ID IN ("
-        + "SELECT WID from ("
-        + "SELECT WORKBASKET_ID "
-        + "as WID, MAX(PERM_READ::int) "
-        + "as MAX_READ FROM WORKBASKET_ACCESS_LIST "
-        + "AS s where ACCESS_ID IN "
-        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
-        + "group by WORKBASKET_ID) "
-        + "AS f where max_read = 1) "
-        + "</if> "
+        + checkForAuthorization()
         + commonTaskWhereStatement()
         + WILDCARD_LIKE_STATEMENT
         + commonTaskObjectReferenceWhereStatement()
@@ -82,29 +69,10 @@ public class TaskQuerySqlProvider {
   public static String queryTaskSummariesDb2() {
     return OPENING_SCRIPT_TAG
         + "WITH X ("
-        + "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, "
-        + "DESCRIPTION, NOTE, PRIORITY, STATE, TCLASSIFICATION_KEY, CLASSIFICATION_CATEGORY, "
-        + "CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, BUSINESS_PROCESS_ID, "
-        + "PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, "
-        + "POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, "
-        + "CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, "
-        + "CUSTOM_14, CUSTOM_15, CUSTOM_16"
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED"
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
+        + db2selectFields()
         + ") AS ("
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
-        + "t.ID, t.EXTERNAL_ID, t.CREATED, t.CLAIMED, t.COMPLETED, t.MODIFIED, t.PLANNED, t.DUE, "
-        + "t.NAME, t.CREATOR, t.DESCRIPTION, t.NOTE, t.PRIORITY, t.STATE, t.CLASSIFICATION_KEY, "
-        + "t.CLASSIFICATION_CATEGORY, t.CLASSIFICATION_ID, t.WORKBASKET_ID, t.DOMAIN, "
-        + "t.WORKBASKET_KEY, t.BUSINESS_PROCESS_ID, t.PARENT_BUSINESS_PROCESS_ID, t.OWNER, "
-        + "t.POR_COMPANY, t.POR_SYSTEM, t.POR_INSTANCE, t.POR_TYPE, t.POR_VALUE, t.IS_READ, "
-        + "t.IS_TRANSFERRED, t.CUSTOM_1, t.CUSTOM_2, t.CUSTOM_3, t.CUSTOM_4, t.CUSTOM_5, "
-        + "t.CUSTOM_6, t.CUSTOM_7, t.CUSTOM_8, t.CUSTOM_9, t.CUSTOM_10, t.CUSTOM_11, t.CUSTOM_12, "
-        + "t.CUSTOM_13, t.CUSTOM_14, t.CUSTOM_15, t.CUSTOM_16"
+        + commonSelectFields()
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
         + ", a.CLASSIFICATION_ID, a.CLASSIFICATION_KEY, a.CHANNEL, a.REF_VALUE, a.RECEIVED"
         + "</if>"
@@ -130,33 +98,10 @@ public class TaskQuerySqlProvider {
         + WILDCARD_LIKE_STATEMENT
         + CLOSING_WHERE_TAG
         + "), Y ("
-        + "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, CREATOR, "
-        + "DESCRIPTION, NOTE, PRIORITY, STATE, TCLASSIFICATION_KEY, CLASSIFICATION_CATEGORY, "
-        + "CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, BUSINESS_PROCESS_ID, "
-        + "PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, "
-        + "POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, "
-        + "CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, "
-        + "CUSTOM_14, CUSTOM_15, CUSTOM_16"
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED"
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
+        + db2selectFields()
         + ", FLAG ) AS ("
-        + "SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, "
-        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, TCLASSIFICATION_KEY, "
-        + "CLASSIFICATION_CATEGORY, CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, "
-        + "BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, "
-        + "POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, "
-        + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
-        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16"
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED"
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
+        + "SELECT "
+        + db2selectFields()
         + ", ("
         + "SELECT 1 "
         + "FROM WORKBASKET_ACCESS_LIST s "
@@ -167,19 +112,8 @@ public class TaskQuerySqlProvider {
         + "and </if>"
         + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only ) "
         + "FROM X )"
-        + "SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, DUE, NAME, "
-        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, TCLASSIFICATION_KEY, "
-        + "CLASSIFICATION_CATEGORY, CLASSIFICATION_ID, WORKBASKET_ID, DOMAIN, WORKBASKET_KEY, "
-        + "BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, "
-        + "POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, "
-        + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
-        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16"
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, RECEIVED "
-        + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME </if>"
+        + "SELECT "
+        + db2selectFields()
         + "FROM Y "
         + "WHERE FLAG = 1 "
         + "<if test='!orderBy.isEmpty()'>"
@@ -206,15 +140,7 @@ public class TaskQuerySqlProvider {
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
         + "</if>"
         + OPENING_WHERE_TAG
-        + "<if test='accessIdIn != null'> "
-        + "AND t.WORKBASKET_ID IN ("
-        + "select WID from ("
-        + "select WORKBASKET_ID as WID, MAX(PERM_READ::int) "
-        + "as MAX_READ FROM WORKBASKET_ACCESS_LIST AS s "
-        + "where ACCESS_ID IN "
-        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
-        + "group by WORKBASKET_ID) AS f where max_read = 1) "
-        + "</if> "
+        + checkForAuthorization()
         + commonTaskWhereStatement()
         + commonTaskObjectReferenceWhereStatement()
         + WILDCARD_LIKE_STATEMENT
@@ -267,15 +193,7 @@ public class TaskQuerySqlProvider {
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
         + "</if>"
         + OPENING_WHERE_TAG
-        + "<if test='accessIdIn != null'> "
-        + "AND t.WORKBASKET_ID IN ("
-        + "select WID from ("
-        + "select WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ FROM WORKBASKET_ACCESS_LIST "
-        + "where ACCESS_ID IN "
-        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
-        + "group by WORKBASKET_ID) "
-        + "where max_read = 1) "
-        + "</if> "
+        + checkForAuthorization()
         + commonTaskWhereStatement()
         + CLOSING_WHERE_TAG
         + "<if test='!orderBy.isEmpty()'>"
@@ -317,6 +235,44 @@ public class TaskQuerySqlProvider {
         + "</if> "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
         + CLOSING_SCRIPT_TAG;
+  }
+
+  private static String commonSelectFields() {
+    // includes only the names that start with a t, because other columns are conditional
+    return Arrays.stream(TaskQueryColumnName.values())
+        .map(TaskQueryColumnName::toString)
+        .filter(column -> column.startsWith("t"))
+        .collect(Collectors.joining(", "));
+  }
+
+  private static String db2selectFields() {
+    // needs to be the same order as the commonSelectFields (TaskQueryColumnValue)
+    return "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, "
+        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, STATE, CLASSIFICATION_CATEGORY, "
+        + "TCLASSIFICATION_KEY, CLASSIFICATION_ID, "
+        + "WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, "
+        + "BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, "
+        + "POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, "
+        + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
+        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16"
+        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if>"
+        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME</if>"
+        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
+        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED"
+        + "</if>"
+        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if>";
+  }
+
+  private static String checkForAuthorization() {
+    return "<if test='accessIdIn != null'> AND t.WORKBASKET_ID IN ("
+        + "SELECT WID "
+        + "FROM ("
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ "
+        + "FROM WORKBASKET_ACCESS_LIST AS s where ACCESS_ID IN "
+        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
+        + "GROUP by WORKBASKET_ID) as f "
+        + "WHERE MAX_READ = 1) "
+        + "</if>";
   }
 
   private static String commonTaskObjectReferenceWhereStatement() {
@@ -375,6 +331,7 @@ public class TaskQuerySqlProvider {
     whereInTime("completedIn", "t.COMPLETED", sb);
     whereInTime("modifiedIn", "t.MODIFIED", sb);
     whereInTime("plannedIn", "t.PLANNED", sb);
+    whereInTime("receivedIn", "t.RECEIVED", sb);
     whereInTime("dueIn", "t.DUE", sb);
     whereInTime("attachmentReceivedIn", "a.RECEIVED", sb);
     whereNotIn("classificationKeyNotIn", "t.CLASSIFICATION_KEY", sb);

@@ -406,6 +406,36 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant plannedUntil;
 
   /**
+   * Filter by a time interval within which the task was received. To create an open interval you
+   * can just leave it blank.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'received-from' or 'received-until'.
+   */
+  private final Instant[] received;
+
+  /**
+   * Filter since a given received timestamp.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'received'.
+   */
+  @JsonProperty("received-from")
+  private final Instant receivedFrom;
+
+  /**
+   * Filter until a given received timestamp.
+   *
+   * <p>The format is ISO-8601.
+   *
+   * <p>This parameter can't be used together with 'received'.
+   */
+  @JsonProperty("received-until")
+  private final Instant receivedUntil;
+
+  /**
    * Filter by a time interval within which the task was due. To create an open interval you can
    * just leave it blank.
    *
@@ -778,6 +808,9 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "planned",
     "planned-from",
     "planned-until",
+    "received",
+    "received-from",
+    "received-until",
     "due",
     "due-from",
     "due-until",
@@ -896,6 +929,9 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       Instant[] planned,
       Instant plannedFrom,
       Instant plannedUntil,
+      Instant[] received,
+      Instant receivedFrom,
+      Instant receivedUntil,
       Instant[] due,
       Instant dueFrom,
       Instant dueUntil,
@@ -1013,6 +1049,9 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.planned = planned;
     this.plannedFrom = plannedFrom;
     this.plannedUntil = plannedUntil;
+    this.received = received;
+    this.receivedFrom = receivedFrom;
+    this.receivedUntil = receivedUntil;
     this.due = due;
     this.dueFrom = dueFrom;
     this.dueUntil = dueUntil;
@@ -1183,6 +1222,10 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     if (plannedFrom != null || plannedUntil != null) {
       query.plannedWithin(new TimeInterval(plannedFrom, plannedUntil));
     }
+    Optional.ofNullable(received).map(this::extractTimeIntervals).ifPresent(query::receivedWithin);
+    if (receivedFrom != null || receivedUntil != null) {
+      query.receivedWithin(new TimeInterval(receivedFrom, receivedUntil));
+    }
     Optional.ofNullable(due).map(this::extractTimeIntervals).ifPresent(query::dueWithin);
     if (dueFrom != null || dueUntil != null) {
       query.dueWithin(new TimeInterval(dueFrom, dueUntil));
@@ -1269,6 +1312,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
               + "with the params 'planned-from'  and / or 'planned-until'");
     }
 
+    if (received != null && (receivedFrom != null || receivedUntil != null)) {
+      throw new IllegalArgumentException(
+          "It is prohibited to use the param 'received' in combination "
+              + "with the params 'received-from'  and / or 'received-until'");
+    }
+
     if (due != null && (dueFrom != null || dueUntil != null)) {
       throw new IllegalArgumentException(
           "It is prohibited to use the param 'due' in combination with the params "
@@ -1299,6 +1348,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     if (planned != null && planned.length % 2 != 0) {
       throw new InvalidArgumentException(
           "provided length of the property 'planned' is not dividable by 2");
+    }
+
+    if (received != null && received.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'received' is not dividable by 2");
     }
 
     if (due != null && due.length % 2 != 0) {

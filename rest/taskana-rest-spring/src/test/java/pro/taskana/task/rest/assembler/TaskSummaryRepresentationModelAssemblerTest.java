@@ -88,6 +88,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setName("name");
     task.setCreator("creator");
@@ -152,6 +153,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     repModel.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    repModel.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
     repModel.setName("name");
     repModel.setCreator("creator");
@@ -235,6 +237,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setCompleted(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setModified(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setPlanned(Instant.parse("2019-09-13T08:44:17.588Z"));
+    task.setReceived(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setDue(Instant.parse("2019-09-13T08:44:17.588Z"));
     task.setName("name");
     task.setCreator("creator");
@@ -284,6 +287,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     assertThat(taskSummary.getCompleted()).isEqualTo(repModel.getCompleted());
     assertThat(taskSummary.getModified()).isEqualTo(repModel.getModified());
     assertThat(taskSummary.getPlanned()).isEqualTo(repModel.getPlanned());
+    assertThat(taskSummary.getReceived()).isEqualTo(repModel.getReceived());
     assertThat(taskSummary.getDue()).isEqualTo(repModel.getDue());
     assertThat(taskSummary.getName()).isEqualTo(repModel.getName());
     assertThat(taskSummary.getCreator()).isEqualTo(repModel.getCreator());
