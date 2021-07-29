@@ -24,6 +24,7 @@ import pro.taskana.task.api.models.ObjectReference;
 public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void> {
 
   /** Filter by the name of the task. This is an exact match. */
+  @JsonProperty("name")
   private final String[] name;
   /**
    * Filter by the name of the task. This results in a substring search (% is appended to the front
@@ -34,9 +35,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] nameLike;
 
   /** Filter by the priority of the task. This is an exact match. */
+  @JsonProperty("priority")
   private final int[] priority;
 
   /** Filter by the task state. This is an exact match. */
+  @JsonProperty("state")
   private final TaskState[] state;
 
   /** Filter by the classification id of the task. This is an exact match. */
@@ -138,6 +141,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @JsonProperty("created")
   private final Instant[] created;
 
   /**
@@ -166,6 +170,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @JsonProperty("claimed")
   private final Instant[] claimed;
 
   /**
@@ -174,6 +179,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @JsonProperty("completed")
   private final Instant[] completed;
 
   /**
@@ -202,6 +208,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @JsonProperty("modified")
   private final Instant[] modified;
 
   /** Filter by the classification category of the task. This is an exact match. */
@@ -280,9 +287,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] workbasketKeys;
 
   /** Filter by domain of the task. This is an exact match. */
+  @JsonProperty("domain")
   private final String domain;
 
   /** Filter by owner of the task. This is an exact match. */
+  @JsonProperty("owner")
   private final String[] owner;
 
   /**
@@ -294,6 +303,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] ownerLike;
 
   /** Filter by creator of the task. This is an exact match. */
+  @JsonProperty("creator")
   private final String[] creator;
 
   /**
@@ -383,6 +393,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned-from' or 'planned-until'.
    */
+  @JsonProperty("planned")
   private final Instant[] planned;
 
   /**
@@ -443,6 +454,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due-from' or 'due-until'.
    */
+  @JsonProperty("due")
   private final Instant[] due;
 
   /**

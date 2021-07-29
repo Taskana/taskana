@@ -21,6 +21,7 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
    * of sort-by and order declarations have to match. Alternatively the value can be omitted. If
    * done so the default sort order (ASCENDING) will be applied to every sort-by value.
    */
+  @JsonProperty("order")
   private final List<SortDirection> order;
 
   // this is only necessary because spring-auto-rest-docs can't resolve Enum[] data types.
