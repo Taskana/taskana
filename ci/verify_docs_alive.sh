@@ -5,6 +5,7 @@ BASE_URL=https://taskana.mybluemix.net/taskana
 
 test 200 -eq $(curl -sw %{http_code} -o /dev/null "$BASE_URL/docs/rest/rest-api.html")
 test 200 -eq $(curl -sw %{http_code} -o /dev/null "$BASE_URL/docs/rest/simplehistory-rest-api.html")
+test 200 -eq $(curl -sw %{http_code} -o /dev/null "$BASE_URL/docs/rest/routing-rest-api.html")
 for module in taskana-core taskana-spring; do
   test 200 -eq $(curl -sw %{http_code} -o /dev/null "$BASE_URL/docs/java/$module/pro/taskana/package-summary.html")
 done

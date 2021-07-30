@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.3.5">
+  <decision id="workbasketRouting" name="workbasketRouting">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="BKN">
+        <inputExpression id="InputExpression1816276523" typeRef="string">
+          <text>task.primaryObjRef.value</text>
+        </inputExpression>
+      </input>
+      <input id="input2" label="ClassificationKey">
+        <inputExpression id="InputExpression475650354" typeRef="string" expressionLanguage="javascript">
+          <text>task.classificationSummary.key + task.note</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="workbasketKey" name="workbasketKey" typeRef="string" />
+      <output id="output2" label="domain" name="domain" typeRef="string" />
+      <rule id="excelRow6">
+        <description>VIP-Team</description>
+        <inputEntry id="B6">
+          <text>"06260203"</text>
+        </inputEntry>
+        <inputEntry id="C6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="D6">
+          <text>"GPK_ARS"</text>
+        </outputEntry>
+        <outputEntry id="E6">
+          <text>"ULAK-D"</text>
+        </outputEntry>
+      </rule>
+      <rule id="excelRow7">
+        <description>Second-Level Team 1</description>
+        <inputEntry id="B7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="C7">
+          <text>"matches(cellInput,"12924|12925|")"</text>
+        </inputEntry>
+        <outputEntry id="D7">
+          <text>"GPK_ARS_4"</text>
+        </outputEntry>
+        <outputEntry id="E7">
+          <text>"ULAK-D"</text>
+        </outputEntry>
+      </rule>
+      <rule id="excelRow8">
+        <description>ULAK-D</description>
+        <inputEntry id="B8">
+          <text>"12345678"</text>
+        </inputEntry>
+        <inputEntry id="C8">
+          <text>"contains("someString")"</text>
+        </inputEntry>
+        <outputEntry id="D8">
+          <text>"GPK_ARS_3"</text>
+        </outputEntry>
+        <outputEntry id="E8">
+          <text>"ULAK-D"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

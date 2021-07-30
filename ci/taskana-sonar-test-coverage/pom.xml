@@ -66,6 +66,11 @@
       <artifactId>taskana-rest-spring</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-routing-rest</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- all SPI dependencies -->
     <dependency>

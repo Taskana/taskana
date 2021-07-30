@@ -94,6 +94,11 @@
     <version.aspectj-maven-plugin>1.14.0</version.aspectj-maven-plugin>
     <version.aspectj>1.9.7</version.aspectj>
 
+    <!-- Excel to DMN converter dependencies -->
+    <version.dmn-xlsx-converter>0.3.0</version.dmn-xlsx-converter>
+    <version.jaxb>2.3.0</version.jaxb>
+    <version.javax.activation>1.1.1</version.javax.activation>
+
     <!-- database driver versions -->
     <version.db2>11.1.1.1</version.db2>
 

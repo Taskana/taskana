@@ -241,6 +241,7 @@ jobs:
           - taskana-spring
           - taskana-spring-example
           - taskana-spi-routing-dmn-router
+          - taskana-routing-rest
           - taskana-rest-spring
           - taskana-rest-spring-example-common
           - taskana-loghistory-provider
