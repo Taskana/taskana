@@ -18,6 +18,7 @@
 
   <modules>
     <module>taskana-spi-routing-dmn-router</module>
+    <module>taskana-routing-rest</module>
   </modules>
 
 </project>

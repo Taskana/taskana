@@ -20,5 +20,6 @@ verifyDocs "$REL/../lib/taskana-cdi/target/apidocs" "/static/docs/java/taskana-c
 verifyDocs "$REL/../lib/taskana-spring/target/apidocs" "/static/docs/java/taskana-spring"
 test -n "$(jar -tf $JAR_FILE_LOCATION | grep /static/docs/rest/rest-api.html)"
 test -n "$(jar -tf $JAR_FILE_LOCATION | grep /static/docs/rest/simplehistory-rest-api.html)"
+test -n "$(jar -tf $JAR_FILE_LOCATION | grep /static/docs/rest/routing-rest-api.html)"
 set +x
 echo "the jar file '$JAR_FILE_LOCATION' contains documentation"

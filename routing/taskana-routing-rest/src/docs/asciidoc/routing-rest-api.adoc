@@ -1,0 +1,26 @@
+= TASKANA RESTful API Documentation
+
+== Overview
+
+This is the REST documentation for http://taskana.pro)[TASKANA]'s routing REST endpoints.
+
+*For all Query Parameters:* whenever a parameter is an array type, several values can be passed by declaring that parameter multiple times.
+
+=== Hypermedia Support
+
+NOTE: HATEOAS support is still in development.
+Please have a look at example responses for each resource to determine the available links.
+
+TASKANA uses the https://restfulapi.net/hateoas/)[HATEOAS] (Hypermedia as the Engine of Application State) REST constraint.
+Most of our resources contain a `_links` section which contains navigation links.
+Besides, helping to navigate through our REST API, the navigation links also encapsulate the API.
+Using HATEOAS allows us to change some endpoints without modifying your frontend.
+
+=== Errors
+
+In order to support multilingual websites, TASKANA uses error codes to define which error occurred.
+Additionally, an optional set of message variables, containing some technical information, is added, so that the website can describe the error with all details.
+
+== DMN routing Upload
+
+include::{snippets}/DmnUploadControllerRestDocTest/convertAndUploadDocTest/auto-section.adoc[]
