@@ -13,19 +13,13 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import pro.taskana.common.rest.QueryParameter;
+
 public class SpringArchitectureTest {
-  private static final List<String> TASKANA_SUB_PACKAGES =
-      List.of(
-          "pro.taskana.common.rest",
-          "pro.taskana.classification.rest",
-          "pro.taskana.task.rest",
-          "pro.taskana.workbasket.rest",
-          "pro.taskana.monitor.rest");
   private static JavaClasses importedClasses;
 
   @BeforeAll
@@ -37,16 +31,14 @@ public class SpringArchitectureTest {
   @Test
   void should_AnnotateAllFieldsWithJsonProperty_When_ImplementingQueryParameter() {
     ArchRule myRule =
-        classes()
-            .that()
-            .implement(pro.taskana.common.rest.QueryParameter.class)
-            .should(shouldOnlyHaveAnnotatedFields());
+        classes().that().implement(QueryParameter.class).should(shouldOnlyHaveAnnotatedFields());
 
     myRule.check(importedClasses);
   }
 
   private ArchCondition<JavaClass> shouldOnlyHaveAnnotatedFields() {
-    return new ArchCondition<JavaClass>("have all fields without a @JsonProperty annotation") {
+    return new ArchCondition<JavaClass>(
+        "all fields should have a @JsonProperty or @JsonIgnore annotation") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
         for (JavaField field : javaClass.getAllFields()) {
