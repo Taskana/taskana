@@ -6,4 +6,9 @@ public class NotFoundException extends TaskanaException {
   protected NotFoundException(String message, ErrorCode errorCode) {
     super(message, errorCode);
   }
+
+  @Override
+  public String toString() {
+    return "NotFoundException{}";
+  }
 }

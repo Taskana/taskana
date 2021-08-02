@@ -1307,37 +1307,37 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   private void validateFilterParameters() throws InvalidArgumentException {
     if (planned != null && (plannedFrom != null || plannedUntil != null)) {
-      throw new IllegalArgumentException(
+      throw new InvalidArgumentException(
           "It is prohibited to use the param 'planned' in combination "
               + "with the params 'planned-from'  and / or 'planned-until'");
     }
 
     if (received != null && (receivedFrom != null || receivedUntil != null)) {
-      throw new IllegalArgumentException(
+      throw new InvalidArgumentException(
           "It is prohibited to use the param 'received' in combination "
               + "with the params 'received-from'  and / or 'received-until'");
     }
 
     if (due != null && (dueFrom != null || dueUntil != null)) {
-      throw new IllegalArgumentException(
+      throw new InvalidArgumentException(
           "It is prohibited to use the param 'due' in combination with the params "
               + "'due-from'  and / or 'due-until'");
     }
 
     if (created != null && (createdFrom != null || createdUntil != null)) {
-      throw new IllegalArgumentException(
+      throw new InvalidArgumentException(
           "It is prohibited to use the param 'created' in combination with the params "
               + "'created-from'  and / or 'created-until'");
     }
 
     if (completed != null && (completedFrom != null || completedUntil != null)) {
-      throw new IllegalArgumentException(
+      throw new InvalidArgumentException(
           "It is prohibited to use the param 'completed' in combination with the params "
               + "'completed-from'  and / or 'completed-until'");
     }
 
     if (wildcardSearchFields == null ^ wildcardSearchValue == null) {
-      throw new IllegalArgumentException(
+      throw new InvalidArgumentException(
           "The params 'wildcard-search-field' and 'wildcard-search-value' must be used together");
     }
 

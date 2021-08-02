@@ -458,7 +458,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+      throws NotAuthorizedException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     List<WorkbasketAccessItem> result = new ArrayList<>();
     try {
@@ -950,7 +950,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       Workbasket oldWorkbasket, WorkbasketImpl workbasketImplToUpdate) throws ConcurrencyException {
 
     if (!oldWorkbasket.getModified().equals(workbasketImplToUpdate.getModified())) {
-      throw new ConcurrencyException();
+      throw new ConcurrencyException(workbasketImplToUpdate.getId());
     }
   }
 

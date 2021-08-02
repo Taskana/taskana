@@ -30,7 +30,7 @@ public class QueryParamsValidator {
     providedParams.removeIf(allowedParams::contains);
 
     if (!providedParams.isEmpty()) {
-      throw new IllegalArgumentException("Unkown request parameters found: " + providedParams);
+      throw new IllegalArgumentException("Unknown request parameters found: " + providedParams);
     }
   }
 }

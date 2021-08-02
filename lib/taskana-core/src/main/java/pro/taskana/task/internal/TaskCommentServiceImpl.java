@@ -193,7 +193,7 @@ class TaskCommentServiceImpl {
       TaskComment oldTaskComment, TaskComment taskCommentImplToUpdate) throws ConcurrencyException {
 
     if (!oldTaskComment.getModified().equals(taskCommentImplToUpdate.getModified())) {
-      throw new ConcurrencyException();
+      throw new ConcurrencyException(taskCommentImplToUpdate.getId());
     }
   }
 

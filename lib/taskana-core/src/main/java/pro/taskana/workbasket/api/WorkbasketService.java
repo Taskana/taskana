@@ -167,11 +167,9 @@ public interface WorkbasketService {
    * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN}
-   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
-   *     given {@linkplain Workbasket#getId() id}.
    */
   List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId)
-      throws NotAuthorizedException, WorkbasketNotFoundException;
+      throws NotAuthorizedException;
 
   /**
    * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be

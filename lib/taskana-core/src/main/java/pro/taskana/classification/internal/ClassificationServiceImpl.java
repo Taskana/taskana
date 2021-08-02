@@ -515,7 +515,7 @@ public class ClassificationServiceImpl implements ClassificationService {
     Classification oldClassification =
         this.getClassification(classificationImpl.getKey(), classificationImpl.getDomain());
     if (!oldClassification.getModified().equals(classificationImpl.getModified())) {
-      throw new ConcurrencyException();
+      throw new ConcurrencyException(classificationImpl.getId());
     }
     return oldClassification;
   }
