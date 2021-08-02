@@ -11,31 +11,55 @@ import pro.taskana.common.test.BaseRestDocTest;
 class MonitorControllerRestDocTest extends BaseRestDocTest {
 
   @Test
-  void getTaskStatusReportDocTest() throws Exception {
-    mockMvc
-        .perform(get(RestEndpoints.URL_MONITOR_TASKS_STATUS_REPORT))
-        .andExpect(MockMvcResultMatchers.status().isOk());
-  }
-
-  @Test
-  void getWorkbasketReportDocTest() throws Exception {
+  void computeWorkbasketReportDocTest() throws Exception {
     mockMvc
         .perform(
             get(
-                RestEndpoints.URL_MONITOR_TASKS_WORKBASKET_REPORT
-                    + "?daysInPast=4&states=READY,CLAIMED,COMPLETED"))
+                RestEndpoints.URL_MONITOR_WORKBASKET_REPORT
+                    + "?states=READY&states=CLAIMED&states=COMPLETED"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
-  void getClassificationReportDocTest() throws Exception {
+  void computeClassificationCategoryReportDocTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_MONITOR_TASKS_CLASSIFICATION_REPORT))
+        .perform(get(RestEndpoints.URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
-  void getTimestampReportDocTest() throws Exception {
+  void computeClassificationReportDocTest() throws Exception {
+    mockMvc
+        .perform(get(RestEndpoints.URL_MONITOR_CLASSIFICATION_REPORT))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void computeDetailedClassificationReportDocTest() throws Exception {
+    mockMvc
+        .perform(get(RestEndpoints.URL_MONITOR_DETAILED_CLASSIFICATION_REPORT))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void computeTaskCustomFieldValueReportDocTest() throws Exception {
+    mockMvc
+        .perform(
+            get(
+                RestEndpoints.URL_MONITOR_TASK_CUSTOM_FIELD_VALUE_REPORT
+                    + "?custom-field=CUSTOM_14"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void computeTaskStatusReportDocTest() throws Exception {
+    mockMvc
+        .perform(get(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void computeTimestampReportDocTest() throws Exception {
     mockMvc
         .perform(get(RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT))
         .andExpect(MockMvcResultMatchers.status().isOk());

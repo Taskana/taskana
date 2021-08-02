@@ -34,21 +34,12 @@ public class ClassificationCategoryReportBuilderImpl
   @Override
   public ClassificationCategoryReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
+    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
       ClassificationCategoryReport report = new ClassificationCategoryReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
-          this.monitorMapper.getTaskCountOfCategories(
-              Instant.now(),
-              this.workbasketIds,
-              this.states,
-              this.classificationCategory,
-              this.domains,
-              timestamp,
-              this.classificationIds,
-              this.excludedClassificationIds,
-              this.customAttributeFilter);
+          this.monitorMapper.getTaskCountOfCategories(Instant.now(), timestamp, this);
       report.addItems(
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(

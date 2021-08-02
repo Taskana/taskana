@@ -5,14 +5,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TaskStatusColumnHeader;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
+import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * A TaskStatusReport contains the total number of tasks, clustered in their task status.
- * Furthermore the report contains a sum line that contains the total numbers of the different
- * clusters and the total number of all tasks.
+ * A TaskStatusReport aggregates {@linkplain Task} related data.
+ *
+ * <p>Each {@linkplain Row} represents a {@linkplain Workbasket}.
+ *
+ * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TaskState}.
  */
 public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHeader> {
 

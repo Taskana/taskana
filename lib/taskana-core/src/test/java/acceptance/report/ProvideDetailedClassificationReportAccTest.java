@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -592,15 +590,14 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfDetailedClassificationReportWithCustomFieldValueFilter() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnItemsOfDetailedClassificationReport_When_FilteringWithCustomAttributeIn()
+      throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     DetailedClassificationReport report =
         MONITOR_SERVICE
             .createClassificationReportBuilder()
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .inWorkingDays()
             .withColumnHeaders(columnHeaders)
             .buildDetailedReport();
@@ -646,6 +643,42 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
 
     Row<DetailedMonitorQueryItem> detailedLineNoAttachment5 = line5.getFoldableRow("N/A");
     assertThat(detailedLineNoAttachment5.getCells()).isEqualTo(new int[] {1, 2, 0, 2, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfDetailedClassificationReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    DetailedClassificationReport report =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .inWorkingDays()
+            .withColumnHeaders(columnHeaders)
+            .buildDetailedReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(5);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfDetailedClassificationReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    DetailedClassificationReport report =
+        MONITOR_SERVICE
+            .createClassificationReportBuilder()
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%eftsstelle A")
+            .inWorkingDays()
+            .withColumnHeaders(columnHeaders)
+            .buildDetailedReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(5);
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

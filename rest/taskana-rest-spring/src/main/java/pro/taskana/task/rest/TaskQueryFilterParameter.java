@@ -1125,7 +1125,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   }
 
   @Override
-  public Void applyToQuery(TaskQuery query) {
+  public Void apply(TaskQuery query) {
     Optional.ofNullable(name).ifPresent(query::nameIn);
     Optional.ofNullable(nameLike).map(this::wrapElementsInLikeStatement).ifPresent(query::nameLike);
     Optional.ofNullable(priority).ifPresent(query::priorityIn);

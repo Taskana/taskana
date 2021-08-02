@@ -185,7 +185,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
                     TaskState.TERMINATED))
             .buildReport();
     int[] summaryNumbers = report.getSumRow().getCells();
-    assertThat(summaryNumbers.length).isEqualTo(5);
+    assertThat(summaryNumbers).hasSize(5);
     assertThat(summaryNumbers[3]).isEqualTo(2); // number of cancelled tasks
     assertThat(summaryNumbers[4]).isEqualTo(3); // number of terminated tasks
   }

@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 
-public interface QueryParameter<Q extends BaseQuery<?, ?>, R> {
+public interface QueryParameter<E, R> {
 
-  R applyToQuery(Q query);
+  R apply(E entity);
 
   default String[] wrapElementsInLikeStatement(String[] list) {
     return Arrays.stream(list).map(item -> "%" + item + "%").toArray(String[]::new);

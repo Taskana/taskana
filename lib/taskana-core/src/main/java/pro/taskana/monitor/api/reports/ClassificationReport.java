@@ -2,19 +2,27 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
+import pro.taskana.classification.api.models.Classification;
+import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
+import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.api.reports.row.DetailedClassificationRow;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.Task;
 
 /**
- * The ClassificationReport extends the Report. The {@link Row}s of the ClassificationReport are
- * grouped by classifications.
+ * A ClassificationReport aggregates {@linkplain Task} related data.
+ *
+ * <p>Each {@linkplain Row} represents a {@linkplain Classification}.
+ *
+ * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TimeInterval}.
  */
 public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 
@@ -51,9 +59,12 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
   }
 
   /**
-   * The DetailedClassificationReport is a functional extension of the {@link ClassificationReport}.
-   * Its {@link FoldableRow}s contain an additional list of {@link Row}s for the classifications of
-   * the attachments of the tasks.
+   * A DetailedClassificationReport aggregates {@linkplain Task} related data.
+   *
+   * <p>Each {@linkplain FoldableRow} represents a {@linkplain Classification} and can be expanded
+   * to show the {@linkplain Classification} of {@linkplain Attachment}s.
+   *
+   * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TimeInterval}.
    */
   public static class DetailedClassificationReport
       extends Report<DetailedMonitorQueryItem, TimeIntervalColumnHeader> {

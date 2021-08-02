@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -220,9 +218,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCategoryReportWithCustomFieldValueFilter() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnTaskIdsOfCategoryReport_When_FilteringWithCustomAttributeIn() throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
 
     final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
@@ -232,7 +228,7 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
     assertThat(ids)
@@ -242,6 +238,50 @@ class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccT
             "TKI:000000000000000000000000000000000027",
             "TKI:000000000000000000000000000000000031",
             "TKI:000000000000000000000000000000000032");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnTaskIdsOfCategoryReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .customAttributeNotIn(TaskCustomField.CUSTOM_2, "Vollkasko")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
+
+    assertThat(ids)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000021",
+            "TKI:000000000000000000000000000000000022",
+            "TKI:000000000000000000000000000000000028");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnTaskIdsOfCategoryReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+
+    final List<SelectedItem> selectedItems = List.of(EXTERN, AUTOMATIC, MANUAL);
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%aeftsstelle A")
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
+
+    assertThat(ids).hasSize(5);
   }
 
   @WithAccessId(user = "monitor")

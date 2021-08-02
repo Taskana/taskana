@@ -18,7 +18,7 @@ export class MonitorService {
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}tasks-status-report${asUrlQueryString(queryParams)}`
+      `${environment.taskanaRestUrl + monitorUrl}task-status-report${asUrlQueryString(queryParams)}`
     );
   }
 
@@ -27,22 +27,22 @@ export class MonitorService {
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}tasks-workbasket-report${asUrlQueryString(queryParams)}`
+      `${environment.taskanaRestUrl + monitorUrl}workbasket-report${asUrlQueryString(queryParams)}`
     );
   }
 
   getWorkbasketStatisticsQueryingByPlannedDate(): Observable<ReportData> {
     const queryParams = {
-      daysInPast: 7,
+      'task-timetamp': 'PLANNED',
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl}/v1/monitor/tasks-workbasket-planned-date-report${asUrlQueryString(queryParams)}`
+      `${environment.taskanaRestUrl}/v1/monitor/workbasket-report${asUrlQueryString(queryParams)}`
     );
   }
 
   getClassificationTasksReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}tasks-classification-report`);
+    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}classification-report`);
   }
 
   getDailyEntryExitReport(): Observable<ReportData> {

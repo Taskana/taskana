@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -207,9 +205,8 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetTaskIdsOfCustomFieldValueReportWithCustomFieldValueFilter() throws Exception {
-    final Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnTaskIdsOfCustomFieldValueReport_When_FilteringWithCustomAttributeIn()
+      throws Exception {
     final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
     List<SelectedItem> selectedItems =
         List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
@@ -219,14 +216,39 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).hasSize(4);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000024")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000027")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000029")).isTrue();
+    assertThat(ids)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000020",
+            "TKI:000000000000000000000000000000000024",
+            "TKI:000000000000000000000000000000000027",
+            "TKI:000000000000000000000000000000000029");
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnTaskIdsOfCustomFieldValueReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    final List<TimeIntervalColumnHeader> columnHeaders = getListOfColumnHeaders();
+    List<SelectedItem> selectedItems =
+        List.of(GESCHAEFTSSTELLE_A, GESCHAEFTSSTELLE_B, GESCHAEFTSSTELLE_C);
+
+    List<String> ids =
+        MONITOR_SERVICE
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
+
+    assertThat(ids)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000002",
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000033");
   }
 
   @WithAccessId(user = "monitor")

@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -326,16 +324,15 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCategoryReportWithCustomFieldValueFilter() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnItemsOfCategoryReport_When_FilteringWithCustomAttributeIn()
+      throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =
         MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
             .withColumnHeaders(columnHeaders)
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .inWorkingDays()
             .buildReport();
 
@@ -350,6 +347,50 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     int[] row3 = report.getRow("MANUAL").getCells();
     assertThat(row3).isEqualTo(new int[] {1, 1, 2, 0, 2});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfCategoryReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    ClassificationCategoryReport report =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
+
+    int[] row1 = report.getRow("EXTERN").getCells();
+    assertThat(row1).isEqualTo(new int[] {6, 5, 1, 3, 2});
+
+    int[] row2 = report.getRow("AUTOMATIC").getCells();
+    assertThat(row2).isEqualTo(new int[] {1, 1, 0, 0, 2});
+
+    int[] row3 = report.getRow("MANUAL").getCells();
+    assertThat(row3).isEqualTo(new int[] {1, 1, 0, 0, 2});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfCategoryReport_When_FilteringWithCustomAttributeLike() throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    ClassificationCategoryReport report =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%aeftsstelle A")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

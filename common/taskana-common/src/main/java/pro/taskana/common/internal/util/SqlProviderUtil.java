@@ -1,6 +1,10 @@
 package pro.taskana.common.internal.util;
 
 public class SqlProviderUtil {
+  public static final String OPENING_SCRIPT_TAG = "<script>";
+  public static final String CLOSING_SCRIPT_TAG = "</script>";
+  public static final String OPENING_WHERE_TAG = "<where>";
+  public static final String CLOSING_WHERE_TAG = "</where>";
 
   private SqlProviderUtil() {}
 

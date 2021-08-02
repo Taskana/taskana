@@ -35,7 +35,7 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
   }
 
   @Override
-  public Void applyToQuery(Q query) {
+  public Void apply(Q query) {
     if (sortBy != null) {
       for (int i = 0; i < sortBy.size(); i++) {
         SortDirection sortDirection =
@@ -49,7 +49,7 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
   // this method is only static because there exists no query for the task comment entity
   public static <T> void verifyAmountOfSortByAndOrderByMatches(
       List<T> sortBy, List<SortDirection> order) throws InvalidArgumentException {
-    if (sortBy != null && order != null && sortBy.size() != order.size() && order.size() > 0) {
+    if (sortBy != null && order != null && sortBy.size() != order.size() && !order.isEmpty()) {
       throw new InvalidArgumentException(
           "The amount of 'sort-by' and 'order' does not match. "
               + "Please specify an 'order' for each 'sort-by' or no 'order' parameters at all.");

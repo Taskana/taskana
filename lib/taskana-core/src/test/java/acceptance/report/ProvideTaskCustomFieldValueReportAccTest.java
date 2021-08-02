@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -345,15 +343,14 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfCustomFieldValueReportWithCustomFieldValueFilter() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnItemsOfCustomFieldValueReport_When_FilteringWithCustomAttributeIn()
+      throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     TaskCustomFieldValueReport report =
         MONITOR_SERVICE
             .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .withColumnHeaders(columnHeaders)
             .inWorkingDays()
             .buildReport();
@@ -363,6 +360,42 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
 
     int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
     assertThat(row1).isEqualTo(new int[] {11, 4, 3, 4, 3});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfCustomFieldValueReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    TaskCustomFieldValueReport report =
+        MONITOR_SERVICE
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(2);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfCustomFieldValueReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    TaskCustomFieldValueReport report =
+        MONITOR_SERVICE
+            .createTaskCustomFieldValueReportBuilder(TaskCustomField.CUSTOM_1)
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%ftsstelle A")
+            .withColumnHeaders(columnHeaders)
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
   }
 
   private List<TimeIntervalColumnHeader> getListOfColumnHeaders() {

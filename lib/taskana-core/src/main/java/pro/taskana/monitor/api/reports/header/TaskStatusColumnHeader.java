@@ -6,7 +6,7 @@ import pro.taskana.task.api.TaskState;
 /** The TaskStatusColumnHeader represents a column for each {@link TaskState}. */
 public class TaskStatusColumnHeader implements ColumnHeader<TaskQueryItem> {
 
-  private TaskState state;
+  private final TaskState state;
 
   public TaskStatusColumnHeader(TaskState state) {
     this.state = state;

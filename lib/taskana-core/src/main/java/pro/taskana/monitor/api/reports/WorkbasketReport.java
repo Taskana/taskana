@@ -2,21 +2,24 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
+import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.TaskTimestamp;
+import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
+import pro.taskana.monitor.api.reports.row.Row;
+import pro.taskana.task.api.models.Task;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * A WorkbasketReport contains the total numbers of tasks of the respective workbasket as well as
- * the total number of all tasks. The tasks of the report can be filtered by workbaskets, states,
- * categories, domains, classifications and values of a custom field. Classifications can also be
- * excluded from the report. It is also possible to filter by the classifications of the attachments
- * by using the {@link CombinedClassificationFilter}. If the {@link TimeIntervalColumnHeader}s are
- * set, the report contains also the number of tasks of the respective cluster. The age of the tasks
- * can be counted in days or in working days. Tasks with Timestamp DUE = null are not considered.
+ * A WorkbasketReport aggregates {@linkplain Task} related data.
+ *
+ * <p>Each {@linkplain Row} represents a {@linkplain Workbasket}.
+ *
+ * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TimeInterval}.
  */
 public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 

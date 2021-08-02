@@ -137,10 +137,13 @@ include::{snippets}/WorkbasketAccessItemControllerRestDocTest/removeWorkbasketAc
 
 == Monitoring Resources
 
-include::{snippets}/MonitorControllerRestDocTest/getTaskStatusReportDocTest/auto-section.adoc[]
-include::{snippets}/MonitorControllerRestDocTest/getWorkbasketReportDocTest/auto-section.adoc[]
-include::{snippets}/MonitorControllerRestDocTest/getClassificationReportDocTest/auto-section.adoc[]
-include::{snippets}/MonitorControllerRestDocTest/getTimestampReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeWorkbasketReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeClassificationCategoryReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeClassificationReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeDetailedClassificationReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeTaskCustomFieldValueReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeTaskStatusReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeTimestampReportDocTest/auto-section.adoc[]
 
 == Access Id Resource
 

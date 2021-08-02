@@ -51,8 +51,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     assertThat(after).isEqualTo(before + 1);
     Workbasket createdWorkbasket = workbasketService.getWorkbasket("NT1234", "DOMAIN_A");
     assertThat(createdWorkbasket).isNotNull();
-    assertThat(createdWorkbasket.getId()).isNotNull();
-    assertThat(createdWorkbasket.getId().startsWith("WBI")).isTrue();
+    assertThat(createdWorkbasket.getId()).startsWith("WBI");
     assertThat(createdWorkbasket).isEqualTo(workbasket);
     Workbasket createdWorkbasket2 = workbasketService.getWorkbasket(createdWorkbasket.getId());
     assertThat(createdWorkbasket).isNotNull();

@@ -1,5 +1,9 @@
 package pro.taskana.task.internal;
 
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_WHERE_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
@@ -12,10 +16,6 @@ import java.util.stream.IntStream;
 import pro.taskana.task.api.TaskQueryColumnName;
 
 public class TaskQuerySqlProvider {
-  private static final String OPENING_SCRIPT_TAG = "<script>";
-  private static final String CLOSING_SCRIPT_TAG = "</script>";
-  private static final String OPENING_WHERE_TAG = "<where>";
-  private static final String CLOSING_WHERE_TAG = "</where>";
   private static final String WILDCARD_LIKE_STATEMENT =
       "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND ("
           + "<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>"
@@ -26,6 +26,7 @@ public class TaskQuerySqlProvider {
 
   private TaskQuerySqlProvider() {}
 
+  @SuppressWarnings("unused")
   public static String queryTaskSummaries() {
     return OPENING_SCRIPT_TAG
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
@@ -66,6 +67,7 @@ public class TaskQuerySqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  @SuppressWarnings("unused")
   public static String queryTaskSummariesDb2() {
     return OPENING_SCRIPT_TAG
         + "WITH X ("
@@ -126,6 +128,7 @@ public class TaskQuerySqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  @SuppressWarnings("unused")
   public static String countQueryTasks() {
     return OPENING_SCRIPT_TAG
         + "SELECT COUNT( <if test=\"useDistinctKeyword\">DISTINCT</if> t.ID) "
@@ -148,6 +151,7 @@ public class TaskQuerySqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  @SuppressWarnings("unused")
   public static String countQueryTasksDb2() {
     return OPENING_SCRIPT_TAG
         + "WITH X (ID, WORKBASKET_ID) AS ("
@@ -179,6 +183,7 @@ public class TaskQuerySqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  @SuppressWarnings("unused")
   public static String queryTaskColumnValues() {
     return OPENING_SCRIPT_TAG
         + "SELECT DISTINCT ${columnName} "

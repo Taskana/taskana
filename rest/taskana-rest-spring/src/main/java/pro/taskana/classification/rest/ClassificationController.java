@@ -87,9 +87,9 @@ public class ClassificationController {
         QueryPagingParameter.class);
 
     final ClassificationQuery query = classificationService.createClassificationQuery();
-    filterParameter.applyToQuery(query);
-    sortParameter.applyToQuery(query);
-    List<ClassificationSummary> classificationSummaries = pagingParameter.applyToQuery(query);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
+    List<ClassificationSummary> classificationSummaries = pagingParameter.apply(query);
 
     return ResponseEntity.ok(
         summaryModelAssembler.toPagedModel(
