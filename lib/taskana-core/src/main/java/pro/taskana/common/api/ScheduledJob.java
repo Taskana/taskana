@@ -168,15 +168,15 @@ public class ScheduledJob {
     FAILED
   }
 
-  /** This enum controls the type of a job. */
+  /** This enum controls the type of jobs. */
   public enum Type {
-    CLASSIFICATIONCHANGEDJOB(ClassificationChangedJob.class.getName()),
-    UPDATETASKSJOB(TaskRefreshJob.class.getName()),
-    TASKCLEANUPJOB(TaskCleanupJob.class.getName()),
-    WORKBASKETCLEANUPJOB(WorkbasketCleanupJob.class.getName()),
-    HISTORYCLEANUPJOB("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob");
+    CLASSIFICATION_CHANGED_JOB(ClassificationChangedJob.class.getName()),
+    TASK_REFRESH_JOB(TaskRefreshJob.class.getName()),
+    TASK_CLEANUP_JOB(TaskCleanupJob.class.getName()),
+    WORKBASKET_CLEANUP_JOB(WorkbasketCleanupJob.class.getName()),
+    HISTORY_CLEANUP_JOB("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob");
 
-    private String clazz;
+    private final String clazz;
 
     Type(String clazz) {
       this.clazz = clazz;

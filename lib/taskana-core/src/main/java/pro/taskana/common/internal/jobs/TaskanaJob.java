@@ -6,9 +6,9 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 public interface TaskanaJob {
 
   /**
-   * Runs the TaskanaJob.
+   * Execute the TaskanaJob.
    *
-   * @throws TaskanaException if an exception occured during the run.
+   * @throws TaskanaException if any exception occurs during the execution.
    */
   void run() throws TaskanaException;
 }

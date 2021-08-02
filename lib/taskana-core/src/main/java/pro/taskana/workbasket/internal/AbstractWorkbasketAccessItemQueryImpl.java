@@ -19,21 +19,20 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
  * @param <Q> the actual WorkbasketAccessItemQuery behind this abstract class
  * @param <T> the workbasket access item
  */
+// TODO: this class not never used.. remove?
 abstract class AbstractWorkbasketAccessItemQueryImpl<
         Q extends AbstractWorkbasketAccessItemQuery<Q, T>, T extends WorkbasketAccessItem>
     implements AbstractWorkbasketAccessItemQuery<Q, T> {
 
   private static final String LINK_TO_COUNTER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbasketAccessItems";
-
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private AccessItemQueryColumnName columnName;
   private String[] accessIdIn;
   private String[] workbasketIdIn;
   private String[] idIn;
-
-  private InternalTaskanaEngine taskanaEngine;
-  private List<String> orderBy;
-  private List<String> orderColumns;
 
   AbstractWorkbasketAccessItemQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -77,7 +76,7 @@ abstract class AbstractWorkbasketAccessItemQueryImpl<
 
   @Override
   public List<T> list() {
-    return taskanaEngine.openAndReturnConnection(
+    return taskanaEngine.executeInDatabaseConnection(
         () -> taskanaEngine.getSqlSession().selectList(getLinkToMapper(), _this()));
   }
 

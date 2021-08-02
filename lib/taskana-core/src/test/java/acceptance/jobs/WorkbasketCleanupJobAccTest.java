@@ -95,11 +95,11 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
+      job.setType(ScheduledJob.Type.WORKBASKET_CLEANUP_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.UPDATETASKSJOB);
+      job.setType(Type.TASK_REFRESH_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -109,7 +109,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> workbasketCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.WORKBASKETCLEANUPJOB))
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.WORKBASKET_CLEANUP_JOB))
             .collect(Collectors.toList());
 
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);

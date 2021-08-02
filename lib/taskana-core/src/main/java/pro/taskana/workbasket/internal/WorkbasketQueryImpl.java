@@ -352,7 +352,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   @Override
   public List<WorkbasketSummary> list() {
     handleCallerRolesAndAccessIds();
-    return taskanaEngine.openAndReturnConnection(
+    return taskanaEngine.executeInDatabaseConnection(
         () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 

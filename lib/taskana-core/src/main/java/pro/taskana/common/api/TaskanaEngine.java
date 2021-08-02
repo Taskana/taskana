@@ -71,6 +71,13 @@ public interface TaskanaEngine {
   boolean isHistoryEnabled();
 
   /**
+   * gets the current connection management mode.
+   *
+   * @return the current connection management mode.
+   */
+  ConnectionManagementMode getConnectionManagementMode();
+
+  /**
    * sets the connection management mode.
    *
    * @param mode the connection management mode Valid values are:
@@ -117,14 +124,29 @@ public interface TaskanaEngine {
   void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
 
   /**
-   * This method is supposed to skip further permission checks if we are already in a secured
-   * environment. With great power comes great responsibility.
+   * Executes a given supplier with admin privileges and thus skips further permission checks. With
+   * great power comes great responsibility.
    *
    * @param supplier will be executed with admin privileges
    * @param <T> defined with the supplier return value
    * @return output from supplier
    */
   <T> T runAsAdmin(Supplier<T> supplier);
+
+  /**
+   * Executes a given runnable with admin privileges and thus skips further permission checks. With
+   * great power comes great responsibility.
+   *
+   * @see #runAsAdmin(Supplier)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default void runAsAdmin(Runnable runnable) {
+    runAsAdmin(
+        () -> {
+          runnable.run();
+          return null;
+        });
+  }
 
   /**
    * Returns the CurrentUserContext class.

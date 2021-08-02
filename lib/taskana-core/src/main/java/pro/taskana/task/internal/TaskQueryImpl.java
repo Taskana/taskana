@@ -977,7 +977,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public List<TaskSummary> list() {
-    return taskanaEngine.openAndReturnConnection(
+    return taskanaEngine.executeInDatabaseConnection(
         () -> {
           checkForIllegalParamCombinations();
           checkOpenAndReadPermissionForSpecifiedWorkbaskets();

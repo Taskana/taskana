@@ -110,7 +110,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     }
 
     Workbasket workbasket =
-        taskanaEngine.openAndReturnConnection(
+        taskanaEngine.executeInDatabaseConnection(
             () -> workbasketMapper.findByKeyAndDomain(workbasketKey, domain));
     if (workbasket == null) {
       throw new WorkbasketNotFoundException(workbasketKey, domain);

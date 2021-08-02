@@ -27,19 +27,16 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketCleanupJob.class);
 
-  // Parameter
   private final int batchSize;
 
   public WorkbasketCleanupJob(
-      TaskanaEngine taskanaEngine,
-      TaskanaTransactionProvider<Object> txProvider,
-      ScheduledJob job) {
-    super(taskanaEngine, txProvider, job);
+      TaskanaEngine taskanaEngine, TaskanaTransactionProvider txProvider, ScheduledJob job) {
+    super(taskanaEngine, txProvider, job, true);
     batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
   }
 
   @Override
-  public void run() throws TaskanaException {
+  public void execute() throws TaskanaException {
     LOGGER.info("Running job to delete all workbaskets marked for deletion");
     try {
       List<String> workbasketsMarkedForDeletion = getWorkbasketsMarkedForDeletion();
@@ -51,8 +48,6 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
           "Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
     } catch (Exception e) {
       throw new SystemException("Error while processing WorkbasketCleanupJob.", e);
-    } finally {
-      scheduleNextCleanupJob();
     }
   }
 
@@ -64,9 +59,14 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    jobService.deleteJobs(Type.WORKBASKETCLEANUPJOB);
     WorkbasketCleanupJob job = new WorkbasketCleanupJob(taskanaEngine, null, null);
-    job.scheduleNextCleanupJob();
+    jobService.deleteJobs(job.getType());
+    job.scheduleNextJob();
+  }
+
+  @Override
+  protected Type getType() {
+    return Type.WORKBASKET_CLEANUP_JOB;
   }
 
   private List<String> getWorkbasketsMarkedForDeletion() {
@@ -79,26 +79,16 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteWorkbasketsTransactionally(List<String> workbasketsToBeDeleted) {
-    int deletedWorkbasketsCount = 0;
-    if (txProvider != null) {
-      return (Integer)
-          txProvider.executeInTransaction(
-              () -> {
-                try {
-                  return deleteWorkbaskets(workbasketsToBeDeleted);
-                } catch (Exception e) {
-                  LOGGER.warn("Could not delete workbaskets.", e);
-                  return 0;
-                }
-              });
-    } else {
-      try {
-        deletedWorkbasketsCount = deleteWorkbaskets(workbasketsToBeDeleted);
-      } catch (Exception e) {
-        LOGGER.warn("Could not delete workbaskets.", e);
-      }
-    }
-    return deletedWorkbasketsCount;
+    return TaskanaTransactionProvider.executeInTransactionIfPossible(
+        txProvider,
+        () -> {
+          try {
+            return deleteWorkbaskets(workbasketsToBeDeleted);
+          } catch (Exception e) {
+            LOGGER.warn("Could not delete workbaskets.", e);
+            return 0;
+          }
+        });
   }
 
   private int deleteWorkbaskets(List<String> workbasketsToBeDeleted)
@@ -117,12 +107,5 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
           results.getErrorForId(failedId));
     }
     return workbasketsToBeDeleted.size() - results.getFailedIds().size();
-  }
-
-  private void scheduleNextCleanupJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(ScheduledJob.Type.WORKBASKETCLEANUPJOB);
-    job.setDue(getNextDueForCleanupJob());
-    taskanaEngineImpl.getJobService().createJob(job);
   }
 }

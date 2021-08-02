@@ -31,18 +31,15 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
 
-  private static final SortDirection ASCENDING = SortDirection.ASCENDING;
-
-  // Parameter
   private final Duration minimumAge;
   private final int batchSize;
   private final boolean allCompletedSameParentBusiness;
 
   public TaskCleanupJob(
       TaskanaEngine taskanaEngine,
-      TaskanaTransactionProvider<Object> txProvider,
+      TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
-    super(taskanaEngine, txProvider, scheduledJob);
+    super(taskanaEngine, txProvider, scheduledJob, true);
     minimumAge = taskanaEngine.getConfiguration().getCleanupJobMinimumAge();
     batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
     allCompletedSameParentBusiness =
@@ -50,7 +47,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   }
 
   @Override
-  public void run() throws TaskanaException {
+  public void execute() {
     Instant completedBefore = Instant.now().minus(minimumAge);
     LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore);
     try {
@@ -64,8 +61,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
       LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskCleanupJob.", e);
-    } finally {
-      scheduleNextCleanupJob();
     }
   }
 
@@ -77,9 +72,14 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    jobService.deleteJobs(Type.TASKCLEANUPJOB);
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    job.scheduleNextCleanupJob();
+    jobService.deleteJobs(Type.TASK_CLEANUP_JOB);
+    job.scheduleNextJob();
+  }
+
+  @Override
+  protected Type getType() {
+    return Type.TASK_CLEANUP_JOB;
   }
 
   private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
@@ -89,7 +89,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
             .getTaskService()
             .createTaskQuery()
             .completedWithin(new TimeInterval(null, untilDate))
-            .orderByBusinessProcessId(ASCENDING)
+            .orderByBusinessProcessId(SortDirection.ASCENDING)
             .list();
 
     if (allCompletedSameParentBusiness) {
@@ -131,27 +131,16 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteTasksTransactionally(List<TaskSummary> tasksToBeDeleted) {
-
-    int deletedTaskCount = 0;
-    if (txProvider != null) {
-      return (int)
-          txProvider.executeInTransaction(
-              () -> {
-                try {
-                  return deleteTasks(tasksToBeDeleted);
-                } catch (Exception e) {
-                  LOGGER.warn("Could not delete tasks.", e);
-                  return 0;
-                }
-              });
-    } else {
-      try {
-        deletedTaskCount = deleteTasks(tasksToBeDeleted);
-      } catch (Exception e) {
-        LOGGER.warn("Could not delete tasks.", e);
-      }
-    }
-    return deletedTaskCount;
+    return TaskanaTransactionProvider.executeInTransactionIfPossible(
+        txProvider,
+        () -> {
+          try {
+            return deleteTasks(tasksToBeDeleted);
+          } catch (Exception ex) {
+            LOGGER.warn("Could not delete tasks.", ex);
+            return 0;
+          }
+        });
   }
 
   private int deleteTasks(List<TaskSummary> tasksToBeDeleted)
@@ -175,10 +164,24 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     return tasksIdsToBeDeleted.size() - results.getFailedIds().size();
   }
 
-  private void scheduleNextCleanupJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
-    job.setDue(getNextDueForCleanupJob());
-    taskanaEngineImpl.getJobService().createJob(job);
+  @Override
+  public String toString() {
+    return "TaskCleanupJob [firstRun="
+        + firstRun
+        + ", runEvery="
+        + runEvery
+        + ", taskanaEngineImpl="
+        + taskanaEngineImpl
+        + ", txProvider="
+        + txProvider
+        + ", scheduledJob="
+        + scheduledJob
+        + ", minimumAge="
+        + minimumAge
+        + ", batchSize="
+        + batchSize
+        + ", allCompletedSameParentBusiness="
+        + allCompletedSameParentBusiness
+        + "]";
   }
 }
