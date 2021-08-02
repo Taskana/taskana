@@ -107,13 +107,7 @@
     </dependency>
     <dependency>
       <groupId>com.tngtech.archunit</groupId>
-      <artifactId>archunit-junit5-api</artifactId>
-      <version>${version.archunit}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.tngtech.archunit</groupId>
-      <artifactId>archunit-junit5-engine</artifactId>
+      <artifactId>archunit</artifactId>
       <version>${version.archunit}</version>
       <scope>test</scope>
     </dependency>
