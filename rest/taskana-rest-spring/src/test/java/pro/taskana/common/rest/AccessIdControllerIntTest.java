@@ -17,7 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
@@ -119,9 +119,10 @@ class AccessIdControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining("Minimum Length is")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -172,9 +173,10 @@ class AccessIdControllerIntTest {
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining("The AccessId is invalid")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -204,8 +206,9 @@ class AccessIdControllerIntTest {
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -217,8 +220,9 @@ class AccessIdControllerIntTest {
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
 
     assertThatThrownBy(call)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 }

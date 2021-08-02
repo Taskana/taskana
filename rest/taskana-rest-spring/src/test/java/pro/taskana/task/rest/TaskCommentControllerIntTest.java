@@ -15,7 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
@@ -51,7 +51,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
@@ -68,7 +69,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -137,7 +139,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -154,7 +157,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -177,7 +181,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -198,7 +203,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
@@ -226,7 +232,8 @@ class TaskCommentControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_COMMENT_TYPE);
         };
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.CONFLICT);
   }
 
@@ -254,7 +261,8 @@ class TaskCommentControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_COMMENT_TYPE);
         };
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -285,7 +293,8 @@ class TaskCommentControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_COMMENT_TYPE);
         };
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -309,9 +318,10 @@ class TaskCommentControllerIntTest {
         () -> TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_COMMENT_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining("TASK_COMMENT_CREATOR_MISMATCHED")
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -327,7 +337,8 @@ class TaskCommentControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.NOT_FOUND);
   }
 }

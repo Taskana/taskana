@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
 import pro.taskana.common.api.exceptions.ErrorCode;
@@ -54,7 +54,7 @@ class GeneralExceptionHandlingTest {
                     ClassificationSummaryPagedRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining("non-existing-id");
   }
 

@@ -15,7 +15,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
@@ -222,8 +221,8 @@ class ClassificationControllerIntTest {
                     ClassificationRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
@@ -351,8 +350,8 @@ class ClassificationControllerIntTest {
                     ClassificationRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -378,8 +377,9 @@ class ClassificationControllerIntTest {
                     ClassificationRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -425,7 +425,7 @@ class ClassificationControllerIntTest {
                 auth,
                 ParameterizedTypeReference.<ClassificationSummaryRepresentationModel>forType(
                     ClassificationSummaryRepresentationModel.class));
-    assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
+    assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
   }
 
   @Test
@@ -448,10 +448,10 @@ class ClassificationControllerIntTest {
                     ClassificationSummaryPagedRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining(
             "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }

@@ -32,7 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
@@ -194,16 +193,16 @@ class WorkbasketDefinitionControllerIntTest {
     ThrowingCallable httpCall =
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.BAD_REQUEST, w);
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
 
     w.getWorkbasket().setKey("anotherNewKey");
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -218,8 +217,8 @@ class WorkbasketDefinitionControllerIntTest {
     ThrowingCallable httpCall =
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.CONFLICT);
   }
@@ -254,7 +253,7 @@ class WorkbasketDefinitionControllerIntTest {
 
     ThrowingCallable httpCall =
         () -> expectStatusWhenExecutingImportRequestOfWorkbaskets(HttpStatus.CONFLICT, w, w);
-    assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
+    assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
   }
 
   private void changeWorkbasketIdOrKey(

@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -140,9 +139,10 @@ class TaskHistoryEventControllerIntTest {
                 new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
                 TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining(currentTime)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -271,10 +271,10 @@ class TaskHistoryEventControllerIntTest {
                 TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining(
             "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }

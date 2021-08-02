@@ -20,7 +20,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
@@ -135,10 +134,10 @@ class WorkbasketAccessItemControllerIntTest {
             TEMPLATE.exchange(
                 url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining(
             "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -165,8 +164,9 @@ class WorkbasketAccessItemControllerIntTest {
                   TEMPLATE.exchange(
                       url, HttpMethod.DELETE, auth, ParameterizedTypeReference.forType(Void.class));
           assertThatThrownBy(httpCall)
-              .isInstanceOf(HttpClientErrorException.class)
-              .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+              .isInstanceOf(HttpStatusCodeException.class)
+              .extracting(HttpStatusCodeException.class::cast)
+              .extracting(HttpStatusCodeException::getStatusCode)
               .isEqualTo(HttpStatus.BAD_REQUEST);
         };
 
