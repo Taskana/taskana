@@ -29,7 +29,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
@@ -191,8 +190,8 @@ class TaskControllerIntTest {
         () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -259,13 +258,12 @@ class TaskControllerIntTest {
                   taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
 
           ThrowingCallable httpCall =
-              () -> {
-                TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
-              };
+              () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
           assertThatThrownBy(httpCall)
-              .isInstanceOf(HttpClientErrorException.class)
+              .isInstanceOf(HttpStatusCodeException.class)
               .hasMessageContaining("Format of custom attributes is not valid")
-              .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+              .extracting(HttpStatusCodeException.class::cast)
+              .extracting(HttpStatusCodeException::getStatusCode)
               .isEqualTo(HttpStatus.BAD_REQUEST);
         };
 
@@ -299,8 +297,8 @@ class TaskControllerIntTest {
         () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
 
@@ -311,8 +309,8 @@ class TaskControllerIntTest {
         () -> TEMPLATE.exchange(url2, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall2)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -376,8 +374,8 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -421,8 +419,8 @@ class TaskControllerIntTest {
         () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
-        .extracting(HttpClientErrorException.class::cast)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
@@ -668,7 +666,7 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
         };
 
-    assertThatThrownBy(httpCall).isInstanceOf(HttpClientErrorException.class);
+    assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
   }
 
   @Test
@@ -820,7 +818,8 @@ class TaskControllerIntTest {
         () -> TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
@@ -877,7 +876,7 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining("400");
   }
 
@@ -897,7 +896,8 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
@@ -915,10 +915,10 @@ class TaskControllerIntTest {
         () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpClientErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining(
             "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
