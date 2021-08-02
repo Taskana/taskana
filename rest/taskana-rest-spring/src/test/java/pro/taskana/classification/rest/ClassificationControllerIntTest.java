@@ -425,7 +425,34 @@ class ClassificationControllerIntTest {
                 auth,
                 ParameterizedTypeReference.<ClassificationSummaryRepresentationModel>forType(
                     ClassificationSummaryRepresentationModel.class));
-    assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  @DirtiesContext
+  void should_ReturnStatusCodeLocked_WhenDeletingClassificationInUse() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:000000000000000000000000000000000003");
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("businessadmin"));
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.DELETE,
+                auth,
+                ParameterizedTypeReference.<ClassificationSummaryRepresentationModel>forType(
+                    ClassificationSummaryRepresentationModel.class));
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.LOCKED);
   }
 
   @Test

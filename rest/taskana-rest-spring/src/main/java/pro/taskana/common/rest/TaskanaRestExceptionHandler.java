@@ -36,7 +36,6 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
-import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
@@ -84,7 +83,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     TaskanaHistoryEventNotFoundException.class,
     WorkbasketNotFoundException.class
   })
-  protected ResponseEntity<Object> handleNotFound(NotFoundException ex, WebRequest req) {
+  protected ResponseEntity<Object> handleNotFound(TaskanaException ex, WebRequest req) {
     return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.NOT_FOUND);
   }
 
@@ -102,8 +101,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   }
 
   @ExceptionHandler({WorkbasketInUseException.class, ClassificationInUseException.class})
-  protected ResponseEntity<Object> handleWorkbasketInUse(
-      WorkbasketInUseException ex, WebRequest req) {
+  protected ResponseEntity<Object> handleWorkbasketInUse(TaskanaException ex, WebRequest req) {
     return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.LOCKED);
   }
 
