@@ -11,7 +11,7 @@
   <parent>
     <artifactId>taskana-common-parent</artifactId>
     <groupId>pro.taskana</groupId>
-    <version>4.7.1-SNAPSHOT</version>
+    <version>4.8.1-SNAPSHOT</version>
   </parent>
 
   <dependencies>
