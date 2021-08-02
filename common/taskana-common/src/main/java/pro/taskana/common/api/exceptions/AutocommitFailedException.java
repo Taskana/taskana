@@ -1,7 +1,8 @@
 package pro.taskana.common.api.exceptions;
 
 /**
- * This exception is thrown in ConnectionManagementMode AUTOCOMMIT when an attempt to commit fails.
+ * This exception is thrown when using TASKANA with the AUTOCOMMIT ConnectionManagementMode and an
+ * attempt to commit fails.
  */
 public class AutocommitFailedException extends TaskanaRuntimeException {
 
@@ -9,5 +10,10 @@ public class AutocommitFailedException extends TaskanaRuntimeException {
 
   public AutocommitFailedException(Throwable cause) {
     super("Autocommit failed", ErrorCode.of(ERROR_KEY), cause);
+  }
+
+  @Override
+  public String toString() {
+    return "AutocommitFailedException{}";
   }
 }

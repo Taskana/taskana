@@ -20,7 +20,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import pro.taskana.common.rest.models.PageMetadata;
@@ -271,11 +271,12 @@ class TaskHistoryEventControllerIntTest {
                 TASK_HISTORY_EVENT_PAGED_REPRESENTATION_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
+        .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining(
-            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+            "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   // endregion

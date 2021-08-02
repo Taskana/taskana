@@ -129,8 +129,10 @@ public class TaskRepresentationModelAssembler
     task.setDescription(repModel.getDescription());
     task.setPriority(repModel.getPriority());
     task.setState(repModel.getState());
-    task.setClassificationSummary(
-        classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
+    if (repModel.getClassificationSummary() != null) {
+      task.setClassificationSummary(
+          classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
+    }
     if (repModel.getWorkbasketSummary() != null) {
       task.setWorkbasketSummary(workbasketAssembler.toEntityModel(repModel.getWorkbasketSummary()));
     }

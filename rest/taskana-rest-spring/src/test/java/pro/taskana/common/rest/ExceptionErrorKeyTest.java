@@ -12,6 +12,7 @@ import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
@@ -58,6 +59,7 @@ class ExceptionErrorKeyTest {
     assertThat(UnsupportedDatabaseException.ERROR_KEY).isEqualTo("DATABASE_UNSUPPORTED");
     assertThat(WrongCustomHolidayFormatException.ERROR_KEY)
         .isEqualTo("CUSTOM_HOLIDAY_WRONG_FORMAT");
+    assertThat(InvalidArgumentException.ERROR_KEY).isEqualTo("INVALID_ARGUMENT");
   }
 
   @Test

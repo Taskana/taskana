@@ -1062,7 +1062,7 @@ public class TaskServiceImpl implements TaskService {
             && !oldTaskImpl.getClaimed().equals(newTaskImpl.getClaimed())
         || oldTaskImpl.getState() != null
             && !oldTaskImpl.getState().equals(newTaskImpl.getState())) {
-      throw new ConcurrencyException();
+      throw new ConcurrencyException(newTaskImpl.getId());
     }
     newTaskImpl.setModified(Instant.now());
   }

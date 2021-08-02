@@ -13,7 +13,7 @@ public class InvalidOwnerException extends TaskanaException {
 
   public InvalidOwnerException(String currentUserId, String taskId) {
     super(
-        String.format("User '%s' is not owner of Task '%s'.", currentUserId, taskId),
+        String.format("User '%s' is not owner of Task '%s'", currentUserId, taskId),
         ErrorCode.of(ERROR_KEY, MapCreator.of("taskId", taskId, "currentUserId", currentUserId)));
     this.taskId = taskId;
     this.currentUserId = currentUserId;

@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -110,6 +111,16 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     return buildResponse(ErrorCode.of(ERROR_KEY_PAYLOAD), ex, req, HttpStatus.PAYLOAD_TOO_LARGE);
   }
 
+  @ExceptionHandler(BeanInstantiationException.class)
+  protected ResponseEntity<Object> handleBeanInstantiationException(
+      BeanInstantiationException ex, WebRequest req) {
+    if (ex.getCause() instanceof InvalidArgumentException) {
+      InvalidArgumentException cause = (InvalidArgumentException) ex.getCause();
+      return buildResponse(cause.getErrorCode(), ex, req, HttpStatus.BAD_REQUEST);
+    }
+    return buildResponse(null, ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
   @ExceptionHandler({
     InvalidTaskStateException.class,
     InvalidCallbackStateException.class,
@@ -120,6 +131,13 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   })
   protected ResponseEntity<Object> handleBadRequestExceptions(TaskanaException ex, WebRequest req) {
     return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  protected ResponseEntity<Object> handleIllegalArgumentException(
+      IllegalArgumentException ex, WebRequest req) {
+    return buildResponse(
+        ErrorCode.of(InvalidArgumentException.ERROR_KEY), ex, req, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(TaskanaRuntimeException.class)
@@ -148,7 +166,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
             .toArray(MalformedQueryParameter[]::new);
 
     // if we have no wrong query parameter then this BindException is representing something else.
-    // Therefore we only create an ErrorCode when we have found a wrong query parameter.
+    // Therefore, we only create an ErrorCode when we have found a wrong query parameter.
     ErrorCode errorCode =
         wrongQueryParameters.length != 0
             ? ErrorCode.of(

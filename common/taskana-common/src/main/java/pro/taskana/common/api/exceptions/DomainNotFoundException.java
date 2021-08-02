@@ -18,4 +18,9 @@ public class DomainNotFoundException extends NotFoundException {
   public String getDomain() {
     return domain;
   }
+
+  @Override
+  public String toString() {
+    return "DomainNotFoundException [domain=" + domain + "]";
+  }
 }

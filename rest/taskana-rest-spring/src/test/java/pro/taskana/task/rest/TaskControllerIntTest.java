@@ -30,7 +30,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
@@ -188,13 +188,13 @@ class TaskControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
-        .hasMessageContaining("500");
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -296,27 +296,25 @@ class TaskControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
-        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
 
     String url2 =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?wildcard-search-fields=NAME,CUSTOM_3,CUSTOM_4";
     ThrowingCallable httpCall2 =
-        () -> {
-          TEMPLATE.exchange(url2, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url2, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall2)
-        .isInstanceOf(HttpServerErrorException.class)
-        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -378,9 +376,10 @@ class TaskControllerIntTest {
         };
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
-        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -419,13 +418,13 @@ class TaskControllerIntTest {
     HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
-        .hasMessageContaining("500");
+        .isInstanceOf(HttpClientErrorException.class)
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -691,7 +690,7 @@ class TaskControllerIntTest {
     out.write(taskToCreateJson);
     out.flush();
     out.close();
-    assertThat(con.getResponseCode()).isEqualTo(500);
+    assertThat(con.getResponseCode()).isEqualTo(400);
 
     con.disconnect();
     final String taskToCreateJson2 =
@@ -711,7 +710,7 @@ class TaskControllerIntTest {
     out.write(taskToCreateJson2);
     out.flush();
     out.close();
-    assertThat(con.getResponseCode()).isEqualTo(500);
+    assertThat(con.getResponseCode()).isEqualTo(400);
 
     con.disconnect();
   }
@@ -818,9 +817,7 @@ class TaskControllerIntTest {
         restHelper.toUrl(
             RestEndpoints.URL_TASKS_ID_CLAIM, "TKI:000000000000000000000000000000000026");
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
         .extracting(ex -> ((HttpClientErrorException) ex).getStatusCode())
@@ -915,16 +912,15 @@ class TaskControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
+        .isInstanceOf(HttpClientErrorException.class)
         .hasMessageContaining(
-            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+            "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(HttpClientErrorException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @TestFactory

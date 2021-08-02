@@ -127,8 +127,9 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskHasAlreadyBeenUpdated() throws Exception {
 
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    final Task task2 = taskService.getTask("TKI:000000000000000000000000000000000000");
+    String taskId = "TKI:000000000000000000000000000000000000";
+    Task task = taskService.getTask(taskId);
+    final Task task2 = taskService.getTask(taskId);
 
     task.setCustomAttribute(CUSTOM_1, "willi");
     Thread.sleep(10);
@@ -138,7 +139,8 @@ class UpdateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.updateTask(task2))
         .isInstanceOf(ConcurrencyException.class)
         .hasMessage(
-            "The current entity cannot be updated since it has been modified while editing.");
+            "The entity with id '%s' cannot be updated since it has been modified while editing.",
+            taskId);
   }
 
   @WithAccessId(user = "admin")
@@ -346,6 +348,4 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
     assertThat(retrievedUpdatedTask).extracting(TaskSummary::getReceived).isEqualTo(retrievedTime);
   }
-
-
 }

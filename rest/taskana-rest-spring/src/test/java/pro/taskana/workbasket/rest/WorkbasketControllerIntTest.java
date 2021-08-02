@@ -18,7 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
@@ -298,15 +298,14 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
-        .isInstanceOf(HttpServerErrorException.class)
+        .isInstanceOf(HttpStatusCodeException.class)
         .hasMessageContaining(
-            "Unkown request parameters found: [anotherIllegalParam, illegalParam]")
-        .extracting(ex -> ((HttpServerErrorException) ex).getStatusCode())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+            "Unknown request parameters found: [anotherIllegalParam, illegalParam]")
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 }

@@ -17,4 +17,9 @@ public class TaskanaException extends Exception {
   public ErrorCode getErrorCode() {
     return errorCode;
   }
+
+  @Override
+  public String toString() {
+    return "TaskanaException [errorCode=" + errorCode + "]";
+  }
 }
