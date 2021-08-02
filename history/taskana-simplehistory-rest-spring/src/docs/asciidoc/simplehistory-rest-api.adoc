@@ -15,6 +15,19 @@ Most of our resources contain a `_links` section which contains navigation links
 Besides, helping to navigate through our REST API, the navigation links also encapsulate the API.
 Using HATEOAS allows us to change some endpoints without modifying your frontend.
 
+=== Errors
+
+In order to support multilingual websites, TASKANA uses error codes to define which error occurred.
+Additionally, an optional set of message variables, containing some technical information, is added, so that the website can describe the error with all details.
+
+The table below is an addition to the already documented TASKANA REST Service ErrorCodes
+
+[%autowidth,width="100%"]
+|===
+| Status Code                 | Key                                       | Message Variables
+| *404 NOT_FOUND*             | HISTORY_EVENT_NOT_FOUND                   | historyEventId
+|===
+
 == History event
 
 include::{snippets}/TaskHistoryEventControllerRestDocTest/getAllTaskHistoryEventsDocTest/auto-section.adoc[]

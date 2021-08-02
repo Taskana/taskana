@@ -307,93 +307,93 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   @Override
   public String toString() {
     return "TaskImpl [customAttributes="
-               + customAttributes
-               + ", callbackInfo="
-               + callbackInfo
-               + ", callbackState="
-               + callbackState
-               + ", attachments="
-               + attachments
-               + ", id="
-               + id
-               + ", externalId="
-               + externalId
-               + ", created="
-               + created
-               + ", claimed="
-               + claimed
-               + ", completed="
-               + completed
-               + ", modified="
-               + modified
-               + ", planned="
-               + planned
-               + ", received="
-               + received
-               + ", due="
-               + due
-               + ", name="
-               + name
-               + ", creator="
-               + creator
-               + ", note="
-               + note
-               + ", description="
-               + description
-               + ", priority="
-               + priority
-               + ", state="
-               + state
-               + ", classificationSummary="
-               + classificationSummary
-               + ", workbasketSummary="
-               + workbasketSummary
-               + ", businessProcessId="
-               + businessProcessId
-               + ", parentBusinessProcessId="
-               + parentBusinessProcessId
-               + ", owner="
-               + owner
-               + ", primaryObjRef="
-               + primaryObjRef
-               + ", isRead="
-               + isRead
-               + ", isTransferred="
-               + isTransferred
-               + ", attachmentSummaries="
-               + attachmentSummaries
-               + ", custom1="
-               + custom1
-               + ", custom2="
-               + custom2
-               + ", custom3="
-               + custom3
-               + ", custom4="
-               + custom4
-               + ", custom5="
-               + custom5
-               + ", custom6="
-               + custom6
-               + ", custom7="
-               + custom7
-               + ", custom8="
-               + custom8
-               + ", custom9="
-               + custom9
-               + ", custom10="
-               + custom10
-               + ", custom11="
-               + custom11
-               + ", custom12="
-               + custom12
-               + ", custom13="
-               + custom13
-               + ", custom14="
-               + custom14
-               + ", custom15="
-               + custom15
-               + ", custom16="
-               + custom16
-               + "]";
+        + customAttributes
+        + ", callbackInfo="
+        + callbackInfo
+        + ", callbackState="
+        + callbackState
+        + ", attachments="
+        + attachments
+        + ", id="
+        + id
+        + ", externalId="
+        + externalId
+        + ", created="
+        + created
+        + ", claimed="
+        + claimed
+        + ", completed="
+        + completed
+        + ", modified="
+        + modified
+        + ", planned="
+        + planned
+        + ", received="
+        + received
+        + ", due="
+        + due
+        + ", name="
+        + name
+        + ", creator="
+        + creator
+        + ", note="
+        + note
+        + ", description="
+        + description
+        + ", priority="
+        + priority
+        + ", state="
+        + state
+        + ", classificationSummary="
+        + classificationSummary
+        + ", workbasketSummary="
+        + workbasketSummary
+        + ", businessProcessId="
+        + businessProcessId
+        + ", parentBusinessProcessId="
+        + parentBusinessProcessId
+        + ", owner="
+        + owner
+        + ", primaryObjRef="
+        + primaryObjRef
+        + ", isRead="
+        + isRead
+        + ", isTransferred="
+        + isTransferred
+        + ", attachmentSummaries="
+        + attachmentSummaries
+        + ", custom1="
+        + custom1
+        + ", custom2="
+        + custom2
+        + ", custom3="
+        + custom3
+        + ", custom4="
+        + custom4
+        + ", custom5="
+        + custom5
+        + ", custom6="
+        + custom6
+        + ", custom7="
+        + custom7
+        + ", custom8="
+        + custom8
+        + ", custom9="
+        + custom9
+        + ", custom10="
+        + custom10
+        + ", custom11="
+        + custom11
+        + ", custom12="
+        + custom12
+        + ", custom13="
+        + custom13
+        + ", custom14="
+        + custom14
+        + ", custom15="
+        + custom15
+        + ", custom16="
+        + custom16
+        + "]";
   }
 }
