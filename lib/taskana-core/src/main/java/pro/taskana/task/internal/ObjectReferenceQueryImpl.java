@@ -67,7 +67,7 @@ public class ObjectReferenceQueryImpl implements ObjectReferenceQuery {
 
   @Override
   public List<ObjectReference> list() {
-    return taskanaEngine.openAndReturnConnection(
+    return taskanaEngine.executeInDatabaseConnection(
         () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 

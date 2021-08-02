@@ -115,44 +115,39 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public TaskService getTaskService() {
-    SqlSession session = this.sessionManager;
     return new TaskServiceImpl(
         internalTaskanaEngineImpl,
-        session.getMapper(TaskMapper.class),
-        session.getMapper(TaskCommentMapper.class),
-        session.getMapper(AttachmentMapper.class));
+        sessionManager.getMapper(TaskMapper.class),
+        sessionManager.getMapper(TaskCommentMapper.class),
+        sessionManager.getMapper(AttachmentMapper.class));
   }
 
   @Override
   public MonitorService getMonitorService() {
-    SqlSession session = this.sessionManager;
     return new MonitorServiceImpl(
-        internalTaskanaEngineImpl, session.getMapper(MonitorMapper.class));
+        internalTaskanaEngineImpl, sessionManager.getMapper(MonitorMapper.class));
   }
 
   @Override
   public WorkbasketService getWorkbasketService() {
-    SqlSession session = this.sessionManager;
     return new WorkbasketServiceImpl(
         internalTaskanaEngineImpl,
-        session.getMapper(WorkbasketMapper.class),
-        session.getMapper(DistributionTargetMapper.class),
-        session.getMapper(WorkbasketAccessMapper.class));
+        sessionManager.getMapper(WorkbasketMapper.class),
+        sessionManager.getMapper(DistributionTargetMapper.class),
+        sessionManager.getMapper(WorkbasketAccessMapper.class));
   }
 
   @Override
   public ClassificationService getClassificationService() {
-    SqlSession session = this.sessionManager;
     return new ClassificationServiceImpl(
         internalTaskanaEngineImpl,
-        session.getMapper(ClassificationMapper.class),
-        session.getMapper(TaskMapper.class));
+        sessionManager.getMapper(ClassificationMapper.class),
+        sessionManager.getMapper(TaskMapper.class));
   }
 
   @Override
   public JobService getJobService() {
-    SqlSession session = this.sessionManager;
-    return new JobServiceImpl(internalTaskanaEngineImpl, session.getMapper(JobMapper.class));
+    return new JobServiceImpl(internalTaskanaEngineImpl, sessionManager.getMapper(JobMapper.class));
   }
 
   @Override
@@ -168,6 +163,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   @Override
   public boolean isHistoryEnabled() {
     return HistoryEventManager.isHistoryEnabled();
+  }
+
+  @Override
+  public ConnectionManagementMode getConnectionManagementMode() {
+    return mode;
   }
 
   @Override
@@ -244,6 +244,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public <T> T runAsAdmin(Supplier<T> supplier) {
+    if (isUserInRole(TaskanaRole.ADMIN)) {
+      return supplier.get();
+    }
 
     String adminName =
         this.getConfiguration().getRoleMap().get(TaskanaRole.ADMIN).stream()
@@ -420,7 +423,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     @Override
-    public <T> T openAndReturnConnection(Supplier<T> supplier) {
+    public <T> T executeInDatabaseConnection(Supplier<T> supplier) {
       try {
         openConnection();
         return supplier.get();

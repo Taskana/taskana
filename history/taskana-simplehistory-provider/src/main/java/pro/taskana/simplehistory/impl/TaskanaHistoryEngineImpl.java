@@ -65,9 +65,9 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     if (taskanaHistoryService == null) {
       SimpleHistoryServiceImpl historyService = new SimpleHistoryServiceImpl();
       historyService.initialize(taskanaEngine);
-      this.taskanaHistoryService = historyService;
+      taskanaHistoryService = historyService;
     }
-    return this.taskanaHistoryService;
+    return taskanaHistoryService;
   }
 
   public boolean isUserInRole(TaskanaRole... roles) {

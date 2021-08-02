@@ -585,7 +585,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       args.put(ClassificationChangedJob.SERVICE_LEVEL_CHANGED, String.valueOf(serviceLevelChanged));
       ScheduledJob job = new ScheduledJob();
       job.setArguments(args);
-      job.setType(ScheduledJob.Type.CLASSIFICATIONCHANGEDJOB);
+      job.setType(ScheduledJob.Type.CLASSIFICATION_CHANGED_JOB);
       taskanaEngine.getEngine().getJobService().createJob(job);
     }
   }

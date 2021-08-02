@@ -181,7 +181,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     resetDb(true);
     ScheduledJob job = new ScheduledJob();
     job.setArguments(Map.of("keyBla", "valueBla"));
-    job.setType(ScheduledJob.Type.TASKCLEANUPJOB);
+    job.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
     job.setDue(Instant.now().minus(Duration.ofHours(5)));
     job.setLockExpires(Instant.now().minus(Duration.ofHours(5)));
     JobService jobService = taskanaEngine.getJobService();

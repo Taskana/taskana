@@ -30,13 +30,27 @@ public interface InternalTaskanaEngine {
   void returnConnection();
 
   /**
-   * Executes the supplier after openConnection is called and then returns the connection.
+   * Executes the given supplier after openConnection is called and then returns the connection.
    *
    * @param supplier a function that returns something of type T
    * @param <T> any type
    * @return the result of the supplier
    */
-  <T> T openAndReturnConnection(Supplier<T> supplier);
+  <T> T executeInDatabaseConnection(Supplier<T> supplier);
+
+  /**
+   * Executes the given runnable after openConnection is called and then returns the connection.
+   *
+   * @see #executeInDatabaseConnection(Supplier)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default void executeInDatabaseConnection(Runnable runnable) {
+    executeInDatabaseConnection(
+        () -> {
+          runnable.run();
+          return null;
+        });
+  }
 
   /** Initializes the SqlSessionManager. */
   void initSqlSession();

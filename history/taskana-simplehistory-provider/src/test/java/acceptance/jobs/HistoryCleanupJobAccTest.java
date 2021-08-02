@@ -378,11 +378,11 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.HISTORYCLEANUPJOB);
+      job.setType(ScheduledJob.Type.HISTORY_CLEANUP_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.UPDATETASKSJOB);
+      job.setType(Type.TASK_REFRESH_JOB);
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATIONCHANGEDJOB);
+      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -392,7 +392,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> historyCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.HISTORYCLEANUPJOB))
+            .filter(scheduledJob -> scheduledJob.getType().equals(Type.HISTORY_CLEANUP_JOB))
             .collect(Collectors.toList());
 
     HistoryCleanupJob.initializeSchedule(taskanaEngine);

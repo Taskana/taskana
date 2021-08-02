@@ -4,12 +4,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,7 +15,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
@@ -29,7 +22,6 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
@@ -43,34 +35,33 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryCleanupJob.class);
 
-  private static final String TASKANA_PROPERTIES = "/taskana.properties";
-
   private static final String TASKANA_JOB_HISTORY_BATCH_SIZE = "taskana.jobs.history.batchSize";
 
   private static final String TASKANA_JOB_HISTORY_CLEANUP_MINIMUM_AGE =
       "taskana.jobs.history.cleanup.minimumAge";
 
-  private final boolean allCompletedSameParentBusiness;
-
-  TaskanaHistoryEngineImpl taskanaHistoryEngine =
+  private final TaskanaHistoryEngineImpl taskanaHistoryEngine =
       TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl);
 
-  private Duration minimumAge = Duration.parse("P14D");
-  private int batchSize = 100;
+  private final boolean allCompletedSameParentBusiness;
+
+  private Duration minimumAge = taskanaEngineImpl.getConfiguration().getCleanupJobMinimumAge();
+  private int batchSize =
+      taskanaEngineImpl.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
 
   public HistoryCleanupJob(
       TaskanaEngine taskanaEngine,
-      TaskanaTransactionProvider<Object> txProvider,
+      TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
-    super(taskanaEngine, txProvider, scheduledJob);
+    super(taskanaEngine, txProvider, scheduledJob, true);
     allCompletedSameParentBusiness =
         taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
-    Properties props = readPropertiesFromFile(TASKANA_PROPERTIES);
+    Properties props = taskanaEngine.getConfiguration().readPropertiesFromFile();
     initJobParameters(props);
   }
 
   @Override
-  public void run() throws TaskanaException {
+  public void execute() {
 
     Instant createdBefore = Instant.now().minus(minimumAge);
 
@@ -136,8 +127,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
           "Job ended successfully. {} history events deleted.", totalNumberOfHistoryEventsDeleted);
     } catch (Exception e) {
       throw new SystemException("Error while processing HistoryCleanupJob.", e);
-    } finally {
-      scheduleNextCleanupJob();
     }
   }
 
@@ -149,15 +138,20 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    jobService.deleteJobs(Type.HISTORYCLEANUPJOB);
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
-    job.scheduleNextCleanupJob();
+    jobService.deleteJobs(job.getType());
+    job.scheduleNextJob();
+  }
+
+  @Override
+  protected Type getType() {
+    return Type.HISTORY_CLEANUP_JOB;
   }
 
   private List<String> filterSameParentBusinessHistoryEventsQualifiedToClean(
       List<TaskHistoryEvent> historyEventCandidatesToClean) {
 
-    Map<String, Map<String, List<String>>> historyEventsGroupedByParentBusinessProcessIdAndType =
+    Map<String, Map<String, List<String>>> taskHistoryIdsByEventTypeByParentBusinessProcessId =
         historyEventCandidatesToClean.stream()
             .collect(
                 groupingBy(
@@ -168,54 +162,32 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
     List<String> taskIdsToDeleteHistoryEventsFor = new ArrayList<>();
 
-    historyEventsGroupedByParentBusinessProcessIdAndType
-        .entrySet()
-        .forEach(
-            idsOfTasksInSameParentBusinessProcessGroupedByType -> {
-              if (idsOfTasksInSameParentBusinessProcessGroupedByType
-                      .getValue()
-                      .get(TaskHistoryEventType.CREATED.getName())
-                      .size()
-                  == idsOfTasksInSameParentBusinessProcessGroupedByType
-                      .getValue()
-                      .entrySet()
-                      .stream()
-                      .filter(
-                          entry -> !entry.getKey().equals(TaskHistoryEventType.CREATED.getName()))
-                      .mapToInt(stringListEntry -> stringListEntry.getValue().size())
-                      .sum()) {
-
-                taskIdsToDeleteHistoryEventsFor.addAll(
-                    idsOfTasksInSameParentBusinessProcessGroupedByType
-                        .getValue()
-                        .get(TaskHistoryEventType.CREATED.getName()));
-              }
-            });
+    taskHistoryIdsByEventTypeByParentBusinessProcessId.forEach(
+        (parentBusinessProcessId, taskHistoryIdsByEventType) -> {
+          if (taskHistoryIdsByEventType.get(TaskHistoryEventType.CREATED.getName()).size()
+              == taskHistoryIdsByEventType.entrySet().stream()
+                  .filter(entry -> !entry.getKey().equals(TaskHistoryEventType.CREATED.getName()))
+                  .mapToInt(stringListEntry -> stringListEntry.getValue().size())
+                  .sum()) {
+            taskIdsToDeleteHistoryEventsFor.addAll(
+                taskHistoryIdsByEventType.get(TaskHistoryEventType.CREATED.getName()));
+          }
+        });
 
     return taskIdsToDeleteHistoryEventsFor;
   }
 
   private int deleteHistoryEventsTransactionally(List<String> taskIdsToDeleteHistoryEventsFor) {
-    int deletedEventsCount = 0;
-    if (txProvider != null) {
-      return (int)
-          txProvider.executeInTransaction(
-              () -> {
-                try {
-                  return deleteEvents(taskIdsToDeleteHistoryEventsFor);
-                } catch (Exception e) {
-                  LOGGER.warn("Could not delete history events.", e);
-                  return 0;
-                }
-              });
-    } else {
-      try {
-        deletedEventsCount = deleteEvents(taskIdsToDeleteHistoryEventsFor);
-      } catch (Exception e) {
-        LOGGER.warn("Could not delete history events.", e);
-      }
-    }
-    return deletedEventsCount;
+    return TaskanaTransactionProvider.executeInTransactionIfPossible(
+        txProvider,
+        () -> {
+          try {
+            return deleteEvents(taskIdsToDeleteHistoryEventsFor);
+          } catch (Exception e) {
+            LOGGER.warn("Could not delete history events.", e);
+            return 0;
+          }
+        });
   }
 
   private int deleteEvents(List<String> taskIdsToDeleteHistoryEventsFor)
@@ -223,12 +195,11 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     SimpleHistoryServiceImpl simpleHistoryService =
         (SimpleHistoryServiceImpl) taskanaHistoryEngine.getTaskanaHistoryService();
 
-    String[] taskIdsArray = new String[taskIdsToDeleteHistoryEventsFor.size()];
     int deletedTasksCount =
         (int)
             simpleHistoryService
                 .createTaskHistoryQuery()
-                .taskIdIn(taskIdsToDeleteHistoryEventsFor.toArray(taskIdsArray))
+                .taskIdIn(taskIdsToDeleteHistoryEventsFor.toArray(new String[0]))
                 .count();
 
     simpleHistoryService.deleteHistoryEventsByTaskIds(taskIdsToDeleteHistoryEventsFor);
@@ -238,13 +209,6 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     }
 
     return deletedTasksCount;
-  }
-
-  private void scheduleNextCleanupJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(Type.HISTORYCLEANUPJOB);
-    job.setDue(getNextDueForCleanupJob());
-    taskanaEngineImpl.getJobService().createJob(job);
   }
 
   private void initJobParameters(Properties props) {
@@ -283,46 +247,5 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
           "HistoryCleanupJob configuration: minimum age of history events to be cleanup up is {}",
           minimumAge);
     }
-  }
-
-  private Properties readPropertiesFromFile(String propertiesFile) {
-    Properties props = new Properties();
-    boolean loadFromClasspath = loadFromClasspath(propertiesFile);
-    try {
-      if (loadFromClasspath) {
-        InputStream inputStream =
-            TaskanaEngineConfiguration.class.getResourceAsStream(propertiesFile);
-        if (inputStream == null) {
-          LOGGER.error("taskana properties file {} was not found on classpath.", propertiesFile);
-        } else {
-          props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                "taskana properties were loaded from file {} from classpath.", propertiesFile);
-          }
-        }
-      } else {
-        try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
-          props.load(fileInputStream);
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("taskana properties were loaded from file {}.", propertiesFile);
-          }
-        }
-      }
-    } catch (IOException e) {
-      LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
-      throw new SystemException(
-          "internal System error when processing properties file " + propertiesFile, e.getCause());
-    }
-    return props;
-  }
-
-  private boolean loadFromClasspath(String propertiesFile) {
-    boolean loadFromClasspath = true;
-    File f = new File(propertiesFile);
-    if (f.exists() && !f.isDirectory()) {
-      loadFromClasspath = false;
-    }
-    return loadFromClasspath;
   }
 }

@@ -50,7 +50,7 @@ class TaskanaTransactionIntTest {
 
   private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
   private static final String INTERNAL_SERVER_ERROR_STATUS = "500";
-  @Autowired TaskanaTransactionProvider<Object> springTransactionProvider;
+  @Autowired TaskanaTransactionProvider springTransactionProvider;
   @Autowired private TestRestTemplate restTemplate;
   @Autowired private DataSource dataSource;
   @Autowired private JdbcTemplate jdbcTemplate;

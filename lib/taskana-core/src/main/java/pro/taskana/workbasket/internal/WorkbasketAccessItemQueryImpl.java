@@ -31,9 +31,9 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
   private String[] workbasketKeyLike;
   private String[] idIn;
 
-  private InternalTaskanaEngine taskanaEngine;
-  private List<String> orderBy;
-  private List<String> orderColumns;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
 
   WorkbasketAccessItemQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -100,7 +100,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
   @Override
   public List<WorkbasketAccessItem> list() {
-    return taskanaEngine.openAndReturnConnection(
+    return taskanaEngine.executeInDatabaseConnection(
         () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
   }
 

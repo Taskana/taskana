@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -14,7 +15,7 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 
-/** This class executes a job of type CLASSIFICATIONCHANGEDJOB. */
+/** This class executes a job of type {@linkplain ScheduledJob.Type#TASK_REFRESH_JOB}. */
 public class TaskRefreshJob extends AbstractTaskanaJob {
 
   public static final String TASK_IDS = "taskIds";
@@ -26,8 +27,8 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
   private final boolean serviceLevelChanged;
 
   public TaskRefreshJob(
-      TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider, ScheduledJob job) {
-    super(engine, txProvider, job);
+      TaskanaEngine engine, TaskanaTransactionProvider txProvider, ScheduledJob job) {
+    super(engine, txProvider, job, false);
     Map<String, String> args = job.getArguments();
     String taskIdsString = args.get(TASK_IDS);
     affectedTaskIds = Arrays.asList(taskIdsString.split(","));
@@ -36,7 +37,7 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
   }
 
   @Override
-  public void run() throws TaskanaException {
+  public void execute() throws TaskanaException {
     LOGGER.info("Running TaskRefreshJob for {} tasks", affectedTaskIds.size());
     try {
       TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
@@ -49,7 +50,28 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
   }
 
   @Override
+  protected Type getType() {
+    return Type.TASK_REFRESH_JOB;
+  }
+
+  @Override
   public String toString() {
-    return "TaskRefreshJob [affectedTaskIds= " + affectedTaskIds + "]";
+    return "TaskRefreshJob [firstRun="
+        + firstRun
+        + ", runEvery="
+        + runEvery
+        + ", taskanaEngineImpl="
+        + taskanaEngineImpl
+        + ", txProvider="
+        + txProvider
+        + ", scheduledJob="
+        + scheduledJob
+        + ", affectedTaskIds="
+        + affectedTaskIds
+        + ", priorityChanged="
+        + priorityChanged
+        + ", serviceLevelChanged="
+        + serviceLevelChanged
+        + "]";
   }
 }

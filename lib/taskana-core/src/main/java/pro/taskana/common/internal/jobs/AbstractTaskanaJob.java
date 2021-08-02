@@ -3,12 +3,10 @@ package pro.taskana.common.internal.jobs;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
@@ -17,23 +15,26 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
 
   protected final Instant firstRun;
   protected final Duration runEvery;
-  protected TaskanaEngineImpl taskanaEngineImpl;
-  protected TaskanaTransactionProvider<Object> txProvider;
-  protected ScheduledJob scheduledJob;
+  protected final TaskanaEngineImpl taskanaEngineImpl;
+  protected final TaskanaTransactionProvider txProvider;
+  protected final ScheduledJob scheduledJob;
+  private final boolean async;
 
   public AbstractTaskanaJob(
       TaskanaEngine taskanaEngine,
-      TaskanaTransactionProvider<Object> txProvider,
-      ScheduledJob job) {
+      TaskanaTransactionProvider txProvider,
+      ScheduledJob job,
+      boolean async) {
     this.taskanaEngineImpl = (TaskanaEngineImpl) taskanaEngine;
     this.txProvider = txProvider;
     this.scheduledJob = job;
-    firstRun = taskanaEngine.getConfiguration().getCleanupJobFirstRun();
-    this.runEvery = taskanaEngineImpl.getConfiguration().getCleanupJobRunEvery();
+    this.async = async;
+    firstRun = taskanaEngineImpl.getConfiguration().getCleanupJobFirstRun();
+    runEvery = taskanaEngineImpl.getConfiguration().getCleanupJobRunEvery();
   }
 
   public static TaskanaJob createFromScheduledJob(
-      TaskanaEngine engine, TaskanaTransactionProvider<Object> txProvider, ScheduledJob job)
+      TaskanaEngine engine, TaskanaTransactionProvider txProvider, ScheduledJob job)
       throws ClassNotFoundException, IllegalAccessException, InstantiationException,
           InvocationTargetException {
 
@@ -45,23 +46,19 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
             .newInstance(engine, txProvider, job);
   }
 
-  protected <T> List<List<T>> partition(Collection<T> members, int maxSize) {
-    List<List<T>> result = new ArrayList<>();
-    List<T> internal = new ArrayList<>();
-    for (T member : members) {
-      internal.add(member);
-      if (internal.size() == maxSize) {
-        result.add(internal);
-        internal = new ArrayList<>();
-      }
+  @Override
+  public final void run() throws TaskanaException {
+    execute();
+    if (async) {
+      scheduleNextJob();
     }
-    if (!internal.isEmpty()) {
-      result.add(internal);
-    }
-    return result;
   }
 
-  protected Instant getNextDueForCleanupJob() {
+  protected abstract ScheduledJob.Type getType();
+
+  protected abstract void execute() throws TaskanaException;
+
+  protected Instant getNextDueForJob() {
     Instant nextRun = firstRun;
     if (scheduledJob != null && scheduledJob.getDue() != null) {
       nextRun = scheduledJob.getDue();
@@ -72,5 +69,12 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     }
 
     return nextRun;
+  }
+
+  protected void scheduleNextJob() {
+    ScheduledJob job = new ScheduledJob();
+    job.setType(getType());
+    job.setDue(getNextDueForJob());
+    taskanaEngineImpl.getJobService().createJob(job);
   }
 }
