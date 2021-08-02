@@ -142,14 +142,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     return this;
   }
 
-  private void validateAllTimeIntervals(TimeInterval[] intervals) {
-    for (TimeInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
-      }
-    }
-  }
-
   @Override
   public WorkbasketQuery descriptionLike(String... description) {
     this.descriptionLike = toUpperCopy(description);
@@ -591,6 +583,14 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         if (id != null) {
           accessIdArray[i] = id.toLowerCase();
         }
+      }
+    }
+  }
+
+  private void validateAllTimeIntervals(TimeInterval[] intervals) {
+    for (TimeInterval ti : intervals) {
+      if (!ti.isValid()) {
+        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
       }
     }
   }

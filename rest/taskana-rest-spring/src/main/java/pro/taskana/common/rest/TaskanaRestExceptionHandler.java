@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.ErrorCode;
@@ -38,6 +39,7 @@ import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
+import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.common.rest.models.ExceptionRepresentationModel;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
@@ -127,7 +129,8 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     InvalidOwnerException.class,
     InvalidArgumentException.class,
     DomainNotFoundException.class,
-    TaskanaException.class
+    MalformedServiceLevelException.class,
+    WrongCustomHolidayFormatException.class
   })
   protected ResponseEntity<Object> handleBadRequestExceptions(TaskanaException ex, WebRequest req) {
     return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.BAD_REQUEST);
@@ -141,8 +144,14 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   }
 
   @ExceptionHandler(TaskanaRuntimeException.class)
-  protected ResponseEntity<Object> handleInternalServerExceptions(
+  protected ResponseEntity<Object> handleUnknownTaskanaRuntimeExceptions(
       TaskanaRuntimeException ex, WebRequest req) {
+    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(TaskanaException.class)
+  protected ResponseEntity<Object> handleUnknownTaskanaExceptions(
+      TaskanaException ex, WebRequest req) {
     return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

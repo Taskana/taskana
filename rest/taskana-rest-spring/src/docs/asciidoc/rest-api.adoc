@@ -38,14 +38,13 @@ Additionally, an optional set of message variables, containing some technical in
 | *403 FORBIDDEN*             | WORKBASKET_WITH_KEY_MISMATCHED_PERMISSION | currentUserId, workbasketKey, domain, requiredPermissions
 | *404 NOT_FOUND*             | CLASSIFICATION_WITH_ID_NOT_FOUND          | classificationId
 | *404 NOT_FOUND*             | CLASSIFICATION_WITH_KEY_NOT_FOUND         | classificationKey, domain
-| *404 NOT_FOUND*             | HISTORY_EVENT_NOT_FOUND                   | historyEventId
 | *404 NOT_FOUND*             | TASK_COMMENT_NOT_FOUND                    | taskCommentId
 | *404 NOT_FOUND*             | TASK_NOT_FOUND                            | taskId
 | *404 NOT_FOUND*             | WORKBASKET_WITH_ID_NOT_FOUND              | workbasketId
 | *404 NOT_FOUND*             | WORKBASKET_WITH_KEY_NOT_FOUND             | workbasketKey, domain
 | *409 CONFLICT*              | ATTACHMENT_ALREADY_EXISTS                 | attachmentId, taskId
 | *409 CONFLICT*              | CLASSIFICATION_ALREADY_EXISTS             | classificationKey, domain
-| *409 CONFLICT*              | ENTITY_NOT_UP_TO_DATE                     |
+| *409 CONFLICT*              | ENTITY_NOT_UP_TO_DATE                     | entityId
 | *409 CONFLICT*              | TASK_ALREADY_EXISTS                       | externalTaskId
 | *409 CONFLICT*              | WORKBASKET_ACCESS_ITEM_ALREADY_EXISTS     | accessId, workbasketId
 | *409 CONFLICT*              | WORKBASKET_ALREADY_EXISTS                 | workbasketKey, domain

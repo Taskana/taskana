@@ -134,14 +134,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     return this;
   }
 
-  private void validateAllTimeIntervals(TimeInterval[] createdIn) {
-    for (TimeInterval ti : createdIn) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
-      }
-    }
-  }
-
   @Override
   public ClassificationQuery nameIn(String... nameIn) {
     this.nameIn = nameIn;
@@ -535,6 +527,14 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   public List<String> getOrderColumns() {
     return orderColumns;
+  }
+
+  private void validateAllTimeIntervals(TimeInterval[] createdIn) {
+    for (TimeInterval ti : createdIn) {
+      if (!ti.isValid()) {
+        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+      }
+    }
   }
 
   private ClassificationQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
