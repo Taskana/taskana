@@ -40,22 +40,12 @@ public class TaskCustomFieldValueReportBuilderImpl
   @Override
   public TaskCustomFieldValueReport buildReport(TaskTimestamp timestamp)
       throws InvalidArgumentException, NotAuthorizedException {
-    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
+    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();
       TaskCustomFieldValueReport report = new TaskCustomFieldValueReport(this.columnHeaders);
       List<MonitorQueryItem> monitorQueryItems =
-          this.monitorMapper.getTaskCountOfTaskCustomFieldValues(
-              Instant.now(),
-              this.taskCustomField,
-              this.workbasketIds,
-              this.states,
-              this.classificationCategory,
-              this.domains,
-              timestamp,
-              this.classificationIds,
-              this.excludedClassificationIds,
-              this.customAttributeFilter);
+          this.monitorMapper.getTaskCountOfTaskCustomFieldValues(Instant.now(), timestamp, this);
 
       report.addItems(
           monitorQueryItems,

@@ -3,9 +3,7 @@ package acceptance.report;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,15 +55,41 @@ class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testGetCustomAttributeValuesForCustomAttribute() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_2, "Vollkasko");
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
-
+  void should_ReturnCustomAttributeValuesOfCategoryReport_When_FilteringWithCustomAttributeIn()
+      throws Exception {
     List<String> values =
         MONITOR_SERVICE
             .createClassificationCategoryReportBuilder()
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_2, "Vollkasko")
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
+
+    assertThat(values).hasSize(12);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnCustomAttributeValuesOfCategoryReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    List<String> values =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .customAttributeNotIn(TaskCustomField.CUSTOM_2, "Vollkasko")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
+
+    assertThat(values).hasSize(16);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnCustomAttributeValuesOfCategoryReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    List<String> values =
+        MONITOR_SERVICE
+            .createClassificationCategoryReportBuilder()
+            .customAttributeLike(TaskCustomField.CUSTOM_2, "%ollkas%")
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%aeftsstelle A")
             .listCustomAttributeValuesForCustomAttributeName(TaskCustomField.CUSTOM_16);
 
     assertThat(values).hasSize(12);

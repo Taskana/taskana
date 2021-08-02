@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
@@ -41,22 +40,21 @@ public class SpringArchitectureTest {
         "all fields should have a @JsonProperty or @JsonIgnore annotation") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
-        for (JavaField field : javaClass.getAllFields()) {
-          if (!field.reflect().isSynthetic()) {
-            boolean annotationIsNotPresent =
-                Stream.of(JsonProperty.class, JsonIgnore.class)
-                    .map(field::tryGetAnnotationOfType)
-                    .noneMatch(Optional::isPresent);
-            if (annotationIsNotPresent) {
-              events.add(
-                  SimpleConditionEvent.violated(
-                      javaClass,
-                      String.format(
-                          "Field '%s' in class '%s' is not annotated by @JsonProperty",
-                          field, javaClass)));
-            }
-          }
-        }
+        javaClass.getAllFields().stream()
+            .filter(field -> !field.reflect().isSynthetic())
+            .filter(
+                field ->
+                    Stream.of(JsonProperty.class, JsonIgnore.class)
+                        .map(field::tryGetAnnotationOfType)
+                        .noneMatch(Optional::isPresent))
+            .map(
+                field ->
+                    SimpleConditionEvent.violated(
+                        javaClass,
+                        String.format(
+                            "Field '%s' in class '%s' is not annotated with a json annotation",
+                            field, javaClass)))
+            .forEach(events::add);
       }
     };
   }

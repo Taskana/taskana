@@ -16,6 +16,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -66,14 +67,12 @@ class WorkbasketAccessItemControllerIntTest {
         TEMPLATE.exchange(
             url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith(parameters))
-        .isTrue();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
+        .isNotEmpty()
+        .get()
+        .extracting(Link::getHref)
+        .asString()
+        .endsWith(parameters);
   }
 
   @Test
@@ -90,16 +89,14 @@ class WorkbasketAccessItemControllerIntTest {
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent().iterator().next().getAccessId())
         .isEqualTo("user-1-1");
-    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith(parameters))
-        .isTrue();
-    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
-    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
+        .isNotEmpty()
+        .get()
+        .extracting(Link::getHref)
+        .asString()
+        .endsWith(parameters);
+    assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotEmpty();
+    assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotEmpty();
     assertThat(response.getBody().getPageMetadata().getSize()).isEqualTo(9);
     assertThat(response.getBody().getPageMetadata().getTotalElements()).isEqualTo(1);
     assertThat(response.getBody().getPageMetadata().getTotalPages()).isEqualTo(1);

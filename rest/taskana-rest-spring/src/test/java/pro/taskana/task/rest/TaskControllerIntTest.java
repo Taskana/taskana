@@ -635,7 +635,6 @@ class TaskControllerIntTest {
     assertThat(responseCreate.getBody()).isNotNull();
 
     String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
-    assertThat(taskIdOfCreatedTask).isNotNull();
     assertThat(taskIdOfCreatedTask).startsWith("TKI:");
 
     String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);

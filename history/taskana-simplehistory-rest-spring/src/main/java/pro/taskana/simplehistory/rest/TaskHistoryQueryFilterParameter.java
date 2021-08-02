@@ -362,7 +362,7 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
   }
 
   @Override
-  public Void applyToQuery(TaskHistoryQuery query) {
+  public Void apply(TaskHistoryQuery query) {
     ofNullable(eventType).ifPresent(query::eventTypeIn);
     ofNullable(eventTypeLike)
         .map(this::wrapElementsInLikeStatement)

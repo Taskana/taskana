@@ -72,10 +72,10 @@ public class WorkbasketAccessItemController {
         QueryPagingParameter.class);
 
     WorkbasketAccessItemQuery query = workbasketService.createWorkbasketAccessItemQuery();
-    filterParameter.applyToQuery(query);
-    sortParameter.applyToQuery(query);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
 
-    List<WorkbasketAccessItem> workbasketAccessItems = pagingParameter.applyToQuery(query);
+    List<WorkbasketAccessItem> workbasketAccessItems = pagingParameter.apply(query);
 
     WorkbasketAccessItemPagedRepresentationModel pagedResources =
         modelAssembler.toPagedModel(workbasketAccessItems, pagingParameter.getPageMetadata());

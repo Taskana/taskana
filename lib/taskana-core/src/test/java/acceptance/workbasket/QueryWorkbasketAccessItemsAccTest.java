@@ -25,17 +25,12 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 @ExtendWith(JaasExtension.class)
 class QueryWorkbasketAccessItemsAccTest extends AbstractAccTest {
 
-  QueryWorkbasketAccessItemsAccTest() {
-    super();
-  }
-
   @WithAccessId(user = "businessadmin")
   @Test
   void testQueryWorkbasketAccessItemValuesForColumnName() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<String> columnValueList =
         workbasketService.createWorkbasketAccessItemQuery().listValues(WORKBASKET_ID, null);
-    assertThat(columnValueList).isNotNull();
     assertThat(columnValueList).hasSize(24);
 
     columnValueList =

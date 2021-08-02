@@ -55,14 +55,16 @@ public final class RestEndpoints {
   public static final String URL_TASK_COMMENT = API_V1 + "tasks/comments/{taskCommentId}";
 
   // monitor endpoints
-  public static final String URL_MONITOR_TASKS_STATUS_REPORT =
-      API_V1 + "monitor/tasks-status-report";
-  public static final String URL_MONITOR_TASKS_WORKBASKET_REPORT =
-      API_V1 + "monitor/tasks-workbasket-report";
-  public static final String URL_MONITOR_TASKS_WORKBASKET_PLANNED_REPORT =
-      API_V1 + "monitor/tasks-workbasket-planned-date-report";
-  public static final String URL_MONITOR_TASKS_CLASSIFICATION_REPORT =
-      API_V1 + "monitor/tasks-classification-report";
+  public static final String URL_MONITOR_WORKBASKET_REPORT = API_V1 + "monitor/workbasket-report";
+  public static final String URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT =
+      API_V1 + "monitor/classification-category-report";
+  public static final String URL_MONITOR_CLASSIFICATION_REPORT =
+      API_V1 + "monitor/classification-report";
+  public static final String URL_MONITOR_DETAILED_CLASSIFICATION_REPORT =
+      API_V1 + "monitor/detailed-classification-report";
+  public static final String URL_MONITOR_TASK_CUSTOM_FIELD_VALUE_REPORT =
+      API_V1 + "monitor/task-custom-field-value-report";
+  public static final String URL_MONITOR_TASK_STATUS_REPORT = API_V1 + "monitor/task-status-report";
   public static final String URL_MONITOR_TIMESTAMP_REPORT = API_V1 + "monitor/timestamp-report";
 
   private RestEndpoints() {}

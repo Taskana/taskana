@@ -366,7 +366,7 @@ class CallbackStateAccTest extends AbstractAccTest {
             .stateIn(TaskState.COMPLETED)
             .callbackStateIn(CallbackState.CALLBACK_PROCESSING_REQUIRED)
             .count();
-    assertThat(numOfTasksRemaining).isEqualTo(0);
+    assertThat(numOfTasksRemaining).isZero();
   }
 
   private TaskImpl createTask(TaskService taskService, CallbackState callbackState)

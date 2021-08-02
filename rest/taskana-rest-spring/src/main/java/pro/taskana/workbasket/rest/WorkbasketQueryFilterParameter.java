@@ -104,7 +104,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   }
 
   @Override
-  public Void applyToQuery(WorkbasketQuery query) {
+  public Void apply(WorkbasketQuery query) {
     Optional.ofNullable(name).ifPresent(query::nameIn);
     Optional.ofNullable(nameLike).map(this::wrapElementsInLikeStatement).ifPresent(query::nameLike);
     Optional.ofNullable(key).ifPresent(query::keyIn);

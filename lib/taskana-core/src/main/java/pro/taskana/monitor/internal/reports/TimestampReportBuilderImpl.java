@@ -48,8 +48,8 @@ public class TimestampReportBuilderImpl
   }
 
   @Override
-  public TimestampReport.Builder withTimestamps(List<TaskTimestamp> statuses) {
-    this.status = new ArrayList<>(statuses);
+  public TimestampReport.Builder withTimestamps(List<TaskTimestamp> taskTimestamps) {
+    this.status = new ArrayList<>(taskTimestamps);
     return _this();
   }
 
@@ -94,13 +94,6 @@ public class TimestampReportBuilderImpl
   }
 
   private List<TimestampQueryItem> getTasksCountForStatusGroupedByOrgLevel(TaskTimestamp s) {
-    return monitorMapper.getTasksCountForStatusGroupedByOrgLevel(
-        Instant.now(),
-        s,
-        classificationCategory,
-        classificationIds,
-        excludedClassificationIds,
-        domains,
-        customAttributeFilter);
+    return monitorMapper.getTasksCountForStatusGroupedByOrgLevel(Instant.now(), s, this);
   }
 }

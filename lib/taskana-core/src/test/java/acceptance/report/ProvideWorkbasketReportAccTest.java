@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
@@ -313,16 +311,14 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void testEachItemOfWorkbasketReportWithCustomFieldValueFilter() throws Exception {
-    Map<TaskCustomField, String> customAttributeFilter = new HashMap<>();
-    customAttributeFilter.put(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A");
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithCustomAttributeIn() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     WorkbasketReport report =
         MONITOR_SERVICE
             .createWorkbasketReportBuilder()
             .withColumnHeaders(columnHeaders)
-            .customAttributeFilterIn(customAttributeFilter)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
             .inWorkingDays()
             .buildReport();
 
@@ -337,6 +333,51 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
 
     int[] row3 = report.getRow("USER-1-3").getCells();
     assertThat(row3).isEqualTo(new int[] {2, 1, 0, 0, 1});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    WorkbasketReport report =
+        MONITOR_SERVICE
+            .createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeNotIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
+
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {7, 2, 0, 0, 1});
+
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {1, 4, 1, 3, 0});
+
+    int[] row3 = report.getRow("USER-1-3").getCells();
+    assertThat(row3).isEqualTo(new int[] {0, 1, 0, 0, 5});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
+
+    WorkbasketReport report =
+        MONITOR_SERVICE
+            .createWorkbasketReportBuilder()
+            .withColumnHeaders(columnHeaders)
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%ftsstelle A")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(3);
   }
 
   @WithAccessId(user = "monitor")

@@ -47,7 +47,7 @@ public class WorkbasketAccessItemQueryFilterParameter
   }
 
   @Override
-  public Void applyToQuery(WorkbasketAccessItemQuery query) {
+  public Void apply(WorkbasketAccessItemQuery query) {
     Optional.ofNullable(workbasketKey).ifPresent(query::workbasketKeyIn);
     Optional.ofNullable(workbasketKeyLike)
         .map(this::wrapElementsInLikeStatement)

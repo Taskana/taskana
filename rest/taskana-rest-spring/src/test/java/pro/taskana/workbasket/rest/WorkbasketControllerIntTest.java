@@ -33,22 +33,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 class WorkbasketControllerIntTest {
 
-  private static final ParameterizedTypeReference<WorkbasketRepresentationModel>
-      WORKBASKET_REPRESENTATION_MODEL_TYPE =
-          new ParameterizedTypeReference<WorkbasketRepresentationModel>() {};
-
-  private static final ParameterizedTypeReference<WorkbasketSummaryPagedRepresentationModel>
-      WORKBASKET_SUMMARY_PAGE_MODEL_TYPE =
-          new ParameterizedTypeReference<WorkbasketSummaryPagedRepresentationModel>() {};
-
-  private static final ParameterizedTypeReference<WorkbasketAccessItemCollectionRepresentationModel>
-      WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE =
-          new ParameterizedTypeReference<WorkbasketAccessItemCollectionRepresentationModel>() {};
-
-  private static final ParameterizedTypeReference<DistributionTargetsCollectionRepresentationModel>
-      DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE =
-          new ParameterizedTypeReference<DistributionTargetsCollectionRepresentationModel>() {};
-
   private final RestHelper restHelper;
 
   @Autowired
@@ -64,7 +48,11 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketRepresentationModel> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -79,7 +67,11 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -91,7 +83,11 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF)).isNotNull();
@@ -105,7 +101,11 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -126,7 +126,11 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketRepresentationModel> initialWorkbasketResourceRequestResponse =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_REPRESENTATION_MODEL_TYPE);
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
     WorkbasketRepresentationModel workbasketRepresentationModel =
         initialWorkbasketResourceRequestResponse.getBody();
     assertThat(workbasketRepresentationModel).isNotNull();
@@ -142,9 +146,13 @@ class WorkbasketControllerIntTest {
             workbasketRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.PUT, auth2, WORKBASKET_REPRESENTATION_MODEL_TYPE);
-        };
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.PUT,
+                auth2,
+                ParameterizedTypeReference.<WorkbasketRepresentationModel>forType(
+                    WorkbasketRepresentationModel.class));
     assertThatThrownBy(httpCall)
         .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
@@ -159,9 +167,13 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("businessadmin"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_REPRESENTATION_MODEL_TYPE);
-        };
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.<WorkbasketRepresentationModel>forType(
+                    WorkbasketRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpStatusCodeException.class)
@@ -177,7 +189,11 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketSummaryPagedRepresentationModel> response =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(WorkbasketSummaryPagedRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(5);
@@ -216,9 +232,7 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("businessadmin"));
 
     ThrowingCallable call =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpStatusCodeException.class)
@@ -244,7 +258,11 @@ class WorkbasketControllerIntTest {
             "WBI:100000000000000000000000000000000002");
     ResponseEntity<DistributionTargetsCollectionRepresentationModel> response2 =
         TEMPLATE.exchange(
-            url2, HttpMethod.GET, auth, DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
+            url2,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(
+                DistributionTargetsCollectionRepresentationModel.class));
 
     assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response2.getBody()).isNotNull();
@@ -263,7 +281,11 @@ class WorkbasketControllerIntTest {
 
     ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> response =
         TEMPLATE.exchange(
-            url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_COLLECTION_REPRESENTATION_TYPE);
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(
+                WorkbasketAccessItemCollectionRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -281,7 +303,11 @@ class WorkbasketControllerIntTest {
 
     ResponseEntity<DistributionTargetsCollectionRepresentationModel> response =
         TEMPLATE.exchange(
-            url, HttpMethod.GET, auth, DISTRIBUTION_TARGETS_COLLECTION_REPRESENTATION_MODEL_TYPE);
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(
+                DistributionTargetsCollectionRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
@@ -300,7 +326,13 @@ class WorkbasketControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, WORKBASKET_SUMMARY_PAGE_MODEL_TYPE);
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(
+                    WorkbasketSummaryPagedRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpStatusCodeException.class)

@@ -105,10 +105,10 @@ public class WorkbasketController {
         QueryPagingParameter.class);
 
     WorkbasketQuery query = workbasketService.createWorkbasketQuery();
-    filterParameter.applyToQuery(query);
-    sortParameter.applyToQuery(query);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
 
-    List<WorkbasketSummary> workbasketSummaries = pagingParameter.applyToQuery(query);
+    List<WorkbasketSummary> workbasketSummaries = pagingParameter.apply(query);
     WorkbasketSummaryPagedRepresentationModel pagedModels =
         workbasketSummaryRepresentationModelAssembler.toPagedModel(
             workbasketSummaries, pagingParameter.getPageMetadata());

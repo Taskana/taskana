@@ -159,7 +159,7 @@ public class ClassificationQueryFilterParameter
   }
 
   @Override
-  public Void applyToQuery(ClassificationQuery query) {
+  public Void apply(ClassificationQuery query) {
     Optional.ofNullable(name).ifPresent(query::nameIn);
     Optional.ofNullable(nameLike).map(this::wrapElementsInLikeStatement).ifPresent(query::nameLike);
     Optional.ofNullable(key).ifPresent(query::keyIn);

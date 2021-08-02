@@ -39,7 +39,7 @@ public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
   }
 
   @Override
-  public List<T> applyToQuery(Q query) {
+  public List<T> apply(Q query) {
     initPageMetaData(query);
     List<T> resultList;
     if (pageMetadata != null) {

@@ -16,8 +16,11 @@ import org.springframework.stereotype.Component;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
+import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
+import pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport;
 import pro.taskana.monitor.api.reports.Report;
+import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
@@ -27,13 +30,91 @@ import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 import pro.taskana.monitor.rest.MonitorController;
+import pro.taskana.monitor.rest.TimeIntervalReportFilterParameter;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentationModel;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /** Transforms any {@link Report} into its {@link ReportRepresentationModel}. */
 @Component
 public class ReportRepresentationModelAssembler {
+
+  @NonNull
+  public ReportRepresentationModel toModel(
+      @NonNull WorkbasketReport report,
+      @NonNull TimeIntervalReportFilterParameter filterParameter,
+      @NonNull TaskTimestamp taskTimestamp)
+      throws NotAuthorizedException, InvalidArgumentException {
+    ReportRepresentationModel resource = toReportResource(report);
+    resource.add(
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computeWorkbasketReport(filterParameter, taskTimestamp))
+            .withSelfRel());
+    return resource;
+  }
+
+  @NonNull
+  public ReportRepresentationModel toModel(
+      @NonNull ClassificationCategoryReport report,
+      @NonNull TimeIntervalReportFilterParameter filterParameter,
+      @NonNull TaskTimestamp taskTimestamp)
+      throws NotAuthorizedException, InvalidArgumentException {
+    ReportRepresentationModel resource = toReportResource(report);
+    resource.add(
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computeClassificationCategoryReport(filterParameter, taskTimestamp))
+            .withSelfRel());
+    return resource;
+  }
+
+  @NonNull
+  public ReportRepresentationModel toModel(
+      @NonNull ClassificationReport report,
+      @NonNull TimeIntervalReportFilterParameter filterParameter,
+      @NonNull TaskTimestamp taskTimestamp)
+      throws NotAuthorizedException, InvalidArgumentException {
+    ReportRepresentationModel resource = toReportResource(report);
+    resource.add(
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computeClassificationReport(filterParameter, taskTimestamp))
+            .withSelfRel());
+    return resource;
+  }
+
+  @NonNull
+  public ReportRepresentationModel toModel(
+      @NonNull DetailedClassificationReport report,
+      @NonNull TimeIntervalReportFilterParameter filterParameter,
+      @NonNull TaskTimestamp taskTimestamp)
+      throws NotAuthorizedException, InvalidArgumentException {
+    ReportRepresentationModel resource = toReportResource(report);
+    resource.add(
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computeDetailedClassificationReport(filterParameter, taskTimestamp))
+            .withSelfRel());
+    return resource;
+  }
+
+  @NonNull
+  public ReportRepresentationModel toModel(
+      @NonNull TaskCustomFieldValueReport report,
+      @NonNull TaskCustomField customField,
+      @NonNull TimeIntervalReportFilterParameter filterParameter,
+      @NonNull TaskTimestamp taskTimestamp)
+      throws NotAuthorizedException, InvalidArgumentException {
+    ReportRepresentationModel resource = toReportResource(report);
+    resource.add(
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computeTaskCustomFieldValueReport(customField, filterParameter, taskTimestamp))
+            .withSelfRel());
+    return resource;
+  }
 
   @NonNull
   public ReportRepresentationModel toModel(
@@ -47,57 +128,27 @@ public class ReportRepresentationModelAssembler {
     resource.add(
         linkTo(
                 methodOn(MonitorController.class)
-                    .getTaskStatusReport(domains, states, workbasketIds, priorityMinimum))
+                    .computeTaskStatusReport(domains, states, workbasketIds, priorityMinimum))
             .withSelfRel());
     return resource;
   }
 
   @NonNull
   public ReportRepresentationModel toModel(
-      @NonNull ClassificationReport report, TaskTimestamp taskTimestamp)
-      throws NotAuthorizedException, InvalidArgumentException {
-    ReportRepresentationModel resource = toReportResource(report);
-    resource.add(
-        linkTo(methodOn(MonitorController.class).getClassificationReport(taskTimestamp))
-            .withSelfRel());
-    return resource;
-  }
-
-  @NonNull
-  public ReportRepresentationModel toModel(
-      @NonNull WorkbasketReport report,
-      @NonNull List<TaskState> states,
-      @NonNull TaskTimestamp taskTimestamp)
-      throws NotAuthorizedException, InvalidArgumentException {
-    ReportRepresentationModel resource = toReportResource(report);
-    resource.add(
-        linkTo(methodOn(MonitorController.class).getWorkbasketReport(states, taskTimestamp))
-            .withSelfRel());
-    return resource;
-  }
-
-  @NonNull
-  public ReportRepresentationModel toModel(
-      @NonNull WorkbasketReport report, int daysInPast, @NonNull List<TaskState> states)
+      @NonNull TimestampReport report,
+      @NonNull TimeIntervalReportFilterParameter filterParameter,
+      TaskTimestamp[] timestamps)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
                 methodOn(MonitorController.class)
-                    .getTasksWorkbasketPlannedDateReport(daysInPast, states))
+                    .computeTimestampReport(filterParameter, timestamps))
             .withSelfRel());
     return resource;
   }
 
-  @NonNull
-  public ReportRepresentationModel toModel(@NonNull TimestampReport report)
-      throws NotAuthorizedException, InvalidArgumentException {
-    ReportRepresentationModel resource = toReportResource(report);
-    resource.add(linkTo(methodOn(MonitorController.class).getTimestampReport()).withSelfRel());
-    return resource;
-  }
-
-  public <I extends QueryItem, H extends ColumnHeader<? super I>>
+  <I extends QueryItem, H extends ColumnHeader<? super I>>
       ReportRepresentationModel toReportResource(Report<I, H> report, Instant time) {
     String[] header =
         report.getColumnHeaders().stream().map(H::getDisplayName).toArray(String[]::new);

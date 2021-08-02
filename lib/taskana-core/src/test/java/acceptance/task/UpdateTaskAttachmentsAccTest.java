@@ -551,7 +551,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             .orElse(null);
     assertThat(updatedAttachment).isNotNull();
     assertThat(updatedTask.getModified()).isEqualTo(updatedAttachment.getModified());
-    assertThat(updatedAttachment.getCustomAttributeMap().get("TEST_KEY")).isEqualTo("TEST_VALUE");
+    assertThat(updatedAttachment.getCustomAttributeMap()).containsEntry("TEST_KEY", "TEST_VALUE");
   }
 
   @WithAccessId(user = "user-1-1")

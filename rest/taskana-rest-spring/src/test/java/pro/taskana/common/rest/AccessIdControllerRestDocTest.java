@@ -7,7 +7,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.test.BaseRestDocTest;
 
-public class AccessIdControllerRestDocTest extends BaseRestDocTest {
+class AccessIdControllerRestDocTest extends BaseRestDocTest {
 
   @Test
   void searchForAccessIdDocTest() throws Exception {
