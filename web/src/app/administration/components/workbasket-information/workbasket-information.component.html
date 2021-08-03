@@ -152,7 +152,8 @@
         <mat-divider class="horizontal-line"> </mat-divider>
 
         <div class="custom-fields">
-          <div *ngFor="let customField of customFields$ | async; let index = index" class="custom-fields__input">
+          <ng-container *ngFor="let customField of customFields$ | async; let index = index">
+            <div *ngIf="customField.visible" class="custom-fields__input">
               <mat-form-field appearance="outline" class="custom-fields__form-field">
                 <mat-label>{{customField.field}}</mat-label>
                 <label for='wb-custom-{{index+1}}'></label>
@@ -162,7 +163,8 @@
                        (input)="validateInputOverflow(custom, 255)">
               </mat-form-field>
               <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
-          </div>
+            </div>
+          </ng-container>
         </div>
 
       </div>

@@ -68,8 +68,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.customFields$ = this.store.select(EngineConfigurationSelectors.classificationsCustomisation).pipe(
       map((customisation) => customisation.information),
-      getCustomFields(customFieldCount),
-      map((customisationFields) => customisationFields.filter((customisation) => customisation.visible))
+      getCustomFields(customFieldCount)
     );
 
     this.selectedClassification$.pipe(takeUntil(this.destroy$)).subscribe((classification) => {

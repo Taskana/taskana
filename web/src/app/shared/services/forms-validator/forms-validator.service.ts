@@ -91,7 +91,7 @@ export class FormsValidatorService {
     return result;
   }
 
-  isFieldValid(ngForm: NgForm, field: string) {
+  isFieldValid(ngForm: NgForm, field: string): boolean {
     if (!ngForm || !ngForm.form.controls || !ngForm.form.controls[field]) {
       return false;
     }

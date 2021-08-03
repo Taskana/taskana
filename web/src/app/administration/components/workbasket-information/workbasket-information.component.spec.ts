@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { WorkbasketInformationComponent } from './workbasket-information.component';
 import { Component, DebugElement, Input } from '@angular/core';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { MapValuesPipe } from '../../../shared/pipes/map-values.pipe';
@@ -39,6 +39,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { By } from '@angular/platform-browser';
 
 @Component({ selector: 'taskana-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
@@ -53,21 +54,19 @@ class IconTypeStub {
   @Input() text: string;
 }
 
-const triggerWorkbasketSavedFn = jest.fn().mockReturnValue(true);
 const workbasketServiceMock: Partial<WorkbasketService> = {
-  triggerWorkBasketSaved: triggerWorkbasketSavedFn,
+  triggerWorkBasketSaved: jest.fn(),
   updateWorkbasket: jest.fn().mockReturnValue(of(true)),
   markWorkbasketForDeletion: jest.fn().mockReturnValue(of(true)),
   createWorkbasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
   getWorkBasket: jest.fn().mockReturnValue(of({ ...selectedWorkbasketMock })),
-  getWorkBasketAccessItems: jest.fn().mockReturnValue(of()),
-  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
+  getWorkBasketAccessItems: jest.fn().mockReturnValue(EMPTY),
+  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(EMPTY)
 };
 
-const isFieldValidFn = jest.fn().mockReturnValue(true);
 const validateFormInformationFn = jest.fn().mockImplementation((): Promise<any> => Promise.resolve(true));
 const formValidatorServiceMock: Partial<FormsValidatorService> = {
-  isFieldValid: isFieldValidFn,
+  isFieldValid: jest.fn().mockReturnValue(true),
   validateInputOverflow: jest.fn(),
   validateFormInformation: validateFormInformationFn,
   get inputOverflowObservable(): Observable<Map<string, boolean>> {
@@ -75,10 +74,9 @@ const formValidatorServiceMock: Partial<FormsValidatorService> = {
   }
 };
 
-const showDialogFn = jest.fn().mockReturnValue(true);
 const notificationServiceMock: Partial<NotificationService> = {
-  showDialog: showDialogFn,
-  showSuccess: showDialogFn
+  showDialog: jest.fn(),
+  showSuccess: jest.fn()
 };
 
 describe('WorkbasketInformationComponent', () => {
@@ -88,61 +86,63 @@ describe('WorkbasketInformationComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
-        MatDialogModule,
-        NgxsModule.forRoot([EngineConfigurationState, WorkbasketState]),
-        TypeaheadModule.forRoot(),
-        ReactiveFormsModule,
-        RouterTestingModule.withRoutes([]),
-        BrowserAnimationsModule,
-        MatProgressBarModule,
-        MatDividerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatAutocompleteModule,
-        MatTooltipModule
-      ],
-      declarations: [
-        WorkbasketInformationComponent,
-        FieldErrorDisplayStub,
-        IconTypeStub,
-        TypeAheadComponent,
-        MapValuesPipe,
-        RemoveNoneTypePipe
-      ],
-      providers: [
-        { provide: WorkbasketService, useValue: workbasketServiceMock },
-        { provide: FormsValidatorService, useValue: formValidatorServiceMock },
-        { provide: NotificationService, useValue: notificationServiceMock },
-        RequestInProgressService,
-        DomainService,
-        SelectedRouteService,
-        ClassificationCategoriesService,
-        StartupService,
-        TaskanaEngineService,
-        WindowRefService
-      ]
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          FormsModule,
+          HttpClientTestingModule,
+          MatDialogModule,
+          NgxsModule.forRoot([EngineConfigurationState, WorkbasketState]),
+          TypeaheadModule.forRoot(),
+          ReactiveFormsModule,
+          RouterTestingModule.withRoutes([]),
+          BrowserAnimationsModule,
+          MatProgressBarModule,
+          MatDividerModule,
+          MatFormFieldModule,
+          MatInputModule,
+          MatSelectModule,
+          MatAutocompleteModule,
+          MatTooltipModule
+        ],
+        declarations: [
+          WorkbasketInformationComponent,
+          FieldErrorDisplayStub,
+          IconTypeStub,
+          TypeAheadComponent,
+          MapValuesPipe,
+          RemoveNoneTypePipe
+        ],
+        providers: [
+          { provide: WorkbasketService, useValue: workbasketServiceMock },
+          { provide: FormsValidatorService, useValue: formValidatorServiceMock },
+          { provide: NotificationService, useValue: notificationServiceMock },
+          RequestInProgressService,
+          DomainService,
+          SelectedRouteService,
+          ClassificationCategoriesService,
+          StartupService,
+          TaskanaEngineService,
+          WindowRefService
+        ]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(WorkbasketInformationComponent);
-    debugElement = fixture.debugElement;
-    component = fixture.componentInstance;
-    store = TestBed.inject(Store);
-    actions$ = TestBed.inject(Actions);
-    store.reset({
-      ...store.snapshot(),
-      engineConfiguration: engineConfigurationMock,
-      workbasket: workbasketReadStateMock
-    });
-    component.workbasket = selectedWorkbasketMock;
+      fixture = TestBed.createComponent(WorkbasketInformationComponent);
+      debugElement = fixture.debugElement;
+      component = fixture.componentInstance;
+      store = TestBed.inject(Store);
+      actions$ = TestBed.inject(Actions);
+      store.reset({
+        ...store.snapshot(),
+        engineConfiguration: engineConfigurationMock,
+        workbasket: workbasketReadStateMock
+      });
+      component.workbasket = selectedWorkbasketMock;
 
-    fixture.detectChanges();
-  }));
+      fixture.detectChanges();
+    })
+  );
 
   it('should create component', () => {
     expect(component).toBeTruthy();
@@ -174,23 +174,29 @@ describe('WorkbasketInformationComponent', () => {
     expect(component.workbasket).toMatchObject(component.workbasketClone);
   });
 
-  it('should save workbasket when workbasketId there', async(() => {
-    component.workbasket = { ...selectedWorkbasketMock };
-    component.workbasket.workbasketId = '1';
-    component.action = ACTION.COPY;
-    let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(UpdateWorkbasket)).subscribe(() => (actionDispatched = true));
-    component.onSave();
-    expect(actionDispatched).toBe(true);
-    expect(component.workbasketClone).toMatchObject(component.workbasket);
-  }));
+  it(
+    'should save workbasket when workbasketId there',
+    waitForAsync(() => {
+      component.workbasket = { ...selectedWorkbasketMock };
+      component.workbasket.workbasketId = '1';
+      component.action = ACTION.COPY;
+      let actionDispatched = false;
+      actions$.pipe(ofActionDispatched(UpdateWorkbasket)).subscribe(() => (actionDispatched = true));
+      component.onSave();
+      expect(actionDispatched).toBe(true);
+      expect(component.workbasketClone).toMatchObject(component.workbasket);
+    })
+  );
 
-  it('should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called', async(() => {
-    let actionDispatched = false;
-    actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
-    component.onRemoveConfirmed();
-    expect(actionDispatched).toBe(true);
-  }));
+  it(
+    'should dispatch MarkWorkbasketforDeletion action when onRemoveConfirmed is called',
+    waitForAsync(() => {
+      let actionDispatched = false;
+      actions$.pipe(ofActionDispatched(MarkWorkbasketForDeletion)).subscribe(() => (actionDispatched = true));
+      component.onRemoveConfirmed();
+      expect(actionDispatched).toBe(true);
+    })
+  );
 
   it('should create new workbasket when workbasketId is undefined', () => {
     component.workbasket.workbasketId = undefined;
@@ -198,4 +204,26 @@ describe('WorkbasketInformationComponent', () => {
     component.onSave();
     expect(postNewWorkbasketSpy).toHaveBeenCalled();
   });
+
+  it('should not show custom fields with attribute visible = false', () => {
+    const inputCustoms = debugElement.queryAll(By.css('.custom-fields__input'));
+    expect(inputCustoms).toHaveLength(3);
+  });
+
+  it('should save custom field input at position 4 when custom field at position 3 is not visible', fakeAsync(() => {
+    const newValue = 'New value';
+
+    let inputCustom3 = debugElement.nativeElement.querySelector('#wb-custom-3');
+    let inputCustom4 = debugElement.nativeElement.querySelector('#wb-custom-4');
+    expect(inputCustom3).toBeFalsy();
+    expect(inputCustom4).toBeTruthy();
+    inputCustom4.value = newValue;
+    inputCustom4.dispatchEvent(new Event('input'));
+
+    tick();
+    fixture.detectChanges();
+
+    expect(component.workbasket['custom3']).toBe('');
+    expect(component.workbasket['custom4']).toBe(newValue);
+  }));
 });

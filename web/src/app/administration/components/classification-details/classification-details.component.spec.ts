@@ -1,10 +1,10 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ClassificationsService } from '../../../shared/services/classifications/classifications.service';
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { ClassificationCategoriesService } from '../../../shared/services/classification-categories/classification-categories.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ImportExportService } from '../../services/import-export.service';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Actions, NgxsModule, ofActionDispatched, Store } from '@ngxs/store';
 import { ClassificationState } from '../../../shared/store/classification-store/classification.state';
 import { EngineConfigurationState } from '../../../shared/store/engine-configuration-store/engine-configuration.state';
@@ -56,26 +56,28 @@ class TextareaStub {
 }
 
 const classificationServiceSpy: Partial<ClassificationsService> = {
-  getClassification: jest.fn().mockReturnValue(of()),
-  getClassifications: jest.fn().mockReturnValue(of()),
-  postClassification: jest.fn().mockReturnValue(of()),
-  putClassification: jest.fn().mockReturnValue(of()),
-  deleteClassification: jest.fn().mockReturnValue(of())
+  getClassification: jest.fn().mockReturnValue(EMPTY),
+  getClassifications: jest.fn().mockReturnValue(EMPTY),
+  postClassification: jest.fn().mockReturnValue(EMPTY),
+  putClassification: jest.fn().mockReturnValue(EMPTY),
+  deleteClassification: jest.fn().mockReturnValue(EMPTY)
 };
+
 const classificationCategoriesServiceSpy: Partial<ClassificationCategoriesService> = {
-  getCustomisation: jest.fn().mockReturnValue(of())
+  getCustomisation: jest.fn().mockReturnValue(EMPTY)
 };
+
 const domainServiceSpy: Partial<DomainService> = {
   getSelectedDomainValue: jest.fn().mockReturnValue(of('A')),
-  getSelectedDomain: jest.fn().mockReturnValue(of())
+  getSelectedDomain: jest.fn().mockReturnValue(EMPTY)
 };
-const getImportingFinishedFn = jest.fn().mockReturnValue(of(true));
+
 const importExportServiceSpy: Partial<ImportExportService> = {
-  getImportingFinished: getImportingFinishedFn
+  getImportingFinished: jest.fn().mockReturnValue(of(true))
 };
 
 const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
-  setRequestInProgress: jest.fn().mockReturnValue(of()),
+  setRequestInProgress: jest.fn(),
   getRequestInProgress: jest.fn().mockReturnValue(of(false))
 };
 
@@ -90,9 +92,9 @@ const formsValidatorServiceSpy: Partial<FormsValidatorService> = {
 };
 
 const notificationServiceSpy: Partial<NotificationService> = {
-  showError: jest.fn().mockReturnValue(of()),
-  showSuccess: jest.fn().mockReturnValue(of()),
-  showDialog: jest.fn().mockReturnValue(of())
+  showError: jest.fn(),
+  showSuccess: jest.fn(),
+  showDialog: jest.fn()
 };
 
 describe('ClassificationDetailsComponent', () => {
@@ -102,47 +104,49 @@ describe('ClassificationDetailsComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([ClassificationState, EngineConfigurationState]),
-        FormsModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatDividerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatProgressBarModule,
-        MatMenuModule,
-        MatTooltipModule,
-        BrowserAnimationsModule
-      ],
-      declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
-      providers: [
-        { provide: ClassificationsService, useValue: classificationServiceSpy },
-        { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
-        { provide: DomainService, useValue: domainServiceSpy },
-        { provide: ImportExportService, useValue: importExportServiceSpy },
-        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
-        { provide: FormsValidatorService, useValue: formsValidatorServiceSpy },
-        { provide: NotificationService, useValue: notificationServiceSpy }
-      ]
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([ClassificationState, EngineConfigurationState]),
+          FormsModule,
+          MatIconModule,
+          MatToolbarModule,
+          MatDividerModule,
+          MatFormFieldModule,
+          MatInputModule,
+          MatOptionModule,
+          MatSelectModule,
+          MatProgressBarModule,
+          MatMenuModule,
+          MatTooltipModule,
+          BrowserAnimationsModule
+        ],
+        declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
+        providers: [
+          { provide: ClassificationsService, useValue: classificationServiceSpy },
+          { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
+          { provide: DomainService, useValue: domainServiceSpy },
+          { provide: ImportExportService, useValue: importExportServiceSpy },
+          { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+          { provide: FormsValidatorService, useValue: formsValidatorServiceSpy },
+          { provide: NotificationService, useValue: notificationServiceSpy }
+        ]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(ClassificationDetailsComponent);
-    debugElement = fixture.debugElement;
-    component = fixture.debugElement.componentInstance;
-    store = TestBed.inject(Store);
-    actions$ = TestBed.inject(Actions);
-    store.reset({
-      ...store.snapshot(),
-      classification: classificationStateMock,
-      engineConfiguration: engineConfigurationMock
-    });
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(ClassificationDetailsComponent);
+      debugElement = fixture.debugElement;
+      component = fixture.debugElement.componentInstance;
+      store = TestBed.inject(Store);
+      actions$ = TestBed.inject(Actions);
+      store.reset({
+        ...store.snapshot(),
+        classification: classificationStateMock,
+        engineConfiguration: engineConfigurationMock
+      });
+      fixture.detectChanges();
+    })
+  );
 
   it('should create component', () => {
     expect(component).toBeTruthy();
@@ -380,4 +384,26 @@ describe('ClassificationDetailsComponent', () => {
     button.click();
     expect(component.classification.isValidInDomain).toBe(false);
   });
+
+  it('should not show custom fields with attribute visible = false', () => {
+    const inputCustoms = debugElement.queryAll(By.css('.detailed-fields__input-custom-field'));
+    expect(inputCustoms).toHaveLength(7);
+  });
+
+  it('should save custom field input at position 4 when custom field at position 3 is not visible', fakeAsync(() => {
+    const newValue = 'New value';
+
+    let inputCustom3 = debugElement.nativeElement.querySelector('#classification-custom-3');
+    let inputCustom4 = debugElement.nativeElement.querySelector('#classification-custom-4');
+    expect(inputCustom3).toBeFalsy();
+    expect(inputCustom4).toBeTruthy();
+    inputCustom4.value = newValue;
+    inputCustom4.dispatchEvent(new Event('input'));
+
+    tick();
+    fixture.detectChanges();
+
+    expect(component.classification['custom3']).toBe(undefined);
+    expect(component.classification['custom4']).toBe(newValue);
+  }));
 });
