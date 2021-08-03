@@ -209,9 +209,9 @@
           <!-- CUSTOM FIELDS -->
           <h6 class="detailed-fields__subheading"> Custom Fields </h6>
           <mat-divider class="detailed-fields__horizontal-line"> </mat-divider>
-
           <div class="detailed-fields__custom-fields">
-            <div *ngFor="let customField of (customFields$ | async), let i = index" class="detailed-fields__input-custom-field">
+            <ng-container *ngFor="let customField of (customFields$ | async), let i = index">
+              <div *ngIf="customField.visible" class="detailed-fields__input-custom-field">
                 <mat-form-field appearance="outline" style="width: 100%">
                     <mat-label>{{customField.field}}</mat-label>
                     <label for="classification-custom-{{i + 1}}"></label>
@@ -222,7 +222,8 @@
                            (input)="validateInputOverflow(custom, 255)">
                 </mat-form-field>
                 <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
-            </div>
+              </div>
+            </ng-container>
           </div>
         </div>
       </ng-form>
