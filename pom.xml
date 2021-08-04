@@ -90,7 +90,7 @@
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
 
     <!-- AspectJ dependencies -->
-    <version.aspectj-maven-plugin>1.12.6</version.aspectj-maven-plugin>
+    <version.aspectj-maven-plugin>1.14.0</version.aspectj-maven-plugin>
     <version.aspectj>1.9.7</version.aspectj>
 
     <!-- database driver versions -->
@@ -149,7 +149,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>com.nickwongdev</groupId>
+            <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
             <version>${version.aspectj-maven-plugin}</version>
             <configuration>
