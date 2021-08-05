@@ -32,7 +32,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testGetWorkbasketById() throws Exception {
+  void should_ReturnWorkbasketWithId_When_IdIsValidAndUserHasPermissions() throws Exception {
 
     Workbasket workbasket =
         WORKBASKET_SERVICE.getWorkbasket("WBI:100000000000000000000000000000000007");
@@ -82,9 +82,10 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testGetWorkbasketByKeyAndDomain() throws Exception {
+  void should_ReturnWorkbasketWithKeyAndDomainAndIgnoreCapitalization_When_KeyAndDomainAreValid()
+      throws Exception {
 
-    Workbasket workbasket = WORKBASKET_SERVICE.getWorkbasket("USER-1-2", "DOMAIN_A");
+    Workbasket workbasket = WORKBASKET_SERVICE.getWorkbasket("user-1-2", "domain_a");
 
     assertThat(workbasket.getId()).isEqualTo("WBI:100000000000000000000000000000000007");
     assertThat(workbasket.getDescription()).isEqualTo("PPK User 2 KSC 1");
@@ -103,7 +104,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
-  void testGetWorkbasketPermissions() {
+  void should_ReturnWorkbasketPermissions_When_IdIsValidAndUserHasPermissions() {
     List<WorkbasketPermission> permissions =
         WORKBASKET_SERVICE.getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
 
@@ -116,7 +117,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testGetWorkbasketPermissionsForInvalidWorkbasketId() {
+  void should_ReturnNoWorkbasketPermissions_When_ProvidingAnInvalidId() {
     List<WorkbasketPermission> permissions =
         WORKBASKET_SERVICE.getPermissionsForWorkbasket("WBI:invalid");
 
@@ -125,7 +126,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testGetWorkbasketAsSummary() throws Exception {
+  void should_ReturnWorkbasketSummary_When_IdIsValidAndSummaryIsRequested() throws Exception {
 
     WorkbasketSummary workbasketSummary =
         WORKBASKET_SERVICE.getWorkbasket("WBI:100000000000000000000000000000000007").asSummary();
@@ -148,7 +149,7 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testThrowsExceptionIfIdIsInvalid() {
+  void should_ThrowException_When_ProvidingAnInvalidId() {
     assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("INVALID_ID"))
         .isInstanceOf(WorkbasketNotFoundException.class);
   }
@@ -156,26 +157,30 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   @Test
   void testThrowsExceptionIfKeyOrDomainIsInvalid() {
 
-    assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("INVALID_KEY", "INVALID_DOMAIN"))
+    assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("USER-1-2", "INVALID_DOMAIN"))
+        .isInstanceOf(WorkbasketNotFoundException.class);
+    assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("INVALID_ID", "DOMAIN_A"))
+        .isInstanceOf(WorkbasketNotFoundException.class);
+    assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("INAVLID_ID", "INVALID_DOMAIN"))
         .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
   @Test
-  void testGetByIdNotAuthorized() {
+  void should_ThrowException_When_TryingToGetByIdWithoutPermissions() {
     ThrowingCallable call =
         () -> WORKBASKET_SERVICE.getWorkbasket("WBI:100000000000000000000000000000000001");
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @Test
-  void testGetByKeyDomainNotAuthorized() {
+  void should_ThrowException_When_TryingToGetByKeyAndDomainWithoutPermissions() {
     assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("GPK_KSC", "DOMAIN_A"))
         .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testGetWorkbasketByIdNotExisting() {
+  void should_ThrowException_When_TryingToGetWithAnInvalidId() {
     assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("NOT EXISTING ID"))
         .isInstanceOf(WorkbasketNotFoundException.class);
   }
