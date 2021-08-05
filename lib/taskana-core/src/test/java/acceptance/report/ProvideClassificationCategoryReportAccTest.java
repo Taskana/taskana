@@ -324,8 +324,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
   @WithAccessId(user = "monitor")
   @Test
-  void should_ReturnItemsOfCategoryReport_When_FilteringWithCustomAttributeIn()
-      throws Exception {
+  void should_ReturnItemsOfCategoryReport_When_FilteringWithCustomAttributeIn() throws Exception {
     List<TimeIntervalColumnHeader> columnHeaders = getShortListOfColumnHeaders();
 
     ClassificationCategoryReport report =
