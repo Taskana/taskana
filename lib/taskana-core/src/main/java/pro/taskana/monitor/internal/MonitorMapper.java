@@ -48,7 +48,9 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("report") TimeIntervalReportBuilder<?, ?, ?> report);
 
-  @SelectProvider(type = MonitorMapperSqlProvider.class, method = "getTaskCountOfDetailedClassifications")
+  @SelectProvider(
+      type = MonitorMapperSqlProvider.class,
+      method = "getTaskCountOfDetailedClassifications")
   @Result(column = "TASK_CLASSIFICATION_KEY", property = "key")
   @Result(column = "ATTACHMENT_CLASSIFICATION_KEY", property = "attachmentKey")
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
@@ -58,7 +60,9 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("report") TimeIntervalReportBuilder<?, ?, ?> report);
 
-  @SelectProvider(type = MonitorMapperSqlProvider.class, method = "getTaskCountOfTaskCustomFieldValues")
+  @SelectProvider(
+      type = MonitorMapperSqlProvider.class,
+      method = "getTaskCountOfTaskCustomFieldValues")
   @Result(column = "CUSTOM_FIELD", property = "key")
   @Result(column = "AGE_IN_DAYS", property = "ageInDays")
   @Result(column = "NUMBER_OF_TASKS", property = "numberOfTasks")
@@ -67,9 +71,7 @@ public interface MonitorMapper {
       @Param("timestamp") TaskTimestamp timestamp,
       @Param("report") TimeIntervalReportBuilder<?, ?, ?> report);
 
-  @SelectProvider(
-      type = MonitorMapperSqlProvider.class,
-      method = "getTaskIdsForSelectedItems")
+  @SelectProvider(type = MonitorMapperSqlProvider.class, method = "getTaskIdsForSelectedItems")
   List<String> getTaskIdsForSelectedItems(
       @Param("now") Instant now,
       @Param("report") TimeIntervalReportBuilder<?, ?, ?> report,

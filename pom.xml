@@ -152,6 +152,13 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
             <version>${version.aspectj-maven-plugin}</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjtools</artifactId>
+                <version>${version.aspectj}</version>
+              </dependency>
+            </dependencies>
             <configuration>
               <complianceLevel>${java.version}</complianceLevel>
               <source>11</source>
@@ -173,13 +180,6 @@
                 </goals>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjtools</artifactId>
-                <version>${version.aspectj}</version>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>
