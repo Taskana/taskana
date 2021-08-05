@@ -12,15 +12,16 @@ import pro.taskana.common.api.exceptions.SystemException;
 
 public class SecurityVerifier {
 
+  public static final String SECURITY_FLAG_COLUMN_NAME = "ENFORCE_SECURITY";
+  public static final String INSERT_SECURITY_FLAG_SQL =
+      "INSERT INTO %s.CONFIGURATION (" + SECURITY_FLAG_COLUMN_NAME + ") VALUES (%b)";
+  public static final String SELECT_SECURITY_FLAG_SQL = "SELECT %s FROM %s.CONFIGURATION";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityVerifier.class);
-  private static final String SECURITY_FLAG_COLUMN_NAME = "ENFORCE_SECURITY";
-  private static final String INSERT_SECURITY_FLAG = "INSERT INTO %s.CONFIGURATION VALUES (%b)";
-  private static final String SELECT_SECURITY_FLAG = "SELECT %s FROM %s.CONFIGURATION";
   private final String schemaName;
   private final DataSource dataSource;
 
   public SecurityVerifier(DataSource dataSource, String schema) {
-    super();
     this.dataSource = dataSource;
     this.schemaName = schema;
   }
@@ -35,7 +36,7 @@ public class SecurityVerifier {
       SqlRunner sqlRunner = new SqlRunner(connection);
 
       String querySecurity =
-          String.format(SELECT_SECURITY_FLAG, SECURITY_FLAG_COLUMN_NAME, schemaName);
+          String.format(SELECT_SECURITY_FLAG_SQL, SECURITY_FLAG_COLUMN_NAME, schemaName);
 
       if ((boolean) sqlRunner.selectOne(querySecurity).get(SECURITY_FLAG_COLUMN_NAME)
           && !securityEnabled) {
@@ -65,7 +66,8 @@ public class SecurityVerifier {
 
     try (Connection connection = dataSource.getConnection()) {
 
-      String setSecurityFlagSql = String.format(INSERT_SECURITY_FLAG, schemaName, securityEnabled);
+      String setSecurityFlagSql =
+          String.format(INSERT_SECURITY_FLAG_SQL, schemaName, securityEnabled);
 
       try (PreparedStatement preparedStatement = connection.prepareStatement(setSecurityFlagSql)) {
 
