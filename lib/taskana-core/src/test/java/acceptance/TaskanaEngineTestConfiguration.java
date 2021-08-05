@@ -174,9 +174,9 @@ public final class TaskanaEngineTestConfiguration {
 
     String jdbcDriver = "org.h2.Driver";
     String jdbcUrl =
-        "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
-            + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
-            + "SET COLLATION DEFAULT_de_DE ";
+        "jdbc:h2:mem:taskana;"
+            //  + "IGNORECASE=TRUE;"
+            + "LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;SET COLLATION DEFAULT_de_DE ";
     String dbUserName = "sa";
     String dbPassword = "sa";
     PooledDataSource ds =
