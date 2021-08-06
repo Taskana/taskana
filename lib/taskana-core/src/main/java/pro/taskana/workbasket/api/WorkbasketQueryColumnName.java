@@ -1,5 +1,7 @@
 package pro.taskana.workbasket.api;
 
+import java.util.Arrays;
+
 import pro.taskana.common.api.QueryColumnName;
 
 /**
