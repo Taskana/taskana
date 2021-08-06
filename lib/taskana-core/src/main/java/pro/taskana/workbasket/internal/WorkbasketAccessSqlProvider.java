@@ -99,11 +99,11 @@ public class WorkbasketAccessSqlProvider {
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
         + "SELECT "
-        + getMaximumPermissionStatement(true)
+        + getMaximumPermissionStatement(false)
         + "</when>"
         + "<otherwise>"
         + "SELECT "
-        + getMaximumPermissionStatement(false)
+        + getMaximumPermissionStatement(true)
         + "</otherwise>"
         + "</choose>"
         + "FROM WORKBASKET_ACCESS_LIST "
@@ -118,19 +118,15 @@ public class WorkbasketAccessSqlProvider {
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
         + "SELECT "
-        + getMaximumPermissionStatement(true)
+        + getMaximumPermissionStatement(false)
         + "</when>"
         + "<otherwise>"
         + "SELECT "
-        + getMaximumPermissionStatement(false)
-        + "</otherwise>"
-        + "</choose>"
-        + "FROM WORKBASKET_ACCESS_LIST "
-        + "WHERE WORKBASKET_ID in "
-        + "(SELECT ID FROM WORKBASKET WHERE UPPER(KEY) = UPPER(#{workbasketKey}) AND UPPER(DOMAIN) = UPPER(#{domain}) )"
-        + "AND ACCESS_ID IN"
-        + "(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
-        + "<if test=\"_databaseId == 'db2'\">with UR</if>"
+        + getMaximumPermissionStatement(true)
+        + "</otherwise></choose>FROM WORKBASKET_ACCESS_LIST WHERE WORKBASKET_ID in (SELECT ID FROM"
+        + " WORKBASKET WHERE UPPER(KEY) = UPPER(#{workbasketKey}) AND UPPER(DOMAIN) ="
+        + " UPPER(#{domain}) )AND ACCESS_ID IN(<foreach item='item' collection='accessIds'"
+        + " separator=',' >#{item}</foreach>)<if test=\"_databaseId == 'db2'\">with UR</if>"
         + "</script>";
   }
 
