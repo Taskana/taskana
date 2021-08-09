@@ -8,7 +8,7 @@ import pro.taskana.common.internal.util.Pair;
 
 public class WorkbasketSqlProvider {
 
-  public static final List<Pair<String, String>> columns =
+  public static final List<Pair<String, String>> COLUMNS =
       Arrays.asList(
           Pair.of("ID", "#{workbasket.id}"),
           Pair.of("KEY", "#{workbasket.key}"),
@@ -95,13 +95,16 @@ public class WorkbasketSqlProvider {
   }
 
   public static String update() {
-    return "UPDATE WORKBASKET " + "SET " + updateSetStatement() + " WHERE id = #{workbasket.id}";
+    return "UPDATE WORKBASKET "
+        + "SET "
+        + updateSetStatement(false)
+        + " WHERE id = #{workbasket.id}";
   }
 
   public static String updateByKeyAndDomain() {
     return "UPDATE WORKBASKET "
         + "SET "
-        + updateSetStatement()
+        + updateSetStatement(true)
         + " WHERE KEY = #{workbasket.key} AND DOMAIN = #{workbasket.domain}";
   }
 
@@ -109,21 +112,33 @@ public class WorkbasketSqlProvider {
     return "DELETE FROM WORKBASKET where id = #{id}";
   }
 
-  private static String updateSetStatement() {
-    return columns.stream()
+  private static String updateSetStatement(boolean byKeyAndDomain) {
+    return COLUMNS.stream()
+        .filter(
+            col -> {
+              if (byKeyAndDomain) {
+                String name = col.getLeft();
+                return !(name.contains("ID")
+                    || name.contains("KEY")
+                    || name.contains("DOMAIN")
+                    || name.contains("CREATED"));
+              } else {
+                return true;
+              }
+            })
         .map(col -> col.getLeft() + " = " + col.getRight())
         .collect(Collectors.joining(", "));
   }
 
   private static String commonSelectFields(boolean excludeMarkedForDeletion) {
-    int limit = columns.size();
+    int limit = COLUMNS.size();
     if (excludeMarkedForDeletion) {
       limit -= 1;
     }
-    return columns.stream().limit(limit).map(Pair::getLeft).collect(Collectors.joining(", "));
+    return COLUMNS.stream().limit(limit).map(Pair::getLeft).collect(Collectors.joining(", "));
   }
 
   private static String valueReferences() {
-    return columns.stream().map(Pair::getRight).collect(Collectors.joining(", "));
+    return COLUMNS.stream().map(Pair::getRight).collect(Collectors.joining(", "));
   }
 }
