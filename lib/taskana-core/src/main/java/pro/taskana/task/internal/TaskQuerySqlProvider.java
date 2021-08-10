@@ -313,7 +313,7 @@ public class TaskQuerySqlProvider {
     whereIn("creatorIn", "CREATOR", sb);
     whereIn("stateIn", "STATE", sb);
     whereIn("callbackStateIn", "t.CALLBACK_STATE", sb);
-    whereIn("workbasketIdIn", "WORKBASKET_ID", sb);
+    whereIn("workbasketIdIn", "t.WORKBASKET_ID", sb);
     whereIn("classificationKeyIn", "t.CLASSIFICATION_KEY", sb);
     whereIn("classificationIdIn", "t.CLASSIFICATION_ID", sb);
     whereIn("classificationCategoryIn", "CLASSIFICATION_CATEGORY", sb);
@@ -366,8 +366,8 @@ public class TaskQuerySqlProvider {
     sb.append("<if test='isTransferred != null'>AND IS_TRANSFERRED = #{isTransferred}</if> ");
     sb.append(
         "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item'"
-            + " collection='workbasketKeyDomainIn' separator=' OR '>(WORKBASKET_KEY = #{item.key}"
-            + " AND DOMAIN = #{item.domain})</foreach>)</if> ");
+            + " collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key}"
+            + " AND t.DOMAIN = #{item.domain})</foreach>)</if> ");
     return sb.toString();
   }
 
