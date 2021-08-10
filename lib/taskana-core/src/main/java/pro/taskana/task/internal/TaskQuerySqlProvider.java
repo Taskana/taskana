@@ -2,6 +2,7 @@ package pro.taskana.task.internal;
 
 import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_WHERE_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.DB2_WITH_UR;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
@@ -238,7 +239,7 @@ public class TaskQuerySqlProvider {
         + "</choose>"
         + "</foreach>"
         + "</if> "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
   }
 

@@ -1,5 +1,9 @@
 package pro.taskana.workbasket.internal;
 
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.DB2_WITH_UR;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,13 +13,13 @@ import pro.taskana.common.internal.util.Pair;
 
 public class WorkbasketAccessSqlProvider {
 
-  public static final List<Pair<String, String>> COLUMNS =
+  private static final List<Pair<String, String>> COLUMNS =
       Arrays.asList(
           Pair.of("WORKBASKET_ID", "#{workbasketAccessItem.workbasketId}"),
           Pair.of("ACCESS_ID", "#{workbasketAccessItem.accessId}"),
           Pair.of("ACCESS_NAME", "#{workbasketAccessItem.accessName}"));
 
-  public static final List<Pair<String, String>> PERMISSIONS =
+  private static final List<Pair<String, String>> PERMISSIONS =
       Arrays.asList(
           Pair.of("PERM_READ", "#{workbasketAccessItem.permRead}"),
           Pair.of("PERM_OPEN", "#{workbasketAccessItem.permOpen}"),
@@ -35,38 +39,40 @@ public class WorkbasketAccessSqlProvider {
           Pair.of("PERM_CUSTOM_11", "#{workbasketAccessItem.permCustom11}"),
           Pair.of("PERM_CUSTOM_12", "#{workbasketAccessItem.permCustom1}"));
 
+  private WorkbasketAccessSqlProvider() {}
+
   public static String findById() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + "ID, "
         + commonSelectStatements()
         + "FROM WORKBASKET_ACCESS_LIST WHERE ID = #{id} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findByWorkbasketId() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + "WBA.ID, WB.KEY, "
         + commonSelectStatements()
         + "FROM WORKBASKET_ACCESS_LIST AS WBA "
         + "LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID "
         + "WHERE WORKBASKET_ID = #{id} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findByAccessId() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + "WBA.ID, WB.KEY, "
         + commonSelectStatements()
         + "FROM WORKBASKET_ACCESS_LIST AS WBA "
         + "LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID "
         + "WHERE ACCESS_ID = #{id} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String insert() {
@@ -96,7 +102,7 @@ public class WorkbasketAccessSqlProvider {
   }
 
   public static String findByWorkbasketAndAccessId() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
         + "SELECT "
@@ -110,12 +116,12 @@ public class WorkbasketAccessSqlProvider {
         + "FROM WORKBASKET_ACCESS_LIST "
         + "WHERE WORKBASKET_ID = #{workbasketId} AND ACCESS_ID IN"
         + "(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>) "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findByWorkbasketKeyDomainAndAccessId() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "<choose>"
         + "<when test=\"_databaseId == 'db2'\">"
         + "SELECT "
@@ -135,7 +141,7 @@ public class WorkbasketAccessSqlProvider {
         + "AND ACCESS_ID IN"
         + "(<foreach item='item' collection='accessIds' separator=',' >#{item}</foreach>)"
         + "<if test=\"_databaseId == 'db2'\">with UR</if>"
-        + "</script>";
+        + CLOSING_SCRIPT_TAG;
   }
 
   private static String commonUpdateStatement() {

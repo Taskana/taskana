@@ -1,5 +1,9 @@
 package pro.taskana.workbasket.internal;
 
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.DB2_WITH_UR;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +12,7 @@ import pro.taskana.common.internal.util.Pair;
 
 public class WorkbasketSqlProvider {
 
-  public static final List<Pair<String, String>> COLUMNS =
+  private static final List<Pair<String, String>> COLUMNS =
       Arrays.asList(
           Pair.of("ID", "#{workbasket.id}"),
           Pair.of("KEY", "#{workbasket.key}"),
@@ -29,69 +33,71 @@ public class WorkbasketSqlProvider {
           Pair.of("ORG_LEVEL_4", "#{workbasket.orgLevel4}"),
           Pair.of("MARKED_FOR_DELETION", "#{workbasket.markedForDeletion}"));
 
+  private WorkbasketSqlProvider() {}
+
   public static String findById() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + commonSelectFields(false)
         + " FROM WORKBASKET WHERE ID = #{id}"
-        + "<if test=\"_databaseId == 'db2'\">with UR </if>"
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findSummaryById() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + commonSelectFields(true)
         + " FROM WORKBASKET WHERE ID = #{id} "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if>"
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findByKeyAndDomain() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + commonSelectFields(false)
         + " FROM WORKBASKET WHERE UPPER(KEY) = UPPER(#{key}) and UPPER(DOMAIN) = UPPER(#{domain}) "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if>"
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findDistributionTargets() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + commonSelectFields(true)
         + " FROM WORKBASKET "
         + "WHERE ID IN (SELECT TARGET_ID FROM DISTRIBUTION_TARGETS WHERE SOURCE_ID = #{id}) "
-        + "<if test=\"_databaseId == 'db2'\">with UR </if>"
-        + "</script>";
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findDistributionSources() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT "
         + commonSelectFields(true)
         + " FROM WORKBASKET "
         + "WHERE ID IN (SELECT SOURCE_ID FROM DISTRIBUTION_TARGETS WHERE TARGET_ID = #{id}) "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>";
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String findAll() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "SELECT * FROM WORKBASKET ORDER BY ID "
         + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-        + "</script>";
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String insert() {
-    return "<script>"
+    return OPENING_SCRIPT_TAG
         + "INSERT INTO WORKBASKET ("
         + commonSelectFields(false)
         + ") "
         + "VALUES ("
         + valueReferences()
         + ") "
-        + "</script>";
+        + CLOSING_SCRIPT_TAG;
   }
 
   public static String update() {
