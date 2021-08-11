@@ -231,8 +231,7 @@ class WorkbasketControllerIntTest {
             RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000004");
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("businessadmin"));
 
-    ThrowingCallable call =
-        () -> TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
+    ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.DELETE, auth, Void.class);
 
     assertThatThrownBy(call)
         .isInstanceOf(HttpStatusCodeException.class)

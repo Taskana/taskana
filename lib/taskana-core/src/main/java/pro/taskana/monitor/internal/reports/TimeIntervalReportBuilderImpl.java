@@ -47,6 +47,7 @@ abstract class TimeIntervalReportBuilderImpl<
   protected List<String> domains;
   protected List<String> classificationIds;
   protected List<String> excludedClassificationIds;
+  protected WorkingDaysToDaysConverter converter;
   private String[] custom1In;
   private String[] custom1NotIn;
   private String[] custom1Like;
@@ -95,7 +96,6 @@ abstract class TimeIntervalReportBuilderImpl<
   private String[] custom16In;
   private String[] custom16NotIn;
   private String[] custom16Like;
-  protected WorkingDaysToDaysConverter converter;
 
   TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     this.taskanaEngine = taskanaEngine;
@@ -386,9 +386,7 @@ abstract class TimeIntervalReportBuilderImpl<
     try {
       this.taskanaEngine.openConnection();
       return monitorMapper.getCustomAttributeValuesForReport(
-          this,
-          getCombinedClassificationFilter(),
-          taskCustomField);
+          this, getCombinedClassificationFilter(), taskCustomField);
     } finally {
       this.taskanaEngine.returnConnection();
     }

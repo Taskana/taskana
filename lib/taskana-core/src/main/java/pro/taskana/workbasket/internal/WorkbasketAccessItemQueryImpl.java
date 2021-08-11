@@ -23,6 +23,9 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbasketAccessItems";
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketAccessItemColumnValues";
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private AccessItemQueryColumnName columnName;
   private String[] accessIdIn;
   private String[] accessIdLike;
@@ -30,10 +33,6 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
   private String[] workbasketKeyIn;
   private String[] workbasketKeyLike;
   private String[] idIn;
-
-  private final InternalTaskanaEngine taskanaEngine;
-  private final List<String> orderBy;
-  private final List<String> orderColumns;
 
   WorkbasketAccessItemQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;

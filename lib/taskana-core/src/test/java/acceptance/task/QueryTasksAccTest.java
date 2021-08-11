@@ -9,12 +9,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
-import static pro.taskana.task.api.TaskQueryColumnName.A_CHANNEL;
-import static pro.taskana.task.api.TaskQueryColumnName.A_CLASSIFICATION_ID;
-import static pro.taskana.task.api.TaskQueryColumnName.A_REF_VALUE;
-import static pro.taskana.task.api.TaskQueryColumnName.CLASSIFICATION_KEY;
-import static pro.taskana.task.api.TaskQueryColumnName.OWNER;
-import static pro.taskana.task.api.TaskQueryColumnName.STATE;
 
 import acceptance.AbstractAccTest;
 import acceptance.TaskTestMapper;
@@ -29,7 +23,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -48,7 +41,6 @@ import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
-import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
@@ -70,68 +62,6 @@ class QueryTasksAccTest extends AbstractAccTest {
     // required if single tests modify database
     // TODO split test class into readOnly & modifying tests to improve performance
     resetDb(false);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryTaskValuesForEveryColumn() {
-    SoftAssertions softly = new SoftAssertions();
-    Arrays.stream(TaskQueryColumnName.values())
-        .forEach(
-            columnName ->
-                softly
-                    .assertThatCode(
-                        () -> TASK_SERVICE.createTaskQuery().listValues(columnName, ASCENDING))
-                    .describedAs("Column is not working " + columnName)
-                    .doesNotThrowAnyException());
-    softly.assertAll();
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryTaskValuesForColumnName() {
-    List<String> columnValueList =
-        TASK_SERVICE
-            .createTaskQuery()
-            .ownerLike("%user%")
-            .orderByOwner(DESCENDING)
-            .listValues(OWNER, null);
-    assertThat(columnValueList).hasSize(3);
-
-    columnValueList = TASK_SERVICE.createTaskQuery().listValues(STATE, null);
-    assertThat(columnValueList).hasSize(5);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryTaskValuesForColumnNameOnAttachments() {
-    List<String> columnValueList =
-        TASK_SERVICE
-            .createTaskQuery()
-            .attachmentReferenceValueIn("val4")
-            .listValues(A_CHANNEL, null);
-    assertThat(columnValueList).hasSize(2);
-
-    columnValueList =
-        TASK_SERVICE
-            .createTaskQuery()
-            .attachmentReferenceValueLike("%")
-            .listValues(A_REF_VALUE, null);
-    assertThat(columnValueList).hasSize(6);
-
-    columnValueList =
-        TASK_SERVICE
-            .createTaskQuery()
-            .orderByAttachmentClassificationId(DESCENDING)
-            .listValues(A_CLASSIFICATION_ID, null);
-    assertThat(columnValueList).hasSize(11);
-
-    columnValueList =
-        TASK_SERVICE
-            .createTaskQuery()
-            .orderByClassificationKey(DESCENDING)
-            .listValues(CLASSIFICATION_KEY, null);
-    assertThat(columnValueList).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
@@ -273,13 +203,6 @@ class QueryTasksAccTest extends AbstractAccTest {
                 "ETI:000000000000000000000000000000000001")
             .list();
     assertThat(results).hasSize(2);
-
-    List<String> resultValues =
-        TASK_SERVICE
-            .createTaskQuery()
-            .externalIdLike("ETI:000000000000000000000000000000%")
-            .listValues(TaskQueryColumnName.EXTERNAL_ID, DESCENDING);
-    assertThat(resultValues).hasSize(74);
 
     long countAllExternalIds = TASK_SERVICE.createTaskQuery().externalIdLike("ETI:%").count();
     long countAllIds = TASK_SERVICE.createTaskQuery().count();

@@ -44,7 +44,7 @@
     <version.json>20210307</version.json>
 
     <!-- build dependencies -->
-    <version.checkstyle>8.45</version.checkstyle>
+    <version.checkstyle>8.45.1</version.checkstyle>
     <version.google-java-format>1.10.0</version.google-java-format>
     <version.maven.checkstyle>3.1.2</version.maven.checkstyle>
     <version.maven.jar>3.2.0</version.maven.jar>
@@ -90,7 +90,7 @@
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
 
     <!-- AspectJ dependencies -->
-    <version.aspectj-maven-plugin>1.12.6</version.aspectj-maven-plugin>
+    <version.aspectj-maven-plugin>1.14.0</version.aspectj-maven-plugin>
     <version.aspectj>1.9.7</version.aspectj>
 
     <!-- database driver versions -->
@@ -149,9 +149,16 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>com.nickwongdev</groupId>
+            <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
             <version>${version.aspectj-maven-plugin}</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjtools</artifactId>
+                <version>${version.aspectj}</version>
+              </dependency>
+            </dependencies>
             <configuration>
               <complianceLevel>${java.version}</complianceLevel>
               <source>11</source>
@@ -173,13 +180,6 @@
                 </goals>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjtools</artifactId>
-                <version>${version.aspectj}</version>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>
