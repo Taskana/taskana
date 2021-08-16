@@ -47,6 +47,7 @@ import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
@@ -99,6 +100,7 @@ public class TaskServiceImpl implements TaskService {
   private final AttachmentMapper attachmentMapper;
   private final HistoryEventManager historyEventManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
+  private final PriorityServiceManager priorityServiceManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -112,6 +114,7 @@ public class TaskServiceImpl implements TaskService {
     this.classificationService = taskanaEngine.getEngine().getClassificationService();
     this.historyEventManager = taskanaEngine.getHistoryEventManager();
     this.createTaskPreprocessorManager = taskanaEngine.getCreateTaskPreprocessorManager();
+    this.priorityServiceManager = taskanaEngine.getPriorityServiceManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService = new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, this);
     this.serviceLevelHandler =
@@ -222,6 +225,14 @@ public class TaskServiceImpl implements TaskService {
       ObjectReference.validate(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
       standardSettingsOnTaskCreation(task, classification);
       setCallbackStateOnTaskCreation(task);
+
+      if (PriorityServiceManager.isPriorityServiceEnabled()) {
+        Optional<Integer> newPriority = priorityServiceManager.calculatePriorityOfTask(task);
+        if (newPriority.isPresent()) {
+          task.setPriority(newPriority.get());
+        }
+      }
+
       try {
         this.taskMapper.insert(task);
         if (LOGGER.isDebugEnabled()) {
@@ -418,6 +429,13 @@ public class TaskServiceImpl implements TaskService {
       ObjectReference.validate(newTaskImpl.getPrimaryObjRef(), "primary ObjectReference", "Task");
 
       standardUpdateActions(oldTaskImpl, newTaskImpl);
+
+      if (PriorityServiceManager.isPriorityServiceEnabled()) {
+        Optional<Integer> newPriority = priorityServiceManager.calculatePriorityOfTask(newTaskImpl);
+        if (newPriority.isPresent()) {
+          newTaskImpl.setPriority(newPriority.get());
+        }
+      }
 
       taskMapper.update(newTaskImpl);
 

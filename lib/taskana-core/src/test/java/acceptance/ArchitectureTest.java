@@ -71,7 +71,9 @@ class ArchitectureTest {
           "pro.taskana.spi.routing.api",
           "pro.taskana.spi.routing.internal",
           "pro.taskana.spi.task.api",
-          "pro.taskana.spi.task.internal");
+          "pro.taskana.spi.task.internal",
+          "pro.taskana.spi.priority.api",
+          "pro.taskana.spi.priority.internal");
   private static JavaClasses importedClasses;
 
   @BeforeAll
