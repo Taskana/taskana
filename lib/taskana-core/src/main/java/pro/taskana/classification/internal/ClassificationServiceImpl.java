@@ -37,6 +37,7 @@ import pro.taskana.spi.history.api.events.classification.ClassificationCreatedEv
 import pro.taskana.spi.history.api.events.classification.ClassificationDeletedEvent;
 import pro.taskana.spi.history.api.events.classification.ClassificationUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskMapper;
 
@@ -253,7 +254,10 @@ public class ClassificationServiceImpl implements ClassificationService {
 
       this.checkExistenceOfParentClassification(oldClassification, classificationImpl);
       classificationMapper.update(classificationImpl);
-      this.createJobIfPriorityOrServiceLevelHasChanged(oldClassification, classificationImpl);
+
+      if (!PriorityServiceManager.isPriorityServiceEnabled()) {
+        this.createJobIfPriorityOrServiceLevelHasChanged(oldClassification, classificationImpl);
+      }
 
       if (HistoryEventManager.isHistoryEnabled()) {
         String details =

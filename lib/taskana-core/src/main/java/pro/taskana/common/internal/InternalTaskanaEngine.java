@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 
@@ -97,4 +98,11 @@ public interface InternalTaskanaEngine {
    * @return the CreateTaskPreprocessorManager instance.
    */
   CreateTaskPreprocessorManager getCreateTaskPreprocessorManager();
+
+  /**
+   * Retrieves the {@linkplain PriorityServiceManager}.
+   *
+   * @return the {@linkplain PriorityServiceManager} instance
+   */
+  PriorityServiceManager getPriorityServiceManager();
 }

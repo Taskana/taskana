@@ -51,6 +51,7 @@ import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.spi.history.internal.HistoryEventManager;
+import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.TaskService;
@@ -76,6 +77,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private static final SessionStack SESSION_STACK = new SessionStack();
   private final TaskRoutingManager taskRoutingManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
+  private final PriorityServiceManager priorityServiceManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   private final HistoryEventManager historyEventManager;
@@ -106,6 +108,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
     historyEventManager = HistoryEventManager.getInstance(this);
     taskRoutingManager = TaskRoutingManager.getInstance(this);
+    priorityServiceManager = PriorityServiceManager.getInstance();
   }
 
   public static TaskanaEngine createTaskanaEngine(
@@ -471,6 +474,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public CreateTaskPreprocessorManager getCreateTaskPreprocessorManager() {
       return createTaskPreprocessorManager;
+    }
+
+    @Override
+    public PriorityServiceManager getPriorityServiceManager() {
+      return priorityServiceManager;
     }
   }
 }
