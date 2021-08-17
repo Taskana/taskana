@@ -43,6 +43,10 @@ public class PriorityServiceManager {
     return Objects.nonNull(singleton) && singleton.enabled;
   }
 
+  public long countRegisteredServices() {
+    return StreamSupport.stream(serviceLoader.spliterator(), false).count();
+  }
+
   public Optional<Integer> calculatePriorityOfTask(TaskSummary task) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Sending task to PriorityServiceProviders: {}", task);

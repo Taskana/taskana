@@ -58,6 +58,10 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_JOB_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
   private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS =
       "taskana.jobs.cleanup.allCompletedSameParentBusiness";
+  private static final String TASKANA_JOB_PRIORITY_BATCHSIZE = "taskana.jobs.priority.batchSize";
+  private static final String TASKANA_JOB_PRIORITY_RUN_EVERY = "taskana.jobs.priority.runEvery";
+  private static final String TASKANA_JOB_PRIORITY_FIRST_RUN = "taskana.jobs.priority.firstRunAt";
+  private static final String TASKANA_JOB_PRIORITY_ACTIVE = "taskana.jobs.priority.active";
   private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
   private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY =
       "taskana.classification.types";
@@ -103,6 +107,11 @@ public class TaskanaEngineConfiguration {
   private Duration cleanupJobRunEvery = Duration.parse("P1D");
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
+
+  private int priorityJobBatchSize = 100;
+  private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+  private Duration priorityJobRunEvery = Duration.parse("P1D");
+  private boolean priorityJobActive = false;
 
   public TaskanaEngineConfiguration(
       DataSource dataSource, boolean useManagedTransactions, String schemaName) {
@@ -349,6 +358,38 @@ public class TaskanaEngineConfiguration {
         taskCleanupJobAllCompletedSameParentBusiness;
   }
 
+  public int getPriorityJobBatchSize() {
+    return priorityJobBatchSize;
+  }
+
+  public void setPriorityJobBatchSize(int priorityJobBatchSize) {
+    this.priorityJobBatchSize = priorityJobBatchSize;
+  }
+
+  public Instant getPriorityJobFirstRun() {
+    return priorityJobFirstRun;
+  }
+
+  public void setPriorityJobFirstRun(Instant priorityJobFirstRun) {
+    this.priorityJobFirstRun = priorityJobFirstRun;
+  }
+
+  public Duration getPriorityJobRunEvery() {
+    return priorityJobRunEvery;
+  }
+
+  public void setPriorityJobRunEvery(Duration priorityJobRunEvery) {
+    this.priorityJobRunEvery = priorityJobRunEvery;
+  }
+
+  public boolean isPriorityJobActive() {
+    return priorityJobActive;
+  }
+
+  public void setPriorityJobActive(boolean priorityJobActive) {
+    this.priorityJobActive = priorityJobActive;
+  }
+
   public String getSchemaName() {
     return schemaName;
   }
@@ -404,6 +445,18 @@ public class TaskanaEngineConfiguration {
 
     parseProperty(props, TASKANA_JOB_CLEANUP_MINIMUM_AGE, Duration::parse)
         .ifPresent(this::setCleanupJobMinimumAge);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_BATCHSIZE, Integer::parseInt)
+        .ifPresent(this::setPriorityJobBatchSize);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_RUN_EVERY, Duration::parse)
+        .ifPresent(this::setPriorityJobRunEvery);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_FIRST_RUN, Instant::parse)
+        .ifPresent(this::setPriorityJobFirstRun);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_ACTIVE, Boolean::parseBoolean)
+        .ifPresent(this::setPriorityJobActive);
 
     parseProperty(
             props,
