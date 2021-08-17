@@ -13,8 +13,8 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 /** Abstract base for all background jobs of TASKANA. */
 public abstract class AbstractTaskanaJob implements TaskanaJob {
 
-  protected final Instant firstRun;
-  protected final Duration runEvery;
+  protected Instant firstRun;
+  protected Duration runEvery;
   protected final TaskanaEngineImpl taskanaEngineImpl;
   protected final TaskanaTransactionProvider txProvider;
   protected final ScheduledJob scheduledJob;

@@ -8,6 +8,7 @@ import java.util.Objects;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
+import pro.taskana.task.internal.jobs.TaskUpdatePriorityJob;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 /** This class holds all data that go into the Job table. */
@@ -173,6 +174,7 @@ public class ScheduledJob {
     CLASSIFICATION_CHANGED_JOB(ClassificationChangedJob.class.getName()),
     TASK_REFRESH_JOB(TaskRefreshJob.class.getName()),
     TASK_CLEANUP_JOB(TaskCleanupJob.class.getName()),
+    TASK_UPDATE_PRIORITY_JOB(TaskUpdatePriorityJob.class.getName()),
     WORKBASKET_CLEANUP_JOB(WorkbasketCleanupJob.class.getName()),
     HISTORY_CLEANUP_JOB("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob");
 
