@@ -21,7 +21,8 @@ public class LoggingAspect {
 
   @Pointcut(
       "!@annotation(pro.taskana.common.internal.logging.NoLogging)"
-          + " && execution(* *(..))"
+          + " && !within(@pro.taskana.common.internal.logging.NoLogging *)"
+          + " && execution(* pro.taskana..*(..))"
           + " && !execution(* lambda*(..))"
           + " && !execution(String *.toString())"
           + " && !execution(int *.hashCode())"
