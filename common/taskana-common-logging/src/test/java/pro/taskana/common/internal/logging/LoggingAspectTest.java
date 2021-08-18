@@ -5,14 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import outside.of.pro.staskana.OutsideOfProTaskanaPackageLoggingTestClass;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jtest.LoggingEvent;
 import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-class LoggingAspectTest {
+import pro.taskana.AtProTaskanaRootPackageLoggingTestClass;
 
-  TestLogger logger = TestLoggerFactory.getTestLogger(LoggingTestClass.class);
+class LoggingAspectTest {
 
   @BeforeEach
   public void clearLoggers() {
@@ -20,63 +21,92 @@ class LoggingAspectTest {
   }
 
   @Test
-  void should_Log_For_InternalMethod() {
+  void should_NotLogMethodCalls_When_ClassDoesNotResideWithinTaskanaPackage() {
+    OutsideOfProTaskanaPackageLoggingTestClass loggingTestClass =
+        new OutsideOfProTaskanaPackageLoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
+
+    loggingTestClass.doStuff();
+
+    assertThat(logger.getLoggingEvents()).isEmpty();
+  }
+
+  @Test
+  void should_LogMethod_When_ClassResidesAtTaskanaRootPackage() {
+    AtProTaskanaRootPackageLoggingTestClass loggingTestClass =
+        new AtProTaskanaRootPackageLoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
+
+    loggingTestClass.doStuff();
+
+    verifyLoggingStatement(logger, "doStuff", "", null);
+  }
+
+  @Test
+  void should_LogInternalMethod_When_ClassResidesAtTaskanaSubPackage() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.logInternalMethod();
 
-    verifyLoggingStatement("logInternalMethod", "", null);
+    verifyLoggingStatement(logger, "logInternalMethod", "", null);
   }
 
   @Test
-  void should_Log_For_InternalMethodWithReturnValue() {
+  void should_LogInternalMethodWithReturnValue_When_ClassResidesAtTaskanaSubPackage() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.logInternalMethodWithReturnValue();
 
-    verifyLoggingStatement("logInternalMethodWithReturnValue", "", "test string");
+    verifyLoggingStatement(logger, "logInternalMethodWithReturnValue", "", "test string");
   }
 
   @Test
-  void should_Log_For_InternalMethodWithReturnValueNull() {
+  void should_LogInternalMethodWithReturnValueNull_When_ClassResidesAtTaskanaSubPackage() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.logInternalMethodWithReturnValueNull();
 
-    verifyLoggingStatement("logInternalMethodWithReturnValueNull", "", "null");
+    verifyLoggingStatement(logger, "logInternalMethodWithReturnValueNull", "", "null");
   }
 
   @Test
-  void should_Log_For_InternalMethodWithArguments() {
+  void should_LogInternalMethodWithArguments_When_ClassResidesAtTaskanaSubPackage() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.logInternalMethodWithArguments("message");
 
-    verifyLoggingStatement("logInternalMethodWithArguments", "param = message", null);
+    verifyLoggingStatement(logger, "logInternalMethodWithArguments", "param = message", null);
   }
 
   @Test
-  void should_Log_For_InternalMethodWithReturnValueAndArguments() {
+  void should_LogInternalMethodWithReturnValueAndArguments_When_ClassResidesAtTaskanaSubPackage() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.logInternalMethodWithReturnValueAndArguments("message");
 
     verifyLoggingStatement(
-        "logInternalMethodWithReturnValueAndArguments", "param = message", "return value");
+        logger, "logInternalMethodWithReturnValueAndArguments", "param = message", "return value");
   }
 
   @Test
-  void should_NotLog_For_ExternalMethod() {
+  void should_NotLogExternalMethod_When_AMethodCallsAMethodOutsideOfTaskanaPackage() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.callsExternalMethod();
 
-    verifyLoggingStatement("callsExternalMethod", "", null);
+    verifyLoggingStatement(logger, "callsExternalMethod", "", null);
   }
 
   @Test
   void should_LogMultipleMethods_When_SubMethodIsCalled() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.logInternalMethodWrapper();
     assertThat(logger.getLoggingEvents())
@@ -88,6 +118,7 @@ class LoggingAspectTest {
   @Test
   void should_NotLogInternalMethod_When_MethodIsAnnotatedWithNoLogging() {
     LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
 
     loggingTestClass.doNotLogInternalMethod();
 
@@ -97,6 +128,7 @@ class LoggingAspectTest {
   @Test
   void should_NotLogInternalMethod_When_ClassIsAnnotatedWithNoLogging() {
     NoLoggingTestClass noLoggingTestClass = new NoLoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(noLoggingTestClass.getClass());
 
     noLoggingTestClass.doNotLogInternalMethod();
 
@@ -106,13 +138,15 @@ class LoggingAspectTest {
   @Test
   void should_NotLogInternalMethod_When_SuperClassIsAnnotatedWithNoLogging() {
     NoLoggingTestSubClass noLoggingTestSubClass = new NoLoggingTestSubClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(noLoggingTestSubClass.getClass());
 
     noLoggingTestSubClass.doNotLogInternalMethod();
 
     assertThat(logger.getLoggingEvents()).isEmpty();
   }
 
-  private void verifyLoggingStatement(String methodName, String arguments, Object returnValue) {
+  private void verifyLoggingStatement(
+      TestLogger logger, String methodName, String arguments, Object returnValue) {
     assertThat(logger.getLoggingEvents()).hasSize(2);
     LoggingEvent entryLoggingEvent = logger.getLoggingEvents().get(0);
     assertThat(entryLoggingEvent.getLevel()).isEqualTo(Level.TRACE);
@@ -136,7 +170,7 @@ class LoggingAspectTest {
     public void logInternalMethod() {}
 
     @SuppressWarnings("UnusedReturnValue")
-    String logInternalMethodWithReturnValue() {
+    public String logInternalMethodWithReturnValue() {
       return "test string";
     }
 
