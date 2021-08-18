@@ -61,6 +61,9 @@ import pro.taskana.task.internal.TaskCommentMapper;
 import pro.taskana.task.internal.TaskMapper;
 import pro.taskana.task.internal.TaskQueryMapper;
 import pro.taskana.task.internal.TaskServiceImpl;
+import pro.taskana.user.api.UserService;
+import pro.taskana.user.internal.UserMapper;
+import pro.taskana.user.internal.UserServiceImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.internal.DistributionTargetMapper;
 import pro.taskana.workbasket.internal.WorkbasketAccessMapper;
@@ -151,6 +154,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   @Override
   public JobService getJobService() {
     return new JobServiceImpl(internalTaskanaEngineImpl, sessionManager.getMapper(JobMapper.class));
+  }
+
+  @Override
+  public UserService getUserService() {
+    return new UserServiceImpl(
+        internalTaskanaEngineImpl, sessionManager.getMapper(UserMapper.class));
   }
 
   @Override
@@ -311,6 +320,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(ClassificationQueryMapper.class);
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);
+    configuration.addMapper(UserMapper.class);
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }

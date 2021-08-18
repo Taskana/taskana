@@ -72,7 +72,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     newTask.setDescription("Description of test task");
     newTask.setNote("My note");
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_A",

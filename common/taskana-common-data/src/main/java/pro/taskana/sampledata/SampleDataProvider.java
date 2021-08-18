@@ -13,6 +13,7 @@ public final class SampleDataProvider {
   static final String TEST_CLASSIFICATION = "/sql/test-data/classification.sql";
   static final String TEST_OBJECT_REFERENCE = "/sql/test-data/object-reference.sql";
   static final String TEST_ATTACHMENT = "/sql/test-data/attachment.sql";
+  static final String TEST_USER = "/sql/test-data/user.sql";
   static final String TEST_TASK_HISTORY_EVENT = "/sql/test-data/task-history-event.sql";
   static final String TEST_WORKBASKET_HISTORY_EVENT = "/sql/test-data/workbasket-history-event.sql";
   static final String TEST_CLASSIFICATION_HISTORY_EVENT =
@@ -31,6 +32,7 @@ public final class SampleDataProvider {
   private static final String SAMPLE_CLASSIFICATION = "/sql/sample-data/classification.sql";
   private static final String SAMPLE_OBJECT_REFERENCE = "/sql/sample-data/object-reference.sql";
   private static final String SAMPLE_ATTACHMENT = "/sql/sample-data/attachment.sql";
+  private static final String SAMPLE_USER = "/sql/sample-data/user.sql";
 
   private SampleDataProvider() {}
 
@@ -44,7 +46,8 @@ public final class SampleDataProvider {
         SAMPLE_ATTACHMENT,
         SAMPLE_WORKBASKET_ACCESS_LIST,
         SAMPLE_OBJECT_REFERENCE,
-        SAMPLE_TASK_HISTORY_EVENT);
+        SAMPLE_TASK_HISTORY_EVENT,
+        SAMPLE_USER);
   }
 
   static Stream<String> getScriptsToClearDatabase() {
@@ -67,7 +70,8 @@ public final class SampleDataProvider {
         TEST_WORKBASKET_ACCESS_LIST,
         TEST_DISTRIBUTION_TARGETS,
         TEST_OBJECT_REFERENCE,
-        TEST_ATTACHMENT);
+        TEST_ATTACHMENT,
+        TEST_USER);
   }
 
   static Stream<String> getMonitorDataScripts() {

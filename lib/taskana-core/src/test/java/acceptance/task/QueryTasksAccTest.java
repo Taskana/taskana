@@ -169,7 +169,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForAttachmentInSummary() throws Exception {
 
     Attachment attachment =
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT", // priority 99, SL P2000D
             createObjectReference(
                 "COMPANY_A",

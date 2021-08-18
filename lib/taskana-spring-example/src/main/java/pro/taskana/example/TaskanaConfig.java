@@ -17,6 +17,7 @@ import pro.taskana.SpringTaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
 /** Class to set /load configuration for Taskana Library. */
@@ -71,6 +72,11 @@ public class TaskanaConfig {
   @Bean
   public ClassificationService classificationService(TaskanaEngine taskanaEngine) {
     return taskanaEngine.getClassificationService();
+  }
+
+  @Bean
+  public UserService userService(TaskanaEngine taskanaEngine) {
+    return taskanaEngine.getUserService();
   }
 
   @Bean

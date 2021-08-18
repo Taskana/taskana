@@ -304,7 +304,7 @@ CREATE TABLE CLASSIFICATION_HISTORY_EVENT
     PRIMARY KEY (ID)
 );
 
-
+-- USER can not be taken as table name because it is a reserved keyword.
 CREATE TABLE USER_INFO (
     USER_ID                     VARCHAR(32)     NOT NULL,
     FIRST_NAME                  VARCHAR(32)     NULL,

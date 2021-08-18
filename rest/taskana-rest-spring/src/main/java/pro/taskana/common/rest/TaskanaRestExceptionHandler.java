@@ -50,6 +50,8 @@ import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.user.api.exceptions.UserAlreadyExistException;
+import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
@@ -81,7 +83,8 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     TaskCommentNotFoundException.class,
     TaskNotFoundException.class,
     TaskanaHistoryEventNotFoundException.class,
-    WorkbasketNotFoundException.class
+    WorkbasketNotFoundException.class,
+    UserNotFoundException.class
   })
   protected ResponseEntity<Object> handleNotFound(TaskanaException ex, WebRequest req) {
     return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.NOT_FOUND);
@@ -93,6 +96,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     ConcurrencyException.class,
     WorkbasketAlreadyExistException.class,
     WorkbasketAccessItemAlreadyExistException.class,
+    UserAlreadyExistException.class,
     AttachmentPersistenceException.class,
     WorkbasketMarkedForDeletionException.class
   })

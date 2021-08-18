@@ -42,12 +42,14 @@ Additionally, an optional set of message variables, containing some technical in
 | *404 NOT_FOUND*             | TASK_NOT_FOUND                            | taskId
 | *404 NOT_FOUND*             | WORKBASKET_WITH_ID_NOT_FOUND              | workbasketId
 | *404 NOT_FOUND*             | WORKBASKET_WITH_KEY_NOT_FOUND             | workbasketKey, domain
+| *404 NOT_FOUND*             | USER_NOT_FOUND                            | userId
 | *409 CONFLICT*              | ATTACHMENT_ALREADY_EXISTS                 | attachmentId, taskId
 | *409 CONFLICT*              | CLASSIFICATION_ALREADY_EXISTS             | classificationKey, domain
 | *409 CONFLICT*              | ENTITY_NOT_UP_TO_DATE                     | entityId
 | *409 CONFLICT*              | TASK_ALREADY_EXISTS                       | externalTaskId
 | *409 CONFLICT*              | WORKBASKET_ACCESS_ITEM_ALREADY_EXISTS     | accessId, workbasketId
 | *409 CONFLICT*              | WORKBASKET_ALREADY_EXISTS                 | workbasketKey, domain
+| *409 CONFLICT*              | USER_ALREADY_EXISTS                       | userID
 | *413 PAYLOAD_TOO_LARGE*     | PAYLOAD_TOO_LARGE                         |
 | *423 LOCKED*                | CLASSIFICATION_IN_USE                     | classificationKey, domain
 | *423 LOCKED*                | WORKBASKET_IN_USE                         | workbasketId
@@ -151,6 +153,13 @@ include::{snippets}/MonitorControllerRestDocTest/computeTimestampReportDocTest/a
 include::{snippets}/AccessIdControllerRestDocTest/searchForAccessIdDocTest/auto-section.adoc[]
 include::{snippets}/AccessIdControllerRestDocTest/getGroupsForAccessIdDocTest/auto-section.adoc[]
 include::{snippets}/AccessIdControllerRestDocTest/searchUsersByNameOrAccessIdForRoleTest/auto-section.adoc[]
+
+== User Resource
+
+include::{snippets}/UserControllerRestDocTest/getUserDocTest/auto-section.adoc[]
+include::{snippets}/UserControllerRestDocTest/createUserDocTest/auto-section.adoc[]
+include::{snippets}/UserControllerRestDocTest/updateUserDocTest/auto-section.adoc[]
+include::{snippets}/UserControllerRestDocTest/deleteUserDocTest/auto-section.adoc[]
 
 == Configuration Resources
 
