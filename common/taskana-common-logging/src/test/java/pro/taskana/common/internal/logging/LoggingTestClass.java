@@ -2,9 +2,7 @@ package pro.taskana.common.internal.logging;
 
 class LoggingTestClass {
 
-  public void logInternalMethod() {
-    System.out.println("PENIS");
-  }
+  public void logInternalMethod() {}
 
   @SuppressWarnings("UnusedReturnValue")
   public String logInternalMethodWithReturnValue() {
