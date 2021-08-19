@@ -3,8 +3,12 @@ package pro.taskana.common.internal.logging;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.internal.stubbing.answers.CallsRealMethods;
 import outside.of.pro.staskana.OutsideOfProTaskanaPackageLoggingTestClass;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jtest.LoggingEvent;
@@ -13,11 +17,17 @@ import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 import pro.taskana.AtProTaskanaRootPackageLoggingTestClass;
 
+@NoLogging
 class LoggingAspectTest {
 
   @BeforeEach
   public void clearLoggers() {
     TestLoggerFactory.clear();
+  }
+
+  @BeforeAll
+  public static void setup() {
+    System.setProperty(LoggingAspect.ENABLE_LOGGING_ASPECT_PROPERTY_KEY, "true");
   }
 
   @Test
@@ -50,6 +60,22 @@ class LoggingAspectTest {
     loggingTestClass.logInternalMethod();
 
     verifyLoggingStatement(logger, "logInternalMethod", "", null);
+  }
+
+  @Test
+  void should_NotLogInternalMethod_When_SystemPropertyIsNotSet() {
+    LoggingTestClass loggingTestClass = new LoggingTestClass();
+    TestLogger logger = TestLoggerFactory.getTestLogger(loggingTestClass.getClass());
+
+    try (MockedStatic<LoggingAspect> loggingAspectMockedStatic =
+        Mockito.mockStatic(LoggingAspect.class, new CallsRealMethods())) {
+      loggingAspectMockedStatic
+          .when(LoggingAspect::getLoggingAspectEnabledPropertyValue)
+          .thenReturn("");
+
+      loggingTestClass.logInternalMethod();
+    }
+    assertThat(logger.getLoggingEvents()).isEmpty();
   }
 
   @Test
@@ -165,47 +191,4 @@ class LoggingAspectTest {
       assertThat(exitLoggingEvent.getArguments()).containsExactly(methodName, returnValue);
     }
   }
-
-  static class LoggingTestClass {
-    public void logInternalMethod() {}
-
-    @SuppressWarnings("UnusedReturnValue")
-    public String logInternalMethodWithReturnValue() {
-      return "test string";
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
-    public String logInternalMethodWithReturnValueNull() {
-      return null;
-    }
-
-    @SuppressWarnings("unused")
-    public void logInternalMethodWithArguments(String param) {}
-
-    @SuppressWarnings({"UnusedReturnValue", "unused"})
-    public String logInternalMethodWithReturnValueAndArguments(String param) {
-      return "return value";
-    }
-
-    public void logInternalMethodWrapper() {
-      logInternalMethodPrivate();
-    }
-
-    @SuppressWarnings("unused")
-    public void callsExternalMethod() {
-      String sum = String.valueOf(5);
-    }
-
-    @NoLogging
-    public void doNotLogInternalMethod() {}
-
-    private void logInternalMethodPrivate() {}
-  }
-
-  @NoLogging
-  static class NoLoggingTestClass {
-    public void doNotLogInternalMethod() {}
-  }
-
-  static class NoLoggingTestSubClass extends NoLoggingTestClass {}
 }
