@@ -136,14 +136,15 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_SplitTaskListIntoChunksOf32000_When_AugmentingTasksAfterTaskQuery() {
-    MockedStatic<CollectionUtil> listUtilMock = Mockito.mockStatic(CollectionUtil.class);
-    listUtilMock
-        .when(() -> CollectionUtil.partitionBasedOnSize(any(), anyInt()))
-        .thenCallRealMethod();
+    try (MockedStatic<CollectionUtil> listUtilMock = Mockito.mockStatic(CollectionUtil.class)) {
+      listUtilMock
+          .when(() -> CollectionUtil.partitionBasedOnSize(any(), anyInt()))
+          .thenCallRealMethod();
 
-    TASK_SERVICE.createTaskQuery().list();
+      TASK_SERVICE.createTaskQuery().list();
 
-    listUtilMock.verify(() -> CollectionUtil.partitionBasedOnSize(any(), eq(32000)));
+      listUtilMock.verify(() -> CollectionUtil.partitionBasedOnSize(any(), eq(32000)));
+    }
   }
 
   @WithAccessId(user = "admin")
