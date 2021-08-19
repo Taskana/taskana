@@ -70,6 +70,48 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_PreventTimestampServiceLevelMismatch_When_ConfigurationPreventsIt() throws Exception {
+    // Given
+
+    taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(false);
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    // When
+    Instant planned = Instant.parse("2018-03-02T00:00:00Z");
+    task.setPlanned(planned);
+    Instant due = Instant.parse("2018-04-15T00:00:00Z");
+    task.setDue(due);
+
+    // Then
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessageContaining("not matching the service level");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
+    try {
+      // Given
+      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(true);
+      Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+
+      // When
+      Instant planned = Instant.parse("2018-01-02T00:00:00Z");
+      task.setPlanned(planned);
+      Instant due = Instant.parse("2018-02-15T00:00:00Z");
+      task.setDue(due);
+      Task updateTask = taskService.updateTask(task);
+
+      // Then
+      assertThat(updateTask.getPlanned()).isEqualTo(planned);
+      assertThat(updateTask.getDue()).isEqualTo(due);
+    } finally {
+      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(false);
+    }
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_UpdatePrimaryObjectReferenceOfTask_When_ObjectreferenceSystemAndSystemInstanceIsNull()
       throws Exception {
 

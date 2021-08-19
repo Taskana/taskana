@@ -74,6 +74,8 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR = ".";
   private static final String TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED =
       "taskana.history.deletion.on.task.deletion.enabled";
+  private static final String TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH =
+      "taskana.validation.allowTimestampServiceLevelMismatch";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -107,6 +109,7 @@ public class TaskanaEngineConfiguration {
   private Duration cleanupJobRunEvery = Duration.parse("P1D");
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
+  private boolean validationAllowTimestampServiceLevelMismatch = false;
 
   private int priorityJobBatchSize = 100;
   private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
@@ -174,6 +177,10 @@ public class TaskanaEngineConfiguration {
         props,
         TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED,
         this::setDeleteHistoryOnTaskDeletionEnabled);
+    initBooleanProperty(
+        props,
+        TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH,
+        this::setValidationAllowTimestampServiceLevelMismatch);
     initCustomHolidays(props, separator);
   }
 
@@ -260,6 +267,16 @@ public class TaskanaEngineConfiguration {
 
   public void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
     this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
+  }
+
+  public boolean isValidationAllowTimestampServiceLevelMismatch() {
+    return validationAllowTimestampServiceLevelMismatch;
+  }
+
+  public void setValidationAllowTimestampServiceLevelMismatch(
+      boolean validationAllowTimestampServiceLevelMismatch) {
+    this.validationAllowTimestampServiceLevelMismatch =
+        validationAllowTimestampServiceLevelMismatch;
   }
 
   public boolean isDeleteHistoryOnTaskDeletionEnabled() {
