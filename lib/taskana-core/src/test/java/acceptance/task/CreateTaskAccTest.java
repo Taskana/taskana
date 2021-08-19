@@ -102,6 +102,57 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_PreventTimestampServiceLevelMismatch_When_ConfigurationPreventsIt() {
+    // Given
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T6310");
+    ObjectReference objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    newTask.setPrimaryObjRef(objectReference);
+    newTask.setOwner("user-1-1");
+
+    // When
+    Instant planned = Instant.parse("2018-01-02T00:00:00Z");
+    newTask.setPlanned(planned);
+    Instant due = Instant.parse("2018-02-15T00:00:00Z");
+    newTask.setDue(due);
+
+    // Then
+    assertThatThrownBy(() -> taskService.createTask(newTask))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessageContaining("not matching the service level");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
+    // Given
+    try {
+      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(true);
+      Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+      newTask.setClassificationKey("T6310");
+      ObjectReference objectReference =
+          createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+      newTask.setPrimaryObjRef(objectReference);
+      newTask.setOwner("user-1-1");
+
+      // When
+      Instant planned = Instant.parse("2018-01-02T00:00:00Z");
+      newTask.setPlanned(planned);
+      Instant due = Instant.parse("2018-02-15T00:00:00Z");
+      newTask.setDue(due);
+      Task createdTask = taskService.createTask(newTask);
+
+      // Then
+      assertThat(createdTask.getPlanned()).isEqualTo(planned);
+      assertThat(createdTask.getDue()).isEqualTo(due);
+    } finally {
+      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(false);
+    }
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_CreateTask_When_ObjectReferenceSystemAndSystemInstanceIsNull() throws Exception {
 
     String currentUser = taskanaEngine.getCurrentUserContext().getUserid();
