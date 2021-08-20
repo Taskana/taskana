@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.rest.QueryParameter;
 
-public class SpringArchitectureTest {
+class SpringArchitectureTest {
   private static JavaClasses importedClasses;
 
   @BeforeAll

@@ -163,8 +163,8 @@ public class DbSchemaCreator {
 
   private boolean isSchemaPreexisting(Connection connection, String dbProductId) {
     ScriptRunner runner = getScriptRunnerInstance(connection);
-    StringWriter errorWriter = new StringWriter();
-    runner.setErrorLogWriter(new PrintWriter(errorWriter));
+    StringWriter localErrorWriter = new StringWriter();
+    runner.setErrorLogWriter(new PrintWriter(localErrorWriter));
 
     String scriptPath = selectDbSchemaDetectionScript(dbProductId);
     try (InputStream resource = DbSchemaCreator.class.getResourceAsStream(scriptPath);
@@ -174,8 +174,8 @@ public class DbSchemaCreator {
     } catch (RuntimeSqlException | IOException e) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Schema does not exist.");
-        if (!errorWriter.toString().trim().isEmpty()) {
-          LOGGER.debug(errorWriter.toString());
+        if (!localErrorWriter.toString().trim().isEmpty()) {
+          LOGGER.debug(localErrorWriter.toString());
         }
       }
       return false;

@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class LogSanitizerTest {
+class LogSanitizerTest {
 
   @Test
   void should_NotModifyInput_When_NothingHasToBeStripped() {

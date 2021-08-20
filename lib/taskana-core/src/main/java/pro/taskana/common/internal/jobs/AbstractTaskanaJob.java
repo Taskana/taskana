@@ -20,7 +20,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
   protected final ScheduledJob scheduledJob;
   private final boolean async;
 
-  public AbstractTaskanaJob(
+  protected AbstractTaskanaJob(
       TaskanaEngine taskanaEngine,
       TaskanaTransactionProvider txProvider,
       ScheduledJob job,
