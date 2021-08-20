@@ -18,7 +18,7 @@
           <div class="task-list__task-info">
             <p> <b>{{task.name}}</b>,&nbsp;<i *ngIf="task.owner">{{task.owner}} </i> </p>
             <p> State: {{task.state}} </p>
-            <p> Due: {{task.due | dateTimeZone }} </p>
+            <p> Due: {{task.due | germanTimeFormat }} </p>
           </div>
 
         </div>

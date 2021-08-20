@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h4 *ngIf="metaInformation">{{getTitle()}} ({{metaInformation?.date | date : 'dd.MM.yyyy HH:mm:ss'}})</h4>
+    <h4 *ngIf="metaInformation">{{getTitle()}} ({{metaInformation?.date | germanTimeFormat}})</h4>
   </div>
   <mat-tab-group class="panel-body" animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" >
     <mat-tab label="Due Date">
