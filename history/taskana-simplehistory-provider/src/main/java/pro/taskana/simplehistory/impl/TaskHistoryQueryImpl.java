@@ -33,7 +33,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private final List<String> orderBy;
   private final List<String> orderColumns;
 
-  private TaskHistoryQueryColumnName columnName;
   private String[] idIn;
   private String[] businessProcessIdIn;
   private String[] parentBusinessProcessIdIn;
@@ -658,9 +657,8 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public List<String> listValues(
       TaskHistoryQueryColumnName dbColumnName, SortDirection sortDirection) {
     List<String> result = new ArrayList<>();
-    this.columnName = dbColumnName;
     this.orderBy.clear();
-    this.addOrderCriteria(columnName.toString(), sortDirection);
+    this.addOrderCriteria(dbColumnName.toString(), sortDirection);
 
     try {
       taskanaHistoryEngine.openConnection();
@@ -694,7 +692,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   @Override
   public long count() {
-    Long rowCount = null;
+    Long rowCount;
     try {
       taskanaHistoryEngine.openConnection();
       rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
