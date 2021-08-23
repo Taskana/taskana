@@ -207,12 +207,12 @@ jobs:
         run: ./mvnw install -pl :taskana-web
       - name: Test
         working-directory: web
-        run: npm run test -- --coverageReporters text-summary
+        run: yarn run test -- --coverageReporters text-summary
       - name: Cypress tests
         working-directory: web
         run: |
           ../mvnw -B spring-boot:run -P history.plugin -f .. -pl :taskana-rest-spring-example-boot &
-          npx wait-port -t 30000 localhost:8080 && npm run e2e-standalone
+          npx wait-port -t 30000 localhost:8080 && yarn run e2e-standalone
       - name: Upload Cypress tests
         if: failure()
         uses: actions/upload-artifact@v2

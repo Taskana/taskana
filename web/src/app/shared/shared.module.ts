@@ -100,11 +100,12 @@ const DECLARATIONS = [
   ProgressSpinnerComponent,
   DialogPopUpComponent,
   WorkbasketFilterComponent,
-  TaskFilterComponent
+  TaskFilterComponent,
+  GermanTimeFormatPipe
 ];
 
 @NgModule({
-  declarations: [DECLARATIONS, GermanTimeFormatPipe],
+  declarations: [DECLARATIONS],
   imports: [
     MODULES,
     MatRadioModule,
