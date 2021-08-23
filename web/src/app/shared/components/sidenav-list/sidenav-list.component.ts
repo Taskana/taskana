@@ -17,6 +17,7 @@ export class SidenavListComponent implements OnInit {
   workplaceUrl = 'taskana/workplace';
   historyUrl = 'taskana/history';
   accessUrl = 'taskana/administration/access-items-management';
+  routingUrl = 'taskana/administration/task-routing';
   classificationUrl = 'taskana/administration/classifications';
   workbasketsUrl = 'taskana/administration/workbaskets';
   administrationsUrl = 'taskana/administration/workbaskets';
