@@ -1,6 +1,7 @@
 package acceptance.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
@@ -77,6 +78,8 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_14)).isEqualTo("abc");
     assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_15)).isEqualTo("custom15");
     assertThat(task.getCustomAttribute(TaskCustomField.CUSTOM_16)).isEqualTo("custom16");
+    assertThatCode(() -> task.getCustomAttributeMap().put("X", "Y")).doesNotThrowAnyException();
+    assertThatCode(() -> task.getCallbackInfo().put("X", "Y")).doesNotThrowAnyException();
   }
 
   @WithAccessId(user = "user-1-1")
@@ -84,10 +87,7 @@ class GetTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_RequestedTaskByIdIsNotExisting() {
     TaskService taskService = taskanaEngine.getTaskService();
 
-    ThrowingCallable call =
-        () -> {
-          taskService.getTask("INVALID");
-        };
+    ThrowingCallable call = () -> taskService.getTask("INVALID");
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
@@ -98,9 +98,7 @@ class GetTaskAccTest extends AbstractAccTest {
     TaskService taskService = taskanaEngine.getTaskService();
 
     ThrowingCallable getTaskCall =
-        () -> {
-          taskService.getTask("TKI:000000000000000000000000000000000000");
-        };
+        () -> taskService.getTask("TKI:000000000000000000000000000000000000");
     assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedException.class);
   }
 
