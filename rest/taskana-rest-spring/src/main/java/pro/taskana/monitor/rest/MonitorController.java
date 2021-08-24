@@ -21,11 +21,14 @@ import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
+import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
+import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Controller for all monitoring endpoints. */
 @RestController
@@ -74,6 +77,54 @@ public class MonitorController {
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
             builder.buildReport(taskTimestamp), filterParameter, taskTimestamp);
+
+    return ResponseEntity.status(HttpStatus.OK).body(report);
+  }
+
+  /**
+   * This endpoint generates a Workbasket Report by priority. This Report currently
+   *
+   * <p>Each Row represents a Workbasket.
+   *
+   * <p>Each Column Header represents a priority range.
+   *
+   * <table>
+   *   <th>Default ranges</th>
+   *   <tr>
+   *     <td> high </td> <td>priority > 500</td>
+   *   </tr>
+   *   <tr>
+   *     <td> medium </td> <td> 250 >= priority <= 500</td>
+   *   </tr>
+   *   <tr>
+   *     <td> low </td> <td> priority < 250</td>
+   *   </tr>
+   * </table>
+   *
+   * @title Compute a Workbasket Report
+   * @param workbasketTypes determine the {@linkplain WorkbasketType}s to include in the report
+   * @return the computed Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
+   * @throws InvalidArgumentException if topicWorkbaskets or useDefaultValues are false
+   */
+  @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<ReportRepresentationModel> computePriorityWorkbasketReport(
+      @RequestParam(name = "workbasket-types", required = false) WorkbasketType[] workbasketTypes)
+      throws NotAuthorizedException, InvalidArgumentException {
+
+    WorkbasketPriorityReport.Builder builder =
+        monitorService
+            .createPriorityWorkbasketReportBuilder()
+            .withColumnHeaders(
+                Arrays.asList(
+                    new PriorityColumnHeader(Integer.MIN_VALUE, 249),
+                    new PriorityColumnHeader(250, 500),
+                    new PriorityColumnHeader(501, Integer.MAX_VALUE)))
+            .workbasketTypeIn(workbasketTypes);
+
+    ReportRepresentationModel report =
+        reportRepresentationModelAssembler.toModel(builder.buildReport(), workbasketTypes);
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }

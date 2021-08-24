@@ -23,8 +23,10 @@ import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
+import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
+import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
@@ -35,6 +37,7 @@ import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Transforms any {@link Report} into its {@link ReportRepresentationModel}. */
 @Component
@@ -51,6 +54,20 @@ public class ReportRepresentationModelAssembler {
         linkTo(
                 methodOn(MonitorController.class)
                     .computeWorkbasketReport(filterParameter, taskTimestamp))
+            .withSelfRel());
+    return resource;
+  }
+
+  @NonNull
+  public ReportRepresentationModel toModel(
+      @NonNull WorkbasketPriorityReport report,
+      @NonNull WorkbasketType[] workbasketTypes)
+      throws NotAuthorizedException, InvalidArgumentException {
+    ReportRepresentationModel resource = toReportResource(report);
+    resource.add(
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computePriorityWorkbasketReport(workbasketTypes))
             .withSelfRel());
     return resource;
   }

@@ -275,6 +275,20 @@ public class MonitorMapperSqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  public static String getTaskCountByPriority() {
+    StringBuilder whereStatements = new StringBuilder();
+    whereIn("report.workbasketType", "W.TYPE", whereStatements);
+    return OPENING_SCRIPT_TAG
+        + "SELECT T.WORKBASKET_KEY, T.PRIORITY, COUNT(T.PRIORITY) as COUNT "
+        + "FROM TASK as T "
+        + "INNER JOIN WORKBASKET as W ON W.ID = T.WORKBASKET_ID "
+        + OPENING_WHERE_TAG
+        + whereStatements
+        + CLOSING_WHERE_TAG
+        + "GROUP BY T.WORKBASKET_KEY, T.PRIORITY"
+        + CLOSING_SCRIPT_TAG;
+  }
+
   private static String timeIntervalWhereStatements() {
     StringBuilder sb = new StringBuilder();
     SqlProviderUtil.whereIn("report.workbasketIds", "T.WORKBASKET_ID", sb);

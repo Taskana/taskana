@@ -5,6 +5,7 @@ import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
+import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.task.api.TaskCustomField;
 
@@ -18,6 +19,15 @@ public interface MonitorService {
    * @return a {@link WorkbasketReport.Builder}
    */
   WorkbasketReport.Builder createWorkbasketReportBuilder();
+
+  /**
+   * Provides a {@link WorkbasketPriorityReport.Builder} for creating a {@link
+   * WorkbasketPriorityReport}, list the task ids of this report and list the values of an entered
+   * custom attribute.
+   *
+   * @return a {@link WorkbasketReport.Builder}
+   */
+  WorkbasketPriorityReport.Builder createPriorityWorkbasketReportBuilder();
 
   /**
    * Provides a {@link ClassificationCategoryReport.Builder} for creating a {@link

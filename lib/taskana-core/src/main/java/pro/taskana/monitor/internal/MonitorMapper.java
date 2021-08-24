@@ -12,8 +12,10 @@ import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TimeIntervalReportBuilder;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
+import pro.taskana.monitor.api.reports.item.PriorityQueryItem;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
+import pro.taskana.monitor.internal.reports.WorkbasketPriorityReportBuilderImpl;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
@@ -115,4 +117,11 @@ public interface MonitorMapper {
       @Param("now") Instant now,
       @Param("status") TaskTimestamp status,
       @Param("report") TimeIntervalReportBuilder<?, ?, ?> report);
+
+  @SelectProvider(type = MonitorMapperSqlProvider.class, method = "getTaskCountByPriority")
+  @Result(column = "WORKBASKET_KEY", property = "workbasketKey")
+  @Result(column = "COUNT", property = "count")
+  @Result(column = "PRIORITY", property = "priority")
+  List<PriorityQueryItem> getTaskCountByPriority(
+      @Param("report") WorkbasketPriorityReportBuilderImpl report);
 }
