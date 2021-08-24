@@ -80,19 +80,20 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOwnerLike() {
-
+  void should_ReturnCorrectResults_When_QueryingForOwnerLike() {
     List<TaskSummary> results =
         TASK_SERVICE.createTaskQuery().ownerLike("%a%", "%u%").orderByCreated(ASCENDING).list();
 
-    assertThat(results).hasSize(39);
-    TaskSummary previousSummary = null;
-    for (TaskSummary taskSummary : results) {
-      if (previousSummary != null) {
-        assertThat(previousSummary.getCreated().isAfter(taskSummary.getCreated())).isFalse();
-      }
-      previousSummary = taskSummary;
-    }
+    assertThat(results).hasSize(39).extracting(TaskSummary::getCreated).isSorted();
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_FilterOutOwner_When_OwnerNotInIsSet() {
+    List<TaskSummary> results =
+        TASK_SERVICE.createTaskQuery().ownerNotIn("user-1-1", "user-1-2").list();
+
+    assertThat(results).hasSize(3).extracting(TaskSummary::getOwner).containsOnly("user-b-1");
   }
 
   @WithAccessId(user = "admin")

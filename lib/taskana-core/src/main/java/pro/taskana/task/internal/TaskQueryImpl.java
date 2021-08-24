@@ -75,6 +75,7 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] classificationNameIn;
   private String[] classificationNameLike;
   private String[] ownerIn;
+  private String[] ownerNotIn;
   private String[] ownerLike;
   private Boolean isRead;
   private Boolean isTransferred;
@@ -314,6 +315,12 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery ownerIn(String... owners) {
     this.ownerIn = owners;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerNotIn(String... owners) {
+    this.ownerNotIn = owners;
     return this;
   }
 
@@ -992,7 +999,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public List<TaskSummary> list(int offset, int limit) {
-    List<TaskSummary> result = new ArrayList<>();
+    List<TaskSummary> result;
     try {
       taskanaEngine.openConnection();
       checkForIllegalParamCombinations();
@@ -1020,7 +1027,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public List<String> listValues(TaskQueryColumnName columnName, SortDirection sortDirection) {
-    List<String> result = new ArrayList<>();
+    List<String> result;
     try {
       taskanaEngine.openConnection();
       this.columnName = columnName;
@@ -1052,7 +1059,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskSummary single() {
-    TaskSummary result = null;
+    TaskSummary result;
     try {
       taskanaEngine.openConnection();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
@@ -1077,7 +1084,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public long count() {
-    Long rowCount = null;
+    Long rowCount;
     try {
       taskanaEngine.openConnection();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
@@ -1184,6 +1191,10 @@ public class TaskQueryImpl implements TaskQuery {
 
   public String[] getOwnerIn() {
     return ownerIn;
+  }
+
+  public String[] getOwnerNotIn() {
+    return ownerNotIn;
   }
 
   public String[] getOwnerLike() {

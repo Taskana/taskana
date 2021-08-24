@@ -321,6 +321,7 @@ public class TaskQuerySqlProvider {
     whereIn("classificationNameIn", "c.NAME", sb);
     whereIn("attachmentClassificationNameIn", "ac.NAME", sb);
     whereIn("ownerIn", "OWNER", sb);
+    whereNotIn("ownerNotIn", "OWNER", sb);
     whereIn("porCompanyIn", "POR_COMPANY", sb);
     whereIn("porSystemIn", "POR_SYSTEM", sb);
     whereIn("porSystemInstanceIn", "POR_INSTANCE", sb);
