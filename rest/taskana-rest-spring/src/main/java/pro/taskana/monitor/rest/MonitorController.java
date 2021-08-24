@@ -88,17 +88,19 @@ public class MonitorController {
    *
    * <p>Each Column Header represents a priority range.
    *
-   * <table>
-   *   <th>Default ranges</th>
-   *   <tr>
-   *     <td> high </td> <td>priority > 500</td>
-   *   </tr>
-   *   <tr>
-   *     <td> medium </td> <td> 250 >= priority <= 500</td>
-   *   </tr>
-   *   <tr>
-   *     <td> low </td> <td> priority < 250</td>
-   *   </tr>
+   * <table summary="Default ranges">
+   *  <tr>
+   *    <th>Default ranges</th>
+   *  </tr>
+   *  <tr>
+   *    <td> high </td> <td>priority &gt; 500</td>
+   *  </tr>
+   *  <tr>
+   *    <td> medium </td> <td> 250 &ge; priority &le; 500</td>
+   *  </tr>
+   *  <tr>
+   *    <td> low </td> <td> priority &lt; 250</td>
+   *  </tr>
    * </table>
    *
    * @title Compute a Workbasket Report
@@ -115,7 +117,7 @@ public class MonitorController {
 
     WorkbasketPriorityReport.Builder builder =
         monitorService
-            .createPriorityWorkbasketReportBuilder()
+            .createWorkbasketPriorityReportBuilder()
             .withColumnHeaders(
                 Arrays.asList(
                     new PriorityColumnHeader(Integer.MIN_VALUE, 249),

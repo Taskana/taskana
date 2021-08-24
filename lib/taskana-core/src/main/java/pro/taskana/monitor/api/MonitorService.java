@@ -27,7 +27,7 @@ public interface MonitorService {
    *
    * @return a {@link WorkbasketReport.Builder}
    */
-  WorkbasketPriorityReport.Builder createPriorityWorkbasketReportBuilder();
+  WorkbasketPriorityReport.Builder createWorkbasketPriorityReportBuilder();
 
   /**
    * Provides a {@link ClassificationCategoryReport.Builder} for creating a {@link

@@ -26,7 +26,6 @@ import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
-import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
@@ -60,14 +59,11 @@ public class ReportRepresentationModelAssembler {
 
   @NonNull
   public ReportRepresentationModel toModel(
-      @NonNull WorkbasketPriorityReport report,
-      @NonNull WorkbasketType[] workbasketTypes)
+      @NonNull WorkbasketPriorityReport report, @NonNull WorkbasketType[] workbasketTypes)
       throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
-        linkTo(
-                methodOn(MonitorController.class)
-                    .computePriorityWorkbasketReport(workbasketTypes))
+        linkTo(methodOn(MonitorController.class).computePriorityWorkbasketReport(workbasketTypes))
             .withSelfRel());
     return resource;
   }

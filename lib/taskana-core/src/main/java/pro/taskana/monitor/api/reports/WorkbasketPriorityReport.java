@@ -24,6 +24,11 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
     super(priorityColumnHeaders, new String[] {"WORKBASKET"});
   }
 
+  @Override
+  public String toString() {
+    return "WorkbasketPriorityReport [columnHeaders=" + columnHeaders + "]";
+  }
+
   /** Builder for {@link WorkbasketPriorityReport}. */
   public interface Builder extends Report.Builder<PriorityQueryItem, PriorityColumnHeader> {
 

@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.util.Collections;
 import java.util.List;
 
 import pro.taskana.common.api.TaskanaRole;
@@ -24,6 +25,7 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
       InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     this.taskanaEngine = taskanaEngine;
     this.monitorMapper = monitorMapper;
+    columnHeaders = Collections.emptyList();
   }
 
   @Override

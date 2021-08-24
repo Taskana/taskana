@@ -36,7 +36,7 @@ public class MonitorServiceImpl implements MonitorService {
   }
 
   @Override
-  public WorkbasketPriorityReport.Builder createPriorityWorkbasketReportBuilder() {
+  public WorkbasketPriorityReport.Builder createWorkbasketPriorityReportBuilder() {
     return new WorkbasketPriorityReportBuilderImpl(taskanaEngine, monitorMapper);
   }
 

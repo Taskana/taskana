@@ -33,7 +33,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   }
 
   @Test
-  void should_ThrowException_IfUserIsNotAuthorized() {
+  void should_ThrowException_When_UserIsNotAuthorized() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .isInstanceOf(NotAuthorizedException.class);
   }
@@ -43,7 +43,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_ThrowException_IfUserIsNotAdminOrMonitor() {
+  void should_ThrowException_When_UserIsNotAdminOrMonitor() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .isInstanceOf(NotAuthorizedException.class);
   }
@@ -51,7 +51,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "admin")
   @WithAccessId(user = "monitor")
   @TestTemplate
-  void should_BuildReport_IfUserIsAdminOrMonitor() {
+  void should_BuildReport_When_UserIsAdminOrMonitor() {
     assertThatCode(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .doesNotThrowAnyException();
   }

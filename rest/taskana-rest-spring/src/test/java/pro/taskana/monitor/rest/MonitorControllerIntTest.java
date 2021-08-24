@@ -104,4 +104,27 @@ class MonitorControllerIntTest {
         .extracting(RowRepresentationModel::getCells)
         .containsExactly(new int[] {0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0});
   }
+
+  @Test
+  void should_ComputeReport_When_QueryingForAWorkbasketPriorityReport() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
+            + "?workbasket-types=TOPIC,GROUP";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    ReportRepresentationModel report = response.getBody();
+
+    assertThat(report).isNotNull();
+
+    assertThat(report.getSumRow())
+        .extracting(RowRepresentationModel::getCells)
+        .containsExactly(new int[] {23, 0, 0});
+  }
 }
