@@ -87,7 +87,7 @@ public class DbSchemaCreator {
       connection.setSchema(this.schemaName);
       SqlRunner runner = new SqlRunner(connection);
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(connection.getMetaData().toString());
+        LOGGER.debug("{}", connection.getMetaData());
       }
 
       String query =
@@ -163,8 +163,7 @@ public class DbSchemaCreator {
 
   private boolean isSchemaPreexisting(Connection connection, String dbProductId) {
     ScriptRunner runner = getScriptRunnerInstance(connection);
-    StringWriter localErrorWriter = new StringWriter();
-    runner.setErrorLogWriter(new PrintWriter(localErrorWriter));
+    runner.setErrorLogWriter(errorLogWriter);
 
     String scriptPath = selectDbSchemaDetectionScript(dbProductId);
     try (InputStream resource = DbSchemaCreator.class.getResourceAsStream(scriptPath);
@@ -174,8 +173,8 @@ public class DbSchemaCreator {
     } catch (RuntimeSqlException | IOException e) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Schema does not exist.");
-        if (!localErrorWriter.toString().trim().isEmpty()) {
-          LOGGER.debug(localErrorWriter.toString());
+        if (!errorWriter.toString().trim().isEmpty()) {
+          LOGGER.debug(errorWriter.toString());
         }
       }
       return false;

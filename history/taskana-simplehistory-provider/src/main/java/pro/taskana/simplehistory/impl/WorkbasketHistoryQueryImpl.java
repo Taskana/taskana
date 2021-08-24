@@ -31,6 +31,9 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   private TaskanaHistoryEngineImpl taskanaHistoryEngine;
 
+  @SuppressWarnings("unused")
+  private WorkbasketHistoryQueryColumnName columnName;
+
   private List<String> orderBy;
   private List<String> orderColumns;
 
@@ -498,9 +501,10 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   public List<String> listValues(
       WorkbasketHistoryQueryColumnName dbColumnName, SortDirection sortDirection) {
     List<String> result = new ArrayList<>();
+    this.columnName = dbColumnName;
     List<String> cacheOrderBy = this.orderBy;
     this.orderBy.clear();
-    this.addOrderCriteria(dbColumnName.toString(), sortDirection);
+    this.addOrderCriteria(columnName.toString(), sortDirection);
 
     try {
       taskanaHistoryEngine.openConnection();
@@ -511,6 +515,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       return result;
     } finally {
       this.orderBy = cacheOrderBy;
+      this.columnName = null;
       this.orderColumns.remove(orderColumns.size() - 1);
       taskanaHistoryEngine.returnConnection();
     }

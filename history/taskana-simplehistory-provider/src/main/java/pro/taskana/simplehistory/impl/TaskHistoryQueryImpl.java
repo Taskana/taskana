@@ -33,6 +33,9 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private final List<String> orderBy;
   private final List<String> orderColumns;
 
+  @SuppressWarnings("unused")
+  private TaskHistoryQueryColumnName columnName;
+
   private String[] idIn;
   private String[] businessProcessIdIn;
   private String[] parentBusinessProcessIdIn;
@@ -657,8 +660,9 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public List<String> listValues(
       TaskHistoryQueryColumnName dbColumnName, SortDirection sortDirection) {
     List<String> result = new ArrayList<>();
+    this.columnName = dbColumnName;
     this.orderBy.clear();
-    this.addOrderCriteria(dbColumnName.toString(), sortDirection);
+    this.addOrderCriteria(columnName.toString(), sortDirection);
 
     try {
       taskanaHistoryEngine.openConnection();
