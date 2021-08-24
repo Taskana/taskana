@@ -203,6 +203,14 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery ownerIn(String... owners);
 
   /**
+   * Filter out owners.
+   *
+   * @param owners the owners as String
+   * @return the query
+   */
+  TaskQuery ownerNotIn(String... owners);
+
+  /**
    * Add the owner for pattern matching to your query. It will be compared in SQL with the LIKE
    * operator. You may use a wildcard like % to specify the pattern.
    *
