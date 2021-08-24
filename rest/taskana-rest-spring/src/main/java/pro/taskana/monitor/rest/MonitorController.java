@@ -88,10 +88,8 @@ public class MonitorController {
    *
    * <p>Each Column Header represents a priority range.
    *
-   * <table summary="Default ranges">
-   *  <tr>
-   *    <th>Default ranges</th>
-   *  </tr>
+   * <table>
+   *   <caption><b>Default ranges</b></caption>
    *  <tr>
    *    <td> high </td> <td>priority &gt; 500</td>
    *  </tr>

@@ -19,7 +19,7 @@ import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.workbasket.api.WorkbasketType;
 
-/** Acceptance test for all "task status report" scenarios. */
+/** Acceptance test for all "workbasket priority report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
 
