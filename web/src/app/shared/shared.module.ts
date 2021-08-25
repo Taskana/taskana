@@ -58,6 +58,7 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { ObtainMessageService } from './services/obtain-message/obtain-message.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
+import { GermanTimeFormatPipe } from './pipes/german-time-format.pipe';
 
 const MODULES = [
   CommonModule,
@@ -99,11 +100,12 @@ const DECLARATIONS = [
   ProgressSpinnerComponent,
   DialogPopUpComponent,
   WorkbasketFilterComponent,
-  TaskFilterComponent
+  TaskFilterComponent,
+  GermanTimeFormatPipe
 ];
 
 @NgModule({
-  declarations: DECLARATIONS,
+  declarations: [DECLARATIONS],
   imports: [
     MODULES,
     MatRadioModule,
@@ -117,7 +119,7 @@ const DECLARATIONS = [
     ReactiveFormsModule,
     MatProgressSpinnerModule
   ],
-  exports: DECLARATIONS,
+  exports: [DECLARATIONS, GermanTimeFormatPipe],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
