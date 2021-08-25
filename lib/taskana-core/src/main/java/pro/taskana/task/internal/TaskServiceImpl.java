@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -312,18 +313,13 @@ public class TaskServiceImpl implements TaskService {
           attachmentImpls = new ArrayList<>();
         }
 
-        List<ClassificationSummary> classifications;
-        classifications = findClassificationForTaskImplAndAttachments(resultTask, attachmentImpls);
-        List<Attachment> attachments =
-            addClassificationSummariesToAttachments(attachmentImpls, classifications);
-        resultTask.setAttachments(attachments);
+        Map<String, ClassificationSummary> classificationSummariesById =
+            findClassificationForTaskImplAndAttachments(resultTask, attachmentImpls);
+        addClassificationSummariesToAttachments(attachmentImpls, classificationSummariesById);
+        resultTask.setAttachments(new ArrayList<>(attachmentImpls));
 
         String classificationId = resultTask.getClassificationSummary().getId();
-        ClassificationSummary classification =
-            classifications.stream()
-                .filter(c -> c.getId().equals(classificationId))
-                .findFirst()
-                .orElse(null);
+        ClassificationSummary classification = classificationSummariesById.get(classificationId);
         if (classification == null) {
           throw new SystemException(
               "Could not find a Classification for task " + resultTask.getId());
@@ -969,8 +965,8 @@ public class TaskServiceImpl implements TaskService {
 
   private List<TaskSummaryImpl> augmentTaskSummariesByContainedSummariesWithoutPartitioning(
       List<TaskSummaryImpl> taskSummaries) {
-    List<String> taskIds =
-        taskSummaries.stream().map(TaskSummaryImpl::getId).distinct().collect(Collectors.toList());
+    Set<String> taskIds =
+        taskSummaries.stream().map(TaskSummaryImpl::getId).collect(Collectors.toSet());
 
     if (taskIds.isEmpty()) {
       taskIds = null;
@@ -982,15 +978,17 @@ public class TaskServiceImpl implements TaskService {
               + "about to query for attachmentSummaries ",
           taskSummaries);
     }
+
     List<AttachmentSummaryImpl> attachmentSummaries =
         attachmentMapper.findAttachmentSummariesByTaskIds(taskIds);
-
-    List<ClassificationSummary> classifications =
+    Map<String, ClassificationSummary> classificationSummariesById =
         findClassificationsForTasksAndAttachments(taskSummaries, attachmentSummaries);
+    Map<String, WorkbasketSummary> workbasketSummariesById = findWorkbasketsForTasks(taskSummaries);
 
-    addClassificationSummariesToTaskSummaries(taskSummaries, classifications);
-    addWorkbasketSummariesToTaskSummaries(taskSummaries);
-    addAttachmentSummariesToTaskSummaries(taskSummaries, attachmentSummaries, classifications);
+    addClassificationSummariesToAttachments(attachmentSummaries, classificationSummariesById);
+    addClassificationSummariesToTaskSummaries(taskSummaries, classificationSummariesById);
+    addWorkbasketSummariesToTaskSummaries(taskSummaries, workbasketSummariesById);
+    addAttachmentSummariesToTaskSummaries(taskSummaries, attachmentSummaries);
 
     return taskSummaries;
   }
@@ -1541,184 +1539,159 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private void addClassificationSummariesToTaskSummaries(
-      List<TaskSummaryImpl> tasks, List<ClassificationSummary> classifications) {
+  private Map<String, WorkbasketSummary> findWorkbasketsForTasks(
+      List<? extends TaskSummary> taskSummaries) {
+    if (taskSummaries == null || taskSummaries.isEmpty()) {
+      return Collections.emptyMap();
+    }
 
-    if (tasks == null || tasks.isEmpty()) {
-      return;
-    }
-    // assign query results to appropriate tasks.
-    for (TaskSummaryImpl task : tasks) {
-      String classificationId = task.getClassificationSummary().getId();
-      ClassificationSummary classificationSummary =
-          classifications.stream()
-              .filter(c -> c.getId().equals(classificationId))
-              .findFirst()
-              .orElse(null);
-      if (classificationSummary == null) {
-        throw new SystemException(
-            "Did not find a Classification for task (Id="
-                + task.getId()
-                + ",classification="
-                + task.getClassificationSummary().getId()
-                + ")");
-      }
-      // set the classification on the task object
-      task.setClassificationSummary(classificationSummary);
-    }
+    Set<String> workbasketIds =
+        taskSummaries.stream()
+            .map(TaskSummary::getWorkbasketSummary)
+            .map(WorkbasketSummary::getId)
+            .collect(Collectors.toSet());
+
+    return queryWorkbasketsForTasks(workbasketIds).stream()
+        .collect(Collectors.toMap(WorkbasketSummary::getId, Function.identity()));
   }
 
-  private List<ClassificationSummary> findClassificationsForTasksAndAttachments(
-      List<? extends TaskSummaryImpl> taskSummaries,
+  private Map<String, ClassificationSummary> findClassificationsForTasksAndAttachments(
+      List<? extends TaskSummary> taskSummaries,
       List<? extends AttachmentSummaryImpl> attachmentSummaries) {
     if (taskSummaries == null || taskSummaries.isEmpty()) {
-      return new ArrayList<>();
+      return Collections.emptyMap();
     }
 
-    Set<String> classificationIdSet =
+    Set<String> classificationIds =
         Stream.concat(
                 taskSummaries.stream().map(TaskSummary::getClassificationSummary),
                 attachmentSummaries.stream().map(AttachmentSummary::getClassificationSummary))
             .map(ClassificationSummary::getId)
             .collect(Collectors.toSet());
 
-    return queryClassificationsForTasksAndAttachments(classificationIdSet);
+    return queryClassificationsForTasksAndAttachments(classificationIds).stream()
+        .collect(Collectors.toMap(ClassificationSummary::getId, Function.identity()));
   }
 
-  private List<ClassificationSummary> findClassificationForTaskImplAndAttachments(
+  private Map<String, ClassificationSummary> findClassificationForTaskImplAndAttachments(
       TaskImpl task, List<AttachmentImpl> attachmentImpls) {
     return findClassificationsForTasksAndAttachments(
         Collections.singletonList(task), attachmentImpls);
   }
 
   private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(
-      Set<String> classificationIdSet) {
-
-    String[] classificationIdArray = classificationIdSet.toArray(new String[0]);
+      Set<String> classificationIds) {
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
-          "getClassificationsForTasksAndAttachments() about to query classifications and exit");
+          "queryClassificationsForTasksAndAttachments() about to query classifications and exit");
     }
-    // perform classification query
     return this.classificationService
         .createClassificationQuery()
-        .idIn(classificationIdArray)
+        .idIn(classificationIds.toArray(new String[0]))
         .list();
   }
 
-  private void addWorkbasketSummariesToTaskSummaries(List<TaskSummaryImpl> taskSummaries) {
-    if (taskSummaries == null || taskSummaries.isEmpty()) {
+  private List<WorkbasketSummary> queryWorkbasketsForTasks(Set<String> workbasketIds) {
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("queryWorkbasketsForTasks() about to query workbaskets and exit");
+    }
+    // perform classification query
+    return this.workbasketService
+        .createWorkbasketQuery()
+        .idIn(workbasketIds.toArray(new String[0]))
+        .list();
+  }
+
+  private void addClassificationSummariesToTaskSummaries(
+      List<TaskSummaryImpl> tasks, Map<String, ClassificationSummary> classificationSummaryById) {
+
+    if (tasks == null || tasks.isEmpty()) {
       return;
     }
-    // calculate parameters for workbasket query: workbasket keys
-    String[] workbasketIdArray =
-        taskSummaries.stream()
-            .map(t -> t.getWorkbasketSummary().getId())
-            .distinct()
-            .toArray(String[]::new);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("addWorkbasketSummariesToTaskSummaries() about to query workbaskets");
-    }
-    WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
-    query.setUsedToAugmentTasks(true);
 
-    List<WorkbasketSummary> workbaskets = query.idIn(workbasketIdArray).list();
-    Iterator<TaskSummaryImpl> taskIterator = taskSummaries.iterator();
-    while (taskIterator.hasNext()) {
-      TaskSummaryImpl task = taskIterator.next();
-      String workbasketId = task.getWorkbasketSummaryImpl().getId();
-
-      WorkbasketSummary workbasketSummary =
-          workbaskets.stream()
-              .filter(x -> workbasketId != null && workbasketId.equals(x.getId()))
-              .findFirst()
-              .orElse(null);
-      if (workbasketSummary == null) {
-        LOGGER.warn("Could not find a Workbasket for task {}.", task.getId());
-        taskIterator.remove();
-        continue;
+    for (TaskSummaryImpl task : tasks) {
+      String classificationId = task.getClassificationSummary().getId();
+      ClassificationSummary classificationSummary = classificationSummaryById.get(classificationId);
+      if (classificationSummary == null) {
+        throw new SystemException(
+            "Did not find a Classification for task (Id="
+                + task.getId()
+                + ",Classification="
+                + task.getClassificationSummary().getId()
+                + ")");
       }
+      task.setClassificationSummary(classificationSummary);
+    }
+  }
 
+  private void addWorkbasketSummariesToTaskSummaries(
+      List<TaskSummaryImpl> tasks, Map<String, WorkbasketSummary> workbasketSummaryById) {
+    if (tasks == null || tasks.isEmpty()) {
+      return;
+    }
+
+    for (TaskSummaryImpl task : tasks) {
+      String workbasketId = task.getWorkbasketSummary().getId();
+      WorkbasketSummary workbasketSummary = workbasketSummaryById.get(workbasketId);
+      if (workbasketSummary == null) {
+        throw new SystemException(
+            "Did not find a Workbasket for task (Id="
+                + task.getId()
+                + ",Workbasket="
+                + task.getWorkbasketSummary().getId()
+                + ")");
+      }
       task.setWorkbasketSummary(workbasketSummary);
     }
   }
 
   private void addAttachmentSummariesToTaskSummaries(
-      List<TaskSummaryImpl> taskSummaries,
-      List<AttachmentSummaryImpl> attachmentSummaries,
-      List<ClassificationSummary> classifications) {
+      List<TaskSummaryImpl> taskSummaries, List<AttachmentSummaryImpl> attachmentSummaries) {
 
     if (taskSummaries == null || taskSummaries.isEmpty()) {
       return;
     }
 
-    // augment attachment summaries by classification summaries
-    // Note:
-    // the mapper sets for each Attachment summary the property classificationSummary.key from the
-    // CLASSIFICATION_KEY property in the DB
-    addClassificationSummariesToAttachmentSummaries(
-        attachmentSummaries, taskSummaries, classifications);
-    // assign attachment summaries to task summaries
-    for (TaskSummaryImpl task : taskSummaries) {
-      for (AttachmentSummaryImpl attachment : attachmentSummaries) {
-        if (attachment.getTaskId() != null && attachment.getTaskId().equals(task.getId())) {
-          task.addAttachmentSummary(attachment);
-        }
+    Map<String, TaskSummaryImpl> taskSummariesById =
+        taskSummaries.stream()
+            .collect(
+                Collectors.toMap(
+                    TaskSummary::getId,
+                    Function.identity(),
+                    // Currently, we still have a bug (TSK-1204), where the TaskQuery#list function
+                    // returns the same task multiple times when that task has more than one
+                    // attachment...Therefore, this MergeFunction is necessary.
+                    (a, b) -> b));
+
+    for (AttachmentSummaryImpl attachmentSummary : attachmentSummaries) {
+      String taskId = attachmentSummary.getTaskId();
+      TaskSummaryImpl taskSummary = taskSummariesById.get(taskId);
+      if (taskSummary != null) {
+        taskSummary.addAttachmentSummary(attachmentSummary);
       }
     }
   }
 
-  private void addClassificationSummariesToAttachmentSummaries(
-      List<AttachmentSummaryImpl> attachmentSummaries,
-      List<TaskSummaryImpl> taskSummaries,
-      List<ClassificationSummary> classifications) {
-    // prereq: in each attachmentSummary, the classificationSummary.key property is set.
-    if (attachmentSummaries == null
-        || attachmentSummaries.isEmpty()
-        || taskSummaries == null
-        || taskSummaries.isEmpty()) {
+  private void addClassificationSummariesToAttachments(
+      List<? extends AttachmentSummaryImpl> attachments,
+      Map<String, ClassificationSummary> classificationSummariesById) {
+
+    if (attachments == null || attachments.isEmpty()) {
       return;
     }
-    // iterate over all attachment summaries an add the appropriate classification summary to each
-    for (AttachmentSummaryImpl att : attachmentSummaries) {
-      String classificationId = att.getClassificationSummary().getId();
+
+    for (AttachmentSummaryImpl attachment : attachments) {
+      String classificationId = attachment.getClassificationSummary().getId();
       ClassificationSummary classificationSummary =
-          classifications.stream()
-              .filter(x -> classificationId != null && classificationId.equals(x.getId()))
-              .findFirst()
-              .orElse(null);
-      if (classificationSummary == null) {
-        throw new SystemException("Could not find a Classification for attachment " + att);
-      }
-      att.setClassificationSummary(classificationSummary);
-    }
-  }
-
-  private List<Attachment> addClassificationSummariesToAttachments(
-      List<AttachmentImpl> attachmentImpls, List<ClassificationSummary> classifications) {
-
-    if (attachmentImpls == null || attachmentImpls.isEmpty()) {
-      return new ArrayList<>();
-    }
-
-    List<Attachment> result = new ArrayList<>();
-    for (AttachmentImpl att : attachmentImpls) {
-      // find the associated task to use the correct domain
-      ClassificationSummary classificationSummary =
-          classifications.stream()
-              .filter(c -> c != null && c.getId().equals(att.getClassificationSummary().getId()))
-              .findFirst()
-              .orElse(null);
+          classificationSummariesById.get(classificationId);
 
       if (classificationSummary == null) {
-        throw new SystemException("Could not find a Classification for attachment " + att);
+        throw new SystemException("Could not find a Classification for attachment " + attachment);
       }
-      att.setClassificationSummary(classificationSummary);
-      result.add(att);
+      attachment.setClassificationSummary(classificationSummary);
     }
-
-    return result;
   }
 
   private TaskImpl initUpdatedTask(
