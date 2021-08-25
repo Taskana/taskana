@@ -1,5 +1,9 @@
 @import 'src/theme/_colors.scss';
 
+.fileover {
+  border: 4px solid $green;
+}
+
 .routing-upload {
   width: 100%;
   height: calc(100vh - 104px);
