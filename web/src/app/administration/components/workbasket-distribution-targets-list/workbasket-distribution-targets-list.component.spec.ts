@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, DebugElement, Input, Pipe, PipeTransform } from '@angular/core';
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -39,26 +39,28 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   let debugElement: DebugElement;
   let component: WorkbasketDistributionTargetsListComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        MatIconModule,
-        MatToolbarModule,
-        MatListModule,
-        MatTooltipModule,
-        InfiniteScrollModule,
-        BrowserAnimationsModule
-      ],
-      declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],
-      providers: []
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          MatIconModule,
+          MatToolbarModule,
+          MatListModule,
+          MatTooltipModule,
+          InfiniteScrollModule,
+          BrowserAnimationsModule
+        ],
+        declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],
+        providers: []
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(WorkbasketDistributionTargetsListComponent);
-    debugElement = fixture.debugElement;
-    component = fixture.componentInstance;
-    component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
-    component.side = Side.AVAILABLE;
-  }));
+      fixture = TestBed.createComponent(WorkbasketDistributionTargetsListComponent);
+      debugElement = fixture.debugElement;
+      component = fixture.componentInstance;
+      component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
+      component.side = Side.AVAILABLE;
+    })
+  );
 
   it('should create component', () => {
     expect(component).toBeTruthy();
@@ -92,6 +94,6 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   it('should call orderBy pipe', () => {
     const orderBySpy = jest.spyOn(OrderByMock.prototype, 'transform');
     fixture.detectChanges();
-    expect(orderBySpy).toHaveBeenCalledWith(component.distributionTargets, ['type', 'description']);
+    expect(orderBySpy).toHaveBeenCalledWith(component.distributionTargets, ['type', 'name']);
   });
 });
