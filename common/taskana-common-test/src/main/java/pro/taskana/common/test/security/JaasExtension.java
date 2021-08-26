@@ -39,6 +39,7 @@ import org.opentest4j.TestAbortedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.GroupPrincipal;
 import pro.taskana.common.api.security.UserPrincipal;
+import pro.taskana.common.test.security.WithAccessId.WithAccessIds;
 
 /** Runner for integration tests that enables JAAS subject. */
 public class JaasExtension implements InvocationInterceptor, TestTemplateInvocationContextProvider {
