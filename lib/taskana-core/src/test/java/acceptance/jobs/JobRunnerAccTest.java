@@ -21,6 +21,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.jobs.PlainJavaTransactionProvider;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
 
 class JobRunnerAccTest extends AbstractAccTest {
 
@@ -79,7 +80,7 @@ class JobRunnerAccTest extends AbstractAccTest {
 
   private ScheduledJob createJob(Instant firstDue) {
     ScheduledJob job = new ScheduledJob();
-    job.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
+    job.setType(TaskCleanupJob.class.getName());
     job.setDue(firstDue);
     jobService.createJob(job);
     return job;

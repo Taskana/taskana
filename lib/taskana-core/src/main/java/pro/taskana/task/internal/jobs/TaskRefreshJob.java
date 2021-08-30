@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -15,7 +14,7 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 
-/** This class executes a job of type {@linkplain ScheduledJob.Type#TASK_REFRESH_JOB}. */
+/** This class executes a job of type {@linkplain pro.taskana.task.internal.jobs.TaskRefreshJob}. */
 public class TaskRefreshJob extends AbstractTaskanaJob {
 
   public static final String TASK_IDS = "taskIds";
@@ -50,8 +49,8 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
   }
 
   @Override
-  protected Type getType() {
-    return Type.TASK_REFRESH_JOB;
+  protected String getType() {
+    return TaskRefreshJob.class.getName();
   }
 
   @Override

@@ -21,6 +21,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -181,7 +182,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     resetDb(true);
     ScheduledJob job = new ScheduledJob();
     job.setArguments(Map.of("keyBla", "valueBla"));
-    job.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
+    job.setType(TaskCleanupJob.class.getName());
     job.setDue(Instant.now().minus(Duration.ofHours(5)));
     job.setLockExpires(Instant.now().minus(Duration.ofHours(5)));
     JobService jobService = taskanaEngine.getJobService();

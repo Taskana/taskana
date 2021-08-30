@@ -19,8 +19,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.JobRunner;
@@ -30,6 +30,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
+import pro.taskana.task.internal.jobs.TaskRefreshJob;
 
 /** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -110,11 +111,11 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
+      job.setType(TaskCleanupJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.TASK_REFRESH_JOB);
+      job.setType(TaskRefreshJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
+      job.setType(ClassificationChangedJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -124,7 +125,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> taskCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.TASK_CLEANUP_JOB))
+            .filter(scheduledJob -> scheduledJob.getType().equals(TaskCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
     TaskCleanupJob.initializeSchedule(taskanaEngine);
@@ -172,7 +173,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     Instant firstDue = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     ScheduledJob scheduledJob = new ScheduledJob();
-    scheduledJob.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
+    scheduledJob.setType(TaskCleanupJob.class.getName());
     scheduledJob.setDue(firstDue);
 
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();

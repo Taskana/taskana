@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
@@ -71,13 +70,13 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
     TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
-    jobService.deleteJobs(job.getType());
+    jobService.deleteJobs(TaskUpdatePriorityJob.class.getName());
     job.scheduleNextJob();
   }
 
   @Override
-  protected Type getType() {
-    return Type.TASK_UPDATE_PRIORITY_JOB;
+  protected String getType() {
+    return TaskUpdatePriorityJob.class.getName();
   }
 
   @Override

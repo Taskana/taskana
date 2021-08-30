@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -73,13 +72,13 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    jobService.deleteJobs(Type.TASK_CLEANUP_JOB);
+    jobService.deleteJobs(TaskCleanupJob.class.getName());
     job.scheduleNextJob();
   }
 
   @Override
-  protected Type getType() {
-    return Type.TASK_CLEANUP_JOB;
+  protected String getType() {
+    return TaskCleanupJob.class.getName();
   }
 
   private List<TaskSummary> getTasksCompletedBefore(Instant untilDate) {
