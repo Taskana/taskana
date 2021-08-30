@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -97,7 +96,7 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
     assertThat(getJobMapper().findJobsToRun(someTimeInTheFuture))
         .hasSizeGreaterThanOrEqualTo(1)
         .extracting(ScheduledJob::getType)
-        .contains(Type.TASK_UPDATE_PRIORITY_JOB);
+        .contains(TaskUpdatePriorityJob.class.getName());
   }
 
   @Test

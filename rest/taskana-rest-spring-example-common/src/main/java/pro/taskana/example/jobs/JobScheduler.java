@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
@@ -40,7 +39,7 @@ public class JobScheduler {
     if (taskanaEngine.isHistoryEnabled()) {
       Thread.currentThread()
           .getContextClassLoader()
-          .loadClass(Type.HISTORY_CLEANUP_JOB.getClazz())
+          .loadClass("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob")
           .getDeclaredMethod("initializeSchedule", TaskanaEngine.class)
           .invoke(null, taskanaEngine);
     }

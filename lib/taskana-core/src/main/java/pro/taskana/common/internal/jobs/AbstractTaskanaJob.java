@@ -41,7 +41,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     return (TaskanaJob)
         Thread.currentThread()
             .getContextClassLoader()
-            .loadClass(job.getType().getClazz())
+            .loadClass(job.getType())
             .getConstructors()[0]
             .newInstance(engine, txProvider, job);
   }
@@ -54,7 +54,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     }
   }
 
-  protected abstract ScheduledJob.Type getType();
+  protected abstract String getType();
 
   protected abstract void execute() throws TaskanaException;
 
