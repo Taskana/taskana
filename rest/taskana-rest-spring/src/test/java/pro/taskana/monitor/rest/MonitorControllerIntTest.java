@@ -109,7 +109,7 @@ class MonitorControllerIntTest {
   void should_ComputeReport_When_QueryingForAWorkbasketPriorityReport() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
-            + "?workbasket-types=TOPIC,GROUP";
+            + "?workbasket-type=TOPIC,GROUP";
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
 
     ResponseEntity<ReportRepresentationModel> response =

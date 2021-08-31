@@ -21,6 +21,14 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
   }
 
   @Test
+  void computeWorkbasketPriorityReportDocTest() throws Exception {
+    mockMvc
+        .perform(
+            get(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT + "?workbasket-type=GROUP"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   void computeClassificationCategoryReportDocTest() throws Exception {
     mockMvc
         .perform(get(RestEndpoints.URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT))

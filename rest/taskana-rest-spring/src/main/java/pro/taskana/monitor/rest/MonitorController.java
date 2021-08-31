@@ -82,28 +82,23 @@ public class MonitorController {
   }
 
   /**
-   * This endpoint generates a Workbasket Report by priority. This Report currently
+   * This endpoint generates a Workbasket Report by priority ranges.
    *
    * <p>Each Row represents a Workbasket.
    *
    * <p>Each Column Header represents a priority range. <br>
    * <br>
    *
-   * <table>
-   *   <caption><b>Default ranges</b></caption>
-   *  <tr>
-   *    <td> high </td> <td>priority &gt; 500</td>
-   *  </tr>
-   *  <tr>
-   *    <td> medium </td> <td> 250 &ge; priority &le; 500</td>
-   *  </tr>
-   *  <tr>
-   *    <td> low </td> <td> priority &lt; 250</td>
-   *  </tr>
-   * </table>
+   * <p><b>Default ranges</b>
    *
-   * @title Compute a Workbasket Report
-   * @param workbasketTypes determine the {@linkplain WorkbasketType}s to include in the report
+   * <p>High: priority &gt; 500
+   *
+   * <p>Medium: 250 &ge; priority &le; 500
+   *
+   * <p>Low: priority &lt; 250
+   *
+   * @title Compute a Workbasket Priority Report
+   * @param workbasketTypes determine the WorkbasketTypes to include in the report
    * @return the computed Report
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException if topicWorkbaskets or useDefaultValues are false
@@ -111,7 +106,7 @@ public class MonitorController {
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computePriorityWorkbasketReport(
-      @RequestParam(name = "workbasket-types", required = false) WorkbasketType[] workbasketTypes)
+      @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes)
       throws NotAuthorizedException, InvalidArgumentException {
 
     WorkbasketPriorityReport.Builder builder =
@@ -318,7 +313,7 @@ public class MonitorController {
    *
    * <p>Each Column Header represents a TimeInterval.
    *
-   * @title Get a Timestamp Report
+   * @title Compute a Timestamp Report
    * @param filterParameter the filter parameter
    * @param timestamps Filter by the Task Timestamp of the task
    * @return the computed report
