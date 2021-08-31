@@ -72,7 +72,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    jobService.deleteJobs(TaskCleanupJob.class.getName());
+    jobService.deleteJobs(job.getType());
     job.scheduleNextJob();
   }
 

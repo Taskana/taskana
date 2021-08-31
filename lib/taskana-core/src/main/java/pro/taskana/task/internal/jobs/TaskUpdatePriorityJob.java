@@ -70,7 +70,7 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
     TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
-    jobService.deleteJobs(TaskUpdatePriorityJob.class.getName());
+    jobService.deleteJobs(job.getType());
     job.scheduleNextJob();
   }
 
