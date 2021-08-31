@@ -13,12 +13,14 @@ import pro.taskana.monitor.api.reports.item.PriorityQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.workbasket.api.WorkbasketType;
 
-/** The implementation of WorkbasketReportBuilder. */
 public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityReport.Builder {
 
-  protected InternalTaskanaEngine taskanaEngine;
-  protected MonitorMapper monitorMapper;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final MonitorMapper monitorMapper;
+
+  @SuppressWarnings("unused")
   private WorkbasketType[] workbasketType;
+
   private List<PriorityColumnHeader> columnHeaders;
 
   public WorkbasketPriorityReportBuilderImpl(
@@ -30,15 +32,12 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
 
   @Override
   public WorkbasketPriorityReport buildReport() throws NotAuthorizedException {
-    // create report
-    // sql magic from monitor mapper
-    // data in report
-    this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
+    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
 
     WorkbasketPriorityReport report = new WorkbasketPriorityReport(columnHeaders);
     List<PriorityQueryItem> items =
-        this.taskanaEngine.executeInDatabaseConnection(
-            () -> this.monitorMapper.getTaskCountByPriority(this));
+        taskanaEngine.executeInDatabaseConnection(
+            () -> monitorMapper.getTaskCountByPriority(this));
     report.addItems(items);
     return report;
   }

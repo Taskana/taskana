@@ -16,17 +16,12 @@ import pro.taskana.workbasket.api.models.Workbasket;
  *
  * <p>Each {@linkplain Row} represents a {@linkplain Workbasket}.
  *
- * <p>Each {@linkplain ColumnHeader} represents a {@linkplain Task#getPriority() priority}.
+ * <p>Each {@linkplain ColumnHeader} represents a {@linkplain Task#getPriority() priority range}.
  */
 public class WorkbasketPriorityReport extends Report<PriorityQueryItem, PriorityColumnHeader> {
 
   public WorkbasketPriorityReport(List<PriorityColumnHeader> priorityColumnHeaders) {
     super(priorityColumnHeaders, new String[] {"WORKBASKET"});
-  }
-
-  @Override
-  public String toString() {
-    return "WorkbasketPriorityReport [columnHeaders=" + columnHeaders + "]";
   }
 
   /** Builder for {@link WorkbasketPriorityReport}. */

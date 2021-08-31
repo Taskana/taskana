@@ -13,8 +13,7 @@ import pro.taskana.task.api.TaskCustomField;
 public interface MonitorService {
 
   /**
-   * Provides a {@link WorkbasketReport.Builder} for creating a {@link WorkbasketReport}, list the
-   * task ids of this report and list the values of an entered custom attribute.
+   * Provides a {@link WorkbasketReport.Builder} for creating a {@link WorkbasketReport}.
    *
    * @return a {@link WorkbasketReport.Builder}
    */
@@ -22,8 +21,7 @@ public interface MonitorService {
 
   /**
    * Provides a {@link WorkbasketPriorityReport.Builder} for creating a {@link
-   * WorkbasketPriorityReport}, list the task ids of this report and list the values of an entered
-   * custom attribute.
+   * WorkbasketPriorityReport}.
    *
    * @return a {@link WorkbasketReport.Builder}
    */
@@ -31,8 +29,7 @@ public interface MonitorService {
 
   /**
    * Provides a {@link ClassificationCategoryReport.Builder} for creating a {@link
-   * ClassificationCategoryReport}, list the task ids of this report and list the values of an
-   * entered custom attribute.
+   * ClassificationCategoryReport}.
    *
    * @return a {@link ClassificationCategoryReport.Builder}
    */
@@ -40,8 +37,7 @@ public interface MonitorService {
 
   /**
    * Provides a {@link ClassificationReport.Builder} for creating a {@link ClassificationReport} or
-   * a DetailedClassificationReport, list the task ids of these reports and list the values of an
-   * entered custom attribute.
+   * a {@link pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport}.
    *
    * @return a {@link ClassificationReport.Builder}
    */
@@ -49,7 +45,7 @@ public interface MonitorService {
 
   /**
    * Provides a {@link TaskCustomFieldValueReport.Builder} for creating a {@link
-   * TaskCustomFieldValueReport} and list the values of an entered custom attribute.
+   * TaskCustomFieldValueReport}.
    *
    * @param taskCustomField the customField whose values should appear in the report
    * @return a {@link TaskCustomFieldValueReport.Builder}

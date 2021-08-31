@@ -86,7 +86,8 @@ public class MonitorController {
    *
    * <p>Each Row represents a Workbasket.
    *
-   * <p>Each Column Header represents a priority range.
+   * <p>Each Column Header represents a priority range. <br>
+   * <br>
    *
    * <table>
    *   <caption><b>Default ranges</b></caption>

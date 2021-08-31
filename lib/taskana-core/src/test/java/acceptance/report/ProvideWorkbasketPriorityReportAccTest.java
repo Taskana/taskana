@@ -2,14 +2,15 @@ package acceptance.report;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
@@ -36,20 +37,23 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
           new PriorityColumnHeader(250, 500),
           new PriorityColumnHeader(501, Integer.MAX_VALUE));
 
-  @BeforeEach
-  void reset() throws Exception {
-    resetDb();
-  }
-
   @WithAccessId(user = "admin")
   @WithAccessId(user = "monitor")
   @TestTemplate
-  void should_BuildReport_When_UserIsAdminOrMonitor() {
+  void should_NotThrowExceptions_When_UserIsAdminOrMonitor() {
     assertThatCode(() -> MONITOR_SERVICE.createWorkbasketPriorityReportBuilder().buildReport())
         .doesNotThrowAnyException();
   }
 
-  @WithAccessId(user = "admin")
+  @WithAccessId(user = "user-1-1")
+  @WithAccessId(user = "businessadmin")
+  @TestTemplate
+  void should_ThrowMismatchedRoleException_When_UserDoesNotHaveCorrectRole() {
+    assertThatThrownBy(() -> MONITOR_SERVICE.createWorkbasketPriorityReportBuilder().buildReport())
+        .isInstanceOf(MismatchedRoleException.class);
+  }
+
+  @WithAccessId(user = "monitor")
   @Test
   void should_BuildReport_When_UserIsAuthorized() throws Exception {
     WorkbasketPriorityReport priorityReport =
@@ -64,7 +68,7 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
         .isEqualTo(expectedCells);
   }
 
-  @WithAccessId(user = "admin")
+  @WithAccessId(user = "monitor")
   @Test
   void should_OnlyIncludeWantedWorkbasketTypesReport_When_UsingWorkbasketTypeIn() throws Exception {
     WorkbasketPriorityReport priorityReport =
