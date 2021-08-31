@@ -56,6 +56,8 @@ public final class RestEndpoints {
 
   // monitor endpoints
   public static final String URL_MONITOR_WORKBASKET_REPORT = API_V1 + "monitor/workbasket-report";
+  public static final String URL_MONITOR_WORKBASKET_PRIORITY_REPORT =
+      API_V1 + "monitor/workbasket-priority-report";
   public static final String URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT =
       API_V1 + "monitor/classification-category-report";
   public static final String URL_MONITOR_CLASSIFICATION_REPORT =

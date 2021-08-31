@@ -69,7 +69,7 @@ public class TimestampReportBuilderImpl
           status.stream()
               // This can also be implemented into a single sql query which combines all statuses
               // with the union operator. That would reduce the readability of the sql template.
-              // That's why "the loop" is done outside of mybatis.
+              // That's why "the loop" is done outside mybatis.
               .map(this::getTasksCountForStatusGroupedByOrgLevel)
               .flatMap(Collection::stream)
               .collect(Collectors.toList());

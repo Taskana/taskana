@@ -39,13 +39,12 @@ public class TaskQueryItem implements QueryItem {
 
   @Override
   public String toString() {
-    return "TaskQueryItem ["
-        + "domain= "
-        + this.workbasketKey
-        + ", state= "
-        + this.state.name()
-        + ", count= "
-        + this.count
+    return "TaskQueryItem [workbasketKey="
+        + workbasketKey
+        + ", state="
+        + state
+        + ", count="
+        + count
         + "]";
   }
 }

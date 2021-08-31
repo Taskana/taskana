@@ -112,7 +112,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_UpdatePrimaryObjectReferenceOfTask_When_ObjectreferenceSystemAndSystemInstanceIsNull()
+  void should_UpdatePrimaryObjectReferenceOfTask_When_ObjectReferenceSystemAndSystemInstanceIsNull()
       throws Exception {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");

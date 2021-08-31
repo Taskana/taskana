@@ -7,12 +7,14 @@ import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
+import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.internal.reports.ClassificationCategoryReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.ClassificationReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.TaskCustomFieldValueReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.TaskStatusReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.TimestampReportBuilderImpl;
+import pro.taskana.monitor.internal.reports.WorkbasketPriorityReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.WorkbasketReportBuilderImpl;
 import pro.taskana.task.api.TaskCustomField;
 
@@ -31,6 +33,11 @@ public class MonitorServiceImpl implements MonitorService {
   @Override
   public WorkbasketReport.Builder createWorkbasketReportBuilder() {
     return new WorkbasketReportBuilderImpl(taskanaEngine, monitorMapper);
+  }
+
+  @Override
+  public WorkbasketPriorityReport.Builder createWorkbasketPriorityReportBuilder() {
+    return new WorkbasketPriorityReportBuilderImpl(taskanaEngine, monitorMapper);
   }
 
   @Override

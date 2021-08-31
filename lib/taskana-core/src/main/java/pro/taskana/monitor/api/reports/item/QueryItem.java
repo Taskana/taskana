@@ -1,13 +1,8 @@
 package pro.taskana.monitor.api.reports.item;
 
 import pro.taskana.monitor.api.reports.Report;
-import pro.taskana.monitor.api.reports.row.Row;
 
-/**
- * A QueryItem is en entity on which a {@link Report} is based on. Its value will be added to the
- * existing cell value during the insertion into a report. Its key will determine in which {@link
- * Row} the item will be inserted.
- */
+/** A QueryItem is en entity on which a {@link Report} is based on. */
 public interface QueryItem {
 
   /**
@@ -17,5 +12,10 @@ public interface QueryItem {
    */
   String getKey();
 
+  /**
+   * Its value will be added to the existing cell value during the insertion into a report.
+   *
+   * @return the value
+   */
   int getValue();
 }

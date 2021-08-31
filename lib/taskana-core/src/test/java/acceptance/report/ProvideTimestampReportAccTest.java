@@ -66,7 +66,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
     assertThat(report.rowSize()).isEqualTo(2);
     assertThat(report.getRow("CREATED").getCells())
-        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26});
+        .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27});
     assertThat(report.getRow("COMPLETED").getCells())
         .isEqualTo(new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0});
   }
