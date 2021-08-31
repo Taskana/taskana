@@ -138,6 +138,7 @@ include::{snippets}/WorkbasketAccessItemControllerRestDocTest/removeWorkbasketAc
 == Monitoring Resources
 
 include::{snippets}/MonitorControllerRestDocTest/computeWorkbasketReportDocTest/auto-section.adoc[]
+include::{snippets}/MonitorControllerRestDocTest/computeWorkbasketPriorityReportDocTest/auto-section.adoc[]
 include::{snippets}/MonitorControllerRestDocTest/computeClassificationCategoryReportDocTest/auto-section.adoc[]
 include::{snippets}/MonitorControllerRestDocTest/computeClassificationReportDocTest/auto-section.adoc[]
 include::{snippets}/MonitorControllerRestDocTest/computeDetailedClassificationReportDocTest/auto-section.adoc[]
