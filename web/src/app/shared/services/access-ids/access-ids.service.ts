@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
-import { AccessIdDefinition } from 'app/shared/models/access-id';
+import { AccessId } from 'app/shared/models/access-id';
 import { Observable, of } from 'rxjs';
 import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbasket-access-items-representation';
 import { Sorting, WorkbasketAccessItemQuerySortParameter } from 'app/shared/models/sorting';
@@ -20,18 +20,18 @@ export class AccessIdsService {
     return this.startupService.getTaskanaRestUrl() + '/v1/access-ids';
   }
 
-  searchForAccessId(accessId: string): Observable<AccessIdDefinition[]> {
+  searchForAccessId(accessId: string): Observable<AccessId[]> {
     if (!accessId || accessId.length < 3) {
       return of([]);
     }
-    return this.httpClient.get<AccessIdDefinition[]>(`${this.url}?search-for=${accessId}`);
+    return this.httpClient.get<AccessId[]>(`${this.url}?search-for=${accessId}`);
   }
 
-  getGroupsByAccessId(accessId: string): Observable<AccessIdDefinition[]> {
+  getGroupsByAccessId(accessId: string): Observable<AccessId[]> {
     if (!accessId || accessId.length < 3) {
       return of([]);
     }
-    return this.httpClient.get<AccessIdDefinition[]>(`${this.url}/groups?access-id=${accessId}`);
+    return this.httpClient.get<AccessId[]>(`${this.url}/groups?access-id=${accessId}`);
   }
 
   getAccessItems(

@@ -57,7 +57,10 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "taskana-web:build"
+            "browserTarget": "taskana-web:build",
+            "sourceMap": {
+              "scripts": true
+            }
           },
           "configurations": {
             "production": {

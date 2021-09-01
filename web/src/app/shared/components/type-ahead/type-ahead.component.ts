@@ -1,127 +1,115 @@
-import { Component, Input, ViewChild, forwardRef, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
-
-import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { highlight } from 'app/shared/animations/validation.animation';
-import { mergeMap } from 'rxjs/operators';
-import { AccessIdDefinition } from 'app/shared/models/access-id';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AccessIdsService } from '../../services/access-ids/access-ids.service';
+import { Observable, Subject } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { AccessId } from '../../models/access-id';
+import { take, takeUntil } from 'rxjs/operators';
+import { Select } from '@ngxs/store';
+import { WorkbasketSelectors } from '../../store/workbasket-store/workbasket.selectors';
+import { ButtonAction } from '../../../administration/models/button-action';
 
 @Component({
   selector: 'taskana-shared-type-ahead',
   templateUrl: './type-ahead.component.html',
-  styleUrls: ['./type-ahead.component.scss'],
-  animations: [highlight],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TypeAheadComponent),
-      multi: true
-    }
-  ]
+  styleUrls: ['./type-ahead.component.scss']
 })
-export class TypeAheadComponent implements ControlValueAccessor {
-  dataSource: any;
-  typing = false;
-  isFirst = false;
-  items = [];
+export class TypeAheadComponent implements OnInit, OnDestroy {
+  @Input() savedAccessId;
+  @Input() placeHolderMessage;
+  @Input() entityId;
+  @Input() isRequired = false;
+  @Input() isDisabled = false;
+  @Input() displayError = false;
 
-  @Input()
-  placeHolderMessage;
+  @Output() accessIdEventEmitter = new EventEmitter<AccessId>();
+  @Output() isFormValid = new EventEmitter<boolean>();
 
-  @Input()
-  validationValue;
+  @Select(WorkbasketSelectors.buttonAction)
+  buttonAction$: Observable<ButtonAction>;
 
-  @Input()
-  displayError;
+  name: string = '';
+  lastSavedAccessId: string = '';
+  filteredAccessIds: AccessId[] = [];
+  destroy$ = new Subject<void>();
+  accessIdForm = new FormGroup({
+    accessId: new FormControl('')
+  });
+  emptyAccessId: AccessId = { accessId: '', name: '' };
 
-  @Input()
-  width;
+  constructor(private accessIdService: AccessIdsService) {}
 
-  @Input()
-  disable;
-
-  @Input()
-  isRequired;
-
-  @Output()
-  selectedItem = new EventEmitter<AccessIdDefinition>();
-
-  @ViewChild('inputTypeAhead')
-  typeaheadLoading = false;
-  typeaheadMinLength = 3;
-  typeaheadWaitMs = 500;
-  typeaheadOptionsInScrollableView = 6;
-
-  // The internal data model
-  private innerValue: any;
-
-  // Placeholders for the callbacks which are later provided
-  // by the Control Value Accessor
-  private onTouchedCallback: () => {};
-  private onChangeCallback: (_: any) => {};
-
-  // get accessor
-  get value(): any {
-    return this.innerValue;
-  }
-
-  // set accessor including call the onchange callback
-  set value(v: any) {
-    if (v !== this.innerValue) {
-      this.innerValue = v;
+  ngOnChanges(changes: SimpleChanges) {
+    // currently needed because when saving, workbasket-details components sends old workbasket which reverts changes in this component
+    if (changes.entityId) {
+      this.setAccessIdFromInput();
     }
   }
 
-  // From ControlValueAccessor interface
-  writeValue(value: any) {
-    if (value !== this.innerValue) {
-      this.innerValue = value;
-      if (this.value) {
-        this.isFirst = true;
-      }
-      this.initializeDataSource();
+  ngOnInit() {
+    if (this.isDisabled) {
+      this.accessIdForm.controls['accessId'].disable();
     }
-  }
 
-  // From ControlValueAccessor interface
-  registerOnChange(fn: any) {
-    this.onChangeCallback = fn;
-  }
-
-  // From ControlValueAccessor interface
-  registerOnTouched(fn: any) {
-    this.onTouchedCallback = fn;
-  }
-
-  constructor(private accessIdsService: AccessIdsService) {}
-
-  initializeDataSource() {
-    this.dataSource = new Observable((observer: any) => {
-      observer.next(this.value);
-    }).pipe(mergeMap((token: string) => this.getUsersAsObservable(token)));
-    this.accessIdsService.searchForAccessId(this.value).subscribe((items) => {
-      this.items = items;
-      if (this.isFirst) {
-        this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
-        this.selectedItem.emit(this.dataSource.selected);
+    // currently needed because this component cannot obtain changes of the current workbasket from workbasket-information component
+    this.buttonAction$.pipe(takeUntil(this.destroy$)).subscribe((button) => {
+      if (button == ButtonAction.UNDO) {
+        this.accessIdForm.controls['accessId'].setValue(this.lastSavedAccessId);
       }
     });
-  }
 
-  getUsersAsObservable(accessId: string): Observable<any> {
-    return this.accessIdsService.searchForAccessId(accessId);
-  }
-
-  typeaheadOnSelect(event): void {
-    if (event) {
-      if (this.items.length > 0) {
-        this.dataSource.selected = this.items.find((item) => item.accessId.toLowerCase() === this.value.toLowerCase());
+    this.accessIdForm.controls['accessId'].valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const value = this.accessIdForm.controls['accessId'].value;
+      if (value === '') {
+        this.handleEmptyAccessId();
+        return;
       }
-      this.selectedItem.emit(this.dataSource.selected);
+      this.searchForAccessId(value);
+    });
+
+    this.setAccessIdFromInput();
+  }
+
+  handleEmptyAccessId() {
+    this.name = '';
+    this.isFormValid.emit(!this.isRequired);
+    if (this.placeHolderMessage !== 'Search for AccessId') {
+      this.accessIdEventEmitter.emit(this.emptyAccessId);
     }
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
+    if (this.isRequired) {
+      this.accessIdForm.controls['accessId'].setErrors({ incorrect: true });
     }
+  }
+
+  searchForAccessId(value: string) {
+    this.accessIdService
+      .searchForAccessId(value)
+      .pipe(take(1))
+      .subscribe((accessIds) => {
+        this.filteredAccessIds = accessIds;
+        const accessId = accessIds.find((accessId) => accessId.accessId === value);
+
+        if (typeof accessId !== 'undefined') {
+          this.name = accessId?.name;
+          this.isFormValid.emit(true);
+          this.accessIdEventEmitter.emit(accessId);
+        } else if (this.displayError) {
+          this.isFormValid.emit(false);
+          this.accessIdEventEmitter.emit(this.emptyAccessId);
+          this.accessIdForm.controls['accessId'].setErrors({ incorrect: true });
+        }
+      });
+  }
+
+  setAccessIdFromInput() {
+    const accessId = this.savedAccessId?.value;
+    const access = accessId?.accessId || accessId?.accessId == '' ? accessId.accessId : this.savedAccessId || '';
+    this.accessIdForm.controls['accessId'].setValue(access);
+    this.lastSavedAccessId = access;
+    this.name = accessId?.accessName || '';
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

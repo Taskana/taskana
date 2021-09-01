@@ -48,11 +48,12 @@
 							class="workbasket-access-items__typeahead" [ngClass]="{	'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
                 							'has-error': !accessItem.value.accessId }">
 
-							<taskana-shared-type-ahead formControlName="accessId"
-								placeHolderMessage="Access id *"
-								[validationValue]="toggleValidationAccessIdMap.get(index)"
-								[displayError]="!isFieldValid('accessItem.value.accessId', index)"
-								(selectedItem)="accessItemSelected($event, index)">
+							<taskana-shared-type-ahead
+                [savedAccessId]="accessItem"
+                placeHolderMessage="Access id"
+                [displayError]="true"
+                [isRequired]="true"
+                (accessIdEventEmitter)="accessItemSelected($event, index)">
 							</taskana-shared-type-ahead>
 						</td>
 

@@ -241,6 +241,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         const date = TaskanaDate.getDate();
         emptyWorkbasket.created = date;
         emptyWorkbasket.modified = date;
+        emptyWorkbasket.owner = '';
 
         const accessItems = { accessItems: [], _links: {} };
         const distributionTargets = { distributionTargets: [], _links: {} };

@@ -1,3 +1,4 @@
-export class AccessIdDefinition {
-  constructor(public accessId?: string, public name?: string) {}
+export interface AccessId {
+  accessId?: string;
+  name?: string;
 }

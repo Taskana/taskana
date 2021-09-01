@@ -12,7 +12,6 @@ import {
 import { Task } from 'app/workplace/models/task';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { NgForm } from '@angular/forms';
-import { DomainService } from 'app/shared/services/domain/domain.service';
 import { Select } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
@@ -20,7 +19,7 @@ import { ClassificationsService } from '../../../shared/services/classifications
 import { Classification } from '../../../shared/models/classification';
 import { TasksCustomisation } from '../../../shared/models/customisation';
 import { takeUntil } from 'rxjs/operators';
-import { AccessIdDefinition } from '../../../shared/models/access-id';
+import { AccessId } from '../../../shared/models/access-id';
 
 @Component({
   selector: 'taskana-task-information',
@@ -45,6 +44,7 @@ export class TaskInformationComponent implements OnInit, OnChanges, OnDestroy {
   requestInProgress = false;
   classifications: Classification[];
   isClassificationEmpty: boolean;
+  isOwnerValid: boolean = true;
 
   readonly lengthError = 'You have reached the maximum length';
   inputOverflowMap = new Map<string, boolean>();
@@ -55,8 +55,7 @@ export class TaskInformationComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private classificationService: ClassificationsService,
-    private formsValidatorService: FormsValidatorService,
-    private domainService: DomainService
+    private formsValidatorService: FormsValidatorService
   ) {}
 
   ngOnInit() {
@@ -102,7 +101,7 @@ export class TaskInformationComponent implements OnInit, OnChanges, OnDestroy {
     this.isClassificationEmpty = typeof this.task.classificationSummary === 'undefined';
     this.formsValidatorService.formSubmitAttempt = true;
     this.formsValidatorService.validateFormInformation(this.taskForm, this.toggleValidationMap).then((value) => {
-      if (value && !this.isClassificationEmpty) {
+      if (value && !this.isClassificationEmpty && this.isOwnerValid) {
         this.formValid.emit(true);
       }
     });
@@ -120,7 +119,7 @@ export class TaskInformationComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  onSelectedOwner(owner: AccessIdDefinition) {
+  onSelectedOwner(owner: AccessId) {
     if (owner?.accessId) {
       this.task.owner = owner.accessId;
     }

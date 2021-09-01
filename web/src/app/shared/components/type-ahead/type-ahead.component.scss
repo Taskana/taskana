@@ -1,26 +1,34 @@
 @import '../../../../theme/colors';
 
-::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  opacity: 1; /* Firefox */
+.type-ahead {
+  min-height: 0;
+
+  &__form-field {
+    width: 100% !important;
+  }
+
+  &__form-options {
+    white-space: pre;
+  }
+
+  &__input-field {
+    left: 50%;
+  }
+
+  &__error--accessId {
+    white-space: nowrap;
+    padding-top: 8px;
+  }
+
+  ::ng-deep &--small > .mat-form-field-appearance-outline div.mat-form-field-infix {
+    padding: 0.25em;
+  }
 }
 
-.disable {
-  cursor: not-allowed;
+::ng-deep .ng-invalid.ng-touched:not(form) {
+  box-shadow: unset;
 }
 
 .invalid {
   color: $invalid;
-}
-
-.typeahead__form {
-  width: 100% !important;
-}
-
-.typeahead__form-options {
-  white-space: pre;
-}
-
-.align {
-  left: 50%;
 }
