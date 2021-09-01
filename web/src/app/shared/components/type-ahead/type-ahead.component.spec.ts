@@ -1,74 +1,82 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { AccessIdsService } from 'app/shared/services/access-ids/access-ids.service';
 import { TypeAheadComponent } from './type-ahead.component';
-import { BrowserModule, By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AccessIdsService } from '../../services/access-ids/access-ids.service';
+import { of } from 'rxjs';
+import { NgxsModule } from '@ngxs/store';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EMPTY } from 'rxjs';
 
-const AccessIdsServiceSpy: Partial<AccessIdsService> = {
-  getAccessItems: jest.fn().mockReturnValue(EMPTY),
-  searchForAccessId: jest.fn().mockReturnValue(EMPTY)
+const accessIdService: Partial<AccessIdsService> = {
+  searchForAccessId: jest.fn().mockReturnValue(of([{ accessId: 'user-g-1', name: 'Gerda' }]))
 };
 
-describe('TypeAheadComponent', () => {
-  let component: TypeAheadComponent;
+describe('TypeAheadComponent with AccessId input', () => {
   let fixture: ComponentFixture<TypeAheadComponent>;
   let debugElement: DebugElement;
+  let component: TypeAheadComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [TypeAheadComponent],
-      imports: [
-        BrowserModule,
-        RouterModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        MatSelectModule,
-        MatAutocompleteModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTooltipModule,
-        FormsModule,
-        BrowserAnimationsModule
-      ],
-      providers: [{ provide: AccessIdsService, useValue: AccessIdsServiceSpy }]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([]),
+          MatFormFieldModule,
+          MatInputModule,
+          MatAutocompleteModule,
+          MatTooltipModule,
+          BrowserAnimationsModule,
+          FormsModule,
+          ReactiveFormsModule
+        ],
+        declarations: [TypeAheadComponent],
+        providers: [{ provide: AccessIdsService, useValue: accessIdService }]
+      }).compileComponents();
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TypeAheadComponent);
-    debugElement = fixture.debugElement;
-    component = fixture.debugElement.componentInstance;
-    fixture.detectChanges();
-  });
+      fixture = TestBed.createComponent(TypeAheadComponent);
+      debugElement = fixture.debugElement;
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should change value via the input field', async(() => {
-    component.value = 'val_1';
-    component.initializeDataSource();
+  it('should fetch name when typing in an access id', fakeAsync(() => {
+    const input = debugElement.nativeElement.querySelector('.type-ahead__input-field');
+    expect(input).toBeTruthy();
+    input.value = 'user-g-1';
+    input.dispatchEvent(new Event('input'));
+    component.accessIdForm.get('accessId').updateValueAndValidity({ emitEvent: true });
+
+    tick();
+    expect(component.name).toBe('Gerda');
+  }));
+
+  it('should emit false when an invalid access id is set', fakeAsync(() => {
+    const emitSpy = jest.spyOn(component.isFormValid, 'emit');
+    component.displayError = true;
+    component.accessIdForm.get('accessId').setValue('invalid-user');
+    component.accessIdForm.get('accessId').updateValueAndValidity({ emitEvent: true });
+
+    tick();
     fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      let input = debugElement.query(By.css('.typeahead__form-input'));
-      let el = input.nativeElement;
-      expect(el.value).toBe('val_1');
-      el.value = 'val_2';
-      el.dispatchEvent(new Event('input'));
-      expect(component.value).toBe('val_2');
-      component.initializeDataSource();
-      expect(component.items.length).toBeNull;
-    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
+  }));
+
+  it('should emit true when a valid access id is set', fakeAsync(() => {
+    const emitSpy = jest.spyOn(component.isFormValid, 'emit');
+    component.accessIdForm.get('accessId').setValue('user-g-1');
+    component.accessIdForm.get('accessId').updateValueAndValidity({ emitEvent: true });
+
+    tick();
+    fixture.detectChanges();
+    expect(emitSpy).toHaveBeenCalledWith(true);
   }));
 });

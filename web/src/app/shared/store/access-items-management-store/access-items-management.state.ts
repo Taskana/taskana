@@ -8,7 +8,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { AccessIdsService } from '../../services/access-ids/access-ids.service';
 import { take, tap } from 'rxjs/operators';
-import { AccessIdDefinition } from '../../models/access-id';
+import { AccessId } from '../../models/access-id';
 import { NotificationService } from '../../services/notifications/notification.service';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
@@ -44,7 +44,7 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
     return this.accessIdsService.getGroupsByAccessId(action.accessId).pipe(
       take(1),
       tap(
-        (groups: AccessIdDefinition[]) => {
+        (groups: AccessId[]) => {
           ctx.patchState({
             groups
           });
@@ -106,6 +106,6 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
 
 export interface AccessItemsManagementStateModel {
   accessItemsResource: WorkbasketAccessItemsRepresentation;
-  selectedAccessId: AccessIdDefinition;
-  groups: AccessIdDefinition[];
+  selectedAccessId: AccessId;
+  groups: AccessId[];
 }

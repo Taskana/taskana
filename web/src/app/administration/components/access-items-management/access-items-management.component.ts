@@ -12,7 +12,7 @@ import {
 } from 'app/shared/models/sorting';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { takeUntil } from 'rxjs/operators';
-import { AccessIdDefinition } from '../../../shared/models/access-id';
+import { AccessId } from '../../../shared/models/access-id';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../../shared/models/customisation';
 import { customFieldCount } from '../../../shared/models/workbasket-access-items';
@@ -31,14 +31,13 @@ import { WorkbasketAccessItemQueryFilterParameter } from '../../../shared/models
   styleUrls: ['./access-items-management.component.scss']
 })
 export class AccessItemsManagementComponent implements OnInit {
-  accessIdSelected: string;
   accessIdPrevious: string;
   isRequired: boolean = false;
   accessIdName: string;
   panelState: boolean = false;
   accessItemsForm: FormGroup;
-  accessId: AccessIdDefinition;
-  groups: AccessIdDefinition[];
+  accessId: AccessId;
+  groups: AccessId[];
   defaultSortBy: WorkbasketAccessItemQuerySortParameter = WorkbasketAccessItemQuerySortParameter.ACCESS_ID;
   sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string> = WORKBASKET_ACCESS_ITEM_SORT_PARAMETER_NAMING;
   sortModel: Sorting<WorkbasketAccessItemQuerySortParameter> = {
@@ -50,7 +49,7 @@ export class AccessItemsManagementComponent implements OnInit {
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation)
   accessItemsCustomization$: Observable<AccessItemsCustomisation>;
-  @Select(AccessItemsManagementSelector.groups) groups$: Observable<AccessIdDefinition[]>;
+  @Select(AccessItemsManagementSelector.groups) groups$: Observable<AccessId[]>;
   customFields$: Observable<CustomField[]>;
   destroy$ = new Subject<void>();
 
@@ -68,7 +67,7 @@ export class AccessItemsManagementComponent implements OnInit {
     });
   }
 
-  onSelectAccessId(selected: AccessIdDefinition) {
+  onSelectAccessId(selected: AccessId) {
     if (selected) {
       this.accessId = selected;
       if (this.accessIdPrevious !== selected.accessId) {

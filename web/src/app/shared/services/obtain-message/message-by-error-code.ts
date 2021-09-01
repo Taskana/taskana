@@ -29,6 +29,7 @@ export const messageByErrorCode = {
     CLASSIFICATION_WITH_ID_NOT_FOUND: 'Classification with id {classificationId} cannot be found',
     CLASSIFICATION_COPY_NOT_CREATED: 'Cannot copy a not created Classification',
 
+    WORKBASKET_SAVE: 'The Workbasket cannot be saved since the Workbasket Information contains invalid values',
     WORKBASKET_WITH_ID_NOT_FOUND: 'Workbasket with id {workbasketId} cannot be found',
     WORKBASKET_WITH_KEY_NOT_FOUND: 'Workbasket with key {workbasketKey} cannot be found in domain {domain}',
     WORKBASKET_ALREADY_EXISTS:

@@ -40,13 +40,13 @@
             </taskana-shared-field-error-display>
 
             <!-- OWNER -->
-            <taskana-shared-type-ahead *ngIf="lookupField else ownerInput" isRequired="true" maxlength="128"
-                                       #owner="ngModel" name="workbasket.owner" [(ngModel)]="workbasket.owner" placeHolderMessage="Owner"
-                                       [validationValue]="this.toggleValidationMap.get('workbasket.owner') "
-                                       [displayError]="!isFieldValid('workbasket.owner')"
-                                       (input)="validateInputOverflow(owner, 128)"
-            (selectedItem)="onSelectedOwner($event)">
-              <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
+            <taskana-shared-type-ahead *ngIf="lookupField else ownerInput"
+                                       [savedAccessId]="workbasket.owner"
+                                       placeHolderMessage="Owner"
+                                       [entityId]="workbasket.workbasketId"
+                                       [displayError]="true"
+                                       (isFormValid)="isOwnerValid = $event"
+                                       (accessIdEventEmitter)="onSelectedOwner($event)">
             </taskana-shared-type-ahead>
 
             <ng-template #ownerInput>

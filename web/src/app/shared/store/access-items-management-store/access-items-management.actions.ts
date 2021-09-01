@@ -1,11 +1,11 @@
-import { AccessIdDefinition } from '../../models/access-id';
+import { AccessId } from '../../models/access-id';
 import { Sorting, WorkbasketAccessItemQuerySortParameter } from '../../models/sorting';
 import { WorkbasketAccessItemQueryFilterParameter } from '../../models/workbasket-access-item-query-filter-parameter';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
 
 export class SelectAccessId {
   static readonly type = '[Access Items Management] Select access ID';
-  constructor(public accessIdDefinition: AccessIdDefinition) {}
+  constructor(public accessIdDefinition: AccessId) {}
 }
 
 export class GetGroupsByAccessId {
