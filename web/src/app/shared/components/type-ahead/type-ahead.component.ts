@@ -57,6 +57,10 @@ export class TypeAheadComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.setAccessIdFromInput();
+  }
+
+  ngAfterViewInit() {
     this.accessIdForm.controls['accessId'].valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       const value = this.accessIdForm.controls['accessId'].value;
       if (value === '') {
@@ -65,8 +69,6 @@ export class TypeAheadComponent implements OnInit, OnDestroy {
       }
       this.searchForAccessId(value);
     });
-
-    this.setAccessIdFromInput();
   }
 
   handleEmptyAccessId() {

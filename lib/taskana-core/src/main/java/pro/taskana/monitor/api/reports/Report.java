@@ -2,7 +2,7 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +28,7 @@ import pro.taskana.monitor.api.reports.row.SingleRow;
  */
 public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super I>> {
 
-  private final Map<String, Row<I>> reportRows = new LinkedHashMap<>();
+  private final Map<String, Row<I>> reportRows = new HashMap<>();
   private final Row<I> sumRow;
   private final String[] rowDesc;
   protected List<H> columnHeaders;
