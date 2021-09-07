@@ -75,7 +75,10 @@ context('TASKANA Workbaskets', () => {
     cy.get('button[mattooltip="Add new access"')
       .click()
       .then(() => {
-        cy.get('mat-form-field').contains('mat-form-field', 'Access id').find('input').type('teamlead-2');
+        cy.get('mat-form-field')
+          .contains('mat-form-field', 'Access id')
+          .find('input')
+          .type('teamlead-2', { force: true });
         cy.get('input[aria-label="checkAll"]:first').click();
         cy.saveWorkbaskets();
       });

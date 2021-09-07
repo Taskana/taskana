@@ -71,3 +71,7 @@
 ::ng-deep .mat-drawer {
   overflow-y: visible !important;
 }
+
+::ng-deep mat-tooltip-component {
+  word-break: break-word;
+}
