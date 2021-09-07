@@ -25,6 +25,7 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.user.api.models.User;
 
 /** Base class for all acceptance tests. */
 public abstract class AbstractAccTest {
@@ -88,7 +89,7 @@ public abstract class AbstractAccTest {
         .collect(Collectors.toMap("Property_"::concat, "Property Value of Property_"::concat));
   }
 
-  protected Attachment createAttachment(
+  protected Attachment createExampleAttachment(
       String classificationKey,
       ObjectReference objRef,
       String channel,
@@ -110,6 +111,25 @@ public abstract class AbstractAccTest {
     }
 
     return attachment;
+  }
+
+  protected User createExampleUser(String id) {
+    User user = taskanaEngine.getUserService().newUser();
+    user.setId(id);
+    user.setFirstName("Hans");
+    user.setLastName("Georg");
+    user.setFullName("Georg, Hans");
+    user.setLongName("Georg, Hans - (user-10-20)");
+    user.setEmail("hans.georg@web.com");
+    user.setPhone("1234");
+    user.setMobilePhone("01574275632");
+    user.setOrgLevel4("level4");
+    user.setOrgLevel3("level3");
+    user.setOrgLevel2("level2");
+    user.setOrgLevel1("level1");
+    user.setData("ab");
+
+    return user;
   }
 
   protected TimeInterval toDaysInterval() {

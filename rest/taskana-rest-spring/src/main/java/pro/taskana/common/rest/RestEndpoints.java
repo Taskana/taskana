@@ -69,5 +69,9 @@ public final class RestEndpoints {
   public static final String URL_MONITOR_TASK_STATUS_REPORT = API_V1 + "monitor/task-status-report";
   public static final String URL_MONITOR_TIMESTAMP_REPORT = API_V1 + "monitor/timestamp-report";
 
+  // user endpoints
+  public static final String URL_USERS = API_V1 + "users";
+  public static final String URL_USERS_ID = API_V1 + "users/{userId}";
+
   private RestEndpoints() {}
 }

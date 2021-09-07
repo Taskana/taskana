@@ -50,6 +50,9 @@ export const messageByErrorCode = {
     TASK_INVALID_OWNER: 'Current user {currentUserId} is not the owner of the Task with id {taskId}',
     TASK_INVALID_STATE: 'Task with id {taskId} is in state {taskState}. Required state(s): {requiredTaskStates}.',
 
+    USER_ALREADY_EXISTS: 'User with id {userId} cannot be created, because a User with that id does already exist',
+    USER_NOT_FOUND: 'User with id {userId} cannot be found',
+
     IMPORT_EXPORT_UPLOAD_FAILED: 'Upload failed. The uploaded file probably exceeded the maximum file size of 10 MB.',
     IMPORT_EXPORT_UPLOAD_FAILED_AUTH: 'Upload failed because you have no access to apply this operation.',
     IMPORT_EXPORT_UPLOAD_FAILED_NOT_FOUND: 'Upload failed because operation was not found',
