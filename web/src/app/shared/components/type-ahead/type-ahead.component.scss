@@ -32,3 +32,7 @@
 .invalid {
   color: $invalid;
 }
+
+mat-label.type-ahead__label {
+  pointer-events: auto;
+}

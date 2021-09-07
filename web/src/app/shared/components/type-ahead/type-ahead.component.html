@@ -1,7 +1,9 @@
 <form [formGroup]="accessIdForm">
   <div [ngClass]="placeHolderMessage == 'Access id'? 'type-ahead--small' : 'type-ahead--large'">
     <mat-form-field class="type-ahead__form-field" appearance="outline">
-    <mat-label>{{name || placeHolderMessage}}</mat-label>
+    <mat-label class="type-ahead__label" matTooltip="{{name}}" matTooltipPosition="above">
+      {{name || placeHolderMessage}}
+    </mat-label>
     <!-- TEXT INPUT -->
     <input matInput
            type="text"
@@ -9,6 +11,7 @@
            formControlName="accessId"
            [required]="isRequired"
            [matAutocomplete]="auto"
+           matTooltip="{{accessIdForm.controls['accessId'].value}}"
           class="type-ahead__input-field">
     <!-- ERROR MESSAGE -->
     <mat-error
