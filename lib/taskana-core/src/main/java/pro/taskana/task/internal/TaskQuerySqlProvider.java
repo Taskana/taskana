@@ -10,6 +10,8 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotInTime;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotLike;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -17,14 +19,6 @@ import java.util.stream.Collectors;
 import pro.taskana.task.api.TaskQueryColumnName;
 
 public class TaskQuerySqlProvider {
-  private static final String WILDCARD_LIKE_STATEMENT =
-      "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND ("
-          + "<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>"
-          + "UPPER(t.${item}) "
-          + "LIKE #{wildcardSearchValueLike}"
-          + "</foreach>)"
-          + "</if> ";
-
   private TaskQuerySqlProvider() {}
 
   @SuppressWarnings("unused")
@@ -54,8 +48,6 @@ public class TaskQuerySqlProvider {
         + OPENING_WHERE_TAG
         + checkForAuthorization()
         + commonTaskWhereStatement()
-        + WILDCARD_LIKE_STATEMENT
-        + commonTaskObjectReferenceWhereStatement()
         + "<if test='selectAndClaim == true'> AND t.STATE = 'READY' </if>"
         + CLOSING_WHERE_TAG
         + "<if test='!orderBy.isEmpty()'>"
@@ -97,8 +89,6 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + OPENING_WHERE_TAG
         + commonTaskWhereStatement()
-        + commonTaskObjectReferenceWhereStatement()
-        + WILDCARD_LIKE_STATEMENT
         + CLOSING_WHERE_TAG
         + "), Y ("
         + db2selectFields()
@@ -146,8 +136,6 @@ public class TaskQuerySqlProvider {
         + OPENING_WHERE_TAG
         + checkForAuthorization()
         + commonTaskWhereStatement()
-        + commonTaskObjectReferenceWhereStatement()
-        + WILDCARD_LIKE_STATEMENT
         + CLOSING_WHERE_TAG
         + CLOSING_SCRIPT_TAG;
   }
@@ -169,8 +157,6 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + OPENING_WHERE_TAG
         + commonTaskWhereStatement()
-        + commonTaskObjectReferenceWhereStatement()
-        + WILDCARD_LIKE_STATEMENT
         + CLOSING_WHERE_TAG
         + "), Y (ID, FLAG) AS ("
         + "SELECT ID, ("
@@ -305,71 +291,93 @@ public class TaskQuerySqlProvider {
         + "</if>";
   }
 
-  private static String commonTaskWhereStatement() {
+  private static void commonWhereClauses(String filter, String channel, StringBuilder sb) {
+    whereIn(filter + "In", channel, sb);
+    whereNotIn(filter + "NotIn", channel, sb);
+    whereLike(filter + "Like", channel, sb);
+    whereNotLike(filter + "NotLike", channel, sb);
+  }
+
+  private static StringBuilder commonTaskWhereStatement() {
     StringBuilder sb = new StringBuilder();
-    whereIn("taskIds", "t.ID", sb);
-    whereIn("priority", "PRIORITY", sb);
-    whereIn("externalIdIn", "t.EXTERNAL_ID", sb);
-    whereIn("nameIn", "t.NAME", sb);
-    whereIn("creatorIn", "CREATOR", sb);
-    whereIn("stateIn", "STATE", sb);
-    whereIn("callbackStateIn", "t.CALLBACK_STATE", sb);
-    whereIn("workbasketIdIn", "t.WORKBASKET_ID", sb);
-    whereIn("classificationKeyIn", "t.CLASSIFICATION_KEY", sb);
-    whereIn("classificationIdIn", "t.CLASSIFICATION_ID", sb);
-    whereIn("classificationCategoryIn", "CLASSIFICATION_CATEGORY", sb);
-    whereIn("classificationNameIn", "c.NAME", sb);
-    whereIn("attachmentClassificationNameIn", "ac.NAME", sb);
-    whereIn("ownerIn", "OWNER", sb);
-    whereNotIn("ownerNotIn", "OWNER", sb);
-    whereIn("porCompanyIn", "POR_COMPANY", sb);
-    whereIn("porSystemIn", "POR_SYSTEM", sb);
-    whereIn("porSystemInstanceIn", "POR_INSTANCE", sb);
-    whereIn("porTypeIn", "POR_TYPE", sb);
-    whereIn("porValueIn", "POR_VALUE", sb);
-    whereIn("parentBusinessProcessIdIn", "PARENT_BUSINESS_PROCESS_ID", sb);
-    whereIn("businessProcessIdIn", "BUSINESS_PROCESS_ID", sb);
-    whereIn("attachmentClassificationKeyIn", "a.CLASSIFICATION_KEY", sb);
+    commonWhereClauses("attachmentChannel", "a.CHANNEL", sb);
+    commonWhereClauses("attachmentClassificationKey", "a.CLASSIFICATION_KEY", sb);
+    commonWhereClauses("attachmentClassificationName", "ac.NAME", sb);
+    commonWhereClauses("attachmentReference", "a.REF_VALUE", sb);
+    commonWhereClauses("businessProcessId", "t.BUSINESS_PROCESS_ID", sb);
+    commonWhereClauses("classificationCategory", "CLASSIFICATION_CATEGORY", sb);
+    commonWhereClauses("classificationKey", "t.CLASSIFICATION_KEY", sb);
+    commonWhereClauses("classificationName", "c.NAME", sb);
+    commonWhereClauses("creator", "t.CREATOR", sb);
+    commonWhereClauses("name", "t.NAME", sb);
+    commonWhereClauses("owner", "t.OWNER", sb);
+    commonWhereClauses("parentBusinessProcessId", "t.PARENT_BUSINESS_PROCESS_ID", sb);
+    commonWhereClauses("porCompany", "t.POR_COMPANY", sb);
+    commonWhereClauses("porSystem", "t.POR_SYSTEM", sb);
+    commonWhereClauses("porSystemInstance", "t.POR_INSTANCE", sb);
+    commonWhereClauses("porType", "t.POR_TYPE", sb);
+    commonWhereClauses("porValue", "t.POR_VALUE", sb);
+
     whereIn("attachmentClassificationIdIn", "a.CLASSIFICATION_ID", sb);
-    whereIn("attachmentChannelIn", "a.CHANNEL", sb);
-    whereIn("attachmentReferenceIn", "a.REF_VALUE", sb);
-    whereInTime("createdIn", "t.CREATED", sb);
-    whereInTime("claimedIn", "t.CLAIMED", sb);
-    whereInTime("completedIn", "t.COMPLETED", sb);
-    whereInTime("modifiedIn", "t.MODIFIED", sb);
-    whereInTime("plannedIn", "t.PLANNED", sb);
-    whereInTime("receivedIn", "t.RECEIVED", sb);
-    whereInTime("dueIn", "t.DUE", sb);
-    whereInTime("attachmentReceivedIn", "a.RECEIVED", sb);
-    whereNotIn("classificationKeyNotIn", "t.CLASSIFICATION_KEY", sb);
-    whereLike("externalIdLike", "t.EXTERNAL_ID", sb);
-    whereLike("nameLike", "t.NAME", sb);
-    whereLike("creatorLike", "CREATOR", sb);
-    whereLike("noteLike", "NOTE", sb);
-    whereLike("classificationKeyLike", "t.CLASSIFICATION_KEY", sb);
-    whereLike("classificationCategoryLike", "CLASSIFICATION_CATEGORY", sb);
-    whereLike("classificationNameLike", "c.NAME", sb);
-    whereLike("attachmentClassificationNameLike", "ac.NAME", sb);
-    whereLike("ownerLike", "OWNER", sb);
-    whereLike("porCompanyLike", "POR_COMPANY", sb);
-    whereLike("porSystemLike", "POR_SYSTEM", sb);
-    whereLike("porSystemInstanceLike", "POR_INSTANCE", sb);
-    whereLike("porTypeLike", "POR_TYPE", sb);
-    whereLike("porValueLike", "POR_VALUE", sb);
-    whereLike("parentBusinessProcessIdLike", "PARENT_BUSINESS_PROCESS_ID", sb);
-    whereLike("businessProcessIdLike", "BUSINESS_PROCESS_ID", sb);
-    whereLike("attachmentClassificationKeyLike", "a.CLASSIFICATION_KEY", sb);
-    whereLike("attachmentClassificationIdLike", "a.CLASSIFICATION_ID", sb);
-    whereLike("attachmentChannelLike", "a.CHANNEL", sb);
-    whereLike("attachmentReferenceLike", "a.REF_VALUE", sb);
-    whereLike("description", "DESCRIPTION", sb);
+    whereNotIn("attachmentClassificationIdNotIn", "a.CLASSIFICATION_ID", sb);
+    whereIn("callbackStateIn", "t.CALLBACK_STATE", sb);
+    whereNotIn("callbackStateNotIn", "t.CALLBACK_STATE", sb);
+    whereIn("classificationIdIn", "t.CLASSIFICATION_ID", sb);
+    whereNotIn("classificationIdNotIn", "t.CLASSIFICATION_ID", sb);
+    whereIn("externalIdIn", "t.EXTERNAL_ID", sb);
+    whereNotIn("externalIdNotIn", "t.EXTERNAL_ID", sb);
+    whereIn("priority", "t.PRIORITY", sb);
+    whereNotIn("priorityNotIn", "t.PRIORITY", sb);
+    whereIn("priority", "t.PRIORITY", sb);
+    whereNotIn("priorityNotIn", "t.PRIORITY", sb);
+    whereIn("stateIn", "t.STATE", sb);
+    whereNotIn("stateNotIn", "t.STATE", sb);
+    whereIn("taskId", "t.ID", sb);
+    whereNotIn("taskIdNotIn", "t.ID", sb);
+    whereIn("workbasketIdIn", "t.WORKBASKET_ID", sb);
+    whereNotIn("workbasketIdNotIn", "t.WORKBASKET_ID", sb);
+    whereLike("descriptionLike", "t.DESCRIPTION", sb);
+    whereNotLike("descriptionNotLike", "t.DESCRIPTION", sb);
+    whereLike("noteLike", "t.NOTE", sb);
+    whereNotLike("noteNotLike", "t.NOTE", sb);
+
+    whereInTime("attachmentReceivedWithin", "a.RECEIVED", sb);
+    whereNotInTime("attachmentReceivedNotWithin", "a.RECEIVED", sb);
+    whereInTime("claimedWithin", "t.CLAIMED", sb);
+    whereNotInTime("claimedNotWithin", "t.CLAIMED", sb);
+    whereInTime("completedWithin", "t.COMPLETED", sb);
+    whereNotInTime("completedNotWithin", "t.COMPLETED", sb);
+    whereInTime("createdWithin", "t.CREATED", sb);
+    whereNotInTime("createdNotWithin", "t.CREATED", sb);
+    whereInTime("dueWithin", "t.DUE", sb);
+    whereNotInTime("dueNotWithin", "t.DUE", sb);
+    whereInTime("modifiedWithin", "t.MODIFIED", sb);
+    whereNotInTime("modifiedNotWithin", "t.MODIFIED", sb);
+    whereInTime("plannedWithin", "t.PLANNED", sb);
+    whereNotInTime("plannedNotWithin", "t.PLANNED", sb);
+    whereInTime("receivedWithin", "t.RECEIVED", sb);
+    whereNotInTime("receivedNotWithin", "t.RECEIVED", sb);
+
     whereCustomStatements("custom", "t.CUSTOM", 16, sb);
+
     sb.append("<if test='isRead != null'>AND IS_READ = #{isRead}</if> ");
     sb.append("<if test='isTransferred != null'>AND IS_TRANSFERRED = #{isTransferred}</if> ");
     sb.append(
         "<if test='workbasketKeyDomainIn != null'>AND (<foreach item='item'"
             + " collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key}"
             + " AND t.DOMAIN = #{item.domain})</foreach>)</if> ");
-    return sb.toString();
+    sb.append(
+        "<if test='workbasketKeyDomainNotIn != null'>AND (<foreach item='item'"
+            + " collection='workbasketKeyDomainNotIn' separator=' OR '>(t.WORKBASKET_KEY !="
+            + " #{item.key} OR t.DOMAIN != #{item.domain})</foreach>)</if> ");
+    sb.append(
+        "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND ("
+            + "<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>"
+            + "UPPER(t.${item}) "
+            + "LIKE #{wildcardSearchValueLike}"
+            + "</foreach>)"
+            + "</if> ");
+    sb.append(commonTaskObjectReferenceWhereStatement());
+    return sb;
   }
 }

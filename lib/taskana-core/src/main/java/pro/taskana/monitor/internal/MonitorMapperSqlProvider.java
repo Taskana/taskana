@@ -4,9 +4,11 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TA
 import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_WHERE_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
-import static pro.taskana.common.internal.util.SqlProviderUtil.whereCustomStatements;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
+
+import java.util.stream.IntStream;
 
 import pro.taskana.common.internal.util.SqlProviderUtil;
 
@@ -281,6 +283,24 @@ public class MonitorMapperSqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  private static StringBuilder whereCustomStatements(
+      String baseCollection, String baseColumn, int customBound, StringBuilder sb) {
+    IntStream.rangeClosed(1, customBound)
+        .forEach(
+            x -> {
+              String column = baseColumn + "_" + x;
+              whereIn(baseCollection + x + "In", column, sb);
+              whereNotIn(baseCollection + x + "NotIn", column, sb);
+              whereLike(baseCollection + x + "Like", column, sb);
+            });
+    return sb;
+  }
+
+  private static StringBuilder whereCustomStatements(
+      String baseCollection, String baseColumn, int customBound) {
+    return whereCustomStatements(baseCollection, baseColumn, customBound, new StringBuilder());
+  }
+
   private static StringBuilder timeIntervalWhereStatements() {
     StringBuilder sb = new StringBuilder();
     SqlProviderUtil.whereIn("report.workbasketIds", "T.WORKBASKET_ID", sb);
@@ -289,7 +309,7 @@ public class MonitorMapperSqlProvider {
     SqlProviderUtil.whereIn("report.domains", "T.DOMAIN", sb);
     SqlProviderUtil.whereIn("report.classificationIds", "T.CLASSIFICATION_ID", sb);
     SqlProviderUtil.whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID", sb);
-    SqlProviderUtil.whereCustomStatements("report.custom", "T.CUSTOM", 16, sb);
+    whereCustomStatements("report.custom", "T.CUSTOM", 16, sb);
     return sb;
   }
 }

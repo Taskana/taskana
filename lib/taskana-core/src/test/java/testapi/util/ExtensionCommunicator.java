@@ -27,17 +27,25 @@ public class ExtensionCommunicator {
     return context.getStore(determineNamespace(testClass));
   }
 
+  public static Class<?> getTopLevelClass(Class<?> testClazz) {
+    Class<?> parent = testClazz;
+    while (parent.getEnclosingClass() != null) {
+      parent = parent.getEnclosingClass();
+    }
+    return parent;
+  }
+
   private static Namespace determineNamespace(Class<?> testClass) {
     if (isTopLevelClass(testClass)) {
       return Namespace.create(testClass);
     } else if (isAnnotated(testClass, CleanTaskanaContext.class)) {
-      return Namespace.create(testClass.getEnclosingClass(), testClass, CleanTaskanaContext.class);
+      return Namespace.create(getTopLevelClass(testClass), testClass, CleanTaskanaContext.class);
     } else if (isAnnotated(testClass, WithServiceProvider.class)) {
-      return Namespace.create(testClass.getEnclosingClass(), testClass, WithServiceProvider.class);
+      return Namespace.create(getTopLevelClass(testClass), testClass, WithServiceProvider.class);
     } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)) {
       return Namespace.create(
-          testClass.getEnclosingClass(), testClass, TaskanaEngineConfigurationModifier.class);
+          getTopLevelClass(testClass), testClass, TaskanaEngineConfigurationModifier.class);
     }
-    return Namespace.create(testClass.getEnclosingClass());
+    return Namespace.create(getTopLevelClass(testClass));
   }
 }

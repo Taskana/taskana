@@ -42,13 +42,11 @@ class TaskRoutingAccTest {
       throws Exception {
     classificationSummary =
         DefaultTestEntities.defaultTestClassification()
-            .buildAndStore(classificationService)
-            .asSummary();
+            .buildAndStoreAsSummary(classificationService);
     domainAWorkbasket =
         DefaultTestEntities.defaultTestWorkbasket()
             .key("DOMAIN_A_WORKBASKET")
-            .buildAndStore(workbasketService)
-            .asSummary();
+            .buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .workbasketId(domainAWorkbasket.getId())

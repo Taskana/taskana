@@ -112,25 +112,6 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForParentBusinessProcessId() {
-
-    List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().parentBusinessProcessIdLike("%PBPI%", "doc%3%").list();
-    assertThat(results).hasSize(33);
-    for (TaskSummary taskSummary : results) {
-      assertThat(taskSummary.getExternalId()).isNotNull();
-    }
-
-    String[] parentIds =
-        results.stream().map(TaskSummary::getParentBusinessProcessId).toArray(String[]::new);
-
-    List<TaskSummary> result2 =
-        TASK_SERVICE.createTaskQuery().parentBusinessProcessIdIn(parentIds).list();
-    assertThat(result2).hasSize(33);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
   void testQueryForName() {
 
     List<TaskSummary> results = TASK_SERVICE.createTaskQuery().nameLike("task%").list();
@@ -191,24 +172,6 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(results.get(0).getAttachmentSummaries()).hasSize(3);
 
     assertThat(results.get(0).getAttachmentSummaries().get(0)).isNotNull();
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryForExternalId() {
-
-    List<TaskSummary> results =
-        TASK_SERVICE
-            .createTaskQuery()
-            .externalIdIn(
-                "ETI:000000000000000000000000000000000000",
-                "ETI:000000000000000000000000000000000001")
-            .list();
-    assertThat(results).hasSize(2);
-
-    long countAllExternalIds = TASK_SERVICE.createTaskQuery().externalIdLike("ETI:%").count();
-    long countAllIds = TASK_SERVICE.createTaskQuery().count();
-    assertThat(countAllExternalIds).isEqualTo(countAllIds);
   }
 
   @WithAccessId(user = "admin")
@@ -535,13 +498,6 @@ class QueryTasksAccTest extends AbstractAccTest {
     List<TaskSummary> results =
         TASK_SERVICE.createTaskQuery().businessProcessIdIn("PI_0000000000003", "BPI21").list();
     assertThat(results).hasSize(9);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryForBusinessProcessIdLike() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().businessProcessIdLike("pI_%").list();
-    assertThat(results).hasSize(80);
   }
 
   @WithAccessId(user = "admin")
@@ -898,23 +854,6 @@ class QueryTasksAccTest extends AbstractAccTest {
                 "ETI:000000000000000000000000000000000017",
                 "ETI:000000000000000000000000000000000018",
                 "ETI:000000000000000000000000000000000019")
-            .list();
-    assertThat(results).hasSize(10);
-
-    String[] ids = results.stream().map(TaskSummary::getId).toArray(String[]::new);
-
-    List<TaskSummary> result2 = TASK_SERVICE.createTaskQuery().idIn(ids).list();
-    assertThat(result2).hasSize(10);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testQueryForExternalIdLike() {
-
-    List<TaskSummary> results =
-        TASK_SERVICE
-            .createTaskQuery()
-            .externalIdLike("ETI:00000000000000000000000000000000001%")
             .list();
     assertThat(results).hasSize(10);
 

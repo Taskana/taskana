@@ -22,6 +22,7 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -212,5 +213,17 @@ public class TaskBuilder {
     PrivilegedExceptionAction<Task> performBuildAndStore = () -> buildAndStore(taskService);
 
     return Subject.doAs(subject, performBuildAndStore);
+  }
+
+  public TaskSummary buildAndStoreAsSummary(TaskService taskService)
+      throws TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
+          WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          AttachmentPersistenceException {
+    return buildAndStore(taskService).asSummary();
+  }
+
+  public TaskSummary buildAndStoreAsSummary(TaskService taskService, String userId)
+      throws PrivilegedActionException {
+    return buildAndStore(taskService, userId).asSummary();
   }
 }

@@ -57,6 +57,24 @@ public class SqlProviderUtil {
     return whereInTime(collection, column, new StringBuilder());
   }
 
+  public static StringBuilder whereNotInTime(String collection, String column, StringBuilder sb) {
+    return sb.append("<if test='")
+        .append(collection)
+        .append(" !=null'> AND (<foreach item='item' collection='")
+        .append(collection)
+        .append("' separator=' OR ' > ( <if test='item.begin!=null'> ")
+        .append(column)
+        .append(
+            " &lt; #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> OR"
+                + " </if><if test='item.end!=null'> ")
+        .append(column)
+        .append(" &gt; #{item.end} </if>)</foreach>)</if> ");
+  }
+
+  public static StringBuilder whereNotInTime(String collection, String column) {
+    return whereNotInTime(collection, column, new StringBuilder());
+  }
+
   public static StringBuilder whereLike(String collection, String column, StringBuilder sb) {
     return sb.append("<if test='")
         .append(collection)
@@ -71,6 +89,20 @@ public class SqlProviderUtil {
     return whereLike(collection, column, new StringBuilder());
   }
 
+  public static StringBuilder whereNotLike(String collection, String column, StringBuilder sb) {
+    return sb.append("<if test='")
+        .append(collection)
+        .append(" != null'>AND (<foreach item='item' collection='")
+        .append(collection)
+        .append("' separator=' OR '>UPPER(")
+        .append(column)
+        .append(") NOT LIKE #{item}</foreach>)</if> ");
+  }
+
+  public static StringBuilder whereNotLike(String collection, String column) {
+    return whereNotLike(collection, column, new StringBuilder());
+  }
+
   public static StringBuilder whereCustomStatements(
       String baseCollection, String baseColumn, int customBound, StringBuilder sb) {
     IntStream.rangeClosed(1, customBound)
@@ -78,8 +110,9 @@ public class SqlProviderUtil {
             x -> {
               String column = baseColumn + "_" + x;
               whereIn(baseCollection + x + "In", column, sb);
-              whereLike(baseCollection + x + "Like", column, sb);
               whereNotIn(baseCollection + x + "NotIn", column, sb);
+              whereLike(baseCollection + x + "Like", column, sb);
+              whereNotLike(baseCollection + x + "NotLike", column, sb);
             });
     return sb;
   }

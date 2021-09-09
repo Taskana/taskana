@@ -24,8 +24,10 @@ import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.builder.WorkbasketBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
+import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 @TaskanaIntegrationTest
 class WorkbasketBuilderTest {
@@ -129,6 +131,34 @@ class WorkbasketBuilderTest {
               builder.key("key5_G").buildAndStore(workbasketService);
             })
         .doesNotThrowAnyException();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ReturnWorkbasketImpl_When_BuildingWorkbasket() throws Exception {
+    Workbasket workbasket =
+        newWorkbasket()
+            .key("key6_G")
+            .domain("DOMAIN_A")
+            .name("Megabasket")
+            .type(WorkbasketType.GROUP)
+            .buildAndStore(workbasketService);
+
+    assertThat(workbasket.getClass()).isEqualTo(WorkbasketImpl.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ReturnWorkbasketSummaryImpl_When_BuildingWorkbasketAsSummary() throws Exception {
+    WorkbasketSummary workbasketSummary =
+        newWorkbasket()
+            .key("key7_G")
+            .domain("DOMAIN_A")
+            .name("Megabasket")
+            .type(WorkbasketType.GROUP)
+            .buildAndStoreAsSummary(workbasketService);
+
+    assertThat(workbasketSummary.getClass()).isEqualTo(WorkbasketSummaryImpl.class);
   }
 
   @WithAccessId(user = "businessadmin")

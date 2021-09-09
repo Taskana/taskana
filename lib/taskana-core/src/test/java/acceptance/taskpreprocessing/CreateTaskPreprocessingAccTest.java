@@ -39,11 +39,10 @@ class CreateTaskPreprocessingAccTest {
       throws Exception {
     classificationSummary =
         DefaultTestEntities.defaultTestClassification()
-            .buildAndStore(classificationService)
-            .asSummary();
+            .buildAndStoreAsSummary(classificationService);
 
     workbasketSummary =
-        DefaultTestEntities.defaultTestWorkbasket().buildAndStore(workbasketService).asSummary();
+        DefaultTestEntities.defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .accessId("user-1-1")

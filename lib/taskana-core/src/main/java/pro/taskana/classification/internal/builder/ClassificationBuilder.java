@@ -11,6 +11,7 @@ import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistExcep
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -131,5 +132,16 @@ public class ClassificationBuilder {
         () -> buildAndStore(classificationService);
 
     return Subject.doAs(subject, performBuildAndStore);
+  }
+
+  public ClassificationSummary buildAndStoreAsSummary(ClassificationService classificationService)
+      throws InvalidArgumentException, ClassificationAlreadyExistException, DomainNotFoundException,
+          MalformedServiceLevelException, NotAuthorizedException, ClassificationNotFoundException {
+    return buildAndStore(classificationService).asSummary();
+  }
+
+  public ClassificationSummary buildAndStoreAsSummary(
+      ClassificationService classificationService, String userId) throws PrivilegedActionException {
+    return buildAndStore(classificationService, userId).asSummary();
   }
 }

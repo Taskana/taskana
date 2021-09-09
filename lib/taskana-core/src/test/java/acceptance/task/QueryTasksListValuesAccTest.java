@@ -97,18 +97,6 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(7);
   }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ReturnAllExternalIds_When_ListValuesForExternalIdsIsInvoked() {
-
-    List<String> resultValues =
-        TASK_SERVICE
-            .createTaskQuery()
-            .externalIdLike("ETI:000000000000000000000000000000%")
-            .listValues(TaskQueryColumnName.EXTERNAL_ID, DESCENDING);
-    assertThat(resultValues).hasSize(74);
-  }
-
   @WithAccessId(user = "teamlead-1")
   @Test
   void should_ReturnPorTypes_When_QueryingForListOfPorTypesForWorkbasket() {
