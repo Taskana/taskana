@@ -30,8 +30,7 @@ class TaskAttachmentBuilderTest {
         ClassificationBuilder.newClassification()
             .domain("DOMAIN_A")
             .key("key")
-            .buildAndStore(classificationService, "businessadmin")
-            .asSummary();
+            .buildAndStoreAsSummary(classificationService, "businessadmin");
     ObjectReference objectReference = DefaultTestEntities.defaultTestObjectReference().build();
 
     final Attachment attachment =

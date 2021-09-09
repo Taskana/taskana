@@ -19,8 +19,10 @@ import testapi.TaskanaIntegrationTest;
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.builder.ClassificationBuilder;
 import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.test.security.WithAccessId;
 
@@ -127,6 +129,28 @@ class ClassificationBuilderTest {
               builder.key("key5_A").buildAndStore(classificationService);
             })
         .doesNotThrowAnyException();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ReturnClassificationImpl_When_BuildingClassification() throws Exception {
+    Classification classification =
+        newClassification().key("key6_A").domain("DOMAIN_A").buildAndStore(classificationService);
+
+    assertThat(classification.getClass()).isEqualTo(ClassificationImpl.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ReturnClassificationSummaryImpl_When_BuildingClassificationAsSummary()
+      throws Exception {
+    ClassificationSummary classificationSummary =
+        newClassification()
+            .key("key7_A")
+            .domain("DOMAIN_A")
+            .buildAndStoreAsSummary(classificationService);
+
+    assertThat(classificationSummary.getClass()).isEqualTo(ClassificationSummaryImpl.class);
   }
 
   @WithAccessId(user = "businessadmin")

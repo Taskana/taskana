@@ -58,26 +58,6 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
-    WildcardSearchField[] wildcards = {
-      WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
-    };
-
-    List<TaskSummary> foundTasks =
-        TASK_SERVICE
-            .createTaskQuery()
-            .wildcardSearchFieldsIn(wildcards)
-            .wildcardSearchValueLike("%99%")
-            .ownerIn("user-1-1")
-            .businessProcessIdLike("%PI2%")
-            .orderByName(SortDirection.ASCENDING)
-            .list();
-
-    assertThat(foundTasks).hasSize(1);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
   void should_ReturnAllTasksCaseInsensitive_When_PerformingWildcardQuery() {
     WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
 

@@ -341,12 +341,23 @@ class ArchitectureTest {
 
   private DescribedPredicate<JavaClass> areNestedTaskanaIntegrationTestClasses() {
     return new DescribedPredicate<JavaClass>("are nested TaskanaIntegrationTest classes") {
+
       @Override
       public boolean apply(JavaClass input) {
         Optional<JavaClass> enclosingClass = input.getEnclosingClass();
         return input.isAnnotatedWith(Nested.class)
             && enclosingClass.isPresent()
-            && enclosingClass.get().isAnnotatedWith(TaskanaIntegrationTest.class);
+            && isTaskanaIntegrationTest(enclosingClass.get());
+      }
+
+      private boolean isTaskanaIntegrationTest(JavaClass input) {
+        Optional<JavaClass> enclosingClass = input.getEnclosingClass();
+        if (enclosingClass.isPresent()) {
+          return input.isAnnotatedWith(Nested.class)
+              && isTaskanaIntegrationTest(enclosingClass.get());
+        } else {
+          return input.isAnnotatedWith(TaskanaIntegrationTest.class);
+        }
       }
     };
   }

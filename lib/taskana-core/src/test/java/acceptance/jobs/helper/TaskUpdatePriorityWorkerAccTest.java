@@ -53,10 +53,9 @@ class TaskUpdatePriorityWorkerAccTest {
       throws Exception {
     classificationSummary =
         DefaultTestEntities.defaultTestClassification()
-            .buildAndStore(classificationService)
-            .asSummary();
+            .buildAndStoreAsSummary(classificationService);
     workbasketSummary =
-        DefaultTestEntities.defaultTestWorkbasket().buildAndStore(workbasketService).asSummary();
+        DefaultTestEntities.defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
 
     // Currently, we have a bug: TSK-1736
     // Because of that we need at least one WorkbasketAccessItem with the correct permissions.
@@ -73,8 +72,8 @@ class TaskUpdatePriorityWorkerAccTest {
             .workbasketSummary(workbasketSummary)
             .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
 
-    task1 = taskBuilder.buildAndStore(taskService).asSummary();
-    task2 = taskBuilder.buildAndStore(taskService).asSummary();
+    task1 = taskBuilder.buildAndStoreAsSummary(taskService);
+    task2 = taskBuilder.buildAndStoreAsSummary(taskService);
     completedTask = taskBuilder.state(TaskState.COMPLETED).buildAndStore(taskService);
     worker = new TaskUpdatePriorityWorker(taskanaEngine);
   }

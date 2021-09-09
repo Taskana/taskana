@@ -15,6 +15,7 @@ import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 public class WorkbasketBuilder {
 
@@ -126,5 +127,16 @@ public class WorkbasketBuilder {
         () -> buildAndStore(workbasketService);
 
     return Subject.doAs(subject, performBuildAndStore);
+  }
+
+  public WorkbasketSummary buildAndStoreAsSummary(WorkbasketService workbasketService)
+      throws InvalidArgumentException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
+          DomainNotFoundException, NotAuthorizedException {
+    return buildAndStore(workbasketService).asSummary();
+  }
+
+  public WorkbasketSummary buildAndStoreAsSummary(
+      WorkbasketService workbasketService, String userId) throws PrivilegedActionException {
+    return buildAndStore(workbasketService, userId).asSummary();
   }
 }

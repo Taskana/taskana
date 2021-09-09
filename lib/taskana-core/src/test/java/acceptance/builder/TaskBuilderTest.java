@@ -34,9 +34,11 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.builder.TaskAttachmentBuilder;
 import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -57,14 +59,12 @@ class TaskBuilderTest {
         defaultTestWorkbasket()
             .owner("user-1-1")
             .key("key0_D")
-            .buildAndStore(workbasketService)
-            .asSummary();
+            .buildAndStoreAsSummary(workbasketService);
     classificationSummary =
         newClassification()
             .key("key0_D")
             .domain("DOMAIN_A")
-            .buildAndStore(classificationService)
-            .asSummary();
+            .buildAndStoreAsSummary(classificationService);
     newWorkbasketAccessItem()
         .workbasketId(workbasketSummary.getId())
         .accessId("user-1-1")
@@ -217,6 +217,32 @@ class TaskBuilderTest {
               builder.buildAndStore(taskService);
             })
         .doesNotThrowAnyException();
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ReturnTaskImpl_When_BuildingTask() throws Exception {
+    Task task =
+        newTask()
+            .workbasketSummary(workbasketSummary)
+            .classificationSummary(classificationSummary)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+
+    assertThat(task.getClass()).isEqualTo(TaskImpl.class);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ReturnTaskSummaryImpl_When_BuildingTaskAsSummary() throws Exception {
+    TaskSummary taskSummary =
+        newTask()
+            .workbasketSummary(workbasketSummary)
+            .classificationSummary(classificationSummary)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStoreAsSummary(taskService);
+
+    assertThat(taskSummary.getClass()).isEqualTo(TaskSummaryImpl.class);
   }
 
   @WithAccessId(user = "user-1-1")
