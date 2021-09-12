@@ -4,13 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static pro.taskana.classification.internal.ClassificationBuilder.newClassification;
 
-import acceptance.FooBar;
+import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -22,20 +21,17 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.ClassificationBuilder;
 import pro.taskana.classification.internal.models.ClassificationImpl;
-import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
-@ExtendWith(JaasExtension.class)
+@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
 class ClassificationBuilderTest {
 
-  private static ClassificationService classificationService;
+  private final ClassificationService classificationService;
 
-  @BeforeAll
-  static void setup() throws Exception {
-    TaskanaEngine taskanaEngine = FooBar.getTaskanaEngineForTests();
-    classificationService = taskanaEngine.getClassificationService();
+  public ClassificationBuilderTest(ClassificationService classificationService) {
+    this.classificationService = classificationService;
   }
 
   @WithAccessId(user = "businessadmin")

@@ -6,9 +6,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
-import acceptance.FooBar;
+import acceptance.TaskanaIntegrationTestExtension;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -22,17 +21,16 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
-@ExtendWith(JaasExtension.class)
+@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
 class WorkbasketAccessItemBuilderTest {
 
-  private static WorkbasketService workbasketService;
-  private static TaskanaEngine taskanaEngine;
+  private final WorkbasketService workbasketService;
+  private final TaskanaEngine taskanaEngine;
 
-  @BeforeAll
-  @WithAccessId(user = "businessadmin")
-  static void setup() throws Exception {
-    taskanaEngine = FooBar.getTaskanaEngineForTests();
-    workbasketService = taskanaEngine.getWorkbasketService();
+  WorkbasketAccessItemBuilderTest(
+      WorkbasketService workbasketService, TaskanaEngine taskanaEngine) {
+    this.workbasketService = workbasketService;
+    this.taskanaEngine = taskanaEngine;
   }
 
   @WithAccessId(user = "businessadmin")
