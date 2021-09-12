@@ -5,13 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
+import java.util.Properties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEventType;
@@ -22,10 +24,11 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 
 class LogfileHistoryServiceImplTest {
 
-  static ObjectMapper objectMapper = new ObjectMapper();
-  LogfileHistoryServiceImpl logfileHistoryServiceImpl = new LogfileHistoryServiceImpl();
-  TestLogger logger = TestLoggerFactory.getTestLogger("AUDIT");
-  @Mock TaskanaEngine taskanaEngine;
+  private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+  private final LogfileHistoryServiceImpl logfileHistoryServiceImpl =
+      new LogfileHistoryServiceImpl();
+  private final TestLogger logger = TestLoggerFactory.getTestLogger("AUDIT");
+  static TaskanaEngine taskanaEngineMock;
 
   @AfterEach
   public void clearLoggers() {
@@ -34,13 +37,19 @@ class LogfileHistoryServiceImplTest {
 
   @BeforeAll
   public static void setupObjectMapper() {
-    objectMapper.registerModule(new JavaTimeModule());
+    TaskanaEngineConfiguration taskanaEngineConfiguration =
+        Mockito.mock(TaskanaEngineConfiguration.class);
+    taskanaEngineMock = Mockito.mock(TaskanaEngine.class);
+    Mockito.when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+    Properties mockProperties = new Properties();
+    mockProperties.put(LogfileHistoryServiceImpl.TASKANA_HISTORY_LOGGER_NAME, "AUDIT");
+    Mockito.when(taskanaEngineConfiguration.readPropertiesFromFile()).thenReturn(mockProperties);
   }
 
   @Test
   void should_LogTaskEventAsJson_When_CreateIsCalled() throws Exception {
 
-    logfileHistoryServiceImpl.initialize(taskanaEngine);
+    logfileHistoryServiceImpl.initialize(taskanaEngineMock);
     TaskHistoryEvent eventToBeLogged = new TaskHistoryEvent();
     eventToBeLogged.setId("someId");
     eventToBeLogged.setUserId("someUser");
@@ -67,8 +76,7 @@ class LogfileHistoryServiceImplTest {
 
   @Test
   void should_LogWorkbasketEventAsJson_When_CreateIsCalled() throws Exception {
-
-    logfileHistoryServiceImpl.initialize(taskanaEngine);
+    logfileHistoryServiceImpl.initialize(taskanaEngineMock);
     WorkbasketHistoryEvent eventToBeLogged = new WorkbasketHistoryEvent();
     eventToBeLogged.setId("someId");
     eventToBeLogged.setUserId("someUser");
@@ -91,7 +99,7 @@ class LogfileHistoryServiceImplTest {
   @Test
   void should_LogClassificationEventAsJson_When_CreateIsCalled() throws Exception {
 
-    logfileHistoryServiceImpl.initialize(taskanaEngine);
+    logfileHistoryServiceImpl.initialize(taskanaEngineMock);
     ClassificationHistoryEvent eventToBeLogged = new ClassificationHistoryEvent();
     eventToBeLogged.setId("someId");
     eventToBeLogged.setUserId("someUser");
