@@ -1,9 +1,8 @@
 package acceptance.priorityservice;
 
-import java.sql.Date;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.task.api.TaskCustomField;
@@ -14,14 +13,12 @@ public class TestPriorityServiceProvider implements PriorityServiceProvider {
 
   @Override
   public Optional<Integer> calculatePriority(TaskSummary taskSummary) {
-    long diffInMillies =
-        Date.from(Instant.now()).getTime() - Date.from(taskSummary.getCreated()).getTime();
-    long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    long diffInDays = Duration.between(taskSummary.getCreated(), Instant.now()).toDays();
     int priority = diffInDays >= 1 ? Math.toIntExact(diffInDays) : 1;
 
-    if (taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_6) == "true") {
+    if ("true".equals(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_6))) {
       priority *= MULTIPLIER;
     }
-    return Optional.of(Integer.valueOf(priority));
+    return Optional.of(priority);
   }
 }
