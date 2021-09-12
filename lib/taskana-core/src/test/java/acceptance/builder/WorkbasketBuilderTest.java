@@ -5,13 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.workbasket.internal.WorkbasketBuilder.newWorkbasket;
 
-import acceptance.FooBar;
+import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -29,16 +28,15 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.WorkbasketBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-@ExtendWith(JaasExtension.class)
+@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
 class WorkbasketBuilderTest {
 
-  private static WorkbasketService workbasketService;
-  private static TaskanaEngine taskanaEngine;
+  private final WorkbasketService workbasketService;
+  private final TaskanaEngine taskanaEngine;
 
-  @BeforeAll
-  static void setup() throws Exception {
-    taskanaEngine = FooBar.getTaskanaEngineForTests();
-    workbasketService = taskanaEngine.getWorkbasketService();
+  WorkbasketBuilderTest(WorkbasketService workbasketService, TaskanaEngine taskanaEngine) {
+    this.workbasketService = workbasketService;
+    this.taskanaEngine = taskanaEngine;
   }
 
   @WithAccessId(user = "businessadmin")

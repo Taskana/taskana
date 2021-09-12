@@ -9,7 +9,7 @@ import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.task.internal.TaskCommentBuilder.newTaskComment;
 import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
-import acceptance.FooBar;
+import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -20,6 +20,8 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
@@ -39,21 +41,24 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-@ExtendWith(JaasExtension.class)
+@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
+@TestInstance(Lifecycle.PER_CLASS)
 class TaskCommentBuilderTest {
 
-  private static TaskService taskService;
-  private static Task task;
-  private static TaskanaEngine taskanaEngine;
+  private final TaskService taskService;
+  private final TaskanaEngine taskanaEngine;
+
+  private Task task;
+
+  TaskCommentBuilderTest(TaskService taskService, TaskanaEngine taskanaEngine) {
+    this.taskService = taskService;
+    this.taskanaEngine = taskanaEngine;
+  }
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
-  static void setup() throws Exception {
-    taskanaEngine = FooBar.getTaskanaEngineForTests();
-    taskService = taskanaEngine.getTaskService();
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
-
+  void setup(WorkbasketService workbasketService, ClassificationService classificationService)
+      throws Exception {
     ObjectReference objectReference = defaultTestObjectReference().build();
     Workbasket workbasket =
         defaultTestWorkbasket().owner("user-1-1").key("key0_E").buildAndStore(workbasketService);

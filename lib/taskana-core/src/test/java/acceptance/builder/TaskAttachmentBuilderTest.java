@@ -3,17 +3,15 @@ package acceptance.builder;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import acceptance.DefaultTestEntities;
-import acceptance.FooBar;
+import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.ClassificationBuilder;
-import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
@@ -21,17 +19,15 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.TaskAttachmentBuilder;
 import pro.taskana.task.internal.models.AttachmentImpl;
 
-@ExtendWith(JaasExtension.class)
+@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
 class TaskAttachmentBuilderTest {
 
-  private static ClassificationService classificationService;
-  private static TaskService taskService;
+  private final ClassificationService classificationService;
+  private final TaskService taskService;
 
-  @BeforeAll
-  static void setup() throws Exception {
-    TaskanaEngine taskanaEngine = FooBar.getTaskanaEngineForTests();
-    classificationService = taskanaEngine.getClassificationService();
-    taskService = taskanaEngine.getTaskService();
+  TaskAttachmentBuilderTest(ClassificationService classificationService, TaskService taskService) {
+    this.classificationService = classificationService;
+    this.taskService = taskService;
   }
 
   @Test

@@ -9,7 +9,7 @@ import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.task.internal.builder.TaskBuilder.newTask;
 import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
-import acceptance.FooBar;
+import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +21,8 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
@@ -42,21 +44,24 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-@ExtendWith(JaasExtension.class)
+@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
+@TestInstance(Lifecycle.PER_CLASS)
 class TaskBuilderTest {
-  private static TaskService taskService;
-  private static WorkbasketSummary workbasketSummary;
-  private static ClassificationSummary classificationSummary;
-  private static TaskanaEngine taskanaEngine;
+  private final TaskanaEngine taskanaEngine;
+  private final TaskService taskService;
+
+  private WorkbasketSummary workbasketSummary;
+  private ClassificationSummary classificationSummary;
+
+  TaskBuilderTest(TaskanaEngine taskanaEngine, TaskService taskService) {
+    this.taskanaEngine = taskanaEngine;
+    this.taskService = taskService;
+  }
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
-  static void setup() throws Exception {
-    taskanaEngine = FooBar.getTaskanaEngineForTests();
-    taskService = taskanaEngine.getTaskService();
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    ClassificationService classificationService = taskanaEngine.getClassificationService();
-
+  void setup(WorkbasketService workbasketService, ClassificationService classificationService)
+      throws Exception {
     workbasketSummary =
         defaultTestWorkbasket()
             .owner("user-1-1")
