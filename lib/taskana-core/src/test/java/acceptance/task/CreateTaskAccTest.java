@@ -46,7 +46,6 @@ import pro.taskana.workbasket.api.models.Workbasket;
 @ExtendWith(JaasExtension.class)
 class CreateTaskAccTest extends AbstractAccTest {
 
-  private final TaskService taskService = taskanaEngine.getTaskService();
   private final ClassificationService classificationService =
       taskanaEngine.getClassificationService();
 

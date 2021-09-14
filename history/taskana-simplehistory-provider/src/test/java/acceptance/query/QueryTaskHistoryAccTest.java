@@ -10,16 +10,21 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryColumnName;
 import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
+import pro.taskana.task.api.models.TaskSummary;
 
 /** Test for Task History queries. */
+@ExtendWith(JaasExtension.class)
 class QueryTaskHistoryAccTest extends AbstractAccTest {
 
   @Test
@@ -54,10 +59,14 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
             .orderByCreated(SortDirection.DESCENDING);
 
     List<TaskHistoryEvent> results = query.list();
-    assertThat(results).extracting(TaskHistoryEvent::getUserId).containsOnly("admin", "peter");
+    assertThat(results)
+        .extracting(TaskHistoryEvent::getUserId)
+        .containsOnly("admin", "peter", "user-1-2");
     results = query.orderByUserId(SortDirection.DESCENDING).list();
-    assertThat(results).extracting(TaskHistoryEvent::getUserId).containsOnly("admin", "peter");
-    assertThat(query.domainLike().count()).isEqualTo(13);
+    assertThat(results)
+        .extracting(TaskHistoryEvent::getUserId)
+        .containsOnly("admin", "peter", "user-1-2");
+    assertThat(query.domainLike().count()).isEqualTo(14);
   }
 
   @Test
@@ -75,7 +84,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   @Test
   void should_ReturnEmptyList_When_ProvidingWrongConstraints() {
     List<TaskHistoryEvent> result = getHistoryService().createTaskHistoryQuery().list(1, 1000);
-    assertThat(result).hasSize(12);
+    assertThat(result).hasSize(13);
 
     result = getHistoryService().createTaskHistoryQuery().list(100, 1000);
     assertThat(result).isEmpty();
@@ -115,7 +124,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
     assertThat(count).isEqualTo(6);
 
     count = getHistoryService().createTaskHistoryQuery().count();
-    assertThat(count).isEqualTo(13);
+    assertThat(count).isEqualTo(14);
 
     count =
         getHistoryService().createTaskHistoryQuery().userIdIn("klaus", "arnold", "benni").count();
@@ -156,21 +165,21 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
     returnValues =
         getHistoryService().createTaskHistoryQuery().parentBusinessProcessIdIn("BPI:01").list();
-    assertThat(returnValues).hasSize(6);
+    assertThat(returnValues).hasSize(7);
 
     returnValues =
         getHistoryService()
             .createTaskHistoryQuery()
             .taskIdIn("TKI:000000000000000000000000000000000000")
             .list();
-    assertThat(returnValues).hasSize(2);
+    assertThat(returnValues).hasSize(3);
 
     returnValues =
         getHistoryService()
             .createTaskHistoryQuery()
             .eventTypeIn(TaskHistoryEventType.CREATED.getName())
             .list();
-    assertThat(returnValues).hasSize(12);
+    assertThat(returnValues).hasSize(13);
 
     TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
     returnValues = getHistoryService().createTaskHistoryQuery().createdWithin(timeInterval).list();
@@ -180,7 +189,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
     assertThat(returnValues).hasSize(7);
 
     returnValues = getHistoryService().createTaskHistoryQuery().domainIn("DOMAIN_A").list();
-    assertThat(returnValues).hasSize(12);
+    assertThat(returnValues).hasSize(13);
 
     returnValues =
         getHistoryService()
@@ -196,7 +205,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
     assertThat(returnValues).hasSize(7);
 
     returnValues = getHistoryService().createTaskHistoryQuery().porInstanceIn("22").list();
-    assertThat(returnValues).hasSize(6);
+    assertThat(returnValues).hasSize(7);
 
     returnValues = getHistoryService().createTaskHistoryQuery().porTypeIn("VN").list();
     assertThat(returnValues).isEmpty();
@@ -206,25 +215,25 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
     returnValues =
         getHistoryService().createTaskHistoryQuery().taskClassificationKeyIn("L140101").list();
-    assertThat(returnValues).hasSize(7);
+    assertThat(returnValues).hasSize(8);
 
     returnValues =
         getHistoryService().createTaskHistoryQuery().taskClassificationCategoryIn("TASK").list();
-    assertThat(returnValues).hasSize(7);
+    assertThat(returnValues).hasSize(8);
 
     returnValues =
         getHistoryService()
             .createTaskHistoryQuery()
             .attachmentClassificationKeyIn("DOCTYPE_DEFAULT")
             .list();
-    assertThat(returnValues).hasSize(6);
+    assertThat(returnValues).hasSize(7);
 
     returnValues =
         getHistoryService()
             .createTaskHistoryQuery()
             .customAttributeIn(TaskHistoryCustomField.CUSTOM_1, "custom1")
             .list();
-    assertThat(returnValues).hasSize(13);
+    assertThat(returnValues).hasSize(14);
 
     returnValues =
         getHistoryService()
@@ -238,7 +247,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
             .createTaskHistoryQuery()
             .customAttributeIn(TaskHistoryCustomField.CUSTOM_3, "custom3")
             .list();
-    assertThat(returnValues).hasSize(7);
+    assertThat(returnValues).hasSize(8);
 
     returnValues =
         getHistoryService()
@@ -264,18 +273,18 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   void should_ReturnHistoryEvents_For_DifferentLikeAttributes() {
     List<TaskHistoryEvent> returnValues =
         getHistoryService().createTaskHistoryQuery().businessProcessIdLike("BPI:0%").list();
-    assertThat(returnValues).hasSize(13);
+    assertThat(returnValues).hasSize(14);
 
     returnValues =
         getHistoryService()
             .createTaskHistoryQuery()
             .parentBusinessProcessIdLike("BPI:01", " %")
             .list();
-    assertThat(returnValues).hasSize(6);
+    assertThat(returnValues).hasSize(7);
 
     returnValues =
         getHistoryService().createTaskHistoryQuery().taskIdLike("TKI:000000000000000%").list();
-    assertThat(returnValues).hasSize(13);
+    assertThat(returnValues).hasSize(14);
 
     returnValues = getHistoryService().createTaskHistoryQuery().oldValueLike("old%").list();
     assertThat(returnValues).hasSize(1);
@@ -290,7 +299,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
         getHistoryService()
             .createTaskHistoryQuery()
             .listValues(TaskHistoryQueryColumnName.ID, null);
-    assertThat(returnedList).hasSize(13);
+    assertThat(returnedList).hasSize(14);
 
     returnedList =
         getHistoryService()
@@ -326,6 +335,12 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
         getHistoryService()
             .createTaskHistoryQuery()
             .listValues(TaskHistoryQueryColumnName.USER_ID, null);
+    assertThat(returnedList).hasSize(3);
+
+    returnedList =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .listValues(TaskHistoryQueryColumnName.USER_LONG_NAME, null);
     assertThat(returnedList).hasSize(2);
 
     returnedList =
@@ -368,6 +383,12 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
         getHistoryService()
             .createTaskHistoryQuery()
             .listValues(TaskHistoryQueryColumnName.POR_VALUE, null);
+    assertThat(returnedList).hasSize(2);
+
+    returnedList =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .listValues(TaskHistoryQueryColumnName.TASK_OWNER_LONG_NAME, null);
     assertThat(returnedList).hasSize(2);
 
     returnedList =
@@ -423,5 +444,97 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
             .createTaskHistoryQuery()
             .listValues(TaskHistoryQueryColumnName.CUSTOM_4, null);
     assertThat(returnedList).hasSize(2);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_SetUserLongNameOfTask_When_PropertyEnabled() throws Exception {
+    taskanaEngineConfiguration.setLongNameIncludedInQuery(true);
+    List<TaskHistoryEvent> taskHistoryEvents =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .idIn("THI:000000000000000000000000000000000013")
+            .list();
+
+    assertThat(taskHistoryEvents).hasSize(1);
+    String userLongName =
+        taskanaEngine.getUserService().getUser(taskHistoryEvents.get(0).getUserId()).getLongName();
+    assertThat(taskHistoryEvents.get(0))
+        .extracting(TaskHistoryEvent::getUserLongName)
+        .isEqualTo(userLongName);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_SetTaskOwnerLongNameOfTaskHistoryEvent_When_PropertyEnabled() throws Exception {
+    taskanaEngineConfiguration.setLongNameIncludedInQuery(true);
+    List<TaskHistoryEvent> taskHistoryEvents =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .idIn("THI:000000000000000000000000000000000013")
+            .list();
+
+    assertThat(taskHistoryEvents).hasSize(1);
+    TaskSummary task =
+        taskanaEngine
+            .getTaskService()
+            .createTaskQuery()
+            .idIn(taskHistoryEvents.get(0).getTaskId())
+            .single();
+    assertThat(task).isNotNull();
+    String taskOwnerLongName =
+        taskanaEngine.getUserService().getUser(task.getOwner()).getLongName();
+
+    assertThat(taskHistoryEvents.get(0))
+        .extracting(TaskHistoryEvent::getTaskOwnerLongName)
+        .isEqualTo(taskOwnerLongName);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotSetUserLongNameOfTaskHistoryEvent_When_PropertyDisabled() {
+    taskanaEngineConfiguration.setLongNameIncludedInQuery(false);
+    List<TaskHistoryEvent> taskHistoryEvents =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .idIn("THI:000000000000000000000000000000000013")
+            .list();
+
+    assertThat(taskHistoryEvents).hasSize(1);
+    assertThat(taskHistoryEvents.get(0))
+        .extracting(TaskHistoryEvent::getUserLongName)
+        .isEqualTo(null);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotSetTaskOwnerLongNameOfTaskHistoryEvent_When_PropertyDisabled() {
+    taskanaEngineConfiguration.setLongNameIncludedInQuery(false);
+    List<TaskHistoryEvent> taskHistoryEvents =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .idIn("THI:000000000000000000000000000000000013")
+            .list();
+
+    assertThat(taskHistoryEvents).hasSize(1);
+    assertThat(taskHistoryEvents.get(0))
+        .extracting(TaskHistoryEvent::getTaskOwnerLongName)
+        .isEqualTo(null);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_SetUserLongNameOfTaskHistoryEventToNull_When_NotExistingAsUserInDatabase() {
+    taskanaEngineConfiguration.setLongNameIncludedInQuery(true);
+    List<TaskHistoryEvent> taskHistoryEvents =
+        getHistoryService()
+            .createTaskHistoryQuery()
+            .idIn("THI:000000000000000000000000000000000000")
+            .list();
+
+    assertThat(taskHistoryEvents).hasSize(1);
+    assertThat(taskHistoryEvents.get(0))
+        .extracting(TaskHistoryEvent::getUserLongName)
+        .isEqualTo(null);
   }
 }

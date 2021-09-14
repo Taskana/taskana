@@ -26,7 +26,6 @@ import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
@@ -36,14 +35,11 @@ import pro.taskana.task.internal.jobs.TaskRefreshJob;
 @ExtendWith(JaasExtension.class)
 class TaskCleanupJobAccTest extends AbstractAccTest {
 
-  TaskService taskService;
-
   @BeforeEach
   void before() throws Exception {
     // required if single tests modify database
     // TODO split test class into readOnly & modifying tests to improve performance
     resetDb(false);
-    taskService = taskanaEngine.getTaskService();
   }
 
   @WithAccessId(user = "admin")

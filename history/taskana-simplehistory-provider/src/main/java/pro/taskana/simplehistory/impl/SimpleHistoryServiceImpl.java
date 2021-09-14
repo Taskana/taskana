@@ -138,7 +138,8 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   }
 
   public TaskHistoryQuery createTaskHistoryQuery() {
-    return new TaskHistoryQueryImpl(taskanaHistoryEngine);
+    return new TaskHistoryQueryImpl(
+        taskanaHistoryEngine, taskanaHistoryEngine.getConfiguration().isLongNameIncludedInQuery());
   }
 
   public WorkbasketHistoryQuery createWorkbasketHistoryQuery() {

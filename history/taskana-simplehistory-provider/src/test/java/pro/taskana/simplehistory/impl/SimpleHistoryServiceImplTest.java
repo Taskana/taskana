@@ -102,6 +102,9 @@ class SimpleHistoryServiceImplTest {
         AbstractAccTest.createTaskHistoryEvent(
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails"));
 
+    when(taskanaHistoryEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+    when(taskanaEngineConfiguration.isLongNameIncludedInQuery()).thenReturn(false);
+
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 

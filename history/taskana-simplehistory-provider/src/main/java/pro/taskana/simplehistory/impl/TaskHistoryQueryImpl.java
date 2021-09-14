@@ -32,6 +32,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private final TaskanaHistoryEngineImpl taskanaHistoryEngine;
   private final List<String> orderBy;
   private final List<String> orderColumns;
+  private boolean includeLongName = false;
 
   @SuppressWarnings("unused")
   private TaskHistoryQueryColumnName columnName;
@@ -59,7 +60,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private String[] custom2In;
   private String[] custom3In;
   private String[] custom4In;
-
   private String[] businessProcessIdLike;
   private String[] parentBusinessProcessIdLike;
   private String[] taskIdLike;
@@ -82,10 +82,12 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private String[] custom3Like;
   private String[] custom4Like;
 
-  public TaskHistoryQueryImpl(TaskanaHistoryEngineImpl taskanaHistoryEngine) {
+  public TaskHistoryQueryImpl(
+      TaskanaHistoryEngineImpl taskanaHistoryEngine, boolean includeLongName) {
     this.taskanaHistoryEngine = taskanaHistoryEngine;
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
+    this.includeLongName = includeLongName;
   }
 
   public String[] getIdIn() {
@@ -262,6 +264,14 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   public String[] getCustom4Like() {
     return custom4Like;
+  }
+
+  public boolean isIncludeLongName() {
+    return includeLongName;
+  }
+
+  public void setIncludeLongName(boolean includeLongName) {
+    this.includeLongName = includeLongName;
   }
 
   @Override
@@ -663,6 +673,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
     this.columnName = dbColumnName;
     this.orderBy.clear();
     this.addOrderCriteria(columnName.toString(), sortDirection);
+
+    if (columnName == TaskHistoryQueryColumnName.USER_LONG_NAME
+        || columnName == TaskHistoryQueryColumnName.TASK_OWNER_LONG_NAME) {
+      includeLongName = true;
+    }
 
     try {
       taskanaHistoryEngine.openConnection();

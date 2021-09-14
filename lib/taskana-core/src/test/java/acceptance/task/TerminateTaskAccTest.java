@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.models.TaskSummary;
@@ -23,16 +21,10 @@ import pro.taskana.task.api.models.TaskSummary;
 /** Acceptance tests for "terminate task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TerminateTaskAccTest extends AbstractAccTest {
-  private static TaskService taskService;
 
   @BeforeEach
   void setupIndividualTest() throws Exception {
     resetDb(false);
-  }
-
-  @BeforeAll
-  static void setup() {
-    taskService = taskanaEngine.getTaskService();
   }
 
   @WithAccessId(user = "user-1-2")

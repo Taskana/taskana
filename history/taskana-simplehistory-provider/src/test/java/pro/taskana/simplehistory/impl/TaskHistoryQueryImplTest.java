@@ -32,7 +32,7 @@ class TaskHistoryQueryImplTest {
 
   @BeforeEach
   void setup() {
-    historyQueryImpl = new TaskHistoryQueryImpl(taskanaHistoryEngineMock);
+    historyQueryImpl = new TaskHistoryQueryImpl(taskanaHistoryEngineMock, false);
   }
 
   @Test

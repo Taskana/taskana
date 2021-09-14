@@ -27,6 +27,8 @@ public class TaskHistoryEventRepresentationModel
   private Instant created;
   /** The Id of the user. */
   private String userId;
+  /** The long name of the user. */
+  private String userLongName;
   /** Domain. */
   private String domain;
   /** The key of the Workbasket. */
@@ -41,6 +43,8 @@ public class TaskHistoryEventRepresentationModel
   private String porInstance;
   /** The value of the primary object reference. */
   private String porValue;
+  /** The long name of the task owner. */
+  private String taskOwnerLongName;
   /** The key of the task's classification. */
   private String taskClassificationKey;
   /** The category of the task's classification. */
@@ -118,6 +122,14 @@ public class TaskHistoryEventRepresentationModel
     this.userId = userId;
   }
 
+  public String getUserLongName() {
+    return userLongName;
+  }
+
+  public void setUserLongName(String userLongName) {
+    this.userLongName = userLongName;
+  }
+
   public String getDomain() {
     return domain;
   }
@@ -180,6 +192,14 @@ public class TaskHistoryEventRepresentationModel
 
   public void setTaskClassificationKey(String taskClassificationKey) {
     this.taskClassificationKey = taskClassificationKey;
+  }
+
+  public String getTaskOwnerLongName() {
+    return taskOwnerLongName;
+  }
+
+  public void setTaskOwnerLongName(String taskOwnerLongName) {
+    this.taskOwnerLongName = taskOwnerLongName;
   }
 
   public String getTaskClassificationCategory() {
@@ -256,7 +276,7 @@ public class TaskHistoryEventRepresentationModel
 
   @Override
   public String toString() {
-    return "TaskHistoryEventRepresentationModel [taskHistoryEventId="
+    return "TaskHistoryEventRepresentationModel [taskHistoryId="
         + taskHistoryId
         + ", businessProcessId="
         + businessProcessId
@@ -270,6 +290,8 @@ public class TaskHistoryEventRepresentationModel
         + created
         + ", userId="
         + userId
+        + ", userLongName="
+        + userLongName
         + ", domain="
         + domain
         + ", workbasketKey="
@@ -284,6 +306,8 @@ public class TaskHistoryEventRepresentationModel
         + porInstance
         + ", porValue="
         + porValue
+        + ", taskOwnerLongName="
+        + taskOwnerLongName
         + ", taskClassificationKey="
         + taskClassificationKey
         + ", taskClassificationCategory="

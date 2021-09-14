@@ -77,6 +77,10 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] ownerIn;
   private String[] ownerNotIn;
   private String[] ownerLike;
+  private String[] ownerLongNameIn;
+  private String[] ownerLongNameNotIn;
+  private String[] ownerLongNameLike;
+  private String[] ownerLongNameNotLike;
   private Boolean isRead;
   private Boolean isTransferred;
   private ObjectReference[] objectReferences;
@@ -175,13 +179,18 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean addClassificationNameToSelectClauseForOrdering = false;
   private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
   private boolean addWorkbasketNameToSelectClauseForOrdering = false;
+  private boolean includeLongName = false;
 
-  TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
+  TaskQueryImpl(
+      InternalTaskanaEngine taskanaEngine,
+      TaskServiceImpl taskService,
+      boolean includeLongName) {
     this.taskanaEngine = taskanaEngine;
-    this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
+    this.taskService = taskService;
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
     this.filterByAccessIdIn = true;
+    this.includeLongName = includeLongName;
   }
 
   @Override
@@ -327,6 +336,34 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery ownerLike(String... owners) {
     this.ownerLike = toUpperCopy(owners);
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameIn(String... longNames) {
+    includeLongName = true;
+    this.ownerLongNameIn = longNames;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameNotIn(String... longNames) {
+    includeLongName = true;
+    this.ownerLongNameNotIn = longNames;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameLike(String... longNames) {
+    includeLongName = true;
+    this.ownerLongNameLike = toUpperCopy(longNames);
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameNotLike(String... longNames) {
+    includeLongName = true;
+    this.ownerLongNameNotLike = toUpperCopy(longNames);
     return this;
   }
 
@@ -979,6 +1016,14 @@ public class TaskQueryImpl implements TaskQuery {
         : addOrderCriteria("a.RECEIVED", sortDirection);
   }
 
+  @Override
+  public TaskQuery orderByOwnerLongName(SortDirection sortDirection) {
+    includeLongName = true;
+    return DB.isDb2(getDatabaseId())
+        ? addOrderCriteria("ULONG_NAME", sortDirection)
+        : addOrderCriteria("u.LONG_NAME", sortDirection);
+  }
+
   public TaskQuery selectAndClaimEquals(boolean selectAndClaim) {
     this.selectAndClaim = selectAndClaim;
     return this;
@@ -1039,16 +1084,20 @@ public class TaskQueryImpl implements TaskQuery {
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
 
-      if (columnName.equals(TaskQueryColumnName.CLASSIFICATION_NAME)) {
+      if (columnName == TaskQueryColumnName.CLASSIFICATION_NAME) {
         joinWithClassifications = true;
       }
 
-      if (columnName.equals(TaskQueryColumnName.A_CLASSIFICATION_NAME)) {
+      if (columnName == TaskQueryColumnName.A_CLASSIFICATION_NAME) {
         joinWithAttachmentClassifications = true;
       }
 
       if (columnName.isAttachmentColumn()) {
         joinWithAttachments = true;
+      }
+
+      if (columnName == TaskQueryColumnName.OWNER_LONG_NAME) {
+        includeLongName = true;
       }
 
       setupJoinAndOrderParameters();
@@ -1155,6 +1204,14 @@ public class TaskQueryImpl implements TaskQuery {
         addAttachmentColumnsToSelectClauseForOrdering;
   }
 
+  public boolean isIncludeLongName() {
+    return includeLongName;
+  }
+
+  public void setIncludeLongName(boolean includeLongName) {
+    this.includeLongName = includeLongName;
+  }
+
   public String[] getTaskIds() {
     return taskIds;
   }
@@ -1201,6 +1258,18 @@ public class TaskQueryImpl implements TaskQuery {
 
   public String[] getOwnerLike() {
     return ownerLike;
+  }
+
+  public String[] getOwnerLongNameIn() {
+    return ownerLongNameIn;
+  }
+
+  public String[] getOwnerLongNameNotIn() {
+    return ownerLongNameNotIn;
+  }
+
+  public String[] getOwnerLongNameLike() {
+    return ownerLongNameLike;
   }
 
   public Boolean getIsRead() {

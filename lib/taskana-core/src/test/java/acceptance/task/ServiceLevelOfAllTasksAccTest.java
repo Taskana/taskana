@@ -15,14 +15,12 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for planned and prio of all tasks. */
 @ExtendWith(JaasExtension.class)
 class ServiceLevelOfAllTasksAccTest extends AbstractAccTest {
-  TaskService taskService = taskanaEngine.getTaskService();
 
   @WithAccessId(user = "admin")
   @Test

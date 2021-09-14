@@ -40,6 +40,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected String businessProcessId;
   protected String parentBusinessProcessId;
   protected String owner;
+  protected String ownerLongName;
   protected ObjectReference primaryObjRef;
   protected boolean isRead;
   protected boolean isTransferred;
@@ -82,6 +83,7 @@ public class TaskSummaryImpl implements TaskSummary {
     businessProcessId = copyFrom.businessProcessId;
     parentBusinessProcessId = copyFrom.parentBusinessProcessId;
     owner = copyFrom.owner;
+    ownerLongName = copyFrom.ownerLongName;
     primaryObjRef = copyFrom.primaryObjRef;
     isRead = copyFrom.isRead;
     isTransferred = copyFrom.isTransferred;
@@ -303,6 +305,15 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setOwner(String owner) {
     this.owner = owner;
+  }
+
+  @Override
+  public String getOwnerLongName() {
+    return ownerLongName;
+  }
+
+  public void setOwnerLongName(String ownerLongName) {
+    this.ownerLongName = ownerLongName;
   }
 
   @Override
@@ -576,6 +587,7 @@ public class TaskSummaryImpl implements TaskSummary {
         businessProcessId,
         parentBusinessProcessId,
         owner,
+        ownerLongName,
         primaryObjRef,
         isRead,
         isTransferred,
@@ -632,6 +644,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(businessProcessId, other.businessProcessId)
         && Objects.equals(parentBusinessProcessId, other.parentBusinessProcessId)
         && Objects.equals(owner, other.owner)
+        && Objects.equals(ownerLongName, other.ownerLongName)
         && Objects.equals(primaryObjRef, other.primaryObjRef)
         && Objects.equals(attachmentSummaries, other.attachmentSummaries)
         && Objects.equals(custom1, other.custom1)
@@ -694,6 +707,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + parentBusinessProcessId
         + ", owner="
         + owner
+        + ", ownerLongName="
+        + ownerLongName
         + ", primaryObjRef="
         + primaryObjRef
         + ", isRead="
