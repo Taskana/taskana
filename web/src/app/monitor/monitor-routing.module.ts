@@ -5,6 +5,7 @@ import { TaskReportComponent } from './components/task-report/task-report.compon
 import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
 import { ClassificationReportComponent } from './components/classification-report/classification-report.component';
 import { TimestampReportComponent } from './components/timestamp-report/timestamp-report.component';
+import { TaskPriorityReportComponent } from './components/task-priority-report/task-priority-report.component';
 
 const routes: Routes = [
   {
@@ -12,7 +13,11 @@ const routes: Routes = [
     component: MonitorComponent,
     children: [
       {
-        path: 'tasks',
+        path: 'tasks-priority',
+        component: TaskPriorityReportComponent
+      },
+      {
+        path: 'tasks-status',
         component: TaskReportComponent
       },
       {

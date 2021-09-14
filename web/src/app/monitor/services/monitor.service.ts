@@ -6,6 +6,7 @@ import { ChartData } from 'app/monitor/models/chart-data';
 import { ReportData } from '../models/report-data';
 import { asUrlQueryString } from '../../shared/util/query-parameters-v2';
 import { TaskState } from '../../shared/models/task-state';
+import { WorkbasketType } from '../../shared/models/workbasket-type';
 
 const monitorUrl = '/v1/monitor/';
 
@@ -37,7 +38,7 @@ export class MonitorService {
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl}/v1/monitor/workbasket-report${asUrlQueryString(queryParams)}`
+      `${environment.taskanaRestUrl + monitorUrl}workbasket-report${asUrlQueryString(queryParams)}`
     );
   }
 
@@ -49,12 +50,21 @@ export class MonitorService {
     return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}timestamp-report`);
   }
 
-  getChartData(source: ReportData): Array<ChartData> {
+  getChartData(source: ReportData): ChartData[] {
     return source.rows.map((row) => {
       const rowData = new ChartData();
       [rowData.label] = row.desc;
       rowData.data = row.cells;
       return rowData;
     });
+  }
+
+  getTasksByPriorityReport(type: WorkbasketType[] = []): Observable<ReportData> {
+    const queryParams = {
+      'workbasket-type': type
+    };
+    return this.httpClient.get<ReportData>(
+      `${environment.taskanaRestUrl + monitorUrl}workbasket-priority-report${asUrlQueryString(queryParams)}`
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,10 +10,10 @@ export class MonitorComponent implements OnInit {
   selectedTab = '';
 
   constructor(public router: Router) {
-    this.router.navigate(['/taskana/monitor/tasks']);
+    this.router.navigate(['/taskana/monitor/tasks-priority']);
   }
 
   ngOnInit(): void {
-    this.selectedTab = 'tasks';
+    this.selectedTab = 'tasks-priority';
   }
 }

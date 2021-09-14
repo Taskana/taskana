@@ -96,6 +96,12 @@ export const messageByErrorCode = {
     EMPTY_WORKBASKET: 'Selected Workbasket is empty'
   },
 
+  [messageTypes.WARNING]: {
+    REPORT_DATA_WRONG_HEADER:
+      'The received header of the Report data does not match the expected header. ' +
+      'The data might be displayed incorrectly. Please contact your administrator.'
+  },
+
   [messageTypes.DIALOG]: {
     POPUP_CONFIGURATION: 'This Popup was not configured properly for this request. Please contact your administrator.',
 

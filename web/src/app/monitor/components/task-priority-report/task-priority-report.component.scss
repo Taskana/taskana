@@ -1,0 +1,40 @@
+table {
+  width: 100%;
+}
+
+.task-priority-report {
+  padding: 8px;
+  overflow-y: scroll;
+  height: calc(100vh - 104px);
+
+  &__workbaskets {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  &__workbasket {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    margin: 24px 24px 36px 24px;
+  }
+
+  &__headline {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  &__row--low {
+    color: limegreen;
+  }
+
+  &__row--medium {
+    color: gold;
+  }
+
+  &__row--high {
+    color: red;
+  }
+
+}
