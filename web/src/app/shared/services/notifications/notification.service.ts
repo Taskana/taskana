@@ -55,6 +55,10 @@ export class NotificationService {
     );
   }
 
+  showWarning(warningKey: string, messageVariables: object = {}) {
+    this.toastService.warning(this.obtainMessageService.getMessage(warningKey, messageVariables, messageTypes.WARNING));
+  }
+
   showDialog(key: string, messageVariables: object = {}, callback: Function) {
     const message = this.obtainMessageService.getMessage(key, messageVariables, messageTypes.DIALOG);
 

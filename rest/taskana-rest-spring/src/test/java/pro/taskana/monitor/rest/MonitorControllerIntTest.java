@@ -125,6 +125,6 @@ class MonitorControllerIntTest {
 
     assertThat(report.getSumRow())
         .extracting(RowRepresentationModel::getCells)
-        .containsExactly(new int[] {23, 0, 0});
+        .containsExactly(new int[] {25, 1, 0});
   }
 }
