@@ -22,7 +22,7 @@ public enum WorkbasketQueryColumnName implements QueryColumnName {
   ORG_LEVEL_3("w.org_level_3"),
   ORG_LEVEL_4("w.org_level_4");
 
-  private String name;
+  private final String name;
 
   WorkbasketQueryColumnName(String name) {
     this.name = name;
