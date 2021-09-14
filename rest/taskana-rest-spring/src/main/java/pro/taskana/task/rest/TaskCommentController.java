@@ -1,8 +1,9 @@
 package pro.taskana.task.rest;
 
-import java.util.Comparator;
+import java.beans.ConstructorProperties;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.BiConsumer;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -15,15 +16,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.rest.QueryPagingParameter;
+import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
 import pro.taskana.common.rest.RestEndpoints;
+import pro.taskana.common.rest.util.QueryParamsValidator;
+import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -77,30 +81,35 @@ public class TaskCommentController {
    * This endpoint retrieves all Task Comments for a specific Task. Further filters can be applied.
    *
    * @param taskId the Id of the Task whose comments are requested
-   * @param sortBy Sort the result by a given field. Multiple sort values can be declared. When the
-   *     primary sort value is the same, the second one will be used.
-   * @param order The order direction for each sort value. This value requires the use of 'sort-by'.
-   *     The amount of sort-by and order declarations have to match. Alternatively the value can be
-   *     omitted. In this case the default sort order (ASCENDING) will be applied to every sort-by
-   *     value.
+   * @param request the HTTP request
+   * @param filterParameter the filter parameters
+   * @param sortParameter the sort parameters
+   * @param pagingParameter the paging parameters
    * @return a list of Task Comments
-   * @throws NotAuthorizedException If the current user has no authorization to retrieve a Task
-   *     Comment from a certain Task or is not authorized to access the Task.
-   * @throws TaskNotFoundException If the given Task Id in the Task Comment does not refer to an
-   *     existing Task
-   * @throws InvalidArgumentException if some parameters were not supplied correctly
    * @title Get a list of all Task Comments for a specific Task
    */
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentCollectionRepresentationModel> getTaskComments(
       @PathVariable String taskId,
-      @RequestParam(name = "sort-by", required = false) List<TaskCommentsSortBy> sortBy,
-      @RequestParam(required = false) List<SortDirection> order)
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
-    Optional<Comparator<TaskComment>> comparator = getTaskCommentComparator(sortBy, order);
-    List<TaskComment> taskComments = taskService.getTaskComments(taskId);
-    comparator.ifPresent(taskComments::sort);
+      HttpServletRequest request,
+      TaskCommentQueryFilterParameter filterParameter,
+      TaskCommentQuerySortParameter sortParameter,
+      QueryPagingParameter<TaskComment, TaskCommentQuery> pagingParameter) {
+
+    QueryParamsValidator.validateParams(
+        request,
+        TaskCommentQueryFilterParameter.class,
+        QuerySortParameter.class,
+        QueryPagingParameter.class);
+
+    TaskCommentQuery query = taskService.createTaskCommentQuery();
+
+    query.taskIdIn(taskId);
+    filterParameter.apply(query);
+    sortParameter.apply(query);
+
+    List<TaskComment> taskComments = pagingParameter.apply(query);
 
     TaskCommentCollectionRepresentationModel taskCommentListResource =
         taskCommentRepresentationModelAssembler.toTaskanaCollectionModel(taskComments);
@@ -195,36 +204,36 @@ public class TaskCommentController {
         .body(taskCommentRepresentationModelAssembler.toModel(createdTaskComment));
   }
 
-  private Optional<Comparator<TaskComment>> getTaskCommentComparator(
-      List<TaskCommentsSortBy> sortBy, List<SortDirection> order) throws InvalidArgumentException {
-    QuerySortParameter.verifyNotOnlyOrderByExists(sortBy, order);
-    QuerySortParameter.verifyAmountOfSortByAndOrderByMatches(sortBy, order);
-    Comparator<TaskComment> comparator = null;
-    if (sortBy != null) {
-      for (int i = 0; i < sortBy.size(); i++) {
-        SortDirection sortDirection = order == null ? SortDirection.ASCENDING : order.get(i);
-        Comparator<TaskComment> temp = sortBy.get(i).getComparator();
-        if (sortDirection == SortDirection.DESCENDING) {
-          temp = temp.reversed();
-        }
-        comparator = comparator == null ? temp : comparator.thenComparing(temp);
-      }
+  public enum TaskCommentQuerySortBy implements QuerySortBy<TaskCommentQuery> {
+    CREATED(TaskCommentQuery::orderByCreated),
+    MODIFIED(TaskCommentQuery::orderByModified);
+
+    private final BiConsumer<TaskCommentQuery, SortDirection> consumer;
+
+    TaskCommentQuerySortBy(BiConsumer<TaskCommentQuery, SortDirection> consumer) {
+      this.consumer = consumer;
     }
-    return Optional.ofNullable(comparator);
+
+    @Override
+    public void applySortByForQuery(TaskCommentQuery query, SortDirection sortDirection) {
+      consumer.accept(query, sortDirection);
+    }
   }
 
-  enum TaskCommentsSortBy {
-    CREATED(Comparator.comparing(TaskComment::getCreated)),
-    MODIFIED(Comparator.comparing(TaskComment::getModified));
+  public static class TaskCommentQuerySortParameter
+      extends QuerySortParameter<TaskCommentQuery, TaskCommentQuerySortBy> {
 
-    private final Comparator<TaskComment> comparator;
-
-    TaskCommentsSortBy(Comparator<TaskComment> comparing) {
-      comparator = comparing;
+    @ConstructorProperties({"sort-by", "order"})
+    public TaskCommentQuerySortParameter(
+        List<TaskCommentQuerySortBy> sortBy, List<SortDirection> order)
+        throws InvalidArgumentException {
+      super(sortBy, order);
     }
 
-    public Comparator<TaskComment> getComparator() {
-      return comparator;
+    // this getter is necessary for the documentation!
+    @Override
+    public List<TaskCommentQuerySortBy> getSortBy() {
+      return super.getSortBy();
     }
   }
 }

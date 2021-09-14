@@ -20,7 +20,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.EnumUtil;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -32,14 +31,12 @@ import pro.taskana.task.internal.models.TaskImpl;
 @ExtendWith(JaasExtension.class)
 class CompleteTaskAccTest extends AbstractAccTest {
 
-  private static final TaskService TASK_SERVICE = taskanaEngine.getTaskService();
-
   @WithAccessId(user = "user-1-1")
   @Test
   void testCompleteTask() throws Exception {
-    assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000001").getState())
+    assertThat(taskService.getTask("TKI:000000000000000000000000000000000001").getState())
         .isEqualTo(TaskState.CLAIMED);
-    Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000001");
+    Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000001");
     assertThat(completedTask).isNotNull();
     assertThat(completedTask.getCompleted()).isNotNull();
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
@@ -49,9 +46,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_completeClaimedTaskByAnotherUser_When_UserIsAdmin() throws Exception {
-    assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000029").getState())
+    assertThat(taskService.getTask("TKI:000000000000000000000000000000000029").getState())
         .isEqualTo(TaskState.CLAIMED);
-    Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000029");
+    Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000029");
     assertThat(completedTask).isNotNull();
     assertThat(completedTask.getCompleted()).isNotNull();
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
@@ -65,9 +62,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
       throws Exception {
     resetDb(false);
 
-    assertThat(TASK_SERVICE.getTask("TKI:000000000000000000000000000000000000").getState())
+    assertThat(taskService.getTask("TKI:000000000000000000000000000000000000").getState())
         .isEqualTo(TaskState.CLAIMED);
-    Task completedTask = TASK_SERVICE.forceCompleteTask("TKI:000000000000000000000000000000000000");
+    Task completedTask = taskService.forceCompleteTask("TKI:000000000000000000000000000000000000");
     assertThat(completedTask).isNotNull();
     assertThat(completedTask.getCompleted()).isNotNull();
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
@@ -77,15 +74,15 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void testCompleteTaskTwice() throws Exception {
-    Task completedTask = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000002");
-    Task completedTask2 = TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000002");
+    Task completedTask = taskService.completeTask("TKI:000000000000000000000000000000000002");
+    Task completedTask2 = taskService.completeTask("TKI:000000000000000000000000000000000002");
     assertThat(completedTask2).isEqualTo(completedTask);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
   void testForceCompleteAlreadyClaimed() throws Exception {
-    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setOwner("other");
     newTask.setPrimaryObjRef(
@@ -94,8 +91,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
     newTaskImpl.setState(TaskState.CLAIMED);
     newTaskImpl.setClaimed(Instant.now());
 
-    Task createdTask = TASK_SERVICE.createTask(newTaskImpl);
-    Task completedTask = TASK_SERVICE.forceCompleteTask(createdTask.getId());
+    Task createdTask = taskService.createTask(newTaskImpl);
+    Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask.getCompleted()).isNotNull();
@@ -106,7 +103,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void testForceCompleteNotClaimed() throws Exception {
-    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setOwner("other");
     newTask.setPrimaryObjRef(
@@ -114,8 +111,8 @@ class CompleteTaskAccTest extends AbstractAccTest {
     TaskImpl newTaskImpl = (TaskImpl) newTask;
     newTaskImpl.setClaimed(Instant.now());
 
-    Task createdTask = TASK_SERVICE.createTask(newTaskImpl);
-    Task completedTask = TASK_SERVICE.forceCompleteTask(createdTask.getId());
+    Task createdTask = taskService.createTask(newTaskImpl);
+    Task completedTask = taskService.forceCompleteTask(createdTask.getId());
 
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask.getCompleted()).isNotNull();
@@ -127,7 +124,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskIsNotFound() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.completeTask("TKI:0000000000000000000000000000000000xx");
+        () -> taskService.completeTask("TKI:0000000000000000000000000000000000xx");
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
@@ -135,7 +132,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_UserIsNotAuthorizedOnTask() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000004");
+        () -> taskService.completeTask("TKI:000000000000000000000000000000000004");
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
@@ -143,7 +140,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskIsInStateReady() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000025");
+        () -> taskService.completeTask("TKI:000000000000000000000000000000000025");
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
@@ -151,25 +148,25 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskCallerIsNotTheOwner() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.completeTask("TKI:000000000000000000000000000000000026");
+        () -> taskService.completeTask("TKI:000000000000000000000000000000000026");
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
   void testClaimTaskWithDefaultFlag() throws Exception {
-    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setOwner(null);
-    Task createdTask = TASK_SERVICE.createTask(newTask);
+    Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getClaimed()).isNull();
 
     final Instant before = createdTask.getCreated();
-    Task claimedTask = TASK_SERVICE.claim(createdTask.getId());
+    Task claimedTask = taskService.claim(createdTask.getId());
 
     assertThat(claimedTask.getOwner()).isNotNull();
     assertThat(taskanaEngine.getCurrentUserContext().getUserid()).isEqualTo(claimedTask.getOwner());
@@ -183,18 +180,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void testForceClaimTaskFromOtherUser() throws Exception {
-    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setOwner("other_user");
-    Task createdTask = TASK_SERVICE.createTask(newTask);
+    Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getOwner()).isEqualTo("other_user");
 
     Instant beforeForceClaim = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-    Task taskAfterClaim = TASK_SERVICE.forceClaim(createdTask.getId());
+    Task taskAfterClaim = taskService.forceClaim(createdTask.getId());
 
     assertThat(taskAfterClaim.getOwner())
         .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
@@ -210,21 +207,21 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void testClaimTaskNotExisting() {
-    assertThatThrownBy(() -> TASK_SERVICE.claim("NOT_EXISTING"))
+    assertThatThrownBy(() -> taskService.claim("NOT_EXISTING"))
         .isInstanceOf(TaskNotFoundException.class);
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
   void testClaimTaskWithInvalidState() {
-    assertThatThrownBy(() -> TASK_SERVICE.forceClaim("TKI:000000000000000000000000000000000036"))
+    assertThatThrownBy(() -> taskService.forceClaim("TKI:000000000000000000000000000000000036"))
         .isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
   void testClaimTaskWithInvalidOwner() {
-    assertThatThrownBy(() -> TASK_SERVICE.claim("TKI:000000000000000000000000000000000035"))
+    assertThatThrownBy(() -> taskService.claim("TKI:000000000000000000000000000000000035"))
         .isInstanceOf(InvalidOwnerException.class);
   }
 
@@ -232,23 +229,23 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @Test
   void testCancelClaimForcedWithInvalidState() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.forceCancelClaim("TKI:000000000000000000000000000000000036");
+        () -> taskService.forceCancelClaim("TKI:000000000000000000000000000000000036");
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
   void testCancelClaimDefaultFlag() throws Exception {
-    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    Task createdTask = TASK_SERVICE.createTask(newTask);
+    Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getState()).isSameAs(TaskState.READY);
 
-    createdTask = TASK_SERVICE.cancelClaim(createdTask.getId());
+    createdTask = taskService.cancelClaim(createdTask.getId());
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getState()).isSameAs(TaskState.READY);
@@ -257,14 +254,14 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void testForceCancelClaimSuccessfull() throws Exception {
-    Task taskBefore = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000043");
+    Task taskBefore = taskService.getTask("TKI:000000000000000000000000000000000043");
 
     assertThat(taskBefore).isNotNull();
     assertThat(taskBefore.getState()).isEqualTo(TaskState.CLAIMED);
 
     final Instant before = Instant.now();
     Thread.sleep(1);
-    Task taskAfter = TASK_SERVICE.forceCancelClaim("TKI:000000000000000000000000000000000043");
+    Task taskAfter = taskService.forceCancelClaim("TKI:000000000000000000000000000000000043");
 
     assertThat(taskAfter).isNotNull();
     assertThat(taskAfter.getState()).isEqualTo(TaskState.READY);
@@ -277,13 +274,13 @@ class CompleteTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void testCancelClaimWithInvalidOwner() {
-    assertThatThrownBy(() -> TASK_SERVICE.cancelClaim("TKI:000000000000000000000000000000000035"))
+    assertThatThrownBy(() -> taskService.cancelClaim("TKI:000000000000000000000000000000000035"))
         .isInstanceOf(InvalidOwnerException.class);
   }
 
   @Test
   void should_ThrowException_When_BulkCompleteWithNullList() {
-    assertThatThrownBy(() -> TASK_SERVICE.completeTasks(null))
+    assertThatThrownBy(() -> taskService.completeTasks(null))
         .isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -295,18 +292,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
     List<String> taskIdList = List.of(id1, id2);
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
 
-    Task completedTask1 = TASK_SERVICE.getTask(id1);
+    Task completedTask1 = taskService.getTask(id1);
     assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask1.getCompleted())
         .isEqualTo(completedTask1.getModified())
         .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask1.getOwner()).isEqualTo("user-1-2");
 
-    Task completedTask2 = TASK_SERVICE.getTask(id2);
+    Task completedTask2 = taskService.getTask(id2);
     assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask2.getCompleted())
         .isEqualTo(completedTask2.getModified())
@@ -322,10 +319,10 @@ class CompleteTaskAccTest extends AbstractAccTest {
     List<String> taskIdList = List.of(invalid, validId);
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
-    Task completedTask = TASK_SERVICE.getTask(validId);
+    Task completedTask = taskService.getTask(validId);
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask.getCompleted())
         .isEqualTo(completedTask.getModified())
@@ -343,7 +340,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     // we can't use List.of because of the null value we insert
     List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
 
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds())
@@ -357,7 +354,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id = "TKI:000000000000000000000000000000000025"; // task is not claimed
     List<String> taskIdList = List.of(id);
 
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id);
@@ -377,7 +374,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     TaskState[] requiredStates =
         EnumUtil.allValuesExceptFor(TaskState.TERMINATED, TaskState.CANCELLED);
 
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
@@ -398,9 +395,9 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id = "TKI:000000000000000000000000000000000036"; // task is completed
     List<String> taskIdList = List.of(id);
 
-    Task before = TASK_SERVICE.getTask(id);
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
-    Task after = TASK_SERVICE.getTask(id);
+    Task before = taskService.getTask(id);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
+    Task after = taskService.getTask(id);
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(before).isEqualTo(after);
@@ -412,7 +409,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id1 = "TKI:000000000000000000000000000000000035";
     List<String> taskIdList = List.of(id1);
 
-    BulkOperationResults<String, TaskanaException> results = TASK_SERVICE.completeTasks(taskIdList);
+    BulkOperationResults<String, TaskanaException> results = taskService.completeTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1);
@@ -428,18 +425,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
+        taskService.forceCompleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
 
-    Task completedTask1 = TASK_SERVICE.getTask(id1);
+    Task completedTask1 = taskService.getTask(id1);
     assertThat(completedTask1.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask1.getCompleted())
         .isEqualTo(completedTask1.getModified())
         .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(completedTask1.getOwner()).isEqualTo("user-1-2");
 
-    Task completedTask2 = TASK_SERVICE.getTask(id2);
+    Task completedTask2 = taskService.getTask(id2);
     assertThat(completedTask2.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask2.getCompleted())
         .isEqualTo(completedTask2.getModified())
@@ -456,10 +453,10 @@ class CompleteTaskAccTest extends AbstractAccTest {
 
     Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
+        taskService.forceCompleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
-    Task completedTask = TASK_SERVICE.getTask(validId);
+    Task completedTask = taskService.getTask(validId);
     assertThat(completedTask.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(completedTask.getCompleted())
         .isEqualTo(completedTask.getModified())
@@ -478,7 +475,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
     List<String> taskIdList = Arrays.asList(invalid1, invalid2, invalid3, notAuthorized);
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
+        taskService.forceCompleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds())
@@ -496,7 +493,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
         EnumUtil.allValuesExceptFor(TaskState.TERMINATED, TaskState.CANCELLED);
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
+        taskService.forceCompleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(id1, id2);
@@ -517,10 +514,10 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id = "TKI:000000000000000000000000000000000036"; // task is completed
     List<String> taskIdList = List.of(id);
 
-    Task before = TASK_SERVICE.getTask(id);
+    Task before = taskService.getTask(id);
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
-    Task after = TASK_SERVICE.getTask(id);
+        taskService.forceCompleteTasks(taskIdList);
+    Task after = taskService.getTask(id);
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(before).isEqualTo(after);
@@ -533,12 +530,12 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id = "TKI:000000000000000000000000000000000002";
     List<String> taskIdList = List.of(id);
 
-    Task beforeClaim = TASK_SERVICE.getTask(id);
+    Task beforeClaim = taskService.getTask(id);
     assertThat(beforeClaim.getOwner()).isNotEqualTo("user-1-2");
     final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
-    Task afterClaim = TASK_SERVICE.getTask(id);
+        taskService.forceCompleteTasks(taskIdList);
+    Task afterClaim = taskService.getTask(id);
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(afterClaim.getState()).isEqualTo(TaskState.COMPLETED);
@@ -555,17 +552,17 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id = "TKI:000000000000000000000000000000000033";
     List<String> taskIdList = List.of(id);
 
-    Task task = TASK_SERVICE.getTask(id);
+    Task task = taskService.getTask(id);
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
     final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
+        taskService.forceCompleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
-    task = TASK_SERVICE.getTask(id);
+    task = taskService.getTask(id);
     assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(task.getCompleted())
         .isEqualTo(task.getClaimed())
@@ -581,18 +578,18 @@ class CompleteTaskAccTest extends AbstractAccTest {
     String id2 = "TKI:000000000000000000000000000000000044"; // task is ready
     List<String> taskIdList = List.of(id1, id2);
 
-    Task task = TASK_SERVICE.getTask(id2);
+    Task task = taskService.getTask(id2);
     assertThat(task.getState()).isSameAs(TaskState.READY);
     assertThat(task.getClaimed()).isNull();
 
     final Instant beforeBulkComplete = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.forceCompleteTasks(taskIdList);
+        taskService.forceCompleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isFalse();
 
-    task = TASK_SERVICE.getTask(id1);
+    task = taskService.getTask(id1);
     assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
     // do not update claimed timestamp for already claimed task
     assertThat(task.getClaimed()).isBefore(beforeBulkComplete);
@@ -601,7 +598,7 @@ class CompleteTaskAccTest extends AbstractAccTest {
         .isAfterOrEqualTo(beforeBulkComplete);
     assertThat(task.getOwner()).isEqualTo("user-b-2");
 
-    task = TASK_SERVICE.getTask(id2);
+    task = taskService.getTask(id2);
     assertThat(task.getState()).isEqualTo(TaskState.COMPLETED);
     assertThat(task.getCompleted())
         .isEqualTo(task.getClaimed())

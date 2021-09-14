@@ -20,9 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -41,27 +43,204 @@ import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskQuery;
+import pro.taskana.task.api.TaskQueryColumnName;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.task.internal.TaskServiceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksAccTest extends AbstractAccTest {
 
-  private static final TaskServiceImpl TASK_SERVICE =
-      (TaskServiceImpl) taskanaEngine.getTaskService();
-
   @BeforeEach
   void before() throws Exception {
     // required if single tests modify database
     // TODO split test class into readOnly & modifying tests to improve performance
     resetDb(false);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_SetOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    List<TaskSummary> tasks =
+        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
+
+    assertThat(tasks).hasSize(1);
+    String longName = taskanaEngine.getUserService().getUser(tasks.get(0).getOwner()).getLongName();
+    assertThat(tasks.get(0)).extracting(TaskSummary::getOwnerLongName).isEqualTo(longName);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotSetOwnerLongNameOfTask_When_PropertyDisabled() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    List<TaskSummary> tasks =
+        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
+
+    assertThat(tasks).hasSize(1);
+    assertThat(tasks.get(0)).extracting(TaskSummary::getOwnerLongName).isNull();
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameIn() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    String longName = "Eifrig, Elena - (user-1-2)";
+    List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameIn(longName).list();
+
+    assertThat(tasks)
+        .hasSize(23)
+        .extracting(TaskSummary::getOwnerLongName)
+        .doesNotContainNull()
+        .containsOnly(longName);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotIn() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    List<TaskSummary> tasks =
+        taskService
+            .createTaskQuery()
+            .idIn(
+                "TKI:000000000000000000000000000000000000",
+                "TKI:000000000000000000000000000000000027")
+            .ownerLongNameNotIn("Eifrig, Elena - (user-1-2)")
+            .list();
+
+    assertThat(tasks).hasSize(1);
+    assertThat(tasks.get(0))
+        .extracting(TaskSummary::getOwnerLongName)
+        .isEqualTo("Mustermann, Max - (user-1-1)");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameLike() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameLike("%1-2%").list();
+
+    assertThat(tasks)
+        .hasSize(23)
+        .extracting(TaskSummary::getOwnerLongName)
+        .doesNotContainNull()
+        .containsOnly("Eifrig, Elena - (user-1-2)");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotLike() throws Exception {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameNotLike("%1-1%").list();
+
+    assertThat(tasks)
+        .hasSize(23)
+        .extracting(TaskSummary::getOwnerLongName)
+        .doesNotContainNull()
+        .containsOnly("Eifrig, Elena - (user-1-2)");
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetOwnerLongNameOfTaskToNull_When_OwnerNotExistingAsUserInDatabase() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    List<TaskSummary> tasks =
+        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000041").list();
+
+    assertThat(tasks).hasSize(1);
+    ThrowingCallable call =
+        () -> taskanaEngine.getUserService().getUser(tasks.get(0).getOwner()).getLongName();
+    assertThatThrownBy(call).isInstanceOf(UserNotFoundException.class);
+    assertThat(tasks.get(0)).extracting(TaskSummary::getOwnerLongName).isNull();
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_OrderByOwnerLongName_When_QueryingTask() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    List<TaskSummary> tasks =
+        taskService
+            .createTaskQuery()
+            .stateIn(TaskState.CLAIMED)
+            .ownerNotIn("user-b-1")
+            .orderByOwnerLongName(ASCENDING)
+            .list();
+    assertThat(tasks).extracting(TaskSummary::getOwnerLongName).hasSize(17).isSorted();
+
+    tasks =
+        taskService
+            .createTaskQuery()
+            .stateIn(TaskState.CLAIMED)
+            .ownerNotIn("user-b-1")
+            .orderByOwnerLongName(DESCENDING)
+            .list();
+    assertThat(tasks)
+        .hasSize(17)
+        .extracting(TaskSummary::getOwnerLongName)
+        .isSortedAccordingTo(Comparator.reverseOrder());
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ListValues_For_OwnerLongName() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    List<String> longNames =
+        taskService.createTaskQuery().listValues(TaskQueryColumnName.OWNER_LONG_NAME, ASCENDING)
+            .stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    assertThat(longNames)
+        .hasSize(2)
+        .isSorted()
+        .containsExactly("Eifrig, Elena - (user-1-2)", "Mustermann, Max - (user-1-1)");
+
+    longNames =
+        taskService.createTaskQuery().listValues(TaskQueryColumnName.OWNER_LONG_NAME, DESCENDING)
+            .stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    ;
+    assertThat(longNames)
+        .hasSize(2)
+        .contains("Mustermann, Max - (user-1-1)", "Eifrig, Elena - (user-1-2)")
+        .isSortedAccordingTo(Comparator.reverseOrder());
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_ListValuesCorrectly_When_FilteringWithOwnerLongName() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    String longName = "Eifrig, Elena - (user-1-2)";
+    List<String> listedValues =
+        taskService
+            .createTaskQuery()
+            .ownerLongNameIn(longName)
+            .orderByTaskId(null)
+            .listValues(TaskQueryColumnName.ID, null);
+    assertThat(listedValues).hasSize(23);
+
+    List<TaskSummary> query =
+        taskService.createTaskQuery().ownerLongNameIn(longName).orderByTaskId(null).list();
+    assertThat(query).hasSize(23).extracting(TaskSummary::getId).isEqualTo(listedValues);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_CountCorrectly_When_FilteringWithOwnerLongName() {
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    String longName = "Eifrig, Elena - (user-1-2)";
+    long count = taskService.createTaskQuery().ownerLongNameIn(longName).count();
+    assertThat(count).isEqualTo(23);
+
+    List<TaskSummary> query = taskService.createTaskQuery().ownerLongNameIn(longName).list();
+    assertThat(query.size()).isEqualTo(count);
   }
 
   @WithAccessId(user = "admin")
@@ -72,7 +251,7 @@ class QueryTasksAccTest extends AbstractAccTest {
           .when(() -> CollectionUtil.partitionBasedOnSize(any(), anyInt()))
           .thenCallRealMethod();
 
-      TASK_SERVICE.createTaskQuery().list();
+      taskService.createTaskQuery().list();
 
       listUtilMock.verify(() -> CollectionUtil.partitionBasedOnSize(any(), eq(32000)));
     }
@@ -82,7 +261,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_ReturnCorrectResults_When_QueryingForOwnerLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().ownerLike("%a%", "%u%").orderByCreated(ASCENDING).list();
+        taskService.createTaskQuery().ownerLike("%a%", "%u%").orderByCreated(ASCENDING).list();
 
     assertThat(results).hasSize(39).extracting(TaskSummary::getCreated).isSorted();
   }
@@ -91,7 +270,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_FilterOutOwner_When_OwnerNotInIsSet() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().ownerNotIn("user-1-1", "user-1-2").list();
+        taskService.createTaskQuery().ownerNotIn("user-1-1", "user-1-2").list();
 
     assertThat(results).hasSize(3).extracting(TaskSummary::getOwner).containsOnly("user-b-1");
   }
@@ -99,14 +278,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnCorrectResults_When_QueryingForDescription() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().descriptionLike("Lorem%").list();
+    List<TaskSummary> results = taskService.createTaskQuery().descriptionLike("Lorem%").list();
     assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnCorrectResults_When_QueryingForPriority() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().priorityIn(1).list();
+    List<TaskSummary> results = taskService.createTaskQuery().priorityIn(1).list();
     assertThat(results).hasSize(2);
   }
 
@@ -114,12 +293,12 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForName() {
 
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().nameLike("task%").list();
+    List<TaskSummary> results = taskService.createTaskQuery().nameLike("task%").list();
     assertThat(results).hasSize(7);
 
     String[] ids = results.stream().map(TaskSummary::getName).toArray(String[]::new);
 
-    List<TaskSummary> result2 = TASK_SERVICE.createTaskQuery().nameIn(ids).list();
+    List<TaskSummary> result2 = taskService.createTaskQuery().nameIn(ids).list();
     assertThat(result2).hasSize(7);
   }
 
@@ -127,21 +306,21 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForClassificationKey() {
 
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().classificationKeyLike("L10%").list();
+    List<TaskSummary> results = taskService.createTaskQuery().classificationKeyLike("L10%").list();
     assertThat(results).hasSize(78);
 
     String[] ids =
         results.stream().map(t -> t.getClassificationSummary().getKey()).toArray(String[]::new);
 
-    List<TaskSummary> result2 = TASK_SERVICE.createTaskQuery().classificationKeyIn(ids).list();
+    List<TaskSummary> result2 = taskService.createTaskQuery().classificationKeyIn(ids).list();
     assertThat(result2).hasSize(78);
 
     List<TaskSummary> result3 =
-        TASK_SERVICE.createTaskQuery().classificationKeyNotIn("T2100", "T2000").list();
+        taskService.createTaskQuery().classificationKeyNotIn("T2100", "T2000").list();
     assertThat(result3).hasSize(83);
 
     List<TaskSummary> result4 =
-        TASK_SERVICE.createTaskQuery().classificationKeyNotIn("L1050", "L1060", "T2100").list();
+        taskService.createTaskQuery().classificationKeyNotIn("L1050", "L1060", "T2100").list();
     assertThat(result4).hasSize(10);
   }
 
@@ -162,12 +341,12 @@ class QueryTasksAccTest extends AbstractAccTest {
             Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3));
 
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000000");
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     task.addAttachment(attachment);
-    TASK_SERVICE.updateTask(task);
+    taskService.updateTask(task);
 
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
+        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
     assertThat(results).hasSize(1);
     assertThat(results.get(0).getAttachmentSummaries()).hasSize(3);
 
@@ -206,14 +385,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForCustomXLikeAndIn(
       TaskCustomField customField, String[] searchArguments, int expectedResult) throws Exception {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().customAttributeLike(customField, searchArguments).list();
+        taskService.createTaskQuery().customAttributeLike(customField, searchArguments).list();
     assertThat(results).hasSize(expectedResult);
 
     String[] customAttributes =
         results.stream().map(t -> t.getCustomAttribute(customField)).toArray(String[]::new);
 
     List<TaskSummary> result2 =
-        TASK_SERVICE.createTaskQuery().customAttributeIn(customField, customAttributes).list();
+        taskService.createTaskQuery().customAttributeIn(customField, customAttributes).list();
     assertThat(result2).hasSize(expectedResult);
   }
 
@@ -250,14 +429,14 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForCustomXNotIn(
       TaskCustomField customField, String[] searchArguments, int expectedCount) throws Exception {
     long results =
-        TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
+        taskService.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
     assertThat(results).isEqualTo(expectedCount);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForCustom7WithExceptionInLike() {
-    assertThatThrownBy(() -> TASK_SERVICE.createTaskQuery().customAttributeLike(CUSTOM_7).list())
+    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike(CUSTOM_7).list())
         .isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -265,10 +444,10 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom7WithExceptionInIn() throws Exception {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().customAttributeLike(CUSTOM_7, "fsdhfshk%").list();
+        taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "fsdhfshk%").list();
     assertThat(results).isEmpty();
 
-    assertThatThrownBy(() -> TASK_SERVICE.createTaskQuery().customAttributeIn(CUSTOM_7).list())
+    assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeIn(CUSTOM_7).list())
         .isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -276,27 +455,27 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForCustom7WithException() throws Exception {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().customAttributeLike(CUSTOM_7, "%").list();
+        taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "%").list();
     assertThat(results).hasSize(2);
 
     String[] ids = results.stream().map(t -> t.getCustomAttribute(CUSTOM_7)).toArray(String[]::new);
 
     List<TaskSummary> result2 =
-        TASK_SERVICE.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
+        taskService.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
     assertThat(result2).hasSize(2);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryTaskByCustomAttributes() throws Exception {
-    Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setClassificationKey("T2100");
     Map<String, String> customAttributesForCreate =
         createSimpleCustomPropertyMap(20000); // about 1 Meg
     newTask.setCustomAttributeMap(customAttributesForCreate);
-    Task createdTask = TASK_SERVICE.createTask(newTask);
+    Task createdTask = taskService.createTask(newTask);
 
     assertThat(createdTask).isNotNull();
     // query the task by custom attributes
@@ -330,7 +509,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_QueryAndCountMatch_When_CalledWithSameQuery() {
-    TaskQuery taskQuery = TASK_SERVICE.createTaskQuery();
+    TaskQuery taskQuery = taskService.createTaskQuery();
     List<TaskSummary> tasks = taskQuery.nameIn("Task99", "Task01", "Widerruf").list();
     long numberOfTasks = taskQuery.nameIn("Task99", "Task01", "Widerruf").count();
     assertThat(tasks).hasSize((int) numberOfTasks);
@@ -339,7 +518,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void testQueryAllPaged() {
-    TaskQuery taskQuery = TASK_SERVICE.createTaskQuery();
+    TaskQuery taskQuery = taskService.createTaskQuery();
     long numberOfTasks = taskQuery.count();
     assertThat(numberOfTasks).isEqualTo(88);
     List<TaskSummary> tasks = taskQuery.orderByDue(DESCENDING).list();
@@ -354,12 +533,12 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_ReturnCorrectResults_When_QueryingForReceivedWithUpperBoundTimeInterval() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")))
             .list();
     long resultCount =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")))
             .count();
@@ -371,12 +550,12 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_ReturnCorrectResults_When_QueryingForReceivedWithLowerBoundTimeInterval() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
             .list();
     long resultCount =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
             .count();
@@ -388,7 +567,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_ReturnCorrectResults_When_QueryingForReceivedWithMultipleTimeIntervals() {
     long resultCount =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .receivedWithin(
                 new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")),
@@ -396,7 +575,7 @@ class QueryTasksAccTest extends AbstractAccTest {
             .count();
 
     long resultCount2 =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .receivedWithin(
                 new TimeInterval(
@@ -412,21 +591,21 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForCreatorIn() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().creatorIn("creator_user_id2", "creator_user_id3").list();
+        taskService.createTaskQuery().creatorIn("creator_user_id2", "creator_user_id3").list();
     assertThat(results).hasSize(4);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForCreatorLike() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().creatorLike("ersTeLlEr%").list();
+    List<TaskSummary> results = taskService.createTaskQuery().creatorLike("ersTeLlEr%").list();
     assertThat(results).hasSize(3);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForNoteLike() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().noteLike("Some%").list();
+    List<TaskSummary> results = taskService.createTaskQuery().noteLike("Some%").list();
     assertThat(results).hasSize(7);
   }
 
@@ -434,7 +613,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForClassificationCategoryIn() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().classificationCategoryIn("MANUAL", "AUTOMATIC").list();
+        taskService.createTaskQuery().classificationCategoryIn("MANUAL", "AUTOMATIC").list();
     assertThat(results).hasSize(4);
   }
 
@@ -442,7 +621,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForClassificationCategoryLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().classificationCategoryLike("AUTO%").list();
+        taskService.createTaskQuery().classificationCategoryLike("AUTO%").list();
     assertThat(results).hasSize(1);
   }
 
@@ -450,7 +629,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForPrimaryObjectReferenceCompanyLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceCompanyLike("My%").list();
+        taskService.createTaskQuery().primaryObjectReferenceCompanyLike("My%").list();
     assertThat(results).hasSize(7);
   }
 
@@ -458,7 +637,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForPrimaryObjectReferenceSystemLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceSystemLike("My%").list();
+        taskService.createTaskQuery().primaryObjectReferenceSystemLike("My%").list();
     assertThat(results).hasSize(7);
   }
 
@@ -466,7 +645,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForPrimaryObjectReferenceSystemInstanceLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceSystemInstanceLike("My%").list();
+        taskService.createTaskQuery().primaryObjectReferenceSystemInstanceLike("My%").list();
     assertThat(results).hasSize(7);
   }
 
@@ -474,21 +653,21 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForPrimaryObjectReferenceTypeLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceTypeLike("My%").list();
+        taskService.createTaskQuery().primaryObjectReferenceTypeLike("My%").list();
     assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForReadEquals() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().readEquals(true).list();
+    List<TaskSummary> results = taskService.createTaskQuery().readEquals(true).list();
     assertThat(results).hasSize(39);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void testQueryForTransferredEquals() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().transferredEquals(true).list();
+    List<TaskSummary> results = taskService.createTaskQuery().transferredEquals(true).list();
     assertThat(results).hasSize(2);
   }
 
@@ -496,7 +675,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForBusinessProcessIdIn() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().businessProcessIdIn("PI_0000000000003", "BPI21").list();
+        taskService.createTaskQuery().businessProcessIdIn("PI_0000000000003", "BPI21").list();
     assertThat(results).hasSize(9);
   }
 
@@ -504,7 +683,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForAttachmentClassificationKeyIn() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().attachmentClassificationKeyIn("L110102").list();
+        taskService.createTaskQuery().attachmentClassificationKeyIn("L110102").list();
     assertThat(results).hasSize(1);
     assertThat(results.get(0).getId()).isEqualTo("TKI:000000000000000000000000000000000002");
   }
@@ -513,7 +692,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForAttachmentClassificationKeyLike() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().attachmentClassificationKeyLike("%10102").list();
+        taskService.createTaskQuery().attachmentClassificationKeyLike("%10102").list();
     assertThat(results).hasSize(1);
     assertThat(results.get(0).getId()).isEqualTo("TKI:000000000000000000000000000000000002");
   }
@@ -522,7 +701,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForAttachmentClassificationIdIn() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .attachmentClassificationIdIn("CLI:100000000000000000000000000000000002")
             .list();
@@ -533,7 +712,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void testQueryForAttachmentChannelLike() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().attachmentChannelLike("%6").list();
+    List<TaskSummary> results = taskService.createTaskQuery().attachmentChannelLike("%6").list();
     assertThat(results).hasSize(2);
   }
 
@@ -541,7 +720,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForAttachmentReferenceIn() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().attachmentReferenceValueIn("val4").list();
+        taskService.createTaskQuery().attachmentReferenceValueIn("val4").list();
     assertThat(results).hasSize(6);
     assertThat(results.get(5).getAttachmentSummaries()).hasSize(1);
   }
@@ -552,7 +731,7 @@ class QueryTasksAccTest extends AbstractAccTest {
     TimeInterval interval =
         new TimeInterval(getInstant("2018-01-30T12:00:00"), getInstant("2018-01-31T12:00:00"));
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .attachmentReceivedWithin(interval)
             .orderByWorkbasketId(DESCENDING)
@@ -565,7 +744,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnOrderedResult_When_OrderByCreatorDescIsSet() {
-    List<TaskSummary> results = TASK_SERVICE.createTaskQuery().orderByCreator(DESCENDING).list();
+    List<TaskSummary> results = taskService.createTaskQuery().orderByCreator(DESCENDING).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -577,7 +756,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_ReturnOrderedResult_When_OrderByWorkbasketIdDescIsSet() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().orderByWorkbasketId(DESCENDING).list();
+        taskService.createTaskQuery().orderByWorkbasketId(DESCENDING).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -610,7 +789,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void should_ReturnOrderedResult_When_OrderByCustomFieldInSortDirectionIsSet(
       TaskCustomField customField, SortDirection sortDirection) {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().orderByCustomAttribute(customField, sortDirection).list();
+        taskService.createTaskQuery().orderByCustomAttribute(customField, sortDirection).list();
 
     Comparator<String> comparator =
         sortDirection == ASCENDING ? CASE_INSENSITIVE_ORDER : CASE_INSENSITIVE_ORDER.reversed();
@@ -626,7 +805,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderWithDirectionNull() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().orderByPrimaryObjectReferenceSystemInstance(null).list();
+        taskService.createTaskQuery().orderByPrimaryObjectReferenceSystemInstance(null).list();
 
     assertThat(results)
         .hasSizeGreaterThan(2)
@@ -639,7 +818,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentClassificationIdAsc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000009",
@@ -661,7 +840,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentClassificationIdDesc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000009",
@@ -683,7 +862,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentClassificationKeyAsc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000009",
@@ -705,7 +884,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentClassificationKeyDesc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000009",
@@ -727,7 +906,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentRefValueDesc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000010",
@@ -748,7 +927,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentReceivedAsc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000008",
@@ -768,7 +947,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentReceivedDesc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000008",
@@ -788,7 +967,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForOrderByAttachmentChannelAscAndReferenceDesc() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000009",
@@ -812,7 +991,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void testQueryForAttachmentChannelLikeAndOrdering() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .attachmentChannelLike("CH%")
             .orderByClassificationKey(DESCENDING)
@@ -824,7 +1003,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
 
     results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .attachmentChannelLike("CH%")
             .orderByClassificationKey(ASCENDING)
@@ -841,7 +1020,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void testQueryForExternalIdIn() {
 
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .externalIdIn(
                 "ETI:000000000000000000000000000000000010",
@@ -859,7 +1038,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     String[] ids = results.stream().map(TaskSummary::getId).toArray(String[]::new);
 
-    List<TaskSummary> result2 = TASK_SERVICE.createTaskQuery().idIn(ids).list();
+    List<TaskSummary> result2 = taskService.createTaskQuery().idIn(ids).list();
     assertThat(result2).hasSize(10);
   }
 }

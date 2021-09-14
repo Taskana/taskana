@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.models.Task;
@@ -23,11 +22,8 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 class CancelTaskAccTest extends AbstractAccTest {
 
-  private TaskService taskService;
-
   CancelTaskAccTest() {
     super();
-    taskService = taskanaEngine.getTaskService();
   }
 
   @BeforeEach

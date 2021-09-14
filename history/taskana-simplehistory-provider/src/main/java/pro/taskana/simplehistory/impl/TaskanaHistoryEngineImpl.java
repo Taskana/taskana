@@ -35,6 +35,7 @@ import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryMapper;
 import pro.taskana.spi.history.api.TaskanaHistory;
+import pro.taskana.user.internal.UserMapper;
 
 /** This is the implementation of TaskanaHistoryEngine. */
 public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
@@ -118,6 +119,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     configuration.addMapper(WorkbasketHistoryQueryMapper.class);
     configuration.addMapper(ClassificationHistoryEventMapper.class);
     configuration.addMapper(ClassificationHistoryQueryMapper.class);
+    configuration.addMapper(UserMapper.class);
 
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);

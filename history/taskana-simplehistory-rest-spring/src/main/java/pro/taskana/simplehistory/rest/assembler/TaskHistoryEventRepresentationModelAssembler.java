@@ -34,6 +34,7 @@ public class TaskHistoryEventRepresentationModelAssembler
     repModel.setEventType(historyEvent.getEventType());
     repModel.setCreated(historyEvent.getCreated());
     repModel.setUserId(historyEvent.getUserId());
+    repModel.setUserLongName(historyEvent.getUserLongName());
     repModel.setDomain(historyEvent.getDomain());
     repModel.setWorkbasketKey(historyEvent.getWorkbasketKey());
     repModel.setPorCompany(historyEvent.getPorCompany());
@@ -41,6 +42,7 @@ public class TaskHistoryEventRepresentationModelAssembler
     repModel.setPorInstance(historyEvent.getPorInstance());
     repModel.setPorSystem(historyEvent.getPorSystem());
     repModel.setPorValue(historyEvent.getPorValue());
+    repModel.setTaskOwnerLongName(historyEvent.getTaskOwnerLongName());
     repModel.setTaskClassificationKey(historyEvent.getTaskClassificationKey());
     repModel.setTaskClassificationCategory(historyEvent.getTaskClassificationCategory());
     repModel.setAttachmentClassificationKey(historyEvent.getAttachmentClassificationKey());

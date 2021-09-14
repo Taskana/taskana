@@ -1,6 +1,5 @@
 package pro.taskana.task.internal;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -25,21 +24,6 @@ public interface TaskCommentMapper {
 
   @Delete("DELETE FROM TASK_COMMENT WHERE ID = #{taskCommentId}")
   void delete(String taskCommentId);
-
-  @Select(
-      "<script> SELECT ID, TASK_ID, TEXT_FIELD, CREATOR, CREATED, MODIFIED"
-          + " FROM TASK_COMMENT "
-          + "WHERE TASK_ID = #{taskId} "
-          + " ORDER BY CREATED ASC "
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
-          + "</script>")
-  @Result(property = "id", column = "ID")
-  @Result(property = "taskId", column = "TASK_ID")
-  @Result(property = "textField", column = "TEXT_FIELD")
-  @Result(property = "creator", column = "CREATOR")
-  @Result(property = "created", column = "CREATED")
-  @Result(property = "modified", column = "MODIFIED")
-  List<TaskCommentImpl> findByTaskId(@Param("taskId") String taskId);
 
   @Select(
       "<script> SELECT ID, TASK_ID, TEXT_FIELD, CREATOR, CREATED, MODIFIED"

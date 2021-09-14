@@ -32,6 +32,7 @@ public class TaskQuerySqlProvider {
         + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, c.NAME </if>"
         + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ac.NAME </if>"
         + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, w.NAME </if>"
+        + "<if test=\"joinWithUserInfo\">, u.LONG_NAME </if>"
         + "FROM TASK t "
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT AS a ON t.ID = a.TASK_ID "
@@ -44,6 +45,9 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + "<if test=\"joinWithWorkbaskets\">"
         + "LEFT JOIN WORKBASKET AS w ON t.WORKBASKET_ID = w.ID "
+        + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
         + checkForAuthorization()
@@ -74,6 +78,7 @@ public class TaskQuerySqlProvider {
         + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, c.NAME </if>"
         + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ac.NAME </if>"
         + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, w.NAME </if>"
+        + "<if test=\"joinWithUserInfo\">, u.LONG_NAME </if>"
         + "FROM TASK t "
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT a ON t.ID = a.TASK_ID "
@@ -86,6 +91,9 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + "<if test=\"joinWithWorkbaskets\">"
         + "LEFT JOIN WORKBASKET AS w ON t.WORKBASKET_ID = w.ID "
+        + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
         + commonTaskWhereStatement()
@@ -133,6 +141,9 @@ public class TaskQuerySqlProvider {
         + "<if test=\"joinWithAttachmentClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
         + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
+        + "</if>"
         + OPENING_WHERE_TAG
         + checkForAuthorization()
         + commonTaskWhereStatement()
@@ -155,6 +166,9 @@ public class TaskQuerySqlProvider {
         + "<if test=\"joinWithAttachmentClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
         + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
+        + "</if>"
         + OPENING_WHERE_TAG
         + commonTaskWhereStatement()
         + CLOSING_WHERE_TAG
@@ -174,6 +188,7 @@ public class TaskQuerySqlProvider {
   public static String queryTaskColumnValues() {
     return OPENING_SCRIPT_TAG
         + "SELECT DISTINCT ${columnName} "
+        + "<if test=\"joinWithUserInfo\">, u.LONG_NAME </if>"
         + "FROM TASK t "
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT AS a ON t.ID = a.TASK_ID "
@@ -183,6 +198,9 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + "<if test=\"joinWithAttachmentClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
+        + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
         + checkForAuthorization()
@@ -252,7 +270,8 @@ public class TaskQuerySqlProvider {
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
         + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED"
         + "</if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if>";
+        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if>"
+        + "<if test=\"joinWithUserInfo\">, ULONG_NAME </if>";
   }
 
   private static String checkForAuthorization() {
@@ -328,8 +347,8 @@ public class TaskQuerySqlProvider {
     whereNotIn("externalIdNotIn", "t.EXTERNAL_ID", sb);
     whereIn("priority", "t.PRIORITY", sb);
     whereNotIn("priorityNotIn", "t.PRIORITY", sb);
-    whereIn("priority", "t.PRIORITY", sb);
-    whereNotIn("priorityNotIn", "t.PRIORITY", sb);
+    whereIn("ownerLongNameIn", "u.LONG_NAME", sb);
+    whereNotIn("ownerLongNameNotIn", "u.LONG_NAME", sb);
     whereIn("stateIn", "t.STATE", sb);
     whereNotIn("stateNotIn", "t.STATE", sb);
     whereIn("taskId", "t.ID", sb);
@@ -358,6 +377,8 @@ public class TaskQuerySqlProvider {
     whereInTime("receivedWithin", "t.RECEIVED", sb);
     whereNotInTime("receivedNotWithin", "t.RECEIVED", sb);
 
+    whereLike("ownerLongNameLike", "u.LONG_NAME", sb);
+    whereNotLike("ownerLongNameNotLike", "u.LONG_NAME", sb);
     whereCustomStatements("custom", "t.CUSTOM", 16, sb);
 
     sb.append("<if test='isRead != null'>AND IS_READ = #{isRead}</if> ");

@@ -99,6 +99,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
+    task.setOwnerLongName("ownerLongName");
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
@@ -164,6 +165,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     repModel.setBusinessProcessId("businessProcessId");
     repModel.setParentBusinessProcessId("parentBusinessProcessId");
     repModel.setOwner("owner");
+    repModel.setOwnerLongName("ownerLongName");
     repModel.setRead(true);
     repModel.setTransferred(true);
     repModel.setCustom1("custom1");
@@ -250,6 +252,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
+    task.setOwnerLongName("ownerLongName");
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
@@ -303,6 +306,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     assertThat(taskSummary.getParentBusinessProcessId())
         .isEqualTo(repModel.getParentBusinessProcessId());
     assertThat(taskSummary.getOwner()).isEqualTo(repModel.getOwner());
+    assertThat(taskSummary.getOwnerLongName()).isEqualTo(repModel.getOwnerLongName());
     ObjectReferenceRepresentationModelAssemblerTest.testEquality(
         taskSummary.getPrimaryObjRef(), repModel.getPrimaryObjRef());
     assertThat(taskSummary.isRead()).isEqualTo(repModel.isRead());

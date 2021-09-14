@@ -38,6 +38,7 @@ public class TaskCommentRepresentationModelAssembler
     repModel.setTaskId(taskComment.getTaskId());
     repModel.setTextField(taskComment.getTextField());
     repModel.setCreator(taskComment.getCreator());
+    repModel.setCreatorLongName(taskComment.getCreatorLongName());
     repModel.setCreated(taskComment.getCreated());
     repModel.setModified(taskComment.getModified());
     try {
@@ -62,6 +63,7 @@ public class TaskCommentRepresentationModelAssembler
     taskComment.setId(repModel.getTaskCommentId());
     taskComment.setTextField(repModel.getTextField());
     taskComment.setCreator(repModel.getCreator());
+    taskComment.setCreatorLongName(repModel.getCreatorLongName());
     taskComment.setCreated(repModel.getCreated());
     taskComment.setModified(repModel.getModified());
     return taskComment;

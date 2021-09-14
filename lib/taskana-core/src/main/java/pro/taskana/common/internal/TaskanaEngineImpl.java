@@ -58,6 +58,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
 import pro.taskana.task.internal.TaskCommentMapper;
+import pro.taskana.task.internal.TaskCommentQueryMapper;
 import pro.taskana.task.internal.TaskMapper;
 import pro.taskana.task.internal.TaskQueryMapper;
 import pro.taskana.task.internal.TaskServiceImpl;
@@ -139,7 +140,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         internalTaskanaEngineImpl,
         sessionManager.getMapper(TaskMapper.class),
         sessionManager.getMapper(TaskCommentMapper.class),
-        sessionManager.getMapper(AttachmentMapper.class));
+        sessionManager.getMapper(AttachmentMapper.class),
+        sessionManager.getMapper(UserMapper.class));
   }
 
   @Override
@@ -345,6 +347,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(WorkbasketQueryMapper.class);
     configuration.addMapper(TaskQueryMapper.class);
     configuration.addMapper(TaskCommentMapper.class);
+    configuration.addMapper(TaskCommentQueryMapper.class);
     configuration.addMapper(ClassificationQueryMapper.class);
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);

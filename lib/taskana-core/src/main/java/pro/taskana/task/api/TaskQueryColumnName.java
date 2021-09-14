@@ -29,6 +29,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
   BUSINESS_PROCESS_ID("t.business_process_id"),
   PARENT_BUSINESS_PROCESS_ID("t.parent_business_process_id"),
   OWNER("t.owner"),
+  OWNER_LONG_NAME("u.long_name"),
   POR_COMPANY("t.por_company"),
   POR_SYSTEM("t.por_system"),
   POR_INSTANCE("t.por_instance"),

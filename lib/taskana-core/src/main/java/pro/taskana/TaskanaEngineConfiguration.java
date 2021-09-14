@@ -77,6 +77,7 @@ public class TaskanaEngineConfiguration {
       "taskana.history.deletion.on.task.deletion.enabled";
   private static final String TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH =
       "taskana.validation.allowTimestampServiceLevelMismatch";
+  private static final String TASKANA_ADD_ADDITIONAL_USER_INFO = "taskana.addAdditionalUserInfo";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -109,8 +110,11 @@ public class TaskanaEngineConfiguration {
   private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
   private Duration cleanupJobRunEvery = Duration.parse("P1D");
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
+  // TASKANA behavior
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
   private boolean validationAllowTimestampServiceLevelMismatch = false;
+  //Property to enable/disable the addition of user full/long name through joins
+  private boolean addAdditionalUserInfo = false;
 
   private int priorityJobBatchSize = 100;
   private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
@@ -182,6 +186,8 @@ public class TaskanaEngineConfiguration {
         props,
         TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH,
         this::setValidationAllowTimestampServiceLevelMismatch);
+    initBooleanProperty(
+        props, TASKANA_ADD_ADDITIONAL_USER_INFO, this::setAddAdditionalUserInfo);
     initCustomHolidays(props, separator);
   }
 
@@ -315,6 +321,14 @@ public class TaskanaEngineConfiguration {
 
   public void setDomains(List<String> domains) {
     this.domains = domains;
+  }
+
+  public boolean getAddAdditionalUserInfo() {
+    return addAdditionalUserInfo;
+  }
+
+  public void setAddAdditionalUserInfo(boolean addAdditionalUserInfo) {
+    this.addAdditionalUserInfo = addAdditionalUserInfo;
   }
 
   public List<String> getClassificationTypes() {

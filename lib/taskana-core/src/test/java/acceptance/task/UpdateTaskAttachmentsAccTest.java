@@ -39,14 +39,12 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
   private Task task;
   private Attachment attachment;
-  private TaskService taskService;
   private ClassificationService classificationService;
 
   @BeforeEach
   @WithAccessId(user = "admin")
   void setUp() throws Exception {
     resetDb(false);
-    taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
     task =
         taskService.getTask(

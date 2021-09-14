@@ -22,14 +22,10 @@ import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskQueryColumnName;
-import pro.taskana.task.internal.TaskServiceImpl;
 
 /** Acceptance test for listing the column values within a workbasket. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksListValuesAccTest extends AbstractAccTest {
-
-  private static final TaskServiceImpl TASK_SERVICE =
-      (TaskServiceImpl) taskanaEngine.getTaskService();
 
   @WithAccessId(user = "admin")
   @Test
@@ -40,7 +36,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
             columnName ->
                 softly
                     .assertThatCode(
-                        () -> TASK_SERVICE.createTaskQuery().listValues(columnName, ASCENDING))
+                        () -> taskService.createTaskQuery().listValues(columnName, ASCENDING))
                     .describedAs("Column is not working " + columnName)
                     .doesNotThrowAnyException());
     softly.assertAll();
@@ -50,7 +46,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
   @Test
   void should_ReturnOwnerValues_When_ListValuesForOwnerIsInvoked() {
     List<String> columnValueList =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .ownerLike("%user%")
             .orderByOwner(DESCENDING)
@@ -61,7 +57,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnStateValues_When_ListValuesForStateIsInvoked() {
-    List<String> columnValueList = TASK_SERVICE.createTaskQuery().listValues(STATE, null);
+    List<String> columnValueList = taskService.createTaskQuery().listValues(STATE, null);
     assertThat(columnValueList).hasSize(5);
   }
 
@@ -69,28 +65,28 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
   @Test
   void should_ReturnAttachmentColumnValues_When_ListValuesForAttachmentColumnsIsInvoked() {
     List<String> columnValueList =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .attachmentReferenceValueIn("val4")
             .listValues(A_CHANNEL, null);
     assertThat(columnValueList).hasSize(2);
 
     columnValueList =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .attachmentReferenceValueLike("%")
             .listValues(A_REF_VALUE, null);
     assertThat(columnValueList).hasSize(6);
 
     columnValueList =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .orderByAttachmentClassificationId(DESCENDING)
             .listValues(A_CLASSIFICATION_ID, null);
     assertThat(columnValueList).hasSize(11);
 
     columnValueList =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .orderByClassificationKey(DESCENDING)
             .listValues(CLASSIFICATION_KEY, null);
@@ -102,7 +98,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
   void should_ReturnPorTypes_When_QueryingForListOfPorTypesForWorkbasket() {
     KeyDomain keyDomain = new KeyDomain("GPK_KSC", "DOMAIN_A");
     List<String> porTypes =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(keyDomain)
             .primaryObjectReferenceCompanyIn("00", "11")
@@ -115,7 +111,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
   void should_ReturnAttachmentClassificationNames_When_QueryingForListNames() {
     KeyDomain keyDomain = new KeyDomain("GPK_KSC", "DOMAIN_A");
     List<String> attachmentClassificationNames =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .workbasketKeyDomainIn(keyDomain)
             .listValues(TaskQueryColumnName.A_CLASSIFICATION_NAME, SortDirection.ASCENDING);

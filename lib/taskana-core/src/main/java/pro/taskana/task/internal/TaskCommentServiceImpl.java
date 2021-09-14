@@ -1,7 +1,6 @@
 package pro.taskana.task.internal;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,8 @@ import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
+import pro.taskana.user.api.models.User;
+import pro.taskana.user.internal.UserMapper;
 
 class TaskCommentServiceImpl {
 
@@ -26,14 +27,17 @@ class TaskCommentServiceImpl {
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
   private final TaskCommentMapper taskCommentMapper;
+  private final UserMapper userMapper;
 
   TaskCommentServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskCommentMapper taskCommentMapper,
+      UserMapper userMapper,
       TaskServiceImpl taskService) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskCommentMapper = taskCommentMapper;
+    this.userMapper = userMapper;
   }
 
   TaskComment newTaskComment(String taskId) {
@@ -149,7 +153,7 @@ class TaskCommentServiceImpl {
 
       taskService.getTask(taskId);
 
-      List<TaskComment> taskComments = new ArrayList<>(taskCommentMapper.findByTaskId(taskId));
+      List<TaskComment> taskComments = taskService.createTaskCommentQuery().taskIdIn(taskId).list();
 
       if (taskComments.isEmpty() && LOGGER.isDebugEnabled()) {
         LOGGER.debug("getTaskComments() found no comments for the provided taskId");
@@ -178,6 +182,13 @@ class TaskCommentServiceImpl {
 
       if (result == null) {
         throw new TaskCommentNotFoundException(taskCommentId);
+      }
+
+      if (taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+        User creator = userMapper.findById(result.getCreator());
+        if (creator != null) {
+          result.setCreatorLongName(creator.getFullName());
+        }
       }
 
       taskService.getTask(result.getTaskId());
