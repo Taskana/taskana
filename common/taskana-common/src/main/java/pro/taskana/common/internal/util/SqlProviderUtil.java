@@ -1,5 +1,7 @@
 package pro.taskana.common.internal.util;
 
+import java.util.stream.IntStream;
+
 public class SqlProviderUtil {
   public static final String OPENING_SCRIPT_TAG = "<script>";
   public static final String CLOSING_SCRIPT_TAG = "</script>";
@@ -9,8 +11,8 @@ public class SqlProviderUtil {
 
   private SqlProviderUtil() {}
 
-  public static void whereIn(String collection, String column, StringBuilder sb) {
-    sb.append("<if test='")
+  public static StringBuilder whereIn(String collection, String column, StringBuilder sb) {
+    return sb.append("<if test='")
         .append(collection)
         .append(" != null'>AND ")
         .append(column)
@@ -19,8 +21,12 @@ public class SqlProviderUtil {
         .append("' separator=',' >#{item}</foreach>)</if> ");
   }
 
-  public static void whereNotIn(String collection, String column, StringBuilder sb) {
-    sb.append("<if test='")
+  public static StringBuilder whereIn(String collection, String column) {
+    return whereIn(collection, column, new StringBuilder());
+  }
+
+  public static StringBuilder whereNotIn(String collection, String column, StringBuilder sb) {
+    return sb.append("<if test='")
         .append(collection)
         .append(" != null'>AND ")
         .append(column)
@@ -29,8 +35,12 @@ public class SqlProviderUtil {
         .append("' separator=',' >#{item}</foreach>)</if> ");
   }
 
-  public static void whereInTime(String collection, String column, StringBuilder sb) {
-    sb.append("<if test='")
+  public static StringBuilder whereNotIn(String collection, String column) {
+    return whereNotIn(collection, column, new StringBuilder());
+  }
+
+  public static StringBuilder whereInTime(String collection, String column, StringBuilder sb) {
+    return sb.append("<if test='")
         .append(collection)
         .append(" !=null'> AND (<foreach item='item' collection='")
         .append(collection)
@@ -43,13 +53,39 @@ public class SqlProviderUtil {
         .append(" &lt;=#{item.end} </if>)</foreach>)</if> ");
   }
 
-  public static void whereLike(String collection, String column, StringBuilder sb) {
-    sb.append("<if test='")
+  public static StringBuilder whereInTime(String collection, String column) {
+    return whereInTime(collection, column, new StringBuilder());
+  }
+
+  public static StringBuilder whereLike(String collection, String column, StringBuilder sb) {
+    return sb.append("<if test='")
         .append(collection)
         .append(" != null'>AND (<foreach item='item' collection='")
         .append(collection)
         .append("' separator=' OR '>UPPER(")
         .append(column)
         .append(") LIKE #{item}</foreach>)</if> ");
+  }
+
+  public static StringBuilder whereLike(String collection, String column) {
+    return whereLike(collection, column, new StringBuilder());
+  }
+
+  public static StringBuilder whereCustomStatements(
+      String baseCollection, String baseColumn, int customBound, StringBuilder sb) {
+    IntStream.rangeClosed(1, customBound)
+        .forEach(
+            x -> {
+              String column = baseColumn + "_" + x;
+              whereIn(baseCollection + x + "In", column, sb);
+              whereLike(baseCollection + x + "Like", column, sb);
+              whereNotIn(baseCollection + x + "NotIn", column, sb);
+            });
+    return sb;
+  }
+
+  public static StringBuilder whereCustomStatements(
+      String baseCollection, String baseColumn, int customBound) {
+    return whereCustomStatements(baseCollection, baseColumn, customBound, new StringBuilder());
   }
 }

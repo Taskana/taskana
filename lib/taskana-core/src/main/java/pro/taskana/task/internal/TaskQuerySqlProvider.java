@@ -5,6 +5,7 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_WHERE_TAG
 import static pro.taskana.common.internal.util.SqlProviderUtil.DB2_WITH_UR;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereCustomStatements;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
@@ -12,7 +13,6 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import pro.taskana.task.api.TaskQueryColumnName;
 
@@ -363,7 +363,7 @@ public class TaskQuerySqlProvider {
     whereLike("attachmentChannelLike", "a.CHANNEL", sb);
     whereLike("attachmentReferenceLike", "a.REF_VALUE", sb);
     whereLike("description", "DESCRIPTION", sb);
-    whereCustomStatements(sb);
+    whereCustomStatements("custom", "t.CUSTOM", 16, sb);
     sb.append("<if test='isRead != null'>AND IS_READ = #{isRead}</if> ");
     sb.append("<if test='isTransferred != null'>AND IS_TRANSFERRED = #{isTransferred}</if> ");
     sb.append(
@@ -371,19 +371,5 @@ public class TaskQuerySqlProvider {
             + " collection='workbasketKeyDomainIn' separator=' OR '>(t.WORKBASKET_KEY = #{item.key}"
             + " AND t.DOMAIN = #{item.domain})</foreach>)</if> ");
     return sb.toString();
-  }
-
-  private static void whereCustomStatements(StringBuilder sb) {
-    IntStream.rangeClosed(1, 16)
-        .forEach(
-            x -> {
-              String collectionIn = "custom" + x + "In";
-              String collectionNotIn = "custom" + x + "NotIn";
-              String collectionLike = "custom" + x + "Like";
-              String column = "CUSTOM_" + x;
-              whereIn(collectionIn, column, sb);
-              whereLike(collectionLike, column, sb);
-              whereNotIn(collectionNotIn, column, sb);
-            });
   }
 }
