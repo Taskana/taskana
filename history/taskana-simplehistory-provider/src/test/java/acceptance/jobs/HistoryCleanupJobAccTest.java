@@ -40,7 +40,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
   void should_CleanHistoryEventsUntilDate_When_SameParentBusinessTrueAndEventsQualified()
       throws Exception {
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
 
     TaskHistoryEvent eventToBeCleaned =
         createTaskHistoryEvent(
@@ -115,21 +115,21 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     getHistoryService().create(eventToBeCleaned5);
     getHistoryService().create(eventToBeCleaned6);
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(19);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(20);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
   }
 
   @Test
   @WithAccessId(user = "admin")
   void should_NotCleanHistoryEventsUntilDate_When_MinimumAgeNotReached() throws Exception {
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
 
     TaskHistoryEvent eventToBeCleaned =
         createTaskHistoryEvent(
@@ -156,12 +156,12 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     getHistoryService().create(eventToBeCleaned);
     getHistoryService().create(eventToBeCleaned2);
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
   }
 
   @Test
@@ -169,7 +169,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
   void should_NotCleanHistoryEvents_When_SameParentBusinessTrueAndActiveTaskInParentBusiness()
       throws Exception {
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
 
     TaskHistoryEvent eventToBeCleaned =
         createTaskHistoryEvent(
@@ -208,14 +208,14 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     getHistoryService().create(eventToBeCleaned2);
     getHistoryService().create(eventToBeCleaned3);
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
   }
 
   @Test
@@ -223,7 +223,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
   void should_NotCleanHistoryEvents_When_MinimumAgeOfOtherEndtstateEventInParentBusinessNotReached()
       throws Exception {
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
 
     TaskHistoryEvent eventToBeCleaned =
         createTaskHistoryEvent(
@@ -274,21 +274,21 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     getHistoryService().create(eventToBeCleaned3);
     getHistoryService().create(eventToBeCleaned4);
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(18);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(18);
   }
 
   @Test
   @WithAccessId(user = "admin")
   void should_CleanHistoryEventsUntilDate_When_SameParentBusinessFalse() throws Exception {
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(13);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
 
     TaskHistoryEvent eventToBeCleaned =
         createTaskHistoryEvent(
@@ -363,14 +363,14 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     getHistoryService().create(eventToBeCleaned5);
     getHistoryService().create(eventToBeCleaned6);
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(19);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(20);
 
     taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
 
-    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(15);
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
   }
 
   @WithAccessId(user = "admin")

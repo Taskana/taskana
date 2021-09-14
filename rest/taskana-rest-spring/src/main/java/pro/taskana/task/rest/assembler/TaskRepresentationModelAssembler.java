@@ -72,6 +72,7 @@ public class TaskRepresentationModelAssembler
     repModel.setBusinessProcessId(task.getBusinessProcessId());
     repModel.setParentBusinessProcessId(task.getParentBusinessProcessId());
     repModel.setOwner(task.getOwner());
+    repModel.setOwnerLongName(task.getOwnerLongName());
     repModel.setPrimaryObjRef(objectReferenceAssembler.toModel(task.getPrimaryObjRef()));
     repModel.setRead(task.isRead());
     repModel.setTransferred(task.isTransferred());
@@ -139,6 +140,7 @@ public class TaskRepresentationModelAssembler
     task.setBusinessProcessId(repModel.getBusinessProcessId());
     task.setParentBusinessProcessId(repModel.getParentBusinessProcessId());
     task.setOwner(repModel.getOwner());
+    task.setOwnerLongName(repModel.getOwnerLongName());
     task.setPrimaryObjRef(objectReferenceAssembler.toEntity(repModel.getPrimaryObjRef()));
     task.setRead(repModel.isRead());
     task.setTransferred(repModel.isTransferred());

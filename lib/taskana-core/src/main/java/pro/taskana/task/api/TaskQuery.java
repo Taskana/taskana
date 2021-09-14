@@ -720,6 +720,45 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   // region businessProcessId
 
   /**
+   * Adds the long names of the owners to your query.
+   *
+   * @param longNames the long names as String
+   * @return the query
+   */
+  TaskQuery ownerLongNameIn(String... longNames);
+
+  /**
+   * Adds the long names of the owners to your query, which should not be contained.
+   *
+   * @param longNames the long names as String
+   * @return the query
+   */
+  TaskQuery ownerLongNameNotIn(String... longNames);
+
+  /**
+   * Adds the long names of the owner for pattern matching to your query. It will be compared in SQL
+   * with the LIKE operator. You may use a wildcard like % to specify the pattern.
+   *
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
+   *
+   * @param longNames the owners of the searched tasks
+   * @return the query
+   */
+  TaskQuery ownerLongNameLike(String... longNames);
+
+  /**
+   * Adds the long names of the owner for pattern matching to your query, which should not be
+   * contained. It will be compared in SQL with the LIKE operator. You may use a wildcard like % to
+   * specify the pattern.
+   *
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
+   *
+   * @param longNames the owners of the searched tasks
+   * @return the query
+   */
+  TaskQuery ownerLongNameNotLike(String... longNames);
+
+  /**
    * Add the business process ids for exact matching to your query.
    *
    * @param businessProcessIds the businessProcessIds of the searched for tasks
@@ -1297,6 +1336,16 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @return the query
    */
   TaskQuery attachmentChannelNotIn(String... attachmentChannel);
+
+  /**
+   * This method sorts the query result according to the owner's long name. (Should only be used if
+   * each Task has an owner. Otherwise, the result is wrong.)
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByOwnerLongName(SortDirection sortDirection);
 
   /**
    * Add the values of attachment channel for pattern matching to your query. They will be compared

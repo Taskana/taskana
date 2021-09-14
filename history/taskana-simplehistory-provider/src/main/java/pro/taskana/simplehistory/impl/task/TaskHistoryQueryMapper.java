@@ -13,10 +13,15 @@ public interface TaskHistoryQueryMapper {
 
   @Select(
       "<script>"
-          + "SELECT ID, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, TASK_ID, EVENT_TYPE, CREATED, USER_ID, DOMAIN, WORKBASKET_KEY, "
+          + "SELECT ID, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, TASK_ID, EVENT_TYPE, CREATED, t.USER_ID, DOMAIN, WORKBASKET_KEY, "
           + "POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, TASK_CLASSIFICATION_KEY, TASK_CLASSIFICATION_CATEGORY,"
           + "ATTACHMENT_CLASSIFICATION_KEY, OLD_VALUE, NEW_VALUE, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4 "
-          + "FROM TASK_HISTORY_EVENT"
+          + "<if test=\"joinWithUserInfo\">, u.LONG_NAME AS USER_LONG_NAME, o.LONG_NAME AS TASK_OWNER_LONG_NAME </if>"
+          + "FROM TASK_HISTORY_EVENT t "
+          + "<if test=\"joinWithUserInfo\">"
+          + "LEFT JOIN USER_INFO AS u ON t.USER_ID = u.USER_ID "
+          + "LEFT JOIN USER_INFO AS o ON TASK_OWNER = o.USER_ID "
+          + "</if>"
           + "<where>"
           // IN-Queries
           + "<if test='idIn != null'>AND UPPER(ID) IN (<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "
@@ -25,7 +30,7 @@ public interface TaskHistoryQueryMapper {
           + "<if test='taskIdIn != null'>AND UPPER(TASK_ID) IN (<foreach item='item' collection='taskIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='eventTypeIn != null'>AND UPPER(EVENT_TYPE) IN (<foreach item='item' collection='eventTypeIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='createdIn !=null'> AND ( <foreach item='item' collection='createdIn' separator=',' > ( <if test='item.begin!=null'> CREATED &gt;= #{item.begin} </if> <if test='item.begin!=null and item.end!=null'> AND </if><if test='item.end!=null'> CREATED &lt;=#{item.end} </if>)</foreach>)</if> "
-          + "<if test='userIdIn != null'>AND UPPER(USER_ID) IN (<foreach item='item' collection='userIdIn' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='userIdIn != null'>AND UPPER(t.USER_ID) IN (<foreach item='item' collection='userIdIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='domainIn != null'>AND UPPER(DOMAIN) IN (<foreach item='item' collection='domainIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='workbasketKeyIn != null'>AND UPPER(WORKBASKET_KEY) IN (<foreach item='item' collection='workbasketKeyIn' separator=',' >#{item}</foreach>)</if> "
           + "<if test='porCompanyIn != null'>AND UPPER(POR_COMPANY) IN (<foreach item='item' collection='porCompanyIn' separator=',' >#{item}</foreach>)</if> "
@@ -47,7 +52,7 @@ public interface TaskHistoryQueryMapper {
           + "<if test='parentBusinessProcessIdLike != null'>AND (<foreach item='item' collection='parentBusinessProcessIdLike' separator=' OR ' >UPPER(PARENT_BUSINESS_PROCESS_ID) LIKE #{item}</foreach>)</if> "
           + "<if test='taskIdLike != null'>AND (<foreach item='item' collection='taskIdLike' separator=' OR ' >UPPER(TASK_ID) LIKE #{item}</foreach>)</if> "
           + "<if test='eventTypeLike != null'>AND (<foreach item='item' collection='eventTypeLike' separator=' OR ' >UPPER(EVENT_TYPE) LIKE #{item}</foreach>)</if> "
-          + "<if test='userIdLike != null'>AND (<foreach item='item' collection='userIdLike' separator=' OR ' >UPPER(USER_ID) LIKE #{item}</foreach>)</if> "
+          + "<if test='userIdLike != null'>AND (<foreach item='item' collection='userIdLike' separator=' OR ' >UPPER(t.USER_ID) LIKE #{item}</foreach>)</if> "
           + "<if test='domainLike != null'>AND (<foreach item='item' collection='domainLike' separator=' OR ' >UPPER(DOMAIN) LIKE #{item}</foreach>)</if> "
           + "<if test='workbasketKeyLike != null'>AND (<foreach item='item' collection='workbasketKeyLike' separator=' OR ' >UPPER(WORKBASKET_KEY) LIKE #{item}</foreach>)</if> "
           + "<if test='porCompanyLike != null'>AND (<foreach item='item' collection='porCompanyLike' separator=' OR ' >UPPER(POR_COMPANY) LIKE #{item}</foreach>)</if> "
@@ -71,9 +76,11 @@ public interface TaskHistoryQueryMapper {
   @Result(property = "businessProcessId", column = "BUSINESS_PROCESS_ID")
   @Result(property = "parentBusinessProcessId", column = "PARENT_BUSINESS_PROCESS_ID")
   @Result(property = "taskId", column = "TASK_ID")
+  @Result(property = "taskOwnerLongName", column = "TASK_OWNER_LONG_NAME")
   @Result(property = "eventType", column = "EVENT_TYPE")
   @Result(property = "created", column = "CREATED")
   @Result(property = "userId", column = "USER_ID")
+  @Result(property = "userLongName", column = "USER_LONG_NAME")
   @Result(property = "domain", column = "DOMAIN")
   @Result(property = "workbasketKey", column = "WORKBASKET_KEY")
   @Result(property = "porCompany", column = "POR_COMPANY")
@@ -148,7 +155,11 @@ public interface TaskHistoryQueryMapper {
 
   @Select(
       "<script>SELECT DISTINCT ${columnName} "
-          + "FROM TASK_HISTORY_EVENT"
+          + "FROM TASK_HISTORY_EVENT AS t"
+          + "<if test=\"joinWithUserInfo\">"
+          + "LEFT JOIN USER_INFO AS u ON t.USER_ID = u.USER_ID "
+          + "LEFT JOIN USER_INFO AS o ON TASK_OWNER = o.USER_ID "
+          + "</if>"
           + "<where>"
           // IN-Queries
           + "<if test='idIn != null'>AND UPPER(ID) IN (<foreach item='item' collection='idIn' separator=',' >#{item}</foreach>)</if> "

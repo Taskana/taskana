@@ -29,7 +29,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
@@ -40,8 +39,6 @@ import pro.taskana.task.internal.models.TaskImpl;
 /** Acceptance test for all "update task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class UpdateTaskAccTest extends AbstractAccTest {
-
-  private final TaskService taskService = taskanaEngine.getTaskService();
 
   @WithAccessId(user = "user-1-1")
   @Test

@@ -15,7 +15,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -30,12 +29,9 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   private WorkbasketService workbasketService;
 
-  private TaskService taskService;
-
   @BeforeEach
   void setUpMethod() {
     workbasketService = taskanaEngine.getWorkbasketService();
-    taskService = taskanaEngine.getTaskService();
   }
 
   @WithAccessId(user = "businessadmin")

@@ -177,6 +177,11 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] ownerLike;
   private String[] ownerNotLike;
   // endregion
+  // region ownerLongName
+  private String[] ownerLongNameIn;
+  private String[] ownerLongNameNotIn;
+  private String[] ownerLongNameLike;
+  private String[] ownerLongNameNotLike;
   // region primaryObjectReference
   private ObjectReference[] objectReferences;
   // endregion
@@ -322,12 +327,14 @@ public class TaskQueryImpl implements TaskQuery {
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
   // endregion
+  private boolean joinWithUserInfo;
 
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
     this.orderBy = new ArrayList<>();
     this.filterByAccessIdIn = true;
+    this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo();
   }
 
   // region id
@@ -905,6 +912,34 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   // endregion
+
+  public TaskQuery ownerLongNameIn(String... longNames) {
+    joinWithUserInfo = true;
+    this.ownerLongNameIn = longNames;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameNotIn(String... longNames) {
+    joinWithUserInfo = true;
+    this.ownerLongNameNotIn = longNames;
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameLike(String... longNames) {
+    joinWithUserInfo = true;
+    this.ownerLongNameLike = toUpperCopy(longNames);
+    return this;
+  }
+
+  @Override
+  public TaskQuery ownerLongNameNotLike(String... longNames) {
+    joinWithUserInfo = true;
+    this.ownerLongNameNotLike = toUpperCopy(longNames);
+    return this;
+  }
+
   // region primaryObjectReference
 
   @Override
@@ -1302,6 +1337,22 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   // endregion
+
+  public String[] getOwnerLongNameIn() {
+    return ownerLongNameIn;
+  }
+
+  public String[] getOwnerLongNameNotIn() {
+    return ownerLongNameNotIn;
+  }
+
+  public String[] getOwnerLongNameLike() {
+    return ownerLongNameLike;
+  }
+
+  public String[] getOwnerLongNameNotLike() {
+    return ownerLongNameNotLike;
+  }
   // region customAttributes
 
   @Override
@@ -1621,6 +1672,13 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery orderByOwnerLongName(SortDirection sortDirection) {
+    joinWithUserInfo = true;
+    return DB.isDb2(getDatabaseId())
+        ? addOrderCriteria("ULONG_NAME", sortDirection)
+        : addOrderCriteria("u.LONG_NAME", sortDirection);
+  }
+
   public List<TaskSummary> list() {
     return taskanaEngine.executeInDatabaseConnection(
         () -> {
@@ -1685,6 +1743,10 @@ public class TaskQueryImpl implements TaskQuery {
 
       if (columnName.isAttachmentColumn()) {
         joinWithAttachments = true;
+      }
+
+      if (columnName == TaskQueryColumnName.OWNER_LONG_NAME) {
+        joinWithUserInfo = true;
       }
 
       setupJoinAndOrderParameters();
@@ -2043,6 +2105,14 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(ownerLike)
         + ", ownerNotLike="
         + Arrays.toString(ownerNotLike)
+        + ", ownerLongNameIn="
+        + Arrays.toString(ownerLongNameIn)
+        + ", ownerLongNameNotIn="
+        + Arrays.toString(ownerLongNameNotIn)
+        + ", ownerLongNameLike="
+        + Arrays.toString(ownerLongNameLike)
+        + ", ownerLongNameNotLike="
+        + Arrays.toString(ownerLongNameNotLike)
         + ", objectReferences="
         + Arrays.toString(objectReferences)
         + ", porCompanyIn="
@@ -2265,6 +2335,8 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(wildcardSearchFieldIn)
         + ", wildcardSearchValueLike="
         + wildcardSearchValueLike
+        + ", joinWithUserInfo="
+        + joinWithUserInfo
         + "]";
   }
 }

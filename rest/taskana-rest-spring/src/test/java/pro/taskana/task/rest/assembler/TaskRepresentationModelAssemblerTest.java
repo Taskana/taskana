@@ -89,6 +89,7 @@ class TaskRepresentationModelAssemblerTest {
     repModel.setBusinessProcessId("businessProcessId");
     repModel.setParentBusinessProcessId("parentBusinessProcessId");
     repModel.setOwner("owner");
+    repModel.setOwnerLongName("ownerLongName");
     repModel.setPrimaryObjRef(primaryObjRef);
     repModel.setRead(true);
     repModel.setTransferred(true);
@@ -180,6 +181,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
+    task.setOwnerLongName("ownerLongName");
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
@@ -243,6 +245,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
+    task.setOwnerLongName("ownerLongName");
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);

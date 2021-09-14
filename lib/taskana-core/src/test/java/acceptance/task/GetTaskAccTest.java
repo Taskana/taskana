@@ -91,6 +91,38 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetTaskOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
+
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+
+    String userLongName =
+        taskanaEngine.getUserService().getUser(task.getOwner()).getLongName();
+    assertThat(task)
+        .extracting(Task::getOwnerLongName)
+        .isEqualTo(userLongName);
+
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_NotSetTaskOwnerLongNameOfTask_When_PropertyDisabled() throws Exception {
+
+    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    TaskService taskService = taskanaEngine.getTaskService();
+
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+
+    assertThat(task)
+        .extracting(Task::getOwnerLongName)
+        .isNull();
+
+  }
+
   @WithAccessId(user = "user-1-2")
   @Test
   void should_ThrowException_When_UserIsNotAuthorizedToGetTask() {

@@ -21,7 +21,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
@@ -36,18 +35,16 @@ import pro.taskana.workbasket.api.models.Workbasket;
 @ExtendWith(JaasExtension.class)
 class TransferTaskAccTest extends AbstractAccTest {
 
-  private static final TaskService TASK_SERVICE = taskanaEngine.getTaskService();
-
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketIdIsProvided() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
-    TASK_SERVICE.claim(task.getId());
-    TASK_SERVICE.setTaskRead(task.getId(), true);
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    taskService.claim(task.getId());
+    taskService.setTaskRead(task.getId(), true);
 
-    TASK_SERVICE.transfer(task.getId(), "WBI:100000000000000000000000000000000006");
+    taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000006");
 
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -59,13 +56,13 @@ class TransferTaskAccTest extends AbstractAccTest {
   @TestTemplate
   void should_TransferTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
-    TASK_SERVICE.claim(task.getId());
-    TASK_SERVICE.setTaskRead(task.getId(), true);
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    taskService.claim(task.getId());
+    taskService.setTaskRead(task.getId(), true);
 
-    TASK_SERVICE.transfer(task.getId(), "WBI:100000000000000000000000000000000006");
+    taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000006");
 
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -75,13 +72,13 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketKeyAndDomainIsProvided() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
-    TASK_SERVICE.claim(task.getId());
-    TASK_SERVICE.setTaskRead(task.getId(), true);
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    taskService.claim(task.getId());
+    taskService.setTaskRead(task.getId(), true);
 
-    TASK_SERVICE.transfer(task.getId(), "USER-1-1", "DOMAIN_A");
+    taskService.transfer(task.getId(), "USER-1-1", "DOMAIN_A");
 
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -91,10 +88,10 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void should_ChangeDomain_When_TransferringTaskToWorkbasketWithDifferentDomain() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000000");
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     String domain1 = task.getDomain();
 
-    Task transferredTask = TASK_SERVICE.transfer(task.getId(), "GPK_B_KSC_1", "DOMAIN_B");
+    Task transferredTask = taskService.transfer(task.getId(), "GPK_B_KSC_1", "DOMAIN_B");
 
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.getDomain()).isNotEqualTo(domain1);
@@ -103,21 +100,21 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_UserHasNoTransferAuthorization() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000001");
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
 
     ThrowingCallable call =
-        () -> TASK_SERVICE.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+        () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_ThrowException_When_DestinationWorkbasketDoesNotExist() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
-    TASK_SERVICE.claim(task.getId());
-    TASK_SERVICE.setTaskRead(task.getId(), true);
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    taskService.claim(task.getId());
+    taskService.setTaskRead(task.getId(), true);
 
-    ThrowingCallable call = () -> TASK_SERVICE.transfer(task.getId(), "INVALID");
+    ThrowingCallable call = () -> taskService.transfer(task.getId(), "INVALID");
     assertThatThrownBy(call).isInstanceOf(WorkbasketNotFoundException.class);
   }
 
@@ -125,7 +122,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TaskToTransferDoesNotExist() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.transfer("Invalid", "WBI:100000000000000000000000000000000005");
+        () -> taskService.transfer("Invalid", "WBI:100000000000000000000000000000000005");
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
@@ -134,7 +131,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_TransferWithNoTransferAuthorization() {
     ThrowingCallable call =
         () ->
-            TASK_SERVICE.transfer(
+            taskService.transfer(
                 "TKI:200000000000000000000000000000000007",
                 "WBI:100000000000000000000000000000000001");
     assertThatThrownBy(call)
@@ -149,10 +146,10 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void should_ThrowException_When_TransferWithNoAppendAuthorization() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000002");
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000002");
 
     ThrowingCallable call =
-        () -> TASK_SERVICE.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
+        () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
     assertThatThrownBy(call)
         .isInstanceOf(NotAuthorizedException.class)
         .extracting(Throwable::getMessage)
@@ -165,10 +162,10 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "teamlead-1")
   @Test
   void should_ThrowException_When_TaskToTransferIsAlreadyCompleted() throws Exception {
-    Task task = TASK_SERVICE.getTask("TKI:100000000000000000000000000000000006");
+    Task task = taskService.getTask("TKI:100000000000000000000000000000000006");
 
     ThrowingCallable call =
-        () -> TASK_SERVICE.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+        () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
     assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
   }
 
@@ -181,12 +178,12 @@ class TransferTaskAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000004", "TKI:000000000000000000000000000000000005");
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
+        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
     assertThat(results.containsErrors()).isFalse();
 
     final Workbasket wb =
         taskanaEngine.getWorkbasketService().getWorkbasket("USER-1-1", "DOMAIN_A");
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000004");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000004");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -195,7 +192,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
-    transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000005");
+    transferredTask = taskService.getTask("TKI:000000000000000000000000000000000005");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -226,7 +223,7 @@ class TransferTaskAccTest extends AbstractAccTest {
             "TKI:100000000000000000000000000000000006"); // already completed
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
+        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
     // check for exceptions in bulk
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap().values()).hasSize(6);
@@ -242,7 +239,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(results.getErrorForId(null).getClass()).isEqualTo(InvalidArgumentException.class);
 
     // verify valid requests
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000006");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000006");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -252,12 +249,12 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
 
-    transferredTask = TASK_SERVICE.getTask("TKI:200000000000000000000000000000000008");
+    transferredTask = taskService.getTask("TKI:200000000000000000000000000000000008");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
     assertThat(transferredTask.getWorkbasketKey()).isEqualTo("TPK_VIP");
 
-    transferredTask = TASK_SERVICE.getTask("TKI:100000000000000000000000000000000006");
+    transferredTask = taskService.getTask("TKI:100000000000000000000000000000000006");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
     assertThat(transferredTask.getWorkbasketKey()).isEqualTo("TEAMLEAD-1");
@@ -273,7 +270,7 @@ class TransferTaskAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000041"); // NotAuthorized READ
 
     ThrowingCallable call =
-        () -> TASK_SERVICE.transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
+        () -> taskService.transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
     assertThatThrownBy(call)
         .isInstanceOf(NotAuthorizedException.class)
         .hasMessageContaining("APPEND");
@@ -285,7 +282,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     List<String> taskIds = List.of("TKI:000000000000000000000000000000000006");
 
     ThrowingCallable call =
-        () -> TASK_SERVICE.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+        () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
 
     assertThatCode(call).doesNotThrowAnyException();
   }
@@ -294,7 +291,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_TransferredTaskListIsNull() {
     ThrowingCallable call =
-        () -> TASK_SERVICE.transferTasks("WBI:100000000000000000000000000000000006", null);
+        () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not be null or empty.");
@@ -305,7 +302,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_TransferringEmptyTaskIdList() {
     ThrowingCallable call =
         () ->
-            TASK_SERVICE.transferTasks(
+            taskService.transferTasks(
                 "WBI:100000000000000000000000000000000006", Collections.emptyList());
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
@@ -319,12 +316,12 @@ class TransferTaskAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000023", "TKI:000000000000000000000000000000000024");
 
     BulkOperationResults<String, TaskanaException> results =
-        TASK_SERVICE.transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
+        taskService.transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
     assertThat(results.containsErrors()).isFalse();
 
     final Workbasket wb =
         taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000023");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000023");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -333,7 +330,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
-    transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000024");
+    transferredTask = taskService.getTask("TKI:000000000000000000000000000000000024");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -347,12 +344,12 @@ class TransferTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_NotSetTheTransferFlag_When_SetTransferFlagNotRequested() throws Exception {
-    TASK_SERVICE.transfer(
+    taskService.transfer(
         "TKI:000000000000000000000000000000000003",
         "WBI:100000000000000000000000000000000006",
         false);
 
-    Task transferredTask = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
   }
@@ -361,7 +358,7 @@ class TransferTaskAccTest extends AbstractAccTest {
   @Test
   void should_NotSetTheTransferFlagWithinBulkTransfer_When_SetTransferFlagNotRequested()
       throws Exception {
-    TASK_SERVICE.transferTasks(
+    taskService.transferTasks(
         "WBI:100000000000000000000000000000000006",
         List.of(
             "TKI:000000000000000000000000000000000003",
@@ -370,7 +367,7 @@ class TransferTaskAccTest extends AbstractAccTest {
         false);
 
     List<TaskSummary> transferredTasks =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000004",

@@ -22,7 +22,6 @@ import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 
@@ -31,8 +30,6 @@ import pro.taskana.task.api.models.Task;
 @ExtendWith(JaasExtension.class)
 class PriorityServiceAccTest extends AbstractAccTest {
 
-  private static final TaskService TASK_SERVICE = taskanaEngine.getTaskService();
-
   @WithAccessId(user = "user-1-1")
   @TestFactory
   Stream<DynamicTest> should_SetThePriorityAccordingToTestProvider_When_CreatingTask() {
@@ -40,14 +37,14 @@ class PriorityServiceAccTest extends AbstractAccTest {
 
     ThrowingConsumer<Pair<String, Integer>> test =
         x -> {
-          Task task = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+          Task task = taskService.newTask("USER-1-1", "DOMAIN_A");
           task.setCustomAttribute(TaskCustomField.CUSTOM_6, x.getLeft());
           task.setClassificationKey("T2100");
           ObjectReference objectReference =
               createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
           task.setPrimaryObjRef(objectReference);
 
-          Task createdTask = TASK_SERVICE.createTask(task);
+          Task createdTask = taskService.createTask(task);
           assertThat(createdTask.getPriority()).isEqualTo(x.getRight());
         };
 
@@ -59,7 +56,7 @@ class PriorityServiceAccTest extends AbstractAccTest {
   Stream<DynamicTest> should_SetThePriorityAccordingToTestProvider_When_UpdatingTask()
       throws Exception {
     List<Pair<String, Integer>> testCases = List.of(Pair.of("false", 1), Pair.of("true", 10));
-    Task task = TASK_SERVICE.getTask("TKI:000000000000000000000000000000000000");
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
     int daysSinceCreated =
         Math.toIntExact(
             TimeUnit.DAYS.convert(
@@ -70,7 +67,7 @@ class PriorityServiceAccTest extends AbstractAccTest {
         x -> {
           task.setCustomAttribute(TaskCustomField.CUSTOM_6, x.getLeft());
 
-          Task updatedTask = TASK_SERVICE.updateTask(task);
+          Task updatedTask = taskService.updateTask(task);
           assertThat(updatedTask.getPriority()).isEqualTo(daysSinceCreated * x.getRight());
         };
 

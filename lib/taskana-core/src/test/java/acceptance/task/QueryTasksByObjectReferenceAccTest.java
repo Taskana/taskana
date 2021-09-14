@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 
@@ -17,13 +16,11 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
 
-  private static final TaskService TASK_SERVICE = taskanaEngine.getTaskService();
-
   @WithAccessId(user = "admin")
   @Test
   void should_ApplyObjectReferenceFilter_When_ExactValueIsSet() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceValueIn("11223344", "22334455").list();
+        taskService.createTaskQuery().primaryObjectReferenceValueIn("11223344", "22334455").list();
     assertThat(results).hasSize(33);
   }
 
@@ -33,7 +30,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference = new ObjectReference();
     objectReference.setValue("11223344");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
+        taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(21);
   }
 
@@ -43,7 +40,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference = new ObjectReference();
     objectReference.setType("SDNR");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
+        taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(46);
   }
 
@@ -53,7 +50,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference = new ObjectReference();
     objectReference.setCompany("MyCompany1");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
+        taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(7);
   }
 
@@ -63,7 +60,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference = new ObjectReference();
     objectReference.setSystem("MySystem1");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
+        taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(7);
   }
 
@@ -73,7 +70,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference = new ObjectReference();
     objectReference.setSystemInstance("MyInstance1");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
+        taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(7);
   }
 
@@ -85,7 +82,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     ObjectReference objectReference1 = new ObjectReference();
     objectReference1.setValue("11223344");
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .primaryObjectReferenceIn(objectReference, objectReference1)
             .list();
@@ -102,7 +99,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     objectReference.setType("VNR");
     objectReference.setValue("67890123");
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
+        taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).list();
     assertThat(results).hasSize(1);
   }
 
@@ -115,7 +112,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
     objectReference.setSystemInstance("00");
     objectReference.setType("VNR");
     objectReference.setValue("67890123");
-    long count = TASK_SERVICE.createTaskQuery().primaryObjectReferenceIn(objectReference).count();
+    long count = taskService.createTaskQuery().primaryObjectReferenceIn(objectReference).count();
     assertThat(count).isEqualTo(1);
   }
 
@@ -123,7 +120,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   @Test
   void should_ApplyObjectReferenceFilter_When_ExactValueAndTypeAreSet() {
     List<TaskSummary> results =
-        TASK_SERVICE
+        taskService
             .createTaskQuery()
             .primaryObjectReferenceTypeIn("SDNR")
             .primaryObjectReferenceValueIn("11223344")
@@ -135,7 +132,7 @@ class QueryTasksByObjectReferenceAccTest extends AbstractAccTest {
   @Test
   void should_ApplyObjectReferenceFilter_When_ValueLikeIsSet() {
     List<TaskSummary> results =
-        TASK_SERVICE.createTaskQuery().primaryObjectReferenceValueLike("%567%").list();
+        taskService.createTaskQuery().primaryObjectReferenceValueLike("%567%").list();
     assertThat(results).hasSize(10);
   }
 }

@@ -169,6 +169,13 @@ public interface TaskSummary {
   String getOwner();
 
   /**
+   * Gets the owner's long name of the Task.
+   *
+   * @return the long name of the Task owner
+   */
+  String getOwnerLongName();
+
+  /**
    * Gets the primary ObjectReference of the task.
    *
    * @return the task's primary ObjectReference

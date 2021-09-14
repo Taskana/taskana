@@ -17,6 +17,8 @@ public class TaskCommentRepresentationModel
   private String textField;
   /** The creator of the task comment. */
   private String creator;
+  /** The long name of the task comment creator. */
+  private String creatorLongName;
   /** The creation timestamp in the system. */
   private Instant created;
   /** Timestamp of the last task comment modification. */
@@ -52,6 +54,14 @@ public class TaskCommentRepresentationModel
 
   public void setCreator(String creator) {
     this.creator = creator;
+  }
+
+  public String getCreatorLongName() {
+    return creatorLongName;
+  }
+
+  public void setCreatorLongName(String creatorLongName) {
+    this.creatorLongName = creatorLongName;
   }
 
   public Instant getCreated() {
