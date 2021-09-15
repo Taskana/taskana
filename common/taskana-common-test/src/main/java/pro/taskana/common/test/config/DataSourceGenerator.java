@@ -10,72 +10,49 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Integration Test for TaskanaEngineConfiguration. */
-public final class TaskanaEngineTestConfiguration {
+/**
+ * The DataSourceGenerator provides the proper {@linkplain DataSource} for all Integration tests.
+ *
+ * <p>If the file <b>${user.home}/taskanaUnitTest.properties</b> is present, the {@linkplain
+ * DataSource} is created according to the properties <b>jdbcDriver, jdbcUrl, dbUserName and
+ * dbPassword</b>. If any of these properties is missing, or the file doesn't exist, the default
+ * {@linkplain DataSource} for H2 in-memory db is created.
+ *
+ * <p>Additionally the property <b>schemaName</b> can be defined. If that property is missing, or
+ * the file doesn't exist the schemaName TASKANA will be used.
+ */
+public final class DataSourceGenerator {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(TaskanaEngineTestConfiguration.class);
-  private static final int POOL_TIME_TO_WAIT = 50;
+  private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceGenerator.class);
   private static final DataSource DATA_SOURCE;
-  private static String schemaName = null;
+  private static final String SCHEMA_NAME;
+
+  private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
+  private static final int POOL_TIME_TO_WAIT = 50;
 
   static {
     String propertiesFileName = System.getProperty("user.home") + "/taskanaUnitTest.properties";
     File f = new File(propertiesFileName);
     if (f.exists() && !f.isDirectory()) {
       DATA_SOURCE = createDataSourceFromProperties(propertiesFileName);
+      SCHEMA_NAME = getSchemaNameFromPropertiesObject(propertiesFileName);
     } else {
-      DATA_SOURCE = createDefaultDataSource();
+      DATA_SOURCE = createDataSourceForH2();
+      SCHEMA_NAME = DEFAULT_SCHEMA_NAME;
     }
   }
 
-  private TaskanaEngineTestConfiguration() {}
+  private DataSourceGenerator() {}
 
-  /**
-   * returns the Datasource used for Junit test. If the file {user.home}/taskanaUnitTest.properties
-   * is present, the Datasource is created according to the properties jdbcDriver, jdbcUrl,
-   * dbUserName and dbPassword. Assuming, the database has the name tskdb, a sample properties file
-   * for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
-   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password If any of
-   * these properties is missing, or the file doesn't exist, the default Datasource for h2 in-memory
-   * db is created.
-   *
-   * @return dataSource for unit test
-   */
   public static DataSource getDataSource() {
     return DATA_SOURCE;
   }
 
-  /**
-   * returns the SchemaName used for Junit test. If the file {user.home}/taskanaUnitTest.properties
-   * is present, the SchemaName is created according to the property schemaName. a sample properties
-   * file for DB2 looks as follows: jdbcDriver=com.ibm.db2.jcc.DB2Driver
-   * jdbcUrl=jdbc:db2://localhost:50000/tskdb dbUserName=db2user dbPassword=db2password
-   * schemaName=TASKANA If any of these properties is missing, or the file doesn't exist, the
-   * default schemaName TASKANA is created used.
-   *
-   * @return String for unit test
-   */
   public static String getSchemaName() {
-    if (schemaName == null) {
-      String propertiesFileName = System.getProperty("user.home") + "/taskanaUnitTest.properties";
-      File f = new File(propertiesFileName);
-      if (f.exists() && !f.isDirectory()) {
-        schemaName = getSchemaNameFromPropertiesObject(propertiesFileName);
-      } else {
-        schemaName = "TASKANA";
-      }
-    }
-    return schemaName;
+    return SCHEMA_NAME;
   }
 
-  /**
-   * create data source from properties file.
-   *
-   * @param propertiesFileName the name of the property file
-   * @return the parsed datasource.
-   */
-  public static DataSource createDataSourceFromProperties(String propertiesFileName) {
+  private static DataSource createDataSourceFromProperties(String propertiesFileName) {
     DataSource ds;
     try (InputStream input = new FileInputStream(propertiesFileName)) {
       Properties prop = new Properties();
@@ -112,24 +89,24 @@ public final class TaskanaEngineTestConfiguration {
                 dbUserName,
                 dbPassword);
         ((PooledDataSource) ds)
-            .forceCloseAll(); // otherwise the MyBatis pool is not initialized correctly
+            .forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
       } else {
         LOGGER.warn("propertiesFile {} is incomplete {}", propertiesFileName, warningMessage);
         LOGGER.warn("Using default Datasource for Test");
-        ds = createDefaultDataSource();
+        ds = createDataSourceForH2();
       }
 
     } catch (IOException e) {
       LOGGER.warn("createDataSourceFromProperties caught Exception ", e);
       LOGGER.warn("Using default Datasource for Test");
-      ds = createDefaultDataSource();
+      ds = createDataSourceForH2();
     }
 
     return ds;
   }
 
-  static String getSchemaNameFromPropertiesObject(String propertiesFileName) {
-    String schemaName = "TASKANA";
+  private static String getSchemaNameFromPropertiesObject(String propertiesFileName) {
+    String schemaName = DEFAULT_SCHEMA_NAME;
     try (InputStream input = new FileInputStream(propertiesFileName)) {
       Properties prop = new Properties();
       prop.load(input);
@@ -144,21 +121,21 @@ public final class TaskanaEngineTestConfiguration {
       if (!propertiesFileIsComplete) {
         LOGGER.warn("propertiesFile {} is incomplete {}", propertiesFileName, warningMessage);
         LOGGER.warn("Using default Datasource for Test");
-        schemaName = "TASKANA";
+        schemaName = DEFAULT_SCHEMA_NAME;
       }
 
-    } catch (Exception e) {
-      LOGGER.warn("Caught Exception ", e);
+    } catch (IOException e) {
+      LOGGER.warn("getSchemaNameFromPropertiesObject caught Exception ", e);
       LOGGER.warn("Using default schemaName for Test");
     }
 
     return schemaName;
   }
 
-  private static DataSource createDefaultDataSource() {
+  private static DataSource createDataSourceForH2() {
     String jdbcDriver = "org.h2.Driver";
     String jdbcUrl =
-        "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
+        "jdbc:h2:mem:taskana;LOCK_MODE=0;"
             + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
             + "SET COLLATION DEFAULT_de_DE ";
     String dbUserName = "sa";
@@ -171,7 +148,7 @@ public final class TaskanaEngineTestConfiguration {
             dbUserName,
             dbPassword);
     ds.setPoolTimeToWait(POOL_TIME_TO_WAIT);
-    ds.forceCloseAll(); // otherwise the MyBatis pool is not initialized correctly
+    ds.forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
 
     return ds;
   }

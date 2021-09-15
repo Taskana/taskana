@@ -262,6 +262,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       if (wb == null) {
         throw new WorkbasketNotFoundException(workbasketAccessItem.getWorkbasketId());
       }
+      accessItem.setWorkbasketKey(wb.getKey());
       try {
         workbasketAccessMapper.insert(accessItem);
 

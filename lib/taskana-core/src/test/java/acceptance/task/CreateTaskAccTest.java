@@ -755,6 +755,15 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotThrowNullPointerException_When_CreatingTaskWithoutWorkbasketSummary() {
+    Task task = new TaskImpl();
+
+    ThrowingCallable call = () -> taskService.createTask(task);
+    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
+  }
+
   @WithAccessId(user = "admin")
   @Test
   void testCreateTaskWithWorkbasketMarkedForDeletion() throws Exception {

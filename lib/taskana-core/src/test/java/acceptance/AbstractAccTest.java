@@ -22,6 +22,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
@@ -46,8 +47,8 @@ public abstract class AbstractAccTest {
 
   protected static void resetDb(boolean dropTables) throws Exception {
 
-    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+    DataSource dataSource = DataSourceGenerator.getDataSource();
+    String schemaName = DataSourceGenerator.getSchemaName();
     taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
     taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
     SampleDataGenerator sampleDataGenerator =
