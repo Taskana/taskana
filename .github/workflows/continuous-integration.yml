@@ -250,11 +250,11 @@ jobs:
           - H2
         include:
           - module: taskana-core
-            database: POSTGRES_10
+            database: POSTGRES
           - module: taskana-core
-            database: DB2_11_1
+            database: DB2
           - module: taskana-rest-spring-example-boot
-            database: DB2_11_1
+            database: DB2
     steps:
       - name: Git checkout
         uses: actions/checkout@v2.3.4
@@ -281,6 +281,8 @@ jobs:
         run: ./mvnw -B validate -pl :taskana-rest-spring
       - name: Test
         run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip
+        env:
+          db.type: ${{ matrix.database }}
       - name: Upload JaCoCo Report
         if: matrix.database == 'H2'
         uses: actions/upload-artifact@v2
