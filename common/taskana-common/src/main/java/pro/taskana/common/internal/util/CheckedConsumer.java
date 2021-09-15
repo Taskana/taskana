@@ -6,7 +6,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 
 @FunctionalInterface
 public interface CheckedConsumer<T, E extends Throwable> {
-  static <T, E extends Throwable> Consumer<T> wrap(CheckedConsumer<T, E> checkedConsumer) {
+  static <T> Consumer<T> wrap(CheckedConsumer<T, Throwable> checkedConsumer) {
     return t -> {
       try {
         checkedConsumer.accept(t);

@@ -430,12 +430,12 @@ public class TaskanaEngineConfiguration {
   }
 
   private <T> Optional<T> parseProperty(
-      Properties props, String key, CheckedFunction<String, T> function) {
+      Properties props, String key, CheckedFunction<String, T, Exception> function) {
     String property = props.getProperty(key, "");
     if (!property.isEmpty()) {
       try {
         return Optional.ofNullable(function.apply(property));
-      } catch (Throwable t) {
+      } catch (Exception t) {
         LOGGER.warn(
             "Could not parse property {} ({}). Using default. Exception: {}",
             key,
@@ -498,7 +498,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initDomains(Properties props) {
-    CheckedFunction<String, List<String>> parseFunction =
+    CheckedFunction<String, List<String>, Exception> parseFunction =
         p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
     parseProperty(props, TASKANA_DOMAINS_PROPERTY, parseFunction).ifPresent(this::setDomains);
 
@@ -508,7 +508,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initClassificationTypes(Properties props) {
-    CheckedFunction<String, List<String>> parseFunction =
+    CheckedFunction<String, List<String>, Exception> parseFunction =
         p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
     parseProperty(props, TASKANA_CLASSIFICATION_TYPES_PROPERTY, parseFunction)
         .ifPresent(this::setClassificationTypes);
@@ -521,7 +521,7 @@ public class TaskanaEngineConfiguration {
   private void initClassificationCategories(Properties props) {
     Function<String, List<String>> getClassificationCategoriesForType =
         type -> {
-          CheckedFunction<String, List<String>> parseFunction =
+          CheckedFunction<String, List<String>, Exception> parseFunction =
               s -> splitStringAndTrimElements(s, ",", String::toUpperCase);
           return parseProperty(
                   props,
@@ -593,7 +593,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initCustomHolidays(Properties props, String separator) {
-    CheckedFunction<String, List<CustomHoliday>> parseFunction =
+    CheckedFunction<String, List<CustomHoliday>, Exception> parseFunction =
         s ->
             splitStringAndTrimElements(s, separator).stream()
                 .map(

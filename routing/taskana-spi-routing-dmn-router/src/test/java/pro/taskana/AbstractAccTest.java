@@ -7,7 +7,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.common.test.config.TaskanaEngineTestConfiguration;
+import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.ObjectReference;
 
@@ -24,13 +24,13 @@ public abstract class AbstractAccTest {
 
   protected static void resetDb(boolean dropTables) throws Exception {
 
-    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+    DataSource dataSource = DataSourceGenerator.getDataSource();
+    String schemaName = DataSourceGenerator.getSchemaName();
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
     if (dropTables) {
       sampleDataGenerator.dropDb();
     }
-    dataSource = TaskanaEngineTestConfiguration.getDataSource();
+    dataSource = DataSourceGenerator.getDataSource();
     taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
     taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
     DbSchemaCreator dbSchemaCreator =

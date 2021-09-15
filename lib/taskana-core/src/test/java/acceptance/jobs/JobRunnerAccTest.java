@@ -3,7 +3,6 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import acceptance.TaskanaEngineTestConfiguration;
 import java.sql.Connection;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -21,6 +20,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.jobs.PlainJavaTransactionProvider;
+import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 
 class JobRunnerAccTest extends AbstractAccTest {
@@ -40,7 +40,7 @@ class JobRunnerAccTest extends AbstractAccTest {
           try {
             TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
             taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-            DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
+            DataSource dataSource = DataSourceGenerator.getDataSource();
             // We have to slow down the transaction.
             // This is necessary to guarantee the execution of
             // both test threads and therefore test the database lock.

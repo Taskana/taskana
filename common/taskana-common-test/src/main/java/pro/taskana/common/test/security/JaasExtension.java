@@ -125,7 +125,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
                 invocationContext.getExecutable().getName()));
       }
 
-      // Currently a DynamicContainer has children from this type: Stream<DynamicNode>
+      // Currently, a DynamicContainer has children from this type: Stream<DynamicNode>
       // Because of this the children can only be extracted once (Streams can only be operated
       // once). This is obviously not ok since we want to execute each node X times. So we have to
       // manually insert all children recursively to extract them X times...

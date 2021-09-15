@@ -5,8 +5,8 @@ import java.util.function.Function;
 import pro.taskana.common.api.exceptions.SystemException;
 
 @FunctionalInterface
-public interface CheckedFunction<T, E> {
-  static <T, E> Function<T, E> wrap(CheckedFunction<T, E> checkedFunction) {
+public interface CheckedFunction<T, R, E extends Throwable> {
+  static <T, R> Function<T, R> wrap(CheckedFunction<T, R, Throwable> checkedFunction) {
     return t -> {
       try {
         return checkedFunction.apply(t);
@@ -16,8 +16,8 @@ public interface CheckedFunction<T, E> {
     };
   }
 
-  static <T, E> Function<T, E> wrapExceptFor(
-      CheckedFunction<T, E> checkedFunction, Class<? extends RuntimeException> ignore) {
+  static <T, R> Function<T, R> wrapExceptFor(
+      CheckedFunction<T, R, Throwable> checkedFunction, Class<? extends RuntimeException> ignore) {
     return t -> {
       try {
         return checkedFunction.apply(t);
@@ -31,5 +31,5 @@ public interface CheckedFunction<T, E> {
     };
   }
 
-  E apply(T t) throws Throwable;
+  R apply(T t) throws E;
 }
