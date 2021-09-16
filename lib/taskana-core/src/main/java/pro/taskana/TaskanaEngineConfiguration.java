@@ -1,5 +1,9 @@
 package pro.taskana;
 
+import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureAnnotatedFields;
+import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureClassificationCategoriesForType;
+import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureRoles;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -7,21 +11,13 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -33,12 +29,10 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
-import pro.taskana.common.internal.util.CheckedFunction;
+import pro.taskana.common.internal.configuration.TaskanaProperty;
 import pro.taskana.common.internal.util.FileLoaderUtil;
-import pro.taskana.common.internal.util.Pair;
 
 /**
  * This central class creates the TaskanaEngine and holds all the information about DB and Security.
@@ -52,40 +46,10 @@ public class TaskanaEngineConfiguration {
 
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_PROPERTY_SEPARATOR = "|";
-  private static final String TASKANA_JOB_BATCH_SIZE = "taskana.jobs.batchSize";
-  private static final String TASKANA_JOB_RETRIES = "taskana.jobs.maxRetries";
-  private static final String TASKANA_JOB_CLEANUP_RUN_EVERY = "taskana.jobs.cleanup.runEvery";
-  private static final String TASKANA_JOB_CLEANUP_FIRST_RUN = "taskana.jobs.cleanup.firstRunAt";
-  private static final String TASKANA_JOB_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
-  private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS =
-      "taskana.jobs.cleanup.allCompletedSameParentBusiness";
-  private static final String TASKANA_JOB_PRIORITY_BATCHSIZE = "taskana.jobs.priority.batchSize";
-  private static final String TASKANA_JOB_PRIORITY_RUN_EVERY = "taskana.jobs.priority.runEvery";
-  private static final String TASKANA_JOB_PRIORITY_FIRST_RUN = "taskana.jobs.priority.firstRunAt";
-  private static final String TASKANA_JOB_PRIORITY_ACTIVE = "taskana.jobs.priority.active";
-  private static final String TASKANA_JOB_USER_REFRESH_FIRST_RUN =
-      "taskana.jobs.user.refresh.firstRunAt";
-  private static final String TASKANA_JOB_USER_REFRESH_RUN_EVERY =
-      "taskana.jobs.user.refresh.runEvery";
-  private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
-  private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY =
-      "taskana.classification.types";
-  private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY =
-      "taskana.classification.categories";
-  private static final String TASKANA_GERMAN_HOLIDAYS_ENABLED = "taskana.german.holidays.enabled";
-  private static final String TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED =
-      "taskana.german.holidays.corpus-christi.enabled";
-  private static final String TASKANA_CUSTOM_HOLIDAY = "taskana.custom.holidays";
-  private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR = ".";
-  private static final String TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED =
-      "taskana.history.deletion.on.task.deletion.enabled";
-  private static final String TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH =
-      "taskana.validation.allowTimestampServiceLevelMismatch";
-  private static final String TASKANA_ADD_ADDITIONAL_USER_INFO = "taskana.addAdditionalUserInfo";
+
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
-  private final List<CustomHoliday> customHolidays = new ArrayList<>();
   // Taskana properties file
   protected String propertiesFileName = TASKANA_PROPERTIES;
   // Taskana datasource configuration
@@ -94,38 +58,79 @@ public class TaskanaEngineConfiguration {
   // Taskana role configuration
   protected String propertiesSeparator = TASKANA_PROPERTY_SEPARATOR;
   protected Map<TaskanaRole, Set<String>> roleMap;
+
   // global switch to enable JAAS based authentication and Taskana
   // authorizations
   protected boolean securityEnabled;
   protected boolean useManagedTransactions;
+
+  @TaskanaProperty("taskana.custom.holidays")
+  private List<CustomHoliday> customHolidays = new ArrayList<>();
+
   // List of configured domain names
+  @TaskanaProperty("taskana.domains")
   protected List<String> domains = new ArrayList<>();
+
   // List of configured classification types
+  @TaskanaProperty("taskana.classification.types")
   protected List<String> classificationTypes = new ArrayList<>();
+
+  @TaskanaProperty("taskana.classification.categories")
   protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
+
   // Properties for the monitor
+  @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
   private boolean deleteHistoryOnTaskDeletionEnabled;
+
+  @TaskanaProperty("taskana.german.holidays.enabled")
   private boolean germanPublicHolidaysEnabled;
+
+  @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
   private boolean corpusChristiEnabled;
+
   // Properties for general job execution
+  @TaskanaProperty("taskana.jobs.batchSize")
   private int jobBatchSize = 100;
+
+  @TaskanaProperty("taskana.jobs.maxRetries")
   private int maxNumberOfJobRetries = 3;
+
   // Properties for the cleanup job
+  @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
   private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+
+  @TaskanaProperty("taskana.jobs.cleanup.runEvery")
   private Duration cleanupJobRunEvery = Duration.parse("P1D");
+
+  @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
   // TASKANA behavior
+
+  @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
+
+  @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
   private boolean validationAllowTimestampServiceLevelMismatch = false;
   //Property to enable/disable the addition of user full/long name through joins
+  @TaskanaProperty("taskana.addAdditionalUserInfo")
   private boolean addAdditionalUserInfo = false;
 
+  @TaskanaProperty("taskana.jobs.priority.batchSize")
   private int priorityJobBatchSize = 100;
+
+  @TaskanaProperty("taskana.jobs.priority.firstRunAt")
   private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+
+  @TaskanaProperty("taskana.jobs.priority.runEvery")
   private Duration priorityJobRunEvery = Duration.parse("P1D");
+
+  @TaskanaProperty("taskana.jobs.priority.active")
   private boolean priorityJobActive = false;
 
+  @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
   private Duration userRefreshJobRunEvery = Duration.parse("P1D");
+
+  @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
   private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
 
   public TaskanaEngineConfiguration(
@@ -170,32 +175,50 @@ public class TaskanaEngineConfiguration {
     initTaskanaProperties(this.propertiesFileName, this.propertiesSeparator);
   }
 
+  public static Properties loadProperties(String propertiesFile) {
+    Properties props = new Properties();
+    try (InputStream stream =
+        FileLoaderUtil.openFileFromClasspathOrSystem(
+            propertiesFile, TaskanaEngineConfiguration.class)) {
+      props.load(stream);
+    } catch (IOException e) {
+      LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
+      throw new SystemException(
+          "internal System error when processing properties file " + propertiesFile, e.getCause());
+    }
+    return props;
+  }
+
   public void initTaskanaProperties(String propertiesFile, String separator) {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
     }
-    Properties props = readPropertiesFromFile(propertiesFile);
-    initTaskanaRoles(props, separator);
-    initJobParameters(props);
-    initDomains(props);
-    initClassificationTypes(props);
-    initClassificationCategories(props);
-    initBooleanProperty(
-        props, TASKANA_GERMAN_HOLIDAYS_ENABLED, this::setGermanPublicHolidaysEnabled);
-    initBooleanProperty(
-        props, TASKANA_GERMAN_HOLIDAYS_CORPUS_CHRISTI_ENABLED, this::setCorpusChristiEnabled);
-    initBooleanProperty(
-        props,
-        TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED,
-        this::setDeleteHistoryOnTaskDeletionEnabled);
-    initBooleanProperty(
-        props,
-        TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH,
-        this::setValidationAllowTimestampServiceLevelMismatch);
-    initBooleanProperty(
-        props, TASKANA_ADD_ADDITIONAL_USER_INFO, this::setAddAdditionalUserInfo);
-    initCustomHolidays(props, separator);
+    Properties props = loadProperties(propertiesFile);
+    configureAnnotatedFields(this, separator, props);
+    roleMap = configureRoles(separator, props, shouldUseLowerCaseForAccessIds());
+    classificationCategoriesByTypeMap =
+        configureClassificationCategoriesForType(props, classificationTypes);
+
+    if (LOGGER.isDebugEnabled()) {
+      roleMap.forEach((k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, v));
+      LOGGER.debug(
+          "Configured number of task and workbasket updates per transaction: {}", jobBatchSize);
+      LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
+      LOGGER.debug("CleanupJob configuration: first run at {}", cleanupJobFirstRun);
+      LOGGER.debug("CleanupJob configuration: runs every {}", cleanupJobRunEvery);
+      LOGGER.debug(
+          "CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
+          cleanupJobMinimumAge);
+      LOGGER.debug(
+          "TaskCleanupJob configuration: all completed task with the "
+              + "same parent business property id {}",
+          taskCleanupJobAllCompletedSameParentBusiness);
+      LOGGER.debug("Configured classification categories : {}", classificationCategoriesByTypeMap);
+      LOGGER.debug("Configured domains: {}", domains);
+      LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
+      LOGGER.debug("Configured custom Holidays : {}", customHolidays);
+    }
   }
 
   public static DataSource createDefaultDataSource() {
@@ -308,6 +331,10 @@ public class TaskanaEngineConfiguration {
 
   public List<CustomHoliday> getCustomHolidays() {
     return customHolidays;
+  }
+
+  public void setCustomHolidays(List<CustomHoliday> customHolidays) {
+    this.customHolidays = new ArrayList<>(customHolidays);
   }
 
   public void addCustomHolidays(List<CustomHoliday> customHolidays) {
@@ -469,129 +496,7 @@ public class TaskanaEngineConfiguration {
   }
 
   public Properties readPropertiesFromFile() {
-    return readPropertiesFromFile(this.propertiesFileName);
-  }
-
-  private <T> Optional<T> parseProperty(
-      Properties props, String key, CheckedFunction<String, T, Exception> function) {
-    String property = props.getProperty(key, "");
-    if (!property.isEmpty()) {
-      try {
-        return Optional.ofNullable(function.apply(property));
-      } catch (Exception t) {
-        LOGGER.warn(
-            "Could not parse property {} ({}). Using default. Exception: {}",
-            key,
-            property,
-            t.getMessage());
-      }
-    }
-    return Optional.empty();
-  }
-
-  private void initJobParameters(Properties props) {
-
-    parseProperty(props, TASKANA_JOB_BATCH_SIZE, Integer::parseInt)
-        .ifPresent(this::setMaxNumberOfUpdatesPerTransaction);
-
-    parseProperty(props, TASKANA_JOB_RETRIES, Integer::parseInt)
-        .ifPresent(this::setMaxNumberOfJobRetries);
-
-    parseProperty(props, TASKANA_JOB_CLEANUP_FIRST_RUN, Instant::parse)
-        .ifPresent(this::setCleanupJobFirstRun);
-
-    parseProperty(props, TASKANA_JOB_CLEANUP_RUN_EVERY, Duration::parse)
-        .ifPresent(this::setCleanupJobRunEvery);
-
-    parseProperty(props, TASKANA_JOB_CLEANUP_MINIMUM_AGE, Duration::parse)
-        .ifPresent(this::setCleanupJobMinimumAge);
-
-    parseProperty(props, TASKANA_JOB_PRIORITY_BATCHSIZE, Integer::parseInt)
-        .ifPresent(this::setPriorityJobBatchSize);
-
-    parseProperty(props, TASKANA_JOB_PRIORITY_RUN_EVERY, Duration::parse)
-        .ifPresent(this::setPriorityJobRunEvery);
-
-    parseProperty(props, TASKANA_JOB_PRIORITY_FIRST_RUN, Instant::parse)
-        .ifPresent(this::setPriorityJobFirstRun);
-
-    parseProperty(props, TASKANA_JOB_PRIORITY_ACTIVE, Boolean::parseBoolean)
-        .ifPresent(this::setPriorityJobActive);
-
-    parseProperty(props, TASKANA_JOB_USER_REFRESH_RUN_EVERY, Duration::parse)
-        .ifPresent(this::setUserRefreshJobRunEvery);
-
-    parseProperty(props, TASKANA_JOB_USER_REFRESH_FIRST_RUN, Instant::parse)
-        .ifPresent(this::setUserRefreshJobFirstRun);
-
-    parseProperty(
-            props,
-            TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS,
-            Boolean::parseBoolean)
-        .ifPresent(this::setTaskCleanupJobAllCompletedSameParentBusiness);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Configured number of task and workbasket updates per transaction: {}", jobBatchSize);
-      LOGGER.debug("Number of retries of failed task updates: {}", maxNumberOfJobRetries);
-      LOGGER.debug("CleanupJob configuration: first run at {}", cleanupJobFirstRun);
-      LOGGER.debug("CleanupJob configuration: runs every {}", cleanupJobRunEvery);
-      LOGGER.debug(
-          "CleanupJob configuration: minimum age of tasks to be cleanup up is {}",
-          cleanupJobMinimumAge);
-      LOGGER.debug(
-          "TaskCleanupJob configuration: all completed task with the "
-              + "same parent business property id {}",
-          taskCleanupJobAllCompletedSameParentBusiness);
-    }
-  }
-
-  private void initDomains(Properties props) {
-    CheckedFunction<String, List<String>, Exception> parseFunction =
-        p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
-    parseProperty(props, TASKANA_DOMAINS_PROPERTY, parseFunction).ifPresent(this::setDomains);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Configured domains: {}", domains);
-    }
-  }
-
-  private void initClassificationTypes(Properties props) {
-    CheckedFunction<String, List<String>, Exception> parseFunction =
-        p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
-    parseProperty(props, TASKANA_CLASSIFICATION_TYPES_PROPERTY, parseFunction)
-        .ifPresent(this::setClassificationTypes);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
-    }
-  }
-
-  private void initClassificationCategories(Properties props) {
-    Function<String, List<String>> getClassificationCategoriesForType =
-        type -> {
-          CheckedFunction<String, List<String>, Exception> parseFunction =
-              s -> splitStringAndTrimElements(s, ",", String::toUpperCase);
-          return parseProperty(
-                  props,
-                  TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY + "." + type.toLowerCase(),
-                  parseFunction)
-              .orElseGet(ArrayList::new);
-        };
-
-    classificationCategoriesByTypeMap =
-        classificationTypes.stream()
-            .map(type -> Pair.of(type, getClassificationCategoriesForType.apply(type)))
-            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Configured classification categories : {}", classificationCategoriesByTypeMap);
-    }
-  }
-
-  private void initBooleanProperty(
-      Properties props, String propertyName, Consumer<Boolean> consumer) {
-    parseProperty(props, propertyName, Boolean::parseBoolean).ifPresent(consumer);
+    return loadProperties(this.propertiesFileName);
   }
 
   private void initSchemaName(String schemaName) {
@@ -616,86 +521,5 @@ public class TaskanaEngineConfiguration {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Using schema name {}", this.getSchemaName());
     }
-  }
-
-  private void initTaskanaRoles(Properties props, String rolesSeparator) {
-    Function<TaskanaRole, Set<String>> getAccessIdsForRole =
-        role -> {
-          List<String> accessIds =
-              splitStringAndTrimElements(
-                  props.getProperty(role.getPropertyName().toLowerCase(), ""),
-                  rolesSeparator,
-                  shouldUseLowerCaseForAccessIds()
-                      ? String::toLowerCase
-                      : UnaryOperator.identity());
-          return new HashSet<>(accessIds);
-        };
-
-    roleMap =
-        Arrays.stream(TaskanaRole.values())
-            .map(role -> Pair.of(role, getAccessIdsForRole.apply(role)))
-            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
-
-    if (LOGGER.isDebugEnabled()) {
-      roleMap.forEach((k, v) -> LOGGER.debug("Found Taskana RoleConfig {} : {} ", k, v));
-    }
-  }
-
-  private void initCustomHolidays(Properties props, String separator) {
-    CheckedFunction<String, List<CustomHoliday>, Exception> parseFunction =
-        s ->
-            splitStringAndTrimElements(s, separator).stream()
-                .map(
-                    str -> {
-                      try {
-                        return createCustomHolidayFromPropsEntry(str);
-                      } catch (WrongCustomHolidayFormatException e) {
-                        LOGGER.warn(e.getMessage());
-                        return null;
-                      }
-                    })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    parseProperty(props, TASKANA_CUSTOM_HOLIDAY, parseFunction).ifPresent(this::addCustomHolidays);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Configured custom Holidays : {}", customHolidays);
-    }
-  }
-
-  private CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
-      throws WrongCustomHolidayFormatException {
-    List<String> parts =
-        splitStringAndTrimElements(customHolidayEntry, TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR);
-    if (parts.size() == 2) {
-      return CustomHoliday.of(Integer.valueOf(parts.get(0)), Integer.valueOf(parts.get(1)));
-    }
-    throw new WrongCustomHolidayFormatException(customHolidayEntry);
-  }
-
-  private List<String> splitStringAndTrimElements(String str, String separator) {
-    return splitStringAndTrimElements(str, separator, UnaryOperator.identity());
-  }
-
-  private List<String> splitStringAndTrimElements(
-      String str, String separator, UnaryOperator<String> modifier) {
-    return Arrays.stream(str.split(Pattern.quote(separator)))
-        .filter(s -> !s.isEmpty())
-        .map(String::trim)
-        .map(modifier)
-        .collect(Collectors.toList());
-  }
-
-  private Properties readPropertiesFromFile(String propertiesFile) {
-    Properties props = new Properties();
-    try (InputStream stream =
-        FileLoaderUtil.openFileFromClasspathOrSystem(propertiesFile, getClass())) {
-      props.load(stream);
-    } catch (IOException e) {
-      LOGGER.error("caught IOException when processing properties file {}.", propertiesFile);
-      throw new SystemException(
-          "internal System error when processing properties file " + propertiesFile, e.getCause());
-    }
-    return props;
   }
 }
