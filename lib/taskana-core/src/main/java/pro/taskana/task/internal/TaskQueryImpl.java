@@ -974,7 +974,9 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentReceived(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return addOrderCriteria("RECEIVED", sortDirection);
+    return DB.isDb2(getDatabaseId())
+        ? addOrderCriteria("ARECEIVED", sortDirection)
+        : addOrderCriteria("a.RECEIVED", sortDirection);
   }
 
   public TaskQuery selectAndClaimEquals(boolean selectAndClaim) {

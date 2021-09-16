@@ -790,6 +790,46 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
+  void testQueryForOrderByAttachmentReceivedAsc() {
+    List<TaskSummary> results =
+        TASK_SERVICE
+            .createTaskQuery()
+            .idIn(
+                "TKI:000000000000000000000000000000000008",
+                "TKI:000000000000000000000000000000000052",
+                "TKI:000000000000000000000000000000000054")
+            .orderByAttachmentReceived(ASCENDING)
+            .list();
+
+    assertThat(results)
+        .hasSize(3)
+        .flatExtracting(TaskSummary::getAttachmentSummaries)
+        .extracting(AttachmentSummary::getReceived)
+        .isSorted();
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void testQueryForOrderByAttachmentReceivedDesc() {
+    List<TaskSummary> results =
+        TASK_SERVICE
+            .createTaskQuery()
+            .idIn(
+                "TKI:000000000000000000000000000000000008",
+                "TKI:000000000000000000000000000000000052",
+                "TKI:000000000000000000000000000000000054")
+            .orderByAttachmentReceived(DESCENDING)
+            .list();
+
+    assertThat(results)
+        .hasSize(3)
+        .flatExtracting(TaskSummary::getAttachmentSummaries)
+        .extracting(AttachmentSummary::getReceived)
+        .isSortedAccordingTo(Comparator.<Instant>naturalOrder().reversed());
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
   void testQueryForOrderByAttachmentChannelAscAndReferenceDesc() {
     List<TaskSummary> results =
         TASK_SERVICE
