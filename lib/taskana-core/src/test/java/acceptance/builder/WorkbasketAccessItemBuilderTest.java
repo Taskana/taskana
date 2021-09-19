@@ -4,7 +4,7 @@ import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
-import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
+import static pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
-import pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder;
+import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 @TaskanaIntegrationTest

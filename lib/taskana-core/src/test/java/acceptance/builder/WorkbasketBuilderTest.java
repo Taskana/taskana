@@ -3,7 +3,7 @@ package acceptance.builder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
-import static pro.taskana.workbasket.internal.WorkbasketBuilder.newWorkbasket;
+import static pro.taskana.workbasket.internal.builder.WorkbasketBuilder.newWorkbasket;
 
 import java.time.Instant;
 import java.util.List;
@@ -24,7 +24,7 @@ import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
-import pro.taskana.workbasket.internal.WorkbasketBuilder;
+import pro.taskana.workbasket.internal.builder.WorkbasketBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 @TaskanaIntegrationTest

@@ -1,4 +1,4 @@
-package pro.taskana.task.internal;
+package pro.taskana.task.internal.builder;
 
 import java.time.Instant;
 
