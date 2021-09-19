@@ -2,7 +2,7 @@ package acceptance.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static pro.taskana.classification.internal.ClassificationBuilder.newClassification;
+import static pro.taskana.classification.internal.builder.ClassificationBuilder.newClassification;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,7 +19,7 @@ import testapi.TaskanaIntegrationTest;
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.classification.internal.ClassificationBuilder;
+import pro.taskana.classification.internal.builder.ClassificationBuilder;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.test.security.WithAccessId;

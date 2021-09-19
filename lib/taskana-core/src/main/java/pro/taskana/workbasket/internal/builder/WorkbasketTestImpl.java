@@ -1,4 +1,4 @@
-package pro.taskana.workbasket.internal;
+package pro.taskana.workbasket.internal.builder;
 
 import java.time.Instant;
 

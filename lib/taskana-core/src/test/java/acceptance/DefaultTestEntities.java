@@ -1,8 +1,8 @@
 package acceptance;
 
-import pro.taskana.task.internal.ObjectReferenceBuilder;
+import pro.taskana.task.internal.builder.ObjectReferenceBuilder;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.internal.WorkbasketBuilder;
+import pro.taskana.workbasket.internal.builder.WorkbasketBuilder;
 
 public class DefaultTestEntities {
 

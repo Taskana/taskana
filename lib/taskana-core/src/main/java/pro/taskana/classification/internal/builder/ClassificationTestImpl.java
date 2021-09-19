@@ -1,4 +1,4 @@
-package pro.taskana.classification.internal;
+package pro.taskana.classification.internal.builder;
 
 import java.time.Instant;
 

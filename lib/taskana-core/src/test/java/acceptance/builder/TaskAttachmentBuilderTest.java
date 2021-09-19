@@ -11,11 +11,11 @@ import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.classification.internal.ClassificationBuilder;
+import pro.taskana.classification.internal.builder.ClassificationBuilder;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
-import pro.taskana.task.internal.TaskAttachmentBuilder;
+import pro.taskana.task.internal.builder.TaskAttachmentBuilder;
 import pro.taskana.task.internal.models.AttachmentImpl;
 
 @TaskanaIntegrationTest
