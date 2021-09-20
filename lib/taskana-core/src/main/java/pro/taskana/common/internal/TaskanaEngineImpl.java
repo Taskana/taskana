@@ -97,7 +97,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
     this.sessionManager = createSqlSessionManager();
     initializeDbSchema(taskanaEngineConfiguration);
-    createTaskPreprocessorManager = CreateTaskPreprocessorManager.getInstance();
     this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =
         new WorkingDaysToDaysConverter(
@@ -109,9 +108,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     // IMPORTANT: SPI has to be initialized last (and in this order) in order
     // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
-    historyEventManager = HistoryEventManager.getInstance(this);
-    taskRoutingManager = TaskRoutingManager.getInstance(this);
-    priorityServiceManager = PriorityServiceManager.getInstance();
+    historyEventManager = new HistoryEventManager(this);
+    taskRoutingManager = new TaskRoutingManager(this);
+    priorityServiceManager = new PriorityServiceManager();
+    createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
   }
 
   public static TaskanaEngine createTaskanaEngine(
@@ -138,6 +138,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   public WorkbasketService getWorkbasketService() {
     return new WorkbasketServiceImpl(
         internalTaskanaEngineImpl,
+        historyEventManager,
         sessionManager.getMapper(WorkbasketMapper.class),
         sessionManager.getMapper(DistributionTargetMapper.class),
         sessionManager.getMapper(WorkbasketAccessMapper.class));
@@ -147,8 +148,16 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   public ClassificationService getClassificationService() {
     return new ClassificationServiceImpl(
         internalTaskanaEngineImpl,
+        priorityServiceManager,
         sessionManager.getMapper(ClassificationMapper.class),
         sessionManager.getMapper(TaskMapper.class));
+  }
+
+  // This should be part of the InternalTaskanaEngine. Unfortunately the jobs don't have access to
+  // that engine.
+  // Therefore, this getter exits and will be removed as soon as our jobs will be refactored.
+  public PriorityServiceManager getPriorityServiceManager() {
+    return priorityServiceManager;
   }
 
   @Override
@@ -174,7 +183,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public boolean isHistoryEnabled() {
-    return HistoryEventManager.isHistoryEnabled();
+    return historyEventManager.isEnabled();
   }
 
   @Override

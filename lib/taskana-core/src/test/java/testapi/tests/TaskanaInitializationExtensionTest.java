@@ -2,15 +2,20 @@ package testapi.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import acceptance.priorityservice.TestPriorityServiceProvider;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import testapi.CleanTaskanaContext;
 import testapi.TaskanaEngineConfigurationModifier;
 import testapi.TaskanaInject;
 import testapi.TaskanaIntegrationTest;
+import testapi.WithServiceProvider;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.spi.priority.api.PriorityServiceProvider;
 
 @TaskanaIntegrationTest
 class TaskanaInitializationExtensionTest {
@@ -24,6 +29,7 @@ class TaskanaInitializationExtensionTest {
   }
 
   @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class ReuseTaskana {
 
     @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -36,6 +42,7 @@ class TaskanaInitializationExtensionTest {
   }
 
   @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class ModifiedTaskanaEngineConfig implements TaskanaEngineConfigurationModifier {
 
     @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -59,7 +66,30 @@ class TaskanaInitializationExtensionTest {
 
   @CleanTaskanaContext
   @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassAnnotatedWithCleanTaskanaContext {
+
+    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+    @Test
+    void should_createNewTaskanaInstance_For_NestedTestClassAnnotatedWithCleanTaskanaContext() {
+      assertThat(taskanaEngineConfiguration)
+          .isNotSameAs(TaskanaInitializationExtensionTest.this.taskanaEngineConfiguration);
+    }
+
+    @Test
+    void should_UseDefaultTaskanaEngine_When_NestedClassDoesNotImplementModifier() {
+      assertThat(taskanaEngineConfiguration.getDomains())
+          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+    }
+  }
+
+  @WithServiceProvider(
+      serviceProviderInterface = PriorityServiceProvider.class,
+      serviceProviders = TestPriorityServiceProvider.class)
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class NestedTestClassWithServiceProvider {
 
     @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
 

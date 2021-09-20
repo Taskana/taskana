@@ -1,17 +1,16 @@
 package pro.taskana.spi.routing.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.LogSanitizer;
+import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.models.Task;
 
@@ -22,35 +21,18 @@ import pro.taskana.task.api.models.Task;
 public final class TaskRoutingManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingManager.class);
-  private static TaskRoutingManager singleton;
-  private final List<TaskRoutingProvider> theTaskRoutingProviders = new ArrayList<>();
-  private final ServiceLoader<TaskRoutingProvider> serviceLoader;
-  private boolean enabled = false;
+  private final List<TaskRoutingProvider> taskRoutingProviders;
 
-  private TaskRoutingManager(TaskanaEngine taskanaEngine) {
-    serviceLoader = ServiceLoader.load(TaskRoutingProvider.class);
-    for (TaskRoutingProvider router : serviceLoader) {
-      router.initialize(taskanaEngine);
-      theTaskRoutingProviders.add(router);
-      LOGGER.info("Registered TaskRouter provider: {}", router.getClass().getName());
+  public TaskRoutingManager(TaskanaEngine taskanaEngine) {
+    taskRoutingProviders = SpiLoader.load(TaskRoutingProvider.class);
+    for (TaskRoutingProvider taskRoutingProvider : taskRoutingProviders) {
+      taskRoutingProvider.initialize(taskanaEngine);
+      LOGGER.info("Registered TaskRouter provider: {}", taskRoutingProvider.getClass().getName());
     }
 
-    if (theTaskRoutingProviders.isEmpty()) {
-      LOGGER.info("No TaskRouter provider found. Running without Task Routing.");
-    } else {
-      enabled = true;
+    if (taskRoutingProviders.isEmpty()) {
+      LOGGER.info("No TaskRouter provider found. Running without Task routing.");
     }
-  }
-
-  public static synchronized TaskRoutingManager getInstance(TaskanaEngine taskanaEngine) {
-    if (singleton == null) {
-      singleton = new TaskRoutingManager(taskanaEngine);
-    }
-    return singleton;
-  }
-
-  public static boolean isTaskRoutingEnabled() {
-    return Objects.nonNull(singleton) && singleton.enabled;
   }
 
   /**
@@ -64,24 +46,12 @@ public final class TaskRoutingManager {
    */
   public String determineWorkbasketId(Task task) {
     String workbasketId = null;
-    if (isTaskRoutingEnabled()) {
-      // route to all TaskRoutingProviders
-      // collect in a set to see whether different workbasket ids are returned
+    if (isEnabled()) {
       Set<String> workbasketIds =
-          theTaskRoutingProviders.stream()
+          taskRoutingProviders.stream()
               .map(
-                  rtr -> {
-                    try {
-                      return rtr.determineWorkbasketId(task);
-                    } catch (Exception e) {
-                      LOGGER.error(
-                          String.format(
-                              "Caught Exception while trying to determine workbasket in class %s",
-                              rtr.getClass().getName()),
-                          e);
-                      throw new SystemException(e.getMessage(), e.getCause());
-                    }
-                  })
+                  CheckedFunction.wrap(
+                      taskRoutingProvider -> taskRoutingProvider.determineWorkbasketId(task)))
               .filter(Objects::nonNull)
               .collect(Collectors.toSet());
       if (workbasketIds.isEmpty()) {
@@ -97,9 +67,13 @@ public final class TaskRoutingManager {
               LogSanitizer.stripLineBreakingChars(task));
         }
       } else {
-        workbasketId = workbasketIds.stream().findFirst().orElse(null);
+        workbasketId = workbasketIds.iterator().next();
       }
     }
     return workbasketId;
+  }
+
+  public boolean isEnabled() {
+    return !taskRoutingProviders.isEmpty();
   }
 }

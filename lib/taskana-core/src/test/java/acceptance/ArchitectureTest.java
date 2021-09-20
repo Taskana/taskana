@@ -8,6 +8,7 @@ import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClass.Predicates;
@@ -37,8 +38,11 @@ import org.apache.ibatis.annotations.UpdateProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import testapi.TaskanaIntegrationTest;
 
@@ -85,7 +89,8 @@ class ArchitectureTest {
   @BeforeAll
   static void init() {
     // time intensive operation should only be done once
-    importedClasses = new ClassFileImporter().importPackages("pro.taskana", "acceptance");
+    importedClasses =
+        new ClassFileImporter().importPackages("pro.taskana", "acceptance", "testapi");
   }
 
   @Test
@@ -93,8 +98,6 @@ class ArchitectureTest {
     ArchRule myRule =
         classes()
             .that()
-            .haveNameNotMatching(".*ScheduledJob.Type")
-            .and()
             .resideInAPackage("..api..")
             .should()
             .onlyDependOnClassesThat(
@@ -184,7 +187,8 @@ class ArchitectureTest {
     List<Pattern> excludePackages =
         Stream.of(
                 "pro.taskana", // from TaskanaEngineConfiguration
-                "acceptance.*" // all our acceptance tests
+                "acceptance.*", // all our acceptance tests
+                "testapi.*" // our test API
                 )
             .map(Pattern::compile)
             .collect(Collectors.toList());
@@ -232,8 +236,6 @@ class ArchitectureTest {
                 .haveSimpleNameNotEndingWith("ObjectAttributeChangeDetectorTest")
                 .and()
                 .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
-                .and()
-                .haveNameNotMatching(".*ScheduledJob.Type")
                 .and()
                 .resideInAPackage("..common..")
                 .and()
@@ -302,9 +304,51 @@ class ArchitectureTest {
         classes()
             .that()
             .areAnnotatedWith(TaskanaIntegrationTest.class)
+            .or(areNestedTaskanaIntegrationTestClasses())
             .should(onlyHaveFieldsWithNoModifier());
 
     rule.check(importedClasses);
+  }
+
+  @Test
+  void nestedTaskanaIntegrationTestsShouldBeAnnotatedWithTestInstance() {
+    ArchRule rule =
+        classes()
+            .that(areNestedTaskanaIntegrationTestClasses())
+            .should(beAnnotatedWithTestInstancePerClass());
+
+    rule.check(importedClasses);
+  }
+
+  private ArchCondition<JavaClass> beAnnotatedWithTestInstancePerClass() {
+    return new ArchCondition<JavaClass>("be annotated with @TestInstance(Lifecycle.PER_CLASS)") {
+      @Override
+      public void check(JavaClass item, ConditionEvents events) {
+        Optional<TestInstance> testInstanceOptional =
+            item.tryGetAnnotationOfType(TestInstance.class);
+        if (!testInstanceOptional.isPresent()
+            || testInstanceOptional.get().value() != Lifecycle.PER_CLASS) {
+          events.add(
+              SimpleConditionEvent.violated(
+                  item,
+                  String.format(
+                      "Class '%s' is not annotated with @TestInstance(Lifecycle.PER_CLASS)",
+                      item.getFullName())));
+        }
+      }
+    };
+  }
+
+  private DescribedPredicate<JavaClass> areNestedTaskanaIntegrationTestClasses() {
+    return new DescribedPredicate<JavaClass>("are nested TaskanaIntegrationTest classes") {
+      @Override
+      public boolean apply(JavaClass input) {
+        Optional<JavaClass> enclosingClass = input.getEnclosingClass();
+        return input.isAnnotatedWith(Nested.class)
+            && enclosingClass.isPresent()
+            && enclosingClass.get().isAnnotatedWith(TaskanaIntegrationTest.class);
+      }
+    };
   }
 
   private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifier() {
@@ -312,7 +356,7 @@ class ArchitectureTest {
       @Override
       public void check(JavaClass item, ConditionEvents events) {
         for (JavaField field : item.getAllFields()) {
-          if (!field.getModifiers().isEmpty()) {
+          if (!field.reflect().isSynthetic() && !field.getModifiers().isEmpty()) {
             events.add(
                 SimpleConditionEvent.violated(
                     item,

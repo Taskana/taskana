@@ -170,7 +170,7 @@ public class TaskServiceImpl implements TaskService {
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException {
 
-    if (CreateTaskPreprocessorManager.isCreateTaskPreprocessorEnabled()) {
+    if (createTaskPreprocessorManager.isEnabled()) {
       taskToCreate = createTaskPreprocessorManager.processTaskBeforeCreation(taskToCreate);
     }
 
@@ -198,7 +198,7 @@ public class TaskServiceImpl implements TaskService {
           workbasket = workbasketService.getWorkbasket(workbasketId);
           task.setWorkbasketSummary(workbasket.asSummary());
         } else {
-          throw new InvalidArgumentException("Cannot create a task outside a workbasket");
+          throw new InvalidArgumentException("Cannot create a Task outside a Workbasket");
         }
       }
 
@@ -226,20 +226,14 @@ public class TaskServiceImpl implements TaskService {
       ObjectReference.validate(task.getPrimaryObjRef(), "primary ObjectReference", "Task");
       standardSettingsOnTaskCreation(task, classification);
       setCallbackStateOnTaskCreation(task);
-
-      if (PriorityServiceManager.isPriorityServiceEnabled()) {
-        Optional<Integer> newPriority = priorityServiceManager.calculatePriorityOfTask(task);
-        if (newPriority.isPresent()) {
-          task.setPriority(newPriority.get());
-        }
-      }
+      priorityServiceManager.calculatePriorityOfTask(task).ifPresent(task::setPriority);
 
       try {
         this.taskMapper.insert(task);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
         }
-        if (HistoryEventManager.isHistoryEnabled()) {
+        if (historyEventManager.isEnabled()) {
 
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(newTask(), task);
@@ -426,12 +420,9 @@ public class TaskServiceImpl implements TaskService {
 
       standardUpdateActions(oldTaskImpl, newTaskImpl);
 
-      if (PriorityServiceManager.isPriorityServiceEnabled()) {
-        Optional<Integer> newPriority = priorityServiceManager.calculatePriorityOfTask(newTaskImpl);
-        if (newPriority.isPresent()) {
-          newTaskImpl.setPriority(newPriority.get());
-        }
-      }
+      priorityServiceManager
+          .calculatePriorityOfTask(newTaskImpl)
+          .ifPresent(newTaskImpl::setPriority);
 
       taskMapper.update(newTaskImpl);
 
@@ -439,7 +430,7 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
       }
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
 
         String changeDetails =
             ObjectAttributeChangeDetector.determineChangesInAttributes(oldTaskImpl, newTaskImpl);
@@ -771,7 +762,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       cancelledTask = terminateCancelCommonActions(taskId, TaskState.CANCELLED);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskCancelledEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
@@ -797,7 +788,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       terminatedTask = terminateCancelCommonActions(taskId, TaskState.TERMINATED);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskTerminatedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
@@ -1124,7 +1115,7 @@ public class TaskServiceImpl implements TaskService {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
       }
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskClaimedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
@@ -1221,7 +1212,7 @@ public class TaskServiceImpl implements TaskService {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
       }
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskClaimCancelledEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
@@ -1261,7 +1252,7 @@ public class TaskServiceImpl implements TaskService {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
       }
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskCompletedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
@@ -1533,7 +1524,7 @@ public class TaskServiceImpl implements TaskService {
       if (!updateClaimedTaskIds.isEmpty()) {
         taskMapper.updateClaimed(updateClaimedTaskIds, claimedReference);
       }
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         createTasksCompletedEvents(taskSummaryList);
       }
     }

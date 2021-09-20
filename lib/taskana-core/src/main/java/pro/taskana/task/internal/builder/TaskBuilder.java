@@ -182,6 +182,16 @@ public class TaskBuilder {
     return this;
   }
 
+  public TaskBuilder priority(Integer priority) {
+    if (priority != null) {
+      testTask.setPriorityIgnoreFreeze(priority);
+      testTask.freezePriority();
+    } else {
+      testTask.unfreezePriority();
+    }
+    return this;
+  }
+
   public Task buildAndStore(TaskService taskService)
       throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
           ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,

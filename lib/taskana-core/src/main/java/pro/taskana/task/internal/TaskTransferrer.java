@@ -113,7 +113,7 @@ final class TaskTransferrer {
 
       applyTransferValuesForTask(task, destinationWorkbasket, setTransferFlag);
       taskMapper.update(task);
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         createTransferredEvent(
             oldTask, task, originWorkbasket.getId(), destinationWorkbasket.getId());
       }
@@ -250,7 +250,7 @@ final class TaskTransferrer {
       taskMapper.updateTransfered(
           taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toSet()), updateObject);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         taskSummaries.forEach(
             oldSummary -> {
               TaskSummaryImpl newSummary = (TaskSummaryImpl) oldSummary.copy();
