@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.workbasket.internal.WorkbasketBuilder.newWorkbasket;
 
-import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -15,11 +14,11 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -28,16 +27,11 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.WorkbasketBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
+@TaskanaIntegrationTest
 class WorkbasketBuilderTest {
 
-  private final WorkbasketService workbasketService;
-  private final TaskanaEngine taskanaEngine;
-
-  WorkbasketBuilderTest(WorkbasketService workbasketService, TaskanaEngine taskanaEngine) {
-    this.workbasketService = workbasketService;
-    this.taskanaEngine = taskanaEngine;
-  }
+  @TaskanaInject WorkbasketService workbasketService;
+  @TaskanaInject TaskanaEngine taskanaEngine;
 
   @WithAccessId(user = "businessadmin")
   @Test

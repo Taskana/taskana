@@ -9,7 +9,6 @@ import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.task.internal.builder.TaskBuilder.newTask;
 import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
-import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -21,15 +20,13 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
@@ -44,19 +41,13 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
-@TestInstance(Lifecycle.PER_CLASS)
+@TaskanaIntegrationTest
 class TaskBuilderTest {
-  private final TaskanaEngine taskanaEngine;
-  private final TaskService taskService;
+  @TaskanaInject TaskanaEngine taskanaEngine;
+  @TaskanaInject TaskService taskService;
 
-  private WorkbasketSummary workbasketSummary;
-  private ClassificationSummary classificationSummary;
-
-  TaskBuilderTest(TaskanaEngine taskanaEngine, TaskService taskService) {
-    this.taskanaEngine = taskanaEngine;
-    this.taskService = taskService;
-  }
+  WorkbasketSummary workbasketSummary;
+  ClassificationSummary classificationSummary;
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
