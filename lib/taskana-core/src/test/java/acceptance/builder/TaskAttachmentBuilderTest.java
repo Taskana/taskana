@@ -3,32 +3,26 @@ package acceptance.builder;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import acceptance.DefaultTestEntities;
-import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.ClassificationBuilder;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.TaskAttachmentBuilder;
 import pro.taskana.task.internal.models.AttachmentImpl;
 
-@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
+@TaskanaIntegrationTest
 class TaskAttachmentBuilderTest {
 
-  private final ClassificationService classificationService;
-  private final TaskService taskService;
-
-  TaskAttachmentBuilderTest(ClassificationService classificationService, TaskService taskService) {
-    this.classificationService = classificationService;
-    this.taskService = taskService;
-  }
+  @TaskanaInject ClassificationService classificationService;
+  @TaskanaInject TaskService taskService;
 
   @Test
   void should_PopulateAttachment_When_UsingEveryBuilderFunction() throws Exception {

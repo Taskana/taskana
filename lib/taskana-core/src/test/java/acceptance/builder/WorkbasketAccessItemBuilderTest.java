@@ -6,13 +6,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
-import acceptance.TaskanaIntegrationTestExtension;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -21,17 +20,11 @@ import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
-@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
+@TaskanaIntegrationTest
 class WorkbasketAccessItemBuilderTest {
 
-  private final WorkbasketService workbasketService;
-  private final TaskanaEngine taskanaEngine;
-
-  WorkbasketAccessItemBuilderTest(
-      WorkbasketService workbasketService, TaskanaEngine taskanaEngine) {
-    this.workbasketService = workbasketService;
-    this.taskanaEngine = taskanaEngine;
-  }
+  @TaskanaInject WorkbasketService workbasketService;
+  @TaskanaInject TaskanaEngine taskanaEngine;
 
   @WithAccessId(user = "businessadmin")
   @Test

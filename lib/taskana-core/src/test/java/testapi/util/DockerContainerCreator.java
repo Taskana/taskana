@@ -1,14 +1,11 @@
-package pro.taskana.common.test.config;
+package testapi.util;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.UUID;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -17,70 +14,13 @@ import org.testcontainers.utility.DockerImageName;
 
 import pro.taskana.common.internal.configuration.DB;
 
-public class TestContainerExtension implements AfterAllCallback {
+public class DockerContainerCreator {
 
-  private final DataSource dataSource;
-  private final String schemaName;
-  private final JdbcDatabaseContainer<?> container;
-
-  public TestContainerExtension() {
-    DB db = getTestDatabase();
-    Optional<JdbcDatabaseContainer<?>> container = createDockerContainer(db);
-    if (container.isPresent()) {
-      this.container = container.get();
-      this.container.start();
-      dataSource = createDataSource(this.container);
-    } else {
-      dataSource = createDataSourceForH2();
-      this.container = null;
-    }
-    schemaName = determineSchemaName(db);
+  private DockerContainerCreator() {
+    throw new IllegalStateException("Utility class");
   }
 
-  @Override
-  public void afterAll(ExtensionContext context) {
-    if (container != null) {
-      container.stop();
-    }
-  }
-
-  public DataSource getDataSource() {
-    return dataSource;
-  }
-
-  public String getSchemaName() {
-    return schemaName;
-  }
-
-  private DB getTestDatabase() {
-    String property = System.getenv("db.type");
-    DB db;
-    try {
-      db = DB.valueOf(property);
-    } catch (Exception ex) {
-      db = DB.H2;
-    }
-    return db;
-  }
-
-  private static String determineSchemaName(DB db) {
-    return db == DB.POSTGRES ? "taskana" : "TASKANA";
-  }
-
-  private static DataSource createDataSource(JdbcDatabaseContainer<?> container) {
-    PooledDataSource ds =
-        new PooledDataSource(
-            Thread.currentThread().getContextClassLoader(),
-            container.getDriverClassName(),
-            container.getJdbcUrl(),
-            container.getUsername(),
-            container.getPassword());
-    ds.setPoolTimeToWait(50);
-    ds.forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
-    return ds;
-  }
-
-  private static Optional<JdbcDatabaseContainer<?>> createDockerContainer(DB db) {
+  public static Optional<JdbcDatabaseContainer<?>> createDockerContainer(DB db) {
     switch (db) {
       case DB2:
         return Optional.of(
@@ -116,21 +56,16 @@ public class TestContainerExtension implements AfterAllCallback {
     }
   }
 
-  private static DataSource createDataSourceForH2() {
+  public static DataSource createDataSource(JdbcDatabaseContainer<?> container) {
     PooledDataSource ds =
         new PooledDataSource(
             Thread.currentThread().getContextClassLoader(),
-            "org.h2.Driver",
-            "jdbc:h2:mem:"
-                + UUID.randomUUID()
-                + ";LOCK_MODE=0;"
-                + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
-                + "SET COLLATION DEFAULT_de_DE ",
-            "sa",
-            "sa");
+            container.getDriverClassName(),
+            container.getJdbcUrl(),
+            container.getUsername(),
+            container.getPassword());
     ds.setPoolTimeToWait(50);
     ds.forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
-
     return ds;
   }
 }

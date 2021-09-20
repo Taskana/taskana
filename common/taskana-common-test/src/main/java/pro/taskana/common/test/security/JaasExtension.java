@@ -139,7 +139,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
                   StreamSupport.stream(newChildrenForDynamicContainer.spliterator(), false)
                       .map(x -> duplicateDynamicNode(x, childrenMap)));
 
-      Store store = getStore(extensionContext);
+      Store store = getMethodLevelStore(extensionContext);
       return (T)
           Stream.of(annotation.value())
               .peek(a -> store.put(ACCESS_IDS_STORE_KEY, a))
@@ -155,7 +155,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       ReflectiveInvocationContext<Method> invocationContext,
       ExtensionContext extensionContext) {
     WithAccessId accessId =
-        getStore(extensionContext).get(ACCESS_IDS_STORE_KEY, WithAccessId.class);
+        getMethodLevelStore(extensionContext).get(ACCESS_IDS_STORE_KEY, WithAccessId.class);
     performInvocationWithAccessId(invocation, accessId);
   }
 
@@ -163,7 +163,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
   public void interceptDynamicTest(Invocation<Void> invocation, ExtensionContext extensionContext) {
     ExtensionContext testContext = getParentMethodExtensionContent(extensionContext);
     // Check if the test factory provided an access Id for this dynamic test.
-    WithAccessId o = getStore(testContext).get(ACCESS_IDS_STORE_KEY, WithAccessId.class);
+    WithAccessId o = getMethodLevelStore(testContext).get(ACCESS_IDS_STORE_KEY, WithAccessId.class);
     if (o != null) {
       performInvocationWithAccessId(invocation, o);
     } else {
@@ -202,7 +202,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       ExtensionContext context) {
     List<WithAccessId> accessIds =
         AnnotationSupport.findRepeatableAnnotations(context.getElement(), WithAccessId.class);
-    Store store = getStore(context);
+    Store store = getMethodLevelStore(context);
     return accessIds.stream()
         .peek(a -> store.put(ACCESS_IDS_STORE_KEY, a))
         .map(JaasExtensionInvocationContext::new);
@@ -279,14 +279,9 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
                     "Test '%s' does not have a parent method", extensionContext.getUniqueId())));
   }
 
-  /**
-   * Gets the store with a <b>method-level</b> scope.
-   *
-   * @param context context for current extension
-   * @return The store
-   */
-  private Store getStore(ExtensionContext context) {
-    return context.getStore(Namespace.create(getClass(), context.getRequiredTestMethod()));
+  private static Store getMethodLevelStore(ExtensionContext context) {
+    return context.getStore(
+        Namespace.create(context.getRequiredTestClass(), context.getRequiredTestMethod()));
   }
 
   private static String getDisplayNameForAccessId(WithAccessId withAccessId) {

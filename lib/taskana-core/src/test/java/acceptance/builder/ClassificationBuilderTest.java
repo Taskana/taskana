@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static pro.taskana.classification.internal.ClassificationBuilder.newClassification;
 
-import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -14,7 +13,8 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
@@ -22,17 +22,12 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.ClassificationBuilder;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
-@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
+@TaskanaIntegrationTest
 class ClassificationBuilderTest {
 
-  private final ClassificationService classificationService;
-
-  public ClassificationBuilderTest(ClassificationService classificationService) {
-    this.classificationService = classificationService;
-  }
+  @TaskanaInject ClassificationService classificationService;
 
   @WithAccessId(user = "businessadmin")
   @Test

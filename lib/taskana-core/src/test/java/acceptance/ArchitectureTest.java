@@ -12,6 +12,7 @@ import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClass.Predicates;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -292,6 +294,33 @@ class ArchitectureTest {
             .should(notUseCurrentTimestampSqlFunction());
 
     rule.check(importedClasses);
+  }
+
+  @Test
+  void taskanaIntegrationTestsShouldOnlyHavePackagePrivateFields() {
+    ArchRule rule =
+        classes()
+            .that()
+            .areAnnotatedWith(TaskanaIntegrationTest.class)
+            .should(onlyHaveFieldsWithNoModifier());
+
+    rule.check(importedClasses);
+  }
+
+  private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifier() {
+    return new ArchCondition<JavaClass>("only have fields with no modifier") {
+      @Override
+      public void check(JavaClass item, ConditionEvents events) {
+        for (JavaField field : item.getAllFields()) {
+          if (!field.getModifiers().isEmpty()) {
+            events.add(
+                SimpleConditionEvent.violated(
+                    item,
+                    String.format("Field '%s' should not have any modifier", field.getFullName())));
+          }
+        }
+      }
+    };
   }
 
   private static ArchCondition<JavaClass> beDefinedInTaskanaSubPackages(

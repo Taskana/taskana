@@ -9,7 +9,6 @@ import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.task.internal.TaskCommentBuilder.newTaskComment;
 import static pro.taskana.workbasket.internal.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
 
-import acceptance.TaskanaIntegrationTestExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -20,15 +19,13 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
@@ -41,19 +38,13 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-@ExtendWith({JaasExtension.class, TaskanaIntegrationTestExtension.class})
-@TestInstance(Lifecycle.PER_CLASS)
+@TaskanaIntegrationTest
 class TaskCommentBuilderTest {
 
-  private final TaskService taskService;
-  private final TaskanaEngine taskanaEngine;
+  @TaskanaInject TaskService taskService;
+  @TaskanaInject TaskanaEngine taskanaEngine;
 
-  private Task task;
-
-  TaskCommentBuilderTest(TaskService taskService, TaskanaEngine taskanaEngine) {
-    this.taskService = taskService;
-    this.taskanaEngine = taskanaEngine;
-  }
+  Task task;
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
