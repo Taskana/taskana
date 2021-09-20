@@ -111,7 +111,7 @@
       <version>${version.archunit}</version>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
       <version>${version.testcontainers}</version>

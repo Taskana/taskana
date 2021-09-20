@@ -1,7 +1,8 @@
 package testapi.extensions;
 
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
-import static testapi.util.DockerContainerCreator.createDockerContainer;
+import static pro.taskana.common.test.DockerContainerCreator.createDataSource;
+import static pro.taskana.common.test.DockerContainerCreator.createDockerContainer;
 import static testapi.util.ExtensionCommunicator.getClassLevelStore;
 import static testapi.util.ExtensionCommunicator.isTopLevelClass;
 
@@ -21,7 +22,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import testapi.CleanTaskanaContext;
 import testapi.TaskanaEngineConfigurationModifier;
 import testapi.WithServiceProvider;
-import testapi.util.DockerContainerCreator;
 
 import pro.taskana.common.internal.configuration.DB;
 
@@ -47,7 +47,7 @@ public class TestContainerExtension implements AfterAllCallback, InvocationInter
           .ifPresentOrElse(
               container -> {
                 container.start();
-                store.put(STORE_DATA_SOURCE, DockerContainerCreator.createDataSource(container));
+                store.put(STORE_DATA_SOURCE, createDataSource(container));
                 store.put(STORE_CONTAINER, container);
               },
               () -> store.put(STORE_DATA_SOURCE, createDataSourceForH2()));
@@ -87,7 +87,7 @@ public class TestContainerExtension implements AfterAllCallback, InvocationInter
   }
 
   private static DB retrieveDatabaseFromEnv() {
-    String property = System.getenv("db.type");
+    String property = System.getenv("DB");
     DB db;
     try {
       db = DB.valueOf(property);

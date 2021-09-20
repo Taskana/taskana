@@ -28,8 +28,10 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityWorker;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
+import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 @TaskanaIntegrationTest
 class TaskUpdatePriorityWorkerAccTest {
@@ -42,17 +44,28 @@ class TaskUpdatePriorityWorkerAccTest {
   TaskSummary task1;
   TaskSummary task2;
   Task completedTask;
+  ClassificationSummary classificationSummary;
+  WorkbasketSummary workbasketSummary;
 
   @WithAccessId(user = "admin")
   @BeforeAll
   void setUp(ClassificationService classificationService, WorkbasketService workbasketService)
       throws Exception {
-    ClassificationSummary classificationSummary =
+    classificationSummary =
         DefaultTestEntities.defaultTestClassification()
             .buildAndStore(classificationService)
             .asSummary();
-    WorkbasketSummary workbasketSummary =
+    workbasketSummary =
         DefaultTestEntities.defaultTestWorkbasket().buildAndStore(workbasketService).asSummary();
+
+    // Currently, we have a bug: TSK-1736
+    // Because of that we need at least one WorkbasketAccessItem with the correct permissions.
+    // Otherwise, the DB2 will not work.
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(workbasketSummary.getId())
+        .accessId("whatever")
+        .permission(WorkbasketPermission.READ)
+        .buildAndStore(workbasketService);
 
     TaskBuilder taskBuilder =
         TaskBuilder.newTask()
@@ -127,16 +140,8 @@ class TaskUpdatePriorityWorkerAccTest {
 
     @Test
     @WithAccessId(user = "admin")
-    void should_executeBatch(
-        WorkbasketService workbasketService, ClassificationService classificationService)
-        throws Exception {
+    void should_executeBatch() throws Exception {
       // given
-      ClassificationSummary classificationSummary =
-          DefaultTestEntities.defaultTestClassification()
-              .buildAndStore(classificationService)
-              .asSummary();
-      WorkbasketSummary workbasketSummary =
-          DefaultTestEntities.defaultTestWorkbasket().buildAndStore(workbasketService).asSummary();
       Task oldTask =
           TaskBuilder.newTask()
               .classificationSummary(classificationSummary)
