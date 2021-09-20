@@ -274,15 +274,13 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Prepare database
-        run: docker-databases/prepare_db.sh ${{ matrix.database }}
       - name: Generate JavaDoc for Rest Documentation
         if: matrix.module == 'taskana-simplehistory-rest-spring'
         run: ./mvnw -B validate -pl :taskana-rest-spring
       - name: Test
         run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip
         env:
-          db.type: ${{ matrix.database }}
+          DB: ${{ matrix.database }}
       - name: Upload JaCoCo Report
         if: matrix.database == 'H2'
         uses: actions/upload-artifact@v2

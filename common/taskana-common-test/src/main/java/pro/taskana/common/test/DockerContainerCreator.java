@@ -1,4 +1,4 @@
-package testapi.util;
+package pro.taskana.common.test;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
