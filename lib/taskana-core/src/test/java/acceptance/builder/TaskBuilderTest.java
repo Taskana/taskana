@@ -176,9 +176,7 @@ class TaskBuilderTest {
     expectedTask.setTransferred(true);
     expectedTask.setCreator("user-1-1");
     expectedTask.addAttachment(attachment);
-    // ATTENTION: We have an SPI running which transforms custom1 of every created Task to that.
-    // Please fix after removal of that SPI during TSK-1704 ;)
-    expectedTask.setCustomAttribute(TaskCustomField.CUSTOM_1, "preprocessedCustomField");
+    expectedTask.setCustomAttribute(TaskCustomField.CUSTOM_1, "custom1");
     expectedTask.setCustomAttribute(TaskCustomField.CUSTOM_2, "custom2");
     expectedTask.setCustomAttribute(TaskCustomField.CUSTOM_3, "custom3");
     expectedTask.setCustomAttribute(TaskCustomField.CUSTOM_4, "custom4");
@@ -246,10 +244,9 @@ class TaskBuilderTest {
                     Task::getModified),
                 Quadruple.of("read", true, (b, v) -> b.read((Boolean) v), Task::isRead),
                 Quadruple.of(
-                    "transferred",
-                    true,
-                    (b, v) -> b.transferred((Boolean) v),
-                    Task::isTransferred));
+                    "transferred", true, (b, v) -> b.transferred((Boolean) v), Task::isTransferred),
+                Quadruple.of(
+                    "priority", 1337, (b, v) -> b.priority((Integer) v), Task::getPriority));
 
     Stream<DynamicTest> applyBuilderFunction =
         DynamicTest.stream(

@@ -1,134 +1,159 @@
 package acceptance.jobs.helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
-import acceptance.AbstractAccTest;
+import acceptance.DefaultTestEntities;
+import acceptance.priorityservice.TestPriorityServiceProvider;
+import java.time.Instant;
 import java.util.List;
-import java.util.function.Predicate;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.function.IntPredicate;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
+import testapi.WithServiceProvider;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.spi.priority.internal.PriorityServiceManager;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.spi.priority.api.PriorityServiceProvider;
+import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityWorker;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Acceptance test for all "jobs tasks runner" scenarios. */
-@ExtendWith(JaasExtension.class)
-class TaskUpdatePriorityWorkerAccTest extends AbstractAccTest {
+@TaskanaIntegrationTest
+class TaskUpdatePriorityWorkerAccTest {
 
-  @BeforeEach
-  void before() throws Exception {
-    // required if single tests modify database
-    // TODO split test class into readOnly & modifying tests to improve performance
-    resetDb(true);
+  @TaskanaInject TaskanaEngine taskanaEngine;
+  @TaskanaInject TaskService taskService;
+
+  TaskUpdatePriorityWorker worker;
+
+  TaskSummary task1;
+  TaskSummary task2;
+  Task completedTask;
+
+  @WithAccessId(user = "admin")
+  @BeforeAll
+  void setUp(ClassificationService classificationService, WorkbasketService workbasketService)
+      throws Exception {
+    ClassificationSummary classificationSummary =
+        DefaultTestEntities.defaultTestClassification()
+            .buildAndStore(classificationService)
+            .asSummary();
+    WorkbasketSummary workbasketSummary =
+        DefaultTestEntities.defaultTestWorkbasket().buildAndStore(workbasketService).asSummary();
+
+    TaskBuilder taskBuilder =
+        TaskBuilder.newTask()
+            .classificationSummary(classificationSummary)
+            .workbasketSummary(workbasketSummary)
+            .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
+
+    task1 = taskBuilder.buildAndStore(taskService).asSummary();
+    task2 = taskBuilder.buildAndStore(taskService).asSummary();
+    completedTask = taskBuilder.state(TaskState.COMPLETED).buildAndStore(taskService);
+    worker = new TaskUpdatePriorityWorker(taskanaEngine);
   }
 
   @Test
   @WithAccessId(user = "admin")
-  void should_loadAnyRelevantTaskId() {
-    // given
-    TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngine);
-
+  void should_loadAnyRelevantTaskIds() {
     // when
     final List<String> allRelevantTaskIds = worker.getAllRelevantTaskIds();
 
     // then
-    assertThat(allRelevantTaskIds).hasSizeGreaterThan(0);
+    assertThat(allRelevantTaskIds).containsExactlyInAnyOrder(task1.getId(), task2.getId());
   }
 
   @Test
   @WithAccessId(user = "admin")
   void should_loadExistingTaskIds() {
-    // given
-    TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngine);
-    final List<String> allRelevantTaskIds = worker.getAllRelevantTaskIds();
-    final String foundTaskId = allRelevantTaskIds.get(0);
-
     // when
-    final List<TaskSummary> taskSummariesByIds = worker.getTaskSummariesByIds(List.of(foundTaskId));
+    final List<TaskSummary> taskSummariesByIds =
+        worker.getTaskSummariesByIds(List.of(task1.getId(), task2.getId()));
 
     // then
-    assertThat(taskSummariesByIds)
-        .hasSize(1)
-        .extracting(TaskSummary::getId)
-        .containsExactly(foundTaskId);
+    assertThat(taskSummariesByIds).containsExactlyInAnyOrder(task1, task2);
   }
 
   @Test
   @WithAccessId(user = "admin")
   void should_notLoadAnyIrrelevantTaskIds() {
-    // given
-    TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngine);
-    String completedTaskId = "TKI:000000000000000000000000000000000038";
-
     // when
     final List<String> allRelevantTaskIds = worker.getAllRelevantTaskIds();
 
     // then
-    assertThat(allRelevantTaskIds).isNotEmpty().doesNotContain(completedTaskId);
-  }
-
-  @Test
-  @WithAccessId(user = "admin")
-  void should_loadExistingTaskSummariesById() {
-    // given
-    TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngine);
-    String taskId1 = "TKI:000000000000000000000000000000000050";
-    String taskId2 = "TKI:000000000000000000000000000000000051";
-
-    // when
-    final List<TaskSummary> taskSummariesByIds =
-        worker.getTaskSummariesByIds(List.of(taskId1, taskId2));
-
-    // then
-    assertThat(taskSummariesByIds)
-        .hasSizeGreaterThan(0)
-        .extracting(TaskSummary::getId)
-        .containsExactlyInAnyOrder(taskId1, taskId2);
-  }
-
-  @Test
-  @WithAccessId(user = "admin")
-  void should_executeBatch() throws TaskNotFoundException, NotAuthorizedException {
-    // given
-    TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngine);
-    final List<String> allRelevantTaskIds = worker.getAllRelevantTaskIds();
-    String taskId = "TKI:000000000000000000000000000000000050";
-    Task taskOld = taskanaEngine.getTaskService().getTask(taskId);
-
-    // when
-    final List<String> updatedTaskIds = worker.executeBatch(allRelevantTaskIds);
-
-    // then
-    final Task taskUpdated = taskanaEngine.getTaskService().getTask(taskId);
-
-    assumeThat(PriorityServiceManager.getInstance().countRegisteredServices())
-        .describedAs("SPI should be provided in order to check for modified priorities.")
-        .isPositive();
-
-    assertThat(updatedTaskIds).contains(taskId);
-    assertThat(taskUpdated.getPriority()).isNotEqualTo(taskOld.getPriority());
+    assertThat(allRelevantTaskIds).isNotEmpty().doesNotContain(completedTask.getId());
   }
 
   @Test
   void should_noticeDifferentPriority_When_PriorityHasChanged() {
     // given
-    final TaskImpl task = (TaskImpl) taskanaEngine.getTaskService().newTask();
+    TaskImpl task = (TaskImpl) taskService.newTask();
     task.setPriority(232);
 
     // when
-    final Predicate<Integer> differentPriority =
-        TaskUpdatePriorityWorker.hasDifferentPriority(task);
+    IntPredicate differentPriority = TaskUpdatePriorityWorker.hasDifferentPriority(task);
 
     // then
     assertThat(differentPriority).rejects(232).accepts(2, 3, 4, 5);
+  }
+
+  @Nested
+  @WithServiceProvider(
+      serviceProviderInterface = PriorityServiceProvider.class,
+      serviceProviders = TestPriorityServiceProvider.class)
+  @TestInstance(Lifecycle.PER_CLASS)
+  class WithSpi {
+
+    @TaskanaInject TaskService taskService;
+    TaskUpdatePriorityWorker worker;
+
+    @BeforeAll
+    void setup(TaskanaEngine taskanaEngine) {
+      worker = new TaskUpdatePriorityWorker(taskanaEngine);
+    }
+
+    @Test
+    @WithAccessId(user = "admin")
+    void should_executeBatch(
+        WorkbasketService workbasketService, ClassificationService classificationService)
+        throws Exception {
+      // given
+      ClassificationSummary classificationSummary =
+          DefaultTestEntities.defaultTestClassification()
+              .buildAndStore(classificationService)
+              .asSummary();
+      WorkbasketSummary workbasketSummary =
+          DefaultTestEntities.defaultTestWorkbasket().buildAndStore(workbasketService).asSummary();
+      Task oldTask =
+          TaskBuilder.newTask()
+              .classificationSummary(classificationSummary)
+              .workbasketSummary(workbasketSummary)
+              .created(Instant.parse("2020-04-30T07:12:00.000Z"))
+              .priority(1337)
+              .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+              .buildAndStore(taskService);
+
+      // when
+      final List<String> updatedTaskIds = worker.executeBatch(List.of(oldTask.getId()));
+
+      // then
+      final Task updatedTask = taskService.getTask(oldTask.getId());
+
+      assertThat(updatedTaskIds).containsExactly(oldTask.getId());
+      assertThat(updatedTask.getPriority()).isNotEqualTo(oldTask.getPriority());
+    }
   }
 }

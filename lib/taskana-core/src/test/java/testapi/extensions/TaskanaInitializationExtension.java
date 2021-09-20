@@ -10,8 +10,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.JUnitException;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import testapi.CleanTaskanaContext;
 import testapi.TaskanaEngineConfigurationModifier;
+import testapi.WithServiceProvider;
+import testapi.util.ServiceProviderExtractor;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
@@ -24,6 +28,7 @@ import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
+import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskService;
@@ -41,6 +46,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     Class<?> testClass = testInstance.getClass();
     if (isTopLevelClass(testClass)
         || isAnnotated(testClass, CleanTaskanaContext.class)
+        || isAnnotated(testClass, WithServiceProvider.class)
         || testInstance instanceof TaskanaEngineConfigurationModifier) {
       Store store = getClassLevelStore(context);
       TaskanaEngineConfiguration taskanaEngineConfiguration =
@@ -52,7 +58,14 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         modifier.modify(taskanaEngineConfiguration);
       }
 
-      TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+      TaskanaEngine taskanaEngine;
+      try (MockedStatic<SpiLoader> staticMock = Mockito.mockStatic(SpiLoader.class)) {
+        ServiceProviderExtractor.extractServiceProviders(testClass)
+            .forEach(
+                (spi, serviceProviders) ->
+                    staticMock.when(() -> SpiLoader.load(spi)).thenReturn(serviceProviders));
+        taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
+      }
       taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));

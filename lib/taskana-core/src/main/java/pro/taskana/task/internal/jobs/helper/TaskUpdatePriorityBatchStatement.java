@@ -17,7 +17,7 @@ public class TaskUpdatePriorityBatchStatement {
     preparedStatement = connection.prepareStatement("update TASK set PRIORITY = ? where ID = ?");
   }
 
-  public void addPriorityUpdate(String taskId, Integer priority) throws SQLException {
+  public void addPriorityUpdate(String taskId, int priority) throws SQLException {
     preparedStatement.setInt(1, priority);
     preparedStatement.setString(2, taskId);
     LOGGER.debug("Job update priority to {} for task {}.", priority, taskId);

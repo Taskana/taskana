@@ -46,15 +46,18 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
   private final HistoryEventManager historyEventManager;
+  private final PriorityServiceManager priorityServiceManager;
   private final ClassificationMapper classificationMapper;
   private final TaskMapper taskMapper;
   private final InternalTaskanaEngine taskanaEngine;
 
   public ClassificationServiceImpl(
       InternalTaskanaEngine taskanaEngine,
+      PriorityServiceManager priorityServiceManager,
       ClassificationMapper classificationMapper,
       TaskMapper taskMapper) {
     this.taskanaEngine = taskanaEngine;
+    this.priorityServiceManager = priorityServiceManager;
     this.classificationMapper = classificationMapper;
     this.taskMapper = taskMapper;
     this.historyEventManager = taskanaEngine.getHistoryEventManager();
@@ -132,7 +135,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       try {
         this.classificationMapper.deleteClassification(classificationId);
 
-        if (HistoryEventManager.isHistoryEnabled()) {
+        if (historyEventManager.isEnabled()) {
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(
                   classification, newClassification("", "", ""));
@@ -201,7 +204,7 @@ public class ClassificationServiceImpl implements ClassificationService {
 
       classificationMapper.insert(classificationImpl);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
                 newClassification("", "", ""), classificationImpl);
@@ -255,11 +258,11 @@ public class ClassificationServiceImpl implements ClassificationService {
       this.checkExistenceOfParentClassification(oldClassification, classificationImpl);
       classificationMapper.update(classificationImpl);
 
-      if (!PriorityServiceManager.isPriorityServiceEnabled()) {
+      if (!priorityServiceManager.isEnabled()) {
         this.createJobIfPriorityOrServiceLevelHasChanged(oldClassification, classificationImpl);
       }
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
                 oldClassification, classificationImpl);

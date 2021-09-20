@@ -12,6 +12,7 @@ class TaskTestImpl extends TaskImpl {
   private boolean freezeModified = false;
   private boolean freezeRead = false;
   private boolean freezeTransferred = false;
+  private boolean freezePriority = false;
 
   @Override
   public void setState(TaskState state) {
@@ -68,6 +69,17 @@ class TaskTestImpl extends TaskImpl {
     super.setTransferred(isTransferred);
   }
 
+  @Override
+  public void setPriority(int priority) {
+    if (!freezePriority) {
+      super.setPriority(priority);
+    }
+  }
+
+  public void setPriorityIgnoreFreeze(int priority) {
+    super.setPriority(priority);
+  }
+
   public void freezeState() {
     freezeState = true;
   }
@@ -106,5 +118,13 @@ class TaskTestImpl extends TaskImpl {
 
   public void unfreezeTransferred() {
     freezeTransferred = false;
+  }
+
+  public void freezePriority() {
+    freezePriority = true;
+  }
+
+  public void unfreezePriority() {
+    freezePriority = false;
   }
 }

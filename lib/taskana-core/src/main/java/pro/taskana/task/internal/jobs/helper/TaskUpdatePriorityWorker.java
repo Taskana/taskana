@@ -2,11 +2,12 @@ package pro.taskana.task.internal.jobs.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.OptionalInt;
+import java.util.function.IntPredicate;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
@@ -16,14 +17,15 @@ public class TaskUpdatePriorityWorker {
 
   private final SqlConnectionRunner sqlConnectionRunner;
   private final TaskanaEngine taskanaEngine;
+  private final PriorityServiceManager priorityServiceManager;
 
   public TaskUpdatePriorityWorker(TaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
-    this.sqlConnectionRunner = new SqlConnectionRunner(taskanaEngine);
+    sqlConnectionRunner = new SqlConnectionRunner(taskanaEngine);
+    priorityServiceManager = ((TaskanaEngineImpl) taskanaEngine).getPriorityServiceManager();
   }
 
   public List<String> executeBatch(List<String> taskIds) {
-
     List<String> updatedTaskIds = new ArrayList<>();
     sqlConnectionRunner.runWithConnection(
         connection -> {
@@ -32,11 +34,11 @@ public class TaskUpdatePriorityWorker {
 
           List<TaskSummary> list = getTaskSummariesByIds(taskIds);
           for (TaskSummary taskSummary : list) {
-            Optional<Integer> calculatedPriority = getCalculatedPriority(taskSummary);
+            OptionalInt calculatedPriority = getCalculatedPriority(taskSummary);
             if (calculatedPriority.isPresent()) {
               final String taskId = taskSummary.getId();
               updatedTaskIds.add(taskId);
-              taskUpdateBatch.addPriorityUpdate(taskId, calculatedPriority.get());
+              taskUpdateBatch.addPriorityUpdate(taskId, calculatedPriority.getAsInt());
             }
           }
           taskUpdateBatch.executeBatch();
@@ -71,13 +73,16 @@ public class TaskUpdatePriorityWorker {
         .list();
   }
 
-  public Optional<Integer> getCalculatedPriority(TaskSummary taskSummary) {
-    return PriorityServiceManager.getInstance()
-        .calculatePriorityOfTask(taskSummary)
-        .filter(hasDifferentPriority(taskSummary));
+  public OptionalInt getCalculatedPriority(TaskSummary taskSummary) {
+    OptionalInt computedPriority = priorityServiceManager.calculatePriorityOfTask(taskSummary);
+    if (computedPriority.isPresent()
+        && hasDifferentPriority(taskSummary).test(computedPriority.getAsInt())) {
+      return computedPriority;
+    }
+    return OptionalInt.empty();
   }
 
-  public static Predicate<Integer> hasDifferentPriority(TaskSummary taskSummary) {
+  public static IntPredicate hasDifferentPriority(TaskSummary taskSummary) {
     return prio -> taskSummary != null && prio != taskSummary.getPriority();
   }
 }

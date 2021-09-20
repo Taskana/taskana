@@ -20,6 +20,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import testapi.CleanTaskanaContext;
 import testapi.TaskanaEngineConfigurationModifier;
+import testapi.WithServiceProvider;
 import testapi.util.DockerContainerCreator;
 
 import pro.taskana.common.internal.configuration.DB;
@@ -51,7 +52,8 @@ public class TestContainerExtension implements AfterAllCallback, InvocationInter
               },
               () -> store.put(STORE_DATA_SOURCE, createDataSourceForH2()));
 
-    } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)) {
+    } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)
+        || isAnnotated(testClass, WithServiceProvider.class)) {
       // since the implementation of TaskanaEngineConfigurationModifier implies the generation of a
       // new TaskanaEngine, we have to copy the schema name and datasource from the enclosing class'
       // store to the testClass store.

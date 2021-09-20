@@ -67,6 +67,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   public WorkbasketServiceImpl(
       InternalTaskanaEngine taskanaEngine,
+      HistoryEventManager historyEventManager,
       WorkbasketMapper workbasketMapper,
       DistributionTargetMapper distributionTargetMapper,
       WorkbasketAccessMapper workbasketAccessMapper) {
@@ -74,7 +75,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     this.workbasketMapper = workbasketMapper;
     this.distributionTargetMapper = distributionTargetMapper;
     this.workbasketAccessMapper = workbasketAccessMapper;
-    this.historyEventManager = taskanaEngine.getHistoryEventManager();
+    this.historyEventManager = historyEventManager;
   }
 
   @Override
@@ -145,7 +146,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       workbasketMapper.insert(workbasket);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
                 newWorkbasket("", ""), newWorkbasket);
@@ -202,7 +203,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         workbasketMapper.update(workbasketImplToUpdate);
       }
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
                 oldWorkbasket, workbasketToUpdate);
@@ -266,7 +267,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       try {
         workbasketAccessMapper.insert(accessItem);
 
-        if (HistoryEventManager.isHistoryEnabled()) {
+        if (historyEventManager.isEnabled()) {
 
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(
@@ -326,7 +327,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       workbasketAccessMapper.update(accessItem);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
 
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(originalItem, accessItem);
@@ -359,13 +360,13 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       WorkbasketAccessItem accessItem = null;
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         accessItem = workbasketAccessMapper.findById(accessItemId);
       }
 
       workbasketAccessMapper.delete(accessItemId);
 
-      if (HistoryEventManager.isHistoryEnabled() && accessItem != null) {
+      if (historyEventManager.isEnabled() && accessItem != null) {
 
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
@@ -490,14 +491,14 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       List<WorkbasketAccessItemImpl> originalAccessItems = new ArrayList<>();
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         originalAccessItems = workbasketAccessMapper.findByWorkbasketId(workbasketId);
       }
       // delete all current ones
       workbasketAccessMapper.deleteAllAccessItemsForWorkbasketId(workbasketId);
       accessItems.forEach(workbasketAccessMapper::insert);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
 
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
@@ -601,7 +602,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       List<String> originalTargetWorkbasketIds = new ArrayList<>();
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         originalTargetWorkbasketIds = distributionTargetMapper.findBySourceId(sourceWorkbasketId);
       }
 
@@ -624,7 +625,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
           }
         }
 
-        if (HistoryEventManager.isHistoryEnabled() && !targetWorkbasketIds.isEmpty()) {
+        if (historyEventManager.isEnabled() && !targetWorkbasketIds.isEmpty()) {
 
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(
@@ -674,7 +675,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       } else {
         distributionTargetMapper.insert(sourceWorkbasketId, targetWorkbasketId);
 
-        if (HistoryEventManager.isHistoryEnabled()) {
+        if (historyEventManager.isEnabled()) {
 
           String details =
               "{\"changes\":{\"newValue\":\"" + targetWorkbasketId + "\",\"oldValue\":\"\"}}";
@@ -717,7 +718,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       if (numberOfDistTargets > 0) {
         distributionTargetMapper.delete(sourceWorkbasketId, targetWorkbasketId);
 
-        if (HistoryEventManager.isHistoryEnabled()) {
+        if (historyEventManager.isEnabled()) {
 
           Workbasket workbasket = workbasketMapper.findById(sourceWorkbasketId);
 
@@ -805,7 +806,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
         workbasketMapper.delete(workbasketId);
         deleteReferencesToWorkbasket(workbasketId);
 
-        if (HistoryEventManager.isHistoryEnabled()) {
+        if (historyEventManager.isEnabled()) {
 
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(
@@ -912,12 +913,12 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       }
 
       List<WorkbasketAccessItemImpl> workbasketAccessItems = new ArrayList<>();
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
         workbasketAccessItems = workbasketAccessMapper.findByAccessId(accessId);
       }
       workbasketAccessMapper.deleteAccessItemsForAccessId(accessId);
 
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
 
         for (WorkbasketAccessItemImpl workbasketAccessItem : workbasketAccessItems) {
 
@@ -1104,7 +1105,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       WorkbasketImpl workbasket = workbasketMapper.findById(workbasketId);
       workbasket.setMarkedForDeletion(true);
       workbasketMapper.update(workbasket);
-      if (HistoryEventManager.isHistoryEnabled()) {
+      if (historyEventManager.isEnabled()) {
 
         historyEventManager.createEvent(
             new WorkbasketMarkedForDeletionEvent(

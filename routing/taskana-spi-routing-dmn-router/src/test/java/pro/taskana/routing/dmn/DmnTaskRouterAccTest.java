@@ -36,7 +36,7 @@ class DmnTaskRouterAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "taskadmin")
   @Test
-  void should_ThrowException_When_DmnTaskRouterFindsNoRule() throws Exception {
+  void should_ThrowException_When_DmnTaskRouterFindsNoRule() {
 
     Task taskToRoute = taskService.newTask();
     taskToRoute.setClassificationKey("T2100");
@@ -48,6 +48,6 @@ class DmnTaskRouterAccTest extends AbstractAccTest {
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .extracting(Throwable::getMessage)
-        .isEqualTo("Cannot create a task outside a workbasket");
+        .isEqualTo("Cannot create a Task outside a Workbasket");
   }
 }

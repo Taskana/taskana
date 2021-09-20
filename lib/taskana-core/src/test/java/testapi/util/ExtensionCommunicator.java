@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import testapi.CleanTaskanaContext;
 import testapi.TaskanaEngineConfigurationModifier;
+import testapi.WithServiceProvider;
 
 public class ExtensionCommunicator {
 
@@ -30,7 +31,9 @@ public class ExtensionCommunicator {
     if (isTopLevelClass(testClass)) {
       return Namespace.create(testClass);
     } else if (isAnnotated(testClass, CleanTaskanaContext.class)) {
-      return Namespace.create(testClass.getEnclosingClass(), testClass);
+      return Namespace.create(testClass.getEnclosingClass(), testClass, CleanTaskanaContext.class);
+    } else if (isAnnotated(testClass, WithServiceProvider.class)) {
+      return Namespace.create(testClass.getEnclosingClass(), testClass, WithServiceProvider.class);
     } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)) {
       return Namespace.create(
           testClass.getEnclosingClass(), testClass, TaskanaEngineConfigurationModifier.class);

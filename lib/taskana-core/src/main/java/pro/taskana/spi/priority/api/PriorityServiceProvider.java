@@ -1,6 +1,6 @@
 package pro.taskana.spi.priority.api;
 
-import java.util.Optional;
+import java.util.OptionalInt;
 
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
@@ -21,5 +21,5 @@ public interface PriorityServiceProvider {
    *     priority} for
    * @return the computed {@linkplain Task#getPriority() priority}
    */
-  Optional<Integer> calculatePriority(TaskSummary taskSummary);
+  OptionalInt calculatePriority(TaskSummary taskSummary);
 }
