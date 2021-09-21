@@ -62,7 +62,11 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_JOB_PRIORITY_BATCHSIZE = "taskana.jobs.priority.batchSize";
   private static final String TASKANA_JOB_PRIORITY_RUN_EVERY = "taskana.jobs.priority.runEvery";
   private static final String TASKANA_JOB_PRIORITY_FIRST_RUN = "taskana.jobs.priority.firstRunAt";
+  private static final String TASKANA_JOB_USER_REFRESH_FIRST_RUN =
+      "taskana.jobs.user.refresh.firstRunAt";
   private static final String TASKANA_JOB_PRIORITY_ACTIVE = "taskana.jobs.priority.active";
+  private static final String TASKANA_JOB_USER_REFRESH_RUN_EVERY =
+      "taskana.jobs.user.refresh.runEvery";
   private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
   private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY =
       "taskana.classification.types";
@@ -120,6 +124,9 @@ public class TaskanaEngineConfiguration {
   private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
   private Duration priorityJobRunEvery = Duration.parse("P1D");
   private boolean priorityJobActive = false;
+
+  private Duration userRefreshJobRunEvery = Duration.parse("P1D");
+  private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
 
   public TaskanaEngineConfiguration(
       DataSource dataSource, boolean useManagedTransactions, String schemaName) {
@@ -419,6 +426,22 @@ public class TaskanaEngineConfiguration {
     this.priorityJobRunEvery = priorityJobRunEvery;
   }
 
+  public Duration getUserRefreshJobRunEvery() {
+    return userRefreshJobRunEvery;
+  }
+
+  public void setUserRefreshJobRunEvery(Duration userRefreshJobRunEvery) {
+    this.userRefreshJobRunEvery = userRefreshJobRunEvery;
+  }
+
+  public Instant getUserRefreshJobFirstRun() {
+    return userRefreshJobFirstRun;
+  }
+
+  public void setUserRefreshJobFirstRun(Instant userRefreshJobFirstRun) {
+    this.userRefreshJobFirstRun = userRefreshJobFirstRun;
+  }
+
   public boolean isPriorityJobActive() {
     return priorityJobActive;
   }
@@ -494,6 +517,12 @@ public class TaskanaEngineConfiguration {
 
     parseProperty(props, TASKANA_JOB_PRIORITY_ACTIVE, Boolean::parseBoolean)
         .ifPresent(this::setPriorityJobActive);
+
+    parseProperty(props, TASKANA_JOB_USER_REFRESH_RUN_EVERY, Duration::parse)
+        .ifPresent(this::setUserRefreshJobRunEvery);
+
+    parseProperty(props, TASKANA_JOB_USER_REFRESH_FIRST_RUN, Instant::parse)
+        .ifPresent(this::setUserRefreshJobFirstRun);
 
     parseProperty(
             props,

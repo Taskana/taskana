@@ -93,6 +93,13 @@ objectclass: person
 objectclass: top
 givenName: Titus
 description: desc
+phoneNumber: 012345678
+mobileNumber: 09876554321
+email: Titus.Toll@taskana.de
+orgLevel1: ABC
+orgLevel2: DEF/GHI
+someDepartement: JKL
+orgLevel4: MNO/PQR
 memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 memberOf: cn=monitor-users,cn=groups,OU=Test,O=TASKANA
 memberOf: cn=business-admins,cn=groups,OU=Test,O=TASKANA

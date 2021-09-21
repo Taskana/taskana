@@ -12,6 +12,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
+import pro.taskana.user.jobs.UserInfoRefreshJob;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 /** This class invokes the JobRunner periodically to schedule long running jobs. */
@@ -35,6 +36,7 @@ public class JobScheduler {
           ClassNotFoundException {
     TaskCleanupJob.initializeSchedule(taskanaEngine);
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
+    UserInfoRefreshJob.initializeSchedule(taskanaEngine);
 
     if (taskanaEngine.isHistoryEnabled()) {
       Thread.currentThread()
