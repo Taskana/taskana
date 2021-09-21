@@ -177,7 +177,14 @@ class LdapClientTest {
               {"taskana.ldap.userLastnameAttribute", "sn"},
               {"taskana.ldap.userFirstnameAttribute", "givenName"},
               {"taskana.ldap.userFullnameAttribute", "cn"},
-              {"taskana.ldap.userSearchFilterValue", "person"}
+              {"taskana.ldap.userSearchFilterValue", "person"},
+              {"taskana.ldap.userPhoneAttribute", "phoneNumber"},
+              {"taskana.ldap.userMobilePhoneAttribute", "mobileNumber"},
+              {"taskana.ldap.userEmailAttribute", "email"},
+              {"taskana.ldap.userOrglevel1Attribute", "orgLevel1"},
+              {"taskana.ldap.userOrglevel2Attribute", "orgLevel2"},
+              {"taskana.ldap.userOrglevel3Attribute", "orgLevel3"},
+              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"},
             })
         .forEach(
             strings ->
