@@ -32,6 +32,7 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 import pro.taskana.monitor.rest.MonitorController;
 import pro.taskana.monitor.rest.TimeIntervalReportFilterParameter;
+import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
@@ -59,11 +60,15 @@ public class ReportRepresentationModelAssembler {
 
   @NonNull
   public ReportRepresentationModel toModel(
-      @NonNull WorkbasketPriorityReport report, @NonNull WorkbasketType[] workbasketTypes)
-      throws NotAuthorizedException, InvalidArgumentException {
+      @NonNull WorkbasketPriorityReport report,
+      WorkbasketType[] workbasketTypes,
+      PriorityColumnHeaderRepresentationModel[] columnHeaders)
+      throws InvalidArgumentException, NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
-        linkTo(methodOn(MonitorController.class).computePriorityWorkbasketReport(workbasketTypes))
+        linkTo(
+                methodOn(MonitorController.class)
+                    .computePriorityWorkbasketReport(workbasketTypes, columnHeaders))
             .withSelfRel());
     return resource;
   }

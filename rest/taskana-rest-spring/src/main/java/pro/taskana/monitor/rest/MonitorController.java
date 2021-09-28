@@ -3,6 +3,7 @@ package pro.taskana.monitor.rest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,9 @@ import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
+import pro.taskana.monitor.rest.assembler.PriorityColumnHeaderRepresentationModelAssembler;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
+import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -38,13 +41,19 @@ public class MonitorController {
   private final MonitorService monitorService;
 
   private final ReportRepresentationModelAssembler reportRepresentationModelAssembler;
+  private final PriorityColumnHeaderRepresentationModelAssembler
+      priorityColumnHeaderRepresentationModelAssembler;
 
   @Autowired
   MonitorController(
       MonitorService monitorService,
-      ReportRepresentationModelAssembler reportRepresentationModelAssembler) {
+      ReportRepresentationModelAssembler reportRepresentationModelAssembler,
+      PriorityColumnHeaderRepresentationModelAssembler
+          priorityColumnHeaderRepresentationModelAssembler) {
     this.monitorService = monitorService;
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
+    this.priorityColumnHeaderRepresentationModelAssembler =
+        priorityColumnHeaderRepresentationModelAssembler;
   }
 
   /**
@@ -82,23 +91,15 @@ public class MonitorController {
   }
 
   /**
-   * This endpoint generates a Workbasket Report by priority ranges.
+   * This endpoint generates a Workbasket Priority Report.
    *
    * <p>Each Row represents a Workbasket.
    *
-   * <p>Each Column Header represents a priority range. <br>
-   * <br>
-   *
-   * <p><b>Default ranges</b>
-   *
-   * <p>High: priority &gt; 500
-   *
-   * <p>Medium: 250 &ge; priority &le; 500
-   *
-   * <p>Low: priority &lt; 250
+   * <p>Each Column Header represents a priority range.
    *
    * @title Compute a Workbasket Priority Report
    * @param workbasketTypes determine the WorkbasketTypes to include in the report
+   * @param columnHeaders the column headers for the report
    * @return the computed Report
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException if topicWorkbaskets or useDefaultValues are false
@@ -106,21 +107,25 @@ public class MonitorController {
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computePriorityWorkbasketReport(
-      @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes)
+      @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes,
+      @RequestParam(name = "columnHeader", required = false)
+          PriorityColumnHeaderRepresentationModel[] columnHeaders)
       throws NotAuthorizedException, InvalidArgumentException {
 
     WorkbasketPriorityReport.Builder builder =
-        monitorService
-            .createWorkbasketPriorityReportBuilder()
-            .withColumnHeaders(
-                Arrays.asList(
-                    new PriorityColumnHeader(Integer.MIN_VALUE, 249),
-                    new PriorityColumnHeader(250, 500),
-                    new PriorityColumnHeader(501, Integer.MAX_VALUE)))
-            .workbasketTypeIn(workbasketTypes);
+        monitorService.createWorkbasketPriorityReportBuilder().workbasketTypeIn(workbasketTypes);
+
+    if (columnHeaders != null) {
+      List<PriorityColumnHeader> priorityColumnHeaders =
+          Arrays.stream(columnHeaders)
+              .map(priorityColumnHeaderRepresentationModelAssembler::toEntityModel)
+              .collect(Collectors.toList());
+      builder.withColumnHeaders(priorityColumnHeaders);
+    }
 
     ReportRepresentationModel report =
-        reportRepresentationModelAssembler.toModel(builder.buildReport(), workbasketTypes);
+        reportRepresentationModelAssembler.toModel(
+            builder.buildReport(), workbasketTypes, columnHeaders);
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }

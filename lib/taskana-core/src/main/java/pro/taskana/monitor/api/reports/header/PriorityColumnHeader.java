@@ -27,4 +27,12 @@ public class PriorityColumnHeader implements ColumnHeader<PriorityQueryItem> {
   public boolean fits(PriorityQueryItem item) {
     return lowerBoundInc <= item.getPriority() && upperBoundInc >= item.getPriority();
   }
+
+  public int getLowerBoundInc() {
+    return lowerBoundInc;
+  }
+
+  public int getUpperBoundInc() {
+    return upperBoundInc;
+  }
 }
