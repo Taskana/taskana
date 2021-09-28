@@ -1,8 +1,13 @@
 package pro.taskana.monitor.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,11 +15,12 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
-import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentationModel;
 
@@ -23,12 +29,12 @@ import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentati
 class MonitorControllerIntTest {
 
   private final RestHelper restHelper;
-  private final TaskanaEngine taskanaEngine;
+  private final ObjectMapper objectMapper;
 
   @Autowired
-  MonitorControllerIntTest(RestHelper restHelper, TaskanaEngine taskanaEngine) {
+  MonitorControllerIntTest(RestHelper restHelper, ObjectMapper objectMapper) {
     this.restHelper = restHelper;
-    this.taskanaEngine = taskanaEngine;
+    this.objectMapper = objectMapper;
   }
 
   @Test
@@ -106,10 +112,10 @@ class MonitorControllerIntTest {
   }
 
   @Test
-  void should_ComputeReport_When_QueryingForAWorkbasketPriorityReport() {
+  void should_ComputeWorkbasketPriorityReport_When_QueryingForAWorkbasketPriorityReport() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
-            + "?workbasket-type=TOPIC,GROUP";
+            + "?workbasket-type=TOPIC&workbasket-type=GROUP";
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
 
     ResponseEntity<ReportRepresentationModel> response =
@@ -123,8 +129,50 @@ class MonitorControllerIntTest {
 
     assertThat(report).isNotNull();
 
-    assertThat(report.getSumRow())
-        .extracting(RowRepresentationModel::getCells)
-        .containsExactly(new int[] {25, 1, 0});
+    assertThat(report.getSumRow()).extracting(RowRepresentationModel::getTotal).containsExactly(26);
+  }
+
+  @Test
+  void should_DetectPriorityColumnHeader_When_HeaderIsPassedAsQueryParameter() throws Exception {
+    PriorityColumnHeaderRepresentationModel columnHeader =
+        new PriorityColumnHeaderRepresentationModel(10, 20);
+
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
+            + "?columnHeader="
+            + URLEncoder.encode(
+                objectMapper.writeValueAsString(columnHeader), StandardCharsets.UTF_8);
+
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    ReportRepresentationModel report = response.getBody();
+    assertThat(report).isNotNull();
+    assertThat(report.getMeta().getHeader()).containsExactly("10 - 20");
+  }
+
+  @Test
+  void should_ReturnBadRequest_When_PriorityColumnHeaderIsNotAValidJson() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
+            + "?columnHeader=invalidJson";
+
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
+
+    ThrowingCallable httpCall =
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    assertThatThrownBy(httpCall).isInstanceOf(BadRequest.class);
   }
 }
