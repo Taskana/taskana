@@ -23,9 +23,4 @@ public class ConcurrencyException extends TaskanaException {
   public String getEntityId() {
     return entityId;
   }
-
-  @Override
-  public String toString() {
-    return "ConcurrencyException{}";
-  }
 }

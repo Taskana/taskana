@@ -20,6 +20,7 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -149,6 +150,34 @@ class ArchitectureTest {
             .haveSimpleNameEndingWith("Exception")
             .should()
             .resideInAPackage("..exceptions..");
+
+    myRule.check(importedClasses);
+  }
+
+  @Test
+  void exceptionsThatShouldNotHaveToStringMethod() {
+    ArchRule myRule =
+        classes()
+            .that()
+            .areAssignableTo(TaskanaException.class)
+            .or()
+            .areAssignableTo(TaskanaRuntimeException.class)
+            .and()
+            .doNotBelongToAnyOf(TaskanaRuntimeException.class, TaskanaException.class)
+            .should(notImplementToString());
+
+    myRule.check(importedClasses);
+  }
+
+  @Test
+  void exceptionsThatShouldHaveToStringMethod() {
+    ArchRule myRule =
+        classes()
+            .that()
+            .areAssignableFrom(TaskanaRuntimeException.class)
+            .or()
+            .areAssignableFrom(TaskanaException.class)
+            .should(implementToString());
 
     myRule.check(importedClasses);
   }
@@ -318,6 +347,43 @@ class ArchitectureTest {
             .should(beAnnotatedWithTestInstancePerClass());
 
     rule.check(importedClasses);
+  }
+
+  private ArchCondition<JavaClass> implementToString() {
+    return new ArchCondition<JavaClass>("implement toString()") {
+      @Override
+      public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
+        boolean implementToString =
+            Arrays.stream(javaClass.reflect().getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch("toString"::equals);
+        if (!implementToString) {
+          conditionEvents.add(
+              SimpleConditionEvent.violated(
+                  javaClass,
+                  String.format(
+                      "Class '%s' does not implement toString()", javaClass.getFullName())));
+        }
+      }
+    };
+  }
+
+  private ArchCondition<JavaClass> notImplementToString() {
+    return new ArchCondition<JavaClass>("not implement toString()") {
+      @Override
+      public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
+        boolean implementToString =
+            Arrays.stream(javaClass.reflect().getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch("toString"::equals);
+        if (implementToString) {
+          conditionEvents.add(
+              SimpleConditionEvent.violated(
+                  javaClass,
+                  String.format("Class '%s' does implement toString()", javaClass.getFullName())));
+        }
+      }
+    };
   }
 
   private ArchCondition<JavaClass> beAnnotatedWithTestInstancePerClass() {

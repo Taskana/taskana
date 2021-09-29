@@ -33,13 +33,4 @@ public class MismatchedRoleException extends NotAuthorizedException {
   public String getCurrentUserId() {
     return currentUserId;
   }
-
-  @Override
-  public String toString() {
-    return "MismatchedRoleException [currentUserId="
-        + currentUserId
-        + ", roles="
-        + Arrays.toString(roles)
-        + "]";
-  }
 }

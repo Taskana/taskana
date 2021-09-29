@@ -13,8 +13,4 @@ public class SystemException extends TaskanaRuntimeException {
     super(msg, ErrorCode.of(ERROR_KEY), cause);
   }
 
-  @Override
-  public String toString() {
-    return "SystemException{}";
-  }
 }
