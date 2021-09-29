@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
@@ -209,6 +210,11 @@ public class TaskanaEngineConfiguration {
    */
   public TaskanaEngine buildTaskanaEngine() throws SQLException {
     return TaskanaEngineImpl.createTaskanaEngine(this);
+  }
+
+  public TaskanaEngine buildTaskanaEngine(ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return TaskanaEngineImpl.createTaskanaEngine(this, connectionManagementMode);
   }
 
   /**

@@ -2,15 +2,21 @@ package pro.taskana.common.rest;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
 import pro.taskana.common.rest.models.VersionRepresentationModel;
 
@@ -20,13 +26,20 @@ import pro.taskana.common.rest.models.VersionRepresentationModel;
 public class TaskanaEngineController {
 
   private final TaskanaEngineConfiguration taskanaEngineConfiguration;
-
   private final TaskanaEngine taskanaEngine;
+  private final CurrentUserContext currentUserContext;
+  private final ConfigurationService configurationService;
 
+  @Autowired
   TaskanaEngineController(
-      TaskanaEngineConfiguration taskanaEngineConfiguration, TaskanaEngine taskanaEngine) {
+      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaEngine taskanaEngine,
+      CurrentUserContext currentUserContext,
+      ConfigurationService configurationService) {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     this.taskanaEngine = taskanaEngine;
+    this.currentUserContext = currentUserContext;
+    this.configurationService = configurationService;
   }
 
   /**
@@ -35,6 +48,7 @@ public class TaskanaEngineController {
    * @return An array with the domain-names as strings
    */
   @GetMapping(path = RestEndpoints.URL_DOMAIN)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<List<String>> getDomains() {
     return ResponseEntity.ok(taskanaEngineConfiguration.getDomains());
   }
@@ -48,6 +62,7 @@ public class TaskanaEngineController {
    * @return the classification categories for the requested type.
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<List<String>> getClassificationCategories(
       @RequestParam(required = false) String type) {
     if (type != null) {
@@ -62,6 +77,7 @@ public class TaskanaEngineController {
    * @return the configured classification types.
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_TYPES)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<List<String>> getClassificationTypes() {
     return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationTypes());
   }
@@ -73,6 +89,7 @@ public class TaskanaEngineController {
    * @return the configured classification categories
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
     return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap());
   }
@@ -83,15 +100,14 @@ public class TaskanaEngineController {
    * @return the information of the current user.
    */
   @GetMapping(path = RestEndpoints.URL_CURRENT_USER)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskanaUserInfoRepresentationModel> getCurrentUserInfo() {
     TaskanaUserInfoRepresentationModel resource = new TaskanaUserInfoRepresentationModel();
-    resource.setUserId(taskanaEngine.getCurrentUserContext().getUserid());
-    resource.setGroupIds(taskanaEngine.getCurrentUserContext().getGroupIds());
-    for (TaskanaRole role : taskanaEngineConfiguration.getRoleMap().keySet()) {
-      if (taskanaEngine.isUserInRole(role)) {
-        resource.getRoles().add(role);
-      }
-    }
+    resource.setUserId(currentUserContext.getUserid());
+    resource.setGroupIds(currentUserContext.getGroupIds());
+    taskanaEngineConfiguration.getRoleMap().keySet().stream()
+        .filter(taskanaEngine::isUserInRole)
+        .forEach(resource.getRoles()::add);
     return ResponseEntity.ok(resource);
   }
 
@@ -101,8 +117,24 @@ public class TaskanaEngineController {
    * @return true, when the history is enabled, otherwise false
    */
   @GetMapping(path = RestEndpoints.URL_HISTORY_ENABLED)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<Boolean> getIsHistoryProviderEnabled() {
     return ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
+  }
+
+  @GetMapping(path = RestEndpoints.URL_CUSTOM_ATTRIBUTES)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<CustomAttributesRepresentationModel> getCustomAttributes() {
+    Map<String, Object> allCustomAttributes = configurationService.getAllCustomAttributes();
+    return ResponseEntity.ok(new CustomAttributesRepresentationModel(allCustomAttributes));
+  }
+
+  @PutMapping(path = RestEndpoints.URL_CUSTOM_ATTRIBUTES)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<CustomAttributesRepresentationModel> setCustomAttributes(
+      @RequestBody CustomAttributesRepresentationModel customAttributes) {
+    configurationService.setAllCustomAttributes(customAttributes.getCustomAttributes());
+    return ResponseEntity.ok(customAttributes);
   }
 
   /**
@@ -111,6 +143,7 @@ public class TaskanaEngineController {
    * @return The current version.
    */
   @GetMapping(path = RestEndpoints.URL_VERSION)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<VersionRepresentationModel> currentVersion() {
     VersionRepresentationModel resource = new VersionRepresentationModel();
     resource.setVersion(TaskanaEngineConfiguration.class.getPackage().getImplementationVersion());

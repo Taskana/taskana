@@ -1,0 +1,106 @@
+{
+  "nameHighPrio": "High Prio",
+  "nameMediumPrio": "Medium P",
+  "nameLowPrio": "Low Prio",
+  "intervalHighPrio": [
+    100,
+    200
+  ],
+  "intervalMediumPrio": [
+    21,
+    100
+  ],
+  "intervalLowPrio": [
+    1,
+    20
+  ],
+  "colorHighPrio": "#ff0000",
+  "colorLowPrio": "#5FAD00",
+  "colorMediumPrio": "#FFEE00",
+  "filter": {
+    "Filter": {
+      "custom-1": [
+        "true"
+      ],
+      "custom-5": [
+        "3"
+      ]
+    },
+    "Filter neu": {
+      "custom-5": [
+        "7",
+        "5"
+      ]
+    },
+    "Filter Doppelt": {
+      "custom-5": [
+        "1",
+        "2",
+        "90"
+      ]
+    }
+  },
+  "schema": {
+    "Priority-Report": {
+      "displayName": "Priority Report",
+      "members": {
+        "nameHighPrio": {
+          "displayName": "High Prio Name",
+          "type": "text",
+          "min": 1
+        },
+        "nameMediumPrio": {
+          "displayName": "Medium Prio Name",
+          "type": "text",
+          "min": 1,
+          "max": 8
+        },
+        "nameLowPrio": {
+          "displayName": "Low Prio Name",
+          "type": "text",
+          "min": 2,
+          "max": 64
+        },
+        "intervalHighPrio": {
+          "displayName": "High Prio Interval",
+          "type": "interval",
+          "min": 0,
+          "max": 300
+        },
+        "intervalMediumPrio": {
+          "displayName": "Medium Prio Interval",
+          "type": "interval",
+          "min": -5,
+          "max": 300
+        },
+        "intervalLowPrio": {
+          "displayName": "Low Prio Interval",
+          "type": "interval",
+          "min": 0
+        },
+        "colorHighPrio": {
+          "displayName": "High Prio Color",
+          "type": "color"
+        },
+        "colorMediumPrio": {
+          "displayName": "Medium Prio Color",
+          "type": "color"
+        },
+        "colorLowPrio": {
+          "displayName": "Low Prio Color",
+          "type": "color"
+        }
+      }
+    },
+    "Filter": {
+      "displayName": "Filter for Task-Priority-Report",
+      "members": {
+        "filter": {
+          "displayName": "Filter values",
+          "type": "json",
+          "min": 1
+        }
+      }
+    }
+  }
+}

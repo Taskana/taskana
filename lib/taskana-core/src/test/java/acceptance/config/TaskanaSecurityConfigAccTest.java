@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.common.internal.configuration.SecurityVerifier;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -89,9 +88,7 @@ class TaskanaSecurityConfigAccTest {
 
       String selectSecurityFlagSql =
           String.format(
-              SecurityVerifier.SELECT_SECURITY_FLAG_SQL,
-              SecurityVerifier.SECURITY_FLAG_COLUMN_NAME,
-              DataSourceGenerator.getSchemaName());
+              "SELECT ENFORCE_SECURITY FROM %s.CONFIGURATION", DataSourceGenerator.getSchemaName());
 
       Statement statement = connection.createStatement();
       ResultSet resultSet = statement.executeQuery(selectSecurityFlagSql);
@@ -110,9 +107,8 @@ class TaskanaSecurityConfigAccTest {
 
       String sql =
           String.format(
-              SecurityVerifier.INSERT_SECURITY_FLAG_SQL,
-              DataSourceGenerator.getSchemaName(),
-              securityFlag);
+              "INSERT INTO %s.CONFIGURATION (ENFORCE_SECURITY) VALUES (%b)",
+              DataSourceGenerator.getSchemaName(), securityFlag);
 
       Statement statement = connection.createStatement();
       statement.execute(sql);

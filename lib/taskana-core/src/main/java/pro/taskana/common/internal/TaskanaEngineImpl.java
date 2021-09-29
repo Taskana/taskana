@@ -30,6 +30,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.internal.ClassificationMapper;
 import pro.taskana.classification.internal.ClassificationQueryMapper;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
+import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
@@ -43,7 +44,6 @@ import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.common.internal.configuration.SecurityVerifier;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
@@ -85,19 +85,20 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
+  private final ConfigurationServiceImpl configurationService;
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
-  protected ConnectionManagementMode mode = ConnectionManagementMode.PARTICIPATE;
-  protected Connection connection = null;
+  protected ConnectionManagementMode mode;
+  protected Connection connection;
 
-  protected TaskanaEngineImpl(TaskanaEngineConfiguration taskanaEngineConfiguration)
+  protected TaskanaEngineImpl(
+      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-    createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
-    this.sessionManager = createSqlSessionManager();
-    initializeDbSchema(taskanaEngineConfiguration);
-    this.internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
+    this.mode = connectionManagementMode;
+    internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =
         new WorkingDaysToDaysConverter(
             taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
@@ -105,18 +106,31 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaEngineConfiguration.getCustomHolidays());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds());
+    createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
+    sessionManager = createSqlSessionManager();
+    configurationService =
+        new ConfigurationServiceImpl(
+            internalTaskanaEngineImpl, sessionManager.getMapper(ConfigurationMapper.class));
+    initializeDbSchema(taskanaEngineConfiguration);
 
     // IMPORTANT: SPI has to be initialized last (and in this order) in order
     // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
-    historyEventManager = new HistoryEventManager(this);
-    taskRoutingManager = new TaskRoutingManager(this);
     priorityServiceManager = new PriorityServiceManager();
     createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
+    historyEventManager = new HistoryEventManager(this);
+    taskRoutingManager = new TaskRoutingManager(this);
   }
 
   public static TaskanaEngine createTaskanaEngine(
       TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
-    return new TaskanaEngineImpl(taskanaEngineConfiguration);
+    return createTaskanaEngine(taskanaEngineConfiguration, ConnectionManagementMode.PARTICIPATE);
+  }
+
+  public static TaskanaEngine createTaskanaEngine(
+      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return new TaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
   }
 
   @Override
@@ -169,6 +183,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   public UserService getUserService() {
     return new UserServiceImpl(
         internalTaskanaEngineImpl, sessionManager.getMapper(UserMapper.class));
+  }
+
+  @Override
+  public ConfigurationService getConfigurationService() {
+    return configurationService;
   }
 
   @Override
@@ -330,6 +349,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);
     configuration.addMapper(UserMapper.class);
+    configuration.addMapper(ConfigurationMapper.class);
     SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     return SqlSessionManager.newInstance(localSessionFactory);
   }
@@ -346,9 +366,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
           "The Database Schema Version doesn't match the expected minimal version "
               + MINIMAL_TASKANA_SCHEMA_VERSION);
     }
-    new SecurityVerifier(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName())
-        .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
+    configurationService.checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
+    configurationService.setupDefaultCustomAttributes();
   }
 
   /**
