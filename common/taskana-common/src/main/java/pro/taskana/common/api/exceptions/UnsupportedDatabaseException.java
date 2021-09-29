@@ -20,9 +20,4 @@ public class UnsupportedDatabaseException extends TaskanaRuntimeException {
   public String getDatabaseProductName() {
     return databaseProductName;
   }
-
-  @Override
-  public String toString() {
-    return "UnsupportedDatabaseException [databaseProductName=" + databaseProductName + "]";
-  }
 }

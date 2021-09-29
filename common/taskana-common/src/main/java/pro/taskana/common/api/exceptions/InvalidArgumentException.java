@@ -12,9 +12,4 @@ public class InvalidArgumentException extends TaskanaException {
   public InvalidArgumentException(String msg, Throwable cause) {
     super(msg, ErrorCode.of(ERROR_KEY), cause);
   }
-
-  @Override
-  public String toString() {
-    return "InvalidArgumentException{}";
-  }
 }

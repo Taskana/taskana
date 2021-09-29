@@ -6,9 +6,4 @@ public class NotAuthorizedException extends TaskanaException {
   protected NotAuthorizedException(String msg, ErrorCode errorCode) {
     super(msg, errorCode);
   }
-
-  @Override
-  public String toString() {
-    return "NotAuthorizedException{}";
-  }
 }
