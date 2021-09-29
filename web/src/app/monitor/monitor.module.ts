@@ -23,6 +23,7 @@ import { WorkbasketReportPlannedDateComponent } from './components/workbasket-re
 import { WorkbasketReportDueDateComponent } from './components/workbasket-report-due-date/workbasket-report-due-date.component';
 import { TaskPriorityReportComponent } from './components/task-priority-report/task-priority-report.component';
 import { CanvasComponent } from './components/canvas/canvas.component';
+import { TaskPriorityReportFilterComponent } from './components/task-priority-report-filter/task-priority-report-filter.component';
 
 /**
  * Services
@@ -35,6 +36,9 @@ import { MonitorService } from './services/monitor.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 
 const MODULES = [
   CommonModule,
@@ -48,12 +52,16 @@ const MODULES = [
   SharedModule,
   MatTabsModule,
   MatButtonModule,
-  MatTableModule
+  MatTableModule,
+  MatExpansionModule,
+  MatCheckboxModule,
+  MatDividerModule
 ];
 const DECLARATIONS = [
   ReportTableComponent,
   MonitorComponent,
   TaskPriorityReportComponent,
+  TaskPriorityReportFilterComponent,
   CanvasComponent,
   TimestampReportComponent,
   WorkbasketReportComponent,

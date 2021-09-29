@@ -1,7 +1,6 @@
 import { Selector } from '@ngxs/store';
 import { ClassificationStateModel, ClassificationState } from './classification.state';
 import { Classification } from '../../models/classification';
-import { CategoriesResponse } from '../../services/classification-categories/classification-categories.service';
 
 export class ClassificationSelectors {
   @Selector([ClassificationState])

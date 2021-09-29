@@ -20,11 +20,13 @@ export class SidenavListComponent implements OnInit {
   classificationUrl = 'taskana/administration/classifications';
   workbasketsUrl = 'taskana/administration/workbaskets';
   administrationsUrl = 'taskana/administration/workbaskets';
+  settingsURL = 'taskana/settings';
 
   administrationAccess = false;
   monitorAccess = false;
   workplaceAccess = false;
   historyAccess = false;
+  settingsAccess = false;
 
   constructor(private taskanaEngineService: TaskanaEngineService, private sidenavService: SidenavService) {}
 
@@ -35,6 +37,7 @@ export class SidenavListComponent implements OnInit {
     this.taskanaEngineService.isHistoryProviderEnabled().subscribe((value) => {
       this.historyAccess = value;
     });
+    this.settingsAccess = this.administrationAccess;
   }
 
   toggleSidenav() {
