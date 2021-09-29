@@ -11,4 +11,8 @@ export class RoutingUploadService {
   get url(): string {
     return this.startupService.getTaskanaRestUrl() + '/v1/routing-upload/';
   }
+
+  uploadRoutingRules(file: File) {
+    return this.httpClient.post(this.url, file);
+  }
 }
