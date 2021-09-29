@@ -1,0 +1,76 @@
+<div class="settings">
+
+  <!-- BUTTONS -->
+  <div class="settings__buttons">
+    <button mat-button class="settings__button--primary" matTooltip="Save settings" (click)="onSave()">
+      Save
+      <mat-icon class="md-20">save</mat-icon>
+    </button>
+
+    <button mat-stroked-button class="settings__button--secondary" matTooltip="Revert changes" (click)="onReset()">
+      Undo changes
+      <mat-icon class="settings__icon md-20">restore</mat-icon>
+    </button>
+  </div>
+
+  <div class="settings__content">
+
+    <div *ngFor="let group of groups; let outerIndex = index">
+      <h4 class="settings__domain-name"> {{settings.schema[group].displayName}} </h4>
+      <div *ngFor="let member of members[outerIndex]; let innerIndex = index">
+
+        <!-- STRING -->
+        <div *ngIf="getMember(group,member).type == settingTypes.TEXT" class="settings__grid">
+          <span> {{getMember(group,member).displayName}} </span>
+          <mat-form-field appearance="outline" class="settings__grid--two-columns">
+            <mat-label class="{{member}}">{{getMember(group,member).displayName}}</mat-label>
+            <input matInput type="text" placeholder="{{getMember(group,member).displayName}}" [(ngModel)]="settings[member]"
+                   minlength="{{settings.schema[group].members[member].min}}" maxlength="{{settings.schema[group].members[member].max}}">
+          </mat-form-field>
+        </div>
+
+        <!-- INTERVAL -->
+        <div *ngIf="getMember(group,member).type == settingTypes.INTERVAL" class="settings__grid">
+          <span>{{getMember(group,member).displayName}}</span>
+
+          <mat-form-field appearance="outline" >
+            <mat-label class="{{member}}">Lower boundary</mat-label>
+            <input matInput type="number" placeholder="Lower boundary" [(ngModel)]="settings[member][0]"
+                   min="{{getMember(group,member).min}}" max="{{getMember(group,member).max}}">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label class="{{member}}">Upper boundary</mat-label>
+            <input matInput type="number" placeholder="Upper boundary" [(ngModel)]="settings[member][1]"
+                   min="{{getMember(group,member).min}}" max="{{getMember(group,member).max}}">
+          </mat-form-field>
+        </div>
+
+
+        <!-- COLOR -->
+        <div *ngIf="getMember(group,member).type == settingTypes.COLOR" class="settings__grid settings__color">
+          <span>{{getMember(group,member).displayName}}</span>
+          <input matInput value="{{settings[member]}}" type="color" id="{{member}}"
+                 (change)="onColorChange(member)" class="settings__colors--input">
+        </div>
+
+        <!-- JSON -->
+        <div *ngIf="getMember(group,member).type == settingTypes.JSON" class="settings__grid">
+          <span>{{getMember(group,member).displayName}}</span>
+          <mat-form-field appearance="outline" class="settings__grid--two-columns">
+            <mat-label class="{{member}}">
+              {{getMember(group,member).displayName}}
+            </mat-label>
+            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10"
+                      placeholder="{{getMember(group,member).displayName}}" [(ngModel)]="settings[member]"></textarea>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <div class="settings__spacer"></div>
+
+    </div>
+  </div>
+
+
+</div>

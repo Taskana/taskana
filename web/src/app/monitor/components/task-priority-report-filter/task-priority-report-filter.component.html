@@ -1,0 +1,18 @@
+<mat-accordion>
+  <mat-expansion-panel (opened)="isPanelOpen = true"
+                       (closed)="isPanelOpen = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Task Filter
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <!-- CONTENT -->
+    <div *ngFor="let key of keys">
+      <mat-checkbox (change)="emitFilter($event.checked, key)">{{key}}</mat-checkbox>
+    </div>
+
+    <div *ngIf="!filtersAreSpecified"> There are not filters specified. </div>
+
+  </mat-expansion-panel>
+</mat-accordion>

@@ -24,14 +24,11 @@ export class TaskanaEngineService {
       .toPromise();
   }
 
-  hasRole(roles2Find: Array<string>): boolean {
+  hasRole(roles2Find: string[]): boolean {
     if (!this.currentUserInfo || this.currentUserInfo.roles.length < 1) {
       return false;
     }
-    if (this.findRole(roles2Find)) {
-      return true;
-    }
-    return false;
+    return !!this.findRole(roles2Find);
   }
 
   getVersion(): Observable<Version> {
@@ -46,7 +43,7 @@ export class TaskanaEngineService {
     return this.httpClient.get<boolean>(`${environment.taskanaRestUrl}/v1/history-provider-enabled`);
   }
 
-  private findRole(roles2Find: Array<string>) {
+  private findRole(roles2Find: string[]) {
     return this.currentUserInfo.roles.find((role) => roles2Find.some((roleLookingFor) => role === roleLookingFor));
   }
 }

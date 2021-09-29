@@ -7,6 +7,22 @@ table {
   overflow-y: scroll;
   height: calc(100vh - 104px);
 
+  &__header {
+    display: grid;
+    grid-gap: 4px;
+    grid-template-columns: 2fr 1fr;
+  }
+
+  &__headline {
+    margin: 0 0 0 8px;
+    position: relative;
+    top: 12px;
+  }
+
+  &__divider {
+    margin-top: 8px;
+  }
+
   &__workbaskets {
     display: flex;
     flex-direction: row;
@@ -20,21 +36,8 @@ table {
     margin: 24px 24px 36px 24px;
   }
 
-  &__headline {
+  &__workbasket-headline {
     text-align: center;
     margin-bottom: 8px;
   }
-
-  &__row--low {
-    color: limegreen;
-  }
-
-  &__row--medium {
-    color: gold;
-  }
-
-  &__row--high {
-    color: red;
-  }
-
 }

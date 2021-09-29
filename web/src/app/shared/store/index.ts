@@ -4,6 +4,7 @@ import { WorkbasketState } from './workbasket-store/workbasket.state';
 import { AccessItemsManagementState } from './access-items-management-store/access-items-management.state';
 import { FilterState } from './filter-store/filter.state';
 import { WorkplaceState } from './workplace-store/workplace.state';
+import { SettingsState } from './settings-store/settings.state';
 
 export const STATES = [
   EngineConfigurationState,
@@ -11,5 +12,6 @@ export const STATES = [
   WorkbasketState,
   AccessItemsManagementState,
   FilterState,
-  WorkplaceState
+  WorkplaceState,
+  SettingsState
 ];

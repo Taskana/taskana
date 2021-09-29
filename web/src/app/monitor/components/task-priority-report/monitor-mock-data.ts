@@ -34,15 +34,3 @@ export const workbasketReportMock: ReportData = {
     }
   ]
 };
-
-export const workbasketReportUnexpectedHeaderMock: ReportData = {
-  meta: {
-    name: 'WorkbasketPriorityReport',
-    date: '2021-08-24T11:44:34.023901Z',
-    header: ['<10', '11 - 100', '>101'],
-    rowDesc: ['WORKBASKET'],
-    sumRowDesc: 'Total'
-  },
-  rows: [],
-  sumRow: []
-};

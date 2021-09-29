@@ -59,10 +59,13 @@ export class MonitorService {
     });
   }
 
-  getTasksByPriorityReport(type: WorkbasketType[] = []): Observable<ReportData> {
+  getTasksByPriorityReport(type: string[], priority: any[], customFilters: {} = {}): Observable<ReportData> {
     const queryParams = {
-      'workbasket-type': type
+      'workbasket-type': type,
+      columnHeader: priority,
+      ...customFilters
     };
+
     return this.httpClient.get<ReportData>(
       `${environment.taskanaRestUrl + monitorUrl}workbasket-priority-report${asUrlQueryString(queryParams)}`
     );

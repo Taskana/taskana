@@ -58,7 +58,11 @@ export const messageByErrorCode = {
     IMPORT_EXPORT_UPLOAD_FAILED_NOT_FOUND: 'Upload failed because operation was not found',
     IMPORT_EXPORT_UPLOAD_FAILED_CONFLICTS: 'Upload failed because operation has conflicts',
     IMPORT_EXPORT_UPLOAD_FAILED_SIZE: 'Upload failed because maximum file size exceeded',
-    IMPORT_EXPORT_UPLOAD_FILE_FORMAT: 'File format is not allowed. Please use a .json file.'
+    IMPORT_EXPORT_UPLOAD_FILE_FORMAT: 'File format is not allowed. Please use a .json file.',
+
+    SETTINGS_SAVE: 'Settings cannot be saved since the form contains invalid values.',
+    SETTINGS_NO_SCHEMA:
+      'Wrong data format of UI settings. The object must contain field "schema". Please contact your administrator.'
   },
 
   [messageTypes.SUCCESS]: {
@@ -89,7 +93,9 @@ export const messageByErrorCode = {
     TASK_CREATE: 'Task with name {taskName} was created',
     TASK_UPDATE: 'Task with name {taskName} was updated',
     TASK_DELETE: 'Task with name {taskName} was deleted',
-    TASK_RESTORE: 'Task restored'
+    TASK_RESTORE: 'Task restored',
+
+    SETTINGS_SAVE: 'Settings were updated'
   },
 
   [messageTypes.INFORMATION]: {
@@ -99,7 +105,10 @@ export const messageByErrorCode = {
   [messageTypes.WARNING]: {
     REPORT_DATA_WRONG_HEADER:
       'The received header of the Report data does not match the expected header. ' +
-      'The data might be displayed incorrectly. Please contact your administrator.'
+      'The data might be displayed incorrectly. Please contact your administrator.',
+    SETTINGS_INVALID_DATA:
+      'The data structure is invalid. The setting {setting} is configured under UI settings but there is no matching ' +
+      'attribute to save the value. Please contact your administrator.'
   },
 
   [messageTypes.DIALOG]: {

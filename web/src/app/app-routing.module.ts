@@ -40,6 +40,11 @@ const appRoutes: Routes = [
         redirectTo: 'administration/workbaskets'
       },
       {
+        canActivate: [BusinessAdminGuard],
+        path: 'settings',
+        loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule)
+      },
+      {
         path: '**',
         redirectTo: 'workplace'
       }
