@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
@@ -32,7 +33,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testDomains() {
     String url = restHelper.toUrl(RestEndpoints.URL_DOMAIN);
-    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
@@ -43,7 +44,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testClassificationTypes() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_TYPES);
-    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
@@ -54,7 +55,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testClassificationCategories() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES);
-    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<String>> response =
         TEMPLATE.exchange(
@@ -66,7 +67,7 @@ class TaskanaEngineControllerIntTest {
   @Test
   void testGetCurrentUserInfo() {
     String url = restHelper.toUrl(RestEndpoints.URL_CURRENT_USER);
-    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskanaUserInfoRepresentationModel> response =
         TEMPLATE.exchange(
@@ -80,5 +81,20 @@ class TaskanaEngineControllerIntTest {
         .contains("cn=business-admins,cn=groups,ou=test,o=taskana");
     assertThat(response.getBody().getRoles()).contains(TaskanaRole.BUSINESS_ADMIN);
     assertThat(response.getBody().getRoles()).doesNotContain(TaskanaRole.ADMIN);
+  }
+
+  @Test
+  void should_ReturnCustomAttributes() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CUSTOM_ATTRIBUTES);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<CustomAttributesRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(CustomAttributesRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
   }
 }

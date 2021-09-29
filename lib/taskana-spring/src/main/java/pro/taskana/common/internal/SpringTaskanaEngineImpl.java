@@ -9,9 +9,10 @@ import pro.taskana.SpringTaskanaEngineConfiguration;
 /** This class configures the TaskanaEngine for spring. */
 public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {
 
-  public SpringTaskanaEngineImpl(SpringTaskanaEngineConfiguration taskanaEngineConfiguration)
+  public SpringTaskanaEngineImpl(
+      SpringTaskanaEngineConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
       throws SQLException {
-    super(taskanaEngineConfiguration);
+    super(taskanaEngineConfiguration, mode);
   }
 
   @PostConstruct

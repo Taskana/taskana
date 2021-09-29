@@ -17,7 +17,7 @@ import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 public interface InternalTaskanaEngine {
 
   /**
-   * Opens the connection to the database. Has to be called at the begin of each Api call that
+   * Opens the connection to the database. Has to be called at the beginning of each Api call that
    * accesses the database
    */
   void openConnection();

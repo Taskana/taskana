@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pro.taskana.SpringTaskanaEngineConfiguration;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.user.api.UserService;
@@ -56,6 +58,16 @@ public class RestConfiguration {
   @Bean
   public UserService getUserService(TaskanaEngine taskanaEngine) {
     return taskanaEngine.getUserService();
+  }
+
+  @Bean
+  public ConfigurationService configurationService(TaskanaEngine taskanaEngine) {
+    return taskanaEngine.getConfigurationService();
+  }
+
+  @Bean
+  public CurrentUserContext currentUserContext(TaskanaEngine taskanaEngine) {
+    return taskanaEngine.getCurrentUserContext();
   }
 
   @Bean

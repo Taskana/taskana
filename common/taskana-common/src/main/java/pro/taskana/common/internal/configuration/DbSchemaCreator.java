@@ -44,7 +44,6 @@ public class DbSchemaCreator {
   private DataSource dataSource;
 
   public DbSchemaCreator(DataSource dataSource, String schema) {
-    super();
     this.dataSource = dataSource;
     this.schemaName = schema;
   }

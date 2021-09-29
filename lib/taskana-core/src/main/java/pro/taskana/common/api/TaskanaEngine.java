@@ -52,6 +52,8 @@ public interface TaskanaEngine {
 
   UserService getUserService();
 
+  ConfigurationService getConfigurationService();
+
   /**
    * The Taskana configuration.
    *

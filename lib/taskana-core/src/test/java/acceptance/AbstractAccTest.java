@@ -56,8 +56,8 @@ public abstract class AbstractAccTest {
     if (dropTables) {
       sampleDataGenerator.dropDb();
     }
-    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-    taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    taskanaEngine =
+        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();

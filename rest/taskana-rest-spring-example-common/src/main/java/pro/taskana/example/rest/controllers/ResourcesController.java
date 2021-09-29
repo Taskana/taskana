@@ -1,15 +1,12 @@
 package pro.taskana.example.rest.controllers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.stream.Collectors;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import pro.taskana.common.internal.util.ResourceUtil;
 
 @Controller
 public class ResourcesController {
@@ -32,14 +29,10 @@ public class ResourcesController {
   //  }
 
   private String readResourceAsString(String resource) throws IOException {
-    try (InputStream fileStream = getClass().getResourceAsStream(resource)) {
-      if (fileStream == null) {
-        return "{}";
-      }
-      try (Reader inputStreamReader = new InputStreamReader(fileStream);
-          BufferedReader reader = new BufferedReader(inputStreamReader)) {
-        return reader.lines().collect(Collectors.joining(System.lineSeparator()));
-      }
+    String resourceAsString = ResourceUtil.readResourceAsString(getClass(), resource);
+    if (resourceAsString == null) {
+      return "{}";
     }
+    return resourceAsString;
   }
 }

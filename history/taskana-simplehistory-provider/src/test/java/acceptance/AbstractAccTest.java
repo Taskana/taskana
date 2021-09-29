@@ -115,11 +115,12 @@ public abstract class AbstractAccTest {
             dataSource,
             false,
             schemaName != null && !schemaName.isEmpty() ? schemaName : getSchemaName());
-    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-    taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    taskanaEngine =
+        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
     taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
     historyService = new SimpleHistoryServiceImpl();
-    historyService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
+    historyService.initialize(
+        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT));
 
     SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, getSchemaName());
     sampleDataGenerator.clearDb();

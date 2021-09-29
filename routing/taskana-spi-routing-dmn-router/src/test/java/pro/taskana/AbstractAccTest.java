@@ -38,8 +38,8 @@ public abstract class AbstractAccTest {
     dbSchemaCreator.run();
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
-    taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-    taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
+    taskanaEngine =
+        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
   }
 
