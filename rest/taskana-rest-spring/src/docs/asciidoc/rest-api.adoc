@@ -171,6 +171,8 @@ include::{snippets}/TaskanaEngineControllerRestDocTest/getClassificationCategori
 include::{snippets}/TaskanaEngineControllerRestDocTest/getCurrentUserInfoDocTest/auto-section.adoc[]
 include::{snippets}/TaskanaEngineControllerRestDocTest/getHistoryProviderIsEnabledDocTest/auto-section.adoc[]
 include::{snippets}/TaskanaEngineControllerRestDocTest/getCurrentVersionDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/getCustomConfigurationAttributesDocTest/auto-section.adoc[]
+include::{snippets}/TaskanaEngineControllerRestDocTest/setCustomConfigurationAttributesDocTest/auto-section.adoc[]
 
 == Import / Export
 

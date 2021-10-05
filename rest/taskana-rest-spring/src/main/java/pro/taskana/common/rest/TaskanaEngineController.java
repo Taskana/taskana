@@ -122,6 +122,12 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
   }
 
+  /**
+   * This endpoint retrieves the saved custom configuration.
+   *
+   * @title Get custom configuration
+   * @return custom configuration
+   */
   @GetMapping(path = RestEndpoints.URL_CUSTOM_ATTRIBUTES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<CustomAttributesRepresentationModel> getCustomAttributes() {
@@ -129,6 +135,13 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(new CustomAttributesRepresentationModel(allCustomAttributes));
   }
 
+  /**
+   * This endpoint overrides the custom configuration.
+   *
+   * @param customAttributes the new custom configuration
+   * @title Set all custom configuration
+   * @return the new custom configuration
+   */
   @PutMapping(path = RestEndpoints.URL_CUSTOM_ATTRIBUTES)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<CustomAttributesRepresentationModel> setCustomAttributes(
