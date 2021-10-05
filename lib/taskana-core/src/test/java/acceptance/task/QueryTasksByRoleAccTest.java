@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,48 +19,53 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 class QueryTasksByRoleAccTest extends AbstractAccTest {
 
-  @Test
-  void should_ReturnNoResult_When_UserIsNotAuthenticated() {
-    TaskService taskService = taskanaEngine.getTaskService();
+  @Nested
+  class RoleTest {
 
-    List<TaskSummary> results = taskService.createTaskQuery().list();
+    @Test
+    void should_ReturnNoResult_When_UserIsNotAuthenticated() {
+      TaskService taskService = taskanaEngine.getTaskService();
 
-    assertThat(results).isEmpty();
-  }
+      List<TaskSummary> results = taskService.createTaskQuery().list();
 
-  @WithAccessId(user = "admin")
-  @WithAccessId(user = "taskadmin")
-  @WithAccessId(user = "businessadmin")
-  @WithAccessId(user = "monitor")
-  @WithAccessId(user = "teamlead-1")
-  @WithAccessId(user = "user-1-1")
-  @TestTemplate
-  void should_FindAllAccessibleTasksDependentOnTheUser_When_MakingTaskQuery() {
-    TaskService taskService = taskanaEngine.getTaskService();
-    List<TaskSummary> results = taskService.createTaskQuery().list();
-
-    int expectedSize;
-
-    switch (taskanaEngine.getCurrentUserContext().getUserid()) {
-      case "admin":
-      case "taskadmin":
-        expectedSize = 88;
-        break;
-      case "businessadmin":
-      case "monitor":
-        expectedSize = 0;
-        break;
-      case "teamlead-1":
-        expectedSize = 26;
-        break;
-      case "user-1-1":
-        expectedSize = 7;
-        break;
-      default:
-        throw new SystemException(
-            String.format("Invalid User: '%s'", taskanaEngine.getCurrentUserContext().getUserid()));
+      assertThat(results).isEmpty();
     }
 
-    assertThat(results).hasSize(expectedSize);
+    @WithAccessId(user = "admin")
+    @WithAccessId(user = "taskadmin")
+    @WithAccessId(user = "businessadmin")
+    @WithAccessId(user = "monitor")
+    @WithAccessId(user = "teamlead-1")
+    @WithAccessId(user = "user-1-1")
+    @TestTemplate
+    void should_FindAllAccessibleTasksDependentOnTheUser_When_MakingTaskQuery() {
+      TaskService taskService = taskanaEngine.getTaskService();
+      List<TaskSummary> results = taskService.createTaskQuery().list();
+
+      int expectedSize;
+
+      switch (taskanaEngine.getCurrentUserContext().getUserid()) {
+        case "admin":
+        case "taskadmin":
+          expectedSize = 88;
+          break;
+        case "businessadmin":
+        case "monitor":
+          expectedSize = 0;
+          break;
+        case "teamlead-1":
+          expectedSize = 26;
+          break;
+        case "user-1-1":
+          expectedSize = 7;
+          break;
+        default:
+          throw new SystemException(
+              String.format(
+                  "Invalid User: '%s'", taskanaEngine.getCurrentUserContext().getUserid()));
+      }
+
+      assertThat(results).hasSize(expectedSize);
+    }
   }
 }

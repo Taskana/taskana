@@ -51,6 +51,15 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_NotSetAttachmentSummariesToNull_When_CreatingNewTaskWithTaskService() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.newTask("WBI:100000000000000000000000000000000006");
+    assertThat(task.getAttachments()).isNotNull();
+    assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_BeAbleToCreateNewTask_When_TaskCopy() throws Exception {
     Task oldTask = taskService.getTask("TKI:000000000000000000000000000000000000");
 
@@ -631,8 +640,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
     testCreateTask.accept(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-    testCreateTask.accept(
-        createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
   }
 
   @WithAccessId(user = "user-1-1")
