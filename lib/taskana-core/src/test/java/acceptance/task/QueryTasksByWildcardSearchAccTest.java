@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -18,88 +19,112 @@ import pro.taskana.task.api.models.TaskSummary;
 @ExtendWith(JaasExtension.class)
 class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
-    WildcardSearchField[] wildcards = {
-      WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
-    };
+  @Nested
+  class WildcardSearchTest {
 
-    List<TaskSummary> foundTasks =
-        taskService
-            .createTaskQuery()
-            .wildcardSearchFieldsIn(wildcards)
-            .wildcardSearchValueLike("%99%")
-            .orderByName(SortDirection.ASCENDING)
-            .list();
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnAllTasksByWildcardSearch_For_ProvidedSearchValue() {
+      WildcardSearchField[] wildcards = {
+        WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
+      };
 
-    assertThat(foundTasks).hasSize(4);
-  }
+      List<TaskSummary> foundTasks =
+          TASK_SERVICE
+              .createTaskQuery()
+              .wildcardSearchFieldsIn(wildcards)
+              .wildcardSearchValueLike("%99%")
+              .orderByName(SortDirection.ASCENDING)
+              .list();
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_CountAllTasksByWildcardSearch_For_ProvidedSearchValue() {
-    WildcardSearchField[] wildcards = {
-      WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
-    };
+      assertThat(foundTasks).hasSize(4);
+    }
 
-    long foundTasks =
-        taskService
-            .createTaskQuery()
-            .wildcardSearchFieldsIn(wildcards)
-            .wildcardSearchValueLike("%99%")
-            .orderByName(SortDirection.ASCENDING)
-            .count();
+    @WithAccessId(user = "admin")
+    @Test
+    void should_CountAllTasksByWildcardSearch_For_ProvidedSearchValue() {
+      WildcardSearchField[] wildcards = {
+        WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
+      };
 
-    assertThat(foundTasks).isEqualTo(4);
-  }
+      long foundTasks =
+          TASK_SERVICE
+              .createTaskQuery()
+              .wildcardSearchFieldsIn(wildcards)
+              .wildcardSearchValueLike("%99%")
+              .orderByName(SortDirection.ASCENDING)
+              .count();
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ReturnAllTasksCaseInsensitive_When_PerformingWildcardQuery() {
-    WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
+      assertThat(foundTasks).isEqualTo(4);
+    }
 
-    List<TaskSummary> foundTasksCaseSensitive =
-        taskService
-            .createTaskQuery()
-            .wildcardSearchFieldsIn(wildcards)
-            .wildcardSearchValueLike("%Wid%")
-            .list();
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnAllTasks_For_ProvidedSearchValueAndAdditionalParameters() {
+      WildcardSearchField[] wildcards = {
+        WildcardSearchField.CUSTOM_3, WildcardSearchField.CUSTOM_4, WildcardSearchField.NAME
+      };
 
-    List<TaskSummary> foundTasksCaseInsensitive =
-        taskService
-            .createTaskQuery()
-            .wildcardSearchFieldsIn(wildcards)
-            .wildcardSearchValueLike("%wid%")
-            .list();
+      List<TaskSummary> foundTasks =
+          TASK_SERVICE
+              .createTaskQuery()
+              .wildcardSearchFieldsIn(wildcards)
+              .wildcardSearchValueLike("%99%")
+              .ownerIn("user-1-1")
+              .businessProcessIdLike("%PI2%")
+              .orderByName(SortDirection.ASCENDING)
+              .list();
 
-    assertThat(foundTasksCaseSensitive).hasSize(81);
-    assertThat(foundTasksCaseInsensitive).containsExactlyElementsOf(foundTasksCaseSensitive);
-  }
+      assertThat(foundTasks).hasSize(1);
+    }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnAllTasksCaseInsensitive_When_PerformingWildcardQuery() {
+      WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
 
-    ThrowingCallable queryAttempt =
-        () ->
-            taskService
-                .createTaskQuery()
-                .wildcardSearchValueLike("%99%")
-                .orderByName(SortDirection.ASCENDING)
-                .list();
+      List<TaskSummary> foundTasksCaseSensitive =
+          TASK_SERVICE
+              .createTaskQuery()
+              .wildcardSearchFieldsIn(wildcards)
+              .wildcardSearchValueLike("%Wid%")
+              .list();
 
-    assertThatThrownBy(queryAttempt).isInstanceOf(IllegalArgumentException.class);
+      List<TaskSummary> foundTasksCaseInsensitive =
+          TASK_SERVICE
+              .createTaskQuery()
+              .wildcardSearchFieldsIn(wildcards)
+              .wildcardSearchValueLike("%wid%")
+              .list();
 
-    queryAttempt =
-        () ->
-            taskService
-                .createTaskQuery()
-                .wildcardSearchFieldsIn(
-                    WildcardSearchField.CUSTOM_1, WildcardSearchField.DESCRIPTION)
-                .orderByName(SortDirection.ASCENDING)
-                .list();
+      assertThat(foundTasksCaseSensitive).hasSize(81);
+      assertThat(foundTasksCaseInsensitive).containsExactlyElementsOf(foundTasksCaseSensitive);
+    }
 
-    assertThatThrownBy(queryAttempt).isInstanceOf(IllegalArgumentException.class);
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ThrowException_When_NotUsingSearchFieldsAndValueParamsTogether() {
+
+      ThrowingCallable queryAttempt =
+          () ->
+              TASK_SERVICE
+                  .createTaskQuery()
+                  .wildcardSearchValueLike("%99%")
+                  .orderByName(SortDirection.ASCENDING)
+                  .list();
+
+      assertThatThrownBy(queryAttempt).isInstanceOf(IllegalArgumentException.class);
+
+      queryAttempt =
+          () ->
+              TASK_SERVICE
+                  .createTaskQuery()
+                  .wildcardSearchFieldsIn(
+                      WildcardSearchField.CUSTOM_1, WildcardSearchField.DESCRIPTION)
+                  .orderByName(SortDirection.ASCENDING)
+                  .list();
+
+      assertThatThrownBy(queryAttempt).isInstanceOf(IllegalArgumentException.class);
+    }
   }
 }
