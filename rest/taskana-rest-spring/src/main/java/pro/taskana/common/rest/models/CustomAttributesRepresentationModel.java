@@ -7,6 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 public class CustomAttributesRepresentationModel
     extends RepresentationModel<CustomAttributesRepresentationModel> {
 
+  /** The custom configuration attributes. */
   private final Map<String, Object> customAttributes;
 
   @ConstructorProperties({"customAttributes"})
