@@ -72,7 +72,7 @@ describe('SidenavListComponent', () => {
     component.historyAccess = true;
     fixture.detectChanges();
     const menuList = debugElement.queryAll(By.css('.navlist__item'));
-    expect(menuList.length).toBe(9);
+    expect(menuList.length).toBe(10);
     fixture.detectChanges();
   });
 

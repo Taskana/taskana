@@ -46,7 +46,7 @@ describe('AdministrationOverviewComponent', () => {
 
   it('should render 3 tabs in navbar', () => {
     const navbar = fixture.debugElement.nativeElement.getElementsByClassName('administration-overview__navbar-links');
-    expect(navbar).toHaveLength(3);
+    expect(navbar).toHaveLength(4);
   });
 
   it('should display current domain', () => {
