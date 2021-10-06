@@ -7,5 +7,10 @@
     <span class="routing-upload__description" *ngIf="!file?.name">Click to choose file or drag and drop here</span>
     <span class="routing-upload__description" *ngIf="file?.name">{{file?.name}}</span>
   </div>
-  <input #input style="display: none;" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" title="Upload task routing Excel File" (change)="onFileChanged($event)">
+  <input #input style="display: none;"
+         id="routingUpload"
+         type="file"
+         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+         title="Upload task routing Excel File"
+         (change)="onFileChanged($event)">
 </div>
