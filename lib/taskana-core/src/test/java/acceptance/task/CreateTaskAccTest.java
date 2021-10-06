@@ -102,6 +102,57 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_PreventTimestampServiceLevelMismatch_When_ConfigurationPreventsIt() {
+    // Given
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T6310");
+    ObjectReference objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    newTask.setPrimaryObjRef(objectReference);
+    newTask.setOwner("user-1-1");
+
+    // When
+    Instant planned = Instant.parse("2018-01-02T00:00:00Z");
+    newTask.setPlanned(planned);
+    Instant due = Instant.parse("2018-02-15T00:00:00Z");
+    newTask.setDue(due);
+
+    // Then
+    assertThatThrownBy(() -> taskService.createTask(newTask))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessageContaining("not matching the service level");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
+    // Given
+    try {
+      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(true);
+      Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+      newTask.setClassificationKey("T6310");
+      ObjectReference objectReference =
+          createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+      newTask.setPrimaryObjRef(objectReference);
+      newTask.setOwner("user-1-1");
+
+      // When
+      Instant planned = Instant.parse("2018-01-02T00:00:00Z");
+      newTask.setPlanned(planned);
+      Instant due = Instant.parse("2018-02-15T00:00:00Z");
+      newTask.setDue(due);
+      Task createdTask = taskService.createTask(newTask);
+
+      // Then
+      assertThat(createdTask.getPlanned()).isEqualTo(planned);
+      assertThat(createdTask.getDue()).isEqualTo(due);
+    } finally {
+      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(false);
+    }
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_CreateTask_When_ObjectReferenceSystemAndSystemInstanceIsNull() throws Exception {
 
     String currentUser = taskanaEngine.getCurrentUserContext().getUserid();
@@ -257,7 +308,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setClassificationKey("L12010");
     Map<String, String> customAttributesForCreate = createSimpleCustomPropertyMap(27);
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_A",
@@ -336,7 +387,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_A",
@@ -348,7 +399,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             laterInstant,
             createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_A",
@@ -390,7 +441,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT", // prio 99, SL P2000D
             createObjectReference(
                 "COMPANY_A",
@@ -402,7 +453,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "L1060", // prio 1, SL P1D
             createObjectReference(
                 "COMPANY_A",
@@ -456,7 +507,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         };
 
     testCreateTask.accept(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             null,
             "E-MAIL",
@@ -464,7 +515,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
             "E-MAIL",
@@ -472,7 +523,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_A",
@@ -485,7 +536,7 @@ class CreateTaskAccTest extends AbstractAccTest {
             createSimpleCustomPropertyMap(3)));
 
     testCreateTask.accept(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 null,
@@ -581,7 +632,8 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
     testCreateTask.accept(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-    testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    testCreateTask.accept(
+        createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
   }
 
   @WithAccessId(user = "user-1-1")
@@ -620,7 +672,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setDescription("Description of test task");
     newTask.setNote("My note");
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_A",
@@ -701,6 +753,15 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable call = () -> taskService.createTask(task);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotThrowNullPointerException_When_CreatingTaskWithoutWorkbasketSummary() {
+    Task task = new TaskImpl();
+
+    ThrowingCallable call = () -> taskService.createTask(task);
+    assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
   @WithAccessId(user = "admin")

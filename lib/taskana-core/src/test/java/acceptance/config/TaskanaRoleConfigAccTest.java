@@ -2,7 +2,6 @@ package acceptance.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import acceptance.TaskanaEngineTestConfiguration;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.test.config.DataSourceGenerator;
 
 /** Test taskana's role configuration. */
 class TaskanaRoleConfigAccTest {
@@ -25,9 +25,7 @@ class TaskanaRoleConfigAccTest {
   void setup() {
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
-            TaskanaEngineTestConfiguration.getDataSource(),
-            true,
-            TaskanaEngineTestConfiguration.getSchemaName());
+            DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName());
   }
 
   @Test
@@ -71,12 +69,12 @@ class TaskanaRoleConfigAccTest {
     String delimiter = "|";
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
-            TaskanaEngineTestConfiguration.getDataSource(),
+            DataSourceGenerator.getDataSource(),
             true,
             true,
             propertiesFileName,
             delimiter,
-            TaskanaEngineTestConfiguration.getSchemaName());
+            DataSourceGenerator.getSchemaName());
 
     Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
@@ -103,12 +101,12 @@ class TaskanaRoleConfigAccTest {
 
     taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(
-            TaskanaEngineTestConfiguration.getDataSource(),
+            DataSourceGenerator.getDataSource(),
             true,
             true,
             propertiesFileName,
             delimiter,
-            TaskanaEngineTestConfiguration.getSchemaName());
+            DataSourceGenerator.getSchemaName());
 
     Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());

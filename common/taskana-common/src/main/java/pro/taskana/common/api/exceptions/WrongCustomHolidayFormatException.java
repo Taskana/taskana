@@ -22,9 +22,4 @@ public class WrongCustomHolidayFormatException extends TaskanaException {
   public String getCustomHoliday() {
     return customHoliday;
   }
-
-  @Override
-  public String toString() {
-    return "WrongCustomHolidayFormatException [customHoliday=" + customHoliday + "]";
-  }
 }

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,15 +32,20 @@ import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistExcep
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
+import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
+import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.util.MapCreator;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.ExceptionRepresentationModel;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -50,8 +56,9 @@ import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.user.api.exceptions.UserAlreadyExistException;
+import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
-import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -65,50 +72,62 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
 
   public static final String ERROR_KEY_QUERY_MALFORMED = "QUERY_PARAMETER_MALFORMED";
   public static final String ERROR_KEY_PAYLOAD = "PAYLOAD_TOO_LARGE";
-
-  @ExceptionHandler({
-    MismatchedRoleException.class,
-    MismatchedWorkbasketPermissionException.class,
-    MismatchedTaskCommentCreatorException.class,
-    NotAuthorizedToQueryWorkbasketException.class
-  })
-  protected ResponseEntity<Object> handleForbiddenExceptions(TaskanaException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.FORBIDDEN);
-  }
-
-  @ExceptionHandler({
-    ClassificationNotFoundException.class,
-    TaskCommentNotFoundException.class,
-    TaskNotFoundException.class,
-    TaskanaHistoryEventNotFoundException.class,
-    WorkbasketNotFoundException.class
-  })
-  protected ResponseEntity<Object> handleNotFound(TaskanaException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.NOT_FOUND);
-  }
-
-  @ExceptionHandler({
-    TaskAlreadyExistException.class,
-    ClassificationAlreadyExistException.class,
-    ConcurrencyException.class,
-    WorkbasketAlreadyExistException.class,
-    WorkbasketAccessItemAlreadyExistException.class,
-    AttachmentPersistenceException.class,
-    WorkbasketMarkedForDeletionException.class
-  })
-  protected ResponseEntity<Object> handleConflictExceptions(TaskanaException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.CONFLICT);
-  }
-
-  @ExceptionHandler({WorkbasketInUseException.class, ClassificationInUseException.class})
-  protected ResponseEntity<Object> handleWorkbasketInUse(TaskanaException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.LOCKED);
-  }
+  public static final String ERROR_KEY_UNKNOWN_ERROR = "UNKNOWN_ERROR";
+  private static final Map<String, HttpStatus> HTTP_STATUS_BY_ERRORCODE_KEY =
+      Stream.of(
+              Pair.of(MalformedServiceLevelException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              Pair.of(WrongCustomHolidayFormatException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              Pair.of(DomainNotFoundException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              Pair.of(InvalidArgumentException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              Pair.of(ERROR_KEY_QUERY_MALFORMED, HttpStatus.BAD_REQUEST),
+              Pair.of(InvalidCallbackStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              Pair.of(InvalidOwnerException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              Pair.of(InvalidTaskStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+              //
+              Pair.of(MismatchedRoleException.ERROR_KEY, HttpStatus.FORBIDDEN),
+              Pair.of(MismatchedTaskCommentCreatorException.ERROR_KEY, HttpStatus.FORBIDDEN),
+              Pair.of(MismatchedWorkbasketPermissionException.ERROR_KEY_ID, HttpStatus.FORBIDDEN),
+              Pair.of(
+                  MismatchedWorkbasketPermissionException.ERROR_KEY_KEY_DOMAIN,
+                  HttpStatus.FORBIDDEN),
+              //
+              Pair.of(ClassificationNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
+              Pair.of(ClassificationNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),
+              Pair.of(TaskCommentNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+              Pair.of(TaskNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+              Pair.of(UserNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+              Pair.of(WorkbasketNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
+              Pair.of(WorkbasketNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),
+              Pair.of(TaskanaHistoryEventNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+              //
+              Pair.of(AttachmentPersistenceException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(ClassificationAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(ConcurrencyException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(TaskAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(UserAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(WorkbasketAccessItemAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(WorkbasketAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+              Pair.of(WorkbasketMarkedForDeletionException.ERROR_KEY, HttpStatus.CONFLICT),
+              //
+              Pair.of(ERROR_KEY_PAYLOAD, HttpStatus.PAYLOAD_TOO_LARGE),
+              //
+              Pair.of(ClassificationInUseException.ERROR_KEY, HttpStatus.LOCKED),
+              Pair.of(WorkbasketInUseException.ERROR_KEY, HttpStatus.LOCKED),
+              //
+              Pair.of(AutocommitFailedException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+              Pair.of(ConnectionNotSetException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+              Pair.of(SystemException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+              Pair.of(UnsupportedDatabaseException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+              Pair.of(ERROR_KEY_UNKNOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR))
+          .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
       MaxUploadSizeExceededException ex, WebRequest req) {
-    return buildResponse(ErrorCode.of(ERROR_KEY_PAYLOAD), ex, req, HttpStatus.PAYLOAD_TOO_LARGE);
+    HttpStatus status =
+        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+            ERROR_KEY_PAYLOAD, HttpStatus.INTERNAL_SERVER_ERROR);
+    return buildResponse(ErrorCode.of(ERROR_KEY_PAYLOAD), ex, req, status);
   }
 
   @ExceptionHandler(BeanInstantiationException.class)
@@ -116,46 +135,43 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
       BeanInstantiationException ex, WebRequest req) {
     if (ex.getCause() instanceof InvalidArgumentException) {
       InvalidArgumentException cause = (InvalidArgumentException) ex.getCause();
-      return buildResponse(cause.getErrorCode(), ex, req, HttpStatus.BAD_REQUEST);
+      return handleTaskanaException(cause, req);
     }
     return buildResponse(null, ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler({
-    InvalidTaskStateException.class,
-    InvalidCallbackStateException.class,
-    InvalidOwnerException.class,
-    InvalidArgumentException.class,
-    DomainNotFoundException.class,
-    MalformedServiceLevelException.class,
-    WrongCustomHolidayFormatException.class
-  })
-  protected ResponseEntity<Object> handleBadRequestExceptions(TaskanaException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.BAD_REQUEST);
-  }
-
+  // This ExceptionHandler exists to convert IllegalArgumentExceptions to InvalidArgumentExceptions.
+  // Once IllegalArgumentExceptions are no longer in use, you can delete this \(*_*)/
   @ExceptionHandler(IllegalArgumentException.class)
   protected ResponseEntity<Object> handleIllegalArgumentException(
       IllegalArgumentException ex, WebRequest req) {
-    return buildResponse(
-        ErrorCode.of(InvalidArgumentException.ERROR_KEY), ex, req, HttpStatus.BAD_REQUEST);
+    HttpStatus status =
+        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+            InvalidArgumentException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR);
+    return buildResponse(ErrorCode.of(InvalidArgumentException.ERROR_KEY), ex, req, status);
   }
 
   @ExceptionHandler(TaskanaRuntimeException.class)
-  protected ResponseEntity<Object> handleUnknownTaskanaRuntimeExceptions(
+  protected ResponseEntity<Object> handleTaskanaRuntimeException(
       TaskanaRuntimeException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
+    HttpStatus status =
+        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+            ex.getErrorCode().getKey(), HttpStatus.INTERNAL_SERVER_ERROR);
+    return buildResponse(ex.getErrorCode(), ex, req, status);
   }
 
   @ExceptionHandler(TaskanaException.class)
-  protected ResponseEntity<Object> handleUnknownTaskanaExceptions(
-      TaskanaException ex, WebRequest req) {
-    return buildResponse(ex.getErrorCode(), ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
+  protected ResponseEntity<Object> handleTaskanaException(TaskanaException ex, WebRequest req) {
+    HttpStatus status =
+        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+            ex.getErrorCode().getKey(), HttpStatus.INTERNAL_SERVER_ERROR);
+    return buildResponse(ex.getErrorCode(), ex, req, status);
   }
 
   @ExceptionHandler(Exception.class)
   protected ResponseEntity<Object> handleGeneralException(Exception ex, WebRequest req) {
-    return buildResponse(ErrorCode.of("UNKNOWN_ERROR"), ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
+    return buildResponse(
+        ErrorCode.of(ERROR_KEY_UNKNOWN_ERROR), ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @Override

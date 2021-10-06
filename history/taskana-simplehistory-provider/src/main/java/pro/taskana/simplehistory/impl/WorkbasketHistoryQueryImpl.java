@@ -31,7 +31,9 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   private TaskanaHistoryEngineImpl taskanaHistoryEngine;
 
+  @SuppressWarnings("unused")
   private WorkbasketHistoryQueryColumnName columnName;
+
   private List<String> orderBy;
   private List<String> orderColumns;
 
@@ -537,7 +539,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public long count() {
-    Long rowCount = null;
+    Long rowCount;
     try {
       taskanaHistoryEngine.openConnection();
       rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);

@@ -3,12 +3,12 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
-import acceptance.TaskanaEngineTestConfiguration;
 import java.sql.Connection;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.stubbing.answers.CallsRealMethods;
@@ -21,7 +21,10 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.jobs.PlainJavaTransactionProvider;
+import pro.taskana.common.test.config.DataSourceGenerator;
+import pro.taskana.task.internal.jobs.TaskCleanupJob;
 
+@Disabled
 class JobRunnerAccTest extends AbstractAccTest {
 
   private final JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
@@ -37,9 +40,9 @@ class JobRunnerAccTest extends AbstractAccTest {
     runInThread(
         () -> {
           try {
-            TaskanaEngine taskanaEngine = taskanaEngineConfiguration.buildTaskanaEngine();
-            taskanaEngine.setConnectionManagementMode(ConnectionManagementMode.AUTOCOMMIT);
-            DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
+            TaskanaEngine taskanaEngine =
+                taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
+            DataSource dataSource = DataSourceGenerator.getDataSource();
             // We have to slow down the transaction.
             // This is necessary to guarantee the execution of
             // both test threads and therefore test the database lock.
@@ -79,7 +82,7 @@ class JobRunnerAccTest extends AbstractAccTest {
 
   private ScheduledJob createJob(Instant firstDue) {
     ScheduledJob job = new ScheduledJob();
-    job.setType(ScheduledJob.Type.TASK_CLEANUP_JOB);
+    job.setType(TaskCleanupJob.class.getName());
     job.setDue(firstDue);
     jobService.createJob(job);
     return job;

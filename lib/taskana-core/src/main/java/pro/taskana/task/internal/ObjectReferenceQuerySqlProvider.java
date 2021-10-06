@@ -1,12 +1,13 @@
 package pro.taskana.task.internal;
 
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_WHERE_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.DB2_WITH_UR;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
 
 public class ObjectReferenceQuerySqlProvider {
-  private static final String OPENING_SCRIPT_TAG = "<script>";
-  private static final String CLOSING_SCRIPT_TAG = "</script>";
-  private static final String OPENING_WHERE_TAG = "<where>";
-  private static final String CLOSING_WHERE_TAG = "</where>";
 
   private ObjectReferenceQuerySqlProvider() {}
 
@@ -17,7 +18,7 @@ public class ObjectReferenceQuerySqlProvider {
         + OPENING_WHERE_TAG
         + commonObjectReferenceWhereStatement()
         + CLOSING_WHERE_TAG
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -28,7 +29,7 @@ public class ObjectReferenceQuerySqlProvider {
         + OPENING_WHERE_TAG
         + commonObjectReferenceWhereStatement()
         + CLOSING_WHERE_TAG
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -39,7 +40,7 @@ public class ObjectReferenceQuerySqlProvider {
         + OPENING_WHERE_TAG
         + commonObjectReferenceWhereStatement()
         + CLOSING_WHERE_TAG
-        + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+        + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
   }
 

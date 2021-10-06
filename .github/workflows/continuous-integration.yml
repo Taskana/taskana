@@ -83,7 +83,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2.4.1
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -167,7 +167,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2.4.1
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -207,12 +207,12 @@ jobs:
         run: ./mvnw install -pl :taskana-web
       - name: Test
         working-directory: web
-        run: npm run test -- --coverageReporters text-summary
+        run: yarn run test -- --coverageReporters text-summary
       - name: Cypress tests
         working-directory: web
         run: |
           ../mvnw -B spring-boot:run -P history.plugin -f .. -pl :taskana-rest-spring-example-boot &
-          npx wait-port -t 30000 localhost:8080 && npm run e2e-standalone
+          npx wait-port -t 30000 localhost:8080 && yarn run e2e-standalone
       - name: Upload Cypress tests
         if: failure()
         uses: actions/upload-artifact@v2
@@ -250,11 +250,11 @@ jobs:
           - H2
         include:
           - module: taskana-core
-            database: POSTGRES_10
+            database: POSTGRES
           - module: taskana-core
-            database: DB2_11_1
+            database: DB2
           - module: taskana-rest-spring-example-boot
-            database: DB2_11_1
+            database: DB2
     steps:
       - name: Git checkout
         uses: actions/checkout@v2.3.4
@@ -274,13 +274,13 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Prepare database
-        run: docker-databases/prepare_db.sh ${{ matrix.database }}
       - name: Generate JavaDoc for Rest Documentation
         if: matrix.module == 'taskana-simplehistory-rest-spring'
         run: ./mvnw -B validate -pl :taskana-rest-spring
       - name: Test
         run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip
+        env:
+          DB: ${{ matrix.database }}
       - name: Upload JaCoCo Report
         if: matrix.database == 'H2'
         uses: actions/upload-artifact@v2
@@ -435,7 +435,7 @@ jobs:
       - name: Verify Example Application contains documentation
         run: ci/verify_docs_jar.sh
       - name: Deploy to IBM Cloud Foundry
-        uses: IBM/cloudfoundry-deploy@v2.0
+        uses: IBM/cloudfoundry-deploy@v2.1
         with:
           IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
           IBM_CLOUD_CF_API: ${{ secrets.IBM_CLOUD_CF_API }}

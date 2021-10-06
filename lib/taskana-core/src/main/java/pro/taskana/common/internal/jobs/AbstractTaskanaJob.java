@@ -13,14 +13,14 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 /** Abstract base for all background jobs of TASKANA. */
 public abstract class AbstractTaskanaJob implements TaskanaJob {
 
-  protected final Instant firstRun;
-  protected final Duration runEvery;
+  protected Instant firstRun;
+  protected Duration runEvery;
   protected final TaskanaEngineImpl taskanaEngineImpl;
   protected final TaskanaTransactionProvider txProvider;
   protected final ScheduledJob scheduledJob;
   private final boolean async;
 
-  public AbstractTaskanaJob(
+  protected AbstractTaskanaJob(
       TaskanaEngine taskanaEngine,
       TaskanaTransactionProvider txProvider,
       ScheduledJob job,
@@ -41,7 +41,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     return (TaskanaJob)
         Thread.currentThread()
             .getContextClassLoader()
-            .loadClass(job.getType().getClazz())
+            .loadClass(job.getType())
             .getConstructors()[0]
             .newInstance(engine, txProvider, job);
   }
@@ -54,7 +54,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     }
   }
 
-  protected abstract ScheduledJob.Type getType();
+  protected abstract String getType();
 
   protected abstract void execute() throws TaskanaException;
 

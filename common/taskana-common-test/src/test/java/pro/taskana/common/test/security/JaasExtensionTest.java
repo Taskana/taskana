@@ -18,6 +18,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -702,6 +704,7 @@ class JaasExtensionTest {
   // region JaasExtension#interceptTestClassConstructor
 
   @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class ConstructorWithoutAccessId {
     ConstructorWithoutAccessId() {
       assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
@@ -714,6 +717,7 @@ class JaasExtensionTest {
   }
 
   @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class ConstructorWithAccessId {
     @WithAccessId(user = "constructor")
     ConstructorWithAccessId() {

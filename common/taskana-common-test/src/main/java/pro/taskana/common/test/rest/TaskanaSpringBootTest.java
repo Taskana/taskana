@@ -1,7 +1,6 @@
 package pro.taskana.common.test.rest;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -16,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 // DirtiesContext is required to make the integration tests run with embedded LDAP.
 // Otherwise the LDAP server is not shut down correctly and will not come up again. (socket busy)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
-@Inherited
 @ActiveProfiles({"test"})
 @SpringBootTest(
     classes = TestConfiguration.class,

@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -16,10 +15,11 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.task.internal.TaskServiceImpl;
+import pro.taskana.task.internal.jobs.TaskRefreshJob;
 
 /**
  * This class executes a job of type {@linkplain
- * pro.taskana.common.api.ScheduledJob.Type#CLASSIFICATION_CHANGED_JOB}.
+ * pro.taskana.classification.internal.jobs.ClassificationChangedJob}.
  */
 public class ClassificationChangedJob extends AbstractTaskanaJob {
 
@@ -58,8 +58,8 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
   }
 
   @Override
-  protected Type getType() {
-    return Type.CLASSIFICATION_CHANGED_JOB;
+  protected String getType() {
+    return ClassificationChangedJob.class.getName();
   }
 
   private void scheduleTaskRefreshJobs(List<String> affectedTaskIds) {
@@ -82,7 +82,7 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
         args.put(PRIORITY_CHANGED, Boolean.toString(priorityChanged));
         args.put(SERVICE_LEVEL_CHANGED, Boolean.toString(serviceLevelChanged));
         ScheduledJob job = new ScheduledJob();
-        job.setType(ScheduledJob.Type.TASK_REFRESH_JOB);
+        job.setType(TaskRefreshJob.class.getName());
         job.setArguments(args);
         taskanaEngineImpl.getJobService().createJob(job);
       }

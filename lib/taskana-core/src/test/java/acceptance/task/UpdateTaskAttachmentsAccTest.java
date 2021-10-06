@@ -53,7 +53,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
     task.setClassificationKey("T2000");
     attachment =
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT", // prio 99, SL P2000D
             createObjectReference(
                 "COMPANY_A",
@@ -113,7 +113,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   void should_UpdateTaskReceived_When_AddingTwoAttachments() throws Exception {
     task.addAttachment(attachment);
     Attachment attachment2 =
-        createAttachment(
+        createExampleAttachment(
             "L10303",
             createObjectReference(
                 "COMPANY_B",
@@ -336,7 +336,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment);
 
     Attachment attachment2 =
-        createAttachment(
+        createExampleAttachment(
             "L10303", // prio 101, SL PT7H
             createObjectReference(
                 "COMPANY_B",
@@ -408,7 +408,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).isEmpty();
     task.addAttachment(attachment);
     Attachment attachment2 =
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_B",
@@ -427,7 +427,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .isEqualTo("DOCTYPE_DEFAULT");
 
     Attachment attachment3 =
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT",
             createObjectReference(
                 "COMPANY_C",
@@ -470,7 +470,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT", // prio 99, SL P2000D
             createObjectReference(
                 "COMPANY_A",
@@ -482,7 +482,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
             Instant.parse("2018-01-15T00:00:00Z"),
             createSimpleCustomPropertyMap(3)));
     newTask.addAttachment(
-        createAttachment(
+        createExampleAttachment(
             "L1060", // prio 1, SL P1D
             createObjectReference(
                 "COMPANY_A",
@@ -529,7 +529,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         taskService.getTask(
             "TKI:000000000000000000000000000000000000"); // class T2000, prio 1, SL P1D
     attachment =
-        createAttachment(
+        createExampleAttachment(
             "DOCTYPE_DEFAULT", // prio 99, SL P2000D
             createObjectReference(
                 "COMPANY_A",

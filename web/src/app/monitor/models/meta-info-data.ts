@@ -1,7 +1,7 @@
 export class MetaInfoData {
   name: string;
   date: string;
-  header: Array<string>;
-  rowDesc: Array<string>;
+  header: string[];
+  rowDesc: string[];
   sumRowDesc: string;
 }

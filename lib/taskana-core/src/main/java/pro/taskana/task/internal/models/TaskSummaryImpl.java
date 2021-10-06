@@ -22,13 +22,13 @@ public class TaskSummaryImpl implements TaskSummary {
 
   protected String id;
   protected String externalId;
+  protected Instant received;
   protected Instant created;
   protected Instant claimed;
-  protected Instant completed;
   protected Instant modified;
   protected Instant planned;
-  protected Instant received;
   protected Instant due;
+  protected Instant completed;
   protected String name;
   protected String creator;
   protected String note;

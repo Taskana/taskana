@@ -1,6 +1,7 @@
 package pro.taskana.task.internal;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Delete;
@@ -81,7 +82,7 @@ public interface AttachmentMapper {
   @Result(property = "channel", column = "CHANNEL")
   @Result(property = "received", column = "RECEIVED")
   List<AttachmentSummaryImpl> findAttachmentSummariesByTaskIds(
-      @Param("taskIds") List<String> taskIds);
+      @Param("taskIds") Collection<String> taskIds);
 
   @Delete("DELETE FROM ATTACHMENT WHERE ID=#{attachmentId}")
   void delete(@Param("attachmentId") String attachmentId);

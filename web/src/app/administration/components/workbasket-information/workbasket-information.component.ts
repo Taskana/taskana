@@ -21,7 +21,7 @@ import {
 import { WorkbasketComponent } from '../../models/workbasket-component';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
-import { AccessIdDefinition } from '../../../shared/models/access-id';
+import { AccessId } from '../../../shared/models/access-id';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -42,6 +42,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   allTypes: Map<string, string>;
   toggleValidationMap = new Map<string, boolean>();
   lookupField = false;
+  isOwnerValid: boolean = true;
 
   readonly lengthError = 'You have reached the maximum length for this field';
   inputOverflowMap = new Map<string, boolean>();
@@ -98,7 +99,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
       .subscribe((button) => {
         switch (button) {
           case ButtonAction.SAVE:
-            this.onSave();
+            this.onSubmit();
             break;
           case ButtonAction.UNDO:
             this.onUndo();
@@ -122,8 +123,10 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
     this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toggleValidationMap).then((value) => {
-      if (value) {
+      if (value && this.isOwnerValid) {
         this.onSave();
+      } else {
+        this.notificationService.showError('WORKBASKET_SAVE');
       }
     });
   }
@@ -191,10 +194,8 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     });
   }
 
-  onSelectedOwner(owner: AccessIdDefinition) {
-    if (owner?.accessId) {
-      this.workbasket.owner = owner.accessId;
-    }
+  onSelectedOwner(owner: AccessId) {
+    this.workbasket.owner = owner.accessId;
   }
 
   getWorkbasketCustomProperty(custom: number) {

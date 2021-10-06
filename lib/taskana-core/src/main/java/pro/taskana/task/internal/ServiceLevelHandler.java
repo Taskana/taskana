@@ -243,6 +243,15 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
+    if (taskanaEngine
+            .getEngine()
+            .getConfiguration()
+            .isValidationAllowTimestampServiceLevelMismatch()
+        && newTaskImpl.getDue() != null
+        && newTaskImpl.getPlanned() != null) {
+
+      return newTaskImpl;
+    }
     if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
       newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
     }
@@ -325,6 +334,14 @@ class ServiceLevelHandler {
 
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
       TaskImpl newTask, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
+    if (taskanaEngine
+            .getEngine()
+            .getConfiguration()
+            .isValidationAllowTimestampServiceLevelMismatch()
+        && newTask.getDue() != null
+        && newTask.getPlanned() != null) {
+      return newTask;
+    }
     if (newTask.getDue() != null) {
       // due is specified: calculate back and check correctness
       Instant calcDue = getPrecedingWorkingDays(newTask.getDue(), Duration.ofDays(0));

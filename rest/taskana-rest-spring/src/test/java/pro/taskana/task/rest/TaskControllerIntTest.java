@@ -91,7 +91,7 @@ class TaskControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(58);
+    assertThat(response.getBody().getContent()).hasSize(57);
   }
 
   @Test
@@ -497,7 +497,7 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
-    assertThat((response.getBody()).getContent()).hasSize(58);
+    assertThat((response.getBody()).getContent()).hasSize(57);
 
     String url2 =
         restHelper.toUrl(RestEndpoints.URL_TASKS)

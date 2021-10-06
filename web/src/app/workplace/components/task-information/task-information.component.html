@@ -77,10 +77,15 @@
 
 
         <!-- OWNER -->
-        <taskana-shared-type-ahead *ngIf="(tasksCustomisation$ |async)?.information.owner.lookupField else ownerInput"
-                                   #owner="ngModel" name="task.owner"
-                                   [(ngModel)]="task.owner" width="100%" placeHolderMessage="Owner"
-                                   [isRequired]="false" (selectedItem)="onSelectedOwner($event)">
+        <taskana-shared-type-ahead *ngIf="(tasksCustomisation$ | async)?.information.owner.lookupField else ownerInput"
+                                   [savedAccessId]="task.owner"
+                                   placeHolderMessage="Owner"
+                                   [isDisabled]="task.state && task.state !== 'READY'"
+                                   [entityId]="task.taskId"
+                                   [displayError]="true"
+                                   (accessIdEventEmitter)="onSelectedOwner($event)"
+                                   (isFormValid)="isOwnerValid = $event"
+                                   matTooltip="{{task.state && task.state !== 'READY'? 'Cannot be modified since Task is not in state READY' : '' }}">
         </taskana-shared-type-ahead>
         <ng-template #ownerInput>
           <mat-form-field appearance="outline">

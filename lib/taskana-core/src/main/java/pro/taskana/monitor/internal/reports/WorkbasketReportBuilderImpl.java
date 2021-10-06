@@ -20,7 +20,6 @@ import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProce
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** The implementation of WorkbasketReportBuilder. */
 public class WorkbasketReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements WorkbasketReport.Builder {

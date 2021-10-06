@@ -5,11 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
 
-import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
-import pro.taskana.task.internal.jobs.TaskCleanupJob;
-import pro.taskana.task.internal.jobs.TaskRefreshJob;
-import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
-
 /** This class holds all data that go into the Job table. */
 public class ScheduledJob {
 
@@ -21,7 +16,7 @@ public class ScheduledJob {
   private State state;
   private String lockedBy;
   private Instant lockExpires;
-  private Type type;
+  private String type;
   private int retryCount;
 
   public ScheduledJob() {
@@ -94,11 +89,11 @@ public class ScheduledJob {
     this.arguments = arguments;
   }
 
-  public Type getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(Type type) {
+  public void setType(String type) {
     this.type = type;
   }
 
@@ -132,9 +127,9 @@ public class ScheduledJob {
         && Objects.equals(lockExpires, other.lockExpires)
         && Objects.equals(lockedBy, other.lockedBy)
         && Objects.equals(priority, other.priority)
+        && Objects.equals(type, other.type)
         && retryCount == other.retryCount
-        && state == other.state
-        && type == other.type;
+        && state == other.state;
   }
 
   @Override
@@ -166,24 +161,5 @@ public class ScheduledJob {
   public enum State {
     READY,
     FAILED
-  }
-
-  /** This enum controls the type of jobs. */
-  public enum Type {
-    CLASSIFICATION_CHANGED_JOB(ClassificationChangedJob.class.getName()),
-    TASK_REFRESH_JOB(TaskRefreshJob.class.getName()),
-    TASK_CLEANUP_JOB(TaskCleanupJob.class.getName()),
-    WORKBASKET_CLEANUP_JOB(WorkbasketCleanupJob.class.getName()),
-    HISTORY_CLEANUP_JOB("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob");
-
-    private final String clazz;
-
-    Type(String clazz) {
-      this.clazz = clazz;
-    }
-
-    public String getClazz() {
-      return clazz;
-    }
   }
 }

@@ -11,9 +11,4 @@ public class AutocommitFailedException extends TaskanaRuntimeException {
   public AutocommitFailedException(Throwable cause) {
     super("Autocommit failed", ErrorCode.of(ERROR_KEY), cause);
   }
-
-  @Override
-  public String toString() {
-    return "AutocommitFailedException{}";
-  }
 }

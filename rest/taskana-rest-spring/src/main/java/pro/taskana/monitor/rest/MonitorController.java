@@ -3,6 +3,7 @@ package pro.taskana.monitor.rest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,16 @@ import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
+import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
+import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
+import pro.taskana.monitor.rest.assembler.PriorityColumnHeaderRepresentationModelAssembler;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
+import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Controller for all monitoring endpoints. */
 @RestController
@@ -35,13 +41,19 @@ public class MonitorController {
   private final MonitorService monitorService;
 
   private final ReportRepresentationModelAssembler reportRepresentationModelAssembler;
+  private final PriorityColumnHeaderRepresentationModelAssembler
+      priorityColumnHeaderRepresentationModelAssembler;
 
   @Autowired
   MonitorController(
       MonitorService monitorService,
-      ReportRepresentationModelAssembler reportRepresentationModelAssembler) {
+      ReportRepresentationModelAssembler reportRepresentationModelAssembler,
+      PriorityColumnHeaderRepresentationModelAssembler
+          priorityColumnHeaderRepresentationModelAssembler) {
     this.monitorService = monitorService;
     this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
+    this.priorityColumnHeaderRepresentationModelAssembler =
+        priorityColumnHeaderRepresentationModelAssembler;
   }
 
   /**
@@ -74,6 +86,46 @@ public class MonitorController {
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
             builder.buildReport(taskTimestamp), filterParameter, taskTimestamp);
+
+    return ResponseEntity.status(HttpStatus.OK).body(report);
+  }
+
+  /**
+   * This endpoint generates a Workbasket Priority Report.
+   *
+   * <p>Each Row represents a Workbasket.
+   *
+   * <p>Each Column Header represents a priority range.
+   *
+   * @title Compute a Workbasket Priority Report
+   * @param workbasketTypes determine the WorkbasketTypes to include in the report
+   * @param columnHeaders the column headers for the report
+   * @return the computed Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
+   * @throws InvalidArgumentException if topicWorkbaskets or useDefaultValues are false
+   */
+  @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<ReportRepresentationModel> computePriorityWorkbasketReport(
+      @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes,
+      @RequestParam(name = "columnHeader", required = false)
+          PriorityColumnHeaderRepresentationModel[] columnHeaders)
+      throws NotAuthorizedException, InvalidArgumentException {
+
+    WorkbasketPriorityReport.Builder builder =
+        monitorService.createWorkbasketPriorityReportBuilder().workbasketTypeIn(workbasketTypes);
+
+    if (columnHeaders != null) {
+      List<PriorityColumnHeader> priorityColumnHeaders =
+          Arrays.stream(columnHeaders)
+              .map(priorityColumnHeaderRepresentationModelAssembler::toEntityModel)
+              .collect(Collectors.toList());
+      builder.withColumnHeaders(priorityColumnHeaders);
+    }
+
+    ReportRepresentationModel report =
+        reportRepresentationModelAssembler.toModel(
+            builder.buildReport(), workbasketTypes, columnHeaders);
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
@@ -266,7 +318,7 @@ public class MonitorController {
    *
    * <p>Each Column Header represents a TimeInterval.
    *
-   * @title Get a Timestamp Report
+   * @title Compute a Timestamp Report
    * @param filterParameter the filter parameter
    * @param timestamps Filter by the Task Timestamp of the task
    * @return the computed report

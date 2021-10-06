@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -144,8 +143,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   }
 
   @Override
-  protected Type getType() {
-    return Type.HISTORY_CLEANUP_JOB;
+  protected String getType() {
+    return HistoryCleanupJob.class.getName();
   }
 
   private List<String> filterSameParentBusinessHistoryEventsQualifiedToClean(

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -65,8 +64,8 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   }
 
   @Override
-  protected Type getType() {
-    return Type.WORKBASKET_CLEANUP_JOB;
+  protected String getType() {
+    return WorkbasketCleanupJob.class.getName();
   }
 
   private List<String> getWorkbasketsMarkedForDeletion() {

@@ -1,6 +1,7 @@
 package pro.taskana.monitor.api.reports;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,19 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
 
   protected Row<I> createRow(String key, int columnSize) {
     return new SingleRow<>(key, columnSize);
+  }
+
+  @Override
+  public String toString() {
+    return "Report [reportRows="
+        + reportRows
+        + ", sumRow="
+        + sumRow
+        + ", rowDesc="
+        + Arrays.toString(rowDesc)
+        + ", columnHeaders="
+        + columnHeaders
+        + "]";
   }
 
   /**

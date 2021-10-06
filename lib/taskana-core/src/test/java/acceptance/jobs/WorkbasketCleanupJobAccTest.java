@@ -10,14 +10,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
+import pro.taskana.task.internal.jobs.TaskRefreshJob;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
@@ -95,11 +96,11 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.WORKBASKET_CLEANUP_JOB);
+      job.setType(WorkbasketCleanupJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.TASK_REFRESH_JOB);
+      job.setType(TaskRefreshJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
+      job.setType(ClassificationChangedJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -109,7 +110,8 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> workbasketCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.WORKBASKET_CLEANUP_JOB))
+            .filter(
+                scheduledJob -> scheduledJob.getType().equals(WorkbasketCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
     WorkbasketCleanupJob.initializeSchedule(taskanaEngine);

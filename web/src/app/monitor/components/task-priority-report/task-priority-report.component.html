@@ -1,0 +1,48 @@
+<div *ngIf="reportData" class="task-priority-report">
+  <h4> {{reportData?.meta.name}} ({{reportData?.meta.date | germanTimeFormat }}) </h4>
+
+  <div *ngIf="reportData?.rows.length == 0"> There are no Workbaskets with type TOPIC. </div>
+
+  <div class="task-priority-report__workbaskets">
+    <div *ngFor="let row of reportData?.rows; let i = index" class="task-priority-report__workbasket">
+
+      <!-- WORKBASKET NAME -->
+      <div class="task-priority-report__headline">
+        <h6> {{row.desc[0]}} </h6>
+      </div>
+
+      <!-- CHART -->
+      <taskana-monitor-canvas [row]="row" [id]="toString(i)" [isReversed]="isReversed"> </taskana-monitor-canvas>
+
+      <!-- TABLE -->
+      <div>
+        <table mat-table [dataSource]="tableDataArray[i]">
+
+          <!-- Column: Priority -->
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef> Priority </th>
+            <td mat-cell *matCellDef="let element" [ngClass]="{
+           'task-priority-report__row--high': element.priority == 'High',
+           'task-priority-report__row--medium': element.priority == 'Medium',
+           'task-priority-report__row--low': element.priority == 'Low'}">
+              {{element.priority}} </td>
+          </ng-container>
+
+          <!-- Column: Number of Tasks -->
+          <ng-container matColumnDef="number">
+            <th mat-header-cell *matHeaderCellDef> Number of Tasks </th>
+            <td mat-cell *matCellDef="let element" [ngClass]="{
+           'task-priority-report__row--high': element.priority == 'High',
+           'task-priority-report__row--medium': element.priority == 'Medium',
+           'task-priority-report__row--low': element.priority == 'Low'}">
+              {{element.number}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns;">
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
-export class ReportRow {
-  cells: Array<number>;
+export interface ReportRow {
+  cells: number[];
   total: number;
   depth: number;
-  desc: Array<string>;
-  display = false;
+  desc: string[];
+  display: boolean;
 }

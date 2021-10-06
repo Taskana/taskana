@@ -9,6 +9,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
 /** The TaskanaEngine represents an overall set of all needed services. */
@@ -48,6 +49,10 @@ public interface TaskanaEngine {
    * @return the JobService
    */
   JobService getJobService();
+
+  UserService getUserService();
+
+  ConfigurationService getConfigurationService();
 
   /**
    * The Taskana configuration.

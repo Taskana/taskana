@@ -12,9 +12,4 @@ public class ConnectionNotSetException extends TaskanaRuntimeException {
   public ConnectionNotSetException() {
     super("Connection not set", ErrorCode.of(ERROR_KEY));
   }
-
-  @Override
-  public String toString() {
-    return "ConnectionNotSetException{}";
-  }
 }

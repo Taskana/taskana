@@ -3,92 +3,99 @@ package acceptance.taskrouting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import acceptance.AbstractAccTest;
+import acceptance.DefaultTestEntities;
+import acceptance.taskrouting.TaskRoutingAccTest.TaskRoutingProviderForDomainA;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import testapi.TaskanaInject;
+import testapi.TaskanaIntegrationTest;
+import testapi.WithServiceProvider;
 
+import pro.taskana.classification.api.ClassificationService;
+import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
+import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
-/** Acceptance test for all "create task" scenarios. */
-@ExtendWith(JaasExtension.class)
-class TaskRoutingAccTest extends AbstractAccTest {
+@WithServiceProvider(
+    serviceProviderInterface = TaskRoutingProvider.class,
+    serviceProviders = TaskRoutingProviderForDomainA.class)
+@TaskanaIntegrationTest
+class TaskRoutingAccTest {
 
-  @WithAccessId(user = "admin")
-  @Test
-  void testCreateTaskWithoutWorkbasketAndVoidNewTaskMethod() throws Exception {
-    TaskService taskService = taskanaEngine.getTaskService();
+  @TaskanaInject TaskanaEngine taskanaEngine;
+  @TaskanaInject TaskService taskService;
 
-    Task newTask = taskService.newTask();
-    newTask.setClassificationKey("L10303");
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    final Task taskToCreate = newTask;
-    assertThatThrownBy(() -> taskService.createTask(taskToCreate))
-        .isInstanceOf(InvalidArgumentException.class);
-    ((TaskImpl) taskToCreate).setDomain("DOMAIN_C");
-    assertThatThrownBy(() -> taskService.createTask(taskToCreate))
-        .isInstanceOf(InvalidArgumentException.class);
-    ((TaskImpl) taskToCreate).setDomain("DOMAIN_B");
-    Task createdTask = taskService.createTask(taskToCreate);
-    assertThat(createdTask.getWorkbasketSummary().getId())
-        .isEqualTo("WBI:100000000000000000000000000000000011");
+  ClassificationSummary classificationSummary;
+  WorkbasketSummary domainAWorkbasket;
+
+  @WithAccessId(user = "businessadmin")
+  @BeforeAll
+  void setUp(ClassificationService classificationService, WorkbasketService workbasketService)
+      throws Exception {
+    classificationSummary =
+        DefaultTestEntities.defaultTestClassification()
+            .buildAndStoreAsSummary(classificationService);
+    domainAWorkbasket =
+        DefaultTestEntities.defaultTestWorkbasket()
+            .key("DOMAIN_A_WORKBASKET")
+            .buildAndStoreAsSummary(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(domainAWorkbasket.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    TaskRoutingProviderForDomainA.domainAWorkbasketId = domainAWorkbasket.getId();
   }
 
-  @WithAccessId(user = "admin")
+  @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateTaskWithNullWorkbasket() throws Exception {
-    TaskImpl createdTaskA = createTask("DOMAIN_A", "L12010");
-    assertThat(createdTaskA.getWorkbasketSummary().getId())
-        .isEqualTo("WBI:100000000000000000000000000000000001");
-    TaskImpl createdTaskB = createTask("DOMAIN_B", "T21001");
-    assertThat(createdTaskB.getWorkbasketSummary().getId())
-        .isEqualTo("WBI:100000000000000000000000000000000011");
-    assertThatThrownBy(() -> createTask(null, "L12010"))
-        .isInstanceOf(InvalidArgumentException.class);
+  void should_ThrowException_When_TaskRouterDoesNotRouteTask() {
+    Task task = taskService.newTask();
+    task.setClassificationKey(classificationSummary.getKey());
+    task.setPrimaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
+
+    assertThatThrownBy(() -> taskService.createTask(task))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessage("Cannot create a Task outside a Workbasket");
   }
 
-  @WithAccessId(user = "admin")
+  @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateTaskWithNullRouting() throws Exception {
+  void should_SetWorkbasketForTask_When_TaskRouterDeterminesWorkbasket() throws Exception {
+    Task task = taskService.newTask(null, "DOMAIN_A");
+    task.setClassificationKey(classificationSummary.getKey());
+    task.setPrimaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
 
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask(null, "DOMAIN_A");
-    newTask.setClassificationKey("L12010");
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setCustomAttribute(TaskCustomField.CUSTOM_7, "noRouting");
-    assertThatThrownBy(() -> taskService.createTask(newTask))
-        .isInstanceOf(InvalidArgumentException.class);
+    Task createdTask = taskService.createTask(task);
+
+    assertThat(createdTask.getWorkbasketSummary()).isEqualTo(domainAWorkbasket);
   }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void testCreateTaskWithRoutingToMultipleWorkbaskets() throws Exception {
+  public static class TaskRoutingProviderForDomainA implements TaskRoutingProvider {
 
-    TaskService taskService = taskanaEngine.getTaskService();
-    Task newTask = taskService.newTask(null, "DOMAIN_B");
-    newTask.setClassificationKey("L12010");
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    newTask.setCustomAttribute(TaskCustomField.CUSTOM_7, "multipleWorkbaskets");
-    assertThatThrownBy(() -> taskService.createTask(newTask))
-        .isInstanceOf(InvalidArgumentException.class);
-  }
+    static String domainAWorkbasketId;
 
-  private TaskImpl createTask(String domain, String classificationKey) throws Exception {
-    TaskService taskService = taskanaEngine.getTaskService();
+    @Override
+    public void initialize(TaskanaEngine taskanaEngine) {}
 
-    Task newTask = taskService.newTask(null, domain);
-    newTask.setClassificationKey(classificationKey);
-
-    newTask.setPrimaryObjRef(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    return (TaskImpl) taskService.createTask(newTask);
+    @Override
+    public String determineWorkbasketId(Task task) {
+      if ("DOMAIN_A".equals(task.getDomain())) {
+        return domainAWorkbasketId;
+      }
+      return null;
+    }
   }
 }

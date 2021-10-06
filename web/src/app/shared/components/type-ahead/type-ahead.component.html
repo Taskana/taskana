@@ -1,18 +1,32 @@
-<div *ngIf="dataSource" class="typeahead">
-  <form>
-    <mat-form-field class="typeahead__form" appearance="outline">
-      <mat-label>
-        {{dataSource.selected?.name && placeHolderMessage !== 'Owner' ? dataSource.selected?.name : placeHolderMessage}}
-      </mat-label>
-      <input #inputTypeAhead [required]="isRequired" class="typeahead__form-input align" matInput type="text"
-        [matAutocomplete]="auto" placeholder="{{placeHolderMessage}}" [(ngModel)]="value" name="accessId"
-        (ngModelChange)="initializeDataSource()" matTooltip="{{value}}"/>
-      <mat-autocomplete #autoComplete autoActiveFirstOption (optionSelected)="typeaheadOnSelect($event)"
-        #auto="matAutocomplete">
-        <mat-option class="typeahead__form-options" *ngFor="let item of items" [value]="item.accessId" matTooltip="{{item.accessId}} {{item.name}}">
-          <small>{{item.accessId}}&nbsp;&nbsp;{{item.name}}</small>
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </form>
-</div>
+<form [formGroup]="accessIdForm">
+  <div [ngClass]="placeHolderMessage == 'Access id'? 'type-ahead--small' : 'type-ahead--large'">
+    <mat-form-field class="type-ahead__form-field" appearance="outline">
+    <mat-label class="type-ahead__label" matTooltip="{{name}}" matTooltipPosition="above">
+      {{name || placeHolderMessage}}
+    </mat-label>
+    <!-- TEXT INPUT -->
+    <input matInput
+           type="text"
+           placeholder="{{placeHolderMessage}}"
+           formControlName="accessId"
+           [required]="isRequired"
+           [matAutocomplete]="auto"
+           matTooltip="{{accessIdForm.controls['accessId'].value}}"
+          class="type-ahead__input-field">
+    <!-- ERROR MESSAGE -->
+    <mat-error
+      [ngClass]="placeHolderMessage == 'Access id' ? 'type-ahead__error--accessId' : 'type-ahead__error--general'"
+      *ngIf="displayError && !accessIdForm.valid">
+      Access id not valid
+    </mat-error>
+    <!-- AUTOCOMPLETE LIST -->
+    <mat-autocomplete #auto>
+      <mat-option class="type-ahead__form-options" *ngFor="let accessId of filteredAccessIds"
+        [value]="accessId.accessId" matTooltip="{{accessId.accessId}} {{accessId.name}}">
+        <small>{{accessId.accessId}}&nbsp;&nbsp;{{accessId.name}}</small>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  </div>
+</form>
+

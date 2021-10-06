@@ -162,14 +162,14 @@ public class AttachmentHandler {
     if (attachment.getId() == null) {
       attachment.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_ATTACHMENT));
     }
+    if (attachment.getTaskId() == null) {
+      attachment.setTaskId(newTask.getId());
+    }
     if (attachment.getCreated() == null) {
       attachment.setCreated(newTask.getModified());
     }
     if (attachment.getModified() == null) {
       attachment.setModified(attachment.getCreated());
-    }
-    if (attachment.getTaskId() == null) {
-      attachment.setTaskId(newTask.getId());
     }
   }
 

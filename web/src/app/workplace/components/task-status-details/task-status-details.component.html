@@ -7,7 +7,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Modification Date</mat-label>
       <label for="task-modified"></label>
-      <input matInput type="text" disabled id="task-modified" placeholder="Modified Date" [value]="task.modified | dateTimeZone"
+      <input matInput type="text" disabled id="task-modified" placeholder="Modified Date" [value]="task.modified | germanTimeFormat"
              name="task.modified">
     </mat-form-field>
 
@@ -16,7 +16,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Completion Date</mat-label>
       <label for="task-completed"></label>
-      <input matInput type="text" disabled id="task-completed" placeholder="Complete Date" [value]="task.completed | dateTimeZone"
+      <input matInput type="text" disabled id="task-completed" placeholder="Complete Date" [value]="task.completed | germanTimeFormat"
              name="task.completed">
     </mat-form-field>
 
@@ -56,7 +56,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Claim Date</mat-label>
       <label for="task-claimed"></label>
-      <input matInput type="text" disabled id="task-claimed" placeholder="Claimed Date" [value]="task.claimed | dateTimeZone"
+      <input matInput type="text" disabled id="task-claimed" placeholder="Claimed Date" [value]="task.claimed | germanTimeFormat"
              name="task.claimed">
     </mat-form-field>
 
@@ -64,7 +64,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Planned Date</mat-label>
       <label for="task-planned"></label>
-      <input matInput type="text" disabled id="task-planned" placeholder="Planned Date" [value]="task.planned | dateTimeZone"
+      <input matInput type="text" disabled id="task-planned" placeholder="Planned Date" [value]="task.planned | germanTimeFormat"
              name="task.planned">
     </mat-form-field>
 
@@ -72,7 +72,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Creation Date</mat-label>
       <label for="task-created"></label>
-      <input matInput type="text" disabled id="task-created" placeholder="Creation Date" [value]="task.created | dateTimeZone"
+      <input matInput type="text" disabled id="task-created" placeholder="Creation Date" [value]="task.created | germanTimeFormat"
              name="task.created">
     </mat-form-field>
 

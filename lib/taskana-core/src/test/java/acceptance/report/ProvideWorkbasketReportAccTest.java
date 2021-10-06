@@ -43,7 +43,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
   @Test
   void should_AugmentDisplayNames_When_ReportIsBuild() throws Exception {
     WorkbasketReport report = MONITOR_SERVICE.createWorkbasketReportBuilder().buildReport();
-    assertThat(report.getRows()).hasSize(3);
+    assertThat(report.getRows()).hasSize(5);
     assertThat(report.getRow("USER-1-1").getDisplayName()).isEqualTo("PPK User 1 KSC 1");
     assertThat(report.getRow("USER-1-2").getDisplayName()).isEqualTo("PPK User 1 KSC 2");
     assertThat(report.getRow("USER-1-3").getDisplayName()).isEqualTo("PPK User 1 KSC 3");
@@ -69,13 +69,13 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     WorkbasketReport report = MONITOR_SERVICE.createWorkbasketReportBuilder().buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     assertThat(report.getRow("USER-1-1").getTotalValue()).isEqualTo(20);
     assertThat(report.getRow("USER-1-2").getTotalValue()).isEqualTo(20);
     assertThat(report.getRow("USER-1-3").getTotalValue()).isEqualTo(10);
 
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
   }
 
   @WithAccessId(user = "monitor")
@@ -110,15 +110,15 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     assertThat(report.getRow("USER-1-1").getTotalValue()).isEqualTo(20);
     assertThat(report.getRow("USER-1-2").getTotalValue()).isEqualTo(20);
     assertThat(report.getRow("USER-1-3").getTotalValue()).isEqualTo(10);
 
     int[] sumRow = report.getSumRow().getCells();
-    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 7, 4, 5});
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
+    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 5});
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
   }
 
   @WithAccessId(user = "monitor")
@@ -147,7 +147,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {13, 3, 1, 1, 2});
@@ -172,7 +172,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport(TaskTimestamp.PLANNED);
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {0, 2, 18, 0, 0});
 
@@ -195,7 +195,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {16, 0, 1, 0, 3});
@@ -243,7 +243,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(4);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {13, 3, 1, 1, 0});
@@ -270,7 +270,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(4);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {3, 1, 1, 1, 2});
@@ -297,7 +297,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(4);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {8, 1, 0, 1, 2});
@@ -350,7 +350,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {7, 2, 0, 0, 1});
@@ -409,7 +409,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {3, 3, 0, 1, 1});
@@ -434,7 +434,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
             .buildReport(TaskTimestamp.PLANNED);
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     assertThat(report.getRow("USER-1-1").getTotalValue()).isEqualTo(20);
     assertThat(report.getRow("USER-1-2").getTotalValue()).isEqualTo(20);
@@ -442,7 +442,7 @@ class ProvideWorkbasketReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("USER-1-1").getCells()[2]).isEqualTo(2);
     assertThat(report.getRow("USER-1-2").getCells()[1]).isEqualTo(1);
 
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(50);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
   }
 
   @WithAccessId(user = "monitor")

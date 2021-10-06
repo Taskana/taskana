@@ -2,9 +2,8 @@
 
   <!-- SEARCH -->
   <div class="access-items__typeahead">
-    <taskana-shared-type-ahead name="accessIdSelected" [(ngModel)]="accessIdSelected"
-      placeHolderMessage="Search for access id..." (selectedItem)="onSelectAccessId($event)" displayError=true
-      isRequired="false">
+    <taskana-shared-type-ahead
+            placeHolderMessage="Search for AccessId" (accessIdEventEmitter)="onSelectAccessId($event)">
     </taskana-shared-type-ahead>
   </div>
   <div *ngIf="!accessItemsForm" class="access-items__icon">

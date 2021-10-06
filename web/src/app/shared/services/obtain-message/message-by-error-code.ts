@@ -29,6 +29,7 @@ export const messageByErrorCode = {
     CLASSIFICATION_WITH_ID_NOT_FOUND: 'Classification with id {classificationId} cannot be found',
     CLASSIFICATION_COPY_NOT_CREATED: 'Cannot copy a not created Classification',
 
+    WORKBASKET_SAVE: 'The Workbasket cannot be saved since the Workbasket Information contains invalid values',
     WORKBASKET_WITH_ID_NOT_FOUND: 'Workbasket with id {workbasketId} cannot be found',
     WORKBASKET_WITH_KEY_NOT_FOUND: 'Workbasket with key {workbasketKey} cannot be found in domain {domain}',
     WORKBASKET_ALREADY_EXISTS:
@@ -48,6 +49,9 @@ export const messageByErrorCode = {
       'Callback state {taskCallbackState} for Task with id {taskId} is invalid. Required callback states: {requiredCallbackStates}',
     TASK_INVALID_OWNER: 'Current user {currentUserId} is not the owner of the Task with id {taskId}',
     TASK_INVALID_STATE: 'Task with id {taskId} is in state {taskState}. Required state(s): {requiredTaskStates}.',
+
+    USER_ALREADY_EXISTS: 'User with id {userId} cannot be created, because a User with that id does already exist',
+    USER_NOT_FOUND: 'User with id {userId} cannot be found',
 
     IMPORT_EXPORT_UPLOAD_FAILED: 'Upload failed. The uploaded file probably exceeded the maximum file size of 10 MB.',
     IMPORT_EXPORT_UPLOAD_FAILED_AUTH: 'Upload failed because you have no access to apply this operation.',
@@ -90,6 +94,12 @@ export const messageByErrorCode = {
 
   [messageTypes.INFORMATION]: {
     EMPTY_WORKBASKET: 'Selected Workbasket is empty'
+  },
+
+  [messageTypes.WARNING]: {
+    REPORT_DATA_WRONG_HEADER:
+      'The received header of the Report data does not match the expected header. ' +
+      'The data might be displayed incorrectly. Please contact your administrator.'
   },
 
   [messageTypes.DIALOG]: {

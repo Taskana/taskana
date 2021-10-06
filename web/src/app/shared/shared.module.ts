@@ -17,7 +17,6 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { SpinnerComponent } from 'app/shared/components/spinner/spinner.component';
 import { MasterAndDetailComponent } from 'app/shared/components/master-and-detail/master-and-detail.component';
 import { TaskanaTreeComponent } from 'app/administration/components/tree/tree.component';
-import { TypeAheadComponent } from 'app/shared/components/type-ahead/type-ahead.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/components/field-error-display/field-error-display.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -26,6 +25,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { SortComponent } from './components/sort/sort.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
+import { TypeAheadComponent } from './components/type-ahead/type-ahead.component';
 
 /**
  * Pipes
@@ -59,6 +59,7 @@ import { ClassificationsService } from 'app/shared/services/classifications/clas
 import { ObtainMessageService } from './services/obtain-message/obtain-message.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
+import { GermanTimeFormatPipe } from './pipes/german-time-format.pipe';
 
 const MODULES = [
   CommonModule,
@@ -101,11 +102,12 @@ const DECLARATIONS = [
   DialogPopUpComponent,
   WorkbasketFilterComponent,
   TaskFilterComponent,
-  DragAndDropDirective
+  DragAndDropDirective,
+  GermanTimeFormatPipe
 ];
 
 @NgModule({
-  declarations: DECLARATIONS,
+  declarations: [DECLARATIONS],
   imports: [
     MODULES,
     MatRadioModule,
@@ -119,7 +121,7 @@ const DECLARATIONS = [
     ReactiveFormsModule,
     MatProgressSpinnerModule
   ],
-  exports: DECLARATIONS,
+  exports: [DECLARATIONS, GermanTimeFormatPipe],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

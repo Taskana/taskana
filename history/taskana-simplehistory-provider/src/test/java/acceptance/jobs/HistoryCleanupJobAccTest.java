@@ -17,14 +17,15 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
-import pro.taskana.common.api.ScheduledJob.Type;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
+import pro.taskana.task.internal.jobs.TaskRefreshJob;
 
 @ExtendWith(JaasExtension.class)
 class HistoryCleanupJobAccTest extends AbstractAccTest {
@@ -378,11 +379,11 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     for (int i = 0; i < 10; i++) {
       ScheduledJob job = new ScheduledJob();
-      job.setType(ScheduledJob.Type.HISTORY_CLEANUP_JOB);
+      job.setType(HistoryCleanupJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.TASK_REFRESH_JOB);
+      job.setType(TaskRefreshJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
-      job.setType(Type.CLASSIFICATION_CHANGED_JOB);
+      job.setType(ClassificationChangedJob.class.getName());
       taskanaEngine.getJobService().createJob(job);
     }
 
@@ -392,7 +393,8 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     List<ScheduledJob> historyCleanupJobs =
         jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(Type.HISTORY_CLEANUP_JOB))
+            .filter(
+                scheduledJob -> scheduledJob.getType().equals(HistoryCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
     HistoryCleanupJob.initializeSchedule(taskanaEngine);

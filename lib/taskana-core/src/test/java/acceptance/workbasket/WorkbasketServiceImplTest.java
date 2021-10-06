@@ -30,6 +30,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -66,9 +67,12 @@ class WorkbasketServiceImplTest {
 
   @Mock private TaskanaEngineConfiguration taskanaEngineConfigurationMock;
 
+  @Mock private HistoryEventManager historyEventManager;
+
   @BeforeEach
   void setup() {
     lenient().when(internalTaskanaEngineMock.getEngine()).thenReturn(taskanaEngine);
+    lenient().when(historyEventManager.isEnabled()).thenReturn(false);
   }
 
   @Test
@@ -93,7 +97,7 @@ class WorkbasketServiceImplTest {
     verify(taskanaEngine, times(4)).checkRoleMembership(any());
     verify(internalTaskanaEngineMock, times(4)).getEngine();
     verify(internalTaskanaEngineMock, times(3)).domainExists(any());
-    verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
+    verify(historyEventManager, times(5)).isEnabled();
     verifyNoMoreInteractions(
         taskQueryMock,
         taskServiceMock,
@@ -139,7 +143,7 @@ class WorkbasketServiceImplTest {
     verify(internalTaskanaEngineMock, times(1)).domainExists(any());
     verify(distributionTargetMapperMock).deleteAllDistributionTargetsBySourceId(expectedWb.getId());
     verify(workbasketMapperMock).update(expectedWb);
-    verify(internalTaskanaEngineMock, times(1)).getHistoryEventManager();
+    verify(historyEventManager, times(2)).isEnabled();
 
     verifyNoMoreInteractions(
         taskQueryMock,

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
@@ -58,6 +59,10 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_JOB_CLEANUP_MINIMUM_AGE = "taskana.jobs.cleanup.minimumAge";
   private static final String TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS =
       "taskana.jobs.cleanup.allCompletedSameParentBusiness";
+  private static final String TASKANA_JOB_PRIORITY_BATCHSIZE = "taskana.jobs.priority.batchSize";
+  private static final String TASKANA_JOB_PRIORITY_RUN_EVERY = "taskana.jobs.priority.runEvery";
+  private static final String TASKANA_JOB_PRIORITY_FIRST_RUN = "taskana.jobs.priority.firstRunAt";
+  private static final String TASKANA_JOB_PRIORITY_ACTIVE = "taskana.jobs.priority.active";
   private static final String TASKANA_DOMAINS_PROPERTY = "taskana.domains";
   private static final String TASKANA_CLASSIFICATION_TYPES_PROPERTY =
       "taskana.classification.types";
@@ -70,6 +75,8 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR = ".";
   private static final String TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED =
       "taskana.history.deletion.on.task.deletion.enabled";
+  private static final String TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH =
+      "taskana.validation.allowTimestampServiceLevelMismatch";
   // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
 
@@ -103,6 +110,12 @@ public class TaskanaEngineConfiguration {
   private Duration cleanupJobRunEvery = Duration.parse("P1D");
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
+  private boolean validationAllowTimestampServiceLevelMismatch = false;
+
+  private int priorityJobBatchSize = 100;
+  private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+  private Duration priorityJobRunEvery = Duration.parse("P1D");
+  private boolean priorityJobActive = false;
 
   public TaskanaEngineConfiguration(
       DataSource dataSource, boolean useManagedTransactions, String schemaName) {
@@ -165,6 +178,10 @@ public class TaskanaEngineConfiguration {
         props,
         TASKANA_HISTORY_DELETION_ON_TASK_DELETION_ENABLED,
         this::setDeleteHistoryOnTaskDeletionEnabled);
+    initBooleanProperty(
+        props,
+        TASKANA_VALIDATION_ALLOW_TIMESTAMP_SERVICE_LEVEL_MISMATCH,
+        this::setValidationAllowTimestampServiceLevelMismatch);
     initCustomHolidays(props, separator);
   }
 
@@ -193,6 +210,11 @@ public class TaskanaEngineConfiguration {
    */
   public TaskanaEngine buildTaskanaEngine() throws SQLException {
     return TaskanaEngineImpl.createTaskanaEngine(this);
+  }
+
+  public TaskanaEngine buildTaskanaEngine(ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return TaskanaEngineImpl.createTaskanaEngine(this, connectionManagementMode);
   }
 
   /**
@@ -251,6 +273,16 @@ public class TaskanaEngineConfiguration {
 
   public void setGermanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
     this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
+  }
+
+  public boolean isValidationAllowTimestampServiceLevelMismatch() {
+    return validationAllowTimestampServiceLevelMismatch;
+  }
+
+  public void setValidationAllowTimestampServiceLevelMismatch(
+      boolean validationAllowTimestampServiceLevelMismatch) {
+    this.validationAllowTimestampServiceLevelMismatch =
+        validationAllowTimestampServiceLevelMismatch;
   }
 
   public boolean isDeleteHistoryOnTaskDeletionEnabled() {
@@ -349,6 +381,38 @@ public class TaskanaEngineConfiguration {
         taskCleanupJobAllCompletedSameParentBusiness;
   }
 
+  public int getPriorityJobBatchSize() {
+    return priorityJobBatchSize;
+  }
+
+  public void setPriorityJobBatchSize(int priorityJobBatchSize) {
+    this.priorityJobBatchSize = priorityJobBatchSize;
+  }
+
+  public Instant getPriorityJobFirstRun() {
+    return priorityJobFirstRun;
+  }
+
+  public void setPriorityJobFirstRun(Instant priorityJobFirstRun) {
+    this.priorityJobFirstRun = priorityJobFirstRun;
+  }
+
+  public Duration getPriorityJobRunEvery() {
+    return priorityJobRunEvery;
+  }
+
+  public void setPriorityJobRunEvery(Duration priorityJobRunEvery) {
+    this.priorityJobRunEvery = priorityJobRunEvery;
+  }
+
+  public boolean isPriorityJobActive() {
+    return priorityJobActive;
+  }
+
+  public void setPriorityJobActive(boolean priorityJobActive) {
+    this.priorityJobActive = priorityJobActive;
+  }
+
   public String getSchemaName() {
     return schemaName;
   }
@@ -372,12 +436,12 @@ public class TaskanaEngineConfiguration {
   }
 
   private <T> Optional<T> parseProperty(
-      Properties props, String key, CheckedFunction<String, T> function) {
+      Properties props, String key, CheckedFunction<String, T, Exception> function) {
     String property = props.getProperty(key, "");
     if (!property.isEmpty()) {
       try {
         return Optional.ofNullable(function.apply(property));
-      } catch (Throwable t) {
+      } catch (Exception t) {
         LOGGER.warn(
             "Could not parse property {} ({}). Using default. Exception: {}",
             key,
@@ -405,6 +469,18 @@ public class TaskanaEngineConfiguration {
     parseProperty(props, TASKANA_JOB_CLEANUP_MINIMUM_AGE, Duration::parse)
         .ifPresent(this::setCleanupJobMinimumAge);
 
+    parseProperty(props, TASKANA_JOB_PRIORITY_BATCHSIZE, Integer::parseInt)
+        .ifPresent(this::setPriorityJobBatchSize);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_RUN_EVERY, Duration::parse)
+        .ifPresent(this::setPriorityJobRunEvery);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_FIRST_RUN, Instant::parse)
+        .ifPresent(this::setPriorityJobFirstRun);
+
+    parseProperty(props, TASKANA_JOB_PRIORITY_ACTIVE, Boolean::parseBoolean)
+        .ifPresent(this::setPriorityJobActive);
+
     parseProperty(
             props,
             TASKANA_JOB_TASK_CLEANUP_ALL_COMPLETED_SAME_PARENT_BUSINESS,
@@ -428,7 +504,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initDomains(Properties props) {
-    CheckedFunction<String, List<String>> parseFunction =
+    CheckedFunction<String, List<String>, Exception> parseFunction =
         p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
     parseProperty(props, TASKANA_DOMAINS_PROPERTY, parseFunction).ifPresent(this::setDomains);
 
@@ -438,7 +514,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initClassificationTypes(Properties props) {
-    CheckedFunction<String, List<String>> parseFunction =
+    CheckedFunction<String, List<String>, Exception> parseFunction =
         p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
     parseProperty(props, TASKANA_CLASSIFICATION_TYPES_PROPERTY, parseFunction)
         .ifPresent(this::setClassificationTypes);
@@ -451,7 +527,7 @@ public class TaskanaEngineConfiguration {
   private void initClassificationCategories(Properties props) {
     Function<String, List<String>> getClassificationCategoriesForType =
         type -> {
-          CheckedFunction<String, List<String>> parseFunction =
+          CheckedFunction<String, List<String>, Exception> parseFunction =
               s -> splitStringAndTrimElements(s, ",", String::toUpperCase);
           return parseProperty(
                   props,
@@ -523,7 +599,7 @@ public class TaskanaEngineConfiguration {
   }
 
   private void initCustomHolidays(Properties props, String separator) {
-    CheckedFunction<String, List<CustomHoliday>> parseFunction =
+    CheckedFunction<String, List<CustomHoliday>, Exception> parseFunction =
         s ->
             splitStringAndTrimElements(s, separator).stream()
                 .map(

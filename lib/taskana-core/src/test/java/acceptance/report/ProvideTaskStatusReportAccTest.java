@@ -33,7 +33,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   }
 
   @Test
-  void should_ThrowException_IfUserIsNotAuthorized() {
+  void should_ThrowException_When_UserIsNotAuthorized() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .isInstanceOf(NotAuthorizedException.class);
   }
@@ -43,7 +43,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "businessadmin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_ThrowException_IfUserIsNotAdminOrMonitor() {
+  void should_ThrowException_When_UserIsNotAdminOrMonitor() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .isInstanceOf(NotAuthorizedException.class);
   }
@@ -51,7 +51,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "admin")
   @WithAccessId(user = "monitor")
   @TestTemplate
-  void should_BuildReport_IfUserIsAdminOrMonitor() {
+  void should_BuildReport_When_UserIsAdminOrMonitor() {
     assertThatCode(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
         .doesNotThrowAnyException();
   }
@@ -61,7 +61,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   void should_AugmentDisplayNames_When_ReportIsBuild() throws Exception {
     TaskStatusReport report = MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport();
 
-    assertThat(report.getRows()).hasSize(3);
+    assertThat(report.getRows()).hasSize(5);
     assertThat(report.getRow("USER-1-1").getDisplayName()).isEqualTo("PPK User 1 KSC 1");
     assertThat(report.getRow("USER-1-2").getDisplayName()).isEqualTo("PPK User 1 KSC 2");
     assertThat(report.getRow("USER-1-3").getDisplayName()).isEqualTo("PPK User 1 KSC 3");
@@ -87,7 +87,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     TaskStatusReport report = MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
     assertThat(row1.getCells()).isEqualTo(new int[] {18, 2, 0, 0, 0});
@@ -102,8 +102,8 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(row3.getTotalValue()).isEqualTo(10);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {41, 9, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(50);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {42, 12, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(54);
   }
 
   @WithAccessId(user = "monitor")
@@ -116,7 +116,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(5);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
     assertThat(row1.getCells()).isEqualTo(new int[] {15, 2, 0, 0, 0});
@@ -131,8 +131,8 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(row3.getTotalValue()).isEqualTo(6);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {32, 6, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(38);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {33, 8, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(41);
   }
 
   @WithAccessId(user = "monitor")
@@ -145,7 +145,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
             .buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(3);
+    assertThat(report.rowSize()).isEqualTo(4);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
     assertThat(row1.getCells()).isEqualTo(new int[] {18});
@@ -160,8 +160,8 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(row3.getTotalValue()).isEqualTo(4);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {41});
-    assertThat(sumRow.getTotalValue()).isEqualTo(41);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {42});
+    assertThat(sumRow.getTotalValue()).isEqualTo(42);
   }
 
   @WithAccessId(user = "monitor", groups = "admin")
@@ -199,15 +199,15 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
         MONITOR_SERVICE.createTaskStatusReportBuilder().priorityMinimum(5).buildReport();
 
     assertThat(report).isNotNull();
-    assertThat(report.rowSize()).isEqualTo(2);
+    assertThat(report.rowSize()).isEqualTo(4);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
     assertThat(row1.getCells()).isEqualTo(new int[] {3, 1, 0, 0, 0});
     assertThat(row1.getTotalValue()).isEqualTo(4);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {3, 2, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(5);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 5, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(9);
   }
 
   @WithAccessId(user = "monitor")

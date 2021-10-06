@@ -22,8 +22,7 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
   private final int upperAgeLimit;
 
   public TimeIntervalColumnHeader(int ageInDays) {
-    this.lowerAgeLimit = ageInDays;
-    this.upperAgeLimit = ageInDays;
+    this(ageInDays, ageInDays);
   }
 
   public TimeIntervalColumnHeader(int lowerAgeLimit, int upperAgeLimit) {

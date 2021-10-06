@@ -195,15 +195,13 @@ public class MonitorMapperSqlProvider {
 
   @SuppressWarnings("unused")
   public static String getTasksCountByState() {
-    StringBuilder whereStatements = new StringBuilder();
-    whereIn("domains", "DOMAIN", whereStatements);
-    whereIn("states", "STATE", whereStatements);
-    whereIn("workbasketIds", "WORKBASKET_ID", whereStatements);
     return OPENING_SCRIPT_TAG
         + "SELECT WORKBASKET_KEY, STATE, COUNT(STATE) as COUNT "
         + "FROM TASK "
         + OPENING_WHERE_TAG
-        + whereStatements
+        + whereIn("domains", "DOMAIN")
+        + whereIn("states", "STATE")
+        + whereIn("workbasketIds", "WORKBASKET_ID")
         + "<if test='priorityMinimum != null'>"
         + "AND priority >= #{priorityMinimum} "
         + "</if>"
@@ -214,13 +212,6 @@ public class MonitorMapperSqlProvider {
 
   @SuppressWarnings("unused")
   public static String getTasksCountForStatusGroupedByOrgLevel() {
-    StringBuilder whereStatements = new StringBuilder();
-    whereIn("report.classificationCategory", "T.CLASSIFICATION_CATEGORY", whereStatements);
-    whereIn("report.domains", "T.DOMAIN", whereStatements);
-    whereIn("report.classificationIds", "T.CLASSIFICATION_ID", whereStatements);
-    whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID", whereStatements);
-    whereCustomStatements(whereStatements);
-
     return OPENING_SCRIPT_TAG
         + "SELECT A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4, "
         + "'${status}' AS STATUS, COUNT(A.AGE_IN_DAYS) AS COUNT FROM ("
@@ -246,7 +237,11 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"status.name() == 'COMPLETED'\">"
         + "T.COMPLETED IS NOT NULL "
         + "</if>"
-        + whereStatements
+        + whereIn("report.classificationCategory", "T.CLASSIFICATION_CATEGORY")
+        + whereIn("report.domains", "T.DOMAIN")
+        + whereIn("report.classificationIds", "T.CLASSIFICATION_ID")
+        + whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID")
+        + whereCustomStatements("report.custom", "T.CUSTOM", 16)
         + CLOSING_WHERE_TAG
         + ") AS A "
         + "GROUP BY A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4 "
@@ -275,7 +270,38 @@ public class MonitorMapperSqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
-  private static String timeIntervalWhereStatements() {
+  @SuppressWarnings("unused")
+  public static String getTaskCountByPriority() {
+    return OPENING_SCRIPT_TAG
+        + "SELECT T.WORKBASKET_KEY, T.PRIORITY, COUNT(T.PRIORITY) as COUNT "
+        + "FROM TASK as T "
+        + "INNER JOIN WORKBASKET as W ON W.ID = T.WORKBASKET_ID "
+        + OPENING_WHERE_TAG
+        + whereIn("report.workbasketType", "W.TYPE")
+        + CLOSING_WHERE_TAG
+        + "GROUP BY T.WORKBASKET_KEY, T.PRIORITY"
+        + CLOSING_SCRIPT_TAG;
+  }
+
+  private static StringBuilder whereCustomStatements(
+      String baseCollection, String baseColumn, int customBound, StringBuilder sb) {
+    IntStream.rangeClosed(1, customBound)
+        .forEach(
+            x -> {
+              String column = baseColumn + "_" + x;
+              whereIn(baseCollection + x + "In", column, sb);
+              whereNotIn(baseCollection + x + "NotIn", column, sb);
+              whereLike(baseCollection + x + "Like", column, sb);
+            });
+    return sb;
+  }
+
+  private static StringBuilder whereCustomStatements(
+      String baseCollection, String baseColumn, int customBound) {
+    return whereCustomStatements(baseCollection, baseColumn, customBound, new StringBuilder());
+  }
+
+  private static StringBuilder timeIntervalWhereStatements() {
     StringBuilder sb = new StringBuilder();
     SqlProviderUtil.whereIn("report.workbasketIds", "T.WORKBASKET_ID", sb);
     SqlProviderUtil.whereIn("report.states", "T.STATE", sb);
@@ -283,22 +309,7 @@ public class MonitorMapperSqlProvider {
     SqlProviderUtil.whereIn("report.domains", "T.DOMAIN", sb);
     SqlProviderUtil.whereIn("report.classificationIds", "T.CLASSIFICATION_ID", sb);
     SqlProviderUtil.whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID", sb);
-    whereCustomStatements(sb);
-
-    return sb.toString();
-  }
-
-  private static void whereCustomStatements(StringBuilder sb) {
-    IntStream.rangeClosed(1, 16)
-        .forEach(
-            x -> {
-              String collectionIn = "report.custom" + x + "In";
-              String collectionNotIn = "report.custom" + x + "NotIn";
-              String collectionLike = "report.custom" + x + "Like";
-              String column = "T.CUSTOM_" + x;
-              whereIn(collectionIn, column, sb);
-              whereLike(collectionLike, column, sb);
-              whereNotIn(collectionNotIn, column, sb);
-            });
+    whereCustomStatements("report.custom", "T.CUSTOM", 16, sb);
+    return sb;
   }
 }

@@ -33,7 +33,9 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private final List<String> orderBy;
   private final List<String> orderColumns;
 
+  @SuppressWarnings("unused")
   private TaskHistoryQueryColumnName columnName;
+
   private String[] idIn;
   private String[] businessProcessIdIn;
   private String[] parentBusinessProcessIdIn;
@@ -694,7 +696,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   @Override
   public long count() {
-    Long rowCount = null;
+    Long rowCount;
     try {
       taskanaHistoryEngine.openConnection();
       rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);

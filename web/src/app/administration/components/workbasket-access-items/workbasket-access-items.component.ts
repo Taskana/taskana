@@ -19,7 +19,7 @@ import { WorkbasketAccessItemsRepresentation } from 'app/shared/models/workbaske
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { highlight } from 'app/shared/animations/validation.animation';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
-import { AccessIdDefinition } from 'app/shared/models/access-id';
+import { AccessId } from 'app/shared/models/access-id';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
@@ -303,7 +303,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       });
   }
 
-  accessItemSelected(accessItem: AccessIdDefinition, row: number) {
+  accessItemSelected(accessItem: AccessId, row: number) {
     this.accessItemsGroups.controls[row].get('accessId').setValue(accessItem?.accessId);
     this.accessItemsGroups.controls[row].get('accessName').setValue(accessItem?.name);
   }

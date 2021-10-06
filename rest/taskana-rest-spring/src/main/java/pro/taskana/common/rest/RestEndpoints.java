@@ -14,6 +14,7 @@ public final class RestEndpoints {
   public static final String URL_CLASSIFICATION_CATEGORIES_BY_TYPES =
       API_V1 + "classifications-by-type";
   public static final String URL_HISTORY_ENABLED = API_V1 + "history-provider-enabled";
+  public static final String URL_CUSTOM_ATTRIBUTES = API_V1 + "/config/custom-attributes";
 
   // access id endpoints
   public static final String URL_ACCESS_ID = API_V1 + "access-ids";
@@ -56,6 +57,8 @@ public final class RestEndpoints {
 
   // monitor endpoints
   public static final String URL_MONITOR_WORKBASKET_REPORT = API_V1 + "monitor/workbasket-report";
+  public static final String URL_MONITOR_WORKBASKET_PRIORITY_REPORT =
+      API_V1 + "monitor/workbasket-priority-report";
   public static final String URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT =
       API_V1 + "monitor/classification-category-report";
   public static final String URL_MONITOR_CLASSIFICATION_REPORT =
@@ -66,6 +69,10 @@ public final class RestEndpoints {
       API_V1 + "monitor/task-custom-field-value-report";
   public static final String URL_MONITOR_TASK_STATUS_REPORT = API_V1 + "monitor/task-status-report";
   public static final String URL_MONITOR_TIMESTAMP_REPORT = API_V1 + "monitor/timestamp-report";
+
+  // user endpoints
+  public static final String URL_USERS = API_V1 + "users";
+  public static final String URL_USERS_ID = API_V1 + "users/{userId}";
 
   private RestEndpoints() {}
 }

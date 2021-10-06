@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.SpringTaskanaEngineImpl;
 
 /** This class configures the TaskanaEngineConfiguration for spring. */
@@ -41,7 +42,7 @@ public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration
   @Override
   public TaskanaEngine buildTaskanaEngine() throws SQLException {
     this.useManagedTransactions = true;
-    return new SpringTaskanaEngineImpl(this);
+    return new SpringTaskanaEngineImpl(this, ConnectionManagementMode.PARTICIPATE);
   }
 
   public void setDataSource(DataSource dataSource) {

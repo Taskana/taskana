@@ -1,7 +1,6 @@
 package pro.taskana.task.internal.models;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +20,8 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 public class TaskImpl extends TaskSummaryImpl implements Task {
 
   // All objects have to be serializable
-  private Map<String, String> customAttributes = Collections.emptyMap();
-  private Map<String, String> callbackInfo = Collections.emptyMap();
+  private Map<String, String> customAttributes = new HashMap<>();
+  private Map<String, String> callbackInfo = new HashMap<>();
   private CallbackState callbackState;
   private List<Attachment> attachments = new ArrayList<>();
 

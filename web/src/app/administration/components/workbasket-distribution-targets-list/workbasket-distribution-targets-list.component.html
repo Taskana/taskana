@@ -33,7 +33,7 @@
        [scrollWindow]="false" *ngIf="distributionTargets?.length > 0">
     <mat-selection-list #workbasket [multiple]="true">
       <mat-list-option class="workbasket-distribution-targets__workbaskets-item"
-                       *ngFor="let workbasket of distributionTargets | orderBy: ['type', 'description']"
+                       *ngFor="let workbasket of distributionTargets | orderBy: ['type', 'name']"
                        [selected]="workbasket.selected"
                        (click)="workbasket.selected = !workbasket.selected"
                        [value]="workbasket.workbasketId">

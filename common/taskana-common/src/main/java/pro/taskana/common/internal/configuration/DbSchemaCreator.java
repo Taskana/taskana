@@ -44,7 +44,6 @@ public class DbSchemaCreator {
   private DataSource dataSource;
 
   public DbSchemaCreator(DataSource dataSource, String schema) {
-    super();
     this.dataSource = dataSource;
     this.schemaName = schema;
   }
@@ -87,7 +86,7 @@ public class DbSchemaCreator {
       connection.setSchema(this.schemaName);
       SqlRunner runner = new SqlRunner(connection);
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(connection.getMetaData().toString());
+        LOGGER.debug("{}", connection.getMetaData());
       }
 
       String query =
@@ -163,8 +162,7 @@ public class DbSchemaCreator {
 
   private boolean isSchemaPreexisting(Connection connection, String dbProductId) {
     ScriptRunner runner = getScriptRunnerInstance(connection);
-    StringWriter errorWriter = new StringWriter();
-    runner.setErrorLogWriter(new PrintWriter(errorWriter));
+    runner.setErrorLogWriter(errorLogWriter);
 
     String scriptPath = selectDbSchemaDetectionScript(dbProductId);
     try (InputStream resource = DbSchemaCreator.class.getResourceAsStream(scriptPath);

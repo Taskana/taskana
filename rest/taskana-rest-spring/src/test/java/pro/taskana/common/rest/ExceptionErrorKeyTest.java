@@ -26,6 +26,8 @@ import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.user.api.exceptions.UserAlreadyExistException;
+import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
@@ -102,5 +104,11 @@ class ExceptionErrorKeyTest {
     assertThat(TaskanaRestExceptionHandler.ERROR_KEY_PAYLOAD).isEqualTo("PAYLOAD_TOO_LARGE");
     assertThat(TaskanaRestExceptionHandler.ERROR_KEY_QUERY_MALFORMED)
         .isEqualTo("QUERY_PARAMETER_MALFORMED");
+  }
+
+  @Test
+  void should_ProvideConsistentErrorKey_For_UserExceptions() {
+    assertThat(UserNotFoundException.ERROR_KEY).isEqualTo("USER_NOT_FOUND");
+    assertThat(UserAlreadyExistException.ERROR_KEY).isEqualTo("USER_ALREADY_EXISTS");
   }
 }

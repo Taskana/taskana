@@ -120,7 +120,6 @@ describe('AccessItemsManagementComponent', () => {
       ...store.snapshot(),
       engineConfiguration: engineConfigurationMock
     });
-    app.accessIdSelected = '1';
     fixture.detectChanges();
   }));
 
@@ -181,7 +180,6 @@ describe('AccessItemsManagementComponent', () => {
   }));
 
   it('should display a dialog when access is revoked', async(() => {
-    app.accessIdSelected = 'xyz';
     app.accessId = { accessId: 'xyz', name: 'xyz' };
     const notificationService = TestBed.inject(NotificationService);
     const showDialogSpy = jest.spyOn(notificationService, 'showDialog').mockImplementation();

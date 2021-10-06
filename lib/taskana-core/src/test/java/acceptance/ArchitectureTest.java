@@ -8,16 +8,19 @@ import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClass.Predicates;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,9 +39,13 @@ import org.apache.ibatis.annotations.UpdateProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -66,6 +73,10 @@ class ArchitectureTest {
           "pro.taskana.monitor.internal",
           "pro.taskana.task.api",
           "pro.taskana.task.internal",
+          "pro.taskana.user.api",
+          "pro.taskana.user.api.exceptions",
+          "pro.taskana.user.api.models",
+          "pro.taskana.user.internal",
           "pro.taskana.workbasket.api",
           "pro.taskana.workbasket.internal",
           "pro.taskana.spi.routing.api",
@@ -79,7 +90,8 @@ class ArchitectureTest {
   @BeforeAll
   static void init() {
     // time intensive operation should only be done once
-    importedClasses = new ClassFileImporter().importPackages("pro.taskana", "acceptance");
+    importedClasses =
+        new ClassFileImporter().importPackages("pro.taskana", "acceptance", "testapi");
   }
 
   @Test
@@ -87,8 +99,6 @@ class ArchitectureTest {
     ArchRule myRule =
         classes()
             .that()
-            .haveNameNotMatching(".*ScheduledJob.Type")
-            .and()
             .resideInAPackage("..api..")
             .should()
             .onlyDependOnClassesThat(
@@ -145,6 +155,34 @@ class ArchitectureTest {
   }
 
   @Test
+  void exceptionsThatShouldNotHaveToStringMethod() {
+    ArchRule myRule =
+        classes()
+            .that()
+            .areAssignableTo(TaskanaException.class)
+            .or()
+            .areAssignableTo(TaskanaRuntimeException.class)
+            .and()
+            .doNotBelongToAnyOf(TaskanaRuntimeException.class, TaskanaException.class)
+            .should(notImplementToString());
+
+    myRule.check(importedClasses);
+  }
+
+  @Test
+  void exceptionsThatShouldHaveToStringMethod() {
+    ArchRule myRule =
+        classes()
+            .that()
+            .areAssignableFrom(TaskanaRuntimeException.class)
+            .or()
+            .areAssignableFrom(TaskanaException.class)
+            .should(implementToString());
+
+    myRule.check(importedClasses);
+  }
+
+  @Test
   void onlyExceptionsShouldResideInExceptionPackage() {
     ArchRule myRule =
         classes()
@@ -178,7 +216,8 @@ class ArchitectureTest {
     List<Pattern> excludePackages =
         Stream.of(
                 "pro.taskana", // from TaskanaEngineConfiguration
-                "acceptance.*" // all our acceptance tests
+                "acceptance.*", // all our acceptance tests
+                "testapi.*" // our test API
                 )
             .map(Pattern::compile)
             .collect(Collectors.toList());
@@ -226,8 +265,6 @@ class ArchitectureTest {
                 .haveSimpleNameNotEndingWith("ObjectAttributeChangeDetectorTest")
                 .and()
                 .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
-                .and()
-                .haveNameNotMatching(".*ScheduledJob.Type")
                 .and()
                 .resideInAPackage("..common..")
                 .and()
@@ -288,6 +325,123 @@ class ArchitectureTest {
             .should(notUseCurrentTimestampSqlFunction());
 
     rule.check(importedClasses);
+  }
+
+  @Test
+  void taskanaIntegrationTestsShouldOnlyHavePackagePrivateFields() {
+    ArchRule rule =
+        classes()
+            .that()
+            .areAnnotatedWith(TaskanaIntegrationTest.class)
+            .or(areNestedTaskanaIntegrationTestClasses())
+            .should(onlyHaveFieldsWithNoModifier());
+
+    rule.check(importedClasses);
+  }
+
+  @Test
+  void nestedTaskanaIntegrationTestsShouldBeAnnotatedWithTestInstance() {
+    ArchRule rule =
+        classes()
+            .that(areNestedTaskanaIntegrationTestClasses())
+            .should(beAnnotatedWithTestInstancePerClass());
+
+    rule.check(importedClasses);
+  }
+
+  private ArchCondition<JavaClass> implementToString() {
+    return new ArchCondition<JavaClass>("implement toString()") {
+      @Override
+      public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
+        boolean implementToString =
+            Arrays.stream(javaClass.reflect().getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch("toString"::equals);
+        if (!implementToString) {
+          conditionEvents.add(
+              SimpleConditionEvent.violated(
+                  javaClass,
+                  String.format(
+                      "Class '%s' does not implement toString()", javaClass.getFullName())));
+        }
+      }
+    };
+  }
+
+  private ArchCondition<JavaClass> notImplementToString() {
+    return new ArchCondition<JavaClass>("not implement toString()") {
+      @Override
+      public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
+        boolean implementToString =
+            Arrays.stream(javaClass.reflect().getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch("toString"::equals);
+        if (implementToString) {
+          conditionEvents.add(
+              SimpleConditionEvent.violated(
+                  javaClass,
+                  String.format("Class '%s' does implement toString()", javaClass.getFullName())));
+        }
+      }
+    };
+  }
+
+  private ArchCondition<JavaClass> beAnnotatedWithTestInstancePerClass() {
+    return new ArchCondition<JavaClass>("be annotated with @TestInstance(Lifecycle.PER_CLASS)") {
+      @Override
+      public void check(JavaClass item, ConditionEvents events) {
+        Optional<TestInstance> testInstanceOptional =
+            item.tryGetAnnotationOfType(TestInstance.class);
+        if (!testInstanceOptional.isPresent()
+            || testInstanceOptional.get().value() != Lifecycle.PER_CLASS) {
+          events.add(
+              SimpleConditionEvent.violated(
+                  item,
+                  String.format(
+                      "Class '%s' is not annotated with @TestInstance(Lifecycle.PER_CLASS)",
+                      item.getFullName())));
+        }
+      }
+    };
+  }
+
+  private DescribedPredicate<JavaClass> areNestedTaskanaIntegrationTestClasses() {
+    return new DescribedPredicate<JavaClass>("are nested TaskanaIntegrationTest classes") {
+
+      @Override
+      public boolean apply(JavaClass input) {
+        Optional<JavaClass> enclosingClass = input.getEnclosingClass();
+        return input.isAnnotatedWith(Nested.class)
+            && enclosingClass.isPresent()
+            && isTaskanaIntegrationTest(enclosingClass.get());
+      }
+
+      private boolean isTaskanaIntegrationTest(JavaClass input) {
+        Optional<JavaClass> enclosingClass = input.getEnclosingClass();
+        if (enclosingClass.isPresent()) {
+          return input.isAnnotatedWith(Nested.class)
+              && isTaskanaIntegrationTest(enclosingClass.get());
+        } else {
+          return input.isAnnotatedWith(TaskanaIntegrationTest.class);
+        }
+      }
+    };
+  }
+
+  private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifier() {
+    return new ArchCondition<JavaClass>("only have fields with no modifier") {
+      @Override
+      public void check(JavaClass item, ConditionEvents events) {
+        for (JavaField field : item.getAllFields()) {
+          if (!field.reflect().isSynthetic() && !field.getModifiers().isEmpty()) {
+            events.add(
+                SimpleConditionEvent.violated(
+                    item,
+                    String.format("Field '%s' should not have any modifier", field.getFullName())));
+          }
+        }
+      }
+    };
   }
 
   private static ArchCondition<JavaClass> beDefinedInTaskanaSubPackages(

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import acceptance.TaskanaEngineTestConfiguration;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,15 +15,15 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
-import pro.taskana.common.internal.configuration.SecurityVerifier;
+import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 class TaskanaSecurityConfigAccTest {
 
   @BeforeEach
   void cleanDb() throws Exception {
-    DataSource dataSource = TaskanaEngineTestConfiguration.getDataSource();
-    String schemaName = TaskanaEngineTestConfiguration.getSchemaName();
+    DataSource dataSource = DataSourceGenerator.getDataSource();
+    String schemaName = DataSourceGenerator.getSchemaName();
 
     DbSchemaCreator dbSchemaCreator = new DbSchemaCreator(dataSource, schemaName);
     dbSchemaCreator.run();
@@ -76,22 +75,20 @@ class TaskanaSecurityConfigAccTest {
 
   private void createTaskanaEngine(boolean securityEnabled) throws SQLException {
     new TaskanaEngineConfiguration(
-            TaskanaEngineTestConfiguration.getDataSource(),
+            DataSourceGenerator.getDataSource(),
             false,
             securityEnabled,
-            TaskanaEngineTestConfiguration.getSchemaName())
+            DataSourceGenerator.getSchemaName())
         .buildTaskanaEngine();
   }
 
   private Boolean retrieveSecurityFlag() throws Exception {
 
-    try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
+    try (Connection connection = DataSourceGenerator.getDataSource().getConnection()) {
 
       String selectSecurityFlagSql =
           String.format(
-              SecurityVerifier.SELECT_SECURITY_FLAG_SQL,
-              SecurityVerifier.SECURITY_FLAG_COLUMN_NAME,
-              TaskanaEngineTestConfiguration.getSchemaName());
+              "SELECT ENFORCE_SECURITY FROM %s.CONFIGURATION", DataSourceGenerator.getSchemaName());
 
       Statement statement = connection.createStatement();
       ResultSet resultSet = statement.executeQuery(selectSecurityFlagSql);
@@ -106,13 +103,12 @@ class TaskanaSecurityConfigAccTest {
 
   private void setSecurityFlag(boolean securityFlag) throws Exception {
 
-    try (Connection connection = TaskanaEngineTestConfiguration.getDataSource().getConnection()) {
+    try (Connection connection = DataSourceGenerator.getDataSource().getConnection()) {
 
       String sql =
           String.format(
-              SecurityVerifier.INSERT_SECURITY_FLAG_SQL,
-              TaskanaEngineTestConfiguration.getSchemaName(),
-              securityFlag);
+              "INSERT INTO %s.CONFIGURATION (ENFORCE_SECURITY) VALUES (%b)",
+              DataSourceGenerator.getSchemaName(), securityFlag);
 
       Statement statement = connection.createStatement();
       statement.execute(sql);
