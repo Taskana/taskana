@@ -107,7 +107,7 @@ class TaskCommentBuilderTest {
     expectedTaskComment.setCreator("user-1-1");
 
     assertThat(taskComment)
-        .hasNoNullFieldsOrPropertiesExcept("creatorLongName")
+        .hasNoNullFieldsOrPropertiesExcept("creatorFullName")
         .usingRecursiveComparison()
         .ignoringFields("id")
         .isEqualTo(expectedTaskComment);

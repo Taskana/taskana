@@ -15,7 +15,7 @@ public interface TaskCommentQueryMapper {
   @Result(property = "taskId", column = "TASK_ID")
   @Result(property = "textField", column = "TEXT_FIELD")
   @Result(property = "creator", column = "CREATOR")
-  @Result(property = "creatorLongName", column = "FULL_NAME")
+  @Result(property = "creatorFullName", column = "FULL_NAME")
   @Result(property = "created", column = "CREATED")
   @Result(property = "modified", column = "MODIFIED")
   List<TaskCommentImpl> queryTaskComments(

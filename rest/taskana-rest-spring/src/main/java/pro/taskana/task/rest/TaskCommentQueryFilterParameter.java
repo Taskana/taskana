@@ -38,26 +38,6 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
   @JsonProperty("task-id")
   private final String[] taskIdIn;
 
-  /** Filter by what the task id of the TaskComment shouldn't be. This is an exact match. */
-  @JsonProperty("task-id-not")
-  private final String[] taskIdNotIn;
-
-  /**
-   * Filter by the task id of the TaskComment. This results in a substring search (% is appended to
-   * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
-  @JsonProperty("task-id-like")
-  private final String[] taskIdLike;
-
-  /**
-   * Filter by what the task id of the TaskComment shouldn't be. This results in a substring search
-   * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
-   * characters will be resolved correctly.
-   */
-  @JsonProperty("task-id-not-like")
-  private final String[] taskIdNotLike;
-
   /** Filter by the creator of the TaskComment. This is an exact match. */
   @JsonProperty("creator")
   private final String[] creatorIn;
@@ -141,9 +121,6 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
     "id-like",
     "id-not-like",
     "task-id",
-    "task-id-not",
-    "task-id-like",
-    "task-id-not-like",
     "creator",
     "creator-not",
     "creator-like",
@@ -161,9 +138,6 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
       String[] idLike,
       String[] idNotLike,
       String[] taskIdIn,
-      String[] taskIdNotIn,
-      String[] taskIdLike,
-      String[] taskIdNotLike,
       String[] creatorIn,
       String[] creatorNotIn,
       String[] creatorLike,
@@ -179,9 +153,6 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
     this.idLike = idLike;
     this.idNotLike = idNotLike;
     this.taskIdIn = taskIdIn;
-    this.taskIdNotIn = taskIdNotIn;
-    this.taskIdLike = taskIdLike;
-    this.taskIdNotLike = taskIdNotLike;
     this.creatorIn = creatorIn;
     this.creatorNotIn = creatorNotIn;
     this.creatorLike = creatorLike;
@@ -203,13 +174,6 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
         .map(this::wrapElementsInLikeStatement)
         .ifPresent(query::idNotLike);
     Optional.ofNullable(taskIdIn).ifPresent(query::taskIdIn);
-    Optional.ofNullable(taskIdNotIn).ifPresent(query::taskIdNotIn);
-    Optional.ofNullable(taskIdLike)
-        .map(this::wrapElementsInLikeStatement)
-        .ifPresent(query::taskIdLike);
-    Optional.ofNullable(taskIdNotLike)
-        .map(this::wrapElementsInLikeStatement)
-        .ifPresent(query::taskIdNotLike);
     Optional.ofNullable(creatorIn).ifPresent(query::creatorIn);
     Optional.ofNullable(creatorNotIn).ifPresent(query::creatorNotIn);
     Optional.ofNullable(creatorLike)

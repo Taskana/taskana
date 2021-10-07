@@ -4,17 +4,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCommentQueryColumnName;
+import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
 /** TaskCommentQuery for generating dynamic sql. */
 public class TaskCommentQueryImpl implements TaskCommentQuery {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentQueryImpl.class);
 
   private static final String LINK_TO_MAPPER =
       "pro.taskana.task.internal.TaskCommentQueryMapper.queryTaskComments";
@@ -35,9 +42,6 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
   private String[] idLike;
   private String[] idNotLike;
   private String[] taskIdIn;
-  private String[] taskIdNotIn;
-  private String[] taskIdLike;
-  private String[] taskIdNotLike;
   private String[] creatorIn;
   private String[] creatorNotIn;
   private String[] creatorLike;
@@ -87,24 +91,6 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
   @Override
   public TaskCommentQuery taskIdIn(String... taskIds) {
     this.taskIdIn = taskIds;
-    return this;
-  }
-
-  @Override
-  public TaskCommentQuery taskIdNotIn(String... taskIds) {
-    this.taskIdNotIn = taskIds;
-    return this;
-  }
-
-  @Override
-  public TaskCommentQuery taskIdLike(String... taskIds) {
-    this.taskIdLike = toUpperCopy(taskIds);
-    return this;
-  }
-
-  @Override
-  public TaskCommentQuery taskIdNotLike(String... taskIds) {
-    this.taskIdNotLike = toUpperCopy(taskIds);
     return this;
   }
 
@@ -172,6 +158,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public List<TaskComment> list() {
+    checkTaskPermission();
     setupAccessIds();
     return taskanaEngine.executeInDatabaseConnection(
         () -> taskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this));
@@ -179,6 +166,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public List<TaskComment> list(int offset, int limit) {
+    checkTaskPermission();
     setupAccessIds();
     RowBounds rowBounds = new RowBounds(offset, limit);
     return taskanaEngine.executeInDatabaseConnection(
@@ -188,10 +176,11 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
   @Override
   public List<String> listValues(
       TaskCommentQueryColumnName columnName, SortDirection sortDirection) {
+    checkTaskPermission();
     setupAccessIds();
     queryColumnName = columnName;
     // TO-DO: order?
-    if (columnName == TaskCommentQueryColumnName.CREATOR_LONG_NAME) {
+    if (columnName == TaskCommentQueryColumnName.CREATOR_FULL_NAME) {
       joinWithUserInfo = true;
     }
 
@@ -201,6 +190,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public TaskComment single() {
+    checkTaskPermission();
     setupAccessIds();
     return taskanaEngine.executeInDatabaseConnection(
         () -> taskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this));
@@ -208,6 +198,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public long count() {
+    checkTaskPermission();
     setupAccessIds();
     Long rowCount =
         taskanaEngine.executeInDatabaseConnection(
@@ -237,18 +228,6 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   public String[] getTaskIdIn() {
     return taskIdIn;
-  }
-
-  public String[] getTaskIdNotIn() {
-    return taskIdNotIn;
-  }
-
-  public String[] getTaskIdLike() {
-    return taskIdLike;
-  }
-
-  public String[] getTaskIdNotLike() {
-    return taskIdNotLike;
   }
 
   public String[] getCreatorIn() {
@@ -313,6 +292,32 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
     return addOrderCriteria("MODIFIED", sortDirection);
   }
 
+  private void checkTaskPermission() {
+
+    if (taskIdIn != null) {
+      if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
+        }
+        return;
+      }
+
+      Arrays.stream(taskIdIn)
+          .forEach(
+              taskId -> {
+                try {
+                  taskService.getTask(taskId);
+                } catch (NotAuthorizedException e) {
+                  throw new NotAuthorizedToQueryWorkbasketException(
+                      e.getMessage(), e.getErrorCode(), e);
+                } catch (TaskNotFoundException e) {
+                  LOGGER.warn(
+                      String.format("The Task with the ID ' %s ' does not exist.", taskId), e);
+                }
+              });
+    }
+  }
+
   private TaskCommentQuery addOrderCriteria(String columnName, SortDirection sortDirection) {
     String orderByDirection =
         " " + (sortDirection == null ? SortDirection.ASCENDING : sortDirection);
@@ -362,12 +367,6 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
         + Arrays.toString(idNotLike)
         + ", taskIdIn="
         + Arrays.toString(taskIdIn)
-        + ", taskIdNotIn="
-        + Arrays.toString(taskIdNotIn)
-        + ", taskIdLike="
-        + Arrays.toString(taskIdLike)
-        + ", taskIdNotLike="
-        + Arrays.toString(taskIdNotLike)
         + ", creatorIn="
         + Arrays.toString(creatorIn)
         + ", creatorNotIn="

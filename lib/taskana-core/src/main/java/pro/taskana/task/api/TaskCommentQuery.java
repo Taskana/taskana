@@ -51,33 +51,6 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    */
   TaskCommentQuery taskIdIn(String... taskIds);
 
-  /**
-   * Add your {@linkplain Task} ids to your query, which should not be contained.
-   *
-   * @param taskIds the {@linkplain Task} ids as Strings
-   * @return the query
-   */
-  TaskCommentQuery taskIdNotIn(String... taskIds);
-
-  /**
-   * Add your {@linkplain Task} ids for pattern matching to your query. It will be compared in SQL
-   * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
-   * multiple arguments they are combined with the OR keyword.
-   *
-   * @param taskIds your {@linkplain Task} ids
-   * @return the query
-   */
-  TaskCommentQuery taskIdLike(String... taskIds);
-
-  /**
-   * Add your {@linkplain Task} ids for pattern matching to your query, which should not be
-   * contained. It will be compared in SQL with the LIKE operator. You may use a wildcard like % to
-   * specify the pattern. If you specify multiple arguments they are combined with the OR keyword.
-   *
-   * @param taskIds your {@linkplain Task} ids
-   * @return the query
-   */
-  TaskCommentQuery taskIdNotLike(String... taskIds);
 
   /**
    * Add your texts for pattern matching to your query. It will be compared in SQL with the LIKE

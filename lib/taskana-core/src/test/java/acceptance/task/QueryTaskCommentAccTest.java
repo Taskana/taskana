@@ -7,6 +7,7 @@ import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.List;
 import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -16,6 +17,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCommentQueryColumnName;
 import pro.taskana.task.api.models.TaskComment;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 
 /** Test for TaskComment queries. */
 @ExtendWith(JaasExtension.class)
@@ -45,6 +47,20 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
     assertThat(comments).hasSize(3);
   }
 
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_NotAuthorizedToReadTaskComments() {
+
+    ThrowingCallable call =
+        () ->
+            taskService
+                .createTaskCommentQuery()
+                .taskIdIn("TKI:000000000000000000000000000000000020")
+                .list();
+
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
+  }
+
   @WithAccessId(user = "admin")
   @Test
   void should_FilterTaskComments_For_CreatorIn() {
@@ -68,30 +84,6 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
     List<TaskComment> comments =
         taskService.createTaskCommentQuery().modifiedWithin(timeInterval).list();
     assertThat(comments).isEmpty();
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void should_FilterTaskComments_For_IdNotIn() {
-    List<TaskComment> comments =
-        taskService
-            .createTaskCommentQuery()
-            .idNotIn(
-                "TCI:000000000000000000000000000000000000",
-                "TCI:000000000000000000000000000000000002")
-            .list();
-    assertThat(comments).hasSize(11);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void should_FilterTaskComments_For_TaskIdNotIn() {
-    List<TaskComment> comments =
-        taskService
-            .createTaskCommentQuery()
-            .taskIdNotIn("TKI:000000000000000000000000000000000000")
-            .list();
-    assertThat(comments).hasSize(10);
   }
 
   @WithAccessId(user = "admin")
@@ -129,13 +121,6 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_FilterTaskComments_For_TaskIdLike() {
-    List<TaskComment> comments = taskService.createTaskCommentQuery().taskIdLike("%00026%").list();
-    assertThat(comments).hasSize(2);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
   void should_FilterTaskComments_For_TextFieldLike() {
     List<TaskComment> comments =
         taskService.createTaskCommentQuery().textFieldLike("%other%").list();
@@ -154,14 +139,6 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   void should_FilterTaskComments_For_IdNotLike() {
     List<TaskComment> comments = taskService.createTaskCommentQuery().idNotLike("%000001%").list();
     assertThat(comments).hasSize(9);
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void should_FilterTaskComments_For_TaskIdNotLike() {
-    List<TaskComment> comments =
-        taskService.createTaskCommentQuery().taskIdNotLike("%00026%").list();
-    assertThat(comments).hasSize(11);
   }
 
   @WithAccessId(user = "admin")
@@ -234,7 +211,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
     List<String> listedValues =
         taskService
             .createTaskCommentQuery()
-            .listValues(TaskCommentQueryColumnName.CREATOR_LONG_NAME, null);
+            .listValues(TaskCommentQueryColumnName.CREATOR_FULL_NAME, null);
     assertThat(listedValues).hasSize(3);
   }
 
@@ -277,7 +254,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ReturnSingleHistoryEvent_When_UsingSingleMethod() {
+  void should_ReturnSingleTaskComment_When_UsingSingleMethod() {
     TaskComment single =
         taskService
             .createTaskCommentQuery()
@@ -309,7 +286,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
     String creatorFullName =
         taskanaEngine.getUserService().getUser(taskComments.get(0).getCreator()).getFullName();
     assertThat(taskComments.get(0))
-        .extracting(TaskComment::getCreatorLongName)
+        .extracting(TaskComment::getCreatorFullName)
         .isEqualTo(creatorFullName);
   }
 
@@ -324,7 +301,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
             .list();
 
     assertThat(taskComments).hasSize(1);
-    assertThat(taskComments.get(0)).extracting(TaskComment::getCreatorLongName).isNull();
+    assertThat(taskComments.get(0)).extracting(TaskComment::getCreatorFullName).isNull();
   }
 
   @WithAccessId(user = "admin")
@@ -338,6 +315,6 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
             .list();
 
     assertThat(taskComments).hasSize(1);
-    assertThat(taskComments.get(0)).extracting(TaskComment::getCreatorLongName).isNull();
+    assertThat(taskComments.get(0)).extracting(TaskComment::getCreatorFullName).isNull();
   }
 }
