@@ -1,16 +1,16 @@
 package acceptance.jobs.helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityBatchStatement;
@@ -28,7 +28,38 @@ class TaskUpdatePriorityBatchStatementAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_updatePriority() throws TaskNotFoundException, NotAuthorizedException {
+  void should_SetOriginalSchema_When_ExceptionThrown() throws Exception {
+
+    taskanaEngine.getConfiguration().setSchemaName("NotExisting");
+    SqlConnectionRunner runner = new SqlConnectionRunner(taskanaEngine);
+
+    // TSK-1749
+    assertThat(runner.getConnection().getSchema()).matches("TASKANA\\s|TASKANA|taskana");
+
+    String taskId = "TKI:000000000000000000000000000000000050";
+    final int priorityUpdate = 25;
+
+    assertThatThrownBy(
+            () ->
+                runner.runWithConnection(
+                    connection -> {
+                      final TaskUpdatePriorityBatchStatement batchStatement =
+                          new TaskUpdatePriorityBatchStatement(connection);
+                      batchStatement.addPriorityUpdate(taskId, priorityUpdate);
+                      batchStatement.executeBatch();
+                      if (!connection.getAutoCommit()) {
+                        connection.commit();
+                      }
+                    }))
+        .isInstanceOf(TaskanaRuntimeException.class);
+
+    // TSK-1749
+    assertThat(runner.getConnection().getSchema()).matches("TASKANA\\s|TASKANA|taskana");
+  }
+
+  @Test
+  @WithAccessId(user = "admin")
+  void should_updatePriority() throws Exception {
     // given
     SqlConnectionRunner runner = new SqlConnectionRunner(taskanaEngine);
     String taskId = "TKI:000000000000000000000000000000000050";
