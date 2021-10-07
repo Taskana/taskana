@@ -8,7 +8,7 @@ public enum TaskCommentQueryColumnName implements QueryColumnName {
   TASK_ID("tc.task_id"),
   TEXT_FIELD("tc.text_field"),
   CREATOR("tc.creator"),
-  CREATOR_LONG_NAME("u.long_name"),
+  CREATOR_FULL_NAME("u.full_name"),
   CREATED("tc.created"),
   MODIFIED("tc.modified");
 

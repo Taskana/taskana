@@ -97,9 +97,9 @@ class GetTaskCommentAccTest extends AbstractAccTest {
     TaskComment taskComment =
         taskService.getTaskComment("TCI:000000000000000000000000000000000000");
 
-    String creatorLongName =
+    String creatorFullName =
         taskanaEngine.getUserService().getUser(taskComment.getCreator()).getFullName();
-    assertThat(taskComment).extracting(TaskComment::getCreatorLongName).isEqualTo(creatorLongName);
+    assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isEqualTo(creatorFullName);
   }
 
   @WithAccessId(user = "admin")
@@ -112,7 +112,7 @@ class GetTaskCommentAccTest extends AbstractAccTest {
     TaskComment taskComment =
         taskService.getTaskComment("TCI:000000000000000000000000000000000000");
 
-    assertThat(taskComment).extracting(TaskComment::getCreatorLongName).isNull();
+    assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isNull();
   }
 
   @WithAccessId(user = "admin")
@@ -128,11 +128,11 @@ class GetTaskCommentAccTest extends AbstractAccTest {
     taskComments.forEach(
         wrap(
             taskComment -> {
-              String creatorLongName =
+              String creatorFullName =
                   taskanaEngine.getUserService().getUser(taskComment.getCreator()).getFullName();
               assertThat(taskComment)
-                  .extracting(TaskComment::getCreatorLongName)
-                  .isEqualTo(creatorLongName);
+                  .extracting(TaskComment::getCreatorFullName)
+                  .isEqualTo(creatorFullName);
             }));
   }
 
@@ -148,6 +148,6 @@ class GetTaskCommentAccTest extends AbstractAccTest {
 
     taskComments.forEach(
         taskComment ->
-            assertThat(taskComment).extracting(TaskComment::getCreatorLongName).isNull());
+            assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isNull());
   }
 }

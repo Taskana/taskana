@@ -89,9 +89,6 @@ public class TaskCommentQuerySqlProvider {
     whereLike("idLike", "tc.ID", sb);
     whereNotLike("idNotLike", "tc.ID", sb);
     whereIn("taskIdIn", "tc.TASK_ID", sb);
-    whereNotIn("taskIdNotIn", "tc.TASK_ID", sb);
-    whereLike("taskIdLike", "tc.TASK_ID", sb);
-    whereNotLike("taskIdNotLike", "tc.TASK_ID", sb);
     whereLike("textFieldLike", "tc.TEXT_FIELD", sb);
     whereNotLike("textFieldNotLike", "tc.TEXT_FIELD", sb);
     whereIn("creatorIn", "tc.CREATOR", sb);

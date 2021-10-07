@@ -57,16 +57,21 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
-  void should_ReturnEmptyTaskCommentList_When_TaskIstNotVisible() {
+  void should_FailToReturnTaskComments_When_TaskIstNotVisible() {
     String url =
         restHelper.toUrl(
             RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004");
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
-    ResponseEntity<TaskCommentCollectionRepresentationModel> taskComments =
-        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_PAGE_MODEL_TYPE);
+    ThrowingCallable httpCall =
+        () -> {
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_PAGE_MODEL_TYPE);
+        };
 
-    assertThat(taskComments.getBody().getContent()).isEmpty();
+    assertThatThrownBy(httpCall)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.FORBIDDEN);
   }
 
   @Test

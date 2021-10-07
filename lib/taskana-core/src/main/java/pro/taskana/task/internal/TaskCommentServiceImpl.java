@@ -184,14 +184,14 @@ class TaskCommentServiceImpl {
         throw new TaskCommentNotFoundException(taskCommentId);
       }
 
+      taskService.getTask(result.getTaskId());
+
       if (taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
         User creator = userMapper.findById(result.getCreator());
         if (creator != null) {
-          result.setCreatorLongName(creator.getFullName());
+          result.setCreatorFullName(creator.getFullName());
         }
       }
-
-      taskService.getTask(result.getTaskId());
 
       return result;
 

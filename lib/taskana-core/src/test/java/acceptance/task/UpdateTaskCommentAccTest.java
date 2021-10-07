@@ -51,7 +51,7 @@ class UpdateTaskCommentAccTest extends AbstractAccTest {
     List<TaskComment> taskComments =
         taskService.getTaskComments("TKI:000000000000000000000000000000000000");
     assertThat(taskComments).hasSize(3);
-    assertThat(taskComments.get(0).getTextField()).isEqualTo("some other text in textfield");
+    assertThat(taskComments.get(0).getTextField()).isEqualTo("some text in textfield");
 
     TaskComment taskComment =
         taskService.getTaskComment("TCI:000000000000000000000000000000000001");
@@ -64,7 +64,7 @@ class UpdateTaskCommentAccTest extends AbstractAccTest {
     List<TaskComment> taskCommentsAfterUpdateAttempt =
         taskService.getTaskComments("TKI:000000000000000000000000000000000000");
     assertThat(taskCommentsAfterUpdateAttempt.get(0).getTextField())
-        .isEqualTo("some other text in textfield");
+        .isEqualTo("some text in textfield");
   }
 
   @WithAccessId(user = "user-1-1")

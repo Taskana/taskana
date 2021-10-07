@@ -41,7 +41,9 @@ class TaskUpdatePriorityBatchStatementAccTest extends AbstractAccTest {
               new TaskUpdatePriorityBatchStatement(connection);
           batchStatement.addPriorityUpdate(taskId, priorityUpdate);
           batchStatement.executeBatch();
-          connection.commit();
+          if (!connection.getAutoCommit()) {
+            connection.commit();
+          }
         });
 
     // then
