@@ -141,13 +141,10 @@ public class LdapClient {
           userOrGroupFilter.or(new EqualsFilter(getUserIdAttribute(), userOrGroup));
         });
 
-    final AndFilter andFilter = new AndFilter();
-    andFilter.and(userOrGroupFilter);
-
     final List<User> users =
         ldapTemplate.search(
             getUserSearchBase(),
-            andFilter.encode(),
+            userOrGroupFilter.encode(),
             SearchControls.SUBTREE_SCOPE,
             getLookUpUserInfoAttributesToReturn(),
             new UserInfoContextMapper());
