@@ -1,20 +1,20 @@
 export interface SettingsMember {
   displayName: string;
+  key: string;
   type: string;
   min?: number;
   max?: number;
 }
 
+export interface GroupSetting {
+  displayName: string;
+  members: SettingsMember[];
+}
+
 export interface Settings {
+  schema: GroupSetting[];
+
   [setting: string]: any;
-  schema: {
-    [parameterGroup: string]: {
-      displayName: string;
-      members: {
-        [memberName: string]: SettingsMember;
-      };
-    };
-  };
 }
 
 export enum SettingTypes {
