@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Settings, SettingsMember, SettingTypes } from '../../models/settings';
+import { Settings, SettingTypes } from '../../models/settings';
 import { Select, Store } from '@ngxs/store';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { SetSettings } from '../../../shared/store/settings-store/settings.actions';
 import { SettingsSelectors } from '../../../shared/store/settings-store/settings.selectors';
 import { takeUntil } from 'rxjs/operators';
-import { validateForm } from './settings.validators';
+import { validateSettings } from './settings.validators';
 
 @Component({
   selector: 'taskana-administration-settings',
@@ -17,8 +17,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   settingTypes = SettingTypes;
   settings: Settings;
   oldSettings: Settings;
-  groups: string[];
-  members: string[][] = [];
   invalidMembers: string[] = [];
   destroy$ = new Subject<void>();
 
@@ -30,7 +28,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
       this.settings = this.deepCopy(settings);
       this.oldSettings = this.deepCopy(settings);
-      this.getKeysOfSettings();
     });
   }
 
@@ -38,22 +35,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     return JSON.parse(JSON.stringify(settings));
   }
 
-  getKeysOfSettings() {
-    this.groups = Object.keys(this.settings.schema);
-    this.groups.forEach((group) => {
-      let groupMembers = Object.keys(this.settings.schema[group].members);
-      this.members.push(groupMembers);
-      groupMembers.forEach((member) => {
-        if (!(member in this.settings)) {
-          this.notificationService.showWarning('SETTINGS_INVALID_DATA', { setting: member });
-        }
-      });
-    });
-  }
-
   onSave() {
     this.changeLabelColor('grey');
-    this.invalidMembers = validateForm(this.members, this.settings, this.groups);
+    this.invalidMembers = validateSettings(this.settings);
     if (this.invalidMembers.length === 0) {
       this.store.dispatch(new SetSettings(this.settings)).subscribe(() => {
         this.notificationService.showSuccess('SETTINGS_SAVE');
@@ -78,12 +62,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settings = this.deepCopy(this.oldSettings);
   }
 
-  getMember(group: string, member: string): SettingsMember {
-    return this.settings.schema[group].members[member];
-  }
-
-  onColorChange(member: string) {
-    this.settings[member] = (document.getElementById(member) as HTMLInputElement).value;
+  onColorChange(key: string) {
+    this.settings[key] = (document.getElementById(key) as HTMLInputElement).value;
   }
 
   ngOnDestroy() {

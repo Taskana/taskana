@@ -2,7 +2,6 @@ import { Workbasket } from '../../models/workbasket';
 import { WorkbasketType } from '../../models/workbasket-type';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItemsRepresentation } from '../../models/workbasket-access-items-representation';
-import { Settings } from '../../../settings/models/settings';
 
 export const classificationStateMock = {
   classifications: [],
@@ -529,66 +528,76 @@ export const settingsStateMock = {
     colorLowPriority: '#5FAD00',
     colorMediumPriority: '#FFD700',
     filter: '{ "Tasks with state READY": { "state": ["READY"]}, "Tasks with state CLAIMED": {"state": ["CLAIMED"] }}',
-    schema: {
-      'Monitor Workbasket-Priority-Report': {
+    schema: [
+      {
         displayName: 'Priority Report',
-        members: {
-          nameHighPriority: {
+        members: [
+          {
+            key: 'nameHighPriority',
             displayName: 'High Priority Name',
             type: 'text',
             max: 32
           },
-          nameMediumPriority: {
+          {
+            key: 'nameMediumPriority',
             displayName: 'Medium Priority Name',
             type: 'text',
             min: 0,
             max: 32
           },
-          nameLowPriority: {
+          {
+            key: 'nameLowPriority',
             displayName: 'Low Priority Name',
             type: 'text',
             min: 0,
             max: 32
           },
-          intervalHighPriority: {
+          {
+            key: 'intervalHighPriority',
             displayName: 'High Priority Interval',
             type: 'interval',
             min: 0
           },
-          intervalMediumPriority: {
+          {
+            key: 'intervalMediumPriority',
             displayName: 'Medium Priority Interval',
             type: 'interval',
             min: 0
           },
-          intervalLowPriority: {
+          {
+            key: 'intervalLowPriority',
             displayName: 'Low Priority Interval',
             type: 'interval',
             min: 0
           },
-          colorHighPriority: {
+          {
+            key: 'colorHighPriority',
             displayName: 'High Priority Color',
             type: 'color'
           },
-          colorMediumPriority: {
+          {
+            key: 'colorMediumPriority',
             displayName: 'Medium Priority Color',
             type: 'color'
           },
-          colorLowPriority: {
+          {
+            key: 'colorLowPriority',
             displayName: 'Low Priority Color',
             type: 'color'
           }
-        }
+        ]
       },
-      'Monitor Workbasket-Priority-Report-Filter': {
+      {
         displayName: 'Filter for Task-Priority-Report',
-        members: {
-          filter: {
+        members: [
+          {
+            key: 'filter',
             displayName: 'Filter values',
             type: 'json',
             min: 1
           }
-        }
+        ]
       }
-    }
+    ]
   }
 };

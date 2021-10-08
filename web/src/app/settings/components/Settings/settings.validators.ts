@@ -1,13 +1,11 @@
 import { Settings, SettingTypes } from '../../models/settings';
 
-export const validateForm = (members: string[][], settings: Settings, groups: string[]): string[] => {
+export const validateSettings = (settings: Settings): string[] => {
   const invalidMembers = [];
 
-  for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
-    for (let memberIndex = 0; memberIndex < members[groupIndex].length; memberIndex++) {
-      const memberKey = members[groupIndex][memberIndex];
-      const member = settings.schema[groups[groupIndex]].members[memberKey];
-      const value = settings[memberKey];
+  for (let group of settings.schema) {
+    for (let member of group.members) {
+      const value = settings[member.key];
 
       if (member.type == SettingTypes.TEXT || member.type == SettingTypes.INTERVAL) {
         let compareWithMin;
@@ -33,11 +31,11 @@ export const validateForm = (members: string[][], settings: Settings, groups: st
         }
 
         if (!isValid) {
-          invalidMembers.push(memberKey);
+          invalidMembers.push(member.key);
         }
 
         if (member.type == SettingTypes.INTERVAL && compareWithMin > compareWithMax) {
-          invalidMembers.push(memberKey);
+          invalidMembers.push(member.key);
         }
       }
 
@@ -45,7 +43,7 @@ export const validateForm = (members: string[][], settings: Settings, groups: st
         try {
           JSON.parse(value);
         } catch {
-          invalidMembers.push(memberKey);
+          invalidMembers.push(member.key);
         }
       }
     }
