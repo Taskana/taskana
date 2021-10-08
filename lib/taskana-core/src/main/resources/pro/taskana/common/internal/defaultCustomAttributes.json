@@ -2,16 +2,25 @@
   "nameHighPriority": "High Priority",
   "nameMediumPriority": "Medium Priority",
   "nameLowPriority": "Low Priority",
-  "intervalHighPriority": [3, 300],
-  "intervalMediumPriority": [2, 2],
-  "intervalLowPriority": [0, 1],
+  "intervalHighPriority": [
+    3,
+    300
+  ],
+  "intervalMediumPriority": [
+    2,
+    2
+  ],
+  "intervalLowPriority": [
+    0,
+    1
+  ],
   "colorHighPriority": "#FF0000",
   "colorLowPriority": "#5FAD00",
   "colorMediumPriority": "#FFD700",
   "filter": "{ \"Tasks with state READY\": { \"state\": [\"READY\"]}, \"Tasks with state CLAIMED\": {\"state\": [\"CLAIMED\"] }}",
   "schema": {
     "Monitor Workbasket-Priority-Report": {
-      "displayName": "Monitor Workbasket-Priority-Report",
+      "displayName": "Priority Report",
       "members": {
         "nameHighPriority": {
           "displayName": "High Priority Name",
@@ -21,11 +30,13 @@
         "nameMediumPriority": {
           "displayName": "Medium Priority Name",
           "type": "text",
+          "min": 0,
           "max": 32
         },
         "nameLowPriority": {
           "displayName": "Low Priority Name",
           "type": "text",
+          "min": 0,
           "max": 32
         },
         "intervalHighPriority": {
@@ -58,7 +69,8 @@
       }
     },
     "Monitor Workbasket-Priority-Report-Filter": {
-      "displayName": "Monitor Workbasket-Priority-Report-Filter",
+      "displayName": "Filter for Task-Priority-Report",
+      "members": {
         "filter": {
           "displayName": "Filter values",
           "type": "json",
