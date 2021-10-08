@@ -4,13 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
+import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
 import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 
 import acceptance.AbstractAccTest;
 import acceptance.TaskTestMapper;
 import acceptance.TaskanaEngineProxy;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -33,9 +38,12 @@ import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskQueryColumnName;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.user.api.exceptions.UserNotFoundException;
 
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -119,7 +127,7 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotLike() throws Exception {
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotLike() {
     taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
     List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameNotLike("%1-1%").list();
 
@@ -175,7 +183,9 @@ class QueryTasksAccTest extends AbstractAccTest {
   void should_ListValues_For_OwnerLongName() {
     taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
     List<String> longNames =
-        taskService.createTaskQuery().listValues(TaskQueryColumnName.OWNER_LONG_NAME, ASCENDING)
+        taskService
+            .createTaskQuery()
+            .listValues(TaskQueryColumnName.OWNER_LONG_NAME, ASCENDING)
             .stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
@@ -185,11 +195,12 @@ class QueryTasksAccTest extends AbstractAccTest {
         .containsExactly("Eifrig, Elena - (user-1-2)", "Mustermann, Max - (user-1-1)");
 
     longNames =
-        taskService.createTaskQuery().listValues(TaskQueryColumnName.OWNER_LONG_NAME, DESCENDING)
+        taskService
+            .createTaskQuery()
+            .listValues(TaskQueryColumnName.OWNER_LONG_NAME, DESCENDING)
             .stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-    ;
     assertThat(longNames)
         .hasSize(2)
         .contains("Mustermann, Max - (user-1-1)", "Eifrig, Elena - (user-1-2)")
@@ -231,7 +242,7 @@ class QueryTasksAccTest extends AbstractAccTest {
   void should_SplitTaskListIntoChunksOf32000_When_AugmentingTasksAfterTaskQuery() {
     try (MockedStatic<CollectionUtil> listUtilMock =
         Mockito.mockStatic(CollectionUtil.class, new CallsRealMethods())) {
-      TASK_SERVICE.createTaskQuery().list();
+      taskService.createTaskQuery().list();
 
       listUtilMock.verify(() -> CollectionUtil.partitionBasedOnSize(any(), eq(32000)));
     }
@@ -275,14 +286,14 @@ class QueryTasksAccTest extends AbstractAccTest {
         TaskCustomField customField, String[] searchArguments, int expectedResult)
         throws Exception {
       List<TaskSummary> results =
-          TASK_SERVICE.createTaskQuery().customAttributeLike(customField, searchArguments).list();
+          taskService.createTaskQuery().customAttributeLike(customField, searchArguments).list();
       assertThat(results).hasSize(expectedResult);
 
       String[] customAttributes =
           results.stream().map(t -> t.getCustomAttribute(customField)).toArray(String[]::new);
 
       List<TaskSummary> result2 =
-          TASK_SERVICE.createTaskQuery().customAttributeIn(customField, customAttributes).list();
+          taskService.createTaskQuery().customAttributeIn(customField, customAttributes).list();
       assertThat(result2).hasSize(expectedResult);
     }
 
@@ -319,14 +330,14 @@ class QueryTasksAccTest extends AbstractAccTest {
     void testQueryForCustomXNotIn(
         TaskCustomField customField, String[] searchArguments, int expectedCount) throws Exception {
       long results =
-          TASK_SERVICE.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
+          taskService.createTaskQuery().customAttributeNotIn(customField, searchArguments).count();
       assertThat(results).isEqualTo(expectedCount);
     }
 
     @WithAccessId(user = "admin")
     @Test
     void testQueryForCustom7WithExceptionInLike() {
-      assertThatThrownBy(() -> TASK_SERVICE.createTaskQuery().customAttributeLike(CUSTOM_7).list())
+      assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike(CUSTOM_7).list())
           .isInstanceOf(InvalidArgumentException.class);
     }
 
@@ -334,10 +345,10 @@ class QueryTasksAccTest extends AbstractAccTest {
     @Test
     void testQueryForCustom7WithExceptionInIn() throws Exception {
       List<TaskSummary> results =
-          TASK_SERVICE.createTaskQuery().customAttributeLike(CUSTOM_7, "fsdhfshk%").list();
+          taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "fsdhfshk%").list();
       assertThat(results).isEmpty();
 
-      assertThatThrownBy(() -> TASK_SERVICE.createTaskQuery().customAttributeIn(CUSTOM_7).list())
+      assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeIn(CUSTOM_7).list())
           .isInstanceOf(InvalidArgumentException.class);
     }
 
@@ -345,28 +356,28 @@ class QueryTasksAccTest extends AbstractAccTest {
     @Test
     void testQueryForCustom7WithException() throws Exception {
       List<TaskSummary> results =
-          TASK_SERVICE.createTaskQuery().customAttributeLike(CUSTOM_7, "%").list();
+          taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "%").list();
       assertThat(results).hasSize(2);
 
       String[] ids =
           results.stream().map(t -> t.getCustomAttribute(CUSTOM_7)).toArray(String[]::new);
 
       List<TaskSummary> result2 =
-          TASK_SERVICE.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
+          taskService.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
       assertThat(result2).hasSize(2);
     }
 
     @WithAccessId(user = "admin")
     @Test
     void testQueryTaskByCustomAttributes() throws Exception {
-      Task newTask = TASK_SERVICE.newTask("USER-1-1", "DOMAIN_A");
+      Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
       newTask.setPrimaryObjRef(
           createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
       newTask.setClassificationKey("T2100");
       Map<String, String> customAttributesForCreate =
           createSimpleCustomPropertyMap(20000); // about 1 Meg
       newTask.setCustomAttributeMap(customAttributesForCreate);
-      Task createdTask = TASK_SERVICE.createTask(newTask);
+      Task createdTask = taskService.createTask(newTask);
 
       assertThat(createdTask).isNotNull();
       // query the task by custom attributes

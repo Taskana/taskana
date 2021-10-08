@@ -30,7 +30,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
       };
 
       List<TaskSummary> foundTasks =
-          TASK_SERVICE
+          taskService
               .createTaskQuery()
               .wildcardSearchFieldsIn(wildcards)
               .wildcardSearchValueLike("%99%")
@@ -48,7 +48,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
       };
 
       long foundTasks =
-          TASK_SERVICE
+          taskService
               .createTaskQuery()
               .wildcardSearchFieldsIn(wildcards)
               .wildcardSearchValueLike("%99%")
@@ -66,7 +66,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
       };
 
       List<TaskSummary> foundTasks =
-          TASK_SERVICE
+          taskService
               .createTaskQuery()
               .wildcardSearchFieldsIn(wildcards)
               .wildcardSearchValueLike("%99%")
@@ -84,14 +84,14 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
       WildcardSearchField[] wildcards = {WildcardSearchField.NAME};
 
       List<TaskSummary> foundTasksCaseSensitive =
-          TASK_SERVICE
+          taskService
               .createTaskQuery()
               .wildcardSearchFieldsIn(wildcards)
               .wildcardSearchValueLike("%Wid%")
               .list();
 
       List<TaskSummary> foundTasksCaseInsensitive =
-          TASK_SERVICE
+          taskService
               .createTaskQuery()
               .wildcardSearchFieldsIn(wildcards)
               .wildcardSearchValueLike("%wid%")
@@ -107,7 +107,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
       ThrowingCallable queryAttempt =
           () ->
-              TASK_SERVICE
+              taskService
                   .createTaskQuery()
                   .wildcardSearchValueLike("%99%")
                   .orderByName(SortDirection.ASCENDING)
@@ -117,7 +117,7 @@ class QueryTasksByWildcardSearchAccTest extends AbstractAccTest {
 
       queryAttempt =
           () ->
-              TASK_SERVICE
+              taskService
                   .createTaskQuery()
                   .wildcardSearchFieldsIn(
                       WildcardSearchField.CUSTOM_1, WildcardSearchField.DESCRIPTION)
