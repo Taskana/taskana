@@ -2,6 +2,7 @@ package pro.taskana.task.internal.jobs.helper;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -13,7 +14,7 @@ public class SqlConnectionRunner {
   private final TaskanaEngine taskanaEngine;
 
   public SqlConnectionRunner(TaskanaEngine taskanaEngine) {
-    this.taskanaEngine = taskanaEngine;
+    this.taskanaEngine = Objects.requireNonNull(taskanaEngine, "TaskanaEngine may not be null");
   }
 
   /**

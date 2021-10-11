@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.test.security.JaasExtension;
+import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 
 /** Acceptance test for all "jobs tasks runner" scenarios. */
@@ -58,5 +60,31 @@ class SqlConnectionRunnerAccTest extends AbstractAccTest {
                       throw new SQLException("test");
                     }))
         .isInstanceOf(SystemException.class);
+  }
+
+  @Test
+  @WithAccessId(user = "admin")
+  void should_SetOriginalSchema_When_ExceptionThrown() throws Exception {
+
+    taskanaEngine.getConfiguration().setSchemaName("NotExisting");
+    SqlConnectionRunner runner = new SqlConnectionRunner(taskanaEngine);
+
+    // TSK-1749
+    assertThat(runner.getConnection().getSchema()).matches("TASKANA\\s|TASKANA|taskana");
+    String taskId = "TKI:000000000000000000000000000000000000";
+
+    assertThatThrownBy(
+            () ->
+                runner.runWithConnection(
+                    connection -> {
+                      PreparedStatement preparedStatement =
+                          connection.prepareStatement("select * from TASK where ID = ?");
+                      preparedStatement.setString(1, taskId);
+                      preparedStatement.executeQuery();
+                    }))
+        .isInstanceOf(TaskanaRuntimeException.class);
+
+    // TSK-1749
+    assertThat(runner.getConnection().getSchema()).matches("TASKANA\\s|TASKANA|taskana");
   }
 }
