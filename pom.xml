@@ -72,7 +72,7 @@
     <version.wildfly>13.0.0.Final</version.wildfly>
 
     <!-- camunda dependencies -->
-    <version.camunda.dmn>7.15.0</version.camunda.dmn>
+    <version.camunda.dmn>7.16.0</version.camunda.dmn>
 
     <!-- java ee dependencies -->
     <version.resteasy>4.7.2.Final</version.resteasy>
