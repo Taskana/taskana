@@ -1,40 +1,45 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ClassificationDefinitionService } from 'app/administration/services/classification-definition.service';
 import { WorkbasketDefinitionService } from 'app/administration/services/workbasket-definition.service';
 import { DomainService } from 'app/shared/services/domain/domain.service';
 import { TaskanaType } from 'app/shared/models/taskana-type';
-import { environment } from 'environments/environment';
-import { UploadService } from 'app/shared/services/upload/upload.service';
 import { ImportExportService } from 'app/administration/services/import-export.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
+import { Observable, Subject } from 'rxjs';
+import { HotToastService } from '@ngneat/hot-toast';
+import { takeUntil } from 'rxjs/operators';
 
+/**
+ * Recommendation: Turn this component into presentational component - no logic, instead events are
+ * fired back to parent components with @Output(). This way the logic of exporting/importing workbasket
+ * or classification is stored in their respective container component.
+ */
 @Component({
   selector: 'taskana-administration-import-export',
   templateUrl: './import-export.component.html',
   styleUrls: ['./import-export.component.scss']
 })
-export class ImportExportComponent implements OnInit {
+export class ImportExportComponent implements OnInit, OnDestroy {
   @Input() currentSelection: TaskanaType;
   @Input() parentComponent: string;
 
   @ViewChild('selectedFile', { static: true })
   selectedFileInput;
 
-  domains: string[] = [];
+  domains$: Observable<string[]>;
+  destroy$ = new Subject<void>();
 
   constructor(
     private domainService: DomainService,
     private workbasketDefinitionService: WorkbasketDefinitionService,
     private classificationDefinitionService: ClassificationDefinitionService,
-    public uploadService: UploadService,
     private notificationService: NotificationService,
-    private importExportService: ImportExportService
+    private importExportService: ImportExportService,
+    private hotToastService: HotToastService
   ) {}
 
   ngOnInit() {
-    this.domainService.getDomains().subscribe((data) => {
-      this.domains = data;
-    });
+    this.domains$ = this.domainService.getDomains();
   }
 
   export(domain = '') {
@@ -47,31 +52,42 @@ export class ImportExportComponent implements OnInit {
 
   uploadFile() {
     const file = this.selectedFileInput.nativeElement.files[0];
-    const formdata = new FormData();
-    const ajax = new XMLHttpRequest();
     if (this.checkFormatFile(file)) {
-      formdata.append('file', file);
-      ajax.upload.addEventListener('progress', this.progressHandler.bind(this), false);
-      ajax.addEventListener('load', this.resetProgress.bind(this), false);
-      ajax.addEventListener('error', this.onFailedResponse.bind(this, ajax), false);
-      ajax.onreadystatechange = this.onReadyStateChangeHandler.bind(this, ajax);
       if (this.currentSelection === TaskanaType.WORKBASKETS) {
-        ajax.open('POST', `${environment.taskanaRestUrl}/v1/workbasket-definitions`);
+        this.workbasketDefinitionService
+          .importWorkbasket(file)
+          .pipe(
+            takeUntil(this.destroy$),
+            this.hotToastService.observe({
+              loading: 'Uploading...',
+              success: 'File successfully uploaded',
+              error: 'Upload failed'
+            })
+          )
+          .subscribe({
+            next: () => {
+              this.importExportService.setImportingFinished(true);
+            }
+          });
       } else {
-        ajax.open('POST', `${environment.taskanaRestUrl}/v1/classification-definitions`);
+        this.classificationDefinitionService
+          .importClassification(file)
+          .pipe(
+            takeUntil(this.destroy$),
+            this.hotToastService.observe({
+              loading: 'Uploading...',
+              success: 'File successfully uploaded',
+              error: 'Upload failed'
+            })
+          )
+          .subscribe({
+            next: () => {
+              this.importExportService.setImportingFinished(true);
+            }
+          });
       }
-      if (!environment.production) {
-        ajax.setRequestHeader('Authorization', 'Basic YWRtaW46YWRtaW4=');
-      }
-      ajax.send(formdata);
-      this.uploadService.isInUse = true;
-      this.uploadService.setCurrentProgressValue(1);
     }
-  }
-
-  progressHandler(event) {
-    const percent = (event.loaded / event.total) * 100;
-    this.uploadService.setCurrentProgressValue(Math.round(percent));
+    this.resetProgress();
   }
 
   private checkFormatFile(file): boolean {
@@ -87,40 +103,11 @@ export class ImportExportComponent implements OnInit {
   }
 
   private resetProgress() {
-    this.uploadService.setCurrentProgressValue(0);
-    this.uploadService.isInUse = false;
     this.selectedFileInput.nativeElement.value = '';
   }
 
-  private onReadyStateChangeHandler(event) {
-    if (event.readyState === 4 && event.status >= 400) {
-      let key = 'FALLBACK';
-
-      if (event.status === 401) {
-        key = 'IMPORT_EXPORT_UPLOAD_FAILED_AUTH';
-      } else if (event.status === 404) {
-        key = 'IMPORT_EXPORT_UPLOAD_FAILED_NOT_FOUND';
-      } else if (event.status === 409) {
-        key = 'IMPORT_EXPORT_UPLOAD_FAILED_CONFLICTS';
-      } else if (event.status === 413) {
-        key = 'IMPORT_EXPORT_UPLOAD_FAILED_SIZE';
-      }
-      this.errorHandler(key);
-    } else if (event.readyState === 4 && event.status === 204) {
-      const message = this.currentSelection === TaskanaType.WORKBASKETS ? 'WORKBASKET_IMPORT' : 'CLASSIFICATION_IMPORT';
-      this.notificationService.showSuccess(message);
-      this.importExportService.setImportingFinished(true);
-      this.resetProgress();
-    }
-  }
-
-  private onFailedResponse() {
-    this.errorHandler('IMPORT_EXPORT_UPLOAD_FAILED');
-  }
-
-  private errorHandler(key: string) {
-    this.notificationService.showError(key);
-    delete this.selectedFileInput.files;
-    this.resetProgress();
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

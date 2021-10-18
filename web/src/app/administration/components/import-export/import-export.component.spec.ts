@@ -7,7 +7,6 @@ import { WindowRefService } from '../../../shared/services/window/window.service
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { WorkbasketDefinitionService } from '../../services/workbasket-definition.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
-import { UploadService } from '../../../shared/services/upload/upload.service';
 import { ImportExportService } from '../../services/import-export.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
@@ -56,7 +55,6 @@ xdescribe('ImportExportComponent', () => {
         WindowRefService,
         WorkbasketDefinitionService,
         ClassificationDefinitionService,
-        UploadService,
         ImportExportService,
         { provide: DomainService, useClass: domainServiceSpy },
         { provide: NotificationService, useClass: notificationServiceSpy },
