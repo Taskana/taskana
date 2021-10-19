@@ -43,9 +43,11 @@ class AccessIdControllerIntTest {
         List.of(
             Pair.of(
                 "cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
-                "cn=ksc-users,cn=groups,OU=Test,O=TASKANA"),
+                "cn=ksc-users,cn=groups,ou=test,o=taskana"),
             Pair.of("uid=teamlead-1,cn=users,OU=Test,O=TASKANA", "teamlead-1"),
-            Pair.of("ksc-use", "cn=ksc-users,cn=groups,OU=Test,O=TASKANA"));
+            Pair.of("ksc-use", "cn=ksc-users,cn=groups,ou=test,o=taskana"),
+            Pair.of("user-b-2", "user-b-2"),
+            Pair.of("User-b-2", "user-b-2"));
 
     ThrowingConsumer<Pair<String, String>> test =
         pair -> {
@@ -60,7 +62,6 @@ class AccessIdControllerIntTest {
           assertThat(response.getBody())
               .isNotNull()
               .extracting(AccessIdRepresentationModel::getAccessId)
-              .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
               .containsExactly(pair.getRight());
         };
 

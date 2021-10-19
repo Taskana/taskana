@@ -584,6 +584,15 @@ public class LdapClient {
     }
   }
 
+  private String getUserIdFromContext(final DirContextOperations context) {
+    String userId = context.getStringAttribute(getUserIdAttribute());
+    if (userId != null && useLowerCaseForAccessIds) {
+      return userId.toLowerCase();
+    } else {
+      return userId;
+    }
+  }
+
   /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
 
@@ -602,7 +611,7 @@ public class LdapClient {
     @Override
     public User doMapFromContext(final DirContextOperations context) {
       final User user = new UserImpl();
-      user.setId(context.getStringAttribute(getUserIdAttribute()));
+      user.setId(getUserIdFromContext(context));
       user.setFirstName(context.getStringAttribute(getUserFirstnameAttribute()));
       user.setLastName(context.getStringAttribute(getUserLastnameAttribute()));
       user.setFullName(context.getStringAttribute(getUserFullnameAttribute()));
@@ -624,7 +633,7 @@ public class LdapClient {
     @Override
     public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
       final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
-      accessId.setAccessId(context.getStringAttribute(getUserIdAttribute()));
+      accessId.setAccessId(getUserIdFromContext(context));
       String firstName = context.getStringAttribute(getUserFirstnameAttribute());
       String lastName = context.getStringAttribute(getUserLastnameAttribute());
       accessId.setName(String.format("%s, %s", lastName, firstName));
@@ -638,7 +647,7 @@ public class LdapClient {
     @Override
     public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
       final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
-      String userId = context.getStringAttribute(getUserIdAttribute());
+      String userId = getUserIdFromContext(context);
       if (userId != null) {
         accessId.setAccessId(userId);
         String firstName = context.getStringAttribute(getUserFirstnameAttribute());

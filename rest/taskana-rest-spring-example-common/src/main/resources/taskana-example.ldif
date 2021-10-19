@@ -340,14 +340,14 @@ ou: Organisationseinheit/Organisationseinheit B
 cn: Bernd Bern
 userPassword: user-b-1
 
-dn: uid=user-b-2,cn=users,OU=Test,O=TASKANA
+dn: uid=User-b-2,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
 objectclass: organizationalperson
 objectclass: person
 objectclass: top
 givenName: Brunhilde
 description: desc
-uid: user-b-2
+uid: User-b-2
 sn: Bio
 ou: Organisationseinheit/Organisationseinheit B
 cn: Brunhilde Bio
