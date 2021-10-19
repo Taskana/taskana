@@ -15,18 +15,25 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 public class WorkingTimeCalculator {
 
-  private static final Map<DayOfWeek, LocalTimeInterval> WORKING_TIME =
-      new HashMap<DayOfWeek, LocalTimeInterval>() {
-        {
-          put(DayOfWeek.MONDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
-          put(DayOfWeek.TUESDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
-          put(DayOfWeek.WEDNESDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
-          put(DayOfWeek.THURSDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
-          put(DayOfWeek.FRIDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
-          put(DayOfWeek.SATURDAY, new LocalTimeInterval(LocalTime.of(10, 0), LocalTime.of(15, 0)));
-          put(DayOfWeek.SUNDAY, null);
-        }
-      };
+  private static final Map<DayOfWeek, LocalTimeInterval> WORKING_TIME;
+
+  static {
+    WORKING_TIME = new HashMap<>();
+    WORKING_TIME.put(
+        DayOfWeek.MONDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
+    WORKING_TIME.put(
+        DayOfWeek.TUESDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
+    WORKING_TIME.put(
+        DayOfWeek.WEDNESDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
+    WORKING_TIME.put(
+        DayOfWeek.THURSDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
+    WORKING_TIME.put(
+        DayOfWeek.FRIDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
+    WORKING_TIME.put(
+        DayOfWeek.SATURDAY, new LocalTimeInterval(LocalTime.of(10, 0), LocalTime.of(15, 0)));
+    WORKING_TIME.put(DayOfWeek.SUNDAY, null);
+  }
+
   private final ZoneId zone;
   private final WorkingDaysToDaysConverter converter;
 
