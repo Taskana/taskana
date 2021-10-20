@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import 'colors';
 .item {
   margin-bottom: 20px;
@@ -26,8 +28,8 @@
 
 $step: 1; // step of % for created classes
 $loops: 100;
-$increment: (360 / $loops);
-$half: round($loops / 2);
+$increment: math.div(360, $loops);
+$half: round(math.div($loops, 2));
 @for $i from 0 through $loops {
   .progress-#{$i*$step} {
     @if $i < 50 {
