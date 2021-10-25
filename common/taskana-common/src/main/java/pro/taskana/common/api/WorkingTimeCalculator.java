@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -18,7 +18,7 @@ public class WorkingTimeCalculator {
   private static final Map<DayOfWeek, LocalTimeInterval> WORKING_TIME;
 
   static {
-    WORKING_TIME = new HashMap<>();
+    WORKING_TIME = new EnumMap<>(DayOfWeek.class);
     WORKING_TIME.put(
         DayOfWeek.MONDAY, new LocalTimeInterval(LocalTime.of(9, 0), LocalTime.of(17, 0)));
     WORKING_TIME.put(

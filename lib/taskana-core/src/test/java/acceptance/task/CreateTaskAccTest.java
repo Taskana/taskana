@@ -8,6 +8,7 @@ import acceptance.TaskTestMapper;
 import acceptance.TaskanaEngineProxy;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
+import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -572,6 +574,52 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getCreator())
         .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(createdTask.getName()).isEqualTo("Test Name");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_SetCustomFieldToEmptyString_When_SetToNullByUser() throws Exception {
+
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setName("Test Name");
+    Arrays.stream(TaskCustomField.values())
+        .forEach(customField -> newTask.setCustomAttribute(customField, null));
+    Task createdTask = taskService.createTask(newTask);
+
+    SoftAssertions softly = new SoftAssertions();
+    Arrays.stream(TaskCustomField.values())
+        .forEach(
+            customField ->
+                softly
+                    .assertThat(createdTask.getCustomAttribute(customField))
+                    .describedAs("CustomField was null: " + customField)
+                    .isNotNull());
+    softly.assertAll();
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_InitializeCustomFieldsToEmptyString_When_TaskIsCreated() throws Exception {
+
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setName("Test Name");
+    Task createdTask = taskService.createTask(newTask);
+
+    SoftAssertions softly = new SoftAssertions();
+    Arrays.stream(TaskCustomField.values())
+        .forEach(
+            customField ->
+                softly
+                    .assertThat(createdTask.getCustomAttribute(customField))
+                    .describedAs("CustomField was null: " + customField)
+                    .isNotNull());
+    softly.assertAll();
   }
 
   @WithAccessId(user = "user-1-1")

@@ -248,6 +248,15 @@ class QueryTasksAccTest extends AbstractAccTest {
     }
   }
 
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ReturnTasksWithEmptyCustomFields_When_FilteringWithEmptyStringOnCustomField()
+      throws InvalidArgumentException {
+    List<TaskSummary> query =
+        taskService.createTaskQuery().customAttributeIn(TaskCustomField.CUSTOM_1, "").list();
+    assertThat(query).hasSize(85);
+  }
+
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class CustomAttributeTest {
@@ -264,16 +273,16 @@ class QueryTasksAccTest extends AbstractAccTest {
               Triplet.of(TaskCustomField.CUSTOM_4, new String[] {"%ust%", "%ty"}, 2),
               Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al"}, 6),
               Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"%custom6%", "%vvg%", "11%"}, 5),
-              Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"%"}, 3),
-              Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"%"}, 3),
-              Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"%"}, 3),
-              Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"%"}, 3),
+              Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"ijk%"}, 1),
+              Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"%lnp"}, 1),
+              Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"%9%"}, 1),
+              Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"ert%"}, 1),
+              Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"%ert"}, 1),
+              Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"dd%"}, 1),
+              Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"%dd_"}, 1),
               Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"%"}, 88),
-              Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"%"}, 3),
-              Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"%"}, 3));
+              Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"___"}, 2),
+              Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"___"}, 2));
       assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
       return DynamicTest.stream(
@@ -303,22 +312,22 @@ class QueryTasksAccTest extends AbstractAccTest {
       // carefully constructed to always return exactly 2 results
       List<Triplet<TaskCustomField, String[], Integer>> list =
           List.of(
-              Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_2, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_4, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"%"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"abc"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}, 2));
+              Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_2, new String[] {""}, 2),
+              Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_4, new String[] {""}, 2),
+              Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}, 81),
+              Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}, 84),
+              Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"custom7", "ijk"}, 86),
+              Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"not_existing"}, 88),
+              Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"custom9"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"abc"}, 0),
+              Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}, 87),
+              Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}, 87));
       assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
       return DynamicTest.stream(
@@ -336,35 +345,16 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     @WithAccessId(user = "admin")
     @Test
-    void testQueryForCustom7WithExceptionInLike() {
+    void should_ThrowException_When_SearchArgumentInLikeQueryIsNotGiven() {
       assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike(CUSTOM_7).list())
           .isInstanceOf(InvalidArgumentException.class);
     }
 
     @WithAccessId(user = "admin")
     @Test
-    void testQueryForCustom7WithExceptionInIn() throws Exception {
-      List<TaskSummary> results =
-          taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "fsdhfshk%").list();
-      assertThat(results).isEmpty();
-
+    void should_ThrowException_When_SearchArgumentInInQueryIsNotGiven() {
       assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeIn(CUSTOM_7).list())
           .isInstanceOf(InvalidArgumentException.class);
-    }
-
-    @WithAccessId(user = "admin")
-    @Test
-    void testQueryForCustom7WithException() throws Exception {
-      List<TaskSummary> results =
-          taskService.createTaskQuery().customAttributeLike(CUSTOM_7, "%").list();
-      assertThat(results).hasSize(2);
-
-      String[] ids =
-          results.stream().map(t -> t.getCustomAttribute(CUSTOM_7)).toArray(String[]::new);
-
-      List<TaskSummary> result2 =
-          taskService.createTaskQuery().customAttributeIn(CUSTOM_7, ids).list();
-      assertThat(result2).hasSize(2);
     }
 
     @WithAccessId(user = "admin")

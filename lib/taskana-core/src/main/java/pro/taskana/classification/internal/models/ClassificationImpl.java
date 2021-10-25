@@ -83,6 +83,9 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
 
   @Override
   public void setCustomAttribute(ClassificationCustomField customField, String value) {
+    if (value == null) {
+      value = "";
+    }
     switch (customField) {
       case CUSTOM_1:
         custom1 = value;

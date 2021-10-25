@@ -144,7 +144,8 @@ class TaskRepresentationModelAssemblerTest {
     assertThat(repModel.getWorkbasketSummary()).isNull();
     assertThat(task.getWorkbasketSummary())
         .isNotNull()
-        .hasAllNullFieldsOrPropertiesExcept("markedForDeletion");
+        .hasAllNullFieldsOrPropertiesExcept(
+            "markedForDeletion", "custom1", "custom2", "custom3", "custom4");
   }
 
   @Test
