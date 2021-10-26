@@ -308,9 +308,9 @@ public class TimeIntervalReportFilterParameter
   @ConstructorProperties({
     "in-working-days",
     "workbasket-id",
-    "states",
+    "state",
     "classification-category",
-    "domains",
+    "domain",
     "classification-id",
     "excluded-classification-id",
     "custom-1",
