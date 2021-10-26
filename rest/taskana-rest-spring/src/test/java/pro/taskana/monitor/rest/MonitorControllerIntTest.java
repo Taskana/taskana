@@ -112,6 +112,30 @@ class MonitorControllerIntTest {
   }
 
   @Test
+  void should_ApplyStateFilterAndComputeReport_When_QueryingForAWorkbasketReport() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_REPORT)
+            + "?workbasket-id=WBI:100000000000000000000000000000000008"
+            + "&state=READY"
+            + "&state=CLAIMED";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    ReportRepresentationModel report = response.getBody();
+    assertThat(report).isNotNull();
+    assertThat(report.getSumRow())
+        .extracting(RowRepresentationModel::getCells)
+        // expecting 4 tasks due tomorrow (RELATIVE_DATE(1))
+        .containsExactly(new int[] {0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0});
+  }
+
+  @Test
   void should_ComputeWorkbasketPriorityReport_When_QueryingForAWorkbasketPriorityReport() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
