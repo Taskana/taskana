@@ -43,9 +43,8 @@ export class HttpClientInterceptor implements HttpInterceptor {
         (error) => {
           this.requestInProgressService.setRequestInProgress(false);
           if (
-            error.status !== 404 ||
-            !(error instanceof HttpErrorResponse) ||
-            error.url.indexOf('environment-information.json') === -1
+            error.status !== 404 &&
+            (!(error instanceof HttpErrorResponse) || error.url.indexOf('environment-information.json') === -1)
           ) {
             const { key, messageVariables } = error.error.error || {
               key: 'FALLBACK',
