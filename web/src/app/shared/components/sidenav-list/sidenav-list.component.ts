@@ -4,6 +4,8 @@ import { MonitorGuard } from 'app/shared/guards/monitor.guard';
 import { UserGuard } from 'app/shared/guards/user.guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { SidenavService } from '../../services/sidenav/sidenav.service';
+import { Observable, of } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-sidenav-list',
@@ -26,6 +28,7 @@ export class SidenavListComponent implements OnInit {
   monitorAccess = false;
   workplaceAccess = false;
   historyAccess = false;
+  routingAccess$: Observable<boolean> = of(false);
 
   constructor(private taskanaEngineService: TaskanaEngineService, private sidenavService: SidenavService) {}
 
@@ -36,6 +39,9 @@ export class SidenavListComponent implements OnInit {
     this.taskanaEngineService.isHistoryProviderEnabled().subscribe((value) => {
       this.historyAccess = value;
     });
+
+    this.routingAccess$ = this.taskanaEngineService.isCustomRoutingRulesEnabled$;
+    this.routingAccess$.subscribe();
   }
 
   toggleSidenav() {

@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { takeUntil } from 'rxjs/operators';
+import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 
 @Component({
   selector: 'taskana-administration-overview',
@@ -16,8 +17,13 @@ export class AdministrationOverviewComponent implements OnInit {
 
   destroy$ = new Subject<void>();
   url$: Observable<any>;
+  routingAccess$: Observable<boolean> = of(false);
 
-  constructor(private router: Router, private domainService: DomainService) {
+  constructor(
+    private router: Router,
+    private domainService: DomainService,
+    private taskanaEngineService: TaskanaEngineService
+  ) {
     router.events.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       const urlPaths = this.router.url.split('/');
       if (this.router.url.includes('detail')) {
@@ -29,6 +35,8 @@ export class AdministrationOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.routingAccess$ = this.taskanaEngineService.isCustomRoutingRulesEnabled$;
+    this.routingAccess$.pipe(takeUntil(this.destroy$)).subscribe();
     this.domainService
       .getDomains()
       .pipe(takeUntil(this.destroy$))

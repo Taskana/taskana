@@ -8,7 +8,7 @@
        [active]="selectedTab == 'access-items-management'" (click)="selectedTab = 'access-items-management'">Access Items
       Management</a>
     <a mat-tab-link class="administration-overview__navbar-links" routerLink="/taskana/administration/task-routing"
-       [active]="selectedTab == 'task-routing'" (click)="selectedTab = 'task-routing'">Task Routing</a>
+       [active]="selectedTab == 'task-routing'" (click)="selectedTab = 'task-routing'" *ngIf="(routingAccess$ | async)">Task Routing</a>
   </nav>
   <div class="administration-overview__domain">
     <mat-form-field appearance="legacy">

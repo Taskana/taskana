@@ -9,13 +9,13 @@ export class RoutingUploadService {
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/dmn-upload/';
+    return this.startupService.getTaskanaRestUrl() + '/v1/routing-rules/default/';
   }
 
   uploadRoutingRules(file: File) {
     const formData = new FormData();
     formData.append('excelRoutingFile', file);
     const headers = new HttpHeaders().set('Content-Type', 'multipart/form-data');
-    return this.httpClient.post(this.url, formData, { headers });
+    return this.httpClient.put(this.url, formData, { headers });
   }
 }

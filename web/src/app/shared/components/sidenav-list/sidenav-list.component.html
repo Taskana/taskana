@@ -10,7 +10,7 @@
         <a mat-list-item class="navlist__item  navlist__admin-access-items" [routerLink]=[accessUrl]
             [routerLinkActive]="['active__sub']" (click)="toggleSidenav()" *ngIf="administrationAccess">Access Items</a>
       <a mat-list-item class="navlist__item  navlist__admin-task-routing" [routerLink]=[routingUrl]
-         [routerLinkActive]="['active__sub']" (click)="toggleSidenav()" *ngIf="administrationAccess">Task Routing</a>
+         [routerLinkActive]="['active__sub']" (click)="toggleSidenav()" *ngIf="(routingAccess$ | async)">Task Routing</a>
     </div>
     <a mat-list-item class="navlist__item navlist__monitor" [routerLink]=[monitorUrl] [routerLinkActive]="['active']"
         *ngIf="monitorAccess" (click)="toggleSidenav()">Monitor</a>
