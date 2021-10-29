@@ -63,21 +63,17 @@ public class TaskanaEngineConfiguration {
   // authorizations
   protected boolean securityEnabled;
   protected boolean useManagedTransactions;
-
-  @TaskanaProperty("taskana.custom.holidays")
-  private List<CustomHoliday> customHolidays = new ArrayList<>();
-
   // List of configured domain names
   @TaskanaProperty("taskana.domains")
   protected List<String> domains = new ArrayList<>();
-
   // List of configured classification types
   @TaskanaProperty("taskana.classification.types")
   protected List<String> classificationTypes = new ArrayList<>();
 
-  @TaskanaProperty("taskana.classification.categories")
   protected Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
 
+  @TaskanaProperty("taskana.custom.holidays")
+  private List<CustomHoliday> customHolidays = new ArrayList<>();
   // Properties for the monitor
   @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
   private boolean deleteHistoryOnTaskDeletionEnabled;
@@ -111,7 +107,7 @@ public class TaskanaEngineConfiguration {
 
   @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
   private boolean validationAllowTimestampServiceLevelMismatch = false;
-  //Property to enable/disable the addition of user full/long name through joins
+  // Property to enable/disable the addition of user full/long name through joins
   @TaskanaProperty("taskana.addAdditionalUserInfo")
   private boolean addAdditionalUserInfo = false;
 
