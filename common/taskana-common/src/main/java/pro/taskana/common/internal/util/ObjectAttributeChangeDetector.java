@@ -3,8 +3,6 @@ package pro.taskana.common.internal.util;
 import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,7 +49,7 @@ public class ObjectAttributeChangeDetector {
     }
 
     List<JSONObject> changedAttributes =
-        retrieveAllFields(objectClass).stream()
+        ReflectionUtil.retrieveAllFields(objectClass).stream()
             .peek(field -> field.setAccessible(true))
             .filter(field -> !"customAttributes".equals(field.getName()))
             .map(wrap(field -> Triplet.of(field, field.get(oldObject), field.get(newObject))))
@@ -73,15 +71,6 @@ public class ObjectAttributeChangeDetector {
     changedAttribute.put(
         "newValue", Optional.ofNullable(newValue).map(JSONObject::wrap).orElse(""));
     return changedAttribute;
-  }
-
-  private static List<Field> retrieveAllFields(Class<?> currentClass) {
-    List<Field> fields = new ArrayList<>();
-    while (currentClass.getSuperclass() != null) {
-      fields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
-      currentClass = currentClass.getSuperclass();
-    }
-    return fields;
   }
 
   private static <T> String compareLists(T oldObject, T newObject) {
