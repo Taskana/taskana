@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
-public class WorkingTimeCalculatorTest {
+class WorkingTimeCalculatorTest {
 
   private final WorkingTimeCalculator calculator;
 

@@ -63,6 +63,7 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean addClassificationNameToSelectClauseForOrdering = false;
   private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
   private boolean addWorkbasketNameToSelectClauseForOrdering = false;
+  private boolean joinWithUserInfo;
 
   // region id
   private String[] taskId;
@@ -182,6 +183,7 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] ownerLongNameNotIn;
   private String[] ownerLongNameLike;
   private String[] ownerLongNameNotLike;
+  // endregion
   // region primaryObjectReference
   private ObjectReference[] objectReferences;
   // endregion
@@ -327,7 +329,6 @@ public class TaskQueryImpl implements TaskQuery {
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
   // endregion
-  private boolean joinWithUserInfo;
 
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;

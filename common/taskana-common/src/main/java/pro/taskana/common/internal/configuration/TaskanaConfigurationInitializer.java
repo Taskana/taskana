@@ -37,6 +37,10 @@ public class TaskanaConfigurationInitializer {
   private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY =
       "taskana.classification.categories";
 
+  private TaskanaConfigurationInitializer() {
+    throw new IllegalStateException("utility class");
+  }
+
   public static <T> Optional<T> parseProperty(
       Properties props, String key, CheckedFunction<String, T, Exception> function) {
     String property = props.getProperty(key, "");
@@ -52,29 +56,6 @@ public class TaskanaConfigurationInitializer {
       }
     }
     return Optional.empty();
-  }
-
-  static List<String> splitStringAndTrimElements(String str, String separator) {
-    return splitStringAndTrimElements(str, separator, UnaryOperator.identity());
-  }
-
-  static List<String> splitStringAndTrimElements(
-      String str, String separator, UnaryOperator<String> modifier) {
-    return Arrays.stream(str.split(Pattern.quote(separator)))
-        .filter(s -> !s.isEmpty())
-        .map(String::trim)
-        .map(modifier)
-        .collect(Collectors.toList());
-  }
-
-  static CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
-      throws WrongCustomHolidayFormatException {
-    List<String> parts =
-        splitStringAndTrimElements(customHolidayEntry, TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR);
-    if (parts.size() == 2) {
-      return CustomHoliday.of(Integer.valueOf(parts.get(0)), Integer.valueOf(parts.get(1)));
-    }
-    throw new WrongCustomHolidayFormatException(customHolidayEntry);
   }
 
   public static Map<String, List<String>> configureClassificationCategoriesForType(
@@ -185,6 +166,29 @@ public class TaskanaConfigurationInitializer {
                 }
               });
     }
+  }
+
+  static List<String> splitStringAndTrimElements(String str, String separator) {
+    return splitStringAndTrimElements(str, separator, UnaryOperator.identity());
+  }
+
+  static List<String> splitStringAndTrimElements(
+      String str, String separator, UnaryOperator<String> modifier) {
+    return Arrays.stream(str.split(Pattern.quote(separator)))
+        .filter(s -> !s.isEmpty())
+        .map(String::trim)
+        .map(modifier)
+        .collect(Collectors.toList());
+  }
+
+  static CustomHoliday createCustomHolidayFromPropsEntry(String customHolidayEntry)
+      throws WrongCustomHolidayFormatException {
+    List<String> parts =
+        splitStringAndTrimElements(customHolidayEntry, TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR);
+    if (parts.size() == 2) {
+      return CustomHoliday.of(Integer.valueOf(parts.get(0)), Integer.valueOf(parts.get(1)));
+    }
+    throw new WrongCustomHolidayFormatException(customHolidayEntry);
   }
 
   private static void setFieldValue(Object instance, Field field, Object value) {
