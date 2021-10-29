@@ -66,6 +66,8 @@ public class TaskSummaryRepresentationModel
   protected String parentBusinessProcessId;
   /** The owner of the task. The owner is set upon claiming of the task. */
   protected String owner;
+  /** The long name of the task owner. */
+  protected String ownerLongName;
   /** The Objects primary ObjectReference. */
   @NotNull protected ObjectReferenceRepresentationModel primaryObjRef;
   /** Indicator if the task has been read. */
@@ -104,7 +106,6 @@ public class TaskSummaryRepresentationModel
   protected String custom15;
   /** A custom property with name "16". */
   protected String custom16;
-
   /** The attachment summaries of this task. */
   private List<AttachmentSummaryRepresentationModel> attachmentSummaries = new ArrayList<>();
 
@@ -267,6 +268,14 @@ public class TaskSummaryRepresentationModel
 
   public void setOwner(String owner) {
     this.owner = owner;
+  }
+
+  public String getOwnerLongName() {
+    return ownerLongName;
+  }
+
+  public void setOwnerLongName(String ownerLongName) {
+    this.ownerLongName = ownerLongName;
   }
 
   public ObjectReferenceRepresentationModel getPrimaryObjRef() {

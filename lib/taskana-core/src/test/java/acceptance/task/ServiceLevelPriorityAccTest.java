@@ -34,12 +34,10 @@ import pro.taskana.task.api.models.Task;
 @ExtendWith(JaasExtension.class)
 class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
-  private final TaskService taskService;
   private final ClassificationService classificationService;
   private final WorkingDaysToDaysConverter converter;
 
   ServiceLevelPriorityAccTest() {
-    taskService = taskanaEngine.getTaskService();
     classificationService = taskanaEngine.getClassificationService();
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
   }

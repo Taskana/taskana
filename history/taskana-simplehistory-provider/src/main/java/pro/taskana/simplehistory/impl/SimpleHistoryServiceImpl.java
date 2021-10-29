@@ -21,6 +21,8 @@ import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEv
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
+import pro.taskana.user.api.models.User;
+import pro.taskana.user.internal.UserMapper;
 
 /** This is the implementation of TaskanaHistory. */
 public class SimpleHistoryServiceImpl implements TaskanaHistory {
@@ -30,6 +32,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   private TaskHistoryEventMapper taskHistoryEventMapper;
   private WorkbasketHistoryEventMapper workbasketHistoryEventMapper;
   private ClassificationHistoryEventMapper classificationHistoryEventMapper;
+  private UserMapper userMapper;
 
   public void initialize(TaskanaEngine taskanaEngine) {
 
@@ -47,6 +50,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
         this.taskanaHistoryEngine.getSqlSession().getMapper(WorkbasketHistoryEventMapper.class);
     this.classificationHistoryEventMapper =
         this.taskanaHistoryEngine.getSqlSession().getMapper(ClassificationHistoryEventMapper.class);
+    this.userMapper = taskanaHistoryEngine.getSqlSession().getMapper(UserMapper.class);
   }
 
   @Override
@@ -127,6 +131,12 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
         throw new TaskanaHistoryEventNotFoundException(historyEventId);
       }
 
+      if (taskanaHistoryEngine.getConfiguration().getAddAdditionalUserInfo()) {
+        User user = userMapper.findById(resultEvent.getUserId());
+        if (user != null) {
+          resultEvent.setUserLongName(user.getLongName());
+        }
+      }
       return resultEvent;
 
     } catch (SQLException e) {

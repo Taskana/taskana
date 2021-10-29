@@ -65,7 +65,7 @@ public class TestWebSecurityConfig {
   public LdapAuthoritiesPopulator authoritiesPopulator(
       DefaultSpringSecurityContextSource contextSource) {
     Function<Map<String, List<String>>, GrantedAuthority> authorityMapper =
-        record -> new SimpleGrantedAuthority(record.get("spring.security.ldap.dn").get(0));
+        recordVar -> new SimpleGrantedAuthority(recordVar.get("spring.security.ldap.dn").get(0));
 
     DefaultLdapAuthoritiesPopulator populator =
         new DefaultLdapAuthoritiesPopulator(contextSource, ldapGroupSearchBase);

@@ -40,27 +40,28 @@ public class TaskSummaryImpl implements TaskSummary {
   protected String businessProcessId;
   protected String parentBusinessProcessId;
   protected String owner;
+  protected String ownerLongName;
   protected ObjectReference primaryObjRef;
   protected boolean isRead;
   protected boolean isTransferred;
   // All objects have to be serializable
   protected List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
-  protected String custom1;
-  protected String custom2;
-  protected String custom3;
-  protected String custom4;
-  protected String custom5;
-  protected String custom6;
-  protected String custom7;
-  protected String custom8;
-  protected String custom9;
-  protected String custom10;
-  protected String custom11;
-  protected String custom12;
-  protected String custom13;
-  protected String custom14;
-  protected String custom15;
-  protected String custom16;
+  protected String custom1 = "";
+  protected String custom2 = "";
+  protected String custom3 = "";
+  protected String custom4 = "";
+  protected String custom5 = "";
+  protected String custom6 = "";
+  protected String custom7 = "";
+  protected String custom8 = "";
+  protected String custom9 = "";
+  protected String custom10 = "";
+  protected String custom11 = "";
+  protected String custom12 = "";
+  protected String custom13 = "";
+  protected String custom14 = "";
+  protected String custom15 = "";
+  protected String custom16 = "";
 
   public TaskSummaryImpl() {}
 
@@ -82,6 +83,7 @@ public class TaskSummaryImpl implements TaskSummary {
     businessProcessId = copyFrom.businessProcessId;
     parentBusinessProcessId = copyFrom.parentBusinessProcessId;
     owner = copyFrom.owner;
+    ownerLongName = copyFrom.ownerLongName;
     primaryObjRef = copyFrom.primaryObjRef;
     isRead = copyFrom.isRead;
     isTransferred = copyFrom.isTransferred;
@@ -306,6 +308,15 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   @Override
+  public String getOwnerLongName() {
+    return ownerLongName;
+  }
+
+  public void setOwnerLongName(String ownerLongName) {
+    this.ownerLongName = ownerLongName;
+  }
+
+  @Override
   public ObjectReference getPrimaryObjRef() {
     return primaryObjRef;
   }
@@ -411,7 +422,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom1(String custom1) {
-    this.custom1 = custom1;
+    if (custom1 == null) {
+      this.custom1 = "";
+    } else {
+      this.custom1 = custom1;
+    }
   }
 
   public String getCustom2() {
@@ -420,7 +435,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom2(String custom2) {
-    this.custom2 = custom2;
+    if (custom2 == null) {
+      this.custom2 = "";
+    } else {
+      this.custom2 = custom2;
+    }
   }
 
   public String getCustom3() {
@@ -429,7 +448,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom3(String custom3) {
-    this.custom3 = custom3;
+    if (custom3 == null) {
+      this.custom3 = "";
+    } else {
+      this.custom3 = custom3;
+    }
   }
 
   public String getCustom4() {
@@ -438,7 +461,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom4(String custom4) {
-    this.custom4 = custom4;
+    if (custom4 == null) {
+      this.custom4 = "";
+    } else {
+      this.custom4 = custom4;
+    }
   }
 
   public String getCustom5() {
@@ -447,7 +474,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom5(String custom5) {
-    this.custom5 = custom5;
+    if (custom5 == null) {
+      this.custom5 = "";
+    } else {
+      this.custom5 = custom5;
+    }
   }
 
   public String getCustom6() {
@@ -456,7 +487,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom6(String custom6) {
-    this.custom6 = custom6;
+    if (custom6 == null) {
+      this.custom6 = "";
+    } else {
+      this.custom6 = custom6;
+    }
   }
 
   public String getCustom7() {
@@ -465,7 +500,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom7(String custom7) {
-    this.custom7 = custom7;
+    if (custom7 == null) {
+      this.custom7 = "";
+    } else {
+      this.custom7 = custom7;
+    }
   }
 
   public String getCustom8() {
@@ -474,7 +513,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom8(String custom8) {
-    this.custom8 = custom8;
+    if (custom8 == null) {
+      this.custom8 = "";
+    } else {
+      this.custom8 = custom8;
+    }
   }
 
   public String getCustom9() {
@@ -483,7 +526,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom9(String custom9) {
-    this.custom9 = custom9;
+    if (custom9 == null) {
+      this.custom9 = "";
+    } else {
+      this.custom9 = custom9;
+    }
   }
 
   public String getCustom10() {
@@ -492,7 +539,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom10(String custom10) {
-    this.custom10 = custom10;
+    if (custom10 == null) {
+      this.custom10 = "";
+    } else {
+      this.custom10 = custom10;
+    }
   }
 
   public String getCustom11() {
@@ -501,7 +552,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom11(String custom11) {
-    this.custom11 = custom11;
+    if (custom11 == null) {
+      this.custom11 = "";
+    } else {
+      this.custom11 = custom11;
+    }
   }
 
   public String getCustom12() {
@@ -510,7 +565,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom12(String custom12) {
-    this.custom12 = custom12;
+    if (custom12 == null) {
+      this.custom12 = "";
+    } else {
+      this.custom12 = custom12;
+    }
   }
 
   public String getCustom13() {
@@ -519,7 +578,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom13(String custom13) {
-    this.custom13 = custom13;
+    if (custom13 == null) {
+      this.custom13 = "";
+    } else {
+      this.custom13 = custom13;
+    }
   }
 
   public String getCustom14() {
@@ -528,7 +591,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom14(String custom14) {
-    this.custom14 = custom14;
+    if (custom14 == null) {
+      this.custom14 = "";
+    } else {
+      this.custom14 = custom14;
+    }
   }
 
   public String getCustom15() {
@@ -537,7 +604,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom15(String custom15) {
-    this.custom15 = custom15;
+    if (custom15 == null) {
+      this.custom15 = "";
+    } else {
+      this.custom15 = custom15;
+    }
   }
 
   public String getCustom16() {
@@ -546,7 +617,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom16(String custom16) {
-    this.custom16 = custom16;
+    if (custom16 == null) {
+      this.custom16 = "";
+    } else {
+      this.custom16 = custom16;
+    }
   }
 
   protected boolean canEqual(Object other) {
@@ -576,6 +651,7 @@ public class TaskSummaryImpl implements TaskSummary {
         businessProcessId,
         parentBusinessProcessId,
         owner,
+        ownerLongName,
         primaryObjRef,
         isRead,
         isTransferred,
@@ -632,6 +708,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(businessProcessId, other.businessProcessId)
         && Objects.equals(parentBusinessProcessId, other.parentBusinessProcessId)
         && Objects.equals(owner, other.owner)
+        && Objects.equals(ownerLongName, other.ownerLongName)
         && Objects.equals(primaryObjRef, other.primaryObjRef)
         && Objects.equals(attachmentSummaries, other.attachmentSummaries)
         && Objects.equals(custom1, other.custom1)
@@ -694,6 +771,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + parentBusinessProcessId
         + ", owner="
         + owner
+        + ", ownerLongName="
+        + ownerLongName
         + ", primaryObjRef="
         + primaryObjRef
         + ", isRead="

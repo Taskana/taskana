@@ -26,6 +26,9 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
 
   @Override
   public void setCustomAttribute(WorkbasketCustomField customField, String value) {
+    if (value == null) {
+      value = "";
+    }
     switch (customField) {
       case CUSTOM_1:
         custom1 = value;

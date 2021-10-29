@@ -26,6 +26,7 @@ import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.TaskServiceImpl;
 import pro.taskana.user.api.models.User;
 
 /** Base class for all acceptance tests. */
@@ -38,6 +39,8 @@ public abstract class AbstractAccTest {
 
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
+
+  protected static TaskServiceImpl taskService;
   protected static WorkingDaysToDaysConverter converter;
 
   @BeforeAll
@@ -59,6 +62,8 @@ public abstract class AbstractAccTest {
     taskanaEngine =
         taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
+    taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
+
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
   }

@@ -12,6 +12,9 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "aot": true,
+            "sourceMap": {
+              "scripts": true
+            },
             "customWebpackConfig": {
               "path": "webpack.config.js"
             },
@@ -57,10 +60,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "taskana-web:build",
-            "sourceMap": {
-              "scripts": true
-            }
+            "browserTarget": "taskana-web:build"
           },
           "configurations": {
             "production": {

@@ -35,6 +35,7 @@ class TaskHistoryEventRepresentationModelAssemblerTest {
     historyEvent.setDomain("DOMAIN_A");
     historyEvent.setWorkbasketKey("WorkbasketKey");
     historyEvent.setAttachmentClassificationKey("L1050");
+    historyEvent.setUserLongName("userLongName");
     historyEvent.setCreated(Instant.now());
     historyEvent.setOldValue("oldValue");
     historyEvent.setNewValue("newValue");
@@ -42,6 +43,7 @@ class TaskHistoryEventRepresentationModelAssemblerTest {
     historyEvent.setPorSystem("porSystem");
     historyEvent.setPorType("porType");
     historyEvent.setPorValue("porValue");
+    historyEvent.setTaskOwnerLongName("taskOwner");
     historyEvent.setCustomAttribute(TaskHistoryCustomField.CUSTOM_1, "custom1");
     historyEvent.setCustomAttribute(TaskHistoryCustomField.CUSTOM_2, "custom2");
     historyEvent.setCustomAttribute(TaskHistoryCustomField.CUSTOM_3, "custom3");
@@ -85,6 +87,10 @@ class TaskHistoryEventRepresentationModelAssemblerTest {
         .isEqualTo(taskHistoryEventRepresentationModel.getPorType());
     assertThat(historyEvent.getPorValue())
         .isEqualTo(taskHistoryEventRepresentationModel.getPorValue());
+    assertThat(historyEvent.getUserLongName())
+        .isEqualTo(taskHistoryEventRepresentationModel.getUserLongName());
+    assertThat(historyEvent.getTaskOwnerLongName())
+        .isEqualTo(taskHistoryEventRepresentationModel.getTaskOwnerLongName());
     assertThat(historyEvent.getCustomAttribute(TaskHistoryCustomField.CUSTOM_1))
         .isEqualTo(taskHistoryEventRepresentationModel.getCustom1());
     assertThat(historyEvent.getCustomAttribute(TaskHistoryCustomField.CUSTOM_2))

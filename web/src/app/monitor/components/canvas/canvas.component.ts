@@ -1,18 +1,47 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
-import { priorityTypes } from '../../models/priority';
-
 import { ReportRow } from '../../models/report-row';
+import { Select } from '@ngxs/store';
+import { SettingsSelectors } from '../../../shared/store/settings-store/settings.selectors';
+import { Observable, Subject } from 'rxjs';
+import { Settings } from '../../../settings/models/settings';
+import { takeUntil } from 'rxjs/operators';
+import { SettingMembers } from '../../../settings/components/Settings/expected-members';
 
 @Component({
   selector: 'taskana-monitor-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements AfterViewInit {
+export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() row: ReportRow;
   @Input() id: string;
-  @Input() isReversed: boolean;
+
+  labels: string[];
+  colors: string[];
+  destroy$ = new Subject<void>();
+
+  @Select(SettingsSelectors.getSettings)
+  settings$: Observable<Settings>;
+
+  ngOnInit() {
+    this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
+      this.setValuesFromSettings(settings);
+    });
+  }
+
+  setValuesFromSettings(settings: Settings) {
+    this.labels = [
+      settings[SettingMembers.nameHighPriority],
+      settings[SettingMembers.nameMediumPriority],
+      settings[SettingMembers.nameLowPriority]
+    ];
+    this.colors = [
+      settings[SettingMembers.colorHighPriority],
+      settings[SettingMembers.colorMediumPriority],
+      settings[SettingMembers.colorLowPriority]
+    ];
+  }
 
   ngAfterViewInit() {
     const canvas = document.getElementById(this.id) as HTMLCanvasElement;
@@ -26,13 +55,12 @@ export class CanvasComponent implements AfterViewInit {
     new Chart(canvas, {
       type: 'doughnut',
       data: {
-        labels: [priorityTypes.HIGH, priorityTypes.MEDIUM, priorityTypes.LOW],
+        labels: this.labels,
         datasets: [
           {
             label: 'Tasks by Priority',
-            // depends on whether backend sends data sorted in ascending or descending order
-            data: this.isReversed ? row.cells.reverse() : row.cells,
-            backgroundColor: ['red', 'gold', 'limegreen'],
+            data: row.cells,
+            backgroundColor: this.colors,
             borderWidth: 0
           }
         ]
@@ -48,5 +76,12 @@ export class CanvasComponent implements AfterViewInit {
         }
       }
     });
+  }
+
+  ngOnDestroy() {
+    document.getElementById(this.id).outerHTML = ''; // destroy HTML element
+
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

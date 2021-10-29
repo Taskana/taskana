@@ -58,6 +58,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
 import pro.taskana.task.internal.TaskCommentMapper;
+import pro.taskana.task.internal.TaskCommentQueryMapper;
 import pro.taskana.task.internal.TaskMapper;
 import pro.taskana.task.internal.TaskQueryMapper;
 import pro.taskana.task.internal.TaskServiceImpl;
@@ -85,7 +86,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
-  private final ConfigurationServiceImpl configurationService;
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
@@ -108,9 +108,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         new CurrentUserContextImpl(TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds());
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
     sessionManager = createSqlSessionManager();
-    configurationService =
-        new ConfigurationServiceImpl(
-            internalTaskanaEngineImpl, sessionManager.getMapper(ConfigurationMapper.class));
+
     initializeDbSchema(taskanaEngineConfiguration);
 
     // IMPORTANT: SPI has to be initialized last (and in this order) in order
@@ -134,12 +132,19 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
+  public ConfigurationService getConfigurationService() {
+    return new ConfigurationServiceImpl(
+        internalTaskanaEngineImpl, sessionManager.getMapper(ConfigurationMapper.class));
+  }
+
+  @Override
   public TaskService getTaskService() {
     return new TaskServiceImpl(
         internalTaskanaEngineImpl,
         sessionManager.getMapper(TaskMapper.class),
         sessionManager.getMapper(TaskCommentMapper.class),
-        sessionManager.getMapper(AttachmentMapper.class));
+        sessionManager.getMapper(AttachmentMapper.class),
+        sessionManager.getMapper(UserMapper.class));
   }
 
   @Override
@@ -183,11 +188,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   public UserService getUserService() {
     return new UserServiceImpl(
         internalTaskanaEngineImpl, sessionManager.getMapper(UserMapper.class));
-  }
-
-  @Override
-  public ConfigurationService getConfigurationService() {
-    return configurationService;
   }
 
   @Override
@@ -345,6 +345,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(WorkbasketQueryMapper.class);
     configuration.addMapper(TaskQueryMapper.class);
     configuration.addMapper(TaskCommentMapper.class);
+    configuration.addMapper(TaskCommentQueryMapper.class);
     configuration.addMapper(ClassificationQueryMapper.class);
     configuration.addMapper(AttachmentMapper.class);
     configuration.addMapper(JobMapper.class);
@@ -366,8 +367,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
           "The Database Schema Version doesn't match the expected minimal version "
               + MINIMAL_TASKANA_SCHEMA_VERSION);
     }
-    configurationService.checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
-    configurationService.setupDefaultCustomAttributes();
+    ((ConfigurationServiceImpl) getConfigurationService())
+        .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
+    ((ConfigurationServiceImpl) getConfigurationService()).setupDefaultCustomAttributes();
   }
 
   /**

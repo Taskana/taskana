@@ -15,7 +15,6 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
@@ -28,7 +27,6 @@ import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 
   WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-  TaskService taskService = taskanaEngine.getTaskService();
 
   @AfterEach
   void after() throws Exception {

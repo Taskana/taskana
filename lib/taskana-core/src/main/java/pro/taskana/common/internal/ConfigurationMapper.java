@@ -14,9 +14,9 @@ public interface ConfigurationMapper {
   @Insert("INSERT INTO CONFIGURATION(ENFORCE_SECURITY) VALUES (#{securityEnabled})")
   void setSecurityEnabled(@Param("securityEnabled") boolean securityEnabled);
 
-  @Select("SELECT CUSTOM_ATTRIBUTES FROM TASKANA.CONFIGURATION")
+  @Select("SELECT CUSTOM_ATTRIBUTES FROM CONFIGURATION")
   Map<String, Object> getAllCustomAttributes();
 
-  @Update("UPDATE TASKANA.CONFIGURATION SET CUSTOM_ATTRIBUTES = #{customAttributes}")
+  @Update("UPDATE CONFIGURATION SET CUSTOM_ATTRIBUTES = #{customAttributes}")
   void setAllCustomAttributes(@Param("customAttributes") Map<String, ?> customAttributes);
 }

@@ -7,10 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityBatchStatement;
@@ -28,7 +26,7 @@ class TaskUpdatePriorityBatchStatementAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_updatePriority() throws TaskNotFoundException, NotAuthorizedException {
+  void should_updatePriority() throws Exception {
     // given
     SqlConnectionRunner runner = new SqlConnectionRunner(taskanaEngine);
     String taskId = "TKI:000000000000000000000000000000000050";
@@ -41,7 +39,9 @@ class TaskUpdatePriorityBatchStatementAccTest extends AbstractAccTest {
               new TaskUpdatePriorityBatchStatement(connection);
           batchStatement.addPriorityUpdate(taskId, priorityUpdate);
           batchStatement.executeBatch();
-          connection.commit();
+          if (!connection.getAutoCommit()) {
+            connection.commit();
+          }
         });
 
     // then

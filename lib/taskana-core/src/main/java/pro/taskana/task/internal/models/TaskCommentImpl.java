@@ -12,6 +12,7 @@ public class TaskCommentImpl implements TaskComment {
   private String taskId;
   private String textField;
   private String creator;
+  private String creatorFullName;
   private Instant created;
   private Instant modified;
 
@@ -52,6 +53,15 @@ public class TaskCommentImpl implements TaskComment {
     this.creator = creator;
   }
 
+  @Override
+  public String getCreatorFullName() {
+    return creatorFullName;
+  }
+
+  public void setCreatorFullName(String creatorFullName) {
+    this.creatorFullName = creatorFullName;
+  }
+
   public String getTextField() {
     return textField;
   }
@@ -89,7 +99,7 @@ public class TaskCommentImpl implements TaskComment {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, taskId, textField, creator, created, modified);
+    return Objects.hash(id, taskId, textField, creator, creatorFullName, created, modified);
   }
 
   @Override
@@ -110,6 +120,7 @@ public class TaskCommentImpl implements TaskComment {
         && Objects.equals(taskId, other.getTaskId())
         && Objects.equals(textField, other.getTextField())
         && Objects.equals(creator, other.getCreator())
+        && Objects.equals(creatorFullName, other.getCreatorFullName())
         && Objects.equals(created, other.getCreated())
         && Objects.equals(modified, other.getModified());
   }
@@ -124,6 +135,8 @@ public class TaskCommentImpl implements TaskComment {
         + textField
         + ", creator="
         + creator
+        + ", creatorFullName="
+        + creatorFullName
         + ", created="
         + created
         + ", modified="

@@ -17,6 +17,7 @@ public class TaskHistoryEvent {
   protected String eventType;
   protected Instant created;
   protected String userId;
+  protected String userLongName;
   protected String domain;
   protected String workbasketKey;
   protected String porCompany;
@@ -24,6 +25,7 @@ public class TaskHistoryEvent {
   protected String porInstance;
   protected String porType;
   protected String porValue;
+  protected String taskOwnerLongName;
   protected String taskClassificationKey;
   protected String taskClassificationCategory;
   protected String attachmentClassificationKey;
@@ -177,6 +179,14 @@ public class TaskHistoryEvent {
     this.porValue = porValue;
   }
 
+  public String getTaskOwnerLongName() {
+    return taskOwnerLongName;
+  }
+
+  public void setTaskOwnerLongName(String taskOwnerLongName) {
+    this.taskOwnerLongName = taskOwnerLongName;
+  }
+
   public String getTaskClassificationKey() {
     return taskClassificationKey;
   }
@@ -231,6 +241,14 @@ public class TaskHistoryEvent {
 
   public void setUserId(String userId) {
     this.userId = userId;
+  }
+
+  public String getUserLongName() {
+    return userLongName;
+  }
+
+  public void setUserLongName(String userLongName) {
+    this.userLongName = userLongName;
   }
 
   public String getOldValue() {
@@ -323,7 +341,7 @@ public class TaskHistoryEvent {
 
   @Override
   public String toString() {
-    return "TaskEvent [id="
+    return "TaskHistoryEvent [id="
         + id
         + ", businessProcessId="
         + businessProcessId
@@ -337,6 +355,10 @@ public class TaskHistoryEvent {
         + created
         + ", userId="
         + userId
+        + ", userLongName="
+        + userLongName
+        + ", taskOwnerLongName="
+        + taskOwnerLongName
         + ", domain="
         + domain
         + ", workbasketKey="

@@ -29,6 +29,8 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
+import pro.taskana.user.api.models.User;
+import pro.taskana.user.internal.models.UserImpl;
 
 /** Class for Ldap access. */
 @Component
@@ -126,6 +128,30 @@ public class LdapClient {
         "exit from searchUsersByNameOrAccessIdInUserRoleGroups. Retrieved the following users: {}.",
         accessIds);
     return accessIds;
+  }
+
+  public List<User> searchUsersInUserRole() {
+
+    Set<String> userGroupsOrUser = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+
+    final OrFilter userOrGroupFilter = new OrFilter();
+    userGroupsOrUser.forEach(
+        userOrGroup -> {
+          userOrGroupFilter.or(new EqualsFilter(getUserMemberOfGroupAttribute(), userOrGroup));
+          userOrGroupFilter.or(new EqualsFilter(getUserIdAttribute(), userOrGroup));
+        });
+
+    final List<User> users =
+        ldapTemplate.search(
+            getUserSearchBase(),
+            userOrGroupFilter.encode(),
+            SearchControls.SUBTREE_SCOPE,
+            getLookUpUserInfoAttributesToReturn(),
+            new UserInfoContextMapper());
+
+    LOGGER.debug("exit from searchUsersInUserRole. Retrieved the following users: {}.", users);
+
+    return users;
   }
 
   public List<AccessIdRepresentationModel> searchUsersByNameOrAccessId(final String name)
@@ -349,6 +375,34 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_USER_LASTNAME_ATTRIBUTE.getValueFromEnv(env);
   }
 
+  public String getUserPhoneAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_PHONE_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserMobilePhoneAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_MOBILE_PHONE_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserEmailAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_EMAIL_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserOrgLevel1Attribute() {
+    return LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_1_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserOrgLevel2Attribute() {
+    return LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_2_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserOrgLevel3Attribute() {
+    return LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_3_ATTRIBUTE.getValueFromEnv(env);
+  }
+
+  public String getUserOrgLevel4Attribute() {
+    return LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE.getValueFromEnv(env);
+  }
+
   public String getUserIdAttribute() {
     return LdapSettings.TASKANA_LDAP_USER_ID_ATTRIBUTE.getValueFromEnv(env);
   }
@@ -467,6 +521,22 @@ public class LdapClient {
     };
   }
 
+  String[] getLookUpUserInfoAttributesToReturn() {
+    return new String[] {
+      getUserIdAttribute(),
+      getUserFirstnameAttribute(),
+      getUserLastnameAttribute(),
+      getUserFullnameAttribute(),
+      getUserPhoneAttribute(),
+      getUserMobilePhoneAttribute(),
+      getUserEmailAttribute(),
+      getUserOrgLevel1Attribute(),
+      getUserOrgLevel2Attribute(),
+      getUserOrgLevel3Attribute(),
+      getUserOrgLevel4Attribute()
+    };
+  }
+
   @PostConstruct
   void init() {
     minSearchForLength = calcMinSearchForLength(3);
@@ -523,6 +593,28 @@ public class LdapClient {
       accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       return accessId;
+    }
+  }
+
+  /** Context Mapper for user info entries. */
+  class UserInfoContextMapper extends AbstractContextMapper<User> {
+
+    @Override
+    public User doMapFromContext(final DirContextOperations context) {
+      final User user = new UserImpl();
+      user.setId(context.getStringAttribute(getUserIdAttribute()));
+      user.setFirstName(context.getStringAttribute(getUserFirstnameAttribute()));
+      user.setLastName(context.getStringAttribute(getUserLastnameAttribute()));
+      user.setFullName(context.getStringAttribute(getUserFullnameAttribute()));
+      user.setPhone(context.getStringAttribute(getUserPhoneAttribute()));
+      user.setMobilePhone(context.getStringAttribute(getUserMobilePhoneAttribute()));
+      user.setEmail(context.getStringAttribute(getUserEmailAttribute()));
+      user.setOrgLevel1(context.getStringAttribute(getUserOrgLevel1Attribute()));
+      user.setOrgLevel2(context.getStringAttribute(getUserOrgLevel2Attribute()));
+      user.setOrgLevel3(context.getStringAttribute(getUserOrgLevel3Attribute()));
+      user.setOrgLevel4(context.getStringAttribute(getUserOrgLevel4Attribute()));
+
+      return user;
     }
   }
 

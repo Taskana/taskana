@@ -196,7 +196,7 @@ class TaskBuilderTest {
     expectedTask.setCallbackState(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 
     assertThat(task)
-        .hasNoNullFieldsOrProperties()
+        .hasNoNullFieldsOrPropertiesExcept("ownerLongName")
         .usingRecursiveComparison()
         .ignoringFields("id")
         .isEqualTo(expectedTask);

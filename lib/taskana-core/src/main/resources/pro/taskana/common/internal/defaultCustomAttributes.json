@@ -1,106 +1,92 @@
 {
-  "nameHighPrio": "High Prio",
-  "nameMediumPrio": "Medium P",
-  "nameLowPrio": "Low Prio",
-  "intervalHighPrio": [
-    100,
-    200
+  "nameHighPriority": "High Priority",
+  "nameMediumPriority": "Medium Priority",
+  "nameLowPriority": "Low Priority",
+  "intervalHighPriority": [
+    3,
+    300
   ],
-  "intervalMediumPrio": [
-    21,
-    100
+  "intervalMediumPriority": [
+    2,
+    2
   ],
-  "intervalLowPrio": [
-    1,
-    20
+  "intervalLowPriority": [
+    0,
+    1
   ],
-  "colorHighPrio": "#ff0000",
-  "colorLowPrio": "#5FAD00",
-  "colorMediumPrio": "#FFEE00",
-  "filter": {
-    "Filter": {
-      "custom-1": [
-        "true"
-      ],
-      "custom-5": [
-        "3"
-      ]
-    },
-    "Filter neu": {
-      "custom-5": [
-        "7",
-        "5"
-      ]
-    },
-    "Filter Doppelt": {
-      "custom-5": [
-        "1",
-        "2",
-        "90"
-      ]
-    }
-  },
-  "schema": {
-    "Priority-Report": {
+  "colorHighPriority": "#FF0000",
+  "colorLowPriority": "#5FAD00",
+  "colorMediumPriority": "#FFD700",
+  "filter": "{ \"Tasks with state READY\": { \"state\": [\"READY\"]}, \"Tasks with state CLAIMED\": {\"state\": [\"CLAIMED\"] }}",
+  "schema": [
+    {
       "displayName": "Priority Report",
-      "members": {
-        "nameHighPrio": {
-          "displayName": "High Prio Name",
+      "members": [
+        {
+          "key": "nameHighPriority",
+          "displayName": "High Priority Name",
           "type": "text",
-          "min": 1
+          "max": 32
         },
-        "nameMediumPrio": {
-          "displayName": "Medium Prio Name",
+        {
+          "key": "nameMediumPriority",
+          "displayName": "Medium Priority Name",
           "type": "text",
-          "min": 1,
-          "max": 8
-        },
-        "nameLowPrio": {
-          "displayName": "Low Prio Name",
-          "type": "text",
-          "min": 2,
-          "max": 64
-        },
-        "intervalHighPrio": {
-          "displayName": "High Prio Interval",
-          "type": "interval",
           "min": 0,
-          "max": 300
+          "max": 32
         },
-        "intervalMediumPrio": {
-          "displayName": "Medium Prio Interval",
-          "type": "interval",
-          "min": -5,
-          "max": 300
+        {
+          "key": "nameLowPriority",
+          "displayName": "Low Priority Name",
+          "type": "text",
+          "min": 0,
+          "max": 32
         },
-        "intervalLowPrio": {
-          "displayName": "Low Prio Interval",
+        {
+          "key": "intervalHighPriority",
+          "displayName": "High Priority Interval",
           "type": "interval",
           "min": 0
         },
-        "colorHighPrio": {
-          "displayName": "High Prio Color",
+        {
+          "key": "intervalMediumPriority",
+          "displayName": "Medium Priority Interval",
+          "type": "interval",
+          "min": 0
+        },
+        {
+          "key": "intervalLowPriority",
+          "displayName": "Low Priority Interval",
+          "type": "interval",
+          "min": 0
+        },
+        {
+          "key": "colorHighPriority",
+          "displayName": "High Priority Color",
           "type": "color"
         },
-        "colorMediumPrio": {
-          "displayName": "Medium Prio Color",
+        {
+          "key": "colorMediumPriority",
+          "displayName": "Medium Priority Color",
           "type": "color"
         },
-        "colorLowPrio": {
-          "displayName": "Low Prio Color",
+        {
+          "key": "colorLowPriority",
+          "displayName": "Low Priority Color",
           "type": "color"
         }
-      }
+      ]
     },
-    "Filter": {
+    {
       "displayName": "Filter for Task-Priority-Report",
-      "members": {
-        "filter": {
+      "members": [
+        {
+          "key": "filter",
           "displayName": "Filter values",
           "type": "json",
           "min": 1
         }
-      }
+      ]
     }
-  }
+  ]
 }

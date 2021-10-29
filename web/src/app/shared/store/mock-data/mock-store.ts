@@ -515,3 +515,89 @@ export const workbasketReadStateMock = {
   ],
   workbasketAccessItems: workbasketAccessItemsMock
 };
+
+export const settingsStateMock = {
+  settings: {
+    nameHighPriority: 'High Priority',
+    nameMediumPriority: 'Medium Priority',
+    nameLowPriority: 'Low Priority',
+    intervalHighPriority: [3, 300],
+    intervalMediumPriority: [2, 2],
+    intervalLowPriority: [0, 1],
+    colorHighPriority: '#FF0000',
+    colorLowPriority: '#5FAD00',
+    colorMediumPriority: '#FFD700',
+    filter: '{ "Tasks with state READY": { "state": ["READY"]}, "Tasks with state CLAIMED": {"state": ["CLAIMED"] }}',
+    schema: [
+      {
+        displayName: 'Priority Report',
+        members: [
+          {
+            key: 'nameHighPriority',
+            displayName: 'High Priority Name',
+            type: 'text',
+            max: 32
+          },
+          {
+            key: 'nameMediumPriority',
+            displayName: 'Medium Priority Name',
+            type: 'text',
+            min: 0,
+            max: 32
+          },
+          {
+            key: 'nameLowPriority',
+            displayName: 'Low Priority Name',
+            type: 'text',
+            min: 0,
+            max: 32
+          },
+          {
+            key: 'intervalHighPriority',
+            displayName: 'High Priority Interval',
+            type: 'interval',
+            min: 0
+          },
+          {
+            key: 'intervalMediumPriority',
+            displayName: 'Medium Priority Interval',
+            type: 'interval',
+            min: 0
+          },
+          {
+            key: 'intervalLowPriority',
+            displayName: 'Low Priority Interval',
+            type: 'interval',
+            min: 0
+          },
+          {
+            key: 'colorHighPriority',
+            displayName: 'High Priority Color',
+            type: 'color'
+          },
+          {
+            key: 'colorMediumPriority',
+            displayName: 'Medium Priority Color',
+            type: 'color'
+          },
+          {
+            key: 'colorLowPriority',
+            displayName: 'Low Priority Color',
+            type: 'color'
+          }
+        ]
+      },
+      {
+        displayName: 'Filter for Task-Priority-Report',
+        members: [
+          {
+            key: 'filter',
+            displayName: 'Filter values',
+            type: 'json',
+            min: 1
+          }
+        ]
+      }
+    ]
+  }
+};

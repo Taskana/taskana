@@ -263,6 +263,13 @@ public interface TaskService {
   TaskQuery createTaskQuery();
 
   /**
+   * This method provides a query builder for querying the database.
+   *
+   * @return a {@link TaskCommentQuery}
+   */
+  TaskCommentQuery createTaskCommentQuery();
+
+  /**
    * Returns a not inserted instance of {@link Task}. The returned task has no workbasket Id set.
    * When createTask() is invoked for this task, TaskService will call the TaskRouting SPI to
    * determine a workbasket for the task. If the TaskRouting API is not active, e.g. because no

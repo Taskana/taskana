@@ -17,10 +17,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   protected String owner;
   protected String domain;
   protected WorkbasketType type;
-  protected String custom1;
-  protected String custom2;
-  protected String custom3;
-  protected String custom4;
+  protected String custom1 = "";
+  protected String custom2 = "";
+  protected String custom3 = "";
+  protected String custom4 = "";
   protected String orgLevel1;
   protected String orgLevel2;
   protected String orgLevel3;
@@ -130,7 +130,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setCustom1(String custom1) {
-    this.custom1 = custom1;
+    if (custom1 == null) {
+      this.custom1 = "";
+    } else {
+      this.custom1 = custom1;
+    }
   }
 
   public String getCustom2() {
@@ -138,7 +142,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setCustom2(String custom2) {
-    this.custom2 = custom2;
+    if (custom2 == null) {
+      this.custom2 = "";
+    } else {
+      this.custom2 = custom2;
+    }
   }
 
   public String getCustom3() {
@@ -146,7 +154,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setCustom3(String custom3) {
-    this.custom3 = custom3;
+    if (custom3 == null) {
+      this.custom3 = "";
+    } else {
+      this.custom3 = custom3;
+    }
   }
 
   public String getCustom4() {
@@ -154,7 +166,11 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setCustom4(String custom4) {
-    this.custom4 = custom4;
+    if (custom4 == null) {
+      this.custom4 = "";
+    } else {
+      this.custom4 = custom4;
+    }
   }
 
   @Override

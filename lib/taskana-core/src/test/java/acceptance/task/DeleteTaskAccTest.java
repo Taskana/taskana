@@ -16,7 +16,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -26,8 +25,6 @@ import pro.taskana.task.internal.AttachmentMapper;
 /** Acceptance test for all "delete task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class DeleteTaskAccTest extends AbstractAccTest {
-
-  private final TaskService taskService = taskanaEngine.getTaskService();
 
   @WithAccessId(user = "user-1-2")
   @Test

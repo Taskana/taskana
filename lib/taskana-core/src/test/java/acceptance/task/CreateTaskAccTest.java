@@ -8,6 +8,7 @@ import acceptance.TaskTestMapper;
 import acceptance.TaskanaEngineProxy;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
+import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -46,9 +48,17 @@ import pro.taskana.workbasket.api.models.Workbasket;
 @ExtendWith(JaasExtension.class)
 class CreateTaskAccTest extends AbstractAccTest {
 
-  private final TaskService taskService = taskanaEngine.getTaskService();
   private final ClassificationService classificationService =
       taskanaEngine.getClassificationService();
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_NotSetAttachmentSummariesToNull_When_CreatingNewTaskWithTaskService() {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task task = taskService.newTask("WBI:100000000000000000000000000000000006");
+    assertThat(task.getAttachments()).isNotNull();
+    assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
+  }
 
   @WithAccessId(user = "user-1-1")
   @Test
@@ -568,6 +578,52 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_SetCustomFieldToEmptyString_When_SetToNullByUser() throws Exception {
+
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setName("Test Name");
+    Arrays.stream(TaskCustomField.values())
+        .forEach(customField -> newTask.setCustomAttribute(customField, null));
+    Task createdTask = taskService.createTask(newTask);
+
+    SoftAssertions softly = new SoftAssertions();
+    Arrays.stream(TaskCustomField.values())
+        .forEach(
+            customField ->
+                softly
+                    .assertThat(createdTask.getCustomAttribute(customField))
+                    .describedAs("CustomField was null: " + customField)
+                    .isNotNull());
+    softly.assertAll();
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_InitializeCustomFieldsToEmptyString_When_TaskIsCreated() throws Exception {
+
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    newTask.setPrimaryObjRef(
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    newTask.setName("Test Name");
+    Task createdTask = taskService.createTask(newTask);
+
+    SoftAssertions softly = new SoftAssertions();
+    Arrays.stream(TaskCustomField.values())
+        .forEach(
+            customField ->
+                softly
+                    .assertThat(createdTask.getCustomAttribute(customField))
+                    .describedAs("CustomField was null: " + customField)
+                    .isNotNull());
+    softly.assertAll();
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void testUseClassificationMetadataFromCorrectDomainForNewTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
@@ -632,8 +688,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", null));
     testCreateTask.accept(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", null, "1234567"));
-    testCreateTask.accept(
-        createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
+    testCreateTask.accept(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
   }
 
   @WithAccessId(user = "user-1-1")

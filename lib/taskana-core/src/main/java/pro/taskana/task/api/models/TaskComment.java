@@ -27,6 +27,13 @@ public interface TaskComment {
   String getCreator();
 
   /**
+   * Gets the long name of the task comment creator.
+   *
+   * @return the long Name of the creator
+   */
+  String getCreatorFullName();
+
+  /**
    * Gets the text field of the task comment.
    *
    * @return textField

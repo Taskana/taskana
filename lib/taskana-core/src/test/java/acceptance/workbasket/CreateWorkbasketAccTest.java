@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.util.Arrays;
 import java.util.List;
+import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -15,6 +17,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -97,6 +100,56 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
     ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
     assertThatThrownBy(call).isInstanceOf(DomainNotFoundException.class);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_InitializeCustomFieldsToEmptyString_When_WorkbasketIsCreated()
+      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          NotAuthorizedException {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket workbasket = workbasketService.newWorkbasket("GPK_NULL1", "DOMAIN_A");
+    workbasket.setName("Megabasket");
+    workbasket.setType(WorkbasketType.GROUP);
+    workbasket.setOrgLevel1("company");
+    Workbasket createdWorkbasket = workbasketService.createWorkbasket(workbasket);
+
+    SoftAssertions softly = new SoftAssertions();
+    Arrays.stream(WorkbasketCustomField.values())
+        .forEach(
+            customField ->
+                softly
+                    .assertThat(createdWorkbasket.getCustomAttribute(customField))
+                    .describedAs("CustomField was null: " + customField)
+                    .isNotNull());
+    softly.assertAll();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_SetCustomFieldToEmptyString_When_SetToNullByUser()
+      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+          NotAuthorizedException {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket workbasket = workbasketService.newWorkbasket("GPK_NULL2", "DOMAIN_A");
+    workbasket.setName("Megabasket");
+    workbasket.setType(WorkbasketType.GROUP);
+    workbasket.setOrgLevel1("company");
+    Arrays.stream(WorkbasketCustomField.values())
+        .forEach(customField -> workbasket.setCustomAttribute(customField, null));
+    Workbasket createdWorkbasket = workbasketService.createWorkbasket(workbasket);
+
+    SoftAssertions softly = new SoftAssertions();
+    Arrays.stream(WorkbasketCustomField.values())
+        .forEach(
+            customField ->
+                softly
+                    .assertThat(createdWorkbasket.getCustomAttribute(customField))
+                    .describedAs("CustomField was null: " + customField)
+                    .isNotNull());
+    softly.assertAll();
   }
 
   @WithAccessId(user = "businessadmin")

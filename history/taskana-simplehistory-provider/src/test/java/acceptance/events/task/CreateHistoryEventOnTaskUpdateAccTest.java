@@ -34,7 +34,7 @@ class CreateHistoryEventOnTaskUpdateAccTest extends AbstractAccTest {
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
 
-    assertThat(events).hasSize(2);
+    assertThat(events).hasSize(3);
 
     Task task = taskService.getTask(taskId);
     task.setName("someUpdatedName");
@@ -44,7 +44,7 @@ class CreateHistoryEventOnTaskUpdateAccTest extends AbstractAccTest {
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
 
-    assertThat(events).hasSize(3);
+    assertThat(events).hasSize(4);
 
     String eventType = events.get(0).getEventType();
 

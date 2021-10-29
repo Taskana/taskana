@@ -89,6 +89,7 @@ class TaskRepresentationModelAssemblerTest {
     repModel.setBusinessProcessId("businessProcessId");
     repModel.setParentBusinessProcessId("parentBusinessProcessId");
     repModel.setOwner("owner");
+    repModel.setOwnerLongName("ownerLongName");
     repModel.setPrimaryObjRef(primaryObjRef);
     repModel.setRead(true);
     repModel.setTransferred(true);
@@ -143,7 +144,8 @@ class TaskRepresentationModelAssemblerTest {
     assertThat(repModel.getWorkbasketSummary()).isNull();
     assertThat(task.getWorkbasketSummary())
         .isNotNull()
-        .hasAllNullFieldsOrPropertiesExcept("markedForDeletion");
+        .hasAllNullFieldsOrPropertiesExcept(
+            "markedForDeletion", "custom1", "custom2", "custom3", "custom4");
   }
 
   @Test
@@ -180,6 +182,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
+    task.setOwnerLongName("ownerLongName");
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);
@@ -243,6 +246,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
+    task.setOwnerLongName("ownerLongName");
     task.setPrimaryObjRef(primaryObjRef);
     task.setRead(true);
     task.setTransferred(true);

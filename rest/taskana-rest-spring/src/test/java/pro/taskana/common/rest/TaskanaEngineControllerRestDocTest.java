@@ -1,10 +1,13 @@
 package pro.taskana.common.rest;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.common.test.BaseRestDocTest;
 
 class TaskanaEngineControllerRestDocTest extends BaseRestDocTest {
@@ -53,6 +56,39 @@ class TaskanaEngineControllerRestDocTest extends BaseRestDocTest {
   void getCurrentVersionDocTest() throws Exception {
     mockMvc
         .perform(get(RestEndpoints.URL_VERSION))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void getCustomConfigurationAttributesDocTest() throws Exception {
+    mockMvc
+        .perform(get(RestEndpoints.URL_CUSTOM_ATTRIBUTES))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void setCustomConfigurationAttributesDocTest() throws Exception {
+    CustomAttributesRepresentationModel customAttributes2 =
+        new CustomAttributesRepresentationModel(
+            Map.of(
+                "filter",
+                "{ \"Tasks with state READY\": { \"state\": [\"READY\"]}, "
+                    + "\"Tasks with state CLAIMED\": {\"state\": [\"CLAIMED\"] }}",
+                "schema",
+                Map.of(
+                    "Filter",
+                    Map.of(
+                        "displayName",
+                        "Filter for Task-Priority-Report",
+                        "members",
+                        Map.of(
+                            "filter",
+                            Map.of("displayName", "Filter values", "type", "json", "min", "1"))))));
+
+    mockMvc
+        .perform(
+            put(RestEndpoints.URL_CUSTOM_ATTRIBUTES)
+                .content(objectMapper.writeValueAsString(customAttributes2)))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 }

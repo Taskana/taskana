@@ -18,6 +18,7 @@ export class NavBarComponent implements OnInit {
   titleMonitor = 'Monitor';
   titleWorkplace = 'Workplace';
   titleHistory = 'History';
+  titleSettings = 'Settings';
   toggle: boolean = false;
   title = this.titleWorkplace;
 
@@ -27,6 +28,8 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
+      // does not work
+      // console.log('router', value);
       this.selectedRoute = value;
       this.setTitle(value);
     });
@@ -50,6 +53,8 @@ export class NavBarComponent implements OnInit {
       this.title = this.titleAccessItems;
     } else if (value.indexOf('history') === 0) {
       this.title = this.titleHistory;
+    } else if (value.indexOf('settings') === 0) {
+      this.title = this.titleSettings;
     }
   }
 }
