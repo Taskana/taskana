@@ -8,6 +8,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 
 const domainServiceSpy: Partial<DomainService> = {
   getDomains: jest.fn().mockReturnValue(of(['domain a', 'domain b'])),
@@ -30,7 +31,7 @@ describe('AdministrationOverviewComponent', () => {
         BrowserAnimationsModule
       ],
       declarations: [AdministrationOverviewComponent],
-      providers: [{ provide: DomainService, useValue: domainServiceSpy }]
+      providers: [{ provide: DomainService, useValue: domainServiceSpy }, TaskanaEngineService]
     }).compileComponents();
   }));
 
@@ -46,7 +47,7 @@ describe('AdministrationOverviewComponent', () => {
 
   it('should render 3 tabs in navbar', () => {
     const navbar = fixture.debugElement.nativeElement.getElementsByClassName('administration-overview__navbar-links');
-    expect(navbar).toHaveLength(4);
+    expect(navbar).toHaveLength(3);
   });
 
   it('should display current domain', () => {

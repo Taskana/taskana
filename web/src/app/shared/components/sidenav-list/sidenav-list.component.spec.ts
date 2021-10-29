@@ -8,7 +8,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
-import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-engine.mock.service';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -22,9 +21,10 @@ const SidenavServiceSpy: Partial<SidenavService> = {
   toggleSidenav: jest.fn().mockReturnValue(EMPTY)
 };
 
-const TaskanaEngineServiceSpy: Partial<TaskanaEngineServiceMock> = {
+const TaskanaEngineServiceSpy: Partial<TaskanaEngineService> = {
   hasRole: jest.fn().mockReturnValue(EMPTY),
-  isHistoryProviderEnabled: jest.fn().mockReturnValue(EMPTY)
+  isHistoryProviderEnabled: jest.fn().mockReturnValue(EMPTY),
+  isCustomRoutingRulesEnabled$: EMPTY
 };
 
 describe('SidenavListComponent', () => {
@@ -72,7 +72,7 @@ describe('SidenavListComponent', () => {
     component.historyAccess = true;
     fixture.detectChanges();
     const menuList = debugElement.queryAll(By.css('.navlist__item'));
-    expect(menuList.length).toBe(10);
+    expect(menuList.length).toBe(9);
     fixture.detectChanges();
   });
 
