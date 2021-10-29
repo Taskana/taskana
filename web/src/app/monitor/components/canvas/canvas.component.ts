@@ -21,8 +21,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   colors: string[];
   destroy$ = new Subject<void>();
 
-  @Select(SettingsSelectors.getSettings)
-  settings$: Observable<Settings>;
+  @Select(SettingsSelectors.getSettings) settings$: Observable<Settings>;
 
   ngOnInit() {
     this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
@@ -32,14 +31,14 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setValuesFromSettings(settings: Settings) {
     this.labels = [
-      settings[SettingMembers.nameHighPriority],
-      settings[SettingMembers.nameMediumPriority],
-      settings[SettingMembers.nameLowPriority]
+      settings[SettingMembers.NameHighPriority],
+      settings[SettingMembers.NameMediumPriority],
+      settings[SettingMembers.NameLowPriority]
     ];
     this.colors = [
-      settings[SettingMembers.colorHighPriority],
-      settings[SettingMembers.colorMediumPriority],
-      settings[SettingMembers.colorLowPriority]
+      settings[SettingMembers.ColorHighPriority],
+      settings[SettingMembers.ColorMediumPriority],
+      settings[SettingMembers.ColorLowPriority]
     ];
   }
 
@@ -80,7 +79,6 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     document.getElementById(this.id).outerHTML = ''; // destroy HTML element
-
     this.destroy$.next();
     this.destroy$.complete();
   }

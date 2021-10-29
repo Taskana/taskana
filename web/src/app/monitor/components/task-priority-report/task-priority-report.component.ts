@@ -44,9 +44,9 @@ export class TaskPriorityReportComponent implements OnInit, AfterViewChecked, On
           this.setValuesFromSettings(settings);
           // the order must be high, medium, low because the canvas component defines its labels in this order
           this.priority = [
-            settings[SettingMembers.intervalHighPriority],
-            settings[SettingMembers.intervalMediumPriority],
-            settings[SettingMembers.intervalLowPriority]
+            settings[SettingMembers.IntervalHighPriority],
+            settings[SettingMembers.IntervalMediumPriority],
+            settings[SettingMembers.IntervalLowPriority]
           ].map((arr) => ({ lowerBound: arr[0], upperBound: arr[1] }));
           return this.monitorService.getTasksByPriorityReport([WorkbasketType.TOPIC], this.priority);
         })
@@ -67,12 +67,12 @@ export class TaskPriorityReportComponent implements OnInit, AfterViewChecked, On
   }
 
   setValuesFromSettings(settings: Settings) {
-    this.nameHighPriority = settings[SettingMembers.nameHighPriority];
-    this.nameMediumPriority = settings[SettingMembers.nameMediumPriority];
-    this.nameLowPriority = settings[SettingMembers.nameLowPriority];
-    this.colorHighPriority = settings[SettingMembers.colorHighPriority];
-    this.colorMediumPriority = settings[SettingMembers.colorMediumPriority];
-    this.colorLowPriority = settings[SettingMembers.colorLowPriority];
+    this.nameHighPriority = settings[SettingMembers.NameHighPriority];
+    this.nameMediumPriority = settings[SettingMembers.NameMediumPriority];
+    this.nameLowPriority = settings[SettingMembers.NameLowPriority];
+    this.colorHighPriority = settings[SettingMembers.ColorHighPriority];
+    this.colorMediumPriority = settings[SettingMembers.ColorMediumPriority];
+    this.colorLowPriority = settings[SettingMembers.ColorLowPriority];
   }
 
   setValuesFromReportData(reportData) {

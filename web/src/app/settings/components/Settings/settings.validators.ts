@@ -7,15 +7,15 @@ export const validateSettings = (settings: Settings): string[] => {
     for (let member of group.members) {
       const value = settings[member.key];
 
-      if (member.type == SettingTypes.TEXT || member.type == SettingTypes.INTERVAL) {
+      if (member.type == SettingTypes.Text || member.type == SettingTypes.Interval) {
         let compareWithMin;
         let compareWithMax;
         switch (member.type) {
-          case SettingTypes.TEXT:
+          case SettingTypes.Text:
             compareWithMin = value.length;
             compareWithMax = value.length;
             break;
-          case SettingTypes.INTERVAL:
+          case SettingTypes.Interval:
             compareWithMin = value[0];
             compareWithMax = value[1];
             break;
@@ -34,12 +34,12 @@ export const validateSettings = (settings: Settings): string[] => {
           invalidMembers.push(member.key);
         }
 
-        if (member.type == SettingTypes.INTERVAL && compareWithMin > compareWithMax) {
+        if (member.type == SettingTypes.Interval && compareWithMin > compareWithMax) {
           invalidMembers.push(member.key);
         }
       }
 
-      if (member.type == SettingTypes.JSON) {
+      if (member.type == SettingTypes.Json) {
         try {
           JSON.parse(value);
         } catch {
