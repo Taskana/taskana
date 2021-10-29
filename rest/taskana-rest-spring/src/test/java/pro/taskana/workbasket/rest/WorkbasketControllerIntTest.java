@@ -109,13 +109,8 @@ class WorkbasketControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith(parameters))
-        .isTrue();
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
+        .endsWith(parameters);
   }
 
   @Test
@@ -203,13 +198,8 @@ class WorkbasketControllerIntTest {
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.NEXT)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
-    assertThat(
-            response
-                .getBody()
-                .getRequiredLink(IanaLinkRelations.SELF)
-                .getHref()
-                .endsWith(parameters))
-        .isTrue();
+    assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
+        .endsWith(parameters);
   }
 
   @Test

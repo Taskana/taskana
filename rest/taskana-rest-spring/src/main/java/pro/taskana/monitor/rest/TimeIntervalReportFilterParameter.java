@@ -481,7 +481,7 @@ public class TimeIntervalReportFilterParameter
     Optional.ofNullable(inWorkingDays)
         .ifPresent(
             bool -> {
-              if (bool) {
+              if (Boolean.TRUE.equals(bool)) {
                 builder.inWorkingDays();
               }
             });
