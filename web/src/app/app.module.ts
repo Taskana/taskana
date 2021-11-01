@@ -39,7 +39,6 @@ import { NavBarComponent } from 'app/shared/components/nav-bar/nav-bar.component
 import { UserInformationComponent } from 'app/shared/components/user-information/user-information.component';
 import { NoAccessComponent } from 'app/shared/components/no-access/no-access.component';
 import { FormsValidatorService } from './shared/services/forms-validator/forms-validator.service';
-import { UploadService } from './shared/services/upload/upload.service';
 import { NotificationService } from './shared/services/notifications/notification.service';
 import { SidenavService } from './shared/services/sidenav/sidenav.service';
 import { SidenavListComponent } from 'app/shared/components/sidenav-list/sidenav-list.component';
@@ -105,7 +104,6 @@ const PROVIDERS = [
   MasterAndDetailService,
   TaskanaEngineService,
   FormsValidatorService,
-  UploadService,
   NotificationService,
   ClassificationCategoriesService,
   SidenavService,

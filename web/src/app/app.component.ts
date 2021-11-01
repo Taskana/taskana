@@ -6,7 +6,6 @@ import { SidenavService } from './shared/services/sidenav/sidenav.service';
 import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
 import { OrientationService } from './shared/services/orientation/orientation.service';
 import { SelectedRouteService } from './shared/services/selected-route/selected-route';
-import { UploadService } from './shared/services/upload/upload.service';
 import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { environment } from 'environments/environment';
@@ -23,7 +22,6 @@ export class AppComponent implements OnInit, OnDestroy {
   selectedRoute = '';
 
   requestInProgress = false;
-  currentProgressValue = 0;
 
   version: string;
   toggle: boolean = false;
@@ -36,7 +34,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private orientationService: OrientationService,
     private selectedRouteService: SelectedRouteService,
     private formsValidatorService: FormsValidatorService,
-    public uploadService: UploadService,
     private sidenavService: SidenavService,
     private taskanaEngineService: TaskanaEngineService,
     private window: WindowRefService
@@ -74,13 +71,6 @@ export class AppComponent implements OnInit, OnDestroy {
           this.workbasketsRoute = false;
         }
         this.selectedRoute = value;
-      });
-
-    this.uploadService
-      .getCurrentProgressObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.currentProgressValue = value;
       });
 
     this.taskanaEngineService

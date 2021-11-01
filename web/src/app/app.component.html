@@ -27,9 +27,6 @@
           <mat-progress-bar *ngIf="requestInProgress" mode="indeterminate"></mat-progress-bar>
         </div>
         <router-outlet></router-outlet>
-        <taskana-shared-progress-spinner
-          [hidden]="currentProgressValue === 0" currentValue={{currentProgressValue}}>
-        </taskana-shared-progress-spinner>
       </div>
     </div>
   </mat-sidenav-content>
