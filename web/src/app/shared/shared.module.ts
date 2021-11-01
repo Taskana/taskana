@@ -58,6 +58,7 @@ import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.ser
 import { ClassificationsService } from 'app/shared/services/classifications/classifications.service';
 import { ObtainMessageService } from './services/obtain-message/obtain-message.service';
 import { AccessIdsService } from './services/access-ids/access-ids.service';
+import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { GermanTimeFormatPipe } from './pipes/german-time-format.pipe';
 
 const MODULES = [
@@ -101,6 +102,7 @@ const DECLARATIONS = [
   DialogPopUpComponent,
   WorkbasketFilterComponent,
   TaskFilterComponent,
+  DragAndDropDirective,
   GermanTimeFormatPipe
 ];
 

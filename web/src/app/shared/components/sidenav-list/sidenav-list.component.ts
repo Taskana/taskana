@@ -4,6 +4,8 @@ import { MonitorGuard } from 'app/shared/guards/monitor.guard';
 import { UserGuard } from 'app/shared/guards/user.guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { SidenavService } from '../../services/sidenav/sidenav.service';
+import { Observable, of } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-sidenav-list',
@@ -17,6 +19,7 @@ export class SidenavListComponent implements OnInit {
   workplaceUrl = 'taskana/workplace';
   historyUrl = 'taskana/history';
   accessUrl = 'taskana/administration/access-items-management';
+  routingUrl = 'taskana/administration/task-routing';
   classificationUrl = 'taskana/administration/classifications';
   workbasketsUrl = 'taskana/administration/workbaskets';
   administrationsUrl = 'taskana/administration/workbaskets';
@@ -26,6 +29,7 @@ export class SidenavListComponent implements OnInit {
   monitorAccess = false;
   workplaceAccess = false;
   historyAccess = false;
+  routingAccess$: Observable<boolean> = of(false);
   settingsAccess = false;
 
   constructor(private taskanaEngineService: TaskanaEngineService, private sidenavService: SidenavService) {}
@@ -37,6 +41,8 @@ export class SidenavListComponent implements OnInit {
     this.taskanaEngineService.isHistoryProviderEnabled().subscribe((value) => {
       this.historyAccess = value;
     });
+    this.routingAccess$ = this.taskanaEngineService.isCustomRoutingRulesEnabled$;
+    this.routingAccess$.subscribe();
     this.settingsAccess = this.administrationAccess;
   }
 

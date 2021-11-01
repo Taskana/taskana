@@ -8,6 +8,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 
 const domainServiceSpy: Partial<DomainService> = {
   getDomains: jest.fn().mockReturnValue(of(['domain a', 'domain b'])),
@@ -30,7 +31,7 @@ describe('AdministrationOverviewComponent', () => {
         BrowserAnimationsModule
       ],
       declarations: [AdministrationOverviewComponent],
-      providers: [{ provide: DomainService, useValue: domainServiceSpy }]
+      providers: [{ provide: DomainService, useValue: domainServiceSpy }, TaskanaEngineService]
     }).compileComponents();
   }));
 

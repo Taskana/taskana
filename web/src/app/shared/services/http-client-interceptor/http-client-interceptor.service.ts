@@ -3,6 +3,7 @@ import {
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
+  HttpHeaders,
   HttpInterceptor,
   HttpRequest,
   HttpXsrfTokenExtractor
@@ -22,7 +23,13 @@ export class HttpClientInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let req = request.clone({ setHeaders: { 'Content-Type': 'application/hal+json' } });
+    let req = request.clone();
+    if (req.headers.get('Content-Type') === 'multipart/form-data') {
+      const headers = new HttpHeaders();
+      req = req.clone({ headers });
+    } else {
+      req = req.clone({ setHeaders: { 'Content-Type': 'application/hal+json' } });
+    }
     let token = this.tokenExtractor.getToken() as string;
     if (token !== null) {
       req = req.clone({ setHeaders: { 'X-XSRF-TOKEN': token } });
@@ -36,9 +43,8 @@ export class HttpClientInterceptor implements HttpInterceptor {
         (error) => {
           this.requestInProgressService.setRequestInProgress(false);
           if (
-            error.status !== 404 ||
-            !(error instanceof HttpErrorResponse) ||
-            error.url.indexOf('environment-information.json') === -1
+            error.status !== 404 &&
+            (!(error instanceof HttpErrorResponse) || error.url.indexOf('environment-information.json') === -1)
           ) {
             const { key, messageVariables } = error.error.error || {
               key: 'FALLBACK',
