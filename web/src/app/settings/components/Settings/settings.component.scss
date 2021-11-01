@@ -1,7 +1,7 @@
 @import 'src/theme/_colors.scss';
 
 .settings {
-  padding: 8px;
+  padding: 8px 32px;
 
   &__content {
     height: calc(100vh - 116px);
@@ -38,6 +38,12 @@
     display: grid;
     grid-gap: 4px;
     grid-template-columns: 300px 1fr 1fr;
+  }
+
+  &__text {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
   }
 
   &__grid--center {

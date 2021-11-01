@@ -6,15 +6,6 @@ const routes: Routes = [
   {
     path: '',
     component: SettingsComponent
-  },
-  {
-    path: '',
-    redirectTo: '',
-    pathMatch: 'full'
-  },
-  {
-    path: '**',
-    redirectTo: ''
   }
 ];
 

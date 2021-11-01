@@ -2,28 +2,25 @@
 
   <!-- BUTTONS -->
   <div class="settings__buttons">
-    <button (click)="onSave()" class="settings__button--primary" mat-button
-            matTooltip="Save settings">
+    <button class="settings__button--primary" mat-button matTooltip="Save settings" (click)="onSave()">
       Save
       <mat-icon class="md-20">save</mat-icon>
     </button>
 
-    <button (click)="onReset()" class="settings__button--secondary" mat-stroked-button
-            matTooltip="Revert changes">
+    <button class="settings__button--secondary" mat-stroked-button matTooltip="Revert changes" (click)="onReset()">
       Undo changes
       <mat-icon class="settings__icon md-20">restore</mat-icon>
     </button>
   </div>
 
   <div class="settings__content">
-
-    <div *ngFor="let group of settings.schema; let outerIndex = index">
+    <div *ngFor="let group of settings.schema">
       <h4 class="settings__domain-name"> {{group.displayName}} </h4>
       <div *ngFor="let member of group.members">
 
         <!-- STRING -->
-        <div *ngIf="member.type == settingTypes.TEXT" class="settings__grid">
-          <span> {{member.displayName}} </span>
+        <div *ngIf="member.type == settingTypes.Text" class="settings__grid">
+          <div class="settings__text"> {{member.displayName}} </div>
           <mat-form-field appearance="outline" class="settings__grid--two-columns">
             <mat-label class="{{member.key}}">{{member.displayName}}</mat-label>
             <input [(ngModel)]="settings[member.key]" matInput maxlength="{{member.max}}"
@@ -34,8 +31,8 @@
         </div>
 
         <!-- INTERVAL -->
-        <div *ngIf="member.type == settingTypes.INTERVAL" class="settings__grid">
-          <span>{{member.displayName}}</span>
+        <div *ngIf="member.type == settingTypes.Interval" class="settings__grid">
+          <div class="settings__text">{{member.displayName}}</div>
 
           <mat-form-field appearance="outline">
             <mat-label class="{{member.key}}">Lower boundary</mat-label>
@@ -54,17 +51,17 @@
 
 
         <!-- COLOR -->
-        <div *ngIf="member.type == settingTypes.COLOR"
+        <div *ngIf="member.type == settingTypes.Color"
              class="settings__grid settings__color">
-          <span>{{member.displayName}}</span>
+          <div class="settings__text">{{member.displayName}}</div>
           <input (change)="onColorChange(member.key)" class="settings__colors--input"
                  id="{{member.key}}" matInput
                  type="color" value="{{settings[member.key]}}">
         </div>
 
         <!-- JSON -->
-        <div *ngIf="member.type == settingTypes.JSON" class="settings__grid">
-          <span>{{member.displayName}}</span>
+        <div *ngIf="member.type == settingTypes.Json" class="settings__grid">
+          <div class="settings__text">{{member.displayName}}</div>
           <mat-form-field appearance="outline" class="settings__grid--two-columns">
             <mat-label class="{{member.key}}">
               {{member.displayName}}
@@ -76,12 +73,8 @@
                       placeholder="{{member.displayName}}"></textarea>
           </mat-form-field>
         </div>
-
       </div>
       <div class="settings__spacer"></div>
-
     </div>
   </div>
-
-
 </div>

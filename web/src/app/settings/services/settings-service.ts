@@ -4,6 +4,7 @@ import { Settings } from '../models/settings';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SettingsRepresentation } from '../models/settings-representation';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,4 @@ export class SettingsService {
       customAttributes: settings
     });
   }
-}
-
-interface SettingsRepresentation {
-  customAttributes: Settings;
 }
