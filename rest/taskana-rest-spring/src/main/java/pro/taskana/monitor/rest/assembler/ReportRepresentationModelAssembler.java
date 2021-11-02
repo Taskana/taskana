@@ -33,6 +33,7 @@ import pro.taskana.monitor.api.reports.row.SingleRow;
 import pro.taskana.monitor.rest.MonitorController;
 import pro.taskana.monitor.rest.TimeIntervalReportFilterParameter;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
+import pro.taskana.monitor.rest.models.PriorityReportFilterParameter;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
@@ -61,6 +62,7 @@ public class ReportRepresentationModelAssembler {
   @NonNull
   public ReportRepresentationModel toModel(
       @NonNull WorkbasketPriorityReport report,
+      @NonNull PriorityReportFilterParameter filterParameter,
       WorkbasketType[] workbasketTypes,
       PriorityColumnHeaderRepresentationModel[] columnHeaders)
       throws InvalidArgumentException, NotAuthorizedException {
@@ -68,7 +70,8 @@ public class ReportRepresentationModelAssembler {
     resource.add(
         linkTo(
                 methodOn(MonitorController.class)
-                    .computePriorityWorkbasketReport(workbasketTypes, columnHeaders))
+                    .computePriorityWorkbasketReport(
+                        filterParameter, workbasketTypes, columnHeaders))
             .withSelfRel());
     return resource;
   }
@@ -137,8 +140,8 @@ public class ReportRepresentationModelAssembler {
   @NonNull
   public ReportRepresentationModel toModel(
       @NonNull TaskStatusReport report,
-      @NonNull List<String> domains,
-      @NonNull List<TaskState> states,
+      @NonNull List<String> domain,
+      @NonNull List<TaskState> state,
       @NonNull List<String> workbasketIds,
       @NonNull Integer priorityMinimum)
       throws NotAuthorizedException {
@@ -146,7 +149,7 @@ public class ReportRepresentationModelAssembler {
     resource.add(
         linkTo(
                 methodOn(MonitorController.class)
-                    .computeTaskStatusReport(domains, states, workbasketIds, priorityMinimum))
+                    .computeTaskStatusReport(domain, state, workbasketIds, priorityMinimum))
             .withSelfRel());
     return resource;
   }

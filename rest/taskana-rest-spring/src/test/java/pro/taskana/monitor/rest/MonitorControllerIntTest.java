@@ -41,8 +41,8 @@ class MonitorControllerIntTest {
   void should_ReturnAllOpenTasksByState_When_QueryingForAWorkbasketAndReadyAndClaimedState() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT)
-            + "?workbasket-ids=WBI:100000000000000000000000000000000007"
-            + "&states=READY&states=CLAIMED";
+            + "?workbasket-id=WBI:100000000000000000000000000000000007"
+            + "&state=READY&state=CLAIMED";
     HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
     ResponseEntity<ReportRepresentationModel> response =
@@ -70,8 +70,8 @@ class MonitorControllerIntTest {
     ResponseEntity<ReportRepresentationModel> response =
         TEMPLATE.exchange(
             url
-                + "?workbasket-ids=WBI:100000000000000000000000000000000007"
-                + "&states=READY&priority-minimum=1",
+                + "?workbasket-id=WBI:100000000000000000000000000000000007"
+                + "&state=READY&priority-minimum=1",
             HttpMethod.GET,
             auth,
             ParameterizedTypeReference.forType(ReportRepresentationModel.class));
@@ -154,6 +154,30 @@ class MonitorControllerIntTest {
     assertThat(report).isNotNull();
 
     assertThat(report.getSumRow()).extracting(RowRepresentationModel::getTotal).containsExactly(26);
+  }
+
+  @Test
+  void should_ApplyComplexFilterCombination_When_QueryingForAWorkbasketPriorityReport() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
+            + "?workbasket-type=TOPIC&workbasket-type=GROUP"
+            + "&state=READY&state=CLAIMED"
+            + "&custom-6=074&custom-6=075"
+            + "&custom-7-not-in=20";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("monitor"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    ReportRepresentationModel report = response.getBody();
+    assertThat(report).isNotNull();
+    assertThat(report.getSumRow())
+        .extracting(RowRepresentationModel::getCells)
+        .containsExactly(new int[] {2, 0, 1});
   }
 
   @Test

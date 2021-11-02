@@ -18,6 +18,8 @@ import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.api.reports.row.Row;
+import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.WorkbasketType;
 
 /** Acceptance test for all "workbasket priority report" scenarios. */
@@ -82,5 +84,150 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
         .extracting(Report::getSumRow)
         .extracting(Row::getCells)
         .isEqualTo(expectedCells);
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithCustomAttributeIn() throws Exception {
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle B")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(11);
+
+    assertThat(report.rowSize()).isEqualTo(3);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {5, 0, 0});
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {5, 0, 0});
+    int[] row3 = report.getRow("GPK-1").getCells();
+    assertThat(row3).isEqualTo(new int[] {0, 1, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithCustomAttributeNotIn()
+      throws Exception {
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .customAttributeNotIn(
+                TaskCustomField.CUSTOM_1, "Geschaeftsstelle A", "Geschaeftsstelle C")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(11);
+
+    assertThat(report.rowSize()).isEqualTo(3);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {5, 0, 0});
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {5, 0, 0});
+    int[] row3 = report.getRow("GPK-1").getCells();
+    assertThat(row3).isEqualTo(new int[] {0, 1, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithCustomAttributeLike()
+      throws Exception {
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "%ftsstelle B")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(11);
+
+    assertThat(report.rowSize()).isEqualTo(3);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {5, 0, 0});
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {5, 0, 0});
+    int[] row3 = report.getRow("GPK-1").getCells();
+    assertThat(row3).isEqualTo(new int[] {0, 1, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithStateIn() throws Exception {
+    List<TaskState> states = List.of(TaskState.READY);
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .stateIn(states)
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(4);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {18, 0, 0});
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {19, 0, 0});
+    int[] row3 = report.getRow("USER-1-3").getCells();
+    assertThat(row3).isEqualTo(new int[] {4, 0, 0});
+    int[] row4 = report.getRow("GPK-1").getCells();
+    assertThat(row4).isEqualTo(new int[] {0, 1, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithDomainIn() throws Exception {
+    List<String> domains = List.of("DOMAIN_A");
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .domainIn(domains)
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(4);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {12, 0, 0});
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {10, 0, 0});
+    int[] row3 = report.getRow("USER-1-3").getCells();
+    assertThat(row3).isEqualTo(new int[] {4, 0, 0});
+    int[] row4 = report.getRow("TPK-VIP-1").getCells();
+    assertThat(row4).isEqualTo(new int[] {0, 1, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithClassificationCategoryIn()
+      throws Exception {
+    List<String> categories = List.of("AUTOMATIC", "MANUAL");
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .classificationCategoryIn(categories)
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(4);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {8, 0, 0});
+    int[] row2 = report.getRow("USER-1-2").getCells();
+    assertThat(row2).isEqualTo(new int[] {4, 0, 0});
+    int[] row3 = report.getRow("USER-1-3").getCells();
+    assertThat(row3).isEqualTo(new int[] {5, 0, 0});
+    int[] row4 = report.getRow("TPK-VIP-1").getCells();
+    assertThat(row4).isEqualTo(new int[] {0, 1, 0});
   }
 }

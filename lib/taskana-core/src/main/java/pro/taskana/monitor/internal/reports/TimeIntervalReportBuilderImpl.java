@@ -43,7 +43,7 @@ abstract class TimeIntervalReportBuilderImpl<
   protected boolean inWorkingDays;
   protected List<String> workbasketIds;
   protected List<TaskState> states;
-  protected List<String> classificationCategory;
+  protected List<String> classificationCategories;
   protected List<String> domains;
   protected List<String> classificationIds;
   protected List<String> excludedClassificationIds;
@@ -129,8 +129,8 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public B classificationCategoryIn(List<String> classificationCategory) {
-    this.classificationCategory = new ArrayList<>(classificationCategory);
+  public B classificationCategoryIn(List<String> classificationCategories) {
+    this.classificationCategories = new ArrayList<>(classificationCategories);
     return _this();
   }
 

@@ -16,7 +16,7 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
         .perform(
             get(
                 RestEndpoints.URL_MONITOR_WORKBASKET_REPORT
-                    + "?states=READY&states=CLAIMED&states=COMPLETED"))
+                    + "?state=READY&state=CLAIMED&state=COMPLETED"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
@@ -62,7 +62,7 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
   @Test
   void computeTaskStatusReportDocTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT))
+        .perform(get(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT + "?state=READY"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
