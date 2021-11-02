@@ -28,6 +28,7 @@ import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.rest.assembler.PriorityColumnHeaderRepresentationModelAssembler;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
+import pro.taskana.monitor.rest.models.PriorityReportFilterParameter;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -107,6 +108,7 @@ public class MonitorController {
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computePriorityWorkbasketReport(
+      PriorityReportFilterParameter filterParameter,
       @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes,
       @RequestParam(name = "columnHeader", required = false)
           PriorityColumnHeaderRepresentationModel[] columnHeaders)
@@ -114,6 +116,7 @@ public class MonitorController {
 
     WorkbasketPriorityReport.Builder builder =
         monitorService.createWorkbasketPriorityReportBuilder().workbasketTypeIn(workbasketTypes);
+    filterParameter.apply(builder);
 
     if (columnHeaders != null) {
       List<PriorityColumnHeader> priorityColumnHeaders =
@@ -125,7 +128,7 @@ public class MonitorController {
 
     ReportRepresentationModel report =
         reportRepresentationModelAssembler.toModel(
-            builder.buildReport(), workbasketTypes, columnHeaders);
+            builder.buildReport(), filterParameter, workbasketTypes, columnHeaders);
 
     return ResponseEntity.status(HttpStatus.OK).body(report);
   }
@@ -289,9 +292,9 @@ public class MonitorController {
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeTaskStatusReport(
-      @RequestParam(required = false) List<String> domains,
-      @RequestParam(required = false) List<TaskState> states,
-      @RequestParam(name = "workbasket-ids", required = false) List<String> workbasketIds,
+      @RequestParam(name = "domain", required = false) List<String> domains,
+      @RequestParam(name = "state", required = false) List<TaskState> states,
+      @RequestParam(name = "workbasket-id", required = false) List<String> workbasketIds,
       @RequestParam(name = "priority-minimum", required = false) Integer priorityMinimum)
       throws NotAuthorizedException {
 

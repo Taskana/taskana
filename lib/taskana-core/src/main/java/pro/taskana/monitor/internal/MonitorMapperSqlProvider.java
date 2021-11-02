@@ -31,7 +31,7 @@ public class MonitorMapperSqlProvider {
         + "</if> "
         + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "<if test=\"report.combinedClassificationFilter != null\">"
         + "AND <foreach collection='report.combinedClassificationFilter' "
         + "item='item' separator='OR'> "
@@ -65,7 +65,7 @@ public class MonitorMapperSqlProvider {
         + "</if> "
         + "FROM TASK T "
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "AND ${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
         + ") AS B "
@@ -90,7 +90,7 @@ public class MonitorMapperSqlProvider {
         + "</if> "
         + "FROM TASK T "
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "AND ${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
         + ") AS B "
@@ -116,7 +116,7 @@ public class MonitorMapperSqlProvider {
         + "</if> "
         + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "AND T.${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
         + ") AS B "
@@ -140,7 +140,7 @@ public class MonitorMapperSqlProvider {
         + "</if> "
         + "FROM TASK T "
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "AND ${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
         + ") AS B "
@@ -156,7 +156,7 @@ public class MonitorMapperSqlProvider {
         + "LEFT JOIN ATTACHMENT A ON T.ID = A.TASK_ID "
         + "</if>"
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "<if test=\"combinedClassificationFilter != null\">"
         + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
         + "T.CLASSIFICATION_ID = #{item.taskClassificationId} "
@@ -197,7 +197,7 @@ public class MonitorMapperSqlProvider {
   public static String getTasksCountByState() {
     return OPENING_SCRIPT_TAG
         + "SELECT WORKBASKET_KEY, STATE, COUNT(STATE) as COUNT "
-        + "FROM TASK "
+        + "FROM TASK AS T"
         + OPENING_WHERE_TAG
         + whereIn("domains", "DOMAIN")
         + whereIn("states", "STATE")
@@ -237,11 +237,7 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"status.name() == 'COMPLETED'\">"
         + "T.COMPLETED IS NOT NULL "
         + "</if>"
-        + whereIn("report.classificationCategory", "T.CLASSIFICATION_CATEGORY")
-        + whereIn("report.domains", "T.DOMAIN")
-        + whereIn("report.classificationIds", "T.CLASSIFICATION_ID")
-        + whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID")
-        + whereCustomStatements("report.custom", "T.CUSTOM", 16)
+        + taskWhereStatements()
         + CLOSING_WHERE_TAG
         + ") AS A "
         + "GROUP BY A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4 "
@@ -257,7 +253,7 @@ public class MonitorMapperSqlProvider {
         + "LEFT JOIN ATTACHMENT A ON T.ID = A.TASK_ID "
         + "</if>"
         + OPENING_WHERE_TAG
-        + timeIntervalWhereStatements()
+        + taskWhereStatements()
         + "<if test=\"combinedClassificationFilter != null\">"
         + "AND <foreach collection='combinedClassificationFilter' item='item' separator='OR'> "
         + "T.CLASSIFICATION_ID = #{item.taskClassificationId} "
@@ -277,7 +273,8 @@ public class MonitorMapperSqlProvider {
         + "FROM TASK as T "
         + "INNER JOIN WORKBASKET as W ON W.ID = T.WORKBASKET_ID "
         + OPENING_WHERE_TAG
-        + whereIn("report.workbasketType", "W.TYPE")
+        + taskWhereStatements()
+        + workbasketWhereStatements()
         + CLOSING_WHERE_TAG
         + "GROUP BY T.WORKBASKET_KEY, T.PRIORITY"
         + CLOSING_SCRIPT_TAG;
@@ -301,15 +298,21 @@ public class MonitorMapperSqlProvider {
     return whereCustomStatements(baseCollection, baseColumn, customBound, new StringBuilder());
   }
 
-  private static StringBuilder timeIntervalWhereStatements() {
+  private static StringBuilder taskWhereStatements() {
     StringBuilder sb = new StringBuilder();
     SqlProviderUtil.whereIn("report.workbasketIds", "T.WORKBASKET_ID", sb);
     SqlProviderUtil.whereIn("report.states", "T.STATE", sb);
-    SqlProviderUtil.whereIn("report.classificationCategory", "T.CLASSIFICATION_CATEGORY", sb);
+    SqlProviderUtil.whereIn("report.classificationCategories", "T.CLASSIFICATION_CATEGORY", sb);
     SqlProviderUtil.whereIn("report.domains", "T.DOMAIN", sb);
     SqlProviderUtil.whereIn("report.classificationIds", "T.CLASSIFICATION_ID", sb);
     SqlProviderUtil.whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID", sb);
     whereCustomStatements("report.custom", "T.CUSTOM", 16, sb);
+    return sb;
+  }
+
+  private static StringBuilder workbasketWhereStatements() {
+    StringBuilder sb = new StringBuilder();
+    SqlProviderUtil.whereIn("report.workbasketTypes", "W.TYPE", sb);
     return sb;
   }
 }
