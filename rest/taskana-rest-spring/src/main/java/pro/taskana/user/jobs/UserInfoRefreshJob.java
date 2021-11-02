@@ -134,8 +134,8 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
               LOGGER.debug(
                   String.format(
                       "Failed to fetch configuration data for User "
-                          + "with ID '%s' because it doesn't exist"),
-                  user.getId());
+                          + "with ID '%s' because it doesn't exist",
+                      user.getId()));
             }
           }
         });
