@@ -62,7 +62,7 @@ class MonitorControllerRestDocTest extends BaseRestDocTest {
   @Test
   void computeTaskStatusReportDocTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT + "?state=READY"))
+        .perform(get(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 

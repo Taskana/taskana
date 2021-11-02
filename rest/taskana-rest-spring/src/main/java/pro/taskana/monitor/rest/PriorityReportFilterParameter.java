@@ -4,21 +4,19 @@ import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 
 import java.beans.ConstructorProperties;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.QueryParameter;
-import pro.taskana.monitor.api.reports.TimeIntervalReportBuilder;
-import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
+import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
+import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
-public class TimeIntervalReportFilterParameter extends ReportFilterParameter
-    implements QueryParameter<TimeIntervalReportBuilder<?, ?, TimeIntervalColumnHeader>, Void> {
+public class PriorityReportFilterParameter extends ReportFilterParameter
+    implements QueryParameter<WorkbasketPriorityReport.Builder, Void> {
 
   @ConstructorProperties({
     "in-working-days",
@@ -77,7 +75,7 @@ public class TimeIntervalReportFilterParameter extends ReportFilterParameter
     "custom-16-like",
     "custom-16-not-in"
   })
-  public TimeIntervalReportFilterParameter(
+  public PriorityReportFilterParameter(
       Boolean inWorkingDays,
       String[] workbasketId,
       TaskState[] state,
@@ -192,7 +190,7 @@ public class TimeIntervalReportFilterParameter extends ReportFilterParameter
   }
 
   @Override
-  public Void apply(TimeIntervalReportBuilder<?, ?, TimeIntervalColumnHeader> builder) {
+  public Void apply(WorkbasketPriorityReport.Builder builder) {
     builder.withColumnHeaders(defaultColumnHeaders());
     Optional.ofNullable(inWorkingDays)
         .ifPresent(
@@ -282,15 +280,10 @@ public class TimeIntervalReportFilterParameter extends ReportFilterParameter
     return null;
   }
 
-  private List<TimeIntervalColumnHeader> defaultColumnHeaders() {
-    return Stream.concat(
-            Stream.of(
-                new TimeIntervalColumnHeader.Range(Integer.MIN_VALUE, -10),
-                new TimeIntervalColumnHeader.Range(-10, -5),
-                new TimeIntervalColumnHeader.Range(5, 10),
-                new TimeIntervalColumnHeader.Range(10, Integer.MAX_VALUE)),
-            Stream.of(-4, -3, -2, -1, 0, 1, 2, 3, 4).map(TimeIntervalColumnHeader.Range::new))
-        .sorted(Comparator.comparing(TimeIntervalColumnHeader::getLowerAgeLimit))
-        .collect(Collectors.toList());
+  private List<PriorityColumnHeader> defaultColumnHeaders() {
+    return Arrays.asList(
+        new PriorityColumnHeader(Integer.MIN_VALUE, 249),
+        new PriorityColumnHeader(250, 500),
+        new PriorityColumnHeader(501, Integer.MAX_VALUE));
   }
 }

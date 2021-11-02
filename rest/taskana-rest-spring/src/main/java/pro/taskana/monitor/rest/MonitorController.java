@@ -28,7 +28,6 @@ import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.rest.assembler.PriorityColumnHeaderRepresentationModelAssembler;
 import pro.taskana.monitor.rest.assembler.ReportRepresentationModelAssembler;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
-import pro.taskana.monitor.rest.models.PriorityReportFilterParameter;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
@@ -99,6 +98,7 @@ public class MonitorController {
    * <p>Each Column Header represents a priority range.
    *
    * @title Compute a Workbasket Priority Report
+   * @param filterParameter the filter parameters
    * @param workbasketTypes determine the WorkbasketTypes to include in the report
    * @param columnHeaders the column headers for the report
    * @return the computed Report
