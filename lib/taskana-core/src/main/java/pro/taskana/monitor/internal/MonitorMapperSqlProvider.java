@@ -293,11 +293,6 @@ public class MonitorMapperSqlProvider {
     return sb;
   }
 
-  private static StringBuilder whereCustomStatements(
-      String baseCollection, String baseColumn, int customBound) {
-    return whereCustomStatements(baseCollection, baseColumn, customBound, new StringBuilder());
-  }
-
   private static StringBuilder taskWhereStatements() {
     StringBuilder sb = new StringBuilder();
     SqlProviderUtil.whereIn("report.workbasketIds", "T.WORKBASKET_ID", sb);

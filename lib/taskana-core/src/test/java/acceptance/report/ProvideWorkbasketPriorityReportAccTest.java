@@ -230,4 +230,103 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
     int[] row4 = report.getRow("TPK-VIP-1").getCells();
     assertThat(row4).isEqualTo(new int[] {0, 1, 0});
   }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithAllCustomFieldsIn() throws Exception {
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .customAttributeIn(TaskCustomField.CUSTOM_1, "Geschaeftsstelle A")
+            .customAttributeIn(TaskCustomField.CUSTOM_2, "Vollkasko")
+            .customAttributeIn(TaskCustomField.CUSTOM_3, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_4, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_5, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_6, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_7, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_8, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_9, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_10, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_11, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_12, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_13, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_14, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_15, "")
+            .customAttributeIn(TaskCustomField.CUSTOM_16, "VALUE_01")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {1, 0, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithAllCustomFieldsLike()
+      throws Exception {
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .customAttributeLike(TaskCustomField.CUSTOM_1, "Geschaeftsstelle %")
+            .customAttributeLike(TaskCustomField.CUSTOM_2, "Vollkask%")
+            .customAttributeLike(TaskCustomField.CUSTOM_3, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_4, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_5, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_6, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_7, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_8, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_9, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_10, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_11, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_12, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_13, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_14, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_15, "")
+            .customAttributeLike(TaskCustomField.CUSTOM_16, "%ALUE_01")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {1, 0, 0});
+  }
+
+  @WithAccessId(user = "monitor")
+  @Test
+  void should_ReturnItemsOfWorkbasketReport_When_FilteringWithAllCustomFieldsNotIn()
+      throws Exception {
+    WorkbasketPriorityReport report =
+        MONITOR_SERVICE
+            .createWorkbasketPriorityReportBuilder()
+            .withColumnHeaders(DEFAULT_TEST_HEADERS)
+            .customAttributeNotIn(
+                TaskCustomField.CUSTOM_1, "Geschaeftsstelle A", "Geschaeftsstelle C")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_2, "Teilkasko")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_3, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_4, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_5, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_6, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_7, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_8, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_9, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_10, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_11, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_12, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_13, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_14, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_15, "INVALID")
+            .customAttributeNotIn(TaskCustomField.CUSTOM_16, "VALUE_24", "VALUE_25")
+            .inWorkingDays()
+            .buildReport();
+
+    assertThat(report).isNotNull();
+    assertThat(report.rowSize()).isEqualTo(1);
+    int[] row1 = report.getRow("USER-1-1").getCells();
+    assertThat(row1).isEqualTo(new int[] {1, 0, 0});
+  }
 }
