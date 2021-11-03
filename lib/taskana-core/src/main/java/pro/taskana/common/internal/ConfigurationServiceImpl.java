@@ -47,7 +47,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     internalTaskanaEngine.executeInDatabaseConnection(
         CheckedRunnable.wrap(
             () -> {
-              if (mapper.getAllCustomAttributes() == null) {
+              if (mapper.getAllCustomAttributes(true) == null) {
                 if (LOGGER.isDebugEnabled()) {
                   LOGGER.debug("custom attributes are not set. Setting default value");
                 }
@@ -58,7 +58,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
   @Override
   public Map<String, Object> getAllCustomAttributes() {
-    return internalTaskanaEngine.executeInDatabaseConnection(mapper::getAllCustomAttributes);
+    return internalTaskanaEngine.executeInDatabaseConnection(
+        () -> mapper.getAllCustomAttributes(false));
   }
 
   @Override

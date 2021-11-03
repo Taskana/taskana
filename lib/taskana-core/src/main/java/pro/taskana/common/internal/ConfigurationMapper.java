@@ -14,8 +14,14 @@ public interface ConfigurationMapper {
   @Insert("INSERT INTO CONFIGURATION(ENFORCE_SECURITY) VALUES (#{securityEnabled})")
   void setSecurityEnabled(@Param("securityEnabled") boolean securityEnabled);
 
-  @Select("SELECT CUSTOM_ATTRIBUTES FROM CONFIGURATION")
-  Map<String, Object> getAllCustomAttributes();
+  @Select(
+      "<script> SELECT CUSTOM_ATTRIBUTES FROM CONFIGURATION "
+          + "<if test='lockForUpdate == true'>"
+          + "FETCH FIRST ROW ONLY FOR UPDATE "
+          + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if> "
+          + "</if>"
+          + "</script>")
+  Map<String, Object> getAllCustomAttributes(boolean lockForUpdate);
 
   @Update("UPDATE CONFIGURATION SET CUSTOM_ATTRIBUTES = #{customAttributes}")
   void setAllCustomAttributes(@Param("customAttributes") Map<String, ?> customAttributes);

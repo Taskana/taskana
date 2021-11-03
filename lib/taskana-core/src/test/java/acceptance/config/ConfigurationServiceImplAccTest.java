@@ -41,7 +41,7 @@ public class ConfigurationServiceImplAccTest {
                       ConfigurationServiceImpl.class, "defaultCustomAttributes.json"))
               .toMap();
 
-      Map<String, Object> allCustomAttributes = configurationMapper.getAllCustomAttributes();
+      Map<String, Object> allCustomAttributes = configurationMapper.getAllCustomAttributes(false);
 
       assertThat(allCustomAttributes).isEqualTo(expectedCustomAttributes);
     }
