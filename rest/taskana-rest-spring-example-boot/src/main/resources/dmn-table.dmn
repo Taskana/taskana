@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
+  <decision id="workbasketRouting" name="workbasketRouting">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="POR">
+        <inputExpression id="InputExpression1816276523" typeRef="string">
+          <text>task.primaryObjRef.value</text>
+        </inputExpression>
+      </input>
+      <input id="input2" label="ClassificationKey">
+        <inputExpression id="InputExpression475650354" typeRef="string" expressionLanguage="javascript">
+          <text>task.classificationSummary.key + task.note</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="workbasketKey" name="workbasketKey" typeRef="string" />
+      <output id="output2" label="domain" name="domain" typeRef="string" />
+    </decisionTable>
+  </decision>
+</definitions>
