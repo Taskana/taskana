@@ -8,6 +8,10 @@ import pro.taskana.common.api.exceptions.SystemException;
 
 public class ParallelThreadHelper {
 
+  private ParallelThreadHelper() {
+    throw new IllegalStateException("Utility class");
+  }
+
   public static void runInThread(Runnable runnable, int threadCount) throws Exception {
     Thread[] threads = new Thread[threadCount];
 
