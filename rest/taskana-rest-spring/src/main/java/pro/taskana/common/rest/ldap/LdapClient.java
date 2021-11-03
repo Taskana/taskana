@@ -558,6 +558,13 @@ public class LdapClient {
         // optional settings
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS))
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_EMAIL_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_PHONE_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_MOBILE_PHONE_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_1_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_2_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_3_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE))
         .filter(p -> p.getValueFromEnv(env) == null)
         .collect(Collectors.toList());
   }
