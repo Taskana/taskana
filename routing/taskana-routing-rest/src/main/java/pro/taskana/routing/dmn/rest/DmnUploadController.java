@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.routing.dmn.service.DmnConverterService;
-import pro.taskana.routing.dmn.spi.internal.DmnValidatorManager;
 
 /** Controller for all DMN upload related endpoints. */
 @RestController
@@ -59,6 +58,6 @@ public class DmnUploadController {
    */
   @GetMapping(path = RoutingRestEndpoints.ROUTING_REST_ENABLED)
   public ResponseEntity<Boolean> getIsRoutingRestEnabled() {
-    return ResponseEntity.ok(DmnValidatorManager.isDmnUploadProviderEnabled());
+    return ResponseEntity.ok(true);
   }
 }

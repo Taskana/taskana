@@ -4,5 +4,5 @@ applications:
   path: ../rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
   buildpacks: 
   - https://github.com/cloudfoundry/java-buildpack.git
-  memory: 640M
-  disk_quota: 256M
+  memory: 1G
+  disk_quota: 512M
