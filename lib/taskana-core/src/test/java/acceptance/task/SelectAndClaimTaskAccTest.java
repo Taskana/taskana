@@ -22,6 +22,7 @@ import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.common.test.util.ParallelThreadHelper;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
@@ -39,7 +40,8 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
             Stream.of("admin", "teamlead-1", "teamlead-2", "taskadmin")
                 .collect(Collectors.toList()));
 
-    runInThread(getRunnableTest(selectedAndClaimedTasks, accessIds), accessIds.size());
+    ParallelThreadHelper.runInThread(
+        getRunnableTest(selectedAndClaimedTasks, accessIds), accessIds.size());
 
     assertThat(selectedAndClaimedTasks)
         .extracting(Task::getId)
@@ -65,17 +67,6 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
         .hasMessageContaining(
             "No tasks matched the specified filter and sorting options, "
                 + "task query returned nothing!");
-  }
-
-  private void runInThread(Runnable runnable, int threadCount) throws InterruptedException {
-    Thread[] threads = new Thread[threadCount];
-    for (int i = 0; i < threads.length; i++) {
-      threads[i] = new Thread(runnable);
-      threads[i].start();
-    }
-    for (Thread thread : threads) {
-      thread.join();
-    }
   }
 
   private Runnable getRunnableTest(List<Task> selectedAndClaimedTasks, List<String> accessIds) {
