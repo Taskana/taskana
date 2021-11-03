@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.3.5">
   <decision id="workbasketRouting" name="workbasketRouting">
     <decisionTable id="decisionTable" hitPolicy="FIRST">
-      <input id="input1" label="BKN">
+      <input id="input1" label="POR">
         <inputExpression id="InputExpression1816276523" typeRef="string">
           <text>task.primaryObjRef.value</text>
         </inputExpression>
@@ -15,7 +15,7 @@
       <output id="output1" label="workbasketKey" name="workbasketKey" typeRef="string" />
       <output id="output2" label="domain" name="domain" typeRef="string" />
       <rule id="excelRow6">
-        <description>VIP-Team</description>
+        <description>Team-1</description>
         <inputEntry id="B6">
           <text>"06260203"</text>
         </inputEntry>
@@ -23,14 +23,14 @@
           <text>-</text>
         </inputEntry>
         <outputEntry id="D6">
-          <text>"GPK_ARS"</text>
+          <text>"GPK_KSC"</text>
         </outputEntry>
         <outputEntry id="E6">
-          <text>"ULAK-D"</text>
+          <text>"DOMAIN_A"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow7">
-        <description>Second-Level Team 1</description>
+        <description>Team-2</description>
         <inputEntry id="B7">
           <text>-</text>
         </inputEntry>
@@ -38,14 +38,14 @@
           <text>"matches(cellInput,"12924|12925|")"</text>
         </inputEntry>
         <outputEntry id="D7">
-          <text>"GPK_ARS_4"</text>
+          <text>"GPK_KSC_4"</text>
         </outputEntry>
         <outputEntry id="E7">
-          <text>"ULAK-D"</text>
+          <text>"DOMAIN_A"</text>
         </outputEntry>
       </rule>
       <rule id="excelRow8">
-        <description>ULAK-D</description>
+        <description>Team-3</description>
         <inputEntry id="B8">
           <text>"12345678"</text>
         </inputEntry>
@@ -53,10 +53,10 @@
           <text>"contains("someString")"</text>
         </inputEntry>
         <outputEntry id="D8">
-          <text>"GPK_ARS_3"</text>
+          <text>"GPK_KSC_3"</text>
         </outputEntry>
         <outputEntry id="E8">
-          <text>"ULAK-D"</text>
+          <text>"DOMAIN_A"</text>
         </outputEntry>
       </rule>
     </decisionTable>
