@@ -22,6 +22,7 @@ import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.jobs.PlainJavaTransactionProvider;
 import pro.taskana.common.test.config.DataSourceGenerator;
+import pro.taskana.common.test.util.ParallelThreadHelper;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 
 @Disabled
@@ -37,7 +38,7 @@ class JobRunnerAccTest extends AbstractAccTest {
     ScheduledJob job = createJob(Instant.now().minus(5, ChronoUnit.MINUTES));
     assertThat(jobService.findJobsToRun()).containsExactly(job);
 
-    runInThread(
+    ParallelThreadHelper.runInThread(
         () -> {
           try {
             TaskanaEngine taskanaEngine =
@@ -67,17 +68,6 @@ class JobRunnerAccTest extends AbstractAccTest {
         getJobMapper().findJobsToRun(Instant.now().plus(2, ChronoUnit.DAYS));
 
     assertThat(jobsToRun).hasSize(1).doesNotContain(job);
-  }
-
-  private void runInThread(Runnable runnable, int threadCount) throws Exception {
-    Thread[] threads = new Thread[threadCount];
-    for (int i = 0; i < threads.length; i++) {
-      threads[i] = new Thread(runnable);
-      threads[i].start();
-    }
-    for (Thread thread : threads) {
-      thread.join();
-    }
   }
 
   private ScheduledJob createJob(Instant firstDue) {
