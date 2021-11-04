@@ -31,4 +31,9 @@ public class LocalTimeInterval {
   public void setEnd(LocalTime end) {
     this.end = end;
   }
+
+  @Override
+  public String toString() {
+    return "LocalTimeInterval [begin=" + begin + ", end=" + end + "]";
+  }
 }
