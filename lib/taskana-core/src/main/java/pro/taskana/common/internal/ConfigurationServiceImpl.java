@@ -27,16 +27,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
   public void checkSecureAccess(boolean securityEnabled) {
     Boolean isSecurityEnabled =
-        internalTaskanaEngine.executeInDatabaseConnection(mapper::isSecurityEnabled);
+        internalTaskanaEngine.executeInDatabaseConnection(() -> mapper.isSecurityEnabled(false));
 
     if (isSecurityEnabled == null) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Security-mode is not yet set. Setting security flag to {}", securityEnabled);
-      }
-      mapper.setSecurityEnabled(securityEnabled);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Successfully set security mode to {}", securityEnabled);
-      }
+      initializeSecurityEnabled(securityEnabled);
     } else if (isSecurityEnabled && !securityEnabled) {
       LOGGER.error("Tried to start TASKANA in unsecured mode while secured mode is enforced!");
       throw new SystemException("Secured TASKANA mode is enforced, can't start in unsecured mode");
@@ -71,6 +65,25 @@ public class ConfigurationServiceImpl implements ConfigurationService {
   @Override
   public Optional<Object> getValue(String attribute) {
     return Optional.ofNullable(getAllCustomAttributes().get(attribute));
+  }
+
+  private void initializeSecurityEnabled(boolean securityEnabled) {
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Security-mode is not yet set. Setting security flag to {}", securityEnabled);
+    }
+    Boolean isStillSecurityEnabled = mapper.isSecurityEnabled(true);
+    if (isStillSecurityEnabled == null) {
+      mapper.setSecurityEnabled(securityEnabled);
+      isStillSecurityEnabled = Boolean.valueOf(securityEnabled);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Successfully set security mode to {}", securityEnabled);
+      }
+    }
+    if (isStillSecurityEnabled && !securityEnabled) {
+      LOGGER.error("Tried to start TASKANA in unsecured mode while secured mode is enforced!");
+      throw new SystemException("Secured TASKANA mode is enforced, can't start in unsecured mode");
+    }
   }
 
   private Map<String, Object> generateDefaultCustomAttributes() throws IOException {
