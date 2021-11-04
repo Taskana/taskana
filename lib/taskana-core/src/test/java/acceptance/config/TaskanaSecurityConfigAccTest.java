@@ -88,13 +88,19 @@ class TaskanaSecurityConfigAccTest {
 
       String selectSecurityFlagSql =
           String.format(
-              "SELECT ENFORCE_SECURITY FROM %s.CONFIGURATION", DataSourceGenerator.getSchemaName());
+              "SELECT ENFORCE_SECURITY FROM %s.CONFIGURATION WHERE NAME = 'MASTER'",
+              DataSourceGenerator.getSchemaName());
 
       Statement statement = connection.createStatement();
       ResultSet resultSet = statement.executeQuery(selectSecurityFlagSql);
 
       if (resultSet.next()) {
-        return resultSet.getBoolean(1);
+        Boolean securityEnabled = resultSet.getBoolean(1);
+        if (resultSet.wasNull()) {
+          return null;
+        } else {
+          return securityEnabled;
+        }
       }
       statement.close();
       return null;
@@ -107,7 +113,7 @@ class TaskanaSecurityConfigAccTest {
 
       String sql =
           String.format(
-              "INSERT INTO %s.CONFIGURATION (ENFORCE_SECURITY) VALUES (%b)",
+              "UPDATE %s.CONFIGURATION SET ENFORCE_SECURITY = %b WHERE NAME = 'MASTER'",
               DataSourceGenerator.getSchemaName(), securityFlag);
 
       Statement statement = connection.createStatement();

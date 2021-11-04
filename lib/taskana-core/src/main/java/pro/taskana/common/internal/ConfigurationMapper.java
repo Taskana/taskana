@@ -1,17 +1,22 @@
 package pro.taskana.common.internal;
 
 import java.util.Map;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 public interface ConfigurationMapper {
 
-  @Select("SELECT ENFORCE_SECURITY FROM CONFIGURATION")
-  Boolean isSecurityEnabled();
+  @Select(
+      "<script> SELECT ENFORCE_SECURITY FROM CONFIGURATION "
+          + "<if test='lockForUpdate == true'>"
+          + "FETCH FIRST ROW ONLY FOR UPDATE "
+          + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if> "
+          + "</if>"
+          + "</script>")
+  Boolean isSecurityEnabled(boolean lockForUpdate);
 
-  @Insert("INSERT INTO CONFIGURATION(ENFORCE_SECURITY) VALUES (#{securityEnabled})")
+  @Update("UPDATE CONFIGURATION SET ENFORCE_SECURITY = #{securityEnabled} WHERE NAME = 'MASTER'")
   void setSecurityEnabled(@Param("securityEnabled") boolean securityEnabled);
 
   @Select(
@@ -23,6 +28,6 @@ public interface ConfigurationMapper {
           + "</script>")
   Map<String, Object> getAllCustomAttributes(boolean lockForUpdate);
 
-  @Update("UPDATE CONFIGURATION SET CUSTOM_ATTRIBUTES = #{customAttributes}")
+  @Update("UPDATE CONFIGURATION SET CUSTOM_ATTRIBUTES = #{customAttributes} WHERE NAME = 'MASTER'")
   void setAllCustomAttributes(@Param("customAttributes") Map<String, ?> customAttributes);
 }
