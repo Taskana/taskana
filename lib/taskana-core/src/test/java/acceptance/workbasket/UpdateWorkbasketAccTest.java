@@ -7,8 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,28 +56,6 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     assertThat(updatedWorkbasket.getName()).isEqualTo("new name");
     assertThat(updatedWorkbasket.getType()).isEqualTo(WorkbasketType.TOPIC);
     assertThat(updatedWorkbasket.getModified()).isNotEqualTo(modified);
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
-  void should_SetCustomAttributeToEmptyString_When_SetToNullDuringUpdate() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    Workbasket workbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
-    Arrays.stream(WorkbasketCustomField.values())
-        .forEach(customField -> workbasket.setCustomAttribute(customField, null));
-    workbasketService.updateWorkbasket(workbasket);
-
-    Workbasket updatedWorkbasket = workbasketService.getWorkbasket("GPK_KSC", "DOMAIN_A");
-
-    SoftAssertions softly = new SoftAssertions();
-    Arrays.stream(WorkbasketCustomField.values())
-        .forEach(
-            customField ->
-                softly
-                    .assertThat(updatedWorkbasket.getCustomAttribute(customField))
-                    .describedAs("CustomField was null: " + customField)
-                    .isNotNull());
-    softly.assertAll();
   }
 
   @WithAccessId(user = "businessadmin")

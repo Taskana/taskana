@@ -20,14 +20,14 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   protected int priority;
   protected String serviceLevel; // PddDThhHmmM
   protected String type;
-  protected String custom1 = "";
-  protected String custom2 = "";
-  protected String custom3 = "";
-  protected String custom4 = "";
-  protected String custom5 = "";
-  protected String custom6 = "";
-  protected String custom7 = "";
-  protected String custom8 = "";
+  protected String custom1;
+  protected String custom2;
+  protected String custom3;
+  protected String custom4;
+  protected String custom5;
+  protected String custom6;
+  protected String custom7;
+  protected String custom8;
 
   public ClassificationSummaryImpl() {}
 
@@ -179,11 +179,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom1(String custom1) {
-    if (custom1 == null) {
-      this.custom1 = "";
-    } else {
-      this.custom1 = custom1;
-    }
+    this.custom1 = custom1;
   }
 
   public String getCustom2() {
@@ -191,11 +187,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom2(String custom2) {
-    if (custom2 == null) {
-      this.custom2 = "";
-    } else {
-      this.custom2 = custom2;
-    }
+    this.custom2 = custom2;
   }
 
   public String getCustom3() {
@@ -203,11 +195,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom3(String custom3) {
-    if (custom3 == null) {
-      this.custom3 = "";
-    } else {
-      this.custom3 = custom3;
-    }
+    this.custom3 = custom3;
   }
 
   public String getCustom4() {
@@ -215,11 +203,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom4(String custom4) {
-    if (custom4 == null) {
-      this.custom4 = "";
-    } else {
-      this.custom4 = custom4;
-    }
+    this.custom4 = custom4;
   }
 
   public String getCustom5() {
@@ -227,11 +211,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom5(String custom5) {
-    if (custom5 == null) {
-      this.custom5 = "";
-    } else {
-      this.custom5 = custom5;
-    }
+    this.custom5 = custom5;
   }
 
   public String getCustom6() {
@@ -239,11 +219,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom6(String custom6) {
-    if (custom6 == null) {
-      this.custom6 = "";
-    } else {
-      this.custom6 = custom6;
-    }
+    this.custom6 = custom6;
   }
 
   public String getCustom7() {
@@ -251,11 +227,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom7(String custom7) {
-    if (custom7 == null) {
-      this.custom7 = "";
-    } else {
-      this.custom7 = custom7;
-    }
+    this.custom7 = custom7;
   }
 
   public String getCustom8() {
@@ -263,11 +235,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom8(String custom8) {
-    if (custom8 == null) {
-      this.custom8 = "";
-    } else {
-      this.custom8 = custom8;
-    }
+    this.custom8 = custom8;
   }
 
   @Override

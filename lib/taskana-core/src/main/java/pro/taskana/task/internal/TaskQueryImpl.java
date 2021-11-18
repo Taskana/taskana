@@ -257,67 +257,99 @@ public class TaskQueryImpl implements TaskQuery {
   // endregion
   // region customAttributes
   private String[] custom1In;
+  private boolean custom1InContainsNull;
   private String[] custom1NotIn;
+  private boolean custom1NotInContainsNull;
   private String[] custom1Like;
   private String[] custom1NotLike;
   private String[] custom2In;
+  private boolean custom2InContainsNull;
   private String[] custom2NotIn;
+  private boolean custom2NotInContainsNull;
   private String[] custom2Like;
   private String[] custom2NotLike;
   private String[] custom3In;
+  private boolean custom3InContainsNull;
   private String[] custom3NotIn;
+  private boolean custom3NotInContainsNull;
   private String[] custom3Like;
   private String[] custom3NotLike;
   private String[] custom4In;
+  private boolean custom4InContainsNull;
   private String[] custom4NotIn;
+  private boolean custom4NotInContainsNull;
   private String[] custom4Like;
   private String[] custom4NotLike;
   private String[] custom5In;
+  private boolean custom5InContainsNull;
   private String[] custom5NotIn;
+  private boolean custom5NotInContainsNull;
   private String[] custom5Like;
   private String[] custom5NotLike;
   private String[] custom6In;
+  private boolean custom6InContainsNull;
   private String[] custom6NotIn;
+  private boolean custom6NotInContainsNull;
   private String[] custom6Like;
   private String[] custom6NotLike;
   private String[] custom7In;
+  private boolean custom7InContainsNull;
   private String[] custom7NotIn;
+  private boolean custom7NotInContainsNull;
   private String[] custom7Like;
   private String[] custom7NotLike;
   private String[] custom8In;
+  private boolean custom8InContainsNull;
   private String[] custom8NotIn;
+  private boolean custom8NotInContainsNull;
   private String[] custom8Like;
   private String[] custom8NotLike;
   private String[] custom9In;
+  private boolean custom9InContainsNull;
   private String[] custom9NotIn;
+  private boolean custom9NotInContainsNull;
   private String[] custom9Like;
   private String[] custom9NotLike;
   private String[] custom10In;
+  private boolean custom10InContainsNull;
   private String[] custom10NotIn;
+  private boolean custom10NotInContainsNull;
   private String[] custom10Like;
   private String[] custom10NotLike;
   private String[] custom11In;
+  private boolean custom11InContainsNull;
   private String[] custom11NotIn;
+  private boolean custom11NotInContainsNull;
   private String[] custom11Like;
   private String[] custom11NotLike;
   private String[] custom12In;
+  private boolean custom12InContainsNull;
   private String[] custom12NotIn;
+  private boolean custom12NotInContainsNull;
   private String[] custom12Like;
   private String[] custom12NotLike;
   private String[] custom13In;
+  private boolean custom13InContainsNull;
   private String[] custom13NotIn;
+  private boolean custom13NotInContainsNull;
   private String[] custom13Like;
   private String[] custom13NotLike;
   private String[] custom14In;
+  private boolean custom14InContainsNull;
   private String[] custom14NotIn;
+  private boolean custom14NotInContainsNull;
   private String[] custom14Like;
   private String[] custom14NotLike;
   private String[] custom15In;
+  private boolean custom15InContainsNull;
   private String[] custom15NotIn;
+  private boolean custom15NotInContainsNull;
   private String[] custom15Like;
   private String[] custom15NotLike;
   private String[] custom16In;
+  private boolean custom16InContainsNull;
   private String[] custom16NotIn;
+  private boolean custom16NotInContainsNull;
   private String[] custom16Like;
   private String[] custom16NotLike;
   // endregion
@@ -1363,54 +1395,109 @@ public class TaskQueryImpl implements TaskQuery {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
+
+    List<String> conditionList = new ArrayList<>(Arrays.asList(strings));
+    boolean containsNull = conditionList.contains(null);
+    if (containsNull) {
+      conditionList.remove(null);
+    }
+
     switch (customField) {
       case CUSTOM_1:
-        this.custom1In = strings;
+        this.custom1In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom1InContainsNull = true;
+        }
         break;
       case CUSTOM_2:
-        this.custom2In = strings;
+        this.custom2In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom2InContainsNull = true;
+        }
         break;
       case CUSTOM_3:
-        this.custom3In = strings;
+        this.custom3In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom3InContainsNull = true;
+        }
         break;
       case CUSTOM_4:
-        this.custom4In = strings;
+        this.custom4In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom4InContainsNull = true;
+        }
         break;
       case CUSTOM_5:
-        this.custom5In = strings;
+        this.custom5In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom5InContainsNull = true;
+        }
         break;
       case CUSTOM_6:
-        this.custom6In = strings;
+        this.custom6In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom6InContainsNull = true;
+        }
         break;
       case CUSTOM_7:
-        this.custom7In = strings;
+        this.custom7In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom7InContainsNull = true;
+        }
         break;
       case CUSTOM_8:
-        this.custom8In = strings;
+        this.custom8In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom8InContainsNull = true;
+        }
         break;
       case CUSTOM_9:
-        this.custom9In = strings;
+        this.custom9In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom9InContainsNull = true;
+        }
         break;
       case CUSTOM_10:
-        this.custom10In = strings;
+        this.custom10In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom10InContainsNull = true;
+        }
         break;
       case CUSTOM_11:
-        this.custom11In = strings;
+        this.custom11In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom11InContainsNull = true;
+        }
         break;
       case CUSTOM_12:
-        this.custom12In = strings;
+        this.custom12In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom12InContainsNull = true;
+        }
         break;
       case CUSTOM_13:
-        this.custom13In = strings;
+        this.custom13In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom13InContainsNull = true;
+        }
         break;
       case CUSTOM_14:
-        this.custom14In = strings;
+        this.custom14In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom14InContainsNull = true;
+        }
         break;
       case CUSTOM_15:
-        this.custom15In = strings;
+        this.custom15In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom15InContainsNull = true;
+        }
         break;
       case CUSTOM_16:
-        this.custom16In = strings;
+        this.custom16In = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom16InContainsNull = true;
+        }
         break;
       default:
         throw new SystemException("Unknown custom attribute '" + customField + "'");
@@ -1426,54 +1513,107 @@ public class TaskQueryImpl implements TaskQuery {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
+    List<String> conditionList = new ArrayList<>(Arrays.asList(strings));
+    boolean containsNull = conditionList.contains(null);
+    if (containsNull) {
+      conditionList.remove(null);
+    }
     switch (customField) {
       case CUSTOM_1:
-        this.custom1NotIn = strings;
+        this.custom1NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom1NotInContainsNull = true;
+        }
         break;
       case CUSTOM_2:
-        this.custom2NotIn = strings;
+        this.custom2NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom2NotInContainsNull = true;
+        }
         break;
       case CUSTOM_3:
-        this.custom3NotIn = strings;
+        this.custom3NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom3NotInContainsNull = true;
+        }
         break;
       case CUSTOM_4:
-        this.custom4NotIn = strings;
+        this.custom4NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom4NotInContainsNull = true;
+        }
         break;
       case CUSTOM_5:
-        this.custom5NotIn = strings;
+        this.custom5NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom5NotInContainsNull = true;
+        }
         break;
       case CUSTOM_6:
-        this.custom6NotIn = strings;
+        this.custom6NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom6NotInContainsNull = true;
+        }
         break;
       case CUSTOM_7:
-        this.custom7NotIn = strings;
+        this.custom7NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom7NotInContainsNull = true;
+        }
         break;
       case CUSTOM_8:
-        this.custom8NotIn = strings;
+        this.custom8NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom8NotInContainsNull = true;
+        }
         break;
       case CUSTOM_9:
-        this.custom9NotIn = strings;
+        this.custom9NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom9NotInContainsNull = true;
+        }
         break;
       case CUSTOM_10:
-        this.custom10NotIn = strings;
+        this.custom10NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom10NotInContainsNull = true;
+        }
         break;
       case CUSTOM_11:
-        this.custom11NotIn = strings;
+        this.custom11NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom11NotInContainsNull = true;
+        }
         break;
       case CUSTOM_12:
-        this.custom12NotIn = strings;
+        this.custom12NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom12NotInContainsNull = true;
+        }
         break;
       case CUSTOM_13:
-        this.custom13NotIn = strings;
+        this.custom13NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom13NotInContainsNull = true;
+        }
         break;
       case CUSTOM_14:
-        this.custom14NotIn = strings;
+        this.custom14NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom14NotInContainsNull = true;
+        }
         break;
       case CUSTOM_15:
-        this.custom15NotIn = strings;
+        this.custom15NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom15NotInContainsNull = true;
+        }
         break;
       case CUSTOM_16:
-        this.custom16NotIn = strings;
+        this.custom16NotIn = conditionList.toArray(new String[0]);
+        if (containsNull) {
+          this.custom16NotInContainsNull = true;
+        }
         break;
       default:
         throw new SystemException("Unknown custom attribute '" + customField + "'");

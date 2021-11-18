@@ -4,14 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.util.Arrays;
-import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
@@ -53,48 +50,6 @@ class CreateClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getId()).isNotNull();
     assertThat(classification.getIsValidInDomain()).isFalse();
     assertThat(classification.getId()).startsWith(IdGenerator.ID_PREFIX_CLASSIFICATION);
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
-  void should_InitializeCustomFieldsToEmptyString_When_ClassificationIsCreated() throws Exception {
-    Classification classification = CLASSIFICATION_SERVICE.newClassification("Key01", "", "TASK");
-    classification.setIsValidInDomain(true);
-    classification.setServiceLevel("P1D");
-    Classification createdClassification =
-        CLASSIFICATION_SERVICE.createClassification(classification);
-
-    SoftAssertions softly = new SoftAssertions();
-    Arrays.stream(ClassificationCustomField.values())
-        .forEach(
-            customField ->
-                softly
-                    .assertThat(createdClassification.getCustomAttribute(customField))
-                    .describedAs("CustomField was null: " + customField)
-                    .isNotNull());
-    softly.assertAll();
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
-  void should_SetCustomFieldToEmptyString_When_SetToNullByUser() throws Exception {
-    Classification classification = CLASSIFICATION_SERVICE.newClassification("Key02", "", "TASK");
-    classification.setIsValidInDomain(true);
-    classification.setServiceLevel("P1D");
-    Arrays.stream(ClassificationCustomField.values())
-        .forEach(customField -> classification.setCustomAttribute(customField, null));
-    Classification createdClassification =
-        CLASSIFICATION_SERVICE.createClassification(classification);
-
-    SoftAssertions softly = new SoftAssertions();
-    Arrays.stream(ClassificationCustomField.values())
-        .forEach(
-            customField ->
-                softly
-                    .assertThat(createdClassification.getCustomAttribute(customField))
-                    .describedAs("CustomField was null: " + customField)
-                    .isNotNull());
-    softly.assertAll();
   }
 
   @WithAccessId(user = "businessadmin")

@@ -60,7 +60,7 @@ public class WorkbasketReportBuilderImpl
                       workbasketService
                           .createWorkbasketQuery()
                           .keyIn(report.getRows().keySet().toArray(new String[0]))
-                          .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+                          .domainIn(domains)
                           .list()
                           .stream()
                           .collect(

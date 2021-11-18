@@ -7,9 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import acceptance.AbstractAccTest;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
-import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -74,26 +72,6 @@ class UpdateClassificationAccTest extends AbstractAccTest {
     assertThat(updatedClassification.getApplicationEntryPoint()).isEqualTo(newEntryPoint);
     assertThat(updatedClassification.getCreated()).isEqualTo(createdBefore);
     assertThat(modifiedBefore).isBefore(updatedClassification.getModified());
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
-  void should_SetCustomAttributeToEmptyString_When_SetToNullDuringUpdate() throws Exception {
-    Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
-    Arrays.stream(ClassificationCustomField.values())
-        .forEach(customField -> classification.setCustomAttribute(customField, null));
-    Classification updatedClassification =
-        classificationService.updateClassification(classification);
-
-    SoftAssertions softly = new SoftAssertions();
-    Arrays.stream(ClassificationCustomField.values())
-        .forEach(
-            customField ->
-                softly
-                    .assertThat(updatedClassification.getCustomAttribute(customField))
-                    .describedAs("CustomField was null: " + customField)
-                    .isNotNull());
-    softly.assertAll();
   }
 
   @Test

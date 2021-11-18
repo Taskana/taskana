@@ -12,13 +12,22 @@ public class SqlProviderUtil {
   private SqlProviderUtil() {}
 
   public static StringBuilder whereIn(String collection, String column, StringBuilder sb) {
-    return sb.append("<if test='")
+    sb.append("<if test='")
         .append(collection)
-        .append(" != null'>AND ")
+        .append(" != null'>AND (")
+        .append("<choose>")
+        .append("<when test='" + collection + ".length > 0'>")
         .append(column)
         .append(" IN(<foreach item='item' collection='")
         .append(collection)
-        .append("' separator=',' >#{item}</foreach>)</if> ");
+        .append("' separator=',' >#{item}</foreach>)")
+        .append("</when>")
+        .append("<otherwise>0=1</otherwise>")
+        .append("</choose>");
+    if (column.contains("t.CUSTOM_")) {
+      sb.append("<if test='" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
+    }
+    return sb.append(")</if> ");
   }
 
   public static StringBuilder whereIn(String collection, String column) {
@@ -26,13 +35,24 @@ public class SqlProviderUtil {
   }
 
   public static StringBuilder whereNotIn(String collection, String column, StringBuilder sb) {
-    return sb.append("<if test='")
+    sb.append("<if test='")
         .append(collection)
-        .append(" != null'>AND ")
+        .append(" != null'>AND (")
+        .append("<choose>")
+        .append("<when test='" + collection + ".length > 0'>")
         .append(column)
         .append(" NOT IN(<foreach item='item' collection='")
         .append(collection)
-        .append("' separator=',' >#{item}</foreach>)</if> ");
+        .append("' separator=',' >#{item}</foreach>)")
+        .append("</when>")
+        .append("<otherwise>1=1</otherwise>")
+        .append("</choose>");
+    if (column.contains("t.CUSTOM_")) {
+      sb.append("<if test='" + collection + "ContainsNull'> AND " + column + " IS NOT NULL </if>");
+      sb.append("<if test='!" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
+    }
+    sb.append(")</if> ");
+    return sb;
   }
 
   public static StringBuilder whereNotIn(String collection, String column) {
