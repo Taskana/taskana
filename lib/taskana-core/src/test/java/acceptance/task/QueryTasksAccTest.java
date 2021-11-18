@@ -345,6 +345,102 @@ class QueryTasksAccTest extends AbstractAccTest {
 
     @WithAccessId(user = "admin")
     @Test
+    void should_ReturnTasksWithEmptyCustomField_When_QueriedByCustomFieldWhichIsNull()
+        throws InvalidArgumentException {
+      List<TaskSummary> results =
+          taskService
+              .createTaskQuery()
+              .customAttributeIn(TaskCustomField.CUSTOM_9, new String[] {null})
+              .list();
+      assertThat(results).hasSize(1);
+
+      results =
+          taskService
+              .createTaskQuery()
+              .customAttributeIn(TaskCustomField.CUSTOM_9, null, "custom9")
+              .list();
+      assertThat(results).hasSize(2);
+
+      results =
+          taskService
+              .createTaskQuery()
+              .customAttributeIn(TaskCustomField.CUSTOM_9, new String[] {null})
+              .customAttributeIn(TaskCustomField.CUSTOM_14, "abc")
+              .list();
+      assertThat(results).hasSize(1);
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnTasksWithNullCustomField_When_QueriedByCustomFieldWhichIsEmpty()
+        throws InvalidArgumentException {
+      List<TaskSummary> results =
+          taskService.createTaskQuery().customAttributeIn(TaskCustomField.CUSTOM_9, "").list();
+      assertThat(results).hasSize(86);
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_AllowToQueryTasksByCustomFieldWithNullAndEmptyInParallel()
+        throws InvalidArgumentException {
+      List<TaskSummary> results =
+          taskService
+              .createTaskQuery()
+              .customAttributeIn(TaskCustomField.CUSTOM_9, "", null)
+              .list();
+      assertThat(results).hasSize(87);
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnTasksWithEmptyCustomField_When_QueriedByCustomFieldWhichIsNotNull()
+        throws InvalidArgumentException {
+      List<TaskSummary> results =
+          taskService
+              .createTaskQuery()
+              .customAttributeNotIn(TaskCustomField.CUSTOM_9, new String[] {null})
+              .list();
+      assertThat(results).hasSize(87);
+
+      results =
+          taskService
+              .createTaskQuery()
+              .customAttributeNotIn(TaskCustomField.CUSTOM_9, null, "custom9")
+              .list();
+      assertThat(results).hasSize(86);
+
+      results =
+          taskService
+              .createTaskQuery()
+              .customAttributeNotIn(TaskCustomField.CUSTOM_9, new String[] {null})
+              .customAttributeNotIn(TaskCustomField.CUSTOM_10, "custom10")
+              .list();
+      assertThat(results).hasSize(86);
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnTasksWithNullCustomField_When_QueriedByCustomFieldWhichIsNotEmpty()
+        throws InvalidArgumentException {
+      List<TaskSummary> results =
+          taskService.createTaskQuery().customAttributeNotIn(TaskCustomField.CUSTOM_9, "").list();
+      assertThat(results).hasSize(2);
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_AllowToQueryTasksByCustomFieldWithNeitherNullOrEmptyInParallel()
+        throws InvalidArgumentException {
+      List<TaskSummary> results =
+          taskService
+              .createTaskQuery()
+              .customAttributeNotIn(TaskCustomField.CUSTOM_9, "", null)
+              .list();
+      assertThat(results).hasSize(1);
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
     void should_ThrowException_When_SearchArgumentInLikeQueryIsNotGiven() {
       assertThatThrownBy(() -> taskService.createTaskQuery().customAttributeLike(CUSTOM_7).list())
           .isInstanceOf(InvalidArgumentException.class);

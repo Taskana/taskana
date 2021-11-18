@@ -21,6 +21,7 @@ import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
+import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
@@ -298,19 +299,23 @@ public class MonitorController {
       @RequestParam(name = "priority-minimum", required = false) Integer priorityMinimum)
       throws NotAuthorizedException {
 
+    TaskStatusReport.Builder builder = monitorService.createTaskStatusReportBuilder();
+    if (states != null && !states.isEmpty()) {
+      builder = builder.stateIn(states);
+    }
+    if (domains != null && !domains.isEmpty()) {
+      builder.domainIn(domains);
+    }
+    if (workbasketIds != null && !workbasketIds.isEmpty()) {
+      builder.workbasketIdsIn(workbasketIds);
+    }
+    if (priorityMinimum != null) {
+      builder.priorityMinimum(priorityMinimum);
+    }
+
     return ResponseEntity.ok(
         reportRepresentationModelAssembler.toModel(
-            monitorService
-                .createTaskStatusReportBuilder()
-                .stateIn(states)
-                .domainIn(domains)
-                .workbasketIdsIn(workbasketIds)
-                .priorityMinimum(priorityMinimum)
-                .buildReport(),
-            domains,
-            states,
-            workbasketIds,
-            priorityMinimum));
+            builder.buildReport(), domains, states, workbasketIds, priorityMinimum));
   }
 
   /**

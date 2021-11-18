@@ -89,9 +89,9 @@ public interface MonitorMapper {
   @Result(column = "STATE", property = "state")
   @Result(column = "COUNT", property = "count")
   List<TaskQueryItem> getTasksCountByState(
-      @Param("domains") List<String> domains,
-      @Param("states") List<TaskState> states,
-      @Param("workbasketIds") List<String> workbasketIds,
+      @Param("domains") String[] domains,
+      @Param("states") TaskState[] states,
+      @Param("workbasketIds") String[] workbasketIds,
       @Param("priorityMinimum") Integer priorityMinimum);
 
   @SelectProvider(

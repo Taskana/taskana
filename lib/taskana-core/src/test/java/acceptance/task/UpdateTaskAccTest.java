@@ -15,11 +15,9 @@ import static pro.taskana.task.api.TaskCustomField.CUSTOM_7;
 
 import acceptance.AbstractAccTest;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
@@ -247,25 +245,6 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_SetCustomAttributeToEmptyString_When_SetToNullDuringUpdate() throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
-    Arrays.stream(TaskCustomField.values())
-        .forEach(customField -> task.setCustomAttribute(customField, null));
-    Task updatedTask = taskService.updateTask(task);
-
-    SoftAssertions softly = new SoftAssertions();
-    Arrays.stream(TaskCustomField.values())
-        .forEach(
-            customField ->
-                softly
-                    .assertThat(updatedTask.getCustomAttribute(customField))
-                    .describedAs("CustomField was null: " + customField)
-                    .isNotNull());
-    softly.assertAll();
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
   void should_ThrowException_When_ModificationOfWorkbasketKeyIsAttempted() throws Exception {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -317,7 +296,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       assertThat(task.getCustomAttribute(CUSTOM_3)).isEqualTo("This is modifiedValue 3");
       assertThat(task.getCustomAttribute(CUSTOM_7)).isEqualTo("This is modifiedValue 7");
       assertThat(task.getCustomAttribute(CUSTOM_16)).isEqualTo("This is modifiedValue 16");
-      assertThat(task.getCustomAttribute(CUSTOM_14)).isEmpty();
+      assertThat(task.getCustomAttribute(CUSTOM_14)).isNull();
     }
   }
 
@@ -345,7 +324,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
       assertThat(task.getCustomAttribute(CUSTOM_10)).isEqualTo("This is modifiedValue 10");
       assertThat(task.getCustomAttribute(CUSTOM_12)).isEqualTo("This is modifiedValue 12");
       assertThat(task.getCustomAttribute(CUSTOM_2)).isNotNull();
-      assertThat(task.getCustomAttribute(CUSTOM_16)).isEmpty();
+      assertThat(task.getCustomAttribute(CUSTOM_16)).isNull();
     }
   }
 

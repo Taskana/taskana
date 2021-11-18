@@ -1,5 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,9 +22,9 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   private final InternalTaskanaEngine taskanaEngine;
   private final MonitorMapper monitorMapper;
   private final WorkbasketService workbasketService;
-  private List<String> domains;
-  private List<TaskState> states;
-  private List<String> workbasketIds;
+  private String[] domains;
+  private TaskState[] states;
+  private String[] workbasketIds;
   private Integer priorityMinimum;
 
   public TaskStatusReportBuilderImpl(
@@ -41,7 +42,8 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
       List<TaskQueryItem> tasks =
           this.monitorMapper.getTasksCountByState(
               this.domains, this.states, this.workbasketIds, this.priorityMinimum);
-      TaskStatusReport report = new TaskStatusReport(this.states);
+      TaskStatusReport report =
+          new TaskStatusReport(this.states != null ? Arrays.asList(this.states) : null);
       report.addItems(tasks);
       Map<String, String> displayMap =
           taskanaEngine
@@ -51,7 +53,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
                       workbasketService
                           .createWorkbasketQuery()
                           .keyIn(report.getRows().keySet().toArray(new String[0]))
-                          .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+                          .domainIn(domains)
                           .list()
                           .stream()
                           .collect(
@@ -68,7 +70,9 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
   @Override
   public TaskStatusReportBuilderImpl stateIn(List<TaskState> states) {
-    this.states = states;
+    if (states != null) {
+      this.states = states.toArray(new TaskState[0]);
+    }
     return this;
   }
 
@@ -80,13 +84,17 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
   @Override
   public TaskStatusReportBuilderImpl domainIn(List<String> domains) {
-    this.domains = domains;
+    if (domains != null) {
+      this.domains = domains.toArray(new String[0]);
+    }
     return this;
   }
 
   @Override
   public Builder workbasketIdsIn(List<String> workbasketIds) {
-    this.workbasketIds = workbasketIds;
+    if (workbasketIds != null) {
+      this.workbasketIds = workbasketIds.toArray(new String[0]);
+    }
     return this;
   }
 }

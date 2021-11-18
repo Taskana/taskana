@@ -62,7 +62,7 @@ public class ClassificationReportBuilderImpl
                   report.getRows().isEmpty()
                       ? null
                       : report.getRows().keySet().toArray(new String[0]))
-              .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+              .domainIn(this.domains)
               .list()
               .stream()
               .collect(
@@ -106,7 +106,7 @@ public class ClassificationReportBuilderImpl
           classificationService
               .createClassificationQuery()
               .keyIn(keys.length == 0 ? null : keys)
-              .domainIn(domains != null ? domains.toArray(new String[0]) : null)
+              .domainIn(this.domains)
               .list()
               .stream()
               .collect(

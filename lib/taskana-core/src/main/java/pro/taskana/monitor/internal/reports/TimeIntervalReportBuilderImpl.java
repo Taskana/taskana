@@ -1,7 +1,6 @@
 package pro.taskana.monitor.internal.reports;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,12 +40,12 @@ abstract class TimeIntervalReportBuilderImpl<
   protected MonitorMapper monitorMapper;
   protected List<H> columnHeaders;
   protected boolean inWorkingDays;
-  protected List<String> workbasketIds;
-  protected List<TaskState> states;
-  protected List<String> classificationCategories;
-  protected List<String> domains;
-  protected List<String> classificationIds;
-  protected List<String> excludedClassificationIds;
+  protected String[] workbasketIds;
+  protected TaskState[] states;
+  protected String[] classificationCategories;
+  protected String[] domains;
+  protected String[] classificationIds;
+  protected String[] excludedClassificationIds;
   protected WorkingDaysToDaysConverter converter;
   private String[] custom1In;
   private String[] custom1NotIn;
@@ -118,37 +117,49 @@ abstract class TimeIntervalReportBuilderImpl<
 
   @Override
   public B workbasketIdIn(List<String> workbasketIds) {
-    this.workbasketIds = new ArrayList<>(workbasketIds);
+    if (workbasketIds != null) {
+      this.workbasketIds = workbasketIds.toArray(new String[0]);
+    }
     return _this();
   }
 
   @Override
   public B stateIn(List<TaskState> states) {
-    this.states = new ArrayList<>(states);
+    if (states != null) {
+      this.states = states.toArray(new TaskState[0]);
+    }
     return _this();
   }
 
   @Override
   public B classificationCategoryIn(List<String> classificationCategories) {
-    this.classificationCategories = new ArrayList<>(classificationCategories);
+    if (classificationCategories != null) {
+      this.classificationCategories = classificationCategories.toArray(new String[0]);
+    }
     return _this();
   }
 
   @Override
   public B classificationIdIn(List<String> classificationIds) {
-    this.classificationIds = new ArrayList<>(classificationIds);
+    if (classificationIds != null) {
+      this.classificationIds = classificationIds.toArray(new String[0]);
+    }
     return _this();
   }
 
   @Override
   public B excludedClassificationIdIn(List<String> excludedClassificationIds) {
-    this.excludedClassificationIds = new ArrayList<>(excludedClassificationIds);
+    if (excludedClassificationIds != null) {
+      this.excludedClassificationIds = excludedClassificationIds.toArray(new String[0]);
+    }
     return _this();
   }
 
   @Override
   public B domainIn(List<String> domains) {
-    this.domains = new ArrayList<>(domains);
+    if (domains != null) {
+      this.domains = domains.toArray(new String[0]);
+    }
     return _this();
   }
 
