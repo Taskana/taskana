@@ -6,7 +6,6 @@ import { ChartData } from 'app/monitor/models/chart-data';
 import { ReportData } from '../models/report-data';
 import { asUrlQueryString } from '../../shared/util/query-parameters-v2';
 import { TaskState } from '../../shared/models/task-state';
-import { WorkbasketType } from '../../shared/models/workbasket-type';
 
 const monitorUrl = '/v1/monitor/';
 
@@ -62,6 +61,7 @@ export class MonitorService {
   getTasksByPriorityReport(type: string[], priority: any[], customFilters: {} = {}): Observable<ReportData> {
     const queryParams = {
       'workbasket-type': type,
+      state: 'READY',
       columnHeader: priority,
       ...customFilters
     };
