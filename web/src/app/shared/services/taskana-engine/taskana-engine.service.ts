@@ -4,11 +4,12 @@ import { environment } from 'environments/environment';
 import { UserInfo } from 'app/shared/models/user-info';
 import { Version } from 'app/shared/models/version';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TaskanaEngineService {
   currentUserInfo: UserInfo;
+
   constructor(private httpClient: HttpClient) {}
 
   // GET
@@ -38,13 +39,13 @@ export class TaskanaEngineService {
     return this.httpClient.post<string>(`${environment.taskanaLogoutUrl}`, '');
   }
 
+  isCustomRoutingRulesEnabled(): Observable<boolean> {
+    return this.httpClient.get<boolean>(`${environment.taskanaRestUrl}/v1/routing-rules/routing-rest-enabled`);
+  }
+
   isHistoryProviderEnabled(): Observable<boolean> {
     return this.httpClient.get<boolean>(`${environment.taskanaRestUrl}/v1/history-provider-enabled`);
   }
-
-  isCustomRoutingRulesEnabled$ = this.httpClient
-    .get<boolean>(`${environment.taskanaRestUrl}/v1/routing-rules/routing-rest-enabled`)
-    .pipe(shareReplay(1));
 
   private findRole(roles2Find: string[]) {
     return this.currentUserInfo.roles.find((role) => roles2Find.some((roleLookingFor) => role === roleLookingFor));

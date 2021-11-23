@@ -14,7 +14,7 @@ export class TaskRoutingGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.taskanaEngineService.isCustomRoutingRulesEnabled$.pipe(
+    return this.taskanaEngineService.isCustomRoutingRulesEnabled().pipe(
       map((value) => {
         if (value) {
           return value;
