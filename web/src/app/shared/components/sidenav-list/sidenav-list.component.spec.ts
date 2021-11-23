@@ -15,7 +15,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY } from 'rxjs';
 
 const SidenavServiceSpy: Partial<SidenavService> = {
   toggleSidenav: jest.fn().mockReturnValue(EMPTY)
@@ -24,7 +24,7 @@ const SidenavServiceSpy: Partial<SidenavService> = {
 const TaskanaEngineServiceSpy: Partial<TaskanaEngineService> = {
   hasRole: jest.fn().mockReturnValue(EMPTY),
   isHistoryProviderEnabled: jest.fn().mockReturnValue(EMPTY),
-  isCustomRoutingRulesEnabled$: EMPTY
+  isCustomRoutingRulesEnabled: jest.fn().mockReturnValue(EMPTY)
 };
 
 describe('SidenavListComponent', () => {
