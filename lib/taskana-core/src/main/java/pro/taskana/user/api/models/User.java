@@ -11,14 +11,14 @@ public interface User {
   String getId();
 
   /**
-   * Sets the id of the User. 
+   * Sets the id of the User.
    *
    * @param id the id of the User
    */
   void setId(String id);
 
   /**
-   * Gets the first name of the User. 
+   * Gets the first name of the User.
    *
    * @return firstName
    */
@@ -46,7 +46,7 @@ public interface User {
   void setLastName(String lastName);
 
   /**
-   * Gets the full name of the User. 
+   * Gets the full name of the User.
    *
    * @return fullName
    */
@@ -60,7 +60,7 @@ public interface User {
   void setFullName(String fullName);
 
   /**
-   * Gets the long name of the User. 
+   * Gets the long name of the User.
    *
    * @return longName
    */
@@ -88,7 +88,7 @@ public interface User {
   void setEmail(String email);
 
   /**
-   * Gets the phone number of the User. 
+   * Gets the phone number of the User.
    *
    * @return phone
    */
@@ -102,7 +102,7 @@ public interface User {
   void setPhone(String phone);
 
   /**
-   * Gets the mobile phone number of the User. 
+   * Gets the mobile phone number of the User.
    *
    * @return mobilePhone
    */
@@ -116,7 +116,7 @@ public interface User {
   void setMobilePhone(String mobilePhone);
 
   /**
-   * Gets the orgLevel4 of the User. 
+   * Gets the orgLevel4 of the User.
    *
    * @return orgLevel4
    */
@@ -130,7 +130,7 @@ public interface User {
   void setOrgLevel4(String orgLevel4);
 
   /**
-   * Gets the orgLevel3 of the User. 
+   * Gets the orgLevel3 of the User.
    *
    * @return orgLevel3
    */
@@ -144,7 +144,7 @@ public interface User {
   void setOrgLevel3(String orgLevel3);
 
   /**
-   * Gets the orgLevel2 of the User. 
+   * Gets the orgLevel2 of the User.
    *
    * @return orgLevel2
    */
@@ -158,7 +158,7 @@ public interface User {
   void setOrgLevel2(String orgLevel2);
 
   /**
-   * Gets the orgLevel1 of the User. 
+   * Gets the orgLevel1 of the User.
    *
    * @return orgLevel1
    */
@@ -172,7 +172,7 @@ public interface User {
   void setOrgLevel1(String orgLevel1);
 
   /**
-   * Gets the data of the User. 
+   * Gets the data of the User.
    *
    * @return data
    */
@@ -186,5 +186,4 @@ public interface User {
   void setData(String data);
 
   User copy();
-
 }

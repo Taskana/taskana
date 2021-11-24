@@ -100,12 +100,8 @@ class GetTaskAccTest extends AbstractAccTest {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-    String userLongName =
-        taskanaEngine.getUserService().getUser(task.getOwner()).getLongName();
-    assertThat(task)
-        .extracting(Task::getOwnerLongName)
-        .isEqualTo(userLongName);
-
+    String userLongName = taskanaEngine.getUserService().getUser(task.getOwner()).getLongName();
+    assertThat(task).extracting(Task::getOwnerLongName).isEqualTo(userLongName);
   }
 
   @WithAccessId(user = "admin")
@@ -117,10 +113,7 @@ class GetTaskAccTest extends AbstractAccTest {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
 
-    assertThat(task)
-        .extracting(Task::getOwnerLongName)
-        .isNull();
-
+    assertThat(task).extracting(Task::getOwnerLongName).isNull();
   }
 
   @WithAccessId(user = "user-1-2")

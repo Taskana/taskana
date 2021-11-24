@@ -12,5 +12,4 @@ public class SystemException extends TaskanaRuntimeException {
   public SystemException(String msg, Throwable cause) {
     super(msg, ErrorCode.of(ERROR_KEY), cause);
   }
-
 }

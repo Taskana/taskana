@@ -51,7 +51,6 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    */
   TaskCommentQuery taskIdIn(String... taskIds);
 
-
   /**
    * Add your texts for pattern matching to your query. It will be compared in SQL with the LIKE
    * operator. You may use a wildcard like % to specify the pattern. If you specify multiple

@@ -24,11 +24,11 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 
 class LogfileHistoryServiceImplTest {
 
+  static TaskanaEngine taskanaEngineMock;
   private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
   private final LogfileHistoryServiceImpl logfileHistoryServiceImpl =
       new LogfileHistoryServiceImpl();
   private final TestLogger logger = TestLoggerFactory.getTestLogger("AUDIT");
-  static TaskanaEngine taskanaEngineMock;
 
   @AfterEach
   public void clearLoggers() {
