@@ -82,8 +82,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private String[] custom3Like;
   private String[] custom4Like;
 
-  public TaskHistoryQueryImpl(
-      TaskanaHistoryEngineImpl taskanaHistoryEngine) {
+  public TaskHistoryQueryImpl(TaskanaHistoryEngineImpl taskanaHistoryEngine) {
     this.taskanaHistoryEngine = taskanaHistoryEngine;
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
@@ -265,7 +264,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public String[] getCustom4Like() {
     return custom4Like;
   }
-
 
   @Override
   public TaskHistoryQuery idIn(String... idIn) {

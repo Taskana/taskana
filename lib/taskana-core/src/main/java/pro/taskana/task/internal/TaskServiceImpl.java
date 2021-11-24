@@ -385,8 +385,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public TaskCommentQuery createTaskCommentQuery() {
-    return new TaskCommentQueryImpl(
-        taskanaEngine);
+    return new TaskCommentQueryImpl(taskanaEngine);
   }
 
   @Override

@@ -3,7 +3,6 @@ package pro.taskana.task.api;
 import pro.taskana.common.api.QueryColumnName;
 
 public enum TaskCommentQueryColumnName implements QueryColumnName {
-
   ID("tc.id"),
   TASK_ID("tc.task_id"),
   TEXT_FIELD("tc.text_field"),
@@ -22,6 +21,4 @@ public enum TaskCommentQueryColumnName implements QueryColumnName {
   public String toString() {
     return name;
   }
-
-
 }

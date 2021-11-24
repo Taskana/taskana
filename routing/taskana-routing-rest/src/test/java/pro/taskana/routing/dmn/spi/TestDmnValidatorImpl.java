@@ -8,12 +8,10 @@ import pro.taskana.routing.dmn.spi.api.DmnValidator;
 public class TestDmnValidatorImpl implements DmnValidator {
 
   @Override
-  public void initialize(TaskanaEngine taskanaEngine) {
-
-  }
+  public void initialize(TaskanaEngine taskanaEngine) {}
 
   @Override
   public void validate(DmnModelInstance dmnModelInstance) {
-    //custom validation logic
+    // custom validation logic
   }
 }

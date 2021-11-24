@@ -17,7 +17,6 @@ public interface DmnValidator {
    * Validates a DmnModelInstance.
    *
    * @param dmnModelInstance the DMN model to validate
-   *
    */
   void validate(DmnModelInstance dmnModelInstance);
 }

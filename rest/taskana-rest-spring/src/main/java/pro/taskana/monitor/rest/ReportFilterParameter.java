@@ -460,5 +460,4 @@ public class ReportFilterParameter {
     this.custom16Like = custom16Like;
     this.custom16NotIn = custom16NotIn;
   }
-
 }
