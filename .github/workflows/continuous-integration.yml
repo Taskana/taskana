@@ -83,7 +83,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -167,7 +167,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
