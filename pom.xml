@@ -41,7 +41,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <version.mybatis>3.5.7</version.mybatis>
-    <version.json>20210307</version.json>
+    <version.json>20211205</version.json>
 
     <!-- build dependencies -->
     <version.checkstyle>9.1</version.checkstyle>
