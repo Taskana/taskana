@@ -1,5 +1,7 @@
 package pro.taskana.common.rest.assembler;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -29,7 +31,11 @@ public interface CollectionRepresentationModelAssembler<
   default C addLinksToCollectionModel(C model) {
     final UriComponentsBuilder original = ServletUriComponentsBuilder.fromCurrentRequest();
 
-    model.add(Link.of(original.toUriString()).withSelfRel());
+    try {
+      model.add(Link.of(URLDecoder.decode(original.toUriString(), "UTF-8")).withSelfRel());
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException("UTF-8 encoding not supported. This is unexpected.");
+    }
     return model;
   }
 }

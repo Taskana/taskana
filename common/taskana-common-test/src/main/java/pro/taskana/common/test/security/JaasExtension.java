@@ -22,6 +22,7 @@ import java.util.stream.StreamSupport;
 import javax.security.auth.Subject;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
@@ -160,7 +161,10 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
   }
 
   @Override
-  public void interceptDynamicTest(Invocation<Void> invocation, ExtensionContext extensionContext) {
+  public void interceptDynamicTest(
+      Invocation<Void> invocation,
+      DynamicTestInvocationContext invocationContext,
+      ExtensionContext extensionContext) {
     ExtensionContext testContext = getParentMethodExtensionContent(extensionContext);
     // Check if the test factory provided an access Id for this dynamic test.
     WithAccessId o = getMethodLevelStore(testContext).get(ACCESS_IDS_STORE_KEY, WithAccessId.class);
