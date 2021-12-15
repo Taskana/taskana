@@ -63,6 +63,7 @@ class TaskCommentServiceImpl {
       TaskComment originalTaskComment = getTaskComment(taskCommentImplToUpdate.getId());
 
       if (originalTaskComment.getCreator().equals(userId)
+              && taskCommentImplToUpdate.getCreator().equals(originalTaskComment.getCreator())
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 

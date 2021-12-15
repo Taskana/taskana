@@ -39,7 +39,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 @TaskanaIntegrationTest
-public class TaskQueryImplAccTest {
+class TaskQueryImplAccTest {
 
   @TaskanaInject TaskService taskService;
   @TaskanaInject WorkbasketService workbasketService;
