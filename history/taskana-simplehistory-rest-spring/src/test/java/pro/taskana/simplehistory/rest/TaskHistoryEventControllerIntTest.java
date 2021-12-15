@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -218,11 +220,12 @@ class TaskHistoryEventControllerIntTest {
   // region Get Specific Task History Event
 
   @Test
-  void should_GenerateSelfLink_When_SpecificTaskHistoryEventIsRequested() {
+  void should_GenerateSelfLink_When_SpecificTaskHistoryEventIsRequested()
+      throws UnsupportedEncodingException {
     String id = "THI:000000000000000000000000000000000000";
     String expectedUrl =
         UriComponentsBuilder.fromPath(HistoryRestEndpoints.URL_HISTORY_EVENTS_ID)
-            .buildAndExpand(id)
+            .buildAndExpand(URLEncoder.encode(id, "UTF-8"))
             .toUriString();
 
     ResponseEntity<TaskHistoryEventPagedRepresentationModel> response =

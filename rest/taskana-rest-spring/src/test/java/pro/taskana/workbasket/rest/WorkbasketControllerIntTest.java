@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.time.Instant;
 import java.util.Optional;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -41,15 +43,15 @@ class WorkbasketControllerIntTest {
   }
 
   @Test
-  void testGetWorkbasket() {
+  void testGetWorkbasket() throws UnsupportedEncodingException {
     final String url =
         restHelper.toUrl(
-            RestEndpoints.URL_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
+            RestEndpoints.URL_WORKBASKET_ID, "WBI%3A100000000000000000000000000000000006");
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<WorkbasketRepresentationModel> response =
         TEMPLATE.exchange(
-            url,
+            URLDecoder.decode(url, "UTF-8"),
             HttpMethod.GET,
             auth,
             ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));

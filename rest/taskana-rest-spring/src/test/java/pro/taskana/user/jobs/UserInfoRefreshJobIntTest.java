@@ -52,7 +52,7 @@ class UserInfoRefreshJobIntTest {
       List<User> ldapusers = ldapClient.searchUsersInUserRole();
       assertThat(users).hasSize(6).hasSameSizeAs(ldapusers);
       assertThat(users)
-          .usingElementComparatorIgnoringFields("longName", "data")
+          .usingRecursiveFieldByFieldElementComparatorIgnoringFields("longName", "data")
           .containsExactlyElementsOf(ldapusers);
     }
   }

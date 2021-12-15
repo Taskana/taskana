@@ -14,7 +14,7 @@ public final class RestEndpoints {
   public static final String URL_CLASSIFICATION_CATEGORIES_BY_TYPES =
       API_V1 + "classifications-by-type";
   public static final String URL_HISTORY_ENABLED = API_V1 + "history-provider-enabled";
-  public static final String URL_CUSTOM_ATTRIBUTES = API_V1 + "/config/custom-attributes";
+  public static final String URL_CUSTOM_ATTRIBUTES = API_V1 + "config/custom-attributes";
 
   // access id endpoints
   public static final String URL_ACCESS_ID = API_V1 + "access-ids";
