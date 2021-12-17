@@ -204,7 +204,7 @@ class WorkbasketBuilderTest {
 
   private <T> void applyBuilderFunctionAndVerifyValue(
       T value,
-      BiFunction<WorkbasketBuilder, T, WorkbasketBuilder> builderfunction,
+      BiFunction<WorkbasketBuilder, T, WorkbasketBuilder> builderFunction,
       Function<Workbasket, T> retriever)
       throws Exception {
     WorkbasketBuilder builder =
@@ -212,9 +212,9 @@ class WorkbasketBuilderTest {
             .domain("DOMAIN_A")
             .name("workbasketName")
             .type(WorkbasketType.PERSONAL)
-            .key("A" + builderfunction.hashCode());
+            .key("A" + builderFunction.hashCode());
 
-    builderfunction.apply(builder, value);
+    builderFunction.apply(builder, value);
     Workbasket classification = builder.buildAndStore(workbasketService);
     T retrievedValue = retriever.apply(classification);
 
@@ -223,7 +223,7 @@ class WorkbasketBuilderTest {
 
   private <T> void applyAndOverrideWithApiDefaultValue(
       T value,
-      BiFunction<WorkbasketBuilder, T, WorkbasketBuilder> builderfunction,
+      BiFunction<WorkbasketBuilder, T, WorkbasketBuilder> builderFunction,
       Function<Workbasket, T> retriever)
       throws Exception {
     WorkbasketBuilder builder =
@@ -231,10 +231,10 @@ class WorkbasketBuilderTest {
             .domain("DOMAIN_A")
             .name("workbasketName")
             .type(WorkbasketType.PERSONAL)
-            .key("B" + builderfunction.hashCode());
+            .key("B" + builderFunction.hashCode());
 
-    builderfunction.apply(builder, value);
-    builderfunction.apply(builder, null);
+    builderFunction.apply(builder, value);
+    builderFunction.apply(builder, null);
 
     Workbasket classification = builder.buildAndStore(workbasketService);
     T retrievedValue = retriever.apply(classification);
