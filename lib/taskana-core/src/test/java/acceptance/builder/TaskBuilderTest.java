@@ -294,7 +294,7 @@ class TaskBuilderTest {
   }
 
   private <T> void applyBuilderFunctionAndVerifyValue(
-      T value, BiFunction<TaskBuilder, T, TaskBuilder> builderfunction, Function<Task, T> retriever)
+      T value, BiFunction<TaskBuilder, T, TaskBuilder> builderFunction, Function<Task, T> retriever)
       throws Exception {
     TaskBuilder builder =
         newTask()
@@ -302,7 +302,7 @@ class TaskBuilderTest {
             .classificationSummary(classificationSummary)
             .primaryObjRef(defaultTestObjectReference().build());
 
-    builderfunction.apply(builder, value);
+    builderFunction.apply(builder, value);
     Task task = builder.buildAndStore(taskService);
     T retrievedValue = retriever.apply(task);
 
@@ -310,7 +310,7 @@ class TaskBuilderTest {
   }
 
   private <T> void applyAndOverrideWithApiDefaultValue(
-      T value, BiFunction<TaskBuilder, T, TaskBuilder> builderfunction, Function<Task, T> retriever)
+      T value, BiFunction<TaskBuilder, T, TaskBuilder> builderFunction, Function<Task, T> retriever)
       throws Exception {
     TaskBuilder builder =
         newTask()
@@ -318,8 +318,8 @@ class TaskBuilderTest {
             .classificationSummary(classificationSummary)
             .primaryObjRef(defaultTestObjectReference().build());
 
-    builderfunction.apply(builder, value);
-    builderfunction.apply(builder, null);
+    builderFunction.apply(builder, value);
+    builderFunction.apply(builder, null);
 
     Task task = builder.buildAndStore(taskService);
     T retrievedValue = retriever.apply(task);

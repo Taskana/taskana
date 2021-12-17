@@ -360,7 +360,6 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   private void addClassificationToMasterDomain(ClassificationImpl classification) {
     if (!Objects.equals(classification.getDomain(), "")) {
-      boolean doesExist = true;
       ClassificationImpl masterClassification = classification.copy(classification.getKey());
       masterClassification.setId(
           IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION));
@@ -375,11 +374,17 @@ public class ClassificationServiceImpl implements ClassificationService {
         this.getClassification(masterClassification.getKey(), masterClassification.getDomain());
         throw new ClassificationAlreadyExistException(masterClassification);
       } catch (ClassificationNotFoundException e) {
-        doesExist = false;
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug(
               "Method createClassification: Classification does not "
                   + "exist in master domain. Classification {}.",
+              masterClassification);
+        }
+        classificationMapper.insert(masterClassification);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug(
+              "Method createClassification: Classification created in "
+                  + "master-domain, too. Classification {}.",
               masterClassification);
         }
       } catch (ClassificationAlreadyExistException ex) {
@@ -387,16 +392,6 @@ public class ClassificationServiceImpl implements ClassificationService {
             "Method createClassification: Classification does already exist "
                 + "in master domain. Classification {}.",
             LogSanitizer.stripLineBreakingChars(masterClassification));
-      } finally {
-        if (!doesExist) {
-          classificationMapper.insert(masterClassification);
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                "Method createClassification: Classification created in "
-                    + "master-domain, too. Classification {}.",
-                masterClassification);
-          }
-        }
       }
     }
   }

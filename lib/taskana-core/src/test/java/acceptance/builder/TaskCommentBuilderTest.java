@@ -169,11 +169,11 @@ class TaskCommentBuilderTest {
 
   private <T> void applyBuilderFunctionAndVerifyValue(
       T value,
-      BiFunction<TaskCommentBuilder, T, TaskCommentBuilder> builderfunction,
+      BiFunction<TaskCommentBuilder, T, TaskCommentBuilder> builderFunction,
       Function<TaskComment, T> retriever)
       throws Exception {
     TaskCommentBuilder builder = newTaskComment().taskId(task.getId());
-    builderfunction.apply(builder, value);
+    builderFunction.apply(builder, value);
     TaskComment classification = builder.buildAndStore(taskService);
     T retrievedValue = retriever.apply(classification);
 
@@ -182,13 +182,13 @@ class TaskCommentBuilderTest {
 
   private <T> void applyAndOverrideWithApiDefaultValue(
       T value,
-      BiFunction<TaskCommentBuilder, T, TaskCommentBuilder> builderfunction,
+      BiFunction<TaskCommentBuilder, T, TaskCommentBuilder> builderFunction,
       Function<TaskComment, T> retriever)
       throws Exception {
     TaskCommentBuilder builder = newTaskComment().taskId(task.getId());
 
-    builderfunction.apply(builder, value);
-    builderfunction.apply(builder, null);
+    builderFunction.apply(builder, value);
+    builderFunction.apply(builder, null);
 
     TaskComment classification = builder.buildAndStore(taskService);
     T retrievedValue = retriever.apply(classification);

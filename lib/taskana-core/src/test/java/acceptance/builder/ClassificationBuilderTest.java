@@ -196,13 +196,13 @@ class ClassificationBuilderTest {
 
   private <T> void applyBuilderFunctionAndVerifyValue(
       T value,
-      BiFunction<ClassificationBuilder, T, ClassificationBuilder> builderfunction,
+      BiFunction<ClassificationBuilder, T, ClassificationBuilder> builderFunction,
       Function<Classification, T> retriever)
       throws Exception {
     ClassificationBuilder builder =
-        newClassification().domain("DOMAIN_A").key("A" + builderfunction.hashCode());
+        newClassification().domain("DOMAIN_A").key("A" + builderFunction.hashCode());
 
-    builderfunction.apply(builder, value);
+    builderFunction.apply(builder, value);
     Classification classification = builder.buildAndStore(classificationService);
     T retrievedValue = retriever.apply(classification);
 
@@ -211,14 +211,14 @@ class ClassificationBuilderTest {
 
   private <T> void applyAndOverrideWithApiDefaultValue(
       T value,
-      BiFunction<ClassificationBuilder, T, ClassificationBuilder> builderfunction,
+      BiFunction<ClassificationBuilder, T, ClassificationBuilder> builderFunction,
       Function<Classification, T> retriever)
       throws Exception {
     ClassificationBuilder builder =
-        newClassification().domain("DOMAIN_A").key("B" + builderfunction.hashCode());
+        newClassification().domain("DOMAIN_A").key("B" + builderFunction.hashCode());
 
-    builderfunction.apply(builder, value);
-    builderfunction.apply(builder, null);
+    builderFunction.apply(builder, value);
+    builderFunction.apply(builder, null);
 
     Classification classification = builder.buildAndStore(classificationService);
     T retrievedValue = retriever.apply(classification);

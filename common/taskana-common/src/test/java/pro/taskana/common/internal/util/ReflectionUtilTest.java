@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class ReflectionUtilTest {
+class ReflectionUtilTest {
 
   @Test
   void should_RetrieveAllFieldsFromClassAndSuperClass() {
