@@ -1,4 +1,4 @@
-import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError as observableThrowError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
@@ -10,7 +10,7 @@ import { WorkbasketDistributionTargets } from 'app/shared/models/workbasket-dist
 import { Sorting, WorkbasketQuerySortParameter } from 'app/shared/models/sorting';
 
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { mergeMap, tap, catchError } from 'rxjs/operators';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { WorkbasketRepresentation } from '../../models/workbasket-representation';
 import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
@@ -34,7 +34,7 @@ export class WorkbasketService {
     filterParameter?: WorkbasketQueryFilterParameter,
     sortParameter?: Sorting<WorkbasketQuerySortParameter>,
     pagingParameter?: QueryPagingParameter
-  ) {
+  ): Observable<WorkbasketSummaryRepresentation> {
     if (this.workbasketSummaryRef && !forceRequest) {
       return this.workbasketSummaryRef;
     }
@@ -105,8 +105,19 @@ export class WorkbasketService {
   }
 
   // GET
-  getWorkBasketsDistributionTargets(url: string): Observable<WorkbasketDistributionTargets> {
-    return this.httpClient.get<WorkbasketDistributionTargets>(url);
+  getWorkBasketsDistributionTargets(
+    url: string,
+    filterParameter?: WorkbasketQueryFilterParameter,
+    sortParameter?: Sorting<WorkbasketQuerySortParameter>,
+    pagingParameter?: QueryPagingParameter
+  ): Observable<WorkbasketDistributionTargets> {
+    return this.httpClient.get<WorkbasketDistributionTargets>(
+      `${url}/${asUrlQueryString({
+        ...filterParameter,
+        ...sortParameter,
+        ...pagingParameter
+      })}`
+    );
   }
 
   // PUT

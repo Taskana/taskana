@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { ImportExportComponent } from './import-export.component';
 import { StartupService } from '../../../shared/services/startup/startup.service';
@@ -11,9 +11,7 @@ import { ImportExportService } from '../../services/import-export.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ClassificationDefinitionService } from '../../services/classification-definition.service';
-import { take } from 'rxjs/operators';
 import { TaskanaType } from '../../../shared/models/taskana-type';
-import { BlobGenerator } from '../../../shared/util/blob-generator';
 
 jest.mock('../../../shared/util/blob-generator');
 
@@ -45,31 +43,33 @@ xdescribe('ImportExportComponent', () => {
     })
   );
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [],
-      declarations: [ImportExportComponent],
-      providers: [
-        StartupService,
-        TaskanaEngineService,
-        WindowRefService,
-        WorkbasketDefinitionService,
-        ClassificationDefinitionService,
-        ImportExportService,
-        { provide: DomainService, useClass: domainServiceSpy },
-        { provide: NotificationService, useClass: notificationServiceSpy },
-        { provide: HttpClient, useClass: httpSpy }
-      ]
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [],
+        declarations: [ImportExportComponent],
+        providers: [
+          StartupService,
+          TaskanaEngineService,
+          WindowRefService,
+          WorkbasketDefinitionService,
+          ClassificationDefinitionService,
+          ImportExportService,
+          { provide: DomainService, useClass: domainServiceSpy },
+          { provide: NotificationService, useClass: notificationServiceSpy },
+          { provide: HttpClient, useClass: httpSpy }
+        ]
+      }).compileComponents();
 
-    jest.clearAllMocks();
+      jest.clearAllMocks();
 
-    fixture = TestBed.createComponent(ImportExportComponent);
-    debugElement = fixture.debugElement;
-    app = fixture.debugElement.componentInstance;
-    app.currentSelection = TaskanaType.WORKBASKETS;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(ImportExportComponent);
+      debugElement = fixture.debugElement;
+      app = fixture.debugElement.componentInstance;
+      app.currentSelection = TaskanaType.WORKBASKETS;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create component', () => {
     expect(app).toBeTruthy();

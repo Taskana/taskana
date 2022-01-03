@@ -56,6 +56,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const MODULES = [
   CommonModule,
@@ -66,7 +67,8 @@ const MODULES = [
   SharedModule,
   AdministrationRoutingModule,
   TypeaheadModule,
-  InfiniteScrollModule
+  InfiniteScrollModule,
+  ScrollingModule
 ];
 
 const DECLARATIONS = [

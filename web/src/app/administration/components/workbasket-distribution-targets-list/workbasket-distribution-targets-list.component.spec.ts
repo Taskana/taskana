@@ -1,15 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, DebugElement, Input, Pipe, PipeTransform } from '@angular/core';
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
-import { Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
+import { engineConfigurationMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Side } from '../../models/workbasket-distribution-enums';
+import { NgxsModule, Store } from '@ngxs/store';
+import { WorkbasketState } from '../../../shared/store/workbasket-store/workbasket.state';
+import { animationFrameScheduler, EMPTY, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { DomainService } from '../../../shared/services/domain/domain.service';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
 class FilterStub {
@@ -38,6 +47,31 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   let fixture: ComponentFixture<WorkbasketDistributionTargetsListComponent>;
   let debugElement: DebugElement;
   let component: WorkbasketDistributionTargetsListComponent;
+  let store: Store;
+
+  const routeParamsMock = { id: 'workbasket' };
+  const activatedRouteMock = {
+    firstChild: {
+      params: of(routeParamsMock)
+    }
+  };
+
+  const httpSpy = jest.fn().mockImplementation(
+    (): Partial<HttpClient> => ({
+      get: jest.fn().mockReturnValue(of([])),
+      post: jest.fn().mockReturnValue(of([]))
+    })
+  );
+
+  const domainServiceSpy: Partial<DomainService> = {
+    getSelectedDomainValue: jest.fn().mockReturnValue(of(null)),
+    getSelectedDomain: jest.fn().mockReturnValue(of('A')),
+    getDomains: jest.fn().mockReturnValue(of(null))
+  };
+
+  const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
+    setRequestInProgress: jest.fn().mockReturnValue(of(null))
+  };
 
   beforeEach(
     waitForAsync(() => {
@@ -46,12 +80,23 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
           MatIconModule,
           MatToolbarModule,
           MatListModule,
+          MatDialogModule,
           MatTooltipModule,
           InfiniteScrollModule,
-          BrowserAnimationsModule
+          ScrollingModule,
+          BrowserAnimationsModule,
+          NgxsModule.forRoot([WorkbasketState])
         ],
         declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],
-        providers: []
+        providers: [
+          { provide: HttpClient, useValue: httpSpy },
+          {
+            provide: DomainService,
+            useValue: domainServiceSpy
+          },
+          { provide: ActivatedRoute, useValue: activatedRouteMock },
+          { provide: RequestInProgressService, useValue: requestInProgressServiceSpy }
+        ]
       }).compileComponents();
 
       fixture = TestBed.createComponent(WorkbasketDistributionTargetsListComponent);
@@ -59,6 +104,13 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
       component = fixture.componentInstance;
       component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
       component.side = Side.AVAILABLE;
+      component.transferDistributionTargetObservable = EMPTY;
+      store = TestBed.inject(Store);
+      store.reset({
+        ...store.snapshot(),
+        engineConfiguration: engineConfigurationMock,
+        workbasket: workbasketReadStateMock
+      });
     })
   );
 
@@ -83,13 +135,20 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     expect(debugElement.nativeElement.querySelector('taskana-shared-workbasket-filter')).toBeTruthy();
   });
 
-  it('should display all available workbaskets', () => {
+  it('should display all available workbaskets', fakeAsync(() => {
+    // On the first cycle we render the items.
     fixture.detectChanges();
+    flush();
+    // Flush the initial fake scroll event.
+    animationFrameScheduler.flush();
+    flush();
+    fixture.detectChanges();
+
     const distributionTargetList = debugElement.nativeElement.getElementsByClassName(
       'workbasket-distribution-targets__workbaskets-item'
     );
-    expect(distributionTargetList).toHaveLength(5);
-  });
+    expect(distributionTargetList).toHaveLength(3);
+  }));
 
   it('should call orderBy pipe', () => {
     const orderBySpy = jest.spyOn(OrderByMock.prototype, 'transform');
