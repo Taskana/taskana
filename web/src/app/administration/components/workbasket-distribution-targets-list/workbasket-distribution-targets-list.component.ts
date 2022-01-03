@@ -1,18 +1,32 @@
 import {
+  AfterContentChecked,
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
   Input,
-  AfterContentChecked,
-  ChangeDetectorRef,
-  ViewChild,
-  Output,
-  EventEmitter,
   OnChanges,
-  SimpleChanges
+  OnInit,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
+import { isEqual } from 'lodash';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { expandDown } from 'app/shared/animations/expand.animation';
-import { AllSelected, Side } from '../workbasket-distribution-targets/workbasket-distribution-targets.component';
 import { MatSelectionList } from '@angular/material/list';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { Side } from '../../models/workbasket-distribution-enums';
+import { Select, Store } from '@ngxs/store';
+import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
+import { filter, map, pairwise, take, takeUntil, throttleTime } from 'rxjs/operators';
+import {
+  FetchAvailableDistributionTargets,
+  FetchWorkbasketDistributionTargets,
+  TransferDistributionTargets
+} from '../../../shared/store/workbasket-store/workbasket.actions';
+import { Observable, Subject } from 'rxjs';
+import { WorkbasketQueryFilterParameter } from '../../../shared/models/workbasket-query-filter-parameter';
+import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
+import { WorkbasketDistributionTarget } from '../../../shared/models/workbasket-distribution-target';
 
 @Component({
   selector: 'taskana-administration-workbasket-distribution-targets-list',
@@ -20,19 +34,68 @@ import { MatSelectionList } from '@angular/material/list';
   styleUrls: ['./workbasket-distribution-targets-list.component.scss'],
   animations: [expandDown]
 })
-export class WorkbasketDistributionTargetsListComponent implements AfterContentChecked, OnChanges {
-  @Input() distributionTargets: WorkbasketSummary[];
+export class WorkbasketDistributionTargetsListComponent
+  implements AfterContentChecked, OnChanges, OnInit, AfterViewInit
+{
   @Input() side: Side;
   @Input() header: string;
-  @Input() allSelected;
+  allSelected;
   @Input() component;
+  @Input() transferDistributionTargetObservable: Observable<Side>;
 
-  @Output() allSelectedEmitter = new EventEmitter<AllSelected>();
+  @Select(WorkbasketSelectors.workbasketDistributionTargets)
+  workbasketDistributionTargets$: Observable<WorkbasketSummary[]>;
+
+  @Select(WorkbasketSelectors.availableDistributionTargets)
+  availableDistributionTargets$: Observable<WorkbasketSummary[]>;
+
+  @Select(FilterSelectors.getAvailableDistributionTargetsFilter)
+  availableDistributionTargetsFilter$: Observable<WorkbasketQueryFilterParameter>;
+
+  @Select(FilterSelectors.getSelectedDistributionTargetsFilter)
+  selectedDistributionTargetsFilter$: Observable<WorkbasketQueryFilterParameter>;
 
   toolbarState = false;
-  @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
 
-  constructor(private changeDetector: ChangeDetectorRef) {}
+  distributionTargets: WorkbasketDistributionTarget[];
+
+  @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
+  @ViewChild('scroller') workbasketList: CdkVirtualScrollViewport;
+  private destroy$ = new Subject<void>();
+  private filter: WorkbasketQueryFilterParameter;
+  private allSelectedDiff = 0;
+
+  constructor(private changeDetector: ChangeDetectorRef, private store: Store) {}
+
+  ngOnInit(): void {
+    if (this.side === Side.AVAILABLE) {
+      this.availableDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((wbs) => {
+        this.distributionTargets = wbs.map((wb) => {
+          return { ...wb, selected: this.allSelected };
+        });
+      });
+      this.availableDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+        this.filter = filter;
+        this.store.dispatch(new FetchAvailableDistributionTargets(true, this.filter));
+        this.selectAll(false);
+      });
+    } else {
+      this.workbasketDistributionTargets$.pipe().subscribe((wbs) => {
+        this.distributionTargets = wbs.map((wb) => {
+          return { ...wb };
+        });
+      });
+      this.selectedDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+        if (isEqual(this.filter, filter)) return;
+        this.filter = filter;
+        this.store.dispatch(new FetchWorkbasketDistributionTargets(true, this.filter));
+        this.selectAll(false);
+      });
+    }
+    this.transferDistributionTargetObservable.subscribe((targetSide) => {
+      if (targetSide !== this.side) this.transferDistributionTargets(targetSide);
+    });
+  }
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
@@ -44,17 +107,63 @@ export class WorkbasketDistributionTargetsListComponent implements AfterContentC
     }
   }
 
+  ngAfterViewInit() {
+    this.workbasketList
+      .elementScrolled()
+      .pipe(
+        map(() => this.workbasketList.measureScrollOffset('bottom')),
+        pairwise(),
+        filter(([y1, y2]) => y2 < y1 && y2 < 270),
+        throttleTime(200)
+      )
+      .subscribe(() => {
+        if (this.side === Side.AVAILABLE) {
+          this.store.dispatch(new FetchAvailableDistributionTargets(false, this.filter));
+        } else {
+          this.store.dispatch(new FetchWorkbasketDistributionTargets(false, this.filter));
+        }
+      });
+  }
+
   selectAll(selected: boolean) {
     if (typeof this.distributionTargetsList !== 'undefined') {
       this.allSelected = selected;
-      this.distributionTargetsList.options.map((item) => (item['selected'] = selected));
-      this.distributionTargets.map((item) => (item['selected'] = selected));
-
-      this.allSelectedEmitter.emit({ value: this.allSelected, side: this.side });
+      this.distributionTargets.map((wb) => (wb.selected = selected));
+      if (selected) this.allSelectedDiff = this.distributionTargets.length;
+      else this.allSelectedDiff = 0;
     }
+  }
+
+  transferDistributionTargets(targetSide: Side) {
+    let selectedWBs = this.distributionTargets.filter((item: any) => item.selected === true);
+    this.distributionTargets.forEach((wb) => (wb.selected = false));
+    this.store
+      .dispatch(new TransferDistributionTargets(targetSide, selectedWBs))
+      .pipe(take(1))
+      .subscribe(() => {
+        if (this.distributionTargets.length === 0) {
+          const desiredAction =
+            targetSide === Side.SELECTED
+              ? new FetchAvailableDistributionTargets(false, this.filter)
+              : new FetchWorkbasketDistributionTargets(false, this.filter);
+          this.store.dispatch(desiredAction);
+        }
+      });
   }
 
   changeToolbarState(state: boolean) {
     this.toolbarState = state;
+  }
+
+  updateSelectAll(selected: boolean) {
+    if (selected) this.allSelectedDiff++;
+    else this.allSelectedDiff--;
+    this.allSelected = this.allSelectedDiff === this.distributionTargets.length;
+    return true;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

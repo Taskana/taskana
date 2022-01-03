@@ -29,7 +29,6 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
     this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
       // does not work
-      // console.log('router', value);
       this.selectedRoute = value;
       this.setTitle(value);
     });

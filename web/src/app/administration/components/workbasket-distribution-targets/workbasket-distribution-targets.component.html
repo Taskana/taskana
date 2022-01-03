@@ -1,4 +1,4 @@
-<div *ngIf="workbasket" id="wb-information" class="workbasket-distribution-targets">
+<div id="wb-information" class="workbasket-distribution-targets">
   <mat-toolbar class="distribution-targets-list__action-toolbar" >
     <button mat-flat-button class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
             *ngIf="!sideBySide" (click)="toggleSideBySideView()">
@@ -18,7 +18,7 @@
            style="justify-content: flex-end; margin-right: 2%">
         <button mat-flat-button color="accent"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
-                (click)="moveDistributionTargets(side.AVAILABLE)">
+                (click)="moveDistributionTargets(sideEnum.SELECTED)">
           Add selected distribution targets
           <mat-icon>add</mat-icon>
         </button>
@@ -30,7 +30,7 @@
            style="justify-content: flex-end;">
         <button mat-flat-button color="warn"
                 class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
-                (click)="moveDistributionTargets(side.SELECTED)">
+                (click)="moveDistributionTargets(sideEnum.AVAILABLE)">
           Remove selected distribution target
           <mat-icon>remove</mat-icon>
         </button>
@@ -43,7 +43,7 @@
          *ngIf="!displayingDistributionTargetsPicker && !sideBySide">
       <button mat-flat-button color="warn"
               class="distribution-targets-list__action-button distribution-targets-list-dialog__remove-button"
-              (click)="moveDistributionTargets(side.SELECTED)">
+              (click)="moveDistributionTargets(sideEnum.AVAILABLE)">
         Remove selected distribution target
         <mat-icon>remove</mat-icon>
       </button>
@@ -63,7 +63,7 @@
          *ngIf="displayingDistributionTargetsPicker && !sideBySide">
       <button mat-flat-button color="accent"
               class="distribution-targets-list__action-button distribution-targets-list-dialog__add-button"
-              (click)="moveDistributionTargets(side.AVAILABLE)">
+              (click)="moveDistributionTargets(sideEnum.SELECTED)">
         Add selected distribution targets
         <mat-icon>add</mat-icon>
       </button>
@@ -86,23 +86,19 @@
     <taskana-administration-workbasket-distribution-targets-list
       [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
       header="Available distribution targets"
-      [distributionTargets]="availableDistributionTargets"
-      [side]="side.AVAILABLE"
-      [allSelected]="selectAllLeft"
+      [side]="sideEnum.AVAILABLE"
       *ngIf="displayingDistributionTargetsPicker"
       [component]="'availableDistributionTargets'"
-      (allSelectedEmitter)="setAllSelected($event)"
+      [transferDistributionTargetObservable]="transferDistributionTargetObservable"
     >
     </taskana-administration-workbasket-distribution-targets-list>
 
     <taskana-administration-workbasket-distribution-targets-list
       header="Selected distribution targets"
-      [distributionTargets]="selectedDistributionTargets"
-      [side]="side.SELECTED"
-      [allSelected]="selectAllRight"
+      [side]="sideEnum.SELECTED"
       [hidden]="displayingDistributionTargetsPicker && !sideBySide"
       [component]="'selectedDistributionTargets'"
-      (allSelectedEmitter)="setAllSelected($event)"
+      [transferDistributionTargetObservable]="transferDistributionTargetObservable"
     >
     </taskana-administration-workbasket-distribution-targets-list>
   </div>

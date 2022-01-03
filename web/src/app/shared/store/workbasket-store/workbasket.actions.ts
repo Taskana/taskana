@@ -6,6 +6,8 @@ import { WorkbasketComponent } from '../../../administration/models/workbasket-c
 import { ButtonAction } from '../../../administration/models/button-action';
 import { QueryPagingParameter } from '../../models/query-paging-parameter';
 import { WorkbasketQueryFilterParameter } from '../../models/workbasket-query-filter-parameter';
+import { WorkbasketSummary } from '../../models/workbasket-summary';
+import { Side } from '../../../administration/models/workbasket-distribution-enums';
 
 // Workbasket List
 export class GetWorkbasketsSummary {
@@ -21,6 +23,7 @@ export class GetWorkbasketsSummary {
 
 export class SelectWorkbasket {
   static readonly type = '[Workbasket] Select a workbasket';
+
   constructor(public workbasketId: string) {}
 }
 
@@ -34,68 +37,93 @@ export class CreateWorkbasket {
 
 export class SetActiveAction {
   static readonly type = '[Workbasket] Specify current action';
+
   constructor(public action: ACTION) {}
 }
 
 //Workbasket Details
 export class SelectComponent {
   static readonly type = '[Workbasket] Select component';
+
   constructor(public component: WorkbasketComponent) {}
 }
 
 export class OnButtonPressed {
   static readonly type = '[Workbasket] Button pressed';
+
   constructor(public button: ButtonAction) {}
 }
 
 // Workbasket Information
 export class SaveNewWorkbasket {
   static readonly type = '[Workbasket] Save new workbasket';
+
   constructor(public workbasket: Workbasket) {}
 }
 
 export class CopyWorkbasket {
   static readonly type = '[Workbasket] Copy selected workbasket';
+
   constructor(public workbasket: Workbasket) {}
 }
 
 export class UpdateWorkbasket {
   static readonly type = '[Workbasket] Update a workbasket';
-  constructor(public url: string, public workbasket: Workbasket) {}
-}
 
-export class RemoveDistributionTarget {
-  static readonly type = '[Workbasket] Remove distribution targets of selected workbasket';
-  constructor(public url: string) {}
+  constructor(public url: string, public workbasket: Workbasket) {}
 }
 
 export class MarkWorkbasketForDeletion {
   static readonly type = '[Workbasket] Mark selected workbasket for deletion';
+
+  constructor(public url: string) {}
+}
+
+export class RemoveDistributionTarget {
+  static readonly type = '[Workbasket] Remove selected workbasket as distribution target';
+
   constructor(public url: string) {}
 }
 
 // Workbasket Access Items
 export class GetWorkbasketAccessItems {
   static readonly type = '[Workbasket] Get all workbasket access items';
+
   constructor(public url: string) {}
 }
 
 export class UpdateWorkbasketAccessItems {
-  static readonly type = "[Workbasket] Update selected workbasket's access items";
+  static readonly type = '[Workbasket] Update selected workbaskets access items';
+
   constructor(public url: string, public workbasketAccessItems: WorkbasketAccessItems[]) {}
-}
-
-// Workbasket Distribution Targets
-export class GetWorkbasketDistributionTargets {
-  static readonly type = '[Workbasket] Get all workbasket distribution targets';
-  constructor(public url: string) {}
-}
-
-export class GetAvailableDistributionTargets {
-  static readonly type = '[Workbasket] Get available distribution targets';
 }
 
 export class UpdateWorkbasketDistributionTargets {
   static readonly type = '[Workbasket] Update workbasket distribution targets';
-  constructor(public url: string, public distributionTargetsIds: string[]) {}
+}
+
+export class FetchWorkbasketDistributionTargets {
+  static readonly type = '[Workbasket] Fetch a subset of selected workbasket distribution targets';
+
+  constructor(
+    public refetchAll: boolean,
+    public filterParameter?: WorkbasketQueryFilterParameter,
+    public sortParameter?: Sorting<WorkbasketQuerySortParameter>
+  ) {}
+}
+
+export class FetchAvailableDistributionTargets {
+  static readonly type = '[Workbasket] Fetch a subset of available workbasket distribution targets';
+
+  constructor(
+    public refetchAll: boolean,
+    public filterParameter?: WorkbasketQueryFilterParameter,
+    public sortParameter?: Sorting<WorkbasketQuerySortParameter>
+  ) {}
+}
+
+export class TransferDistributionTargets {
+  static readonly type = '[Workbasket] Transfer a set of workbasket distribution targets';
+
+  constructor(public targetSide: Side, public workbasketSummaries: WorkbasketSummary[]) {}
 }

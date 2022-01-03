@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { Side, WorkbasketDistributionTargetsComponent } from './workbasket-distribution-targets.component';
+import { WorkbasketDistributionTargetsComponent } from './workbasket-distribution-targets.component';
 import { WorkbasketSummary } from '../../../shared/models/workbasket-summary';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -13,12 +13,9 @@ import { WorkbasketState } from '../../../shared/store/workbasket-store/workbask
 import { ActivatedRoute } from '@angular/router';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { MatDialogModule } from '@angular/material/dialog';
-import {
-  engineConfigurationMock,
-  selectedWorkbasketMock,
-  workbasketReadStateMock
-} from '../../../shared/store/mock-data/mock-store';
+import { engineConfigurationMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { DomainService } from '../../../shared/services/domain/domain.service';
+import { Side } from '../../models/workbasket-distribution-enums';
 
 const routeParamsMock = { id: 'workbasket' };
 const activatedRouteMock = {
@@ -26,6 +23,7 @@ const activatedRouteMock = {
     params: of(routeParamsMock)
   }
 };
+
 @Component({ selector: 'taskana-administration-workbasket-distribution-targets-list', template: '' })
 class WorkbasketDistributionTargetsListStub {
   @Input() distributionTargets: WorkbasketSummary[];
@@ -36,21 +34,21 @@ class WorkbasketDistributionTargetsListStub {
 }
 
 const domainServiceSpy: Partial<DomainService> = {
-  getSelectedDomainValue: jest.fn().mockReturnValue(of()),
+  getSelectedDomainValue: jest.fn().mockReturnValue(of(null)),
   getSelectedDomain: jest.fn().mockReturnValue(of('A')),
-  getDomains: jest.fn().mockReturnValue(of())
+  getDomains: jest.fn().mockReturnValue(of(null))
 };
 
 const workbasketServiceSpy: Partial<WorkbasketService> = {
-  getWorkBasketsSummary: jest.fn().mockReturnValue(of()),
-  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of())
+  getWorkBasketsSummary: jest.fn().mockReturnValue(of(null)),
+  getWorkBasketsDistributionTargets: jest.fn().mockReturnValue(of(null))
 };
 
 const notificationsServiceSpy: Partial<NotificationService> = {
   showSuccess: jest.fn().mockReturnValue(true)
 };
 const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
-  setRequestInProgress: jest.fn().mockReturnValue(of())
+  setRequestInProgress: jest.fn().mockReturnValue(of(null))
 };
 
 describe('WorkbasketDistributionTargetsComponent', () => {
@@ -60,38 +58,39 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        MatIconModule,
-        MatDialogModule,
-        MatToolbarModule,
-        MatButtonModule,
-        NgxsModule.forRoot([WorkbasketState])
-      ],
-      declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
-      providers: [
-        { provide: WorkbasketService, useValue: workbasketServiceSpy },
-        { provide: NotificationService, useValue: notificationsServiceSpy },
-        { provide: ActivatedRoute, useValue: activatedRouteMock },
-        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
-        { provide: DomainService, useValue: domainServiceSpy }
-      ]
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          MatIconModule,
+          MatDialogModule,
+          MatToolbarModule,
+          MatButtonModule,
+          NgxsModule.forRoot([WorkbasketState])
+        ],
+        declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
+        providers: [
+          { provide: WorkbasketService, useValue: workbasketServiceSpy },
+          { provide: NotificationService, useValue: notificationsServiceSpy },
+          { provide: ActivatedRoute, useValue: activatedRouteMock },
+          { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+          { provide: DomainService, useValue: domainServiceSpy }
+        ]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(WorkbasketDistributionTargetsComponent);
-    debugElement = fixture.debugElement;
-    component = fixture.componentInstance;
-    store = TestBed.inject(Store);
-    actions$ = TestBed.inject(Actions);
-    store.reset({
-      ...store.snapshot(),
-      engineConfiguration: engineConfigurationMock,
-      workbasket: workbasketReadStateMock
-    });
-    component.workbasket = selectedWorkbasketMock;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(WorkbasketDistributionTargetsComponent);
+      debugElement = fixture.debugElement;
+      component = fixture.componentInstance;
+      store = TestBed.inject(Store);
+      actions$ = TestBed.inject(Actions);
+      store.reset({
+        ...store.snapshot(),
+        engineConfiguration: engineConfigurationMock,
+        workbasket: workbasketReadStateMock
+      });
+      fixture.detectChanges();
+    })
+  );
 
   it('should create component', () => {
     expect(component).toBeTruthy();
@@ -109,73 +108,5 @@ describe('WorkbasketDistributionTargetsComponent', () => {
     fixture.detectChanges();
     expect(component.sideBySide).toBe(false);
     expect(debugElement.nativeElement.querySelector('.distribution-targets-list__lists--side')).toBeFalsy();
-  });
-
-  it('should get available and selected distribution targets', () => {
-    // mock-data has 8 entries, array should be filtered by selected distribution targets
-    expect(component.availableDistributionTargets).toHaveLength(5);
-    expect(component.availableDistributionTargetsUndoClone).toHaveLength(5);
-    expect(component.availableDistributionTargetsFilterClone).toHaveLength(5);
-
-    // mock-data has 3 entries
-    expect(component.selectedDistributionTargets).toHaveLength(3);
-    expect(component.selectedDistributionTargetsUndoClone).toHaveLength(3);
-    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
-  });
-
-  it('should move distribution targets to selected list', () => {
-    component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-    const removeSelectedItems = jest.spyOn(component, 'removeSelectedItems');
-    component.moveDistributionTargets(Side.AVAILABLE);
-
-    expect(component.selectedDistributionTargets).toHaveLength(4); // mock-data only has 3
-    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(4);
-    expect(removeSelectedItems).toHaveBeenCalled();
-  });
-
-  it('should move distribution targets to available list', () => {
-    component.selectedDistributionTargets[0]['selected'] = true; // select first item in available array
-    const removeSelectedItems = jest.spyOn(component, 'removeSelectedItems');
-    component.moveDistributionTargets(Side.SELECTED);
-
-    expect(component.availableDistributionTargets).toHaveLength(6); // mock-data has 5
-    expect(component.availableDistributionTargetsFilterClone).toHaveLength(6);
-    expect(removeSelectedItems).toHaveBeenCalled();
-  });
-
-  it('should set selectAll checkboxes to false when moving a workbasket', () => {
-    component.selectAllRight = true;
-    component.moveDistributionTargets(Side.SELECTED);
-    expect(component.selectAllRight).toBeFalsy();
-
-    component.selectAllLeft = true;
-    component.moveDistributionTargets(Side.AVAILABLE);
-    expect(component.selectAllLeft).toBeFalsy();
-  });
-
-  it('should call unselectItems() when moving a workbasket', () => {
-    const unselectItems = jest.spyOn(component, 'unselectItems');
-
-    [Side.SELECTED, Side.AVAILABLE].forEach((side) => {
-      component.moveDistributionTargets(side);
-      expect(unselectItems).toHaveBeenCalled();
-    });
-  });
-
-  it('should reset distribution targets to last state when undo is called', () => {
-    component.availableDistributionTargets[0]['selected'] = true; // select first item in available array
-
-    component.moveDistributionTargets(Side.AVAILABLE);
-    expect(component.selectedDistributionTargets).toHaveLength(4); // mock-data only has 3
-
-    component.onClear();
-    expect(component.selectedDistributionTargets).toHaveLength(3);
-    expect(component.selectedDistributionTargetsFilterClone).toHaveLength(3);
-  });
-
-  it('should call performFilter when filter value from store is obtained', () => {
-    const performFilter = jest.spyOn(component, 'performFilter');
-    component.ngOnInit();
-    expect(performFilter).toHaveBeenCalledTimes(2);
   });
 });

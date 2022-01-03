@@ -8,9 +8,9 @@ import {
   CopyWorkbasket,
   CreateWorkbasket,
   DeselectWorkbasket,
-  GetAvailableDistributionTargets,
+  FetchAvailableDistributionTargets,
+  FetchWorkbasketDistributionTargets,
   GetWorkbasketAccessItems,
-  GetWorkbasketDistributionTargets,
   GetWorkbasketsSummary,
   MarkWorkbasketForDeletion,
   OnButtonPressed,
@@ -19,6 +19,7 @@ import {
   SelectComponent,
   SelectWorkbasket,
   SetActiveAction,
+  TransferDistributionTargets,
   UpdateWorkbasket,
   UpdateWorkbasketAccessItems,
   UpdateWorkbasketDistributionTargets
@@ -38,6 +39,9 @@ import { TaskanaDate } from '../../util/taskana.date';
 import { DomainService } from '../../services/domain/domain.service';
 import { ClearWorkbasketFilter } from '../filter-store/filter.actions';
 import { Injectable } from '@angular/core';
+import { WorkbasketQueryPagingParameter } from '../../models/workbasket-query-paging-parameter';
+import { Side } from '../../../administration/models/workbasket-distribution-enums';
+import { cloneDeep } from 'lodash';
 
 class InitializeStore {
   static readonly type = '[Workbasket] Initializing state';
@@ -77,12 +81,16 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       }
 
       ctx.patchState({
-        badgeMessage: ''
+        badgeMessage: '',
+        availableDistributionTargetsPage: 0,
+        distributionTargetsPage: 0,
+        workbasketDistributionTargets: { distributionTargets: [], _links: {} },
+        availableDistributionTargets: { workbaskets: [], _links: {} }
       });
 
       ctx.dispatch(new SelectComponent(tab));
     });
-    return of();
+    return of(null);
   }
 
   @Action(GetWorkbasketsSummary)
@@ -127,9 +135,6 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           });
 
           ctx.dispatch(new GetWorkbasketAccessItems(ctx.getState().selectedWorkbasket._links.accessItems.href));
-          ctx.dispatch(
-            new GetWorkbasketDistributionTargets(ctx.getState().selectedWorkbasket._links.distributionTargets.href)
-          );
 
           this.location.go(
             this.location
@@ -204,7 +209,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
   }
 
   @Action(CopyWorkbasket)
-  copyWorkbasket(ctx: StateContext<WorkbasketStateModel>, action: CopyWorkbasket): Observable<any> {
+  copyWorkbasket(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
     this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
     ctx.dispatch(new OnButtonPressed(undefined));
 
@@ -230,21 +235,24 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       tap((domain) => {
         this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
 
-        if (!ctx.getState().workbasketAvailableDistributionTargets) {
-          ctx.dispatch(new GetAvailableDistributionTargets());
+        if (!ctx.getState().availableDistributionTargets) {
+          ctx.dispatch(new FetchAvailableDistributionTargets(true));
         }
 
         const emptyWorkbasket: Workbasket = {};
         emptyWorkbasket.domain = domain;
         emptyWorkbasket.type = WorkbasketType.PERSONAL;
 
-        const date = TaskanaDate.getDate();
+        const date: string = TaskanaDate.getDate();
         emptyWorkbasket.created = date;
         emptyWorkbasket.modified = date;
         emptyWorkbasket.owner = '';
 
-        const accessItems = { accessItems: [], _links: {} };
-        const distributionTargets = { distributionTargets: [], _links: {} };
+        const accessItems: WorkbasketAccessItemsRepresentation = { accessItems: [], _links: {} };
+        const distributionTargets: WorkbasketDistributionTargets = {
+          _links: {},
+          distributionTargets: []
+        };
 
         ctx.patchState({
           action: ACTION.CREATE,
@@ -348,73 +356,144 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       );
   }
 
-  @Action(GetWorkbasketDistributionTargets)
-  getWorkbasketDistributionTargets(
-    ctx: StateContext<WorkbasketStateModel>,
-    action: GetWorkbasketDistributionTargets
-  ): Observable<any> {
-    return this.workbasketService.getWorkBasketsDistributionTargets(action.url).pipe(
-      take(1),
-      tap((workbasketDistributionTargets) => {
-        ctx.patchState({
-          workbasketDistributionTargets
-        });
-      })
-    );
-  }
-
-  @Action(GetAvailableDistributionTargets)
-  getAvailableDistributionTargets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
-    return this.workbasketService.getWorkBasketsSummary(true).pipe(
-      take(1),
-      tap((workbasketAvailableDistributionTargets: WorkbasketSummaryRepresentation) => {
-        ctx.patchState({
-          workbasketAvailableDistributionTargets: workbasketAvailableDistributionTargets.workbaskets
-        });
-      })
-    );
-  }
-
   @Action(UpdateWorkbasketDistributionTargets)
-  updateWorkbasketDistributionTargets(
-    ctx: StateContext<WorkbasketStateModel>,
-    action: UpdateWorkbasketDistributionTargets
-  ): Observable<any> {
+  updateWorkbasketDistributionTargets(ctx: StateContext<WorkbasketStateModel>): Observable<any> {
     this.requestInProgressService.setRequestInProgress(true);
-    return this.workbasketService.updateWorkBasketsDistributionTargets(action.url, action.distributionTargetsIds).pipe(
-      take(1),
-      tap(
-        (updatedWorkbasketsDistributionTargets) => {
-          ctx.patchState({
-            workbasketDistributionTargets: updatedWorkbasketsDistributionTargets
-          });
-          const workbasketId = ctx.getState().selectedWorkbasket?.workbasketId;
-
-          if (typeof workbasketId !== 'undefined') {
-            this.workbasketService.getWorkBasket(workbasketId).subscribe((selectedWorkbasket) => {
-              ctx.patchState({
-                selectedWorkbasket,
-                action: ACTION.READ
-              });
-              ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
-              ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
-            });
-          }
-          this.requestInProgressService.setRequestInProgress(false);
-          this.notificationService.showSuccess('WORKBASKET_DISTRIBUTION_TARGET_SAVE', {
-            workbasketName: ctx.getState().selectedWorkbasket.name
-          });
-
-          return of(null);
-        },
-        () => {
-          this.requestInProgressService.setRequestInProgress(false);
-        }
+    return this.workbasketService
+      .updateWorkBasketsDistributionTargets(
+        ctx.getState().selectedWorkbasket._links.distributionTargets.href,
+        ctx.getState().workbasketDistributionTargets.distributionTargets.map((w) => w.workbasketId)
       )
-    );
+      .pipe(
+        take(1),
+        tap({
+          next: (updatedWorkbasketsDistributionTargets) => {
+            ctx.patchState({
+              workbasketDistributionTargets: updatedWorkbasketsDistributionTargets
+            });
+            const workbasketId = ctx.getState().selectedWorkbasket?.workbasketId;
+
+            if (typeof workbasketId !== 'undefined') {
+              this.workbasketService.getWorkBasket(workbasketId).subscribe((selectedWorkbasket) => {
+                ctx.patchState({
+                  selectedWorkbasket,
+                  action: ACTION.READ
+                });
+                ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
+                ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
+              });
+            }
+            this.requestInProgressService.setRequestInProgress(false);
+            this.notificationService.showSuccess('WORKBASKET_DISTRIBUTION_TARGET_SAVE', {
+              workbasketName: ctx.getState().selectedWorkbasket.name
+            });
+
+            return of(null);
+          },
+          error: () => {
+            this.requestInProgressService.setRequestInProgress(false);
+          }
+        })
+      );
   }
 
-  ngxsAfterBootstrap(ctx?: StateContext<any>): void {
+  @Action(FetchWorkbasketDistributionTargets)
+  fetchWorkbasketDistributionTargets(
+    ctx: StateContext<WorkbasketStateModel>,
+    action: FetchWorkbasketDistributionTargets
+  ): Observable<any> {
+    const { selectedWorkbasket, distributionTargetsPage, workbasketDistributionTargets } = ctx.getState();
+    const { filterParameter, sortParameter, refetchAll } = action;
+    const nextDistributionTargetsPage = refetchAll ? 1 : distributionTargetsPage + 1;
+    return this.workbasketService
+      .getWorkBasketsDistributionTargets(
+        selectedWorkbasket._links.distributionTargets.href,
+        filterParameter,
+        sortParameter,
+        new WorkbasketQueryPagingParameter(nextDistributionTargetsPage)
+      )
+      .pipe(
+        take(1),
+        tap((wbt: WorkbasketDistributionTargets) => {
+          if (!refetchAll && workbasketDistributionTargets) {
+            wbt.distributionTargets = workbasketDistributionTargets.distributionTargets.concat(wbt.distributionTargets);
+          }
+          ctx.patchState({
+            workbasketDistributionTargets: wbt,
+            distributionTargetsPage: nextDistributionTargetsPage
+          });
+        })
+      );
+  }
+
+  @Action(FetchAvailableDistributionTargets)
+  fetchAvailableDistributionTargets(
+    ctx: StateContext<WorkbasketStateModel>,
+    action: FetchAvailableDistributionTargets
+  ): Observable<any> {
+    const { availableDistributionTargetsPage, availableDistributionTargets } = ctx.getState();
+    const { filterParameter, sortParameter, refetchAll } = action;
+    const nextAvailableDistributionTargetsPage = refetchAll ? 1 : availableDistributionTargetsPage + 1;
+    if (!refetchAll && nextAvailableDistributionTargetsPage > availableDistributionTargets.page?.totalPages) {
+      return of(null);
+    }
+    return this.workbasketService
+      .getWorkBasketsSummary(
+        true,
+        filterParameter,
+        sortParameter,
+        new WorkbasketQueryPagingParameter(nextAvailableDistributionTargetsPage)
+      )
+      .pipe(
+        take(1),
+        tap((wbSummaryRepresentation: WorkbasketSummaryRepresentation) => {
+          const distributionTargetSet = new Set(
+            ctx.getState().workbasketDistributionTargets.distributionTargets.map((wb) => wb.workbasketId)
+          );
+          wbSummaryRepresentation.workbaskets = wbSummaryRepresentation.workbaskets.filter((wb) => {
+            return !distributionTargetSet.has(wb.workbasketId);
+          });
+          if (!refetchAll && availableDistributionTargets) {
+            wbSummaryRepresentation.workbaskets = availableDistributionTargets.workbaskets.concat(
+              wbSummaryRepresentation.workbaskets
+            );
+          }
+          ctx.patchState({
+            availableDistributionTargets: wbSummaryRepresentation,
+            availableDistributionTargetsPage: nextAvailableDistributionTargetsPage
+          });
+        })
+      );
+  }
+
+  @Action(TransferDistributionTargets)
+  transferDistributionTargets(ctx: StateContext<WorkbasketStateModel>, action: TransferDistributionTargets): void {
+    let { workbasketDistributionTargets, availableDistributionTargets } = ctx.getState();
+    const workbasketSummarySet = new Set(action.workbasketSummaries.map((wb) => wb.workbasketId));
+    availableDistributionTargets = cloneDeep(availableDistributionTargets);
+    workbasketDistributionTargets = cloneDeep(workbasketDistributionTargets);
+    if (action.targetSide === Side.AVAILABLE) {
+      workbasketDistributionTargets.distributionTargets = workbasketDistributionTargets.distributionTargets.filter(
+        (wb) => !workbasketSummarySet.has(wb.workbasketId)
+      );
+      availableDistributionTargets.workbaskets = availableDistributionTargets.workbaskets.concat(
+        action.workbasketSummaries
+      );
+    } else {
+      availableDistributionTargets.workbaskets = availableDistributionTargets.workbaskets.filter(
+        (wb) => !workbasketSummarySet.has(wb.workbasketId)
+      );
+      workbasketDistributionTargets.distributionTargets = workbasketDistributionTargets.distributionTargets.concat(
+        action.workbasketSummaries
+      );
+    }
+    ctx.patchState({
+      availableDistributionTargets,
+      workbasketDistributionTargets
+    });
+  }
+
+  ngxsAfterBootstrap(ctx: StateContext<WorkbasketStateModel>): void {
     ctx.dispatch(new InitializeStore());
   }
 }
@@ -438,7 +517,9 @@ export interface WorkbasketStateModel {
   action: ACTION;
   workbasketAccessItems: WorkbasketAccessItemsRepresentation;
   workbasketDistributionTargets: WorkbasketDistributionTargets;
-  workbasketAvailableDistributionTargets: WorkbasketSummary[];
+  distributionTargetsPage: number;
+  availableDistributionTargets: WorkbasketSummaryRepresentation;
+  availableDistributionTargetsPage: number;
   selectedComponent: WorkbasketComponent;
   badgeMessage: string;
   button: ButtonAction | undefined;
