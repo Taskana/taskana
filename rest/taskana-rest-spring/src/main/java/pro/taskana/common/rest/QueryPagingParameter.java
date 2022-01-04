@@ -56,7 +56,7 @@ public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     if (page != null) {
       long totalElements = query.count();
       long maxPages = (long) Math.ceil(totalElements / pageSize.doubleValue());
-      pageMetadata = new PageMetadata(pageSize, totalElements, maxPages, Math.min(page, maxPages));
+      pageMetadata = new PageMetadata(pageSize, totalElements, maxPages, page);
     }
   }
 }
