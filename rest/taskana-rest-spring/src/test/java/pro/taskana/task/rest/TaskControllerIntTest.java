@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -220,6 +221,22 @@ class TaskControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(22);
+  }
+
+  @Test
+  void should_ReturnAllTasks_For_ProvidedPrimaryObjectReference() throws Exception {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS)
+            + "?por="
+            + URLEncoder.encode(
+                "{\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\"}", "UTF-8");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+    ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(4);
   }
 
   @Test
