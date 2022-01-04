@@ -76,9 +76,9 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
-  void testGetSecondPageSortedByWorkbasketKey() {
+  void should_GetSortedAccessItems_When_OrderingByWorkbasketKey() {
     String parameters =
-        "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=2&page-size=9&access-id=user-1-1";
+        "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=1&page-size=9&access-id=user-1-1";
     String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters;
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
