@@ -2419,11 +2419,18 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     }
 
     if (workbasketKeyIn != null && domain == null) {
-      throw new InvalidArgumentException("'workbasket-key' requires exactly one domain.");
+      throw new InvalidArgumentException(
+          "'workbasket-key' can only be used together with 'domain'.");
     }
 
     if (workbasketKeyNotIn != null && domain == null) {
-      throw new InvalidArgumentException("'workbasket-key-not-in' requires exactly one domain.");
+      throw new InvalidArgumentException(
+          "'workbasket-key-not' can only be used together with 'domain'.");
+    }
+
+    if (workbasketKeyIn == null && workbasketKeyNotIn == null && domain != null) {
+      throw new InvalidArgumentException(
+          "'domain' can only be used together with 'workbasket-key' or 'workbasket-key-not'.");
     }
 
     if (plannedWithin != null && plannedWithin.length % 2 != 0) {
