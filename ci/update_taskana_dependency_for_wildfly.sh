@@ -14,7 +14,7 @@ set -e #fail fast
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
-  cat "$0" | grep "^#H" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
+  grep "^#H" "$0" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
   exit "$1"
 }
 
@@ -29,7 +29,7 @@ function increment_version() {
     echo "'$1' does not match tag pattern." >&2
     exit 1
   fi
-  echo "${1%\.*}.$(expr ${1##*\.*\.} + 1)"
+  echo "${1%\.*}.$(("${1##*\.*\.}" + 1))"
 }
 
 function main() {
@@ -37,10 +37,11 @@ function main() {
   if [[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     REL=$(dirname "$0")
     FILES=(
-      $REL/../rest/taskana-rest-spring-example-wildfly/pom.xml
+      "$REL/../rest/taskana-rest-spring-example-wildfly/pom.xml"
+      "$REL/../rest/taskana-rest-spring-example-wildfly/src/test/java/pro/taskana/example/wildfly/AbstractAccTest.java"
     )
-    for file in ${FILES[@]}; do
-      sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+-SNAPSHOT/$(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT/g" $file
+    for file in "${FILES[@]}"; do
+      sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+-SNAPSHOT/$(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT/g" "$file"
     done
   else
     echo "skipped version change for wildfly because this is not a release build"

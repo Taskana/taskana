@@ -23,7 +23,7 @@ set -e #fail fast
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
-  cat "$0" | grep "^#H" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
+  grep "^#H" "$0" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
   exit "$1"
 }
 
@@ -38,7 +38,7 @@ function increment_version() {
     echo "'$1' does not match tag pattern." >&2
     exit 1
   fi
-  echo "${1%\.*}.$(expr ${1##*\.*\.} + 1)"
+  echo "${1%\.*}.$(("${1##*\.*\.}" + 1))"
 }
 
 # changing version in pom and all its children
@@ -48,7 +48,7 @@ function increment_version() {
 # Environment variable:
 #   REL: relative path to this file
 function change_version() {
-  $REL/../mvnw -q versions:set -f "$1" -DnewVersion="$2" -DartifactId=* -DgroupId=* versions:commit
+  "$REL/../mvnw" -q versions:set -f "$1" -DnewVersion="$2" -DartifactId=* -DgroupId=* versions:commit
 }
 
 function main() {
@@ -65,7 +65,7 @@ function main() {
         echo "missing parameter for argument '-m|--modules'" >&2
         exit 1
       fi
-      MODULES=($2)
+      MODULES=("$2")
       shift # passed argument
       shift # passed value
       ;;
@@ -82,8 +82,8 @@ function main() {
   fi
 
   if [[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    version=$([[ -n "$INCREMENT" ]] && echo $(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT || echo "${GITHUB_REF##refs/tags/v}")
-    for dir in ${MODULES[@]}; do
+    version=$([[ -n "$INCREMENT" ]] && echo "$(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT" || echo "${GITHUB_REF##refs/tags/v}")
+    for dir in "${MODULES[@]}"; do
       change_version "$dir" "$version"
     done
   else

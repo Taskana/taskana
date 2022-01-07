@@ -53,7 +53,7 @@ public class TaskanaWildflyWithSimpleHistoryEnabledTest extends AbstractAccTest 
         MavenCoordinates.createCoordinate(
             "pro.taskana.history",
             "taskana-simplehistory-rest-spring",
-            "${project.version}",
+            DEPENDENCY_VERSION,
             PackagingType.JAR,
             null);
 
