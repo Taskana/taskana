@@ -6,8 +6,8 @@ services:
       - 5102:5432
     environment:
       - POSTGRES_PASSWORD=postgres
-  taskana-db2_11-1:
-    image: taskana/db2:11.1
+  taskana-db2_11-5:
+    image: taskana/db2:11.5
     environment:
       - LICENSE=accept
     ports:

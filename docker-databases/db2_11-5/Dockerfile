@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM centos:7
+FROM centos:8 AS base
 
 ###############################################################
 #
@@ -48,19 +48,27 @@ RUN localedef -i de_DE -c -f UTF-8 \
     -A /usr/share/locale/locale.alias de_DE.UTF-8 && echo "LANG=de_DE.UTF-8" > /etc/locale.conf
 RUN echo "export LANG=de_DE.UTF-8" >> /etc/profile
 
+FROM base AS db2-install
+
 COPY ./db.tar.gz /tmp/expc.tar.gz
+COPY ./db2server.rsp /tmp/db2server.rsp
 
 RUN cd /tmp && tar xf expc.tar.gz \
-    && su - db2inst1 -c "/tmp/expc/db2_install -y -b /home/db2inst1/sqllib" \
+    && su - db2inst1 -c "/tmp/server_dec/db2setup -r /tmp/db2server.rsp" \
     && echo '. /home/db2inst1/sqllib/db2profile' >> /home/db2inst1/.bash_profile \
-    && rm -rf /tmp/db2* && rm -rf /tmp/expc* \
+    && rm -rf /tmp/db2* && rm -rf /tmp/expc* && rm -rf /tmp/server_dec \
     && sed -ri  's/(ENABLE_OS_AUTHENTICATION=).*/\1YES/g' /home/db2inst1/sqllib/instance/db2rfe.cfg \
     && sed -ri  's/(RESERVE_REMOTE_CONNECTION=).*/\1YES/g' /home/db2inst1/sqllib/instance/db2rfe.cfg \
     && sed -ri 's/^\*(SVCENAME=db2c_db2inst1)/\1/g' /home/db2inst1/sqllib/instance/db2rfe.cfg \
     && sed -ri 's/^\*(SVCEPORT)=48000/\1=50000/g' /home/db2inst1/sqllib/instance/db2rfe.cfg
 
+RUN echo "0 localhost 0" > /home/db2inst1/sqllib/db2nodes.cfg
+
+FROM base
+
+COPY --from=db2-install /home/ /home/
+
 RUN su - db2inst1 -c "db2start && db2set DB2COMM=TCPIP \
-      && db2set -g -null DB2_COMPATIBILITY_VECTOR \
       && db2 create database TSKDB using codeset utf-8 territory en-us \
       collate using 'CLDR181_LDE_AS_CX_EX_FX_HX_NX_S3' PAGESIZE 32 K" \
     && su - db2inst1 -c "db2stop force" \

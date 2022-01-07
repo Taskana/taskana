@@ -19,7 +19,7 @@ export TOP_PID=$$
 #H
 #H database:
 #H   - H2
-#H   - DB2 | DB2_11_1
+#H   - DB2 | DB2_11_5
 #H   - POSTGRES | POSTGRES_10
 # Arguments:
 #   $1: exit code
@@ -34,8 +34,8 @@ function helpAndExit() {
 function mapDBToDockerComposeServiceName() {
   [[ -z "$1" || "$1" == "H2" ]] && return
   case "$1" in
-    DB2|DB2_11_1)
-      echo "taskana-db2_11-1"
+    DB2|DB2_11_5)
+      echo "taskana-db2_11-5"
       ;;
     POSTGRES|POSTGRES_10)
       echo "taskana-postgres_10"
@@ -54,7 +54,7 @@ function main() {
   H2)
     [[ -f "$propFile" ]] && rm "$propFile"
     ;;
-  DB2|DB2_11_1)
+  DB2|DB2_11_5)
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
 
     echo 'jdbcDriver=com.ibm.db2.jcc.DB2Driver' > $propFile

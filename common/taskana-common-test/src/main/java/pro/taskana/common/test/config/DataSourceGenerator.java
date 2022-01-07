@@ -11,11 +11,6 @@ import pro.taskana.common.test.DockerContainerCreator;
 /**
  * The DataSourceGenerator provides the proper {@linkplain DataSource} for all Integration tests.
  *
- * <p>If the file <b>${user.home}/taskanaUnitTest.properties</b> is present, the {@linkplain
- * DataSource} is created according to the properties <b>jdbcDriver, jdbcUrl, dbUserName and
- * dbPassword</b>. If any of these properties is missing, or the file doesn't exist, the default
- * {@linkplain DataSource} for H2 in-memory db is created.
- *
  * <p>Additionally the property <b>schemaName</b> can be defined. If that property is missing, or
  * the file doesn't exist the schemaName TASKANA will be used.
  */

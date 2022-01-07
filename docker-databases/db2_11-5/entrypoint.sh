@@ -92,7 +92,7 @@ if [[ $1 = "start" ]]; then
   log_info "Initializing container"
   start_db2
   log_info "Database db2diag log following"
-  tail -f ~db2inst1/sqllib/db2dump/db2diag.log &
+  tail -f ~db2inst1/sqllib/db2dump/DIAG0000/db2diag.log &
   export pid=${!}
   while true
   do
