@@ -25,7 +25,7 @@ public class DockerContainerCreator {
       case DB2:
         return Optional.of(
             new Db2Container(
-                    DockerImageName.parse("taskana/db2:11.1")
+                    DockerImageName.parse("taskana/db2:11.5")
                         .asCompatibleSubstituteFor("ibmcom/db2"))
                 .waitingFor(
                     new LogMessageWaitStrategy()
