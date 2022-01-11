@@ -708,9 +708,14 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] ownerNotLike;
   // endregion
   // region primaryObjectReference
-  /** Filter by the primary object reference of the task. This is an exact match. */
-  @JsonProperty("object-reference")
-  private final ObjectReference[] objectReferenceIn;
+  /**
+   * Filter by the primary object reference of the task. This is an exact match. "por" is a
+   * parameter of complex type. Its following attributes from por[].id to por[].value can be
+   * specified according to the description of complex parameters in the overview, e.g.
+   * por={"value":"exampleValue"}
+   */
+  @JsonProperty("por")
+  private final ObjectReference[] primaryObjectReferenceIn;
   // endregion
   // region primaryObjectReferenceCompany
   /** Filter by the company of the primary object reference of the task. This is an exact match. */
@@ -1501,7 +1506,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "owner-not",
     "owner-like",
     "owner-not-like",
-    "object-reference",
+    "por",
     "por.company",
     "por-company-not",
     "por-company-like",
@@ -1699,7 +1704,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] ownerNotIn,
       String[] ownerLike,
       String[] ownerNotLike,
-      ObjectReference[] objectReferenceIn,
+      ObjectReference[] primaryObjectReferenceIn,
       String[] porCompanyIn,
       String[] porCompanyNotIn,
       String[] porCompanyLike,
@@ -1896,7 +1901,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.ownerNotIn = ownerNotIn;
     this.ownerLike = ownerLike;
     this.ownerNotLike = ownerNotLike;
-    this.objectReferenceIn = objectReferenceIn;
+    this.primaryObjectReferenceIn = primaryObjectReferenceIn;
     this.porCompanyIn = porCompanyIn;
     this.porCompanyNotIn = porCompanyNotIn;
     this.porCompanyLike = porCompanyLike;
@@ -2208,7 +2213,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
         .map(this::wrapElementsInLikeStatement)
         .ifPresent(query::ownerNotLike);
 
-    Optional.ofNullable(objectReferenceIn).ifPresent(query::primaryObjectReferenceIn);
+    Optional.ofNullable(primaryObjectReferenceIn).ifPresent(query::primaryObjectReferenceIn);
 
     Optional.ofNullable(porCompanyIn).ifPresent(query::primaryObjectReferenceCompanyIn);
     Optional.ofNullable(porCompanyNotIn).ifPresent(query::primaryObjectReferenceCompanyNotIn);
