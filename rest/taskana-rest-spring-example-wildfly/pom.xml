@@ -96,12 +96,6 @@
 
     <!-- test dependencies -->
     <dependency>
-      <groupId>pro.taskana</groupId>
-      <artifactId>taskana-common-test</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>pro.taskana.history</groupId>
       <artifactId>taskana-simplehistory-rest-spring</artifactId>
       <version>${project.version}</version>
@@ -128,10 +122,21 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <!-- Brought in via Arquillian BOM, see dependencyManagement section
         above -->
     <dependency>

@@ -53,7 +53,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabledTest extends 
         MavenCoordinates.createCoordinate(
             "pro.taskana.history",
             "taskana-simplehistory-rest-spring",
-            "${project.version}",
+            DEPENDENCY_VERSION,
             PackagingType.JAR,
             null);
 
@@ -64,7 +64,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabledTest extends 
         MavenCoordinates.createCoordinate(
             "pro.taskana.history",
             "taskana-loghistory-provider",
-            "${project.version}",
+            DEPENDENCY_VERSION,
             PackagingType.JAR,
             null);
 

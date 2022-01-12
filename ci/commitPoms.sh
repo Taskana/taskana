@@ -18,7 +18,7 @@ set -e # fail fast
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
-  cat "$0" | grep "^#H" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
+  grep "^#H" "$0" | cut -c4- | sed -e "s/%FILE%/$(basename "$0")/g"
   exit "$1"
 }
 
@@ -33,7 +33,7 @@ function increment_version() {
     echo "'$1' does not match tag pattern." >&2
     exit 1
   fi
-  echo "${1%\.*}.$(expr ${1##*\.*\.} + 1)"
+  echo "${1%\.*}.$(("${1##*\.*\.}" + 1))"
 }
 
 function main() {
@@ -65,7 +65,7 @@ function main() {
     for file in "$@"; do
       [[ -n "$file" ]] && git add "$file"
     done
-    git commit -m "Updated poms to version $(increment_version ${GITHUB_REF##refs/tags/v})-SNAPSHOT"
+    git commit -m "Updated poms to version $(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT"
     git push
   else
     echo "Nothing to push - this is not a release!"

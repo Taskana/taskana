@@ -47,7 +47,7 @@ public class TaskanaWildflyWithHistoryLoggerEnabledTest extends AbstractAccTest 
         MavenCoordinates.createCoordinate(
             "pro.taskana.history",
             "taskana-loghistory-provider",
-            "${project.version}",
+            DEPENDENCY_VERSION,
             PackagingType.JAR,
             null);
 
