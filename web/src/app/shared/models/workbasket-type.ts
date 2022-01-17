@@ -1,4 +1,5 @@
 export enum WorkbasketType {
+  ALL = 'ALL',
   PERSONAL = 'PERSONAL',
   GROUP = 'GROUP',
   CLEARANCE = 'CLEARANCE',
@@ -6,7 +7,7 @@ export enum WorkbasketType {
 }
 
 export const ALL_TYPES: Map<WorkbasketType, string> = new Map([
-  [undefined, 'All'],
+  [WorkbasketType.ALL, 'All'],
   [WorkbasketType.PERSONAL, 'Personal'],
   [WorkbasketType.GROUP, 'Group'],
   [WorkbasketType.CLEARANCE, 'Clearance'],

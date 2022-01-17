@@ -22,9 +22,9 @@ Cypress.Commands.add('visitTestWorkbasket', () => {
   cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
   cy.verifyPageLoad('/workbaskets');
 
-  // since the list is loaded dynamically, we need to explicitly wait 700ms for the results
+  // since the list is loaded dynamically, we need to explicitly wait 1000ms for the results
   // in order to avoid errors regarding detached DOM elements although it is a bad practice
-  cy.wait(700);
+  cy.wait(1000);
   cy.get('mat-selection-list').contains(Cypress.env('testValueWorkbasketSelectionName')).should('exist').click();
   cy.visitWorkbasketsInformationPage();
 });

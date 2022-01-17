@@ -25,7 +25,7 @@ export class TaskFilterComponent implements OnInit, OnDestroy {
   }
 
   setStatus(state: TaskState) {
-    this.filter.state = state ? [state] : [];
+    this.filter.state = state !== TaskState.ALL ? [state] : [];
     this.updateState();
   }
 
