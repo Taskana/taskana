@@ -208,10 +208,16 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     return this.tree.treeModel.getNodeById(nodeId);
   }
 
-  private filterNodes(text, iconText) {
+  private filterNodes(filterText, category) {
     this.tree.treeModel.filterNodes(
-      (node) => TaskanaTreeComponent.checkNameAndKey(node, text) && TaskanaTreeComponent.checkIcon(node, iconText)
+      (node) => TaskanaTreeComponent.checkNameAndKey(node, filterText) && TaskanaTreeComponent.checkIcon(node, category)
     );
+    if (!this.tree.treeModel.getVisibleRoots().length) {
+      this.notificationsService.showInformation('CLASSIFICATION_FILTER_EMPTY_RESULT', {
+        filter: filterText,
+        category: category || 'ALL'
+      });
+    }
   }
 
   private static checkNameAndKey(node: any, text: string): boolean {
