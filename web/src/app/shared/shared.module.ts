@@ -132,7 +132,6 @@ const DECLARATIONS = [
     ClassificationsService,
     WorkbasketService,
     ObtainMessageService
-  ],
-  entryComponents: [DialogPopUpComponent]
+  ]
 })
 export class SharedModule {}

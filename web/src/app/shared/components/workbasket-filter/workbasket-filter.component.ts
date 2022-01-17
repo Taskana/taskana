@@ -64,7 +64,7 @@ export class WorkbasketFilterComponent implements OnInit, OnDestroy {
   }
 
   selectType(type: WorkbasketType) {
-    this.filter.type = type ? [type] : [];
+    this.filter.type = type !== WorkbasketType.ALL ? [type] : [];
   }
 
   search() {

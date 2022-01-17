@@ -46,6 +46,8 @@ node_modules/
 
 
 # misc
+
+web/.angular/cache/
 /.sass-cache
 /connect.lock
 /coverage
