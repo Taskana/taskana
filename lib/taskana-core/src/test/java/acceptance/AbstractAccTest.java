@@ -27,6 +27,7 @@ import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.TaskServiceImpl;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.user.api.models.User;
 
 /** Base class for all acceptance tests. */
@@ -78,9 +79,9 @@ public abstract class AbstractAccTest {
     return sqlSessionManager.getMapper(JobMapper.class);
   }
 
-  protected ObjectReference createObjectReference(
+  protected ObjectReferenceImpl createObjectReference(
       String company, String system, String systemInstance, String type, String value) {
-    ObjectReference objectReference = new ObjectReference();
+    ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
     objectReference.setCompany(company);
     objectReference.setSystem(system);
     objectReference.setSystemInstance(systemInstance);

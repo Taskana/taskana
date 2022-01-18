@@ -13,6 +13,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
@@ -145,10 +146,13 @@ public interface TaskService {
    * @throws InvalidArgumentException thrown if the primary ObjectReference is invalid
    * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
    *     without using the task-methods
+   * @throws ObjectReferencePersistenceException if an ObjectReference with ID will be added
+   *     multiple times without using the task-methods
    */
   Task createTask(Task taskToCreate)
       throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException;
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
+          ObjectReferencePersistenceException;
 
   /**
    * Gets the details of a task by Id without checking permissions.
@@ -313,6 +317,16 @@ public interface TaskService {
   Attachment newAttachment();
 
   /**
+   * Returns a not inserted instance of {@link ObjectReference}.
+   *
+   * @return an empty new ObjectReference
+   */
+  ObjectReference newObjectReference();
+
+  ObjectReference newObjectReference(
+      String company, String system, String systemInstance, String type, String value);
+
+  /**
    * Update a task.
    *
    * @param task the task to be updated in the database
@@ -326,13 +340,15 @@ public interface TaskService {
    * @throws NotAuthorizedException if the current user is not authorized to update the task
    * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
    *     without using the task-methods
+   * @throws ObjectReferencePersistenceException if an ObjectReference with ID will be added
+   *     multiple times without using the task-methods
    * @throws InvalidStateException if an attempt is made to change the owner of the task and the
    *     task is not in state READY .
    */
   Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
           ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException;
+          ObjectReferencePersistenceException, InvalidStateException;
 
   /**
    * Transfers a list of {@linkplain Task Tasks} to another {@linkplain

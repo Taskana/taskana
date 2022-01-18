@@ -37,6 +37,9 @@ public class TaskQuerySqlProvider {
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT AS a ON t.ID = a.TASK_ID "
         + "</if>"
+        + "<if test=\"joinWithSecondaryObjectReferences\">"
+        + "LEFT JOIN OBJECT_REFERENCE AS o ON t.ID = o.TASK_ID "
+        + "</if>"
         + "<if test=\"joinWithClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS c ON t.CLASSIFICATION_ID = c.ID "
         + "</if>"
@@ -82,6 +85,9 @@ public class TaskQuerySqlProvider {
         + "FROM TASK t "
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT a ON t.ID = a.TASK_ID "
+        + "</if>"
+        + "<if test=\"joinWithSecondaryObjectReferences\">"
+        + "LEFT JOIN OBJECT_REFERENCE o ON t.ID = o.TASK_ID "
         + "</if>"
         + "<if test=\"joinWithClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS c ON t.CLASSIFICATION_ID = c.ID "
@@ -135,6 +141,9 @@ public class TaskQuerySqlProvider {
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT AS a ON t.ID = a.TASK_ID "
         + "</if>"
+        + "<if test=\"joinWithSecondaryObjectReferences\">"
+        + "LEFT JOIN OBJECT_REFERENCE AS o ON t.ID = o.TASK_ID "
+        + "</if>"
         + "<if test=\"joinWithClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS c ON t.CLASSIFICATION_ID = c.ID "
         + "</if>"
@@ -165,6 +174,9 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + "<if test=\"joinWithAttachmentClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
+        + "</if>"
+        + "<if test=\"joinWithSecondaryObjectReferences\">"
+        + "LEFT JOIN OBJECT_REFERENCE AS o ON t.ID = o.TASK_ID "
         + "</if>"
         + "<if test=\"joinWithUserInfo\">"
         + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
@@ -198,6 +210,9 @@ public class TaskQuerySqlProvider {
         + "</if>"
         + "<if test=\"joinWithAttachmentClassifications\">"
         + "LEFT JOIN CLASSIFICATION AS ac ON a.CLASSIFICATION_ID = ac.ID "
+        + "</if>"
+        + "<if test=\"joinWithSecondaryObjectReferences\">"
+        + "LEFT JOIN OBJECT_REFERENCE AS o ON t.ID = o.TASK_ID "
         + "</if>"
         + "<if test=\"joinWithUserInfo\">"
         + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
@@ -310,6 +325,30 @@ public class TaskQuerySqlProvider {
         + "</if>";
   }
 
+  private static String commonTaskSecondaryObjectReferencesWhereStatement() {
+    return "<if test='secondaryObjectReferences != null'>"
+        + "AND (<foreach item='item' collection='secondaryObjectReferences' separator=' OR '> "
+        + "<if test='item.company != null'>o.COMPANY = #{item.company} </if>"
+        + "<if test='item.system != null'> "
+        + "<if test='item.company != null'>AND</if> "
+        + "o.SYSTEM = #{item.system} </if>"
+        + "<if test='item.systemInstance != null'> "
+        + "<if test='item.company != null or item.system != null'>AND</if> "
+        + "o.SYSTEM_INSTANCE = #{item.systemInstance} </if>"
+        + "<if test='item.type != null'> "
+        + "<if test='item.company != null or item.system != null or item.systemInstance != null'>"
+        + "AND</if> "
+        + "o.TYPE = #{item.type} </if>"
+        + "<if test='item.value != null'> "
+        + "<if test='item.company != null or item.system != null "
+        + "or item.systemInstance != null or item.type != null'>"
+        + "AND</if> "
+        + "o.VALUE = #{item.value} "
+        + "</if>"
+        + "</foreach>)"
+        + "</if>";
+  }
+
   private static void commonWhereClauses(String filter, String channel, StringBuilder sb) {
     whereIn(filter + "In", channel, sb);
     whereNotIn(filter + "NotIn", channel, sb);
@@ -336,6 +375,17 @@ public class TaskQuerySqlProvider {
     commonWhereClauses("porSystemInstance", "t.POR_INSTANCE", sb);
     commonWhereClauses("porType", "t.POR_TYPE", sb);
     commonWhereClauses("porValue", "t.POR_VALUE", sb);
+
+    whereIn("sorCompanyIn", "o.COMPANY", sb);
+    whereLike("sorCompanyLike", "o.COMPANY", sb);
+    whereIn("sorSystemIn", "o.SYSTEM", sb);
+    whereLike("sorSystemLike", "o.SYSTEM", sb);
+    whereIn("sorSystemInstanceIn", "o.SYSTEM_INSTANCE", sb);
+    whereLike("sorSystemInstanceLike", "o.SYSTEM_INSTANCE", sb);
+    whereIn("sorTypeIn", "o.TYPE", sb);
+    whereLike("sorTypeLike", "o.TYPE", sb);
+    whereIn("sorValueIn", "o.VALUE", sb);
+    whereLike("sorValueLike", "o.VALUE", sb);
 
     whereIn("attachmentClassificationIdIn", "a.CLASSIFICATION_ID", sb);
     whereNotIn("attachmentClassificationIdNotIn", "a.CLASSIFICATION_ID", sb);
@@ -399,6 +449,7 @@ public class TaskQuerySqlProvider {
             + "</foreach>)"
             + "</if> ");
     sb.append(commonTaskObjectReferenceWhereStatement());
+    sb.append(commonTaskSecondaryObjectReferencesWhereStatement());
     return sb;
   }
 }

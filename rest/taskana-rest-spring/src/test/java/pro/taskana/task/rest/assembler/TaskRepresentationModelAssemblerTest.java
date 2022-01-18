@@ -18,9 +18,9 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Attachment;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
@@ -152,7 +152,7 @@ class TaskRepresentationModelAssemblerTest {
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel()
       throws Exception {
     // given
-    ObjectReference primaryObjRef = new ObjectReference();
+    ObjectReferenceImpl primaryObjRef = new ObjectReferenceImpl();
     primaryObjRef.setId("abc");
     final Workbasket workbasket = workbasketService.newWorkbasket("key", "domain");
     ClassificationSummary classification =
@@ -215,7 +215,7 @@ class TaskRepresentationModelAssemblerTest {
   @Test
   void should_Equal_When_ComparingEntityWithConvertedEntity() throws InvalidArgumentException {
     // given
-    ObjectReference primaryObjRef = new ObjectReference();
+    ObjectReferenceImpl primaryObjRef = new ObjectReferenceImpl();
     primaryObjRef.setId("abc");
     final WorkbasketSummary workbasket =
         workbasketService.newWorkbasket("key", "domain").asSummary();

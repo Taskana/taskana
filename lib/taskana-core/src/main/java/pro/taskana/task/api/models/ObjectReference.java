@@ -1,135 +1,96 @@
 package pro.taskana.task.api.models;
 
-import java.util.Objects;
+/** ObjectReference-Interface to specify ObjectReference Attributes. */
+public interface ObjectReference {
 
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
+  /**
+   * Gets the id of the ObjectReference.
+   *
+   * @return the id of the ObjectReference.
+   */
+  String getId();
 
-/** ObjectReference entity. */
-public class ObjectReference {
-  private String id;
-  private String company;
-  private String system;
-  private String systemInstance;
-  private String type;
-  private String value;
+  /**
+   * Gets the id of the associated task.
+   *
+   * @return the taskId
+   */
+  String getTaskId();
 
-  public ObjectReference() {}
+  /**
+   * Gets the company of the ObjectReference.
+   *
+   * @return the company
+   */
+  String getCompany();
 
-  private ObjectReference(ObjectReference copyFrom) {
-    company = copyFrom.company;
-    system = copyFrom.system;
-    systemInstance = copyFrom.systemInstance;
-    type = copyFrom.type;
-    value = copyFrom.value;
-  }
+  /**
+   * Sets the company of the ObjectReference.
+   *
+   * @param company the company of the object reference
+   */
+  void setCompany(String company);
 
-  public static void validate(ObjectReference objectReference, String objRefType, String objName)
-      throws InvalidArgumentException {
-    // check that all values in the ObjectReference are set correctly
-    if (objectReference == null) {
-      throw new InvalidArgumentException(
-          String.format("%s of %s must not be null.", objRefType, objName));
-    } else if (objectReference.getCompany() == null || objectReference.getCompany().isEmpty()) {
-      throw new InvalidArgumentException(
-          String.format("Company of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Type of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getValue() == null || objectReference.getValue().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Value of %s of %s must not be empty", objRefType, objName));
-    }
-  }
+  /**
+   * Gets the system of the ObjectReference.
+   *
+   * @return the system
+   */
+  String getSystem();
 
-  public String getId() {
-    return id;
-  }
+  /**
+   * Sets the system of the ObjectReference.
+   *
+   * @param system the system of the ObjectReference
+   */
+  void setSystem(String system);
 
-  public void setId(String id) {
-    this.id = id;
-  }
+  /**
+   * Gets the systemInstance of the ObjectReference.
+   *
+   * @return the systemInstance
+   */
+  String getSystemInstance();
 
-  public String getCompany() {
-    return company;
-  }
+  /**
+   * Sets the system instance of the ObjectReference.
+   *
+   * @param systemInstance the system instance of the ObjectReference
+   */
+  void setSystemInstance(String systemInstance);
 
-  public void setCompany(String company) {
-    this.company = company;
-  }
+  /**
+   * Gets the type of the ObjectReference.
+   *
+   * @return the type
+   */
+  String getType();
 
-  public String getSystem() {
-    return system;
-  }
+  /**
+   * Sets the type of the ObjectReference.
+   *
+   * @param type the type of the ObjectReference
+   */
+  void setType(String type);
 
-  public void setSystem(String system) {
-    this.system = system;
-  }
+  /**
+   * Gets the value of the ObjectReference.
+   *
+   * @return the value
+   */
+  String getValue();
 
-  public String getSystemInstance() {
-    return systemInstance;
-  }
+  /**
+   * Sets the value of the ObjectReference.
+   *
+   * @param value the value of the ObjectReference
+   */
+  void setValue(String value);
 
-  public void setSystemInstance(String systemInstance) {
-    this.systemInstance = systemInstance;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public ObjectReference copy() {
-    return new ObjectReference(this);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, company, system, systemInstance, type, value);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof ObjectReference)) {
-      return false;
-    }
-    ObjectReference other = (ObjectReference) obj;
-    return Objects.equals(id, other.id)
-        && Objects.equals(company, other.company)
-        && Objects.equals(system, other.system)
-        && Objects.equals(systemInstance, other.systemInstance)
-        && Objects.equals(type, other.type)
-        && Objects.equals(value, other.value);
-  }
-
-  @Override
-  public String toString() {
-    return "ObjectReference ["
-        + "id="
-        + this.id
-        + ", company="
-        + this.company
-        + ", system="
-        + this.system
-        + ", systemInstance="
-        + this.systemInstance
-        + ", type="
-        + this.type
-        + ", value="
-        + this.value
-        + "]";
-  }
+  /**
+   * Duplicates this ObjectReference without the id and taskId.
+   *
+   * @return a copy of this ObjectReference
+   */
+  ObjectReference copy();
 }

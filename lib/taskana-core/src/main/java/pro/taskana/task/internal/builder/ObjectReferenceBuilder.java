@@ -1,10 +1,11 @@
 package pro.taskana.task.internal.builder;
 
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 public class ObjectReferenceBuilder {
 
-  private final ObjectReference objectReference = new ObjectReference();
+  private final ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
 
   private ObjectReferenceBuilder() {}
 

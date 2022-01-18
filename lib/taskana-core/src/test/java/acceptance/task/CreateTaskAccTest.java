@@ -37,6 +37,7 @@ import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.AttachmentMapper;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
@@ -79,11 +80,14 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
-    ObjectReference objectReference =
+    ObjectReferenceImpl objectReference =
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    objectReference.setTaskId(newTask.getId());
     newTask.setPrimaryObjRef(objectReference);
+
     newTask.setOwner("user-1-1");
     Task createdTask = taskService.createTask(newTask);
+
     Instant expectedPlanned = moveForwardToWorkingDay(createdTask.getCreated());
 
     assertThat(createdTask).isNotNull();

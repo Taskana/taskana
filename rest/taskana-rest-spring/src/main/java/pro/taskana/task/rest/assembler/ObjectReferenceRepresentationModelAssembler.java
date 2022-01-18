@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 
 @Controller
@@ -16,6 +17,7 @@ public class ObjectReferenceRepresentationModelAssembler
   public ObjectReferenceRepresentationModel toModel(@NonNull ObjectReference entity) {
     ObjectReferenceRepresentationModel repModel = new ObjectReferenceRepresentationModel();
     repModel.setId(entity.getId());
+    repModel.setTaskId(entity.getTaskId());
     repModel.setCompany(entity.getCompany());
     repModel.setSystem(entity.getSystem());
     repModel.setSystemInstance(entity.getSystemInstance());
@@ -25,8 +27,9 @@ public class ObjectReferenceRepresentationModelAssembler
   }
 
   public ObjectReference toEntity(ObjectReferenceRepresentationModel repModel) {
-    ObjectReference objectReference = new ObjectReference();
+    ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
     objectReference.setId(repModel.getId());
+    objectReference.setTaskId(repModel.getTaskId());
     objectReference.setCompany(repModel.getCompany());
     objectReference.setSystem(repModel.getSystem());
     objectReference.setSystemInstance(repModel.getSystemInstance());

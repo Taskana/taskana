@@ -17,10 +17,11 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
@@ -41,7 +42,7 @@ public class ExampleBootstrap {
           NotAuthorizedException, ClassificationAlreadyExistException,
           MalformedServiceLevelException, TaskAlreadyExistException, WorkbasketNotFoundException,
           ClassificationNotFoundException, AttachmentPersistenceException, TaskNotFoundException,
-          InvalidOwnerException, InvalidStateException {
+          InvalidOwnerException, InvalidStateException, ObjectReferencePersistenceException {
     System.out.println("---------------------------> Start App");
 
     Workbasket wb = taskanaEngine.getWorkbasketService().newWorkbasket("workbasket", "DOMAIN_A");
@@ -56,7 +57,7 @@ public class ExampleBootstrap {
     Task task = taskanaEngine.getTaskService().newTask(wb.getId());
     task.setName("Spring example task");
     task.setClassificationKey(classification.getKey());
-    ObjectReference objRef = new ObjectReference();
+    ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");
     objRef.setSystem("aSystem");
     objRef.setSystemInstance("anInstance");

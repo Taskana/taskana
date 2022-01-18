@@ -201,6 +201,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
       attSummaries.add(att.asSummary());
     }
     taskSummary.setAttachmentSummaries(attSummaries);
+    taskSummary.setSecondaryObjectReferences(secondaryObjectReferences);
     taskSummary.setBusinessProcessId(this.businessProcessId);
     taskSummary.setClaimed(claimed);
     if (classificationSummary != null) {
@@ -313,6 +314,8 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + callbackState
         + ", attachments="
         + attachments
+        + ", objectReferences="
+        + secondaryObjectReferences
         + ", id="
         + id
         + ", externalId="

@@ -1458,6 +1458,50 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByAttachmentReceived(SortDirection sortDirection);
 
   // endregion
+  // region secondaryObjectReference
+
+  /**
+   * Add the {@link ObjectReference} to exact match to your query. Each individual value has to
+   * match. Fields with the value 'null' will be ignored. The id of each ObjectReference will be
+   * ignored
+   *
+   * <p>If you specify multiple arguments they are combined with the OR keyword.
+   *
+   * @param objectReferences the combined values which are searched together.
+   * @return the query
+   */
+  TaskQuery secondaryObjectReferenceIn(ObjectReference... objectReferences);
+
+  // endregion
+  // region secondaryObjectReferenceCompany
+  TaskQuery sorCompanyIn(String... companyIn);
+
+  TaskQuery sorCompanyLike(String... companyLike);
+
+  // endregion
+  // region secondaryObjectReferenceSystem
+  TaskQuery sorSystemIn(String... systemIn);
+
+  TaskQuery sorSystemLike(String... systemLike);
+
+  // endregion
+  // region secondaryObjectReferenceSystemInstance
+  TaskQuery sorSystemInstanceIn(String... systemInstanceIn);
+
+  TaskQuery sorSystemInstanceLike(String... systemInstanceLike);
+
+  // endregion
+  // region secondaryObjectReferenceType
+  TaskQuery sorTypeIn(String... typeIn);
+
+  TaskQuery sorTypeLike(String... typeLike);
+
+  // endregion
+  // region secondaryObjectReferenceValue
+  TaskQuery sorValueIn(String... valueIn);
+
+  TaskQuery sorValueLike(String... valueLike);
+
   // region customAttributes
 
   /**

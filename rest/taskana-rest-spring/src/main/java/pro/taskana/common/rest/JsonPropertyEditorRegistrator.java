@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 @ControllerAdvice
 public class JsonPropertyEditorRegistrator {
@@ -25,6 +26,6 @@ public class JsonPropertyEditorRegistrator {
         PriorityColumnHeaderRepresentationModel.class,
         new JsonPropertyEditor(objectMapper, PriorityColumnHeaderRepresentationModel.class));
     binder.registerCustomEditor(
-        ObjectReference.class, new JsonPropertyEditor(objectMapper, ObjectReference.class));
+        ObjectReference.class, new JsonPropertyEditor(objectMapper, ObjectReferenceImpl.class));
   }
 }

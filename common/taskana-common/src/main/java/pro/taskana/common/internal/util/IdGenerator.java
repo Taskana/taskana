@@ -14,6 +14,7 @@ public final class IdGenerator {
   public static final String ID_PREFIX_EXT_TASK = "ETI";
   public static final String ID_PREFIX_BUSINESS_PROCESS = "BPI";
   public static final String ID_PREFIX_ATTACHMENT = "TAI";
+  public static final String ID_PREFIX_OBJECT_REFERENCE = "ORI";
 
   public static final String ID_PREFIX_TASK_COMMENT = "TCI";
 

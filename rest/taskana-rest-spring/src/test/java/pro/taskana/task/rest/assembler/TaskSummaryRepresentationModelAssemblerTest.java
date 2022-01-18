@@ -30,9 +30,9 @@ import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.AttachmentSummary;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
@@ -66,7 +66,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel()
       throws Exception {
-    ObjectReference primaryObjRef = new ObjectReference();
+    ObjectReferenceImpl primaryObjRef = new ObjectReferenceImpl();
     primaryObjRef.setId("abc");
     ClassificationSummary classification =
         this.classificationService.newClassification("ckey", "cdomain", "MANUAL").asSummary();
@@ -222,7 +222,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
   @Test
   void should_Equal_When_ComparingEntityWithConvertedEntity() {
     // given
-    ObjectReference primaryObjRef = new ObjectReference();
+    ObjectReferenceImpl primaryObjRef = new ObjectReferenceImpl();
     primaryObjRef.setId("abc");
     final WorkbasketSummary workbasket =
         workbasketService.newWorkbasket("key", "domain").asSummary();
@@ -335,7 +335,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
   private static void testEqualityAttachments(
       List<AttachmentSummary> attachmentSummaries,
       List<AttachmentSummaryRepresentationModel> resources) {
-    assertThat(attachmentSummaries.size()).isEqualTo(resources.size());
+    assertThat(attachmentSummaries).hasSameSizeAs(resources);
 
     for (int i = 0; i < resources.size(); ++i) {
       AttachmentSummaryRepresentationModel resource = resources.get(i);

@@ -75,6 +75,10 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setOwner(taskSummary.getOwner());
     repModel.setOwnerLongName(taskSummary.getOwnerLongName());
     repModel.setPrimaryObjRef(objectReferenceAssembler.toModel(taskSummary.getPrimaryObjRef()));
+    repModel.setSecondaryObjectReferences(
+        taskSummary.getSecondaryObjectReferences().stream()
+            .map(objectReferenceAssembler::toModel)
+            .collect(Collectors.toList()));
     repModel.setRead(taskSummary.isRead());
     repModel.setTransferred(taskSummary.isTransferred());
     repModel.setAttachmentSummaries(
@@ -128,6 +132,10 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setOwner(repModel.getOwner());
     taskSummary.setOwnerLongName(repModel.getOwnerLongName());
     taskSummary.setPrimaryObjRef(objectReferenceAssembler.toEntity(repModel.getPrimaryObjRef()));
+    taskSummary.setSecondaryObjectReferences(
+        repModel.getSecondaryObjectReferences().stream()
+            .map(objectReferenceAssembler::toEntity)
+            .collect(Collectors.toList()));
     taskSummary.setRead(repModel.isRead());
     taskSummary.setTransferred(repModel.isTransferred());
     taskSummary.setAttachmentSummaries(

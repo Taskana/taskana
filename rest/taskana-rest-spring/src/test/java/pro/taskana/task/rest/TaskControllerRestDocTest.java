@@ -16,8 +16,8 @@ import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
@@ -106,7 +106,7 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
   @Test
   void createTaskDocTest() throws Exception {
     final Task task = taskService.newTask("WBI:100000000000000000000000000000000004");
-    ObjectReference objectReference = new ObjectReference();
+    ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
     objectReference.setCompany("MyCompany1");
     objectReference.setSystem("MySystem1");
     objectReference.setSystemInstance("MyInstance1");
@@ -114,6 +114,7 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
     objectReference.setValue("00000001");
     task.setPrimaryObjRef(objectReference);
     task.setClassificationKey("L11010");
+    task.addSecondaryObjectReference("company", "system", "systemInstance", "type", "value");
     TaskRepresentationModel repModel = assembler.toModel(task);
     mockMvc
         .perform(post(RestEndpoints.URL_TASKS).content(objectMapper.writeValueAsString(repModel)))

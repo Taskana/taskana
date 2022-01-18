@@ -7,6 +7,9 @@ public class ObjectReferenceRepresentationModel
 
   /** Unique ID. */
   private String id;
+
+  /** Task Id. */
+  private String taskId;
   /** The company the referenced primary object belongs to. */
   private String company;
   /** The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, ...). */
@@ -24,6 +27,14 @@ public class ObjectReferenceRepresentationModel
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getTaskId() {
+    return taskId;
+  }
+
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
   }
 
   public String getCompany() {

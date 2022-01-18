@@ -19,9 +19,9 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
 public class AttachmentHandler {
@@ -183,7 +183,7 @@ public class AttachmentHandler {
       throw new InvalidArgumentException("ClassificationKey of Attachment must not be empty.");
     }
 
-    ObjectReference.validate(attachment.getObjectReference(), "ObjectReference", "Attachment");
+    ObjectReferenceImpl.validate(attachment.getObjectReference(), "ObjectReference", "Attachment");
 
     classification =
         classificationService

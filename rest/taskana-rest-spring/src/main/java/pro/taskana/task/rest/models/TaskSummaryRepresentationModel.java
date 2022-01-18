@@ -106,6 +106,8 @@ public class TaskSummaryRepresentationModel
   protected String custom15;
   /** A custom property with name "16". */
   protected String custom16;
+  /** Secondary object references of the task. */
+  protected List<ObjectReferenceRepresentationModel> secondaryObjectReferences = new ArrayList<>();
   /** The attachment summaries of this task. */
   private List<AttachmentSummaryRepresentationModel> attachmentSummaries = new ArrayList<>();
 
@@ -284,6 +286,15 @@ public class TaskSummaryRepresentationModel
 
   public void setPrimaryObjRef(ObjectReferenceRepresentationModel primaryObjRef) {
     this.primaryObjRef = primaryObjRef;
+  }
+
+  public List<ObjectReferenceRepresentationModel> getSecondaryObjectReferences() {
+    return secondaryObjectReferences;
+  }
+
+  public void setSecondaryObjectReferences(
+      List<ObjectReferenceRepresentationModel> secondaryObjectReferences) {
+    this.secondaryObjectReferences = secondaryObjectReferences;
   }
 
   public boolean isRead() {
