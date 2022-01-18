@@ -6,12 +6,12 @@ import { TaskService } from 'app/workplace/services/task.service';
 import { Task } from 'app/workplace/models/task';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { TaskanaDate } from 'app/shared/util/taskana.date';
-import { ObjectReference } from 'app/workplace/models/object-reference';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { take, takeUntil } from 'rxjs/operators';
+import { ObjectReference } from '../../models/object-reference';
 
 @Component({
   selector: 'taskana-task-details',
@@ -186,7 +186,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task = task;
         this.taskService.selectTask(this.task);
         this.taskService.publishUpdatedTask(task);
-        this.router.navigate([`../${task.taskId}`], { relativeTo: this.route, queryParamsHandling: 'merge' });
+        this.router.navigate([`../${task.taskId}`], {
+          relativeTo: this.route,
+          queryParamsHandling: 'merge'
+        });
       },
       () => {
         this.requestInProgressService.setRequestInProgress(false);

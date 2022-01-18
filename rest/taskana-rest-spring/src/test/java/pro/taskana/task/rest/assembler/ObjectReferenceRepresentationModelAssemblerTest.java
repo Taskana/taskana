@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 
 @TaskanaSpringBootTest
@@ -37,7 +38,7 @@ class ObjectReferenceRepresentationModelAssemblerTest {
 
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
-    ObjectReference entity = new ObjectReference();
+    ObjectReferenceImpl entity = new ObjectReferenceImpl();
     entity.setId("id");
     entity.setValue("value");
     entity.setType("type");

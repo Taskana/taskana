@@ -37,6 +37,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
@@ -84,13 +85,11 @@ public class TaskController {
       TaskQueryFilterParameter filterParameter,
       TaskQuerySortParameter sortParameter,
       QueryPagingParameter<TaskSummary, TaskQuery> pagingParameter) {
-
     QueryParamsValidator.validateParams(
         request,
         TaskQueryFilterParameter.class,
         QuerySortParameter.class,
         QueryPagingParameter.class);
-
     TaskQuery query = taskService.createTaskQuery();
 
     filterParameter.apply(query);
@@ -332,6 +331,8 @@ public class TaskController {
    * @throws InvalidArgumentException if any input is semantically wrong.
    * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
    *     without using the task-methods
+   * @throws ObjectReferencePersistenceException if an ObjectReference with ID will be added
+   *     multiple times without using the task-methods
    * @title Create a new Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS)
@@ -339,7 +340,8 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> createTask(
       @RequestBody TaskRepresentationModel taskRepresentationModel)
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException {
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
+          ObjectReferencePersistenceException {
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
@@ -388,6 +390,8 @@ public class TaskController {
    * @throws NotAuthorizedException if the current user is not authorized.
    * @throws AttachmentPersistenceException if the modified Task contains two attachments with the
    *     same id.
+   * @throws ObjectReferencePersistenceException if the modified Task contains two object references
+   *     with the same id.
    * @throws InvalidStateException if an attempt is made to change the owner of the Task and the
    *     Task is not in state READY.
    * @title Update a Task
@@ -399,7 +403,7 @@ public class TaskController {
       @RequestBody TaskRepresentationModel taskRepresentationModel)
       throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
           ConcurrencyException, NotAuthorizedException, AttachmentPersistenceException,
-          InvalidStateException {
+          InvalidStateException, ObjectReferencePersistenceException {
     if (!taskId.equals(taskRepresentationModel.getTaskId())) {
       throw new InvalidArgumentException(
           String.format(

@@ -74,6 +74,10 @@ public class TaskRepresentationModelAssembler
     repModel.setOwner(task.getOwner());
     repModel.setOwnerLongName(task.getOwnerLongName());
     repModel.setPrimaryObjRef(objectReferenceAssembler.toModel(task.getPrimaryObjRef()));
+    repModel.setSecondaryObjectReferences(
+        task.getSecondaryObjectReferences().stream()
+            .map(objectReferenceAssembler::toModel)
+            .collect(Collectors.toList()));
     repModel.setRead(task.isRead());
     repModel.setTransferred(task.isTransferred());
     repModel.setAttachments(
@@ -163,6 +167,10 @@ public class TaskRepresentationModelAssembler
     task.setAttachments(
         repModel.getAttachments().stream()
             .map(attachmentAssembler::toEntityModel)
+            .collect(Collectors.toList()));
+    task.setSecondaryObjectReferences(
+        repModel.getSecondaryObjectReferences().stream()
+            .map(objectReferenceAssembler::toEntity)
             .collect(Collectors.toList()));
     task.setCustomAttributeMap(
         repModel.getCustomAttributes().stream()

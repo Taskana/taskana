@@ -57,7 +57,12 @@ public enum TaskQueryColumnName implements QueryColumnName {
   A_CLASSIFICATION_ID("a.classification_id"),
   A_CLASSIFICATION_KEY("a.classification_key"),
   A_CHANNEL("a.channel"),
-  A_REF_VALUE("a.ref_value");
+  A_REF_VALUE("a.ref_value"),
+  O_COMPANY("o.company"),
+  O_SYSTEM("o.system"),
+  O_SYSTEM_INSTANCE("o.system_instance"),
+  O_TYPE("o.type"),
+  O_VALUE("o.value");
 
   private final String name;
 
@@ -67,6 +72,10 @@ public enum TaskQueryColumnName implements QueryColumnName {
 
   public boolean isAttachmentColumn() {
     return this.name().startsWith("A_");
+  }
+
+  public boolean isObjectReferenceColumn() {
+    return this.name().startsWith("O_");
   }
 
   @Override

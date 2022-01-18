@@ -121,6 +121,16 @@ public class AttachmentSummaryImpl implements AttachmentSummary {
     this.classificationSummary = classificationSummary;
   }
 
+  // auxiliary method to enable MyBatis access to objectReference
+  public ObjectReferenceImpl getObjectReferenceImpl() {
+    return (ObjectReferenceImpl) objectReference;
+  }
+
+  // auxiliary method to enable MyBatis access to objectReference
+  public void setObjectReferenceImpl(ObjectReferenceImpl objectReferenceImpl) {
+    this.objectReference = objectReferenceImpl;
+  }
+
   protected boolean canEqual(Object other) {
     return (!(other instanceof AttachmentSummaryImpl));
   }

@@ -31,6 +31,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -230,7 +231,7 @@ class TaskanaTransactionIntTest {
   }
 
   private static ObjectReference createDefaultObjRef() {
-    ObjectReference objRef = new ObjectReference();
+    ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("company");
     objRef.setSystem("system");
     objRef.setSystemInstance("instance");

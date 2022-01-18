@@ -12,10 +12,11 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Example Bootstrap Application. */
@@ -28,9 +29,10 @@ public class ExampleBootstrap {
   public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
       throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
           ClassificationNotFoundException, InvalidStateException, InvalidOwnerException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException {
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
+          ObjectReferencePersistenceException {
     System.out.println("---------------------------> Start App");
-    ObjectReference objRef = new ObjectReference();
+    ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");
     objRef.setSystem("aSystem");
     objRef.setSystemInstance("anInstance");

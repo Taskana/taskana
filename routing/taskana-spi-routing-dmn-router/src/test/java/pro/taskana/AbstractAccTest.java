@@ -10,6 +10,7 @@ import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 public abstract class AbstractAccTest {
 
@@ -45,7 +46,7 @@ public abstract class AbstractAccTest {
 
   protected ObjectReference createObjectReference(
       String company, String system, String systemInstance, String type, String value) {
-    ObjectReference objectReference = new ObjectReference();
+    ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
     objectReference.setCompany(company);
     objectReference.setSystem(system);
     objectReference.setSystemInstance(systemInstance);

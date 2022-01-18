@@ -860,6 +860,91 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("por-value-not-like")
   private final String[] porValueNotLike;
   // endregion
+  // region secondaryObjectReference
+  /**
+   * Filter by the primary object reference of the task. This is an exact match. "sor" is a
+   * parameter of complex type. Its following attributes from sor[].id to sor[].value can be
+   * specified according to the description of complex parameters in the overview, e.g.
+   * sor={"value":"exampleValue"}
+   */
+  @JsonProperty("sor")
+  private final ObjectReference[] secondaryObjectReferenceIn;
+  // endregion
+  // region secondaryObjectReferenceCompany
+  /**
+   * Filter by the company of the secondary object reference of the task. This is an exact match.
+   */
+  @JsonProperty("sor-company")
+  private final String[] sorCompanyIn;
+
+  /**
+   * Filter by the company of the secondary object references of the task. This results in a
+   * substring search (% is appended to the front and end of the requested value). Further SQL
+   * "LIKE" wildcard characters will be resolved correctly.
+   */
+  @JsonProperty("sor-company-like")
+  private final String[] sorCompanyLike;
+
+  // endregion
+  // region secondaryObjectReferenceSystem
+  /** Filter by the system of the secondary object reference of the task. This is an exact match. */
+  @JsonProperty("sor-system")
+  private final String[] sorSystemIn;
+
+  /**
+   * Filter by the system of the secondary object reference of the task. This results in a substring
+   * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
+   */
+  @JsonProperty("sor-system-like")
+  private final String[] sorSystemLike;
+
+  // endregion
+  // region secondaryObjectReferenceSystemInstance
+  /**
+   * Filter by the system instance of the secondary object reference of the task. This is an exact
+   * match.
+   */
+  @JsonProperty("sor-instance")
+  private final String[] sorInstanceIn;
+
+  /**
+   * Filter by the system instance of the secondary object reference of the task. This results in a
+   * substring search (% is appended to the front and end of the requested value). Further SQL
+   * "LIKE" wildcard characters will be resolved correctly.
+   */
+  @JsonProperty("sor-instance-like")
+  private final String[] sorInstanceLike;
+
+  // endregion
+  // region secondaryObjectReferenceSystemType
+  /** Filter by the type of the secondary object reference of the task. This is an exact match. */
+  @JsonProperty("sor-type")
+  private final String[] sorTypeIn;
+
+  /**
+   * Filter by the type of the secondary object reference of the task. This results in a substring
+   * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
+   */
+  @JsonProperty("sor-type-like")
+  private final String[] sorTypeLike;
+
+  // endregion
+  // region primaryObjectReferenceSystemValue
+  /** Filter by the value of the secondary object reference of the task. This is an exact match. */
+  @JsonProperty("sor-value")
+  private final String[] sorValueIn;
+
+  /**
+   * Filter by the value of the secondary object reference of the task. This results in a substring
+   * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
+   * characters will be resolved correctly.
+   */
+  @JsonProperty("sor-value-like")
+  private final String[] sorValueLike;
+
+  // endregion
   // region read
   /** Filter by the is read flag of the task. This is an exact match. */
   @JsonProperty("is-read")
@@ -1527,6 +1612,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "por-value-not",
     "por-value-like",
     "por-value-not-like",
+    "sor",
+    "sor-company",
+    "sor-company-like",
+    "sor-system",
+    "sor-system-like",
+    "sor-instance",
+    "sor-instance-like",
+    "sor-type",
+    "sor-type-like",
+    "sor-value",
+    "sor-value-like",
     "is-read",
     "is-transferred",
     "attachment-classification-id",
@@ -1725,6 +1821,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] porValueNotIn,
       String[] porValueLike,
       String[] porValueNotLike,
+      ObjectReference[] secondaryObjectReferenceIn,
+      String[] sorCompanyIn,
+      String[] sorCompanyLike,
+      String[] sorSystemIn,
+      String[] sorSystemLike,
+      String[] sorInstanceIn,
+      String[] sorInstanceLike,
+      String[] sorTypeIn,
+      String[] sorTypeLike,
+      String[] sorValueIn,
+      String[] sorValueLike,
       Boolean isRead,
       Boolean isTransferred,
       String[] attachmentClassificationIdIn,
@@ -1922,6 +2029,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.porValueNotIn = porValueNotIn;
     this.porValueLike = porValueLike;
     this.porValueNotLike = porValueNotLike;
+    this.secondaryObjectReferenceIn = secondaryObjectReferenceIn;
+    this.sorCompanyIn = sorCompanyIn;
+    this.sorCompanyLike = sorCompanyLike;
+    this.sorSystemIn = sorSystemIn;
+    this.sorSystemLike = sorSystemLike;
+    this.sorInstanceIn = sorInstanceIn;
+    this.sorInstanceLike = sorInstanceLike;
+    this.sorTypeIn = sorTypeIn;
+    this.sorTypeLike = sorTypeLike;
+    this.sorValueIn = sorValueIn;
+    this.sorValueLike = sorValueLike;
     this.isRead = isRead;
     this.isTransferred = isTransferred;
     this.attachmentClassificationIdIn = attachmentClassificationIdIn;
@@ -2260,6 +2378,31 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     Optional.ofNullable(porValueNotLike)
         .map(this::wrapElementsInLikeStatement)
         .ifPresent(query::primaryObjectReferenceValueNotLike);
+
+    Optional.ofNullable(secondaryObjectReferenceIn).ifPresent(query::secondaryObjectReferenceIn);
+
+    Optional.ofNullable(sorCompanyIn).ifPresent(query::sorCompanyIn);
+    Optional.ofNullable(sorCompanyLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::sorCompanyLike);
+
+    Optional.ofNullable(sorSystemIn).ifPresent(query::sorSystemIn);
+    Optional.ofNullable(sorSystemLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::sorSystemLike);
+
+    Optional.ofNullable(sorInstanceIn).ifPresent(query::sorSystemInstanceIn);
+    Optional.ofNullable(sorInstanceLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::sorSystemInstanceLike);
+    Optional.ofNullable(sorTypeIn).ifPresent(query::sorTypeIn);
+    Optional.ofNullable(sorTypeLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::sorTypeLike);
+    Optional.ofNullable(sorValueIn).ifPresent(query::sorValueIn);
+    Optional.ofNullable(sorValueLike)
+        .map(this::wrapElementsInLikeStatement)
+        .ifPresent(query::sorValueLike);
 
     Optional.ofNullable(isRead).ifPresent(query::readEquals);
 

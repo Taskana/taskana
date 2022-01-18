@@ -6,6 +6,7 @@ import static pro.taskana.task.internal.builder.ObjectReferenceBuilder.newObject
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 class ObjectReferenceBuilderTest {
 
@@ -20,7 +21,7 @@ class ObjectReferenceBuilderTest {
             .value("Value1")
             .build();
 
-    ObjectReference expectedObjectReference = new ObjectReference();
+    ObjectReferenceImpl expectedObjectReference = new ObjectReferenceImpl();
     expectedObjectReference.setCompany("Company1");
     expectedObjectReference.setSystem("System1");
     expectedObjectReference.setSystemInstance("Instance1");
@@ -28,7 +29,7 @@ class ObjectReferenceBuilderTest {
     expectedObjectReference.setValue("Value1");
 
     assertThat(objectReference)
-        .hasNoNullFieldsOrPropertiesExcept("id")
+        .hasNoNullFieldsOrPropertiesExcept("id", "taskId")
         .isEqualTo(expectedObjectReference);
   }
 }

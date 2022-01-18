@@ -30,6 +30,7 @@ import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
@@ -184,7 +185,7 @@ public abstract class AbstractAccTest {
 
   protected ObjectReference createObjectRef(
       String company, String system, String systemInstance, String type, String value) {
-    ObjectReference objectRef = new ObjectReference();
+    ObjectReferenceImpl objectRef = new ObjectReferenceImpl();
     objectRef.setCompany(company);
     objectRef.setSystem(system);
     objectRef.setSystemInstance(systemInstance);

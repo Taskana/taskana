@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
-import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -39,7 +39,7 @@ public class TaskanaCdiTestRestController {
 
     Task task = taskanaEjb.getTaskService().newTask(workbasket.getKey());
     task.setClassificationKey(classification.getKey());
-    ObjectReference objRef = new ObjectReference();
+    ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");
     objRef.setSystem("aSystem");
     objRef.setSystemInstance("anInstance");

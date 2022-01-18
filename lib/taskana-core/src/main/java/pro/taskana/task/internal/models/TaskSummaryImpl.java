@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
@@ -46,6 +47,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected boolean isTransferred;
   // All objects have to be serializable
   protected List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
+  protected List<ObjectReference> secondaryObjectReferences = new ArrayList<>();
   protected String custom1;
   protected String custom2;
   protected String custom3;
@@ -88,6 +90,10 @@ public class TaskSummaryImpl implements TaskSummary {
     isRead = copyFrom.isRead;
     isTransferred = copyFrom.isTransferred;
     attachmentSummaries = new ArrayList<>(copyFrom.attachmentSummaries);
+    secondaryObjectReferences =
+        copyFrom.secondaryObjectReferences.stream()
+            .map(ObjectReference::copy)
+            .collect(Collectors.toList());
     custom1 = copyFrom.custom1;
     custom2 = copyFrom.custom2;
     custom3 = copyFrom.custom3;
@@ -269,6 +275,15 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   @Override
+  public List<ObjectReference> getSecondaryObjectReferences() {
+    return secondaryObjectReferences;
+  }
+
+  public void setSecondaryObjectReferences(List<ObjectReference> objectReferences) {
+    this.secondaryObjectReferences = objectReferences;
+  }
+
+  @Override
   public String getDomain() {
     return workbasketSummary == null ? null : workbasketSummary.getDomain();
   }
@@ -323,6 +338,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setPrimaryObjRef(ObjectReference primaryObjRef) {
     this.primaryObjRef = primaryObjRef;
+  }
+
+  public void setPrimaryObjRef(
+      String company, String system, String systemInstance, String type, String value) {
+    this.primaryObjRef = new ObjectReferenceImpl(company, system, systemInstance, type, value);
   }
 
   @Override
@@ -406,6 +426,50 @@ public class TaskSummaryImpl implements TaskSummary {
     this.attachmentSummaries.add(attachmentSummary);
   }
 
+  @Override
+  public void addSecondaryObjectReference(ObjectReference objectReferenceToAdd) {
+    if (secondaryObjectReferences == null) {
+      secondaryObjectReferences = new ArrayList<>();
+    }
+    if (objectReferenceToAdd != null) {
+      ((ObjectReferenceImpl) objectReferenceToAdd).setTaskId(this.id);
+      if (objectReferenceToAdd.getId() != null) {
+        secondaryObjectReferences.removeIf(
+            objectReference -> objectReferenceToAdd.getId().equals(objectReference.getId()));
+      }
+      secondaryObjectReferences.add(objectReferenceToAdd);
+    }
+  }
+
+  @Override
+  public void addSecondaryObjectReference(
+      String company, String system, String systemInstance, String type, String value) {
+    ObjectReferenceImpl objectReferenceToAdd =
+        new ObjectReferenceImpl(company, system, systemInstance, type, value);
+    if (secondaryObjectReferences == null) {
+      secondaryObjectReferences = new ArrayList<>();
+    }
+    objectReferenceToAdd.setTaskId(this.id);
+    if (objectReferenceToAdd.getId() != null) {
+      secondaryObjectReferences.removeIf(
+          objectReference -> objectReferenceToAdd.getId().equals(objectReference.getId()));
+    }
+    secondaryObjectReferences.add(objectReferenceToAdd);
+  }
+
+  @Override
+  public ObjectReference removeSecondaryObjectReference(String objectReferenceId) {
+    ObjectReference result = null;
+    for (ObjectReference objectReference : secondaryObjectReferences) {
+      if (objectReference.getId().equals(objectReferenceId)
+          && secondaryObjectReferences.remove(objectReference)) {
+        result = objectReference;
+        break;
+      }
+    }
+    return result;
+  }
+
   // auxiliary Method to enable Mybatis to access classificationSummary
   public ClassificationSummaryImpl getClassificationSummaryImpl() {
     return (ClassificationSummaryImpl) classificationSummary;
@@ -414,6 +478,16 @@ public class TaskSummaryImpl implements TaskSummary {
   // auxiliary Method to enable Mybatis to access classificationSummary
   public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
     setClassificationSummary(classificationSummary);
+  }
+
+  // auxiliary Method to enable Mybatis to access primaryObjRef
+  public ObjectReferenceImpl getPrimaryObjRefImpl() {
+    return (ObjectReferenceImpl) primaryObjRef;
+  }
+
+  // auxiliary Method to enable Mybatis to access primaryObjRef
+  public void setPrimaryObjRefImpl(ObjectReferenceImpl objectReference) {
+    setPrimaryObjRef(objectReference);
   }
 
   public String getCustom1() {
@@ -592,6 +666,7 @@ public class TaskSummaryImpl implements TaskSummary {
         isRead,
         isTransferred,
         attachmentSummaries,
+        secondaryObjectReferences,
         custom1,
         custom2,
         custom3,
@@ -647,6 +722,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(ownerLongName, other.ownerLongName)
         && Objects.equals(primaryObjRef, other.primaryObjRef)
         && Objects.equals(attachmentSummaries, other.attachmentSummaries)
+        && Objects.equals(secondaryObjectReferences, other.secondaryObjectReferences)
         && Objects.equals(custom1, other.custom1)
         && Objects.equals(custom2, other.custom2)
         && Objects.equals(custom3, other.custom3)
@@ -717,6 +793,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + isTransferred
         + ", attachmentSummaries="
         + attachmentSummaries
+        + ", objectReferences="
+        + secondaryObjectReferences
         + ", custom1="
         + custom1
         + ", custom2="

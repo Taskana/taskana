@@ -144,6 +144,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         sessionManager.getMapper(TaskMapper.class),
         sessionManager.getMapper(TaskCommentMapper.class),
         sessionManager.getMapper(AttachmentMapper.class),
+        sessionManager.getMapper(ObjectReferenceMapper.class),
         sessionManager.getMapper(UserMapper.class));
   }
 
