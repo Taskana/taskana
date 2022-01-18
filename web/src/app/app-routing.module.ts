@@ -46,7 +46,7 @@ const appRoutes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'workplace'
+        redirectTo: 'administration/workbaskets'
       }
     ]
   },
@@ -56,7 +56,7 @@ const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'taskana/workplace'
+    redirectTo: 'taskana/administration/workbaskets'
   }
 ];
 @NgModule({

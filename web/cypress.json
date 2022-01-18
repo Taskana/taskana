@@ -1,5 +1,7 @@
 {
   "retries": 2,
+  "viewportWidth": 1280,
+  "viewportHeight": 720,
   "env": {
     "appUrl": "http://localhost:4200/#/taskana",
     "adminUrl": "/administration",
