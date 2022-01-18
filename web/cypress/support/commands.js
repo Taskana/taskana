@@ -1,23 +1,54 @@
+/**
+ * @memberof cy
+ * @method visitWorkbasketsInformationPage
+ * @returns Chainable
+ */
 Cypress.Commands.add('visitWorkbasketsInformationPage', () => {
   cy.get('mat-tab-header').contains('Information').click();
 });
 
+/**
+ * @memberof cy
+ * @method visitWorkbasketsAccessPage
+ * @returns Chainable
+ */
 Cypress.Commands.add('visitWorkbasketsAccessPage', () => {
   cy.get('mat-tab-header').contains('Access').click();
 });
 
+/**
+ * @memberof cy
+ * @method visitWorkbasketsDistributionTargetsPage
+ * @returns Chainable
+ */
 Cypress.Commands.add('visitWorkbasketsDistributionTargetsPage', () => {
   cy.get('mat-tab-header').contains('Distribution Targets').click();
 });
 
+/**
+ * @memberof cy
+ * @method saveWorkbaskets
+ * @returns Chainable
+ */
 Cypress.Commands.add('saveWorkbaskets', () => {
   cy.get('button').contains('Save').click();
 });
 
+/**
+ * @memberof cy
+ * @method verifyPageLoad
+ * @param {string} path
+ * @returns Chainable
+ */
 Cypress.Commands.add('verifyPageLoad', (path) => {
   cy.location('hash', { timeout: 10000 }).should('include', path);
 });
 
+/**
+ * @memberof cy
+ * @method visitTestWorkbasket
+ * @returns Chainable
+ */
 Cypress.Commands.add('visitTestWorkbasket', () => {
   cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/workbaskets');
   cy.verifyPageLoad('/workbaskets');
@@ -29,6 +60,11 @@ Cypress.Commands.add('visitTestWorkbasket', () => {
   cy.visitWorkbasketsInformationPage();
 });
 
+/**
+ * @memberof cy
+ * @method visitTestClassification
+ * @returns Chainable
+ */
 Cypress.Commands.add('visitTestClassification', () => {
   cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/classifications');
   cy.verifyPageLoad('/classifications');
@@ -39,6 +75,23 @@ Cypress.Commands.add('visitTestClassification', () => {
     .click();
 });
 
+/**
+ * @memberof cy
+ * @method visitMonitor
+ * @returns Chainable
+ */
+Cypress.Commands.add('visitMonitor', () => {
+  cy.visit(Cypress.env('appUrl') + '/monitor');
+  cy.wait(1000);
+  cy.verifyPageLoad('/monitor');
+});
+
+/**
+ * @memberof cy
+ * @method loginAs
+ * @param {string} username
+ * @returns Chainable
+ */
 Cypress.Commands.add('loginAs', (username) => {
   if (Cypress.env('isLocal')) {
     cy.log('Local development - No need for testing login functionality');
@@ -51,6 +104,6 @@ Cypress.Commands.add('loginAs', (username) => {
     cy.get('#password').type('admin').should('have.value', 'admin');
     cy.get('#login-submit').click();
 
-    cy.verifyPageLoad('/workplace/tasks');
+    cy.verifyPageLoad('/taskana/administration/workbaskets');
   }
 });
