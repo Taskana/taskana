@@ -387,7 +387,7 @@ jobs:
         run: |
           ci/change_version.sh -i -m .
           ci/update_taskana_dependency_for_wildfly.sh
-          ci/commitPoms.sh
+          ci/commitPoms.sh rest/taskana-rest-spring-example-wildfly/src/test/java/pro/taskana/example/wildfly/AbstractAccTest.java
         env:
           GH_EMAIL: ${{ secrets.GH_EMAIL }}
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
