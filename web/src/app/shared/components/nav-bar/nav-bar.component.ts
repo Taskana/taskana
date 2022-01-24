@@ -40,19 +40,19 @@ export class NavBarComponent implements OnInit {
   }
 
   setTitle(value: string = '') {
-    if (value.indexOf('workbaskets') === 0) {
+    if (value.includes('workbaskets')) {
       this.title = this.titleWorkbaskets;
-    } else if (value.indexOf('classifications') === 0) {
+    } else if (value.includes('classifications')) {
       this.title = this.titleClassifications;
-    } else if (value.indexOf('monitor') === 0) {
+    } else if (value.includes('monitor')) {
       this.title = this.titleMonitor;
-    } else if (value.indexOf('workplace') === 0) {
+    } else if (value.includes('workplace')) {
       this.title = this.titleWorkplace;
-    } else if (value.indexOf('access-items') === 0) {
+    } else if (value.includes('access-items')) {
       this.title = this.titleAccessItems;
-    } else if (value.indexOf('history') === 0) {
+    } else if (value.includes('history')) {
       this.title = this.titleHistory;
-    } else if (value.indexOf('settings') === 0) {
+    } else if (value.includes('settings')) {
       this.title = this.titleSettings;
     }
   }

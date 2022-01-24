@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, DebugElement } from '@angular/core';
 import { NavBarComponent } from './nav-bar.component';
 import { SelectedRouteService } from '../../services/selected-route/selected-route';
@@ -28,16 +28,18 @@ describe('NavBarComponent', () => {
   let debugElement: DebugElement;
   let route = '';
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [NavBarComponent, SvgIconStub],
-      imports: [MatIconModule, HttpClientTestingModule, MatToolbarModule],
-      providers: [
-        { provide: SidenavService, useValue: SidenavServiceSpy },
-        { provide: SelectedRouteService, useValue: SelectedRouteServiceSpy }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NavBarComponent, SvgIconStub],
+        imports: [MatIconModule, HttpClientTestingModule, MatToolbarModule],
+        providers: [
+          { provide: SidenavService, useValue: SidenavServiceSpy },
+          { provide: SelectedRouteService, useValue: SelectedRouteServiceSpy }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavBarComponent);
@@ -55,6 +57,48 @@ describe('NavBarComponent', () => {
     fixture.detectChanges();
     component.setTitle(route);
     expect(component.title).toBe('Workbaskets');
+  });
+
+  it('should set title to classification if classification ist selected', () => {
+    route = 'classifications';
+    fixture.detectChanges();
+    component.setTitle(route);
+    expect(component.title).toBe('Classifications');
+  });
+
+  it('should set title to monitor if monitor ist selected', () => {
+    route = 'monitor';
+    fixture.detectChanges();
+    component.setTitle(route);
+    expect(component.title).toBe('Monitor');
+  });
+
+  it('should set title to workplace if workplace ist selected', () => {
+    route = 'workplace';
+    fixture.detectChanges();
+    component.setTitle(route);
+    expect(component.title).toBe('Workplace');
+  });
+
+  it('should set title to access-items if access-items ist selected', () => {
+    route = 'access-items';
+    fixture.detectChanges();
+    component.setTitle(route);
+    expect(component.title).toBe('Access items');
+  });
+
+  it('should set title to history if history ist selected', () => {
+    route = 'history';
+    fixture.detectChanges();
+    component.setTitle(route);
+    expect(component.title).toBe('History');
+  });
+
+  it('should set title to settings if settings ist selected', () => {
+    route = 'settings';
+    fixture.detectChanges();
+    component.setTitle(route);
+    expect(component.title).toBe('Settings');
   });
 
   it('should toggle sidenav when button clicked', () => {
