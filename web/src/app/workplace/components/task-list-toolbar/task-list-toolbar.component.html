@@ -25,7 +25,7 @@
                    [(ngModel)]="resultName"
                    (ngModelChange)="filterWorkbasketNames()"
                    [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="searchBasket(); navigateBack()">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="searchBasket()">
               <mat-option *ngFor="let workbasketName of filteredWorkbasketNames" [value]="workbasketName">
                 {{workbasketName}}
               </mat-option>
@@ -38,13 +38,13 @@
 
         <!-- SEARCH BUTTON -->
         <button class="task-list-toolbar__button--primary" style="top: 11px"
-                mat-stroked-button matTooltip="Filter Tasks" (click)="onFilter(); navigateBack()">
+                mat-stroked-button matTooltip="Filter Tasks" (click)="onFilter()">
           <mat-icon>search</mat-icon>
         </button>
 
         <!-- CLEAR BUTTON -->
         <button class="task-list-toolbar__button--secondary" style="top: 11px;"
-                mat-stroked-button matTooltip="Clear Filter" (click)="onClearFilter(); navigateBack()">
+                mat-stroked-button matTooltip="Clear Filter" (click)="onClearFilter()">
           <mat-icon>clear</mat-icon>
         </button>
 
@@ -70,7 +70,7 @@
         <div class="task-list-toolbar__filter-input">
           <mat-form-field>
             <mat-label>Filter Tasks</mat-label>
-            <input matInput type="text" placeholder="Filter" [(ngModel)]="filterInput" (keyup.enter)="onFilter(); navigateBack(); this.searched = true;" (ngModelChange)="updateState()">
+            <input matInput type="text" placeholder="Filter" [(ngModel)]="filterInput" (keyup.enter)="onFilter(); this.searched = true;" (ngModelChange)="updateState()">
           </mat-form-field>
         </div>
 
@@ -78,13 +78,13 @@
 
         <!-- SEARCH BUTTON -->
         <button class="task-list-toolbar__button--primary" style="top: 11px"
-                mat-stroked-button matTooltip="Filter Tasks" (click)="onFilter(); navigateBack(); this.searched = true">
+                mat-stroked-button matTooltip="Filter Tasks" (click)="onFilter(); this.searched = true">
           <mat-icon>search</mat-icon>
         </button>
 
         <!-- CLEAR BUTTON -->
         <button class="task-list-toolbar__button--secondary" style="top: 11px;"
-                mat-stroked-button matTooltip="Clear Filter" (click)="onClearFilter(); navigateBack(); this.searched = true;">
+                mat-stroked-button matTooltip="Clear Filter" (click)="onClearFilter(); this.searched = true;">
           <mat-icon>clear</mat-icon>
         </button>
 

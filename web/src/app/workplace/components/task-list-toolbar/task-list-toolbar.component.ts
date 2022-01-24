@@ -183,10 +183,6 @@ export class TaskListToolbarComponent implements OnInit {
     this.resultId = '';
   }
 
-  navigateBack() {
-    this.router.navigate([''], { queryParamsHandling: 'merge' });
-  }
-
   sorting(sort: Sorting<TaskQuerySortParameter>) {
     this.performSorting.emit(sort);
   }
