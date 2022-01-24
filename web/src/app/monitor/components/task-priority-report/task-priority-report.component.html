@@ -8,7 +8,7 @@
 
   <mat-divider class="task-priority-report__divider"> </mat-divider>
 
-  <div *ngIf="reportData?.rows.length == 0"> There are no Workbaskets with type TOPIC. </div>
+  <div *ngIf="reportData?.rows.length == 0"> Could not find any tasks which fulfill the current filter criteria. </div>
 
   <div class="task-priority-report__workbaskets">
     <div *ngFor="let row of reportData?.rows; let i = index" class="task-priority-report__workbasket">
