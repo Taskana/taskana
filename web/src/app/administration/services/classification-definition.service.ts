@@ -17,7 +17,7 @@ export class ClassificationDefinitionService {
 
   // GET
   exportClassifications(domain: string): Observable<Classification[]> {
-    const domainRequest = domain ? '' : `?domain=${domain}`;
+    const domainRequest = domain === '' ? domain : `?domain=${domain}`;
     const classificationDefObservable = this.httpClient.get<Classification[]>(this.url + domainRequest).pipe(take(1));
     classificationDefObservable.subscribe((classificationDefinitions) =>
       BlobGenerator.saveFile(classificationDefinitions, `Classifications_${TaskanaDate.getDate()}.json`)
