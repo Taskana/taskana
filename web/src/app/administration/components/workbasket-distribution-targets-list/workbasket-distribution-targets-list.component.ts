@@ -88,7 +88,10 @@ export class WorkbasketDistributionTargetsListComponent
       this.selectedDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
         if (isEqual(this.filter, filter)) return;
         this.filter = filter;
-        this.store.dispatch(new FetchWorkbasketDistributionTargets(true, this.filter));
+        this.store
+          .dispatch(new FetchWorkbasketDistributionTargets(true))
+          .pipe(take(1))
+          .subscribe(() => this.applyFilter());
         this.selectAll(false);
       });
     }
@@ -165,5 +168,39 @@ export class WorkbasketDistributionTargetsListComponent
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private applyFilter() {
+    function filterExact(target: WorkbasketDistributionTarget, filterStrings: string[], attribute: string) {
+      if (!!filterStrings && filterStrings?.length !== 0) {
+        return filterStrings.map((str) => str.toLowerCase()).includes(target[attribute].toLowerCase());
+      }
+      return true;
+    }
+
+    function filterLike(target: WorkbasketDistributionTarget, filterStrings: string[], attribute: string) {
+      if (!!filterStrings && filterStrings?.length !== 0) {
+        let ret = true;
+        filterStrings.forEach((filterElement) => {
+          ret = ret && target[attribute].toLowerCase().includes(filterElement.toLowerCase());
+        });
+        return ret;
+      }
+      return true;
+    }
+
+    this.distributionTargets = this.distributionTargets?.filter((target) => {
+      let matches = true;
+      matches = matches && filterExact(target, this.filter.name, 'name');
+      matches = matches && filterExact(target, this.filter.key, 'key');
+      matches = matches && filterExact(target, this.filter.owner, 'owner');
+      matches = matches && filterExact(target, this.filter.domain, 'domain');
+      matches = matches && filterExact(target, this.filter.type, 'type');
+      matches = matches && filterLike(target, this.filter['owner-like'], 'owner');
+      matches = matches && filterLike(target, this.filter['name-like'], 'name');
+      matches = matches && filterLike(target, this.filter['key-like'], 'key');
+      matches = matches && filterLike(target, this.filter['description-like'], 'description');
+      return matches;
+    });
   }
 }
