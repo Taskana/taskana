@@ -54,7 +54,7 @@
                                  class="{{toolbarState?  'distribution-targets-list__list--with-filter' : 'distribution-targets-list__list--no-filter'}}"
                                  itemSize="90">
       <mat-list-option
-        *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['type', 'name']; templateCacheSize: 0"
+        *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
         (click)="updateSelectAll(!workbasket.selected) && (workbasket.selected = !workbasket.selected)"
         [selected]="workbasket.selected"
         [value]="workbasket.workbasketId"

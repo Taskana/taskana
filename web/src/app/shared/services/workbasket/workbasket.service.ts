@@ -123,7 +123,7 @@ export class WorkbasketService {
   // PUT
   updateWorkBasketsDistributionTargets(
     url: string,
-    distributionTargetsIds: Array<string>
+    distributionTargetsIds: Set<string>
   ): Observable<WorkbasketDistributionTargets> {
     return this.httpClient.put<WorkbasketDistributionTargets>(url, distributionTargetsIds);
   }

@@ -1,5 +1,5 @@
 import { Workbasket } from '../../models/workbasket';
-import { Sorting, WorkbasketQuerySortParameter } from '../../models/sorting';
+import { Direction, Sorting, WorkbasketQuerySortParameter } from '../../models/sorting';
 import { ACTION } from '../../models/action';
 import { WorkbasketAccessItems } from '../../models/workbasket-access-items';
 import { WorkbasketComponent } from '../../../administration/models/workbasket-component';
@@ -108,7 +108,10 @@ export class FetchWorkbasketDistributionTargets {
   constructor(
     public refetchAll: boolean,
     public filterParameter?: WorkbasketQueryFilterParameter,
-    public sortParameter?: Sorting<WorkbasketQuerySortParameter>
+    public sortParameter: Sorting<WorkbasketQuerySortParameter> = {
+      'sort-by': WorkbasketQuerySortParameter.NAME,
+      order: Direction.ASC
+    }
   ) {}
 }
 

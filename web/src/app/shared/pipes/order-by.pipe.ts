@@ -9,7 +9,7 @@ export class OrderBy implements PipeTransform {
         let direction = 1;
         if (sortKey.charAt(0) === '-') {
           direction = -1;
-          sortKey = sortKey.substr(1);
+          sortKey = sortKey.substring(1);
         }
         const objectA = a[sortKey] ? a[sortKey].toLowerCase() : '';
         const objectB = b[sortKey] ? b[sortKey].toLowerCase() : '';
