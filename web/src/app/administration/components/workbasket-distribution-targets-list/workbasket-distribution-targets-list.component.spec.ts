@@ -153,6 +153,6 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   it('should call orderBy pipe', () => {
     const orderBySpy = jest.spyOn(OrderByMock.prototype, 'transform');
     fixture.detectChanges();
-    expect(orderBySpy).toHaveBeenCalledWith(component.distributionTargets, ['type', 'name']);
+    expect(orderBySpy).toHaveBeenCalledWith(component.distributionTargets, ['name']);
   });
 });

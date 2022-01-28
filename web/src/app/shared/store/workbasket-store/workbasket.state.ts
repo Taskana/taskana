@@ -362,7 +362,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     return this.workbasketService
       .updateWorkBasketsDistributionTargets(
         ctx.getState().selectedWorkbasket._links.distributionTargets.href,
-        ctx.getState().workbasketDistributionTargets.distributionTargets.map((w) => w.workbasketId)
+        new Set(ctx.getState().workbasketDistributionTargets.distributionTargets.map((w) => w.workbasketId))
       )
       .pipe(
         take(1),
