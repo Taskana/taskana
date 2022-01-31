@@ -66,7 +66,7 @@
     <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
     <version.spring.core>2.0.0.RELEASE</version.spring.core>
     <version.spring.boot>2.6.2</version.spring.boot>
-    <version.spring.mybatis>2.0.6</version.spring.mybatis>
+    <version.spring.mybatis>2.0.7</version.spring.mybatis>
 
     <!-- wildfly dependencies -->
     <version.wildfly>13.0.0.Final</version.wildfly>
