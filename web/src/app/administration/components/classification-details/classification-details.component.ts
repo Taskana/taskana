@@ -20,15 +20,16 @@ import { Classification } from '../../../shared/models/classification';
 import { customFieldCount } from '../../../shared/models/classification-summary';
 
 import {
-  SaveCreatedClassification,
+  CopyClassification,
+  DeselectClassification,
   RemoveSelectedClassification,
   RestoreSelectedClassification,
+  SaveCreatedClassification,
   SaveModifiedClassification,
-  SelectClassification,
-  CopyClassification,
-  DeselectClassification
+  SelectClassification
 } from '../../../shared/store/classification-store/classification.actions';
 import { Pair } from '../../../shared/models/pair';
+import { trimForm } from '../../../shared/util/form-trimmer';
 
 @Component({
   selector: 'taskana-administration-classification-details',
@@ -104,6 +105,7 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
+    trimForm(this.classificationForm);
     this.formsValidatorService
       .validateFormInformation(this.classificationForm, this.toggleValidationMap)
       .then((value) => {
@@ -215,12 +217,12 @@ export class ClassificationDetailsComponent implements OnInit, OnDestroy {
     this.location.go(this.location.path().replace(/(classifications).*/g, 'classifications'));
   }
 
-  private afterRequest() {
-    this.requestInProgressService.setRequestInProgress(false);
-  }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private afterRequest() {
+    this.requestInProgressService.setRequestInProgress(false);
   }
 }

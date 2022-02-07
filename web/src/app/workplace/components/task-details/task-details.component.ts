@@ -11,6 +11,7 @@ import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { take, takeUntil } from 'rxjs/operators';
+import { trimObject } from '../../../shared/util/form-trimmer';
 import { ObjectReference } from '../../models/object-reference';
 
 @Component({
@@ -83,17 +84,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.requestInProgressService.setRequestInProgress(false);
       this.task = new Task('', new ObjectReference(), this.currentWorkbasket);
     } else {
-      this.taskService.getTask(this.currentId).subscribe(
-        (task) => {
+      this.taskService.getTask(this.currentId).subscribe({
+        next: (task) => {
           this.requestInProgressService.setRequestInProgress(false);
           this.task = task;
           this.cloneTask();
           this.taskService.selectTask(task);
         },
-        () => {
+        error: () => {
           this.requestInProgressService.setRequestInProgress(false);
         }
-      );
+      });
     }
   }
 
@@ -162,25 +163,27 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   private updateTask() {
     this.requestInProgressService.setRequestInProgress(true);
-    this.taskService.updateTask(this.task).subscribe(
-      (task) => {
+    trimObject(this.task);
+    this.taskService.updateTask(this.task).subscribe({
+      next: (task) => {
         this.requestInProgressService.setRequestInProgress(false);
         this.task = task;
         this.cloneTask();
         this.taskService.publishUpdatedTask(task);
         this.notificationService.showSuccess('TASK_UPDATE', { taskName: task.name });
       },
-      () => {
+      error: () => {
         this.requestInProgressService.setRequestInProgress(false);
       }
-    );
+    });
   }
 
   private createTask() {
     this.requestInProgressService.setRequestInProgress(true);
     this.addDateToTask();
-    this.taskService.createTask(this.task).subscribe(
-      (task) => {
+    trimObject(this.task);
+    this.taskService.createTask(this.task).subscribe({
+      next: (task) => {
         this.requestInProgressService.setRequestInProgress(false);
         this.notificationService.showSuccess('TASK_CREATE', { taskName: task.name });
         this.task = task;
@@ -191,10 +194,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
           queryParamsHandling: 'merge'
         });
       },
-      () => {
+      error: () => {
         this.requestInProgressService.setRequestInProgress(false);
       }
-    );
+    });
   }
 
   private addDateToTask() {
