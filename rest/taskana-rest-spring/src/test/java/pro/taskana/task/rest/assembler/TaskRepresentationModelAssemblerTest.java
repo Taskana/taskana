@@ -82,6 +82,7 @@ class TaskRepresentationModelAssemblerTest {
     repModel.setCreator("creator");
     repModel.setDescription("desc");
     repModel.setNote("note");
+    repModel.setManualPriority(123);
     repModel.setPriority(123);
     repModel.setState(TaskState.READY);
     repModel.setClassificationSummary(classificationSummary);
@@ -176,6 +177,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setDescription("desc");
     task.setNote("note");
     task.setPriority(123);
+    task.setManualPriority(-5);
     task.setState(TaskState.READY);
     task.setClassificationSummary(classification);
     task.setWorkbasketSummary(workbasket.asSummary());
@@ -240,6 +242,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setDescription("desc");
     task.setNote("note");
     task.setPriority(123);
+    task.setManualPriority(123);
     task.setState(TaskState.READY);
     task.setClassificationSummary(classification);
     task.setWorkbasketSummary(workbasket);

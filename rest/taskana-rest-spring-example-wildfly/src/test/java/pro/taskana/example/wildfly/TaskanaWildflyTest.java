@@ -85,7 +85,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
 
   @Test
   @RunAsClient
-  public void should_ReturnUserFromLdap_WhenWildcardSearchIsConducted() {
+  public void should_ReturnUserFromLdap_When_WildcardSearchIsConducted() {
     ResponseEntity<List<AccessIdRepresentationModel>> response =
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
@@ -98,7 +98,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
 
   @Test
   @RunAsClient
-  public void should_ReturnTask_WhenRequested() {
+  public void should_ReturnTask_When_Requested() {
     ResponseEntity<TaskRepresentationModel> response =
         TEMPLATE.exchange(
             restHelper.toUrl(

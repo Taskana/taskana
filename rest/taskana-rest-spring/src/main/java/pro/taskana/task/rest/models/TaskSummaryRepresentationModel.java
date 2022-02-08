@@ -54,6 +54,12 @@ public class TaskSummaryRepresentationModel
   protected String description;
   /** The priority of the task. */
   protected int priority;
+  /**
+   * The manual priority of the task. If the value of manualPriority is zero or greater, the
+   * priority is automatically set to manualPriority. In this case, all computations of priority are
+   * disabled. If the value of manualPriority is negative, Tasks are not prioritized manually.
+   */
+  protected int manualPriority;
   /** The current task state. */
   protected TaskState state;
   /** The classification of this task. */
@@ -221,6 +227,14 @@ public class TaskSummaryRepresentationModel
 
   public void setPriority(int priority) {
     this.priority = priority;
+  }
+
+  public int getManualPriority() {
+    return manualPriority;
+  }
+
+  public void setManualPriority(int manualPriority) {
+    this.manualPriority = manualPriority;
   }
 
   public TaskState getState() {

@@ -40,7 +40,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_OnlyCreateOneClassification_WhenCreatingMasterClassification() throws Exception {
+  void should_OnlyCreateOneClassification_When_CreatingMasterClassification() throws Exception {
     Classification classification = classificationService.newClassification("Key0", "", "TASK");
 
     classification = classificationService.createClassification(classification);
@@ -52,7 +52,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_CreateMasterClassification_WhenCreatingClassificationWithDomain() throws Exception {
+  void should_CreateMasterClassification_When_CreatingClassificationWithDomain() throws Exception {
     Classification classification =
         classificationService.newClassification("Key1", "DOMAIN_A", "TASK");
 
@@ -268,7 +268,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_WhenClassificationWithKeyAlreadyExisting() throws Exception {
+  void should_ThrowException_When_ClassificationWithKeyAlreadyExisting() throws Exception {
     String existingKey = "Key4";
     DefaultTestEntities.defaultTestClassification()
         .key(existingKey)

@@ -153,7 +153,7 @@ class MonitorControllerIntTest {
 
     assertThat(report).isNotNull();
 
-    assertThat(report.getSumRow()).extracting(RowRepresentationModel::getTotal).containsExactly(26);
+    assertThat(report.getSumRow()).extracting(RowRepresentationModel::getTotal).containsExactly(28);
   }
 
   @Test

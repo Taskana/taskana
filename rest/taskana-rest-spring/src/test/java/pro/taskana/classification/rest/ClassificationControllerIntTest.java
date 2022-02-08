@@ -199,7 +199,7 @@ class ClassificationControllerIntTest {
 
   @Test
   @DirtiesContext
-  void should_ThrowNotAuthorized_WhenUserIsNotInRoleAdminOrBusinessAdmin_whileCreating() {
+  void should_ThrowNotAuthorized_When_UserIsNotInRoleAdminOrBusinessAdmin_whileCreating() {
     ClassificationRepresentationModel newClassification = new ClassificationRepresentationModel();
     newClassification.setType("TASK");
     newClassification.setCategory("MANUAL");
