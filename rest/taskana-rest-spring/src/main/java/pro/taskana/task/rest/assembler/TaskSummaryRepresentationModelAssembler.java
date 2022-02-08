@@ -66,6 +66,7 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setNote(taskSummary.getNote());
     repModel.setDescription(taskSummary.getDescription());
     repModel.setPriority(taskSummary.getPriority());
+    repModel.setManualPriority(taskSummary.getManualPriority());
     repModel.setState(taskSummary.getState());
     repModel.setClassificationSummary(
         classificationAssembler.toModel(taskSummary.getClassificationSummary()));
@@ -120,6 +121,7 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setNote(repModel.getNote());
     taskSummary.setDescription(repModel.getDescription());
     taskSummary.setPriority(repModel.getPriority());
+    taskSummary.setManualPriority(repModel.getManualPriority());
     taskSummary.setState(repModel.getState());
     taskSummary.setClassificationSummary(
         classificationAssembler.toEntityModel(repModel.getClassificationSummary()));

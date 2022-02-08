@@ -79,7 +79,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_RemoveWorkbasketsFromDistributionTargets_WhenWorkbasketIsDeleted() throws Exception {
+  void should_RemoveWorkbasketsFromDistributionTargets_When_WorkbasketIsDeleted() throws Exception {
     Workbasket wb = workbasketService.getWorkbasket("GPK_KSC_1", "DOMAIN_A");
     int distTargets =
         workbasketService

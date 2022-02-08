@@ -26,7 +26,7 @@ class WorkingTimeCalculatorTest {
   }
 
   @Test
-  void should_throwInvalidArgumentException_WhenFromTimeIsAfterUntilTime() {
+  void should_throwInvalidArgumentException_When_FromTimeIsAfterUntilTime() {
     Instant from = Instant.parse("2021-09-30T12:00:00.000Z");
     Instant to = Instant.parse("2021-09-30T09:00:00.000Z");
 
@@ -36,7 +36,7 @@ class WorkingTimeCalculatorTest {
   }
 
   @Test
-  void should_throwInvalidArgumentException_WhenFromIsNull() {
+  void should_throwInvalidArgumentException_When_FromIsNull() {
     Instant to = Instant.parse("2021-09-30T09:00:00.000Z");
 
     assertThatThrownBy(() -> calculator.workingTimeBetweenTwoTimestamps(null, to))
