@@ -34,8 +34,16 @@ public class PriorityServiceManager {
   }
 
   public OptionalInt calculatePriorityOfTask(TaskSummary task) {
+    if (task.isManualPriorityActive()) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Skip using PriorityServiceProviders because the Task is prioritised manually: {}",
+            task);
+      }
+      return OptionalInt.empty();
+    }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending task to PriorityServiceProviders: {}", task);
+      LOGGER.debug("Sending Task to PriorityServiceProviders: {}", task);
     }
 
     Set<OptionalInt> priorities =

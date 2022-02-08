@@ -199,6 +199,11 @@ public class TaskBuilder {
     return this;
   }
 
+  public TaskBuilder manualPriority(Integer manualPriority) {
+    testTask.setManualPriority(manualPriority);
+    return this;
+  }
+
   public Task buildAndStore(TaskService taskService)
       throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
           ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,

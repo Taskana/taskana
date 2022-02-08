@@ -70,7 +70,10 @@ class ServiceLevelHandler {
           tasks, attachments, allInvolvedClassificationsWithDuration);
     }
     if (priorityChanged) {
-      updateTaskPriorityOnClassificationUpdate(tasks, attachments, allInvolvedClassifications);
+      List<MinimalTaskSummary> tasksWithoutManualPriority =
+          tasks.stream().filter(t -> !t.isManualPriorityActive()).collect(Collectors.toList());
+      updateTaskPriorityOnClassificationUpdate(
+          tasksWithoutManualPriority, attachments, allInvolvedClassifications);
     }
   }
 
@@ -121,7 +124,11 @@ class ServiceLevelHandler {
     }
 
     DurationPrioHolder durationPrioHolder = determineTaskPrioDuration(newTaskImpl, onlyPriority);
-    newTaskImpl.setPriority(durationPrioHolder.getPriority());
+    if (newTaskImpl.isManualPriorityActive()) {
+      newTaskImpl.setPriority(newTaskImpl.getManualPriority());
+    } else {
+      newTaskImpl.setPriority(durationPrioHolder.getPriority());
+    }
     if (onlyPriority) {
       return newTaskImpl;
     }
@@ -173,7 +180,6 @@ class ServiceLevelHandler {
       List<MinimalTaskSummary> existingTasks,
       List<AttachmentSummaryImpl> attachments,
       List<ClassificationSummary> allInvolvedClassifications) {
-
     Map<Integer, List<String>> priorityToTaskIdsMap =
         getPriorityToTasksIdsMap(existingTasks, attachments, allInvolvedClassifications);
     TaskImpl referenceTask = new TaskImpl();
@@ -588,7 +594,8 @@ class ServiceLevelHandler {
                   || !newTaskImpl
                       .getClassificationKey()
                       .equals(oldTaskImpl.getClassificationKey()));
-
+      final boolean isManualPriorityChanged =
+          newTaskImpl.getManualPriority() != oldTaskImpl.getManualPriority();
       final boolean isClassificationIdChanged =
           newTaskImpl.getClassificationId() != null
               && (oldTaskImpl.getClassificationId() == null
@@ -598,6 +605,7 @@ class ServiceLevelHandler {
           && oldTaskImpl.getDue().equals(newTaskImpl.getDue())
           && !isClassificationKeyChanged
           && !isClassificationIdChanged
+          && !isManualPriorityChanged
           && areAttachmentsUnchanged(newTaskImpl, oldTaskImpl);
     } else {
       return false;

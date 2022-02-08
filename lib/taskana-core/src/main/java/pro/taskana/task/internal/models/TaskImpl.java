@@ -239,6 +239,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     taskSummary.setReceived(received);
     taskSummary.setPrimaryObjRef(primaryObjRef);
     taskSummary.setPriority(priority);
+    taskSummary.setManualPriority(manualPriority);
     taskSummary.setRead(isRead);
     taskSummary.setState(state);
     taskSummary.setTransferred(isTransferred);
@@ -344,6 +345,8 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + description
         + ", priority="
         + priority
+        + ", manualPriority="
+        + manualPriority
         + ", state="
         + state
         + ", classificationSummary="

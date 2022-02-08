@@ -15,6 +15,7 @@ import com.tngtech.archunit.core.domain.JavaClass.Predicates;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.domain.JavaMethod;
+import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
@@ -24,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -334,7 +336,7 @@ class ArchitectureTest {
             .that()
             .areAnnotatedWith(TaskanaIntegrationTest.class)
             .or(areNestedTaskanaIntegrationTestClasses())
-            .should(onlyHaveFieldsWithNoModifier());
+            .should(onlyHaveFieldsWithNoModifierAndPrivateConstants());
 
     rule.check(importedClasses);
   }
@@ -428,16 +430,24 @@ class ArchitectureTest {
     };
   }
 
-  private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifier() {
-    return new ArchCondition<JavaClass>("only have fields with no modifier") {
+  private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifierAndPrivateConstants() {
+    return new ArchCondition<>("only have fields with no modifier") {
+      final Set<JavaModifier> modifiersForConstants =
+          Set.of(JavaModifier.PRIVATE, JavaModifier.STATIC, JavaModifier.FINAL);
+
       @Override
       public void check(JavaClass item, ConditionEvents events) {
         for (JavaField field : item.getAllFields()) {
-          if (!field.reflect().isSynthetic() && !field.getModifiers().isEmpty()) {
+          if (!field.reflect().isSynthetic()
+              && !(field.getModifiers().isEmpty()
+                  || field.getModifiers().equals(modifiersForConstants))) {
             events.add(
                 SimpleConditionEvent.violated(
                     item,
-                    String.format("Field '%s' should not have any modifier", field.getFullName())));
+                    String.format(
+                        "Field '%s' should not have any modifier "
+                            + "except for static fields, which have to be private",
+                        field.getFullName())));
           }
         }
       }

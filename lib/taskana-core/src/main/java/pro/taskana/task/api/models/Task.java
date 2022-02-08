@@ -73,6 +73,15 @@ public interface Task extends TaskSummary {
   void setClassificationKey(String classificationKey);
 
   /**
+   * Sets the manualPriority of the Task. If the value of manualPriority is zero or greater, the
+   * priority is automatically set to manualPriority. In this case, all computations of priority are
+   * disabled. If the value of manualPriority is negative, Tasks are not prioritized manually.
+   *
+   * @param manualPriority the value for manualPriority of the Task
+   */
+  void setManualPriority(int manualPriority);
+
+  /**
    * Returns the key of the Workbasket where the Task is stored in.
    *
    * @return workbasketKey
