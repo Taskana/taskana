@@ -114,6 +114,15 @@ public interface TaskSummary {
   int getPriority();
 
   /**
+   * Gets the manualPriority of the Task. If the value of manualPriority is zero or greater, the
+   * priority is automatically set to manualPriority. In this case, all computations of priority are
+   * disabled. If the value of manualPriority is negative, Tasks are not prioritized manually.
+   *
+   * @return the manualPriority of the Task
+   */
+  int getManualPriority();
+
+  /**
    * Gets the state of the Task.
    *
    * @return the Task's state
@@ -239,6 +248,14 @@ public interface TaskSummary {
    * @return the Task's isTransferred flag.
    */
   boolean isTransferred();
+
+  /**
+   * Returns whether the Task is prioritized manually. That means that the priority is set to the
+   * value of the manualPriority of the Task.
+   *
+   * @return true, if Tasks are prioritized manually; false otherwise
+   */
+  boolean isManualPriorityActive();
 
   /**
    * Gets the custom attribute of the Task.

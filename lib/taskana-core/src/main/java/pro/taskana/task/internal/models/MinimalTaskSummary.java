@@ -20,6 +20,7 @@ public class MinimalTaskSummary {
   private Instant due;
   private Instant modified;
   private CallbackState callbackState;
+  private int manualPriority;
 
   MinimalTaskSummary() {}
 
@@ -103,6 +104,18 @@ public class MinimalTaskSummary {
     this.callbackState = callbackState;
   }
 
+  public int getManualPriority() {
+    return manualPriority;
+  }
+
+  public void setManualPriority(int manualPriority) {
+    this.manualPriority = manualPriority;
+  }
+
+  public boolean isManualPriorityActive() {
+    return manualPriority >= 0;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(
@@ -115,7 +128,8 @@ public class MinimalTaskSummary {
         planned,
         due,
         modified,
-        callbackState);
+        callbackState,
+        manualPriority);
   }
 
   @Override
@@ -136,7 +150,8 @@ public class MinimalTaskSummary {
         && Objects.equals(planned, other.planned)
         && Objects.equals(due, other.due)
         && Objects.equals(modified, other.modified)
-        && callbackState == other.callbackState;
+        && callbackState == other.callbackState
+        && manualPriority == other.manualPriority;
   }
 
   @Override
@@ -161,6 +176,8 @@ public class MinimalTaskSummary {
         + modified
         + ", callbackState="
         + callbackState
+        + ", manualPriority="
+        + manualPriority
         + "]";
   }
 }

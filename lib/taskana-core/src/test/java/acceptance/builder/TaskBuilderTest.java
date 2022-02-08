@@ -130,6 +130,7 @@ class TaskBuilderTest {
             .parentBusinessProcessId("BPI:ParentIsCool")
             .owner("hanspeter")
             .primaryObjRef(defaultTestObjectReference().build())
+            .manualPriority(7)
             .read(true)
             .transferred(true)
             .attachments(attachment)
@@ -172,6 +173,7 @@ class TaskBuilderTest {
     expectedTask.setParentBusinessProcessId("BPI:ParentIsCool");
     expectedTask.setOwner("hanspeter");
     expectedTask.setPrimaryObjRef(defaultTestObjectReference().build());
+    expectedTask.setManualPriority(7);
     expectedTask.setRead(true);
     expectedTask.setTransferred(true);
     expectedTask.setCreator("user-1-1");

@@ -21,6 +21,8 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 /** Entity which contains the most important information about a Task. */
 public class TaskSummaryImpl implements TaskSummary {
 
+  private static final int DEFAULT_MANUAL_PRIORITY = -1;
+
   protected String id;
   protected String externalId;
   protected Instant received;
@@ -35,6 +37,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected String note;
   protected String description;
   protected int priority;
+  protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
   protected TaskState state;
   protected ClassificationSummary classificationSummary;
   protected WorkbasketSummary workbasketSummary;
@@ -80,6 +83,7 @@ public class TaskSummaryImpl implements TaskSummary {
     note = copyFrom.note;
     description = copyFrom.description;
     priority = copyFrom.priority;
+    manualPriority = copyFrom.manualPriority;
     state = copyFrom.state;
     classificationSummary = copyFrom.classificationSummary;
     workbasketSummary = copyFrom.workbasketSummary;
@@ -237,6 +241,18 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setPriority(int priority) {
     this.priority = priority;
+  }
+
+  @Override
+  public int getManualPriority() {
+    return manualPriority;
+  }
+
+  public void setManualPriority(int manualPriority) {
+    this.manualPriority = manualPriority;
+    if (isManualPriorityActive()) {
+      this.priority = manualPriority;
+    }
   }
 
   @Override
@@ -409,6 +425,11 @@ public class TaskSummaryImpl implements TaskSummary {
       default:
         throw new SystemException("Unknown custom field '" + customField + "'");
     }
+  }
+
+  @Override
+  public boolean isManualPriorityActive() {
+    return manualPriority >= 0;
   }
 
   @Override
@@ -662,6 +683,7 @@ public class TaskSummaryImpl implements TaskSummary {
         note,
         description,
         priority,
+        manualPriority,
         state,
         classificationSummary,
         workbasketSummary,
@@ -705,6 +727,7 @@ public class TaskSummaryImpl implements TaskSummary {
       return false;
     }
     return priority == other.priority
+        && manualPriority == other.manualPriority
         && isRead == other.isRead
         && isTransferred == other.isTransferred
         && Objects.equals(id, other.id)
@@ -778,6 +801,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + description
         + ", priority="
         + priority
+        + ", manualPriority="
+        + manualPriority
         + ", state="
         + state
         + ", classificationSummary="
