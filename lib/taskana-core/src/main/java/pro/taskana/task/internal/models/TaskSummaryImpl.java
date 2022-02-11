@@ -208,7 +208,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name == null ? null : name.trim();
   }
 
   @Override
@@ -217,7 +217,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setNote(String note) {
-    this.note = note;
+    this.note = note == null ? null : note.trim();
   }
 
   @Override
@@ -226,7 +226,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = description == null ? null : description.trim();
   }
 
   @Override
@@ -328,7 +328,7 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   public void setOwnerLongName(String ownerLongName) {
-    this.ownerLongName = ownerLongName;
+    this.ownerLongName = ownerLongName == null ? null : ownerLongName.trim();
   }
 
   @Override
@@ -415,12 +415,12 @@ public class TaskSummaryImpl implements TaskSummary {
     return new TaskSummaryImpl(this);
   }
 
-  // utility method to allow mybatis access to workbasketSummary
+  // auxiliary method to allow mybatis access to workbasketSummary
   public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
     return (WorkbasketSummaryImpl) workbasketSummary;
   }
 
-  // utility method to allow mybatis access to workbasketSummary
+  // auxiliary method to allow mybatis access to workbasketSummary
   public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
     setWorkbasketSummary(workbasketSummary);
   }
@@ -502,7 +502,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom1(String custom1) {
-    this.custom1 = custom1;
+    this.custom1 = custom1 == null ? null : custom1.trim();
   }
 
   public String getCustom2() {
@@ -511,7 +511,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom2(String custom2) {
-    this.custom2 = custom2;
+    this.custom2 = custom2 == null ? null : custom2.trim();
   }
 
   public String getCustom3() {
@@ -520,7 +520,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom3(String custom3) {
-    this.custom3 = custom3;
+    this.custom3 = custom3 == null ? null : custom3.trim();
   }
 
   public String getCustom4() {
@@ -529,7 +529,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom4(String custom4) {
-    this.custom4 = custom4;
+    this.custom4 = custom4 == null ? null : custom4.trim();
   }
 
   public String getCustom5() {
@@ -538,7 +538,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom5(String custom5) {
-    this.custom5 = custom5;
+    this.custom5 = custom5 == null ? null : custom5.trim();
   }
 
   public String getCustom6() {
@@ -547,7 +547,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom6(String custom6) {
-    this.custom6 = custom6;
+    this.custom6 = custom6 == null ? null : custom6.trim();
   }
 
   public String getCustom7() {
@@ -556,7 +556,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom7(String custom7) {
-    this.custom7 = custom7;
+    this.custom7 = custom7 == null ? null : custom7.trim();
   }
 
   public String getCustom8() {
@@ -565,7 +565,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom8(String custom8) {
-    this.custom8 = custom8;
+    this.custom8 = custom8 == null ? null : custom8.trim();
   }
 
   public String getCustom9() {
@@ -574,7 +574,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom9(String custom9) {
-    this.custom9 = custom9;
+    this.custom9 = custom9 == null ? null : custom9.trim();
   }
 
   public String getCustom10() {
@@ -583,7 +583,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom10(String custom10) {
-    this.custom10 = custom10;
+    this.custom10 = custom10 == null ? null : custom10.trim();
   }
 
   public String getCustom11() {
@@ -592,7 +592,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom11(String custom11) {
-    this.custom11 = custom11;
+    this.custom11 = custom11 == null ? null : custom11.trim();
   }
 
   public String getCustom12() {
@@ -601,7 +601,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom12(String custom12) {
-    this.custom12 = custom12;
+    this.custom12 = custom12 == null ? null : custom12.trim();
   }
 
   public String getCustom13() {
@@ -610,7 +610,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom13(String custom13) {
-    this.custom13 = custom13;
+    this.custom13 = custom13 == null ? null : custom13.trim();
   }
 
   public String getCustom14() {
@@ -619,7 +619,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom14(String custom14) {
-    this.custom14 = custom14;
+    this.custom14 = custom14 == null ? null : custom14.trim();
   }
 
   public String getCustom15() {
@@ -628,7 +628,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom15(String custom15) {
-    this.custom15 = custom15;
+    this.custom15 = custom15 == null ? null : custom15.trim();
   }
 
   public String getCustom16() {
@@ -637,7 +637,7 @@ public class TaskSummaryImpl implements TaskSummary {
 
   // auxiliary Method needed by Mybatis
   public void setCustom16(String custom16) {
-    this.custom16 = custom16;
+    this.custom16 = custom16 == null ? null : custom16.trim();
   }
 
   protected boolean canEqual(Object other) {

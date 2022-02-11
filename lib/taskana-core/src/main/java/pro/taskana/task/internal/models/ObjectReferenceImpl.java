@@ -58,7 +58,7 @@ public class ObjectReferenceImpl implements ObjectReference {
   }
 
   public void setCompany(String company) {
-    this.company = company;
+    this.company = company == null ? null : company.trim();
   }
 
   @Override
@@ -67,7 +67,7 @@ public class ObjectReferenceImpl implements ObjectReference {
   }
 
   public void setSystem(String system) {
-    this.system = system;
+    this.system = system == null ? null : system.trim();
   }
 
   @Override
@@ -85,7 +85,7 @@ public class ObjectReferenceImpl implements ObjectReference {
   }
 
   public void setType(String type) {
-    this.type = type;
+    this.type = type == null ? null : type.trim();
   }
 
   @Override
@@ -94,7 +94,7 @@ public class ObjectReferenceImpl implements ObjectReference {
   }
 
   public void setValue(String value) {
-    this.value = value;
+    this.value = value == null ? null : value.trim();
   }
 
   @Override

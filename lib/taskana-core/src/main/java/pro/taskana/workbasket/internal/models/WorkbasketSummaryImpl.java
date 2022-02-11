@@ -61,7 +61,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setKey(String key) {
-    this.key = key;
+    this.key = key == null ? null : key.trim();
   }
 
   @Override
@@ -70,7 +70,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name == null ? null : name.trim();
   }
 
   @Override
@@ -79,7 +79,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = description == null ? null : description.trim();
   }
 
   @Override
@@ -88,7 +88,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setOwner(String owner) {
-    this.owner = owner;
+    this.owner = owner == null ? null : owner.trim();
   }
 
   @Override
@@ -97,7 +97,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setDomain(String domain) {
-    this.domain = domain;
+    this.domain = domain == null ? null : domain.trim();
   }
 
   @Override
@@ -131,45 +131,13 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     }
   }
 
-  public String getCustom1() {
-    return custom1;
-  }
-
-  public void setCustom1(String custom1) {
-    this.custom1 = custom1;
-  }
-
-  public String getCustom2() {
-    return custom2;
-  }
-
-  public void setCustom2(String custom2) {
-    this.custom2 = custom2;
-  }
-
-  public String getCustom3() {
-    return custom3;
-  }
-
-  public void setCustom3(String custom3) {
-    this.custom3 = custom3;
-  }
-
-  public String getCustom4() {
-    return custom4;
-  }
-
-  public void setCustom4(String custom4) {
-    this.custom4 = custom4;
-  }
-
   @Override
   public String getOrgLevel1() {
     return orgLevel1;
   }
 
   public void setOrgLevel1(String orgLevel1) {
-    this.orgLevel1 = orgLevel1;
+    this.orgLevel1 = orgLevel1 == null ? null : orgLevel1.trim();
   }
 
   @Override
@@ -178,7 +146,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setOrgLevel2(String orgLevel2) {
-    this.orgLevel2 = orgLevel2;
+    this.orgLevel2 = orgLevel2 == null ? null : orgLevel2.trim();
   }
 
   @Override
@@ -187,7 +155,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setOrgLevel3(String orgLevel3) {
-    this.orgLevel3 = orgLevel3;
+    this.orgLevel3 = orgLevel3 == null ? null : orgLevel3.trim();
   }
 
   @Override
@@ -196,7 +164,7 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   }
 
   public void setOrgLevel4(String orgLevel4) {
-    this.orgLevel4 = orgLevel4;
+    this.orgLevel4 = orgLevel4 == null ? null : orgLevel4.trim();
   }
 
   @Override
@@ -211,6 +179,38 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   @Override
   public WorkbasketSummaryImpl copy() {
     return new WorkbasketSummaryImpl(this);
+  }
+
+  public String getCustom1() {
+    return custom1;
+  }
+
+  public void setCustom1(String custom1) {
+    this.custom1 = custom1 == null ? null : custom1.trim();
+  }
+
+  public String getCustom2() {
+    return custom2;
+  }
+
+  public void setCustom2(String custom2) {
+    this.custom2 = custom2 == null ? null : custom2.trim();
+  }
+
+  public String getCustom3() {
+    return custom3;
+  }
+
+  public void setCustom3(String custom3) {
+    this.custom3 = custom3 == null ? null : custom3.trim();
+  }
+
+  public String getCustom4() {
+    return custom4;
+  }
+
+  public void setCustom4(String custom4) {
+    this.custom4 = custom4 == null ? null : custom4.trim();
   }
 
   protected boolean canEqual(Object other) {
