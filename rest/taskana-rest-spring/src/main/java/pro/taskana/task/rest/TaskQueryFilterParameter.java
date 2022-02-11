@@ -525,7 +525,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region classificationKey
   /** Filter by the classification key of the task. This is an exact match. */
-  @JsonProperty("classification.key")
+  @JsonProperty("classification-key")
   private final String[] classificationKeyIn;
 
   /** Filter by the classification key of the task. This is an exact match. */
@@ -719,7 +719,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region primaryObjectReferenceCompany
   /** Filter by the company of the primary object reference of the task. This is an exact match. */
-  @JsonProperty("por.company")
+  @JsonProperty("por-company")
   private final String[] porCompanyIn;
 
   /**
@@ -747,7 +747,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region primaryObjectReferenceSystem
   /** Filter by the system of the primary object reference of the task. This is an exact match. */
-  @JsonProperty("por.system")
+  @JsonProperty("por-system")
   private final String[] porSystemIn;
 
   /**
@@ -778,7 +778,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by the system instance of the primary object reference of the task. This is an exact
    * match.
    */
-  @JsonProperty("por.instance")
+  @JsonProperty("por-instance")
   private final String[] porInstanceIn;
 
   /**
@@ -806,7 +806,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region primaryObjectReferenceSystemType
   /** Filter by the type of the primary object reference of the task. This is an exact match. */
-  @JsonProperty("por.type")
+  @JsonProperty("por-type")
   private final String[] porTypeIn;
 
   /**
@@ -834,7 +834,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region primaryObjectReferenceSystemValue
   /** Filter by the value of the primary object reference of the task. This is an exact match. */
-  @JsonProperty("por.value")
+  @JsonProperty("por-value")
   private final String[] porValueIn;
 
   /**
@@ -1477,7 +1477,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "state-not",
     "classification-id",
     "classification-id-not",
-    "classification.key",
+    "classification-key",
     "classification-key-not",
     "classification-key-like",
     "classification-key-not-like",
@@ -1507,23 +1507,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "owner-like",
     "owner-not-like",
     "por",
-    "por.company",
+    "por-company",
     "por-company-not",
     "por-company-like",
     "por-company-not-like",
-    "por.system",
+    "por-system",
     "por-system-not",
     "por-system-like",
     "por-system-not-like",
-    "por.instance",
+    "por-instance",
     "por-instance-not",
     "por-instance-like",
     "por-instance-not-like",
-    "por.type",
+    "por-type",
     "por-type-not",
     "por-type-like",
     "por-type-not-like",
-    "por.value",
+    "por-value",
     "por-value-not",
     "por-value-like",
     "por-value-not-like",

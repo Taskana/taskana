@@ -17,7 +17,7 @@ const emptyTaskFilter: TaskQueryFilterParameter = {
   'owner-like': [],
   state: [],
   priority: [],
-  'por.value': [],
+  'por-value': [],
   'wildcard-search-fields': [],
   'wildcard-search-value': []
 };

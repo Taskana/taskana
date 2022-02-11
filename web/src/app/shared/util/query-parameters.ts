@@ -17,8 +17,8 @@ export class TaskanaQueryParameters {
     PRIORITY: 'priority',
     STATE: 'state',
     WORKBASKET_ID: 'workbasket-id',
-    TASK_PRIMARY_OBJ_REF_TYPE_LIKE: 'por.type',
-    TASK_PRIMARY_OBJ_REF_VALUE_LIKE: 'por.value',
+    TASK_PRIMARY_OBJ_REF_TYPE_LIKE: 'por-type',
+    TASK_PRIMARY_OBJ_REF_VALUE_LIKE: 'por-value',
     // Access
     REQUIREDPERMISSION: 'required-permission',
     ACCESSIDS: 'access-ids',
