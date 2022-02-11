@@ -460,7 +460,7 @@ class TaskControllerIntTest {
   void testGetAllTasksKeepingFilters() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
-            + "?por.type=VNR&por.value=22334455&sort-by=POR_VALUE&order=DESCENDING";
+            + "?por-type=VNR&por-value=22334455&sort-by=POR_VALUE&order=DESCENDING";
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
@@ -470,7 +470,7 @@ class TaskControllerIntTest {
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith(
-            "/api/v1/tasks?por.type=VNR&por.value=22334455"
+            "/api/v1/tasks?por-type=VNR&por-value=22334455"
                 + "&sort-by=POR_VALUE&order=DESCENDING");
   }
 
@@ -542,8 +542,8 @@ class TaskControllerIntTest {
     // tasks and this test depends on the tasks as they are in sampledata
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
-            + "?por.company=00&por.system=PASystem&por.instance=00&"
-            + "por.type=VNR&por.value=22334455&sort-by=POR_TYPE&"
+            + "?por-company=00&por-system=PASystem&por-instance=00&"
+            + "por-type=VNR&por-value=22334455&sort-by=POR_TYPE&"
             + "order=ASCENDING&page-size=5&page=2";
     HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
@@ -557,8 +557,8 @@ class TaskControllerIntTest {
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
         .endsWith(
-            "/api/v1/tasks?por.company=00&por.system=PASystem&por.instance=00&"
-                + "por.type=VNR&por.value=22334455&sort-by=POR_TYPE&order=ASCENDING&"
+            "/api/v1/tasks?por-company=00&por-system=PASystem&por-instance=00&"
+                + "por-type=VNR&por-value=22334455&sort-by=POR_TYPE&order=ASCENDING&"
                 + "page-size=5&page=2");
     assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
