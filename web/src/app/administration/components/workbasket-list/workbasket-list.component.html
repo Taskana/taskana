@@ -61,5 +61,6 @@
         [type]="type"
         [expanded]="expanded"
         [numberOfItems]="(workbasketsSummary$ | async)?.length"
+        [resetPaging]="resetPagingSubject.asObservable()"
         (changePage)="changePage($event)">
 </taskana-shared-pagination>

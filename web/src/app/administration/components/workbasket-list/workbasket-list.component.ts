@@ -4,7 +4,6 @@ import { Observable, Subject } from 'rxjs';
 import { WorkbasketSummaryRepresentation } from 'app/shared/models/workbasket-summary-representation';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
 import { Direction, Sorting, WorkbasketQuerySortParameter } from 'app/shared/models/sorting';
-import { Orientation } from 'app/shared/models/orientation';
 
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { OrientationService } from 'app/shared/services/orientation/orientation.service';
@@ -46,26 +45,21 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
   requestInProgress: boolean;
   requestInProgressLocal = false;
 
+  resetPagingSubject = new Subject<null>();
+
   @Input() expanded: boolean;
-
-  @ViewChild('wbToolbar', { static: true })
-  private toolbarElement: ElementRef;
-
   @Select(WorkbasketSelectors.workbasketsSummary)
   workbasketsSummary$: Observable<WorkbasketSummary[]>;
-
   @Select(WorkbasketSelectors.workbasketsSummaryRepresentation)
   workbasketsSummaryRepresentation$: Observable<WorkbasketSummaryRepresentation>;
-
   @Select(WorkbasketSelectors.selectedWorkbasket)
   selectedWorkbasket$: Observable<Workbasket>;
-
   @Select(FilterSelectors.getWorkbasketListFilter)
   getWorkbasketListFilter$: Observable<WorkbasketQueryFilterParameter>;
-
   destroy$ = new Subject<void>();
-
   @ViewChild('workbasket') workbasketList: MatSelectionList;
+  @ViewChild('wbToolbar', { static: true })
+  private toolbarElement: ElementRef;
 
   constructor(
     private store: Store,
@@ -99,21 +93,21 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.workbasketService
       .workbasketSavedTriggered()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(() => {
         this.performRequest();
       });
 
     this.orientationService
       .getOrientation()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((orientation: Orientation) => {
+      .subscribe(() => {
         this.refreshWorkbasketList();
       });
 
     this.importExportService
       .getImportingFinished()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: Boolean) => {
+      .subscribe(() => {
         this.refreshWorkbasketList();
       });
 
@@ -128,7 +122,7 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     this.workbasketService
       .getWorkbasketActionToolbarExpansion()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(() => {
         this.requestInProgressService.setRequestInProgress(true);
         setTimeout(() => {
           this.refreshWorkbasketList();
@@ -169,7 +163,8 @@ export class WorkbasketListComponent implements OnInit, OnDestroy {
     const domain = this.filterBy.domain;
     this.filterBy = { ...filterBy };
     this.filterBy.domain = domain;
-    this.performRequest();
+    this.resetPagingSubject.next(null);
+    // this.performRequest();
   }
 
   changePage(page) {
