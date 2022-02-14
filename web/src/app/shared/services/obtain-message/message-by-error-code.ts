@@ -99,8 +99,7 @@ export const messageByErrorCode = {
   },
 
   [messageTypes.INFORMATION]: {
-    EMPTY_WORKBASKET: 'Selected Workbasket is empty',
-    CLASSIFICATION_FILTER_EMPTY_RESULT: 'No Classification match for used filter {filter} in category {category}'
+    EMPTY_WORKBASKET: 'Selected Workbasket is empty'
   },
 
   [messageTypes.WARNING]: {
