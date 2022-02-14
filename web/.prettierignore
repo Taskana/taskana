@@ -11,3 +11,4 @@ coverage/**
 out-tsc/**
 **/*.html
 target/**
+.angular/cache/

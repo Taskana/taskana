@@ -1,16 +1,30 @@
-<tree-root #tree [nodes]="treeNodes" [options]="options" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)"
-           (moveNode)="onMoveNode($event)" (treeDrop)="onDrop($event)">
-    <ng-template #treeNodeTemplate let-node let-index="index">
-      <span class="tree__svg-icon">
-          <svg-icon
-            *ngIf="node.data.category"
-            [src]="getCategoryIcon(node.data.category).left"
-            matTooltip="{{getCategoryIcon(node.data.category).right}}">
-          </svg-icon>
-      </span>
-      <span>
-          <strong>{{ node.data.key }}</strong>
-      </span>
-      <span> - {{ node.data.name }}</span>
-    </ng-template>
+<div *ngIf="emptyTreeNodes">
+  <h3 class="grey" style="text-align: center">There are no classifications</h3>
+  <p class="grey" style="text-align: center">No Classifications match used filter "{{filter}}"
+    in category {{category}}</p>
+</div>
+<tree-root
+  #tree
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  (moveNode)="onMoveNode($event)"
+  (treeDrop)="onDrop($event)"
+  [hidden]="emptyTreeNodes"
+  [nodes]="treeNodes"
+  [options]="options"
+>
+  <ng-template #treeNodeTemplate let-index="index" let-node>
+    <span class="tree__svg-icon">
+      <svg-icon
+        *ngIf="node.data.category"
+        [src]="getCategoryIcon(node.data.category).left"
+        matTooltip="{{ getCategoryIcon(node.data.category).right }}"
+      >
+      </svg-icon>
+    </span>
+    <span>
+      <strong>{{ node.data.key }}</strong>
+    </span>
+    <span> - {{ node.data.name }}</span>
+  </ng-template>
 </tree-root>

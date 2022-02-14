@@ -41,6 +41,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   treeNodes: TreeNodeModel[];
   categoryIcons: ClassificationCategoryImages;
 
+  emptyTreeNodes = false;
+  filter: string;
+  category: string;
+
   @Input() selectNodeId: string;
   @Input() filterText: string;
   @Input() filterIcon = '';
@@ -188,6 +192,17 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     this.destroy$.complete();
   }
 
+  private checkNameAndKey(node: any, text: string): boolean {
+    return (
+      node.data.name.toUpperCase().includes(text.toUpperCase()) ||
+      node.data.key.toUpperCase().includes(text.toUpperCase())
+    );
+  }
+
+  private checkIcon(node: any, iconText: string): boolean {
+    return node.data.category.toUpperCase() === iconText.toUpperCase() || iconText === '';
+  }
+
   private selectNode(nodeId: string) {
     if (nodeId) {
       const selectedNode = this.getNode(nodeId);
@@ -209,26 +224,10 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private filterNodes(filterText, category) {
-    this.tree.treeModel.filterNodes(
-      (node) => TaskanaTreeComponent.checkNameAndKey(node, filterText) && TaskanaTreeComponent.checkIcon(node, category)
-    );
-    if (!this.tree.treeModel.getVisibleRoots().length) {
-      this.notificationsService.showInformation('CLASSIFICATION_FILTER_EMPTY_RESULT', {
-        filter: filterText,
-        category: category || 'ALL'
-      });
-    }
-  }
-
-  private static checkNameAndKey(node: any, text: string): boolean {
-    return (
-      node.data.name.toUpperCase().includes(text.toUpperCase()) ||
-      node.data.key.toUpperCase().includes(text.toUpperCase())
-    );
-  }
-
-  private static checkIcon(node: any, iconText: string): boolean {
-    return node.data.category.toUpperCase() === iconText.toUpperCase() || iconText === '';
+    this.tree.treeModel.filterNodes((node) => this.checkNameAndKey(node, filterText) && this.checkIcon(node, category));
+    this.filter = filterText;
+    this.category = category || 'ALL';
+    this.emptyTreeNodes = !this.tree.treeModel.getVisibleRoots().length;
   }
 
   private manageTreeState() {
