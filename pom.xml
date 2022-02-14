@@ -60,7 +60,7 @@
 
     <!-- release dependencies -->
     <version.maven.gpg>3.0.1</version.maven.gpg>
-    <version.sonatype>1.6.8</version.sonatype>
+    <version.sonatype>1.6.10</version.sonatype>
 
     <!-- spring dependencies -->
     <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
