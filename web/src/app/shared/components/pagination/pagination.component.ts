@@ -11,6 +11,8 @@ import {
 } from '@angular/core';
 import { Page } from 'app/shared/models/page';
 import { MatPaginator } from '@angular/material/paginator';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-shared-pagination',
@@ -30,6 +32,9 @@ export class PaginationComponent implements OnInit, OnChanges {
   @Input()
   expanded: boolean = true;
 
+  @Input()
+  resetPaging: Observable<null>;
+
   @Output()
   changePage = new EventEmitter<number>();
 
@@ -38,6 +43,8 @@ export class PaginationComponent implements OnInit, OnChanges {
 
   @ViewChild('pagination') paginationWrapper: ElementRef;
 
+  destroy$ = new Subject<void>();
+
   hasItems = true;
   pageSelected = 1;
   pageNumbers: number[];
@@ -45,6 +52,7 @@ export class PaginationComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.changeLabel();
+    if (this.resetPaging) this.resetPaging.pipe(takeUntil(this.destroy$)).subscribe(() => this.goToPage(1));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -122,5 +130,10 @@ export class PaginationComponent implements OnInit, OnChanges {
     const input = document.getElementById('inputTypeAhead') as HTMLInputElement;
     input.focus();
     input.select();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
