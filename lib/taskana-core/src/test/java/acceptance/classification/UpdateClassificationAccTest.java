@@ -35,6 +35,22 @@ class UpdateClassificationAccTest extends AbstractAccTest {
   private final ClassificationService classificationService =
       taskanaEngine.getClassificationService();
 
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetDefaultServiceLevel_When_TryingToUpdateClassificationWithMissingServiceLevel()
+      throws Exception {
+    Classification classification =
+        classificationService.newClassification("Key1230", "DOMAIN_A", "TASK");
+    classification.setServiceLevel("P1D");
+    classification = classificationService.createClassification(classification);
+    classification.setServiceLevel(null);
+    classification = classificationService.updateClassification(classification);
+    assertThat(classification.getServiceLevel()).isEqualTo("P0D");
+    classification.setServiceLevel("");
+    classification = classificationService.updateClassification(classification);
+    assertThat(classification.getServiceLevel()).isEqualTo("P0D");
+  }
+
   @WithAccessId(user = "businessadmin")
   @Test
   void testUpdateClassification() throws Exception {
