@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportData } from 'app/monitor/models/report-data';
 import { MonitorService } from '../../services/monitor.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-task-report',
@@ -12,15 +15,23 @@ export class TaskReportComponent implements OnInit {
   pieChartData: number[] = [];
   pieChartType = 'pie';
   reportData: ReportData;
+  private destroy$ = new Subject<void>();
 
-  constructor(private restConnectorService: MonitorService) {}
+  constructor(private monitorService: MonitorService, private requestInProgressService: RequestInProgressService) {}
 
-  async ngOnInit() {
-    this.reportData = await this.restConnectorService.getTaskStatusReport().toPromise();
-    this.pieChartLabels = this.reportData.meta.header;
-    this.reportData.sumRow[0].cells.forEach((c) => {
-      this.pieChartData.push(c);
-    });
+  ngOnInit() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.monitorService
+      .getTaskStatusReport()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((report) => {
+        this.reportData = report;
+        this.pieChartLabels = this.reportData.meta.header;
+        this.reportData.sumRow[0].cells.forEach((cell) => {
+          this.pieChartData.push(cell);
+        });
+        this.requestInProgressService.setRequestInProgress(false);
+      });
   }
 
   getTitle(): string {

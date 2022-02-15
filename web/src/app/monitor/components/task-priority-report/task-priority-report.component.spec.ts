@@ -11,6 +11,7 @@ import { settingsStateMock } from '../../../shared/store/mock-data/mock-store';
 import { SettingsState } from '../../../shared/store/settings-store/settings.state';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDividerModule } from '@angular/material/divider';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Pipe({ name: 'germanTimeFormat' })
 class GermanTimeFormatPipe implements PipeTransform {
@@ -48,6 +49,7 @@ describe('TaskPriorityReportComponent', () => {
         imports: [NgxsModule.forRoot([SettingsState]), MatTableModule, HttpClientTestingModule, MatDividerModule],
         declarations: [TaskPriorityReportComponent, GermanTimeFormatPipe, CanvasStub, TaskPriorityReportFilterStub],
         providers: [
+          RequestInProgressService,
           { provide: MonitorService, useValue: monitorServiceSpy },
           { provide: NotificationService, useValue: notificationServiceSpy }
         ]

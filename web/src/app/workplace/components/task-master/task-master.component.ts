@@ -16,6 +16,7 @@ import { Select, Store } from '@ngxs/store';
 import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
 import { WorkplaceSelectors } from '../../../shared/store/workplace-store/workplace.selectors';
 import { CalculateNumberOfCards } from '../../../shared/store/workplace-store/workplace.actions';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-task-master',
@@ -52,7 +53,8 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     private workplaceService: WorkplaceService,
     private notificationsService: NotificationService,
     private orientationService: OrientationService,
-    private store: Store
+    private store: Store,
+    private requestInProgressService: RequestInProgressService
   ) {}
 
   ngOnInit() {
@@ -120,8 +122,14 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
+  }
+
   private getTasks(): void {
     this.requestInProgress = true;
+    this.requestInProgressService.setRequestInProgress(true);
 
     if (this.selectedSearchType === Search.byTypeAndValue) {
       delete this.currentBasket;
@@ -131,6 +139,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
 
     if (this.selectedSearchType === Search.byWorkbasket && !this.currentBasket) {
       this.requestInProgress = false;
+      this.requestInProgressService.setRequestInProgress(false);
       this.tasks = [];
     } else {
       this.taskService
@@ -138,6 +147,7 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
         .pipe(take(1))
         .subscribe((taskResource) => {
           this.requestInProgress = false;
+          this.requestInProgressService.setRequestInProgress(false);
           if (taskResource.tasks && taskResource.tasks.length > 0) {
             this.tasks = taskResource.tasks;
           } else {
@@ -149,10 +159,5 @@ export class TaskMasterComponent implements OnInit, OnDestroy {
           this.tasksPageInformation = taskResource.page;
         });
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next(null);
-    this.destroy$.complete();
   }
 }

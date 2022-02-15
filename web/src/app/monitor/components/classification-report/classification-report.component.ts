@@ -3,6 +3,7 @@ import { MonitorService } from 'app/monitor/services/monitor.service';
 import { ChartData } from 'app/monitor/models/chart-data';
 import { ReportData } from '../../models/report-data';
 import { ChartColorsDefinition } from '../../models/chart-colors';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-classification-report',
@@ -22,12 +23,19 @@ export class ClassificationReportComponent implements OnInit {
 
   lineChartColors = ChartColorsDefinition.getColors();
 
-  constructor(private restConnectorService: MonitorService) {}
+  constructor(
+    private restConnectorService: MonitorService,
+    private requestInProgressService: RequestInProgressService
+  ) {}
 
-  async ngOnInit() {
-    this.reportData = await this.restConnectorService.getClassificationTasksReport().toPromise();
-    this.lineChartData = this.restConnectorService.getChartData(this.reportData);
-    this.lineChartLabels = this.reportData.meta.header;
+  ngOnInit() {
+    this.requestInProgressService.setRequestInProgress(true);
+    this.restConnectorService.getClassificationTasksReport().subscribe((report) => {
+      this.reportData = report;
+      this.lineChartData = this.restConnectorService.getChartData(this.reportData);
+      this.lineChartLabels = this.reportData.meta.header;
+      this.requestInProgressService.setRequestInProgress(false);
+    });
   }
 
   getTitle(): string {

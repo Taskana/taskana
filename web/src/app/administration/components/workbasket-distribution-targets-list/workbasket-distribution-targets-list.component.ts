@@ -62,6 +62,7 @@ export class WorkbasketDistributionTargetsListComponent
 
   @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
   @ViewChild('scroller') workbasketList: CdkVirtualScrollViewport;
+  requestInProgress: number;
   private destroy$ = new Subject<void>();
   private filter: WorkbasketQueryFilterParameter;
   private allSelectedDiff = 0;
@@ -69,6 +70,7 @@ export class WorkbasketDistributionTargetsListComponent
   constructor(private changeDetector: ChangeDetectorRef, private store: Store) {}
 
   ngOnInit(): void {
+    this.requestInProgress = 2;
     if (this.side === Side.AVAILABLE) {
       this.availableDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((wbs) => this.assignWbs(wbs));
       this.availableDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
@@ -79,6 +81,7 @@ export class WorkbasketDistributionTargetsListComponent
         this.filter = filter;
         this.store.dispatch(new FetchAvailableDistributionTargets(true, this.filter));
         this.selectAll(false);
+        this.requestInProgress--;
       });
     } else {
       this.workbasketDistributionTargets$.pipe().subscribe((wbs) => this.assignWbs(wbs));
@@ -90,6 +93,7 @@ export class WorkbasketDistributionTargetsListComponent
         this.filter = filter;
         this.applyFilter();
         this.selectAll(false);
+        this.requestInProgress--;
       });
     }
     this.transferDistributionTargetObservable.subscribe((targetSide) => {
@@ -164,8 +168,11 @@ export class WorkbasketDistributionTargetsListComponent
   }
 
   private assignWbs(wbs: WorkbasketSummary[]) {
-    this.distributionTargets = wbs.map((wb) => ({ ...wb, selected: this.allSelected }));
+    this.distributionTargets = wbs.map((wb) => {
+      return { ...wb, selected: this.allSelected };
+    });
     this.distributionTargetsClone = this.distributionTargets;
+    this.requestInProgress--;
   }
 
   private applyFilter() {

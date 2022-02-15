@@ -9,10 +9,6 @@ import { Router } from '@angular/router';
 export class MonitorComponent implements OnInit {
   selectedTab = '';
 
-  constructor(public router: Router) {
-    this.router.navigate(['/taskana/monitor/tasks-priority']);
-  }
-
   ngOnInit(): void {
     this.selectedTab = 'tasks-priority';
   }

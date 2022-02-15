@@ -1,19 +1,21 @@
 <mat-sidenav-container class="sidenav">
-  <mat-sidenav #sidenav mode="over" class="sidenav__drawer" [autoFocus]="false">
+  <mat-sidenav #sidenav [autoFocus]="false" class="sidenav__drawer" mode="over">
     <div class="sidenav__drawer__container">
       <div class="sidenav__drawer__container-menu">
-        <button mat-icon-button class="navbar_button-toggle" (click)="toggleSidenav()">
+        <button (click)="toggleSidenav()" class="navbar_button-toggle" mat-icon-button>
           <mat-icon>menu</mat-icon>
         </button>
       </div>
       <div class="sidenav__drawer__container-logout">
-        <button mat-icon-button data-toggle="tooltip" title="Logout" (click)="logout()" aria-expanded="true"
-          aria-controls="logout">
+        <button (click)="logout()" aria-controls="logout" aria-expanded="true" data-toggle="tooltip"
+                mat-icon-button
+                title="Logout">
           <mat-icon>exit_to_app</mat-icon>
         </button>
       </div>
     </div>
-    <taskana-shared-user-information class="sidenav__drawer-user-info"></taskana-shared-user-information>
+    <taskana-shared-user-information
+      class="sidenav__drawer-user-info"></taskana-shared-user-information>
     <taskana-sidenav-list></taskana-sidenav-list>
     <div class="sidenav__drawer-version">
       <p> Taskana version: {{version}} </p>
@@ -24,7 +26,10 @@
     <div (window:resize)="onResize()">
       <div class="taskana-main">
         <div class="taskana-main__progress-bar">
-          <mat-progress-bar *ngIf="requestInProgress" mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar *ngIf="requestInProgress" color="accent"
+                            mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar *ngIf="requestInProgress" color="accent"
+                            mode="indeterminate"></mat-progress-bar>
         </div>
         <router-outlet></router-outlet>
       </div>

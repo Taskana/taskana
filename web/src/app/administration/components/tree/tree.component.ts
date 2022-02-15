@@ -31,6 +31,7 @@ import {
 } from '../../../shared/store/classification-store/classification.actions';
 import { ClassificationTreeService } from '../../services/classification-tree.service';
 import { Pair } from '../../../shared/models/pair';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-administration-tree',
@@ -83,7 +84,8 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
     private location: Location,
     private store: Store,
     private notificationsService: NotificationService,
-    private classificationTreeService: ClassificationTreeService
+    private classificationTreeService: ClassificationTreeService,
+    private requestInProgressService: RequestInProgressService
   ) {}
 
   @HostListener('document:click', ['$event'])
@@ -104,6 +106,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       .subscribe(([selectedClassificationId, treeNodes]) => {
         this.treeNodes = treeNodes;
         this.selectNodeId = typeof selectedClassificationId !== 'undefined' ? selectedClassificationId : undefined;
+        this.requestInProgressService.setRequestInProgress(false);
         if (typeof this.tree.treeModel.getActiveNode() !== 'undefined') {
           if (this.tree.treeModel.getActiveNode().data.classificationId !== this.selectNodeId) {
             // wait for angular's two-way binding to convert the treeNodes to the internal tree structure.
@@ -146,6 +149,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   onActivate(treeNode: any) {
     const id = treeNode.node.data.classificationId;
     this.selectNodeId = id;
+    this.requestInProgressService.setRequestInProgress(true);
     this.store.dispatch(new SelectClassification(id));
     this.location.go(this.location.path().replace(/(classifications).*/g, `classifications/(detail:${id})`));
   }

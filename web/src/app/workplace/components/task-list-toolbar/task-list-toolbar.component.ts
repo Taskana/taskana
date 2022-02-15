@@ -15,6 +15,7 @@ import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
 import { ClearTaskFilter, SetTaskFilter } from '../../../shared/store/filter-store/filter.actions';
 import { WorkplaceSelectors } from '../../../shared/store/workplace-store/workplace.selectors';
 import { SetFilterExpansion } from '../../../shared/store/workplace-store/workplace.actions';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 export enum Search {
   byWorkbasket = 'workbasket',
@@ -62,7 +63,8 @@ export class TaskListToolbarComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private store: Store,
-    private ngxsActions$: Actions
+    private ngxsActions$: Actions,
+    private requestInProgressService: RequestInProgressService
   ) {}
 
   ngOnInit() {
@@ -139,6 +141,7 @@ export class TaskListToolbarComponent implements OnInit {
 
   onTabChange(search) {
     const tab = search.path[0].innerText;
+    this.requestInProgressService.setRequestInProgress(true);
     if (tab === 'Workbaskets') {
       this.router.navigate(['taskana/workplace'], { queryParams: { component: 'workbaskets' } });
     }

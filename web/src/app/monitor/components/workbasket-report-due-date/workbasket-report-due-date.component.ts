@@ -4,6 +4,7 @@ import { ChartData } from '../../models/chart-data';
 import { ChartColorsDefinition } from '../../models/chart-colors';
 import { MonitorService } from '../../services/monitor.service';
 import { MetaInfoData } from '../../models/meta-info-data';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-workbasket-report-due-date',
@@ -26,12 +27,19 @@ export class WorkbasketReportDueDateComponent implements OnInit {
 
   lineChartColors = ChartColorsDefinition.getColors();
 
-  constructor(private restConnectorService: MonitorService) {}
+  constructor(
+    private restConnectorService: MonitorService,
+    private requestInProgressService: RequestInProgressService
+  ) {}
 
   async ngOnInit() {
-    this.reportData = await this.restConnectorService.getWorkbasketStatisticsQueryingByDueDate().toPromise();
-    this.metaInformation.emit(this.reportData.meta);
-    this.lineChartLabels = this.reportData.meta.header;
-    this.lineChartData = this.restConnectorService.getChartData(this.reportData);
+    this.requestInProgressService.setRequestInProgress(true);
+    this.restConnectorService.getWorkbasketStatisticsQueryingByDueDate().subscribe((report) => {
+      this.reportData = report;
+      this.metaInformation.emit(this.reportData.meta);
+      this.lineChartLabels = this.reportData.meta.header;
+      this.lineChartData = this.restConnectorService.getChartData(this.reportData);
+      this.requestInProgressService.setRequestInProgress(false);
+    });
   }
 }

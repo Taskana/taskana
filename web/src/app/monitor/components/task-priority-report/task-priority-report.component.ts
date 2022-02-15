@@ -1,7 +1,6 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { ReportData } from '../../models/report-data';
 import { MonitorService } from '../../services/monitor.service';
-import { NotificationService } from '../../../shared/services/notifications/notification.service';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
 import { Select } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
@@ -9,6 +8,7 @@ import { SettingsSelectors } from '../../../shared/store/settings-store/settings
 import { Settings } from '../../../settings/models/settings';
 import { mergeMap, take, takeUntil } from 'rxjs/operators';
 import { SettingMembers } from '../../../settings/components/Settings/expected-members';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-monitor-task-priority-report',
@@ -34,9 +34,10 @@ export class TaskPriorityReportComponent implements OnInit, AfterViewChecked, On
   @Select(SettingsSelectors.getSettings)
   settings$: Observable<Settings>;
 
-  constructor(private monitorService: MonitorService, private notificationService: NotificationService) {}
+  constructor(private monitorService: MonitorService, private requestInProgressService: RequestInProgressService) {}
 
   ngOnInit() {
+    this.requestInProgressService.setRequestInProgress(true);
     this.settings$
       .pipe(
         takeUntil(this.destroy$),
@@ -53,6 +54,7 @@ export class TaskPriorityReportComponent implements OnInit, AfterViewChecked, On
       )
       .subscribe((reportData) => {
         this.setValuesFromReportData(reportData);
+        this.requestInProgressService.setRequestInProgress(false);
       });
   }
 
@@ -114,13 +116,14 @@ export class TaskPriorityReportComponent implements OnInit, AfterViewChecked, On
   }
 
   applyFilter(filter: {}) {
+    this.requestInProgressService.setRequestInProgress(true);
     this.monitorService
       .getTasksByPriorityReport([WorkbasketType.TOPIC], this.priority, filter)
       .pipe(take(1))
       .subscribe((reportData) => {
         this.colorShouldChange = true;
         this.setValuesFromReportData(reportData);
-        return;
+        this.requestInProgressService.setRequestInProgress(false);
       });
   }
 

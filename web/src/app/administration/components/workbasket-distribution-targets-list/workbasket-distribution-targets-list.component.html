@@ -34,7 +34,8 @@
                                     isExpanded="true"></taskana-shared-workbasket-filter>
 
   <!-- EMPTY LIST -->
-  <div *ngIf="distributionTargets?.length == 0" class="distribution-targets-list__empty-list">
+  <div *ngIf="distributionTargets?.length == 0 && requestInProgress < 0"
+       class="distribution-targets-list__empty-list">
 
     <!-- AVAILABLE SIDE -->
     <div *ngIf="side === 0" style="padding: 0 16px;">
@@ -48,14 +49,17 @@
 
   </div>
 
+  <!-- SPINNER -->
+  <taskana-shared-spinner [isRunning]="requestInProgress >= 0"></taskana-shared-spinner>
+
   <!-- WORKBASKET LIST -->
   <mat-selection-list #workbasket [multiple]="true">
     <cdk-virtual-scroll-viewport #scroller
                                  class="{{toolbarState?  'distribution-targets-list__list--with-filter' : 'distribution-targets-list__list--no-filter'}}"
                                  itemSize="90">
       <mat-list-option
-        *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
         (click)="updateSelectAll(!workbasket.selected) && (workbasket.selected = !workbasket.selected)"
+        *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
         [selected]="workbasket.selected"
         [value]="workbasket.workbasketId"
         class="workbasket-distribution-targets__workbaskets-item">

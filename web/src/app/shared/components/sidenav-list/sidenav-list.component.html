@@ -1,40 +1,38 @@
 <mat-nav-list class="navlist">
-  <a (click)="toggleSidenav()" *ngIf="administrationAccess" [routerLinkActive]="['active']"
+  <a (click)="toggleSidenav(administrationsUrl)" *ngIf="administrationAccess" [routerLinkActive]="['active']"
      [routerLink]=[administrationsUrl] class="navlist__item navlist__admin" mat-list-item>Administration</a>
   <div class="navlist__admin-item">
-    <a (click)="toggleSidenav()" *ngIf="administrationAccess" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(workbasketsUrl)" *ngIf="administrationAccess" [routerLinkActive]="['active__sub']"
        [routerLink]=[workbasketsUrl] class="navlist__item  navlist__admin-workbaskets"
        mat-list-item>Workbaskets</a>
-    <a (click)="toggleSidenav()" *ngIf="administrationAccess" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(classificationUrl)" *ngIf="administrationAccess" [routerLinkActive]="['active__sub']"
        [routerLink]=[classificationUrl] class="navlist__item  navlist__admin-classifications"
        mat-list-item>Classifications</a>
-    <a (click)="toggleSidenav()" *ngIf="administrationAccess" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(accessUrl)" *ngIf="administrationAccess" [routerLinkActive]="['active__sub']"
        [routerLink]=[accessUrl] class="navlist__item  navlist__admin-access-items" mat-list-item>Access
       Items</a>
-    <a (click)="toggleSidenav()" *ngIf="(routingAccess)" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(routingUrl)" *ngIf="(routingAccess)" [routerLinkActive]="['active__sub']"
        [routerLink]=[routingUrl] class="navlist__item  navlist__admin-task-routing" mat-list-item>Task
       Routing</a>
   </div>
-  <a (click)="toggleSidenav()" *ngIf="monitorAccess" [routerLinkActive]="['active']"
+  <a (click)="toggleSidenav(monitorUrl)" *ngIf="monitorAccess" [routerLinkActive]="['active']"
      [routerLink]=[monitorUrl]
      class="navlist__item navlist__monitor" mat-list-item>Monitor</a>
-  <a (click)="toggleSidenav()" *ngIf="workplaceAccess" [routerLinkActive]="['active']"
+  <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [routerLinkActive]="['active']"
      [routerLink]=[workplaceUrl] class="navlist__item navlist__workplace"
      mat-list-item>Workplace</a>
   <div class="navlist__admin-item">
-    <a (click)="toggleSidenav()" *ngIf="workplaceAccess"
-       [queryParams]="{component: 'workbaskets'}" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [queryParams]="{component: 'workbaskets'}" [routerLinkActive]="['active__sub']"
        [routerLink]=[workplaceUrl] class="navlist__item  navlist__workplace--workbaskets"
        mat-list-item>Workbaskets</a>
-    <a (click)="toggleSidenav()" *ngIf="workplaceAccess"
-       [queryParams]="{component: 'task-search'}" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [queryParams]="{component: 'task-search'}" [routerLinkActive]="['active__sub']"
        [routerLink]=[workplaceUrl] class="navlist__item  navlist__workplace--task-search"
        mat-list-item>Task Search</a>
   </div>
-  <a (click)="toggleSidenav()" *ngIf="historyAccess" [routerLinkActive]="['active']"
+  <a (click)="toggleSidenav(historyUrl)" *ngIf="historyAccess" [routerLinkActive]="['active']"
      [routerLink]=[historyUrl]
      class="navlist__item navlist__history" mat-list-item>History</a>
-  <a (click)="toggleSidenav()" *ngIf="settingsAccess" [routerLinkActive]="['active']"
+  <a (click)="toggleSidenav(settingsURL)" *ngIf="settingsAccess" [routerLinkActive]="['active']"
      [routerLink]=[settingsURL]
      class="navlist__item navlist__setting" mat-list-item>Settings</a>
 </mat-nav-list>
