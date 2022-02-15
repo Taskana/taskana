@@ -7,6 +7,7 @@ import { SetSettings } from '../../../shared/store/settings-store/settings.actio
 import { SettingsSelectors } from '../../../shared/store/settings-store/settings.selectors';
 import { takeUntil } from 'rxjs/operators';
 import { validateSettings } from './settings.validators';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
   selector: 'taskana-administration-settings',
@@ -22,10 +23,15 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   @Select(SettingsSelectors.getSettings) settings$: Observable<Settings>;
 
-  constructor(private store: Store, private notificationService: NotificationService) {}
+  constructor(
+    private store: Store,
+    private notificationService: NotificationService,
+    private requestInProgressService: RequestInProgressService
+  ) {}
 
   ngOnInit() {
     this.settings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
+      this.requestInProgressService.setRequestInProgress(false);
       this.settings = this.deepCopy(settings);
       this.oldSettings = this.deepCopy(settings);
     });

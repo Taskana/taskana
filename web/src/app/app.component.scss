@@ -17,9 +17,11 @@
   width: 350px;
   background-color: $dark-green;
 }
+
 .mat-drawer-content {
   overflow: hidden !important;
 }
+
 .sidenav__drawer-list-item {
   margin-left: 30px;
 }
@@ -60,8 +62,9 @@
 }
 
 .taskana-main__progress-bar {
-  height: 4px;
+  height: 8px;
   background-color: $light-grey;
+  margin-bottom: 2px;
 }
 
 ::ng-deep .mat-drawer-inner-container {
@@ -74,4 +77,8 @@
 
 ::ng-deep mat-tooltip-component {
   word-break: break-word;
+}
+
+mat-progress-bar {
+  height: 3px;
 }

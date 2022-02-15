@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { MonitorComponent } from './components/monitor/monitor.component';
 import { TaskReportComponent } from './components/task-report/task-report.component';
 import { WorkbasketReportComponent } from './components/workbasket-report/workbasket-report.component';
@@ -36,7 +36,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '',
+    redirectTo: 'tasks-priority',
     pathMatch: 'full'
   },
   {

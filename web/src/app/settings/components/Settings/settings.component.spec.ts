@@ -14,6 +14,7 @@ import { SettingsComponent } from './settings.component';
 import { settingsStateMock } from '../../../shared/store/mock-data/mock-store';
 import { SetSettings } from '../../../shared/store/settings-store/settings.actions';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 const notificationServiceSpy: Partial<NotificationService> = {
   showError: jest.fn(),
@@ -42,7 +43,13 @@ describe('SettingsComponent', () => {
           BrowserAnimationsModule
         ],
         declarations: [SettingsComponent],
-        providers: [{ provide: NotificationService, useValue: notificationServiceSpy }]
+        providers: [
+          RequestInProgressService,
+          {
+            provide: NotificationService,
+            useValue: notificationServiceSpy
+          }
+        ]
       }).compileComponents();
 
       fixture = TestBed.createComponent(SettingsComponent);

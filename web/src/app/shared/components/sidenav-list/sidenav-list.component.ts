@@ -4,6 +4,8 @@ import { MonitorGuard } from 'app/shared/guards/monitor.guard';
 import { UserGuard } from 'app/shared/guards/user.guard';
 import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
 import { SidenavService } from '../../services/sidenav/sidenav.service';
+import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'taskana-sidenav-list',
@@ -30,7 +32,12 @@ export class SidenavListComponent implements OnInit {
   routingAccess = false;
   settingsAccess = false;
 
-  constructor(private taskanaEngineService: TaskanaEngineService, private sidenavService: SidenavService) {}
+  constructor(
+    private taskanaEngineService: TaskanaEngineService,
+    private sidenavService: SidenavService,
+    private requestInProgressService: RequestInProgressService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.administrationAccess = this.taskanaEngineService.hasRole(BusinessAdminGuard.roles);
@@ -45,7 +52,8 @@ export class SidenavListComponent implements OnInit {
     this.settingsAccess = this.administrationAccess;
   }
 
-  toggleSidenav() {
+  toggleSidenav(target: string) {
+    if (!this.router.url.includes(target)) this.requestInProgressService.setRequestInProgress(true);
     this.toggle = !this.toggle;
     this.sidenavService.toggleSidenav();
   }
