@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryColumnName;
@@ -166,6 +167,12 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues = historyService.createWorkbasketHistoryQuery().keyIn("soRt003").list();
     assertThat(returnValues).hasSize(5);
 
+    returnValues = historyService.createWorkbasketHistoryQuery().ownerIn("admin").list();
+    assertThat(returnValues).hasSize(10);
+
+    returnValues = historyService.createWorkbasketHistoryQuery().typeIn("TOPIC").list();
+    assertThat(returnValues).hasSize(10);
+
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
@@ -208,6 +215,114 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
   }
 
   @Test
+  void should_ReturnHistoryEvents_In_DifferentOrders() throws InvalidArgumentException {
+    List<WorkbasketHistoryEvent> results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByWorkbasketId(SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getWorkbasketId)
+        .containsExactly(
+            "WBI:000000000000000000000000000000000803",
+            "WBI:000000000000000000000000000000000803",
+            "WBI:000000000000000000000000000000000803");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByEventType(SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getEventType)
+        .containsExactly("CREATED", "CREATED", "CREATED");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByOrgLevel(1, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getOrgLevel1)
+        .containsExactly("orgLevel1", "orgLevel1", "orgLevel1");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByOrgLevel(2, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getOrgLevel2)
+        .containsExactly("orgLevel2", "orgLevel2", "orgLevel2");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByOrgLevel(3, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getOrgLevel3)
+        .containsExactly("orgLevel3", "orgLevel3", "orgLevel3");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByOrgLevel(4, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getOrgLevel4)
+        .containsExactly("orgLevel4", "orgLevel4", "orgLevel4");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByCustomAttribute(1, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getId)
+        .containsExactly(
+            "WHI:000000000000000000000000000000000000",
+            "WHI:000000000000000000000000000000000002",
+            "WHI:000000000000000000000000000000000004");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByCustomAttribute(2, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getId)
+        .containsExactly(
+            "WHI:000000000000000000000000000000000000",
+            "WHI:000000000000000000000000000000000002",
+            "WHI:000000000000000000000000000000000004");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByCustomAttribute(3, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getId)
+        .containsExactly(
+            "WHI:000000000000000000000000000000000000",
+            "WHI:000000000000000000000000000000000002",
+            "WHI:000000000000000000000000000000000004");
+
+    results =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .orderByCustomAttribute(4, SortDirection.ASCENDING)
+            .listPage(0, 3);
+    assertThat(results)
+        .extracting(WorkbasketHistoryEvent::getId)
+        .containsExactly(
+            "WHI:000000000000000000000000000000000000",
+            "WHI:000000000000000000000000000000000002",
+            "WHI:000000000000000000000000000000000004");
+  }
+
+  @Test
   void should_ReturnHistoryEvents_For_DifferentLikeAttributes() {
 
     List<WorkbasketHistoryEvent> returnValues =
@@ -238,11 +353,41 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
     returnValues =
         historyService
             .createWorkbasketHistoryQuery()
-            .customAttributeLike(WorkbasketCustomField.CUSTOM_1, "other%")
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_1, "other%1")
             .list();
     assertThat(returnValues).hasSize(5);
 
-    returnValues = historyService.createWorkbasketHistoryQuery().orgLevel1Like("org%").list();
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_2, "other%2")
+            .list();
+    assertThat(returnValues).hasSize(5);
+
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_3, "other%3")
+            .list();
+    assertThat(returnValues).hasSize(5);
+
+    returnValues =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_4, "other%4")
+            .list();
+    assertThat(returnValues).hasSize(5);
+
+    returnValues = historyService.createWorkbasketHistoryQuery().orgLevel1Like("org%1").list();
+    assertThat(returnValues).hasSize(5);
+
+    returnValues = historyService.createWorkbasketHistoryQuery().orgLevel2Like("org%2").list();
+    assertThat(returnValues).hasSize(5);
+
+    returnValues = historyService.createWorkbasketHistoryQuery().orgLevel3Like("org%3").list();
+    assertThat(returnValues).hasSize(5);
+
+    returnValues = historyService.createWorkbasketHistoryQuery().orgLevel4Like("org%4").list();
     assertThat(returnValues).hasSize(5);
   }
 

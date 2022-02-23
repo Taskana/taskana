@@ -267,31 +267,31 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   @Override
   public TaskHistoryQuery idIn(String... idIn) {
-    this.idIn = toUpperCopy(idIn);
+    this.idIn = idIn;
     return this;
   }
 
   @Override
   public TaskHistoryQuery businessProcessIdIn(String... businessProcessId) {
-    this.businessProcessIdIn = toUpperCopy(businessProcessId);
+    this.businessProcessIdIn = businessProcessId;
     return this;
   }
 
   @Override
   public TaskHistoryQuery parentBusinessProcessIdIn(String... parentBusinessProcessId) {
-    this.parentBusinessProcessIdIn = toUpperCopy(parentBusinessProcessId);
+    this.parentBusinessProcessIdIn = parentBusinessProcessId;
     return this;
   }
 
   @Override
   public TaskHistoryQuery taskIdIn(String... taskId) {
-    this.taskIdIn = toUpperCopy(taskId);
+    this.taskIdIn = taskId;
     return this;
   }
 
   @Override
   public TaskHistoryQuery eventTypeIn(String... eventType) {
-    this.eventTypeIn = toUpperCopy(eventType);
+    this.eventTypeIn = eventType;
     return this;
   }
 
@@ -303,181 +303,181 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   @Override
   public TaskHistoryQuery userIdIn(String... userId) {
-    this.userIdIn = toUpperCopy(userId);
+    this.userIdIn = userId;
     return this;
   }
 
   @Override
   public TaskHistoryQuery domainIn(String... domain) {
-    this.domainIn = toUpperCopy(domain);
+    this.domainIn = domain;
     return this;
   }
 
   @Override
   public TaskHistoryQuery workbasketKeyIn(String... workbasketKey) {
-    this.workbasketKeyIn = toUpperCopy(workbasketKey);
+    this.workbasketKeyIn = workbasketKey;
     return this;
   }
 
   @Override
   public TaskHistoryQuery porCompanyIn(String... porCompany) {
-    this.porCompanyIn = toUpperCopy(porCompany);
+    this.porCompanyIn = porCompany;
     return this;
   }
 
   @Override
   public TaskHistoryQuery porSystemIn(String... porSystem) {
-    this.porSystemIn = toUpperCopy(porSystem);
+    this.porSystemIn = porSystem;
     return this;
   }
 
   @Override
   public TaskHistoryQuery porInstanceIn(String... porInstance) {
-    this.porInstanceIn = toUpperCopy(porInstance);
+    this.porInstanceIn = porInstance;
     return this;
   }
 
   @Override
   public TaskHistoryQuery porTypeIn(String... porType) {
-    this.porTypeIn = toUpperCopy(porType);
+    this.porTypeIn = porType;
     return this;
   }
 
   @Override
   public TaskHistoryQuery porValueIn(String... porValue) {
-    this.porValueIn = toUpperCopy(porValue);
+    this.porValueIn = porValue;
     return this;
   }
 
   @Override
   public TaskHistoryQuery taskClassificationKeyIn(String... taskClassificationKey) {
-    this.taskClassificationKeyIn = toUpperCopy(taskClassificationKey);
+    this.taskClassificationKeyIn = taskClassificationKey;
     return this;
   }
 
   @Override
   public TaskHistoryQuery taskClassificationCategoryIn(String... taskClassificationCategory) {
-    this.taskClassificationCategoryIn = toUpperCopy(taskClassificationCategory);
+    this.taskClassificationCategoryIn = taskClassificationCategory;
     return this;
   }
 
   @Override
   public TaskHistoryQuery attachmentClassificationKeyIn(String... attachmentClassificationKey) {
-    this.attachmentClassificationKeyIn = toUpperCopy(attachmentClassificationKey);
+    this.attachmentClassificationKeyIn = attachmentClassificationKey;
     return this;
   }
 
   @Override
   public TaskHistoryQuery oldValueIn(String... oldValueIn) {
-    this.oldValueIn = toUpperCopy(oldValueIn);
+    this.oldValueIn = oldValueIn;
     return this;
   }
 
   @Override
   public TaskHistoryQuery newValueIn(String... newValueIn) {
-    this.newValueIn = toUpperCopy(newValueIn);
+    this.newValueIn = newValueIn;
     return this;
   }
 
   @Override
   public TaskHistoryQuery businessProcessIdLike(String... businessProcessId) {
-    this.businessProcessIdLike = toUpperCopy(businessProcessId);
+    this.businessProcessIdLike = toLowerCopy(businessProcessId);
     return this;
   }
 
   @Override
   public TaskHistoryQuery parentBusinessProcessIdLike(String... parentBusinessProcessId) {
-    this.parentBusinessProcessIdLike = toUpperCopy(parentBusinessProcessId);
+    this.parentBusinessProcessIdLike = toLowerCopy(parentBusinessProcessId);
     return this;
   }
 
   @Override
   public TaskHistoryQuery taskIdLike(String... taskId) {
-    this.taskIdLike = toUpperCopy(taskId);
+    this.taskIdLike = toLowerCopy(taskId);
     return this;
   }
 
   @Override
   public TaskHistoryQuery eventTypeLike(String... eventType) {
-    this.eventTypeLike = toUpperCopy(eventType);
+    this.eventTypeLike = toLowerCopy(eventType);
     return this;
   }
 
   @Override
   public TaskHistoryQuery userIdLike(String... userId) {
-    this.userIdLike = toUpperCopy(userId);
+    this.userIdLike = toLowerCopy(userId);
     return this;
   }
 
   @Override
   public TaskHistoryQuery domainLike(String... domain) {
-    this.domainLike = toUpperCopy(domain);
+    this.domainLike = toLowerCopy(domain);
     return this;
   }
 
   @Override
   public TaskHistoryQuery workbasketKeyLike(String... workbasketKey) {
-    this.workbasketKeyLike = toUpperCopy(workbasketKey);
+    this.workbasketKeyLike = toLowerCopy(workbasketKey);
     return this;
   }
 
   @Override
   public TaskHistoryQuery porCompanyLike(String... porCompany) {
-    this.porCompanyLike = toUpperCopy(porCompany);
+    this.porCompanyLike = toLowerCopy(porCompany);
     return this;
   }
 
   @Override
   public TaskHistoryQuery porSystemLike(String... porSystem) {
-    this.porSystemLike = toUpperCopy(porSystem);
+    this.porSystemLike = toLowerCopy(porSystem);
     return this;
   }
 
   @Override
   public TaskHistoryQuery porInstanceLike(String... porInstance) {
-    this.porInstanceLike = toUpperCopy(porInstance);
+    this.porInstanceLike = toLowerCopy(porInstance);
     return this;
   }
 
   @Override
   public TaskHistoryQuery porTypeLike(String... porType) {
-    this.porTypeLike = toUpperCopy(porType);
+    this.porTypeLike = toLowerCopy(porType);
     return this;
   }
 
   @Override
   public TaskHistoryQuery porValueLike(String... porValue) {
-    this.porValueLike = toUpperCopy(porValue);
+    this.porValueLike = toLowerCopy(porValue);
     return this;
   }
 
   @Override
   public TaskHistoryQuery taskClassificationKeyLike(String... taskClassificationKey) {
-    this.taskClassificationKeyLike = toUpperCopy(taskClassificationKey);
+    this.taskClassificationKeyLike = toLowerCopy(taskClassificationKey);
     return this;
   }
 
   @Override
   public TaskHistoryQuery taskClassificationCategoryLike(String... taskClassificationCategory) {
-    this.taskClassificationCategoryLike = toUpperCopy(taskClassificationCategory);
+    this.taskClassificationCategoryLike = toLowerCopy(taskClassificationCategory);
     return this;
   }
 
   @Override
   public TaskHistoryQuery attachmentClassificationKeyLike(String... attachmentClassificationKey) {
-    this.attachmentClassificationKeyLike = toUpperCopy(attachmentClassificationKey);
+    this.attachmentClassificationKeyLike = toLowerCopy(attachmentClassificationKey);
     return this;
   }
 
   @Override
   public TaskHistoryQuery oldValueLike(String... oldValue) {
-    this.oldValueLike = toUpperCopy(oldValue);
+    this.oldValueLike = toLowerCopy(oldValue);
     return this;
   }
 
   @Override
   public TaskHistoryQuery newValueLike(String... newValue) {
-    this.newValueLike = toUpperCopy(newValue);
+    this.newValueLike = toLowerCopy(newValue);
     return this;
   }
 
@@ -486,16 +486,16 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       TaskHistoryCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1In = toUpperCopy(searchArguments);
+        custom1In = searchArguments;
         break;
       case CUSTOM_2:
-        custom2In = toUpperCopy(searchArguments);
+        custom2In = searchArguments;
         break;
       case CUSTOM_3:
-        custom3In = toUpperCopy(searchArguments);
+        custom3In = searchArguments;
         break;
       case CUSTOM_4:
-        custom4In = toUpperCopy(searchArguments);
+        custom4In = searchArguments;
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -508,16 +508,16 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       TaskHistoryCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1Like = toUpperCopy(searchArguments);
+        custom1Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_2:
-        custom2Like = toUpperCopy(searchArguments);
+        custom2Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_3:
-        custom3Like = toUpperCopy(searchArguments);
+        custom3Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_4:
-        custom4Like = toUpperCopy(searchArguments);
+        custom4Like = toLowerCopy(searchArguments);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");

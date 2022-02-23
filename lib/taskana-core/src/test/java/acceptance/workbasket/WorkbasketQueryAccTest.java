@@ -67,7 +67,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
-    assertThat(results).hasSize(25);
+    assertThat(results).hasSize(26);
 
     results =
         workbasketService
@@ -86,7 +86,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     List<WorkbasketSummary> results =
         workbasketService.createWorkbasketQuery().nameLike("%").list();
-    assertThat(results).hasSize(25);
+    assertThat(results).hasSize(26);
 
     results =
         workbasketService

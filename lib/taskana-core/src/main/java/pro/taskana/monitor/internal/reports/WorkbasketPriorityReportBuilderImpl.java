@@ -302,52 +302,52 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1Like = toUpperCopy(strings);
+        this.custom1Like = toLowerCopy(strings);
         break;
       case CUSTOM_2:
-        this.custom2Like = toUpperCopy(strings);
+        this.custom2Like = toLowerCopy(strings);
         break;
       case CUSTOM_3:
-        this.custom3Like = toUpperCopy(strings);
+        this.custom3Like = toLowerCopy(strings);
         break;
       case CUSTOM_4:
-        this.custom4Like = toUpperCopy(strings);
+        this.custom4Like = toLowerCopy(strings);
         break;
       case CUSTOM_5:
-        this.custom5Like = toUpperCopy(strings);
+        this.custom5Like = toLowerCopy(strings);
         break;
       case CUSTOM_6:
-        this.custom6Like = toUpperCopy(strings);
+        this.custom6Like = toLowerCopy(strings);
         break;
       case CUSTOM_7:
-        this.custom7Like = toUpperCopy(strings);
+        this.custom7Like = toLowerCopy(strings);
         break;
       case CUSTOM_8:
-        this.custom8Like = toUpperCopy(strings);
+        this.custom8Like = toLowerCopy(strings);
         break;
       case CUSTOM_9:
-        this.custom9Like = toUpperCopy(strings);
+        this.custom9Like = toLowerCopy(strings);
         break;
       case CUSTOM_10:
-        this.custom10Like = toUpperCopy(strings);
+        this.custom10Like = toLowerCopy(strings);
         break;
       case CUSTOM_11:
-        this.custom11Like = toUpperCopy(strings);
+        this.custom11Like = toLowerCopy(strings);
         break;
       case CUSTOM_12:
-        this.custom12Like = toUpperCopy(strings);
+        this.custom12Like = toLowerCopy(strings);
         break;
       case CUSTOM_13:
-        this.custom13Like = toUpperCopy(strings);
+        this.custom13Like = toLowerCopy(strings);
         break;
       case CUSTOM_14:
-        this.custom14Like = toUpperCopy(strings);
+        this.custom14Like = toLowerCopy(strings);
         break;
       case CUSTOM_15:
-        this.custom15Like = toUpperCopy(strings);
+        this.custom15Like = toLowerCopy(strings);
         break;
       case CUSTOM_16:
-        this.custom16Like = toUpperCopy(strings);
+        this.custom16Like = toLowerCopy(strings);
         break;
       default:
         throw new SystemException("Unknown custom field '" + customField + "'");
@@ -356,7 +356,7 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
     return this;
   }
 
-  private String[] toUpperCopy(String... source) {
+  private String[] toLowerCopy(String... source) {
     if (source == null || source.length == 0) {
       // we are currently aware that this is a code smell. Unfortunately the resolution of this
       // would cause havoc in our queries, since we do not have a concept
@@ -365,7 +365,7 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
     } else {
       String[] target = new String[source.length];
       for (int i = 0; i < source.length; i++) {
-        target[i] = source[i].toUpperCase();
+        target[i] = source[i].toLowerCase();
       }
       return target;
     }

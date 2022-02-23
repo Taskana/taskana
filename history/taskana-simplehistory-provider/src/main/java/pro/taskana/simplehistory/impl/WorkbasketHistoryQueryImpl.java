@@ -207,19 +207,19 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public WorkbasketHistoryQuery idIn(String... idIn) {
-    this.idIn = toUpperCopy(idIn);
+    this.idIn = idIn;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery workbasketIdIn(String... workbasketId) {
-    this.workbasketIdIn = toUpperCopy(workbasketId);
+    this.workbasketIdIn = workbasketId;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery eventTypeIn(String... eventType) {
-    this.eventTypeIn = toUpperCopy(eventType);
+    this.eventTypeIn = eventType;
     return this;
   }
 
@@ -231,55 +231,55 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public WorkbasketHistoryQuery userIdIn(String... userId) {
-    this.userIdIn = toUpperCopy(userId);
+    this.userIdIn = userId;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery domainIn(String... domain) {
-    this.domainIn = toUpperCopy(domain);
+    this.domainIn = domain;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery keyIn(String... workbasketKey) {
-    this.keyIn = toUpperCopy(workbasketKey);
+    this.keyIn = workbasketKey;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery typeIn(String... workbasketType) {
-    this.typeIn = toUpperCopy(workbasketType);
+    this.typeIn = workbasketType;
     return this;
   }
 
   @Override
-  public WorkbasketHistoryQuery ownerIn(String... oownerIn) {
-    this.ownerIn = toUpperCopy(ownerIn);
+  public WorkbasketHistoryQuery ownerIn(String... ownerIn) {
+    this.ownerIn = ownerIn;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel1In(String... orgLevel1) {
-    this.orgLevel1In = toUpperCopy(orgLevel1);
+    this.orgLevel1In = orgLevel1;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel2In(String... orgLevel2) {
-    this.orgLevel2In = toUpperCopy(orgLevel2);
+    this.orgLevel2In = orgLevel2;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel3In(String... orgLevel3) {
-    this.orgLevel3In = toUpperCopy(orgLevel3);
+    this.orgLevel3In = orgLevel3;
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel4In(String... orgLevel4) {
-    this.orgLevel4In = toUpperCopy(orgLevel4);
+    this.orgLevel4In = orgLevel4;
     return this;
   }
 
@@ -288,16 +288,16 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       WorkbasketCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1In = toUpperCopy(searchArguments);
+        custom1In = searchArguments;
         break;
       case CUSTOM_2:
-        custom2In = toUpperCopy(searchArguments);
+        custom2In = searchArguments;
         break;
       case CUSTOM_3:
-        custom3In = toUpperCopy(searchArguments);
+        custom3In = searchArguments;
         break;
       case CUSTOM_4:
-        custom4In = toUpperCopy(searchArguments);
+        custom4In = searchArguments;
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -310,16 +310,16 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       WorkbasketCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1Like = toUpperCopy(searchArguments);
+        custom1Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_2:
-        custom2Like = toUpperCopy(searchArguments);
+        custom2Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_3:
-        custom3Like = toUpperCopy(searchArguments);
+        custom3Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_4:
-        custom4Like = toUpperCopy(searchArguments);
+        custom4Like = toLowerCopy(searchArguments);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -329,67 +329,67 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   @Override
   public WorkbasketHistoryQuery workbasketIdLike(String... workbasketId) {
-    this.workbasketIdLike = toUpperCopy(workbasketId);
+    this.workbasketIdLike = toLowerCopy(workbasketId);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery eventTypeLike(String... eventType) {
-    this.eventTypeLike = toUpperCopy(eventType);
+    this.eventTypeLike = toLowerCopy(eventType);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery userIdLike(String... userId) {
-    this.userIdLike = toUpperCopy(userId);
+    this.userIdLike = toLowerCopy(userId);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery domainLike(String... domain) {
-    this.domainLike = toUpperCopy(domain);
+    this.domainLike = toLowerCopy(domain);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery workbasketKeyLike(String... workbasketKey) {
-    this.keyLike = toUpperCopy(workbasketKey);
+    this.keyLike = toLowerCopy(workbasketKey);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery workbasketTypeLike(String... workbasketType) {
-    this.typeLike = toUpperCopy(workbasketType);
+    this.typeLike = toLowerCopy(workbasketType);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery ownerLike(String... ownerLike) {
-    this.ownerLike = toUpperCopy(ownerLike);
+    this.ownerLike = toLowerCopy(ownerLike);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel1Like(String... orgLevel1) {
-    this.orgLevel1Like = toUpperCopy(orgLevel1);
+    this.orgLevel1Like = toLowerCopy(orgLevel1);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel2Like(String... orgLevel2) {
-    this.orgLevel2Like = toUpperCopy(orgLevel2);
+    this.orgLevel2Like = toLowerCopy(orgLevel2);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel3Like(String... orgLevel3) {
-    this.orgLevel3Like = toUpperCopy(orgLevel3);
+    this.orgLevel3Like = toLowerCopy(orgLevel3);
     return this;
   }
 
   @Override
   public WorkbasketHistoryQuery orgLevel4Like(String... orgLevel4) {
-    this.orgLevel4Like = toUpperCopy(orgLevel4);
+    this.orgLevel4Like = toLowerCopy(orgLevel4);
     return this;
   }
 

@@ -444,7 +444,7 @@ public class TaskQuerySqlProvider {
     sb.append(
         "<if test='wildcardSearchValueLike != null and wildcardSearchFieldIn != null'>AND ("
             + "<foreach item='item' collection='wildcardSearchFieldIn' separator=' OR '>"
-            + "UPPER(t.${item}) "
+            + "LOWER(t.${item}) "
             + "LIKE #{wildcardSearchValueLike}"
             + "</foreach>)"
             + "</if> ");

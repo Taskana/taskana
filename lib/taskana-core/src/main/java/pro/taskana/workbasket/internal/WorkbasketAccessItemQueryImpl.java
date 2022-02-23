@@ -60,7 +60,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
   @Override
   public WorkbasketAccessItemQuery workbasketKeyLike(String... key) {
-    this.workbasketKeyLike = toUpperCopy(key);
+    this.workbasketKeyLike = toLowerCopy(key);
     return this;
   }
 
@@ -73,7 +73,7 @@ public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery 
 
   @Override
   public WorkbasketAccessItemQuery accessIdLike(String... ids) {
-    this.accessIdLike = toUpperCopy(ids);
+    this.accessIdLike = toLowerCopy(ids);
     return this;
   }
 
