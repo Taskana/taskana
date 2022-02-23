@@ -49,7 +49,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   void testQueryAllForBusinessAdminMultipleTimes() {
     WorkbasketQuery query = WORKBASKET_SERVICE.createWorkbasketQuery();
     int count = (int) query.count();
-    assertThat(count).isEqualTo(25);
+    assertThat(count).isEqualTo(26);
     List<WorkbasketSummary> workbaskets = query.list();
     assertThat(workbaskets).hasSize(count);
     workbaskets = query.list();
@@ -61,7 +61,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   void testQueryAllForAdminMultipleTimes() {
     WorkbasketQuery query = WORKBASKET_SERVICE.createWorkbasketQuery();
     int count = (int) query.count();
-    assertThat(count).isEqualTo(25);
+    assertThat(count).isEqualTo(26);
     List<WorkbasketSummary> workbaskets = query.list();
     assertThat(workbaskets).hasSize(count);
     workbaskets = query.list();
@@ -106,7 +106,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByName() {
+  void should_ReturnWorkbasketsMatchingName_When_QueriedWithNameIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().nameIn("Gruppenpostkorb KSC").list();
     assertThat(results)
@@ -114,6 +114,18 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
         .first()
         .extracting(WorkbasketSummary::getKey)
         .isEqualTo("GPK_KSC");
+  }
+
+  @WithAccessId(user = "admin", groups = GROUP_1_DN)
+  @Test
+  void should_ReturnWorkbasketsMatchingName_When_QueriedWithNameLikeWithEszett() {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE.createWorkbasketQuery().nameLike("%ß%").list();
+    assertThat(results)
+        .hasSize(1)
+        .first()
+        .extracting(WorkbasketSummary::getKey)
+        .isEqualTo("MASSNAHMEN");
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
@@ -190,7 +202,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .keyIn("GPK_KSC_1", "GPK_Ksc", "GPK_KSC_3")
+            .keyIn("GPK_KSC_1", "GPK_KSC", "GPK_KSC_3")
             .list();
     assertThat(results).hasSize(2);
   }
@@ -297,7 +309,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().nameLike("%").orderByName(DESCENDING).list();
     assertThat(results)
-        .hasSize(25)
+        .hasSize(26)
         .extracting(WorkbasketSummary::getName)
         .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
 
@@ -449,7 +461,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   void testQueryForOrgLevl1In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel1In("orgl1", "").list();
-    assertThat(results).hasSize(24);
+    assertThat(results).hasSize(25);
   }
 
   @WithAccessId(user = "admin")
@@ -505,7 +517,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
   void testQueryForOrgLevel4Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel4Like("%").list();
-    assertThat(results).hasSize(25);
+    assertThat(results).hasSize(26);
   }
 
   @WithAccessId(user = "admin")

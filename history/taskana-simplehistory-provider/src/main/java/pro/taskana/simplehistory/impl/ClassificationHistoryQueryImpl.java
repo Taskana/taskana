@@ -87,13 +87,13 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   @Override
   public ClassificationHistoryQuery idIn(String... idIn) {
-    this.idIn = toUpperCopy(idIn);
+    this.idIn = idIn;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery eventTypeIn(String... eventType) {
-    this.eventTypeIn = toUpperCopy(eventType);
+    this.eventTypeIn = eventType;
     return this;
   }
 
@@ -105,55 +105,55 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   @Override
   public ClassificationHistoryQuery userIdIn(String... userId) {
-    this.userIdIn = toUpperCopy(userId);
+    this.userIdIn = userId;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery classificationIdIn(String... classificationId) {
-    this.classificationIdIn = toUpperCopy(classificationId);
+    this.classificationIdIn = classificationId;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery applicationEntryPointIn(String... applicationEntryPoint) {
-    this.applicationEntryPointIn = toUpperCopy(applicationEntryPoint);
+    this.applicationEntryPointIn = applicationEntryPoint;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery categoryIn(String... category) {
-    this.categoryIn = toUpperCopy(category);
+    this.categoryIn = category;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery domainIn(String... domain) {
-    this.domainIn = toUpperCopy(domain);
+    this.domainIn = domain;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery keyIn(String... key) {
-    this.keyIn = toUpperCopy(key);
+    this.keyIn = key;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery nameIn(String... name) {
-    this.nameIn = toUpperCopy(name);
+    this.nameIn = name;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery parentIdIn(String... parentId) {
-    this.parentIdIn = toUpperCopy(parentId);
+    this.parentIdIn = parentId;
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery parentKeyIn(String... parentKey) {
-    this.parentKeyIn = toUpperCopy(parentKey);
+    this.parentKeyIn = parentKey;
     return this;
   }
 
@@ -180,28 +180,28 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       ClassificationCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1In = toUpperCopy(searchArguments);
+        custom1In = searchArguments;
         break;
       case CUSTOM_2:
-        custom2In = toUpperCopy(searchArguments);
+        custom2In = searchArguments;
         break;
       case CUSTOM_3:
-        custom3In = toUpperCopy(searchArguments);
+        custom3In = searchArguments;
         break;
       case CUSTOM_4:
-        custom4In = toUpperCopy(searchArguments);
+        custom4In = searchArguments;
         break;
       case CUSTOM_5:
-        custom5In = toUpperCopy(searchArguments);
+        custom5In = searchArguments;
         break;
       case CUSTOM_6:
-        custom6In = toUpperCopy(searchArguments);
+        custom6In = searchArguments;
         break;
       case CUSTOM_7:
-        custom7In = toUpperCopy(searchArguments);
+        custom7In = searchArguments;
         break;
       case CUSTOM_8:
-        custom8In = toUpperCopy(searchArguments);
+        custom8In = searchArguments;
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -211,73 +211,73 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
   @Override
   public ClassificationHistoryQuery eventTypeLike(String... eventType) {
-    this.eventTypeLike = toUpperCopy(eventType);
+    this.eventTypeLike = toLowerCopy(eventType);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery userIdLike(String... userId) {
-    this.userIdLike = toUpperCopy(userId);
+    this.userIdLike = toLowerCopy(userId);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery classificationIdLike(String... classificationId) {
-    this.classificationIdLike = toUpperCopy(classificationId);
+    this.classificationIdLike = toLowerCopy(classificationId);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery applicationEntryPointLike(String... applicationEntryPointLike) {
-    this.applicationEntryPointLike = toUpperCopy(applicationEntryPointLike);
+    this.applicationEntryPointLike = toLowerCopy(applicationEntryPointLike);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery categoryLike(String... category) {
-    this.categoryLike = toUpperCopy(category);
+    this.categoryLike = toLowerCopy(category);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery domainLike(String... domain) {
-    this.domainLike = toUpperCopy(domain);
+    this.domainLike = toLowerCopy(domain);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery keyLike(String... key) {
-    this.keyLike = toUpperCopy(key);
+    this.keyLike = toLowerCopy(key);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery nameLike(String... name) {
-    this.nameLike = toUpperCopy(name);
+    this.nameLike = toLowerCopy(name);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery parentIdLike(String... parentId) {
-    this.parentIdLike = toUpperCopy(parentId);
+    this.parentIdLike = toLowerCopy(parentId);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery parentKeyLike(String... parentKey) {
-    this.parentKeyLike = toUpperCopy(parentKey);
+    this.parentKeyLike = toLowerCopy(parentKey);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery serviceLevelLike(String... serviceLevel) {
-    this.serviceLevelLike = toUpperCopy(serviceLevel);
+    this.serviceLevelLike = toLowerCopy(serviceLevel);
     return this;
   }
 
   @Override
   public ClassificationHistoryQuery typeLike(String... type) {
-    this.typeLike = toUpperCopy(type);
+    this.typeLike = toLowerCopy(type);
     return this;
   }
 
@@ -286,28 +286,28 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       ClassificationCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1Like = toUpperCopy(searchArguments);
+        custom1Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_2:
-        custom2Like = toUpperCopy(searchArguments);
+        custom2Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_3:
-        custom3Like = toUpperCopy(searchArguments);
+        custom3Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_4:
-        custom4Like = toUpperCopy(searchArguments);
+        custom4Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_5:
-        custom5Like = toUpperCopy(searchArguments);
+        custom5Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_6:
-        custom6Like = toUpperCopy(searchArguments);
+        custom6Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_7:
-        custom7Like = toUpperCopy(searchArguments);
+        custom7Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_8:
-        custom8Like = toUpperCopy(searchArguments);
+        custom8Like = toLowerCopy(searchArguments);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");

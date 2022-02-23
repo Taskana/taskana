@@ -37,7 +37,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
   @Test
   void shouldCleanWorkbasketMarkedForDeletionWithoutTasks() throws Exception {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertThat(totalWorkbasketCount).isEqualTo(25);
+    assertThat(totalWorkbasketCount).isEqualTo(26);
     List<WorkbasketSummary> workbaskets =
         workbasketService
             .createWorkbasketQuery()
@@ -61,14 +61,14 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     workbasketCleanupJob.run();
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertThat(totalWorkbasketCount).isEqualTo(24);
+    assertThat(totalWorkbasketCount).isEqualTo(25);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void shouldNotCleanWorkbasketMarkedForDeletionIfWorkbasketHasTasks() throws Exception {
     long totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertThat(totalWorkbasketCount).isEqualTo(25);
+    assertThat(totalWorkbasketCount).isEqualTo(26);
     List<WorkbasketSummary> workbaskets =
         workbasketService
             .createWorkbasketQuery()
@@ -85,7 +85,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
     job.run();
 
     totalWorkbasketCount = workbasketService.createWorkbasketQuery().count();
-    assertThat(totalWorkbasketCount).isEqualTo(25);
+    assertThat(totalWorkbasketCount).isEqualTo(26);
   }
 
   @WithAccessId(user = "admin")

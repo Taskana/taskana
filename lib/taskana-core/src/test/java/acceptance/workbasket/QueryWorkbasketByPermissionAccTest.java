@@ -157,6 +157,6 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .createWorkbasketQuery()
             .callerHasPermission(WorkbasketPermission.OPEN)
             .list();
-    assertThat(results).hasSize(25);
+    assertThat(results).hasSize(26);
   }
 }

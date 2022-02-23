@@ -78,13 +78,13 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public TaskCommentQuery idLike(String... taskCommentIds) {
-    this.idLike = toUpperCopy(taskCommentIds);
+    this.idLike = toLowerCopy(taskCommentIds);
     return this;
   }
 
   @Override
   public TaskCommentQuery idNotLike(String... taskCommentIds) {
-    this.idNotLike = toUpperCopy(taskCommentIds);
+    this.idNotLike = toLowerCopy(taskCommentIds);
     return this;
   }
 
@@ -96,13 +96,13 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public TaskCommentQuery textFieldLike(String... texts) {
-    this.textFieldLike = toUpperCopy(texts);
+    this.textFieldLike = toLowerCopy(texts);
     return this;
   }
 
   @Override
   public TaskCommentQuery textFieldNotLike(String... texts) {
-    this.textFieldNotLike = toUpperCopy(texts);
+    this.textFieldNotLike = toLowerCopy(texts);
     return this;
   }
 
@@ -120,13 +120,13 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   @Override
   public TaskCommentQuery creatorLike(String... creators) {
-    this.creatorLike = toUpperCopy(creators);
+    this.creatorLike = toLowerCopy(creators);
     return this;
   }
 
   @Override
   public TaskCommentQuery creatorNotLike(String... creators) {
-    this.creatorNotLike = toUpperCopy(creators);
+    this.creatorNotLike = toLowerCopy(creators);
     return this;
   }
 

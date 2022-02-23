@@ -142,13 +142,13 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public ClassificationQuery nameLike(String... nameLike) {
-    this.nameLike = toUpperCopy(nameLike);
+    this.nameLike = toLowerCopy(nameLike);
     return this;
   }
 
   @Override
   public ClassificationQuery descriptionLike(String description) {
-    this.descriptionLike = description.toUpperCase();
+    this.descriptionLike = description.toLowerCase();
     return this;
   }
 
@@ -166,7 +166,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public ClassificationQuery serviceLevelLike(String... serviceLevelLike) {
-    this.serviceLevelLike = toUpperCopy(serviceLevelLike);
+    this.serviceLevelLike = toLowerCopy(serviceLevelLike);
     return this;
   }
 
@@ -178,7 +178,7 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike) {
-    this.applicationEntryPointLike = toUpperCopy(applicationEntryPointLike);
+    this.applicationEntryPointLike = toLowerCopy(applicationEntryPointLike);
     return this;
   }
 
@@ -232,28 +232,28 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1Like = toUpperCopy(customLike);
+        this.custom1Like = toLowerCopy(customLike);
         break;
       case CUSTOM_2:
-        this.custom2Like = toUpperCopy(customLike);
+        this.custom2Like = toLowerCopy(customLike);
         break;
       case CUSTOM_3:
-        this.custom3Like = toUpperCopy(customLike);
+        this.custom3Like = toLowerCopy(customLike);
         break;
       case CUSTOM_4:
-        this.custom4Like = toUpperCopy(customLike);
+        this.custom4Like = toLowerCopy(customLike);
         break;
       case CUSTOM_5:
-        this.custom5Like = toUpperCopy(customLike);
+        this.custom5Like = toLowerCopy(customLike);
         break;
       case CUSTOM_6:
-        this.custom6Like = toUpperCopy(customLike);
+        this.custom6Like = toLowerCopy(customLike);
         break;
       case CUSTOM_7:
-        this.custom7Like = toUpperCopy(customLike);
+        this.custom7Like = toLowerCopy(customLike);
         break;
       case CUSTOM_8:
-        this.custom8Like = toUpperCopy(customLike);
+        this.custom8Like = toLowerCopy(customLike);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");

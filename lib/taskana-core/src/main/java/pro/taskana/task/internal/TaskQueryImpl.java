@@ -599,13 +599,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery nameLike(String... names) {
-    this.nameLike = toUpperCopy(names);
+    this.nameLike = toLowerCopy(names);
     return this;
   }
 
   @Override
   public TaskQuery nameNotLike(String... names) {
-    this.nameNotLike = toUpperCopy(names);
+    this.nameNotLike = toLowerCopy(names);
     return this;
   }
 
@@ -631,13 +631,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery creatorLike(String... creators) {
-    this.creatorLike = toUpperCopy(creators);
+    this.creatorLike = toLowerCopy(creators);
     return this;
   }
 
   @Override
   public TaskQuery creatorNotLike(String... creators) {
-    this.creatorNotLike = toUpperCopy(creators);
+    this.creatorNotLike = toLowerCopy(creators);
     return this;
   }
 
@@ -651,13 +651,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery noteLike(String... note) {
-    this.noteLike = toUpperCopy(note);
+    this.noteLike = toLowerCopy(note);
     return this;
   }
 
   @Override
   public TaskQuery noteNotLike(String... note) {
-    this.noteNotLike = toUpperCopy(note);
+    this.noteNotLike = toLowerCopy(note);
     return this;
   }
 
@@ -671,13 +671,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery descriptionLike(String... description) {
-    this.descriptionLike = toUpperCopy(description);
+    this.descriptionLike = toLowerCopy(description);
     return this;
   }
 
   @Override
   public TaskQuery descriptionNotLike(String... description) {
-    this.descriptionNotLike = toUpperCopy(description);
+    this.descriptionNotLike = toLowerCopy(description);
     return this;
   }
 
@@ -753,13 +753,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery classificationKeyLike(String... classificationKeys) {
-    this.classificationKeyLike = toUpperCopy(classificationKeys);
+    this.classificationKeyLike = toLowerCopy(classificationKeys);
     return this;
   }
 
   @Override
   public TaskQuery classificationKeyNotLike(String... classificationKeys) {
-    this.classificationKeyNotLike = toUpperCopy(classificationKeys);
+    this.classificationKeyNotLike = toLowerCopy(classificationKeys);
     return this;
   }
 
@@ -787,13 +787,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery classificationCategoryLike(String... classificationCategories) {
-    this.classificationCategoryLike = toUpperCopy(classificationCategories);
+    this.classificationCategoryLike = toLowerCopy(classificationCategories);
     return this;
   }
 
   @Override
   public TaskQuery classificationCategoryNotLike(String... classificationCategories) {
-    this.classificationCategoryNotLike = classificationCategories;
+    this.classificationCategoryNotLike = toLowerCopy(classificationCategories);
     return this;
   }
 
@@ -817,14 +817,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery classificationNameLike(String... classificationNames) {
     joinWithClassifications = true;
-    this.classificationNameLike = toUpperCopy(classificationNames);
+    this.classificationNameLike = toLowerCopy(classificationNames);
     return this;
   }
 
   @Override
   public TaskQuery classificationNameNotLike(String... classificationNames) {
     joinWithClassifications = true;
-    this.classificationNameNotLike = toUpperCopy(classificationNames);
+    this.classificationNameNotLike = toLowerCopy(classificationNames);
     return this;
   }
 
@@ -889,13 +889,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery businessProcessIdLike(String... businessProcessIds) {
-    this.businessProcessIdLike = businessProcessIds;
+    this.businessProcessIdLike = toLowerCopy(businessProcessIds);
     return this;
   }
 
   @Override
   public TaskQuery businessProcessIdNotLike(String... businessProcessIds) {
-    this.businessProcessIdNotLike = businessProcessIds;
+    this.businessProcessIdNotLike = toLowerCopy(businessProcessIds);
     return this;
   }
 
@@ -921,13 +921,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery parentBusinessProcessIdLike(String... businessProcessIds) {
-    this.parentBusinessProcessIdLike = businessProcessIds;
+    this.parentBusinessProcessIdLike = toLowerCopy(businessProcessIds);
     return this;
   }
 
   @Override
   public TaskQuery parentBusinessProcessIdNotLike(String... businessProcessIds) {
-    this.parentBusinessProcessIdNotLike = businessProcessIds;
+    this.parentBusinessProcessIdNotLike = toLowerCopy(businessProcessIds);
     return this;
   }
 
@@ -953,13 +953,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery ownerLike(String... owners) {
-    this.ownerLike = toUpperCopy(owners);
+    this.ownerLike = toLowerCopy(owners);
     return this;
   }
 
   @Override
   public TaskQuery ownerNotLike(String... owners) {
-    this.ownerNotLike = toUpperCopy(owners);
+    this.ownerNotLike = toLowerCopy(owners);
     return this;
   }
 
@@ -986,14 +986,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery ownerLongNameLike(String... longNames) {
     joinWithUserInfo = true;
-    this.ownerLongNameLike = toUpperCopy(longNames);
+    this.ownerLongNameLike = toLowerCopy(longNames);
     return this;
   }
 
   @Override
   public TaskQuery ownerLongNameNotLike(String... longNames) {
     joinWithUserInfo = true;
-    this.ownerLongNameNotLike = toUpperCopy(longNames);
+    this.ownerLongNameNotLike = toLowerCopy(longNames);
     return this;
   }
 
@@ -1022,13 +1022,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery primaryObjectReferenceCompanyLike(String... company) {
-    this.porCompanyLike = toUpperCopy(company);
+    this.porCompanyLike = toLowerCopy(company);
     return this;
   }
 
   @Override
   public TaskQuery primaryObjectReferenceCompanyNotLike(String... company) {
-    this.porCompanyNotLike = toUpperCopy(company);
+    this.porCompanyNotLike = toLowerCopy(company);
     return this;
   }
 
@@ -1054,13 +1054,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery primaryObjectReferenceSystemLike(String... system) {
-    this.porSystemLike = toUpperCopy(system);
+    this.porSystemLike = toLowerCopy(system);
     return this;
   }
 
   @Override
   public TaskQuery primaryObjectReferenceSystemNotLike(String... systems) {
-    this.porSystemNotLike = toUpperCopy(systems);
+    this.porSystemNotLike = toLowerCopy(systems);
     return this;
   }
 
@@ -1086,13 +1086,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstance) {
-    this.porSystemInstanceLike = toUpperCopy(systemInstance);
+    this.porSystemInstanceLike = toLowerCopy(systemInstance);
     return this;
   }
 
   @Override
   public TaskQuery primaryObjectReferenceSystemInstanceNotLike(String... systemInstances) {
-    this.porSystemInstanceNotLike = toUpperCopy(systemInstances);
+    this.porSystemInstanceNotLike = toLowerCopy(systemInstances);
     return this;
   }
 
@@ -1118,13 +1118,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery primaryObjectReferenceTypeLike(String... types) {
-    this.porTypeLike = toUpperCopy(types);
+    this.porTypeLike = toLowerCopy(types);
     return this;
   }
 
   @Override
   public TaskQuery primaryObjectReferenceTypeNotLike(String... types) {
-    this.porTypeNotLike = toUpperCopy(types);
+    this.porTypeNotLike = toLowerCopy(types);
     return this;
   }
 
@@ -1150,13 +1150,13 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery primaryObjectReferenceValueLike(String... values) {
-    this.porValueLike = toUpperCopy(values);
+    this.porValueLike = toLowerCopy(values);
     return this;
   }
 
   @Override
   public TaskQuery primaryObjectReferenceValueNotLike(String... values) {
-    this.porValueNotLike = toUpperCopy(values);
+    this.porValueNotLike = toLowerCopy(values);
     return this;
   }
 
@@ -1229,14 +1229,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey) {
     joinWithAttachments = true;
-    this.attachmentClassificationKeyLike = toUpperCopy(attachmentClassificationKey);
+    this.attachmentClassificationKeyLike = toLowerCopy(attachmentClassificationKey);
     return this;
   }
 
   @Override
   public TaskQuery attachmentClassificationKeyNotLike(String... attachmentClassificationKey) {
     joinWithAttachments = true;
-    this.attachmentClassificationKeyNotLike = toUpperCopy(attachmentClassificationKey);
+    this.attachmentClassificationKeyNotLike = toLowerCopy(attachmentClassificationKey);
     return this;
   }
 
@@ -1269,14 +1269,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName) {
     joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameLike = toUpperCopy(attachmentClassificationName);
+    this.attachmentClassificationNameLike = toLowerCopy(attachmentClassificationName);
     return this;
   }
 
   @Override
   public TaskQuery attachmentClassificationNameNotLike(String... attachmentClassificationName) {
     joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameNotLike = toUpperCopy(attachmentClassificationName);
+    this.attachmentClassificationNameNotLike = toLowerCopy(attachmentClassificationName);
     return this;
   }
 
@@ -1309,14 +1309,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery attachmentChannelLike(String... attachmentChannel) {
     joinWithAttachments = true;
-    this.attachmentChannelLike = toUpperCopy(attachmentChannel);
+    this.attachmentChannelLike = toLowerCopy(attachmentChannel);
     return this;
   }
 
   @Override
   public TaskQuery attachmentChannelNotLike(String... attachmentChannel) {
     joinWithAttachments = true;
-    this.attachmentChannelNotLike = toUpperCopy(attachmentChannel);
+    this.attachmentChannelNotLike = toLowerCopy(attachmentChannel);
     return this;
   }
 
@@ -1347,14 +1347,14 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery attachmentReferenceValueLike(String... referenceValue) {
     joinWithAttachments = true;
-    this.attachmentReferenceLike = toUpperCopy(referenceValue);
+    this.attachmentReferenceLike = toLowerCopy(referenceValue);
     return this;
   }
 
   @Override
   public TaskQuery attachmentReferenceValueNotLike(String... referenceValue) {
     joinWithAttachments = true;
-    this.attachmentReferenceNotLike = toUpperCopy(referenceValue);
+    this.attachmentReferenceNotLike = toLowerCopy(referenceValue);
     return this;
   }
 
@@ -1430,7 +1430,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   public TaskQuery sorCompanyLike(String... companyLike) {
     joinWithSecondaryObjectReferences = true;
-    sorCompanyLike = toUpperCopy(companyLike);
+    sorCompanyLike = toLowerCopy(companyLike);
     return this;
   }
 
@@ -1444,7 +1444,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   public TaskQuery sorSystemLike(String... systemLike) {
     joinWithSecondaryObjectReferences = true;
-    sorSystemLike = toUpperCopy(systemLike);
+    sorSystemLike = toLowerCopy(systemLike);
     return this;
   }
 
@@ -1458,7 +1458,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   public TaskQuery sorSystemInstanceLike(String... systemInstanceLike) {
     joinWithSecondaryObjectReferences = true;
-    sorSystemInstanceLike = toUpperCopy(systemInstanceLike);
+    sorSystemInstanceLike = toLowerCopy(systemInstanceLike);
     return this;
   }
 
@@ -1472,7 +1472,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   public TaskQuery sorTypeLike(String... typeLike) {
     joinWithSecondaryObjectReferences = true;
-    sorTypeLike = toUpperCopy(typeLike);
+    sorTypeLike = toLowerCopy(typeLike);
     return this;
   }
 
@@ -1487,7 +1487,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   public TaskQuery sorValueLike(String... valueLike) {
     joinWithSecondaryObjectReferences = true;
-    sorValueLike = toUpperCopy(valueLike);
+    sorValueLike = toLowerCopy(valueLike);
     return this;
   }
 
@@ -1738,52 +1738,52 @@ public class TaskQueryImpl implements TaskQuery {
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1Like = toUpperCopy(strings);
+        this.custom1Like = toLowerCopy(strings);
         break;
       case CUSTOM_2:
-        this.custom2Like = toUpperCopy(strings);
+        this.custom2Like = toLowerCopy(strings);
         break;
       case CUSTOM_3:
-        this.custom3Like = toUpperCopy(strings);
+        this.custom3Like = toLowerCopy(strings);
         break;
       case CUSTOM_4:
-        this.custom4Like = toUpperCopy(strings);
+        this.custom4Like = toLowerCopy(strings);
         break;
       case CUSTOM_5:
-        this.custom5Like = toUpperCopy(strings);
+        this.custom5Like = toLowerCopy(strings);
         break;
       case CUSTOM_6:
-        this.custom6Like = toUpperCopy(strings);
+        this.custom6Like = toLowerCopy(strings);
         break;
       case CUSTOM_7:
-        this.custom7Like = toUpperCopy(strings);
+        this.custom7Like = toLowerCopy(strings);
         break;
       case CUSTOM_8:
-        this.custom8Like = toUpperCopy(strings);
+        this.custom8Like = toLowerCopy(strings);
         break;
       case CUSTOM_9:
-        this.custom9Like = toUpperCopy(strings);
+        this.custom9Like = toLowerCopy(strings);
         break;
       case CUSTOM_10:
-        this.custom10Like = toUpperCopy(strings);
+        this.custom10Like = toLowerCopy(strings);
         break;
       case CUSTOM_11:
-        this.custom11Like = toUpperCopy(strings);
+        this.custom11Like = toLowerCopy(strings);
         break;
       case CUSTOM_12:
-        this.custom12Like = toUpperCopy(strings);
+        this.custom12Like = toLowerCopy(strings);
         break;
       case CUSTOM_13:
-        this.custom13Like = toUpperCopy(strings);
+        this.custom13Like = toLowerCopy(strings);
         break;
       case CUSTOM_14:
-        this.custom14Like = toUpperCopy(strings);
+        this.custom14Like = toLowerCopy(strings);
         break;
       case CUSTOM_15:
-        this.custom15Like = toUpperCopy(strings);
+        this.custom15Like = toLowerCopy(strings);
         break;
       case CUSTOM_16:
-        this.custom16Like = toUpperCopy(strings);
+        this.custom16Like = toLowerCopy(strings);
         break;
       default:
         throw new SystemException("Unknown custom field '" + customField + "'");
@@ -1802,52 +1802,52 @@ public class TaskQueryImpl implements TaskQuery {
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1NotLike = toUpperCopy(strings);
+        this.custom1NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_2:
-        this.custom2NotLike = toUpperCopy(strings);
+        this.custom2NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_3:
-        this.custom3NotLike = toUpperCopy(strings);
+        this.custom3NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_4:
-        this.custom4NotLike = toUpperCopy(strings);
+        this.custom4NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_5:
-        this.custom5NotLike = toUpperCopy(strings);
+        this.custom5NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_6:
-        this.custom6NotLike = toUpperCopy(strings);
+        this.custom6NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_7:
-        this.custom7NotLike = toUpperCopy(strings);
+        this.custom7NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_8:
-        this.custom8NotLike = toUpperCopy(strings);
+        this.custom8NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_9:
-        this.custom9NotLike = toUpperCopy(strings);
+        this.custom9NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_10:
-        this.custom10NotLike = toUpperCopy(strings);
+        this.custom10NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_11:
-        this.custom11NotLike = toUpperCopy(strings);
+        this.custom11NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_12:
-        this.custom12NotLike = toUpperCopy(strings);
+        this.custom12NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_13:
-        this.custom13NotLike = toUpperCopy(strings);
+        this.custom13NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_14:
-        this.custom14NotLike = toUpperCopy(strings);
+        this.custom14NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_15:
-        this.custom15NotLike = toUpperCopy(strings);
+        this.custom15NotLike = toLowerCopy(strings);
         break;
       case CUSTOM_16:
-        this.custom16NotLike = toUpperCopy(strings);
+        this.custom16NotLike = toLowerCopy(strings);
         break;
       default:
         throw new SystemException("Unknown custom field '" + customField + "'");
@@ -1882,7 +1882,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery wildcardSearchValueLike(String wildcardSearchValue) {
-    this.wildcardSearchValueLike = wildcardSearchValue.toUpperCase();
+    this.wildcardSearchValueLike = wildcardSearchValue.toLowerCase();
     return this;
   }
   // endregion

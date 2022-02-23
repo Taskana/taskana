@@ -82,37 +82,41 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery idIn(String... id) {
-    this.idIn = id;
+    if (id != null && id.length != 0) {
+      this.idIn = id;
+    }
     return this;
   }
 
   @Override
   public WorkbasketQuery keyIn(String... key) {
-    this.keyIn = toUpperCopy(key);
+    if (key != null && key.length != 0) {
+      this.keyIn = key;
+    }
     return this;
   }
 
   @Override
   public WorkbasketQuery keyLike(String... keys) {
-    this.keyLike = toUpperCopy(keys);
+    this.keyLike = toLowerCopy(keys);
     return this;
   }
 
   @Override
   public WorkbasketQuery nameIn(String... names) {
-    this.nameIn = toUpperCopy(names);
+    this.nameIn = names;
     return this;
   }
 
   @Override
   public WorkbasketQuery nameLike(String... names) {
-    this.nameLike = toUpperCopy(names);
+    this.nameLike = toLowerCopy(names);
     return this;
   }
 
   @Override
   public WorkbasketQuery keyOrNameLike(String... keysOrNames) {
-    this.keyOrNameLike = toUpperCopy(keysOrNames);
+    this.keyOrNameLike = toLowerCopy(keysOrNames);
     return this;
   }
 
@@ -144,7 +148,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery descriptionLike(String... description) {
-    this.descriptionLike = toUpperCopy(description);
+    this.descriptionLike = toLowerCopy(description);
     return this;
   }
 
@@ -156,7 +160,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery ownerLike(String... owners) {
-    this.ownerLike = toUpperCopy(owners);
+    this.ownerLike = toLowerCopy(owners);
     return this;
   }
 
@@ -221,7 +225,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery domainLike(String... domain) {
-    this.domainLike = domain;
+    this.domainLike = toLowerCopy(domain);
     return this;
   }
 
@@ -278,16 +282,16 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       WorkbasketCustomField customField, String... searchArguments) {
     switch (customField) {
       case CUSTOM_1:
-        custom1Like = toUpperCopy(searchArguments);
+        custom1Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_2:
-        custom2Like = toUpperCopy(searchArguments);
+        custom2Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_3:
-        custom3Like = toUpperCopy(searchArguments);
+        custom3Like = toLowerCopy(searchArguments);
         break;
       case CUSTOM_4:
-        custom4Like = toUpperCopy(searchArguments);
+        custom4Like = toLowerCopy(searchArguments);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -303,7 +307,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery orgLevel1Like(String... orgLevel1) {
-    this.orgLevel1Like = toUpperCopy(orgLevel1);
+    this.orgLevel1Like = toLowerCopy(orgLevel1);
     return this;
   }
 
@@ -315,7 +319,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery orgLevel2Like(String... orgLevel2) {
-    this.orgLevel2Like = toUpperCopy(orgLevel2);
+    this.orgLevel2Like = toLowerCopy(orgLevel2);
     return this;
   }
 
@@ -327,7 +331,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery orgLevel3Like(String... orgLevel3) {
-    this.orgLevel3Like = toUpperCopy(orgLevel3);
+    this.orgLevel3Like = toLowerCopy(orgLevel3);
     return this;
   }
 
@@ -339,7 +343,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   @Override
   public WorkbasketQuery orgLevel4Like(String... orgLevel4) {
-    this.orgLevel4Like = toUpperCopy(orgLevel4);
+    this.orgLevel4Like = toLowerCopy(orgLevel4);
     return this;
   }
 

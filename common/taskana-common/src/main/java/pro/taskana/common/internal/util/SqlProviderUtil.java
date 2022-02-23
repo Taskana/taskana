@@ -100,7 +100,7 @@ public class SqlProviderUtil {
         .append(collection)
         .append(" != null'>AND (<foreach item='item' collection='")
         .append(collection)
-        .append("' separator=' OR '>UPPER(")
+        .append("' separator=' OR '>LOWER(")
         .append(column)
         .append(") LIKE #{item}</foreach>)</if> ");
   }
@@ -114,7 +114,7 @@ public class SqlProviderUtil {
         .append(collection)
         .append(" != null'>AND (<foreach item='item' collection='")
         .append(collection)
-        .append("' separator=' OR '>UPPER(")
+        .append("' separator=' OR '>LOWER(")
         .append(column)
         .append(") NOT LIKE #{item}</foreach>)</if> ");
   }
