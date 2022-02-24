@@ -604,7 +604,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
 
           assertThat(results)
               .hasSizeGreaterThan(2)
-              .extracting(c -> c.getCustomAttribute(customField))
+              .extracting(c -> c.getCustomField(customField))
               .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
         };
     return DynamicTest.stream(iterator, c -> "for " + c, test);
@@ -624,7 +624,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
 
           assertThat(results)
               .hasSizeGreaterThan(2)
-              .extracting(c -> c.getCustomAttribute(customField))
+              .extracting(c -> c.getCustomField(customField))
               .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
         };
     return DynamicTest.stream(iterator, c -> "for " + c, test);

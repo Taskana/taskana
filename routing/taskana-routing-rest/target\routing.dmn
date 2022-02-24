@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="default" name="default">
+    <decisionTable hitPolicy="FIRST" id="decisionTable">
+      <input id="input1" label="BKN">
+        <inputExpression id="InputExpression1692367781" typeRef="string">
+          <text>task.primaryObjRef.value</text>
+        </inputExpression>
+      </input>
+      <input id="input2" label="ClassificationKey">
+        <inputExpression expressionLanguage="javascript" id="InputExpression1523983793" typeRef="string">
+          <text>task.classificationSummary.key + task.note</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="workbasketKey" name="workbasketKey" typeRef="string"/>
+      <output id="output2" label="domain" name="domain" typeRef="string"/>
+      <rule id="excelRow6">
+        <description>VIP-Team</description>
+        <inputEntry id="B6">
+          <text>"06260203"</text>
+        </inputEntry>
+        <inputEntry id="C6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="D6">
+          <text>"GPK_KSC"</text>
+        </outputEntry>
+        <outputEntry id="E6">
+          <text>"DOMAIN_A"</text>
+        </outputEntry>
+      </rule>
+      <rule id="excelRow7">
+        <description>Second-Level Team 1</description>
+        <inputEntry id="B7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="C7">
+          <text>matches(cellInput,"11048|12012|12013|12513|12523|12619|12910|12911|12912|12913|12914|12915|12916|12917|12918|12919|12920|12921|12922|12923|12924|12925|12926|12927|12928|12929|12930|12931|12932|12933|12934|13082|13093|17999|19012")</text>
+        </inputEntry>
+        <outputEntry id="D7">
+          <text>"GPK_KSC"</text>
+        </outputEntry>
+        <outputEntry id="E7">
+          <text>"DOMAIN_A"</text>
+        </outputEntry>
+      </rule>
+      <rule id="excelRow8">
+        <description>DOMAIN_A</description>
+        <inputEntry id="B8">
+          <text>"12345678"</text>
+        </inputEntry>
+        <inputEntry id="C8">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="D8">
+          <text>"GPK_KSC"</text>
+        </outputEntry>
+        <outputEntry id="E8">
+          <text>"DOMAIN_A"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

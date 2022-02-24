@@ -45,10 +45,10 @@ public class WorkbasketRepresentationModelAssembler
     repModel.setDescription(workbasket.getDescription());
     repModel.setOwner(workbasket.getOwner());
     repModel.setMarkedForDeletion(workbasket.isMarkedForDeletion());
-    repModel.setCustom1(workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_1));
-    repModel.setCustom2(workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_2));
-    repModel.setCustom3(workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_3));
-    repModel.setCustom4(workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_4));
+    repModel.setCustom1(workbasket.getCustomField(WorkbasketCustomField.CUSTOM_1));
+    repModel.setCustom2(workbasket.getCustomField(WorkbasketCustomField.CUSTOM_2));
+    repModel.setCustom3(workbasket.getCustomField(WorkbasketCustomField.CUSTOM_3));
+    repModel.setCustom4(workbasket.getCustomField(WorkbasketCustomField.CUSTOM_4));
     repModel.setOrgLevel1(workbasket.getOrgLevel1());
     repModel.setOrgLevel2(workbasket.getOrgLevel2());
     repModel.setOrgLevel3(workbasket.getOrgLevel3());

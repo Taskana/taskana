@@ -55,14 +55,14 @@ public class ClassificationSummaryRepresentationModelAssembler
     repModel.setPriority(classificationSummary.getPriority());
     repModel.setServiceLevel(classificationSummary.getServiceLevel());
     repModel.setType(classificationSummary.getType());
-    repModel.setCustom1(classificationSummary.getCustomAttribute(CUSTOM_1));
-    repModel.setCustom2(classificationSummary.getCustomAttribute(CUSTOM_2));
-    repModel.setCustom3(classificationSummary.getCustomAttribute(CUSTOM_3));
-    repModel.setCustom4(classificationSummary.getCustomAttribute(CUSTOM_4));
-    repModel.setCustom5(classificationSummary.getCustomAttribute(CUSTOM_5));
-    repModel.setCustom6(classificationSummary.getCustomAttribute(CUSTOM_6));
-    repModel.setCustom7(classificationSummary.getCustomAttribute(CUSTOM_7));
-    repModel.setCustom8(classificationSummary.getCustomAttribute(CUSTOM_8));
+    repModel.setCustom1(classificationSummary.getCustomField(CUSTOM_1));
+    repModel.setCustom2(classificationSummary.getCustomField(CUSTOM_2));
+    repModel.setCustom3(classificationSummary.getCustomField(CUSTOM_3));
+    repModel.setCustom4(classificationSummary.getCustomField(CUSTOM_4));
+    repModel.setCustom5(classificationSummary.getCustomField(CUSTOM_5));
+    repModel.setCustom6(classificationSummary.getCustomField(CUSTOM_6));
+    repModel.setCustom7(classificationSummary.getCustomField(CUSTOM_7));
+    repModel.setCustom8(classificationSummary.getCustomField(CUSTOM_8));
     return repModel;
   }
 

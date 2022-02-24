@@ -88,22 +88,22 @@ public class TaskRepresentationModelAssembler
         task.getCallbackInfo().entrySet().stream()
             .map(CustomAttribute::of)
             .collect(Collectors.toList()));
-    repModel.setCustom1(task.getCustomAttribute(TaskCustomField.CUSTOM_1));
-    repModel.setCustom2(task.getCustomAttribute(TaskCustomField.CUSTOM_2));
-    repModel.setCustom3(task.getCustomAttribute(TaskCustomField.CUSTOM_3));
-    repModel.setCustom4(task.getCustomAttribute(TaskCustomField.CUSTOM_4));
-    repModel.setCustom5(task.getCustomAttribute(TaskCustomField.CUSTOM_5));
-    repModel.setCustom6(task.getCustomAttribute(TaskCustomField.CUSTOM_6));
-    repModel.setCustom7(task.getCustomAttribute(TaskCustomField.CUSTOM_7));
-    repModel.setCustom8(task.getCustomAttribute(TaskCustomField.CUSTOM_8));
-    repModel.setCustom9(task.getCustomAttribute(TaskCustomField.CUSTOM_9));
-    repModel.setCustom10(task.getCustomAttribute(TaskCustomField.CUSTOM_10));
-    repModel.setCustom11(task.getCustomAttribute(TaskCustomField.CUSTOM_11));
-    repModel.setCustom12(task.getCustomAttribute(TaskCustomField.CUSTOM_12));
-    repModel.setCustom13(task.getCustomAttribute(TaskCustomField.CUSTOM_13));
-    repModel.setCustom14(task.getCustomAttribute(TaskCustomField.CUSTOM_14));
-    repModel.setCustom15(task.getCustomAttribute(TaskCustomField.CUSTOM_15));
-    repModel.setCustom16(task.getCustomAttribute(TaskCustomField.CUSTOM_16));
+    repModel.setCustom1(task.getCustomField(TaskCustomField.CUSTOM_1));
+    repModel.setCustom2(task.getCustomField(TaskCustomField.CUSTOM_2));
+    repModel.setCustom3(task.getCustomField(TaskCustomField.CUSTOM_3));
+    repModel.setCustom4(task.getCustomField(TaskCustomField.CUSTOM_4));
+    repModel.setCustom5(task.getCustomField(TaskCustomField.CUSTOM_5));
+    repModel.setCustom6(task.getCustomField(TaskCustomField.CUSTOM_6));
+    repModel.setCustom7(task.getCustomField(TaskCustomField.CUSTOM_7));
+    repModel.setCustom8(task.getCustomField(TaskCustomField.CUSTOM_8));
+    repModel.setCustom9(task.getCustomField(TaskCustomField.CUSTOM_9));
+    repModel.setCustom10(task.getCustomField(TaskCustomField.CUSTOM_10));
+    repModel.setCustom11(task.getCustomField(TaskCustomField.CUSTOM_11));
+    repModel.setCustom12(task.getCustomField(TaskCustomField.CUSTOM_12));
+    repModel.setCustom13(task.getCustomField(TaskCustomField.CUSTOM_13));
+    repModel.setCustom14(task.getCustomField(TaskCustomField.CUSTOM_14));
+    repModel.setCustom15(task.getCustomField(TaskCustomField.CUSTOM_15));
+    repModel.setCustom16(task.getCustomField(TaskCustomField.CUSTOM_16));
     try {
       repModel.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
     } catch (Exception e) {
@@ -144,22 +144,22 @@ public class TaskRepresentationModelAssembler
     task.setPrimaryObjRef(objectReferenceAssembler.toEntity(repModel.getPrimaryObjRef()));
     task.setRead(repModel.isRead());
     task.setTransferred(repModel.isTransferred());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_1, repModel.getCustom1());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_2, repModel.getCustom2());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_3, repModel.getCustom3());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_4, repModel.getCustom4());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_5, repModel.getCustom5());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_6, repModel.getCustom6());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_7, repModel.getCustom7());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_8, repModel.getCustom8());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_9, repModel.getCustom9());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_10, repModel.getCustom10());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_11, repModel.getCustom11());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_12, repModel.getCustom12());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_13, repModel.getCustom13());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_14, repModel.getCustom14());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_15, repModel.getCustom15());
-    task.setCustomAttribute(TaskCustomField.CUSTOM_16, repModel.getCustom16());
+    task.setCustomField(TaskCustomField.CUSTOM_1, repModel.getCustom1());
+    task.setCustomField(TaskCustomField.CUSTOM_2, repModel.getCustom2());
+    task.setCustomField(TaskCustomField.CUSTOM_3, repModel.getCustom3());
+    task.setCustomField(TaskCustomField.CUSTOM_4, repModel.getCustom4());
+    task.setCustomField(TaskCustomField.CUSTOM_5, repModel.getCustom5());
+    task.setCustomField(TaskCustomField.CUSTOM_6, repModel.getCustom6());
+    task.setCustomField(TaskCustomField.CUSTOM_7, repModel.getCustom7());
+    task.setCustomField(TaskCustomField.CUSTOM_8, repModel.getCustom8());
+    task.setCustomField(TaskCustomField.CUSTOM_9, repModel.getCustom9());
+    task.setCustomField(TaskCustomField.CUSTOM_10, repModel.getCustom10());
+    task.setCustomField(TaskCustomField.CUSTOM_11, repModel.getCustom11());
+    task.setCustomField(TaskCustomField.CUSTOM_12, repModel.getCustom12());
+    task.setCustomField(TaskCustomField.CUSTOM_13, repModel.getCustom13());
+    task.setCustomField(TaskCustomField.CUSTOM_14, repModel.getCustom14());
+    task.setCustomField(TaskCustomField.CUSTOM_15, repModel.getCustom15());
+    task.setCustomField(TaskCustomField.CUSTOM_16, repModel.getCustom16());
     task.setAttachments(
         repModel.getAttachments().stream()
             .map(attachmentAssembler::toEntityModel)

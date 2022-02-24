@@ -30,7 +30,7 @@ public class TestPriorityServiceProvider implements PriorityServiceProvider {
       priority = Duration.between(taskSummary.getCreated(), Instant.now()).toMinutes();
     }
 
-    if (Boolean.parseBoolean(taskSummary.getCustomAttribute(TaskCustomField.CUSTOM_6))) {
+    if (Boolean.parseBoolean(taskSummary.getCustomField(TaskCustomField.CUSTOM_6))) {
       priority *= MULTIPLIER;
     }
 

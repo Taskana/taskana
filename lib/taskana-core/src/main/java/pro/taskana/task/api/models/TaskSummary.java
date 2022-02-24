@@ -201,8 +201,17 @@ public interface TaskSummary {
    *
    * @param customField identifies which custom attribute is requested.
    * @return the value for the given customField
+   * @deprecated Use {@link #getCustomField(TaskCustomField)} instead
    */
   String getCustomAttribute(TaskCustomField customField);
+
+  /**
+   * Gets the custom attribute of the task.
+   *
+   * @param customField identifies which custom attribute is requested.
+   * @return the value for the given customField
+   */
+  String getCustomField(TaskCustomField customField);
 
   /**
    * Duplicates this TaskSummary without the internal and external id.

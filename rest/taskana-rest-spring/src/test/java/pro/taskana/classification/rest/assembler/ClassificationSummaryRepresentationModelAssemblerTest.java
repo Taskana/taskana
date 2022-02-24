@@ -141,14 +141,14 @@ class ClassificationSummaryRepresentationModelAssemblerTest {
     assertThat(entity.getPriority()).isEqualTo(repModel.getPriority());
     assertThat(entity.getServiceLevel()).isEqualTo(repModel.getServiceLevel());
     assertThat(entity.getType()).isEqualTo(repModel.getType());
-    assertThat(entity.getCustomAttribute(CUSTOM_1)).isEqualTo(repModel.getCustom1());
-    assertThat(entity.getCustomAttribute(CUSTOM_2)).isEqualTo(repModel.getCustom2());
-    assertThat(entity.getCustomAttribute(CUSTOM_3)).isEqualTo(repModel.getCustom3());
-    assertThat(entity.getCustomAttribute(CUSTOM_4)).isEqualTo(repModel.getCustom4());
-    assertThat(entity.getCustomAttribute(CUSTOM_5)).isEqualTo(repModel.getCustom5());
-    assertThat(entity.getCustomAttribute(CUSTOM_6)).isEqualTo(repModel.getCustom6());
-    assertThat(entity.getCustomAttribute(CUSTOM_7)).isEqualTo(repModel.getCustom7());
-    assertThat(entity.getCustomAttribute(CUSTOM_8)).isEqualTo(repModel.getCustom8());
+    assertThat(entity.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
+    assertThat(entity.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
+    assertThat(entity.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
+    assertThat(entity.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(entity.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
+    assertThat(entity.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
+    assertThat(entity.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
+    assertThat(entity.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
   }
 
   private void testLinks(ClassificationSummaryRepresentationModel repModel) {}

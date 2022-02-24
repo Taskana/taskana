@@ -45,10 +45,10 @@ class CreateHistoryEventOnClassificationsUpdateAccTest extends AbstractAccTest {
     classification.setName("new name");
     classification.setDescription("new description");
     classification.setCategory("EXTERNAL");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, "new custom 1");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_2, "new custom 2");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_3, "new custom 3");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_4, "new custom 4");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_1, "new custom 1");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_2, "new custom 2");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_3, "new custom 3");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_4, "new custom 4");
     classificationService.updateClassification(classification);
 
     events =

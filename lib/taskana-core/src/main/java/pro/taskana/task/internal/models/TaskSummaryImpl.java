@@ -343,8 +343,14 @@ public class TaskSummaryImpl implements TaskSummary {
     this.isTransferred = isTransferred;
   }
 
+  @Deprecated
   @Override
   public String getCustomAttribute(TaskCustomField customField) {
+    return getCustomField(customField);
+  }
+
+  @Override
+  public String getCustomField(TaskCustomField customField) {
 
     switch (customField) {
       case CUSTOM_1:

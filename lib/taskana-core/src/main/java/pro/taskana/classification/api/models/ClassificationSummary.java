@@ -91,8 +91,17 @@ public interface ClassificationSummary {
    *
    * @param customField identifies which custom attribute is requested.
    * @return the value for the given customField
+   * @deprecated Use {@link #getCustomField(ClassificationCustomField)} instead
    */
   String getCustomAttribute(ClassificationCustomField customField);
+
+  /**
+   * Gets the custom field of the classification.
+   *
+   * @param customField identifies which custom field is requested.
+   * @return the value for the given custom field
+   */
+  String getCustomField(ClassificationCustomField customField);
 
   /**
    * Duplicates this ClassificationSummary without the id.

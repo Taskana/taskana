@@ -169,7 +169,7 @@ public class TaskBuilder {
   }
 
   public TaskBuilder customAttribute(TaskCustomField customField, String value) {
-    testTask.setCustomAttribute(customField, value);
+    testTask.setCustomField(customField, value);
     return this;
   }
 

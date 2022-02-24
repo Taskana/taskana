@@ -312,22 +312,22 @@ class TaskSummaryRepresentationModelAssemblerTest {
         taskSummary.getPrimaryObjRef(), repModel.getPrimaryObjRef());
     assertThat(taskSummary.isRead()).isEqualTo(repModel.isRead());
     assertThat(taskSummary.isTransferred()).isEqualTo(repModel.isTransferred());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_1)).isEqualTo(repModel.getCustom1());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_2)).isEqualTo(repModel.getCustom2());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_3)).isEqualTo(repModel.getCustom3());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_4)).isEqualTo(repModel.getCustom4());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_5)).isEqualTo(repModel.getCustom5());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_6)).isEqualTo(repModel.getCustom6());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_7)).isEqualTo(repModel.getCustom7());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_8)).isEqualTo(repModel.getCustom8());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_9)).isEqualTo(repModel.getCustom9());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_10)).isEqualTo(repModel.getCustom10());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_11)).isEqualTo(repModel.getCustom11());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_12)).isEqualTo(repModel.getCustom12());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_13)).isEqualTo(repModel.getCustom13());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_14)).isEqualTo(repModel.getCustom14());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_15)).isEqualTo(repModel.getCustom15());
-    assertThat(taskSummary.getCustomAttribute(CUSTOM_16)).isEqualTo(repModel.getCustom16());
+    assertThat(taskSummary.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
+    assertThat(taskSummary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
+    assertThat(taskSummary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
+    assertThat(taskSummary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(taskSummary.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
+    assertThat(taskSummary.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
+    assertThat(taskSummary.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
+    assertThat(taskSummary.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
+    assertThat(taskSummary.getCustomField(CUSTOM_9)).isEqualTo(repModel.getCustom9());
+    assertThat(taskSummary.getCustomField(CUSTOM_10)).isEqualTo(repModel.getCustom10());
+    assertThat(taskSummary.getCustomField(CUSTOM_11)).isEqualTo(repModel.getCustom11());
+    assertThat(taskSummary.getCustomField(CUSTOM_12)).isEqualTo(repModel.getCustom12());
+    assertThat(taskSummary.getCustomField(CUSTOM_13)).isEqualTo(repModel.getCustom13());
+    assertThat(taskSummary.getCustomField(CUSTOM_14)).isEqualTo(repModel.getCustom14());
+    assertThat(taskSummary.getCustomField(CUSTOM_15)).isEqualTo(repModel.getCustom15());
+    assertThat(taskSummary.getCustomField(CUSTOM_16)).isEqualTo(repModel.getCustom16());
     testEqualityAttachments(
         taskSummary.getAttachmentSummaries(), repModel.getAttachmentSummaries());
   }

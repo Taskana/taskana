@@ -95,10 +95,10 @@ class WorkbasketBuilderTest {
     expectedWorkbasket.setDescription("A test description");
     expectedWorkbasket.setOwner("user-1-1");
     expectedWorkbasket.setType(WorkbasketType.PERSONAL);
-    expectedWorkbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_1, "custom 1 value");
-    expectedWorkbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_2, "custom 2 value");
-    expectedWorkbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_3, "custom 3 value");
-    expectedWorkbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_4, "custom 4 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_1, "custom 1 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_2, "custom 2 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_3, "custom 3 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_4, "custom 4 value");
     expectedWorkbasket.setOrgLevel1("org level 1");
     expectedWorkbasket.setOrgLevel2("org level 2");
     expectedWorkbasket.setOrgLevel3("org level 3");

@@ -38,7 +38,7 @@ class PriorityServiceAccTest extends AbstractAccTest {
     ThrowingConsumer<Pair<String, Integer>> test =
         x -> {
           Task task = taskService.newTask("USER-1-1", "DOMAIN_A");
-          task.setCustomAttribute(TaskCustomField.CUSTOM_6, x.getLeft());
+          task.setCustomField(TaskCustomField.CUSTOM_6, x.getLeft());
           task.setClassificationKey("T2100");
           ObjectReference objectReference =
               createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
@@ -65,7 +65,7 @@ class PriorityServiceAccTest extends AbstractAccTest {
 
     ThrowingConsumer<Pair<String, Integer>> test =
         x -> {
-          task.setCustomAttribute(TaskCustomField.CUSTOM_6, x.getLeft());
+          task.setCustomField(TaskCustomField.CUSTOM_6, x.getLeft());
 
           Task updatedTask = taskService.updateTask(task);
           assertThat(updatedTask.getPriority()).isEqualTo(daysSinceCreated * x.getRight());

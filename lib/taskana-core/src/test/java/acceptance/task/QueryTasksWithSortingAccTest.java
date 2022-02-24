@@ -475,7 +475,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
         assertThat(results)
             .hasSizeGreaterThan(2)
-            .extracting(t -> t.getCustomAttribute(customField))
+            .extracting(t -> t.getCustomField(customField))
             .filteredOn(Objects::nonNull)
             .isSortedAccordingTo(comparator);
       }

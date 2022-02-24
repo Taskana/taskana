@@ -79,7 +79,7 @@ public class ClassificationBuilder {
 
   public ClassificationBuilder customAttribute(
       ClassificationCustomField customField, String value) {
-    testClassification.setCustomAttribute(customField, value);
+    testClassification.setCustomField(customField, value);
     return this;
   }
 
