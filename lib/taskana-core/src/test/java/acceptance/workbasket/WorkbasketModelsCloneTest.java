@@ -19,10 +19,10 @@ class WorkbasketModelsCloneTest {
   @Test
   void should_CopyWithoutId_When_WorkbasketSummaryClone() {
     Workbasket dummyWorkbasketForSummaryTest = new WorkbasketImpl();
-    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_1, "dummyCustom1");
-    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_2, "dummyCustom2");
-    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_3, "dummyCustom3");
-    dummyWorkbasketForSummaryTest.setCustomAttribute(CUSTOM_4, "dummyCustom4");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_1, "dummyCustom1");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_2, "dummyCustom2");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_3, "dummyCustom3");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_4, "dummyCustom4");
     dummyWorkbasketForSummaryTest.setDescription("dummyDescription");
     dummyWorkbasketForSummaryTest.setMarkedForDeletion(false);
     dummyWorkbasketForSummaryTest.setName("dummyName");

@@ -584,7 +584,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
           assertThat(results)
               .hasSizeGreaterThan(2)
-              .extracting(w -> w.getCustomAttribute(customField))
+              .extracting(w -> w.getCustomField(customField))
               .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
         };
     return DynamicTest.stream(iterator, c -> "for " + c, test);
@@ -606,7 +606,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
           assertThat(results)
               .hasSizeGreaterThan(2)
-              .extracting(w -> w.getCustomAttribute(customField))
+              .extracting(w -> w.getCustomField(customField))
               .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
         };
     return DynamicTest.stream(iterator, c -> "for " + c, test);

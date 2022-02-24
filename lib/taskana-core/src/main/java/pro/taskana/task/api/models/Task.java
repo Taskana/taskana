@@ -112,8 +112,17 @@ public interface Task extends TaskSummary {
    *
    * @param customField identifies which custom attribute is to be set.
    * @param value the value of the custom attribute to be set
+   * @deprecated Use {@link #setCustomField(TaskCustomField, String)} instead
    */
   void setCustomAttribute(TaskCustomField customField, String value);
+
+  /**
+   * Sets the value for custom field.
+   *
+   * @param customField identifies which custom field is to be set.
+   * @param value the value of the custom field to be set
+   */
+  void setCustomField(TaskCustomField customField, String value);
 
   /**
    * Add an attachment.<br>

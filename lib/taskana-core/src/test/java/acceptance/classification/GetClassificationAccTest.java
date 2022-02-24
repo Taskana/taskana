@@ -51,14 +51,14 @@ class GetClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getPriority()).isEqualTo(2);
     assertThat(classification.getServiceLevel()).isEqualTo("P2D");
     assertThat(classification.getApplicationEntryPoint()).isEqualTo("point0815");
-    assertThat(classification.getCustomAttribute(CUSTOM_1)).isEqualTo("VNR");
-    assertThat(classification.getCustomAttribute(CUSTOM_2)).isEqualTo("custom2");
-    assertThat(classification.getCustomAttribute(CUSTOM_3)).isEqualTo("custom3");
-    assertThat(classification.getCustomAttribute(CUSTOM_4)).isEqualTo("custom4");
-    assertThat(classification.getCustomAttribute(CUSTOM_5)).isEqualTo("custom5");
-    assertThat(classification.getCustomAttribute(CUSTOM_6)).isEqualTo("custom6");
-    assertThat(classification.getCustomAttribute(CUSTOM_7)).isEqualTo("custom7");
-    assertThat(classification.getCustomAttribute(CUSTOM_8)).isEqualTo("custom8");
+    assertThat(classification.getCustomField(CUSTOM_1)).isEqualTo("VNR");
+    assertThat(classification.getCustomField(CUSTOM_2)).isEqualTo("custom2");
+    assertThat(classification.getCustomField(CUSTOM_3)).isEqualTo("custom3");
+    assertThat(classification.getCustomField(CUSTOM_4)).isEqualTo("custom4");
+    assertThat(classification.getCustomField(CUSTOM_5)).isEqualTo("custom5");
+    assertThat(classification.getCustomField(CUSTOM_6)).isEqualTo("custom6");
+    assertThat(classification.getCustomField(CUSTOM_7)).isEqualTo("custom7");
+    assertThat(classification.getCustomField(CUSTOM_8)).isEqualTo("custom8");
   }
 
   @Test
@@ -76,14 +76,14 @@ class GetClassificationAccTest extends AbstractAccTest {
     assertThat(classification.getPriority()).isEqualTo(2);
     assertThat(classification.getServiceLevel()).isEqualTo("P2D");
     assertThat(classification.getApplicationEntryPoint()).isEqualTo("point0815");
-    assertThat(classification.getCustomAttribute(CUSTOM_1)).isEqualTo("VNR");
-    assertThat(classification.getCustomAttribute(CUSTOM_2)).isEqualTo("custom2");
-    assertThat(classification.getCustomAttribute(CUSTOM_3)).isEqualTo("custom3");
-    assertThat(classification.getCustomAttribute(CUSTOM_4)).isEqualTo("custom4");
-    assertThat(classification.getCustomAttribute(CUSTOM_5)).isEqualTo("custom5");
-    assertThat(classification.getCustomAttribute(CUSTOM_6)).isEqualTo("custom6");
-    assertThat(classification.getCustomAttribute(CUSTOM_7)).isEqualTo("custom7");
-    assertThat(classification.getCustomAttribute(CUSTOM_8)).isEqualTo("custom8");
+    assertThat(classification.getCustomField(CUSTOM_1)).isEqualTo("VNR");
+    assertThat(classification.getCustomField(CUSTOM_2)).isEqualTo("custom2");
+    assertThat(classification.getCustomField(CUSTOM_3)).isEqualTo("custom3");
+    assertThat(classification.getCustomField(CUSTOM_4)).isEqualTo("custom4");
+    assertThat(classification.getCustomField(CUSTOM_5)).isEqualTo("custom5");
+    assertThat(classification.getCustomField(CUSTOM_6)).isEqualTo("custom6");
+    assertThat(classification.getCustomField(CUSTOM_7)).isEqualTo("custom7");
+    assertThat(classification.getCustomField(CUSTOM_8)).isEqualTo("custom8");
   }
 
   @Test

@@ -189,22 +189,22 @@ class TaskRepresentationModelAssemblerTest {
     task.setCustomAttributeMap(Map.of("abc", "def"));
     task.setCallbackInfo(Map.of("ghi", "jkl"));
     task.setAttachments(List.of(attachment));
-    task.setCustomAttribute(TaskCustomField.CUSTOM_1, "custom1");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_2, "custom2");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_3, "custom3");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_4, "custom4");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_5, "custom5");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_6, "custom6");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_7, "custom7");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_8, "custom8");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_9, "custom9");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_10, "custom10");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_11, "custom11");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_12, "custom12");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_13, "custom13");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_14, "custom14");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_15, "custom15");
-    task.setCustomAttribute(TaskCustomField.CUSTOM_16, "custom16");
+    task.setCustomField(TaskCustomField.CUSTOM_1, "custom1");
+    task.setCustomField(TaskCustomField.CUSTOM_2, "custom2");
+    task.setCustomField(TaskCustomField.CUSTOM_3, "custom3");
+    task.setCustomField(TaskCustomField.CUSTOM_4, "custom4");
+    task.setCustomField(TaskCustomField.CUSTOM_5, "custom5");
+    task.setCustomField(TaskCustomField.CUSTOM_6, "custom6");
+    task.setCustomField(TaskCustomField.CUSTOM_7, "custom7");
+    task.setCustomField(TaskCustomField.CUSTOM_8, "custom8");
+    task.setCustomField(TaskCustomField.CUSTOM_9, "custom9");
+    task.setCustomField(TaskCustomField.CUSTOM_10, "custom10");
+    task.setCustomField(TaskCustomField.CUSTOM_11, "custom11");
+    task.setCustomField(TaskCustomField.CUSTOM_12, "custom12");
+    task.setCustomField(TaskCustomField.CUSTOM_13, "custom13");
+    task.setCustomField(TaskCustomField.CUSTOM_14, "custom14");
+    task.setCustomField(TaskCustomField.CUSTOM_15, "custom15");
+    task.setCustomField(TaskCustomField.CUSTOM_16, "custom16");
     // when
     TaskRepresentationModel repModel = assembler.toModel(task);
     // then

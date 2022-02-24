@@ -246,30 +246,30 @@ public class ClassificationDefinitionController {
     currentClassification.setPriority(newClassification.getPriority());
     currentClassification.setServiceLevel(newClassification.getServiceLevel());
     currentClassification.setApplicationEntryPoint(newClassification.getApplicationEntryPoint());
-    currentClassification.setCustomAttribute(
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_1,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_1));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_1));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_2,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_2));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_2));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_3,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_3));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_3));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_4,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_4));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_4));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_5,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_5));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_5));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_6,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_6));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_6));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_7,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_7));
-    currentClassification.setCustomAttribute(
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_7));
+    currentClassification.setCustomField(
         ClassificationCustomField.CUSTOM_8,
-        newClassification.getCustomAttribute(ClassificationCustomField.CUSTOM_8));
+        newClassification.getCustomField(ClassificationCustomField.CUSTOM_8));
     classificationService.updateClassification(currentClassification);
   }
 }

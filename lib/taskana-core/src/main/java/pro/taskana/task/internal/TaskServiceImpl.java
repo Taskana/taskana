@@ -1773,7 +1773,7 @@ public class TaskServiceImpl implements TaskService {
     for (Map.Entry<TaskCustomField, String> entry : customFieldsToUpdate.entrySet()) {
       TaskCustomField key = entry.getKey();
       fieldSelector.setCustomProperty(key, true);
-      newTask.setCustomAttribute(key, entry.getValue());
+      newTask.setCustomField(key, entry.getValue());
     }
     return newTask;
   }

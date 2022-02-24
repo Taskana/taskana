@@ -63,8 +63,17 @@ public interface WorkbasketSummary {
    *
    * @param customField identifies which custom attribute is requested.
    * @return the value for the given customField
+   * @deprecated Use {@link #getCustomField(WorkbasketCustomField)} instead
    */
   String getCustomAttribute(WorkbasketCustomField customField);
+
+  /**
+   * Gets the custom attribute of the workbasket.
+   *
+   * @param customField identifies which custom attribute is requested.
+   * @return the value for the given customField
+   */
+  String getCustomField(WorkbasketCustomField customField);
 
   /**
    * Gets the orglevel1 property of the workbasket.

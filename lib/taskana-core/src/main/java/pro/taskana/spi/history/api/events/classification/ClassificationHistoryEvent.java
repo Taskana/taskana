@@ -53,14 +53,14 @@ public class ClassificationHistoryEvent {
     priority = classification.getPriority();
     serviceLevel = classification.getServiceLevel();
     type = classification.getType();
-    custom1 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_1);
-    custom2 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_2);
-    custom3 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_3);
-    custom4 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_4);
-    custom5 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_5);
-    custom6 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_6);
-    custom7 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_7);
-    custom8 = classification.getCustomAttribute(ClassificationCustomField.CUSTOM_8);
+    custom1 = classification.getCustomField(ClassificationCustomField.CUSTOM_1);
+    custom2 = classification.getCustomField(ClassificationCustomField.CUSTOM_2);
+    custom3 = classification.getCustomField(ClassificationCustomField.CUSTOM_3);
+    custom4 = classification.getCustomField(ClassificationCustomField.CUSTOM_4);
+    custom5 = classification.getCustomField(ClassificationCustomField.CUSTOM_5);
+    custom6 = classification.getCustomField(ClassificationCustomField.CUSTOM_6);
+    custom7 = classification.getCustomField(ClassificationCustomField.CUSTOM_7);
+    custom8 = classification.getCustomField(ClassificationCustomField.CUSTOM_8);
     this.details = details;
   }
 
