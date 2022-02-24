@@ -42,10 +42,10 @@ public class WorkbasketHistoryEvent {
     key = workbasket.getKey();
     type = workbasket.getType().name();
     owner = workbasket.getOwner();
-    custom1 = workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_1);
-    custom2 = workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_2);
-    custom3 = workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_3);
-    custom4 = workbasket.getCustomAttribute(WorkbasketCustomField.CUSTOM_4);
+    custom1 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_1);
+    custom2 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_2);
+    custom3 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_3);
+    custom4 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_4);
     orgLevel1 = workbasket.getOrgLevel1();
     orgLevel2 = workbasket.getOrgLevel2();
     orgLevel3 = workbasket.getOrgLevel3();

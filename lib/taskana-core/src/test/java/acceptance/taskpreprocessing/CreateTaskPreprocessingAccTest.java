@@ -62,7 +62,7 @@ class CreateTaskPreprocessingAccTest {
 
     Task createdTask = taskService.createTask(newTaskToCreate);
 
-    assertThat(createdTask.getCustomAttribute(TaskCustomField.CUSTOM_1))
+    assertThat(createdTask.getCustomField(TaskCustomField.CUSTOM_1))
         .isEqualTo("preprocessedCustomField");
   }
 
@@ -70,7 +70,7 @@ class CreateTaskPreprocessingAccTest {
 
     @Override
     public void processTaskBeforeCreation(Task taskToProcess) {
-      taskToProcess.setCustomAttribute(TaskCustomField.CUSTOM_1, "preprocessedCustomField");
+      taskToProcess.setCustomField(TaskCustomField.CUSTOM_1, "preprocessedCustomField");
     }
   }
 }

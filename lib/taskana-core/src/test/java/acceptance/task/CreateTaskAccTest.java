@@ -677,7 +677,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     for (TaskCustomField taskCustomField : TaskCustomField.values()) {
-      newTask.setCustomAttribute(taskCustomField, taskCustomField.name());
+      newTask.setCustomField(taskCustomField, taskCustomField.name());
     }
     newTask.setCustomAttributeMap(createSimpleCustomPropertyMap(5));
     newTask.setDescription("Description of test task");

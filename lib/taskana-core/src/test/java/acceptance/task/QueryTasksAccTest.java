@@ -299,7 +299,7 @@ class QueryTasksAccTest extends AbstractAccTest {
       assertThat(results).hasSize(expectedResult);
 
       String[] customAttributes =
-          results.stream().map(t -> t.getCustomAttribute(customField)).toArray(String[]::new);
+          results.stream().map(t -> t.getCustomField(customField)).toArray(String[]::new);
 
       List<TaskSummary> result2 =
           taskService.createTaskQuery().customAttributeIn(customField, customAttributes).list();

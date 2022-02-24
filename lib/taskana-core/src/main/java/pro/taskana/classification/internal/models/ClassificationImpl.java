@@ -81,8 +81,14 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     this.description = description;
   }
 
+  @Deprecated
   @Override
   public void setCustomAttribute(ClassificationCustomField customField, String value) {
+    setCustomField(customField, value);
+  }
+
+  @Override
+  public void setCustomField(ClassificationCustomField customField, String value) {
     switch (customField) {
       case CUSTOM_1:
         custom1 = value;

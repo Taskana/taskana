@@ -117,10 +117,10 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     assertThat(summary.getId()).isEqualTo(repModel.getWorkbasketId());
     assertThat(summary.getKey()).isEqualTo(repModel.getKey());
     assertThat(summary.getName()).isEqualTo(repModel.getName());
-    assertThat(summary.getCustomAttribute(CUSTOM_1)).isEqualTo(repModel.getCustom1());
-    assertThat(summary.getCustomAttribute(CUSTOM_2)).isEqualTo(repModel.getCustom2());
-    assertThat(summary.getCustomAttribute(CUSTOM_3)).isEqualTo(repModel.getCustom3());
-    assertThat(summary.getCustomAttribute(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(summary.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
+    assertThat(summary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
+    assertThat(summary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
+    assertThat(summary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
     assertThat(summary.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
     assertThat(summary.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
     assertThat(summary.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());

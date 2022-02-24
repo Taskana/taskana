@@ -47,10 +47,10 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getOrgLevel2()).isEqualTo("abteilung");
     assertThat(workbasket.getOrgLevel3()).isEqualTo("projekt");
     assertThat(workbasket.getOrgLevel4()).isEqualTo("team");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_1)).isEqualTo("custom1");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_2)).isEqualTo("custom2");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_3)).isEqualTo("custom3");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_4)).isEqualTo("custom4");
+    assertThat(workbasket.getCustomField(CUSTOM_1)).isEqualTo("custom1");
+    assertThat(workbasket.getCustomField(CUSTOM_2)).isEqualTo("custom2");
+    assertThat(workbasket.getCustomField(CUSTOM_3)).isEqualTo("custom3");
+    assertThat(workbasket.getCustomField(CUSTOM_4)).isEqualTo("custom4");
   }
 
   @WithAccessId(user = "admin")
@@ -96,10 +96,10 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasket.getOrgLevel2()).isEqualTo("abteilung");
     assertThat(workbasket.getOrgLevel3()).isEqualTo("projekt");
     assertThat(workbasket.getOrgLevel4()).isEqualTo("team");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_1)).isEqualTo("custom1");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_2)).isEqualTo("custom2");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_3)).isEqualTo("custom3");
-    assertThat(workbasket.getCustomAttribute(CUSTOM_4)).isEqualTo("custom4");
+    assertThat(workbasket.getCustomField(CUSTOM_1)).isEqualTo("custom1");
+    assertThat(workbasket.getCustomField(CUSTOM_2)).isEqualTo("custom2");
+    assertThat(workbasket.getCustomField(CUSTOM_3)).isEqualTo("custom3");
+    assertThat(workbasket.getCustomField(CUSTOM_4)).isEqualTo("custom4");
   }
 
   @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
@@ -141,10 +141,10 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     assertThat(workbasketSummary.getOrgLevel2()).isEqualTo("abteilung");
     assertThat(workbasketSummary.getOrgLevel3()).isEqualTo("projekt");
     assertThat(workbasketSummary.getOrgLevel4()).isEqualTo("team");
-    assertThat(workbasketSummary.getCustomAttribute(CUSTOM_1)).isEqualTo("custom1");
-    assertThat(workbasketSummary.getCustomAttribute(CUSTOM_2)).isEqualTo("custom2");
-    assertThat(workbasketSummary.getCustomAttribute(CUSTOM_3)).isEqualTo("custom3");
-    assertThat(workbasketSummary.getCustomAttribute(CUSTOM_4)).isEqualTo("custom4");
+    assertThat(workbasketSummary.getCustomField(CUSTOM_1)).isEqualTo("custom1");
+    assertThat(workbasketSummary.getCustomField(CUSTOM_2)).isEqualTo("custom2");
+    assertThat(workbasketSummary.getCustomField(CUSTOM_3)).isEqualTo("custom3");
+    assertThat(workbasketSummary.getCustomField(CUSTOM_4)).isEqualTo("custom4");
     assertThat(workbasketSummary.isMarkedForDeletion()).isFalse();
   }
 

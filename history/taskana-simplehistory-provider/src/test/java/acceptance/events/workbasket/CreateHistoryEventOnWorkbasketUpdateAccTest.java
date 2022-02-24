@@ -44,10 +44,10 @@ class CreateHistoryEventOnWorkbasketUpdateAccTest extends AbstractAccTest {
     workbasket.setOrgLevel2("new level 2");
     workbasket.setOrgLevel3("new level 3");
     workbasket.setOrgLevel4("new level 4");
-    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_1, "new custom 1");
-    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_2, "new custom 2");
-    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_3, "new custom 3");
-    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_4, "new custom 4");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_1, "new custom 1");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_2, "new custom 2");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_3, "new custom 3");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_4, "new custom 4");
     workbasket.setDescription("new description");
     workbasketService.updateWorkbasket(workbasket);
 

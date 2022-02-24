@@ -62,14 +62,14 @@ class UpdateClassificationAccTest extends AbstractAccTest {
 
     classification.setApplicationEntryPoint(newEntryPoint);
     classification.setCategory("PROCESS");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, "newCustom1");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_2, "newCustom2");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_3, "newCustom3");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_4, "newCustom4");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_5, "newCustom5");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_6, "newCustom6");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_7, "newCustom7");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_8, "newCustom8");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_1, "newCustom1");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_2, "newCustom2");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_3, "newCustom3");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_4, "newCustom4");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_5, "newCustom5");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_6, "newCustom6");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_7, "newCustom7");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_8, "newCustom8");
     classification.setDescription("newDescription");
     classification.setIsValidInDomain(false);
     classification.setName(newName);
@@ -93,7 +93,7 @@ class UpdateClassificationAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_UserIsNotAuthorized() throws Exception {
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
-    classification.setCustomAttribute(ClassificationCustomField.CUSTOM_1, "newCustom1");
+    classification.setCustomField(ClassificationCustomField.CUSTOM_1, "newCustom1");
     ThrowingCallable call = () -> classificationService.updateClassification(classification);
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }

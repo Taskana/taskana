@@ -34,8 +34,17 @@ public interface Workbasket extends WorkbasketSummary {
    *
    * @param customField identifies which custom attribute is to be set.
    * @param value the value of the custom attribute to be set
+   * @deprecated Use {@link #setCustomField(WorkbasketCustomField, String)} instead
    */
   void setCustomAttribute(WorkbasketCustomField customField, String value);
+
+  /**
+   * Sets the value for custom field.
+   *
+   * @param customField identifies which custom field is to be set.
+   * @param value the value of the custom field to be set
+   */
+  void setCustomField(WorkbasketCustomField customField, String value);
 
   /**
    * Sets the value for orgLevel1 attribute.

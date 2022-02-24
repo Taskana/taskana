@@ -58,7 +58,7 @@ public class WorkbasketBuilder {
   }
 
   public WorkbasketBuilder customAttribute(WorkbasketCustomField customField, String value) {
-    testWorkbasket.setCustomAttribute(customField, value);
+    testWorkbasket.setCustomField(customField, value);
     return this;
   }
 

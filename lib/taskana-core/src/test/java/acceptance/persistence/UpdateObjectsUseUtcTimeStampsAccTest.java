@@ -66,7 +66,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     for (TaskCustomField taskCustomField : TaskCustomField.values()) {
-      newTask.setCustomAttribute(taskCustomField, taskCustomField.name());
+      newTask.setCustomField(taskCustomField, taskCustomField.name());
     }
     newTask.setCustomAttributeMap(createSimpleCustomPropertyMap(5));
     newTask.setDescription("Description of test task");
@@ -140,7 +140,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     Workbasket workbasket =
         workbasketService.getWorkbasket("WBI:100000000000000000000000000000000001");
-    workbasket.setCustomAttribute(WorkbasketCustomField.CUSTOM_1, "bla");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_1, "bla");
 
     TimeZone originalZone = TimeZone.getDefault();
     Workbasket updatedWorkbasket = workbasketService.updateWorkbasket(workbasket);

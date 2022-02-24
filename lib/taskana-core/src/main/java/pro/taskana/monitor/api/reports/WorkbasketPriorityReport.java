@@ -100,11 +100,11 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
      * Adds the values of a certain {@linkplain TaskCustomField} for exact matching to the builder.
      *
      * <p>The created report contains only tasks with a {@linkplain
-     * Task#getCustomAttribute(TaskCustomField) custom attribute} value exactly matching one of the
+     * Task#getCustomField(TaskCustomField) custom attribute} value exactly matching one of the
      * items in the list.
      *
      * @param customField the specified {@linkplain TaskCustomField}
-     * @param strings the values the specified {@linkplain Task#getCustomAttribute(TaskCustomField)
+     * @param strings the values the specified {@linkplain Task#getCustomField(TaskCustomField)
      *     custom attribute} should match
      * @return the modified {@linkplain TimeIntervalReportBuilder}
      * @throws InvalidArgumentException if filter values are not given
@@ -116,11 +116,11 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
      * Excludes the values of a certain {@linkplain TaskCustomField} to the builder.
      *
      * <p>The created report contains only tasks with a {@linkplain
-     * Task#getCustomAttribute(TaskCustomField) custom attribute} value not matching one of the
+     * Task#getCustomField(TaskCustomField) custom attribute} value not matching one of the
      * items in the list.
      *
      * @param customField the specified {@linkplain TaskCustomField}
-     * @param strings the values the specified {@linkplain Task#getCustomAttribute(TaskCustomField)
+     * @param strings the values the specified {@linkplain Task#getCustomField(TaskCustomField)
      *     custom attribute} should not match
      * @return the modified {@linkplain TimeIntervalReportBuilder}
      * @throws InvalidArgumentException if filter values are not given
@@ -133,13 +133,13 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
      * builder.
      *
      * <p>The created report contains only tasks with a {@linkplain
-     * Task#getCustomAttribute(TaskCustomField) custom attribute} value pattern-matching one of the
+     * Task#getCustomField(TaskCustomField) custom attribute} value pattern-matching one of the
      * items in the list. They will be compared in SQL with the LIKE operator. You may use a
      * wildcard like % to specify the pattern. If you specify multiple arguments they are combined
      * with the OR keyword.
      *
      * @param customField the specified {@linkplain TaskCustomField}
-     * @param strings the values the specified {@linkplain Task#getCustomAttribute(TaskCustomField)
+     * @param strings the values the specified {@linkplain Task#getCustomField(TaskCustomField)
      *     custom attribute} should match
      * @return the modified {@linkplain TimeIntervalReportBuilder}
      * @throws InvalidArgumentException if filter values are not given
