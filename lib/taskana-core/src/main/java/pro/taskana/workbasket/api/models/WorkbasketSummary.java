@@ -10,103 +10,107 @@ import pro.taskana.workbasket.api.WorkbasketType;
 public interface WorkbasketSummary {
 
   /**
-   * Gets the id of the workbasket.
+   * Returns the id of the {@linkplain Workbasket}.
    *
-   * @return workbasketId
+   * @return id
    */
   String getId();
 
   /**
-   * Gets the key of the workbasket.
+   * Returns the key of the {@linkplain Workbasket}.
    *
-   * @return workbasketKey
+   * @return key
    */
   String getKey();
 
   /**
-   * Gets the name of the workbasket.
+   * Returns the name of the {@linkplain Workbasket}.
    *
-   * @return workbasket's name
+   * @return name
    */
   String getName();
 
   /**
-   * Gets the description of the workbasket.
+   * Returns the description of the {@linkplain Workbasket}.
    *
-   * @return workbasket's description
+   * @return description
    */
   String getDescription();
 
   /**
-   * Gets the owner of the workbasket.
+   * Returns the owner of the {@linkplain Workbasket}.
    *
-   * @return workbasket's owner
+   * @return owner
    */
   String getOwner();
 
   /**
-   * Gets the domain of the workbasket.
+   * Returns the domain of the {@linkplain Workbasket}.
    *
-   * @return workbasket's domain
+   * @return domain
    */
   String getDomain();
 
   /**
-   * Gets the type of the workbasket.
+   * Returns the type of the {@linkplain Workbasket}.
    *
-   * @return workbasket's type
+   * @return type
    */
   WorkbasketType getType();
 
   /**
-   * Gets the custom attribute of the workbasket.
+   * Returns the value of the specified {@linkplain WorkbasketCustomField} of the {@linkplain
+   * Workbasket}.
    *
-   * @param customField identifies which custom attribute is requested.
-   * @return the value for the given customField
-   * @deprecated Use {@link #getCustomField(WorkbasketCustomField)} instead
+   * @param customField identifies which {@linkplain WorkbasketCustomField} is requested
+   * @return the value for the given {@linkplain WorkbasketCustomField}
+   * @deprecated Use {@linkplain #getCustomField(WorkbasketCustomField)} instead
    */
   String getCustomAttribute(WorkbasketCustomField customField);
 
   /**
-   * Gets the custom attribute of the workbasket.
+   * Returns the value of the specified {@linkplain WorkbasketCustomField} of the {@linkplain
+   * Workbasket}.
    *
-   * @param customField identifies which custom attribute is requested.
-   * @return the value for the given customField
+   * @param customField identifies which the value of the specified {@linkplain
+   *     WorkbasketCustomField} of the {@linkplain Workbasket} is requested
+   * @return the value for the given the value of the specified {@linkplain WorkbasketCustomField}
+   *     of the {@linkplain Workbasket}
    */
   String getCustomField(WorkbasketCustomField customField);
 
   /**
-   * Gets the orglevel1 property of the workbasket.
+   * Returns the orglevel1 of the {@linkplain Workbasket}.
    *
-   * @return the workbasket's orglevel1 property
+   * @return orglevel1
    */
   String getOrgLevel1();
 
   /**
-   * Gets the orglevel2 property of the workbasket.
+   * Returns the orglevel2 of the {@linkplain Workbasket}.
    *
-   * @return the workbasket's orglevel2 property
+   * @return orglevel2
    */
   String getOrgLevel2();
 
   /**
-   * Gets the orglevel3 property of the workbasket.
+   * Returns the orglevel3 of the {@linkplain Workbasket}.
    *
-   * @return the workbasket's orglevel3 property
+   * @return orglevel3
    */
   String getOrgLevel3();
 
   /**
-   * Gets the orglevel4 property of the workbasket.
+   * Returns the orglevel4 of the {@linkplain Workbasket}.
    *
-   * @return the workbasket's orglevel4 property
+   * @return orglevel4
    */
   String getOrgLevel4();
 
   /**
-   * Gets the markedForDeletion property of the workbasket.
+   * Checks if the {@linkplain Workbasket} is marked for deletion.
    *
-   * @return the workbasket's markedForDeletion property
+   * @return the markedForDeletion flag
    */
   boolean isMarkedForDeletion();
 

@@ -1,6 +1,7 @@
 package pro.taskana.workbasket.api;
 
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /**
@@ -22,9 +23,9 @@ public interface AbstractWorkbasketAccessItemQuery<
   Q idIn(String... ids);
 
   /**
-   * Add your workbasket id to your query.
+   * Add the {@linkplain Workbasket#getId() id} to your query.
    *
-   * @param workbasketId the workbasket Id
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the Workbasket
    * @return the query
    */
   Q workbasketIdIn(String... workbasketId);

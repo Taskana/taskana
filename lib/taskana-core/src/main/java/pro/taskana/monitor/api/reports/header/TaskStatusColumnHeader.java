@@ -3,7 +3,7 @@ package pro.taskana.monitor.api.reports.header;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
 import pro.taskana.task.api.TaskState;
 
-/** The TaskStatusColumnHeader represents a column for each {@link TaskState}. */
+/** The TaskStatusColumnHeader represents a column for each {@linkplain TaskState}. */
 public class TaskStatusColumnHeader implements ColumnHeader<TaskQueryItem> {
 
   private final TaskState state;

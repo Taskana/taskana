@@ -24,7 +24,7 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
 /**
- * Implementation of {@link TimeIntervalReportBuilder}.
+ * Implementation of {@linkplain TimeIntervalReportBuilder}.
  *
  * @param <B> the true Builder behind this Interface
  * @param <I> the true AgeQueryItem inside the Report

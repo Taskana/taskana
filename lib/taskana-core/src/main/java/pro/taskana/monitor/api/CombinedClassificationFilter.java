@@ -1,12 +1,17 @@
 package pro.taskana.monitor.api;
 
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
+import pro.taskana.task.api.models.Attachment;
+import pro.taskana.task.api.models.Task;
 
 /**
- * The CombinedClassificationFilter is a pair of a classificationId for a task and a
- * classificationId for the corresponding attachment that is used to filter the {@link
- * WorkbasketReport} by the classification of the attachment. To filter by the classification of the
- * task, the classificationId of the attachment should be null.
+ * The CombinedClassificationFilter is a pair of a classificationId for a {@linkplain Task} and a
+ * classificationId for the corresponding {@linkplain Attachment}. Such pair can only be created for
+ * tasks that have no more than one {@linkplain Attachment}. The pair is used to filter the
+ * {@linkplain WorkbasketReport} by the {@linkplain Classification} of the {@linkplain Attachment}.
+ * To filter by the {@linkplain Classification} of the {@linkplain Task}, the
+ * attachmentClassificationId of the CombinedClassificationFilter should be NULL.
  */
 public class CombinedClassificationFilter {
 

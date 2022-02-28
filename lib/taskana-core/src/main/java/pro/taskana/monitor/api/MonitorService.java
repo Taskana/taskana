@@ -13,57 +13,58 @@ import pro.taskana.task.api.TaskCustomField;
 public interface MonitorService {
 
   /**
-   * Provides a {@link WorkbasketReport.Builder} for creating a {@link WorkbasketReport}.
+   * Provides a {@linkplain WorkbasketReport.Builder} for creating a {@linkplain WorkbasketReport}.
    *
-   * @return a {@link WorkbasketReport.Builder}
+   * @return a {@linkplain WorkbasketReport.Builder}
    */
   WorkbasketReport.Builder createWorkbasketReportBuilder();
 
   /**
-   * Provides a {@link WorkbasketPriorityReport.Builder} for creating a {@link
+   * Provides a {@linkplain WorkbasketPriorityReport.Builder} for creating a {@link
    * WorkbasketPriorityReport}.
    *
-   * @return a {@link WorkbasketReport.Builder}
+   * @return a {@linkplain WorkbasketReport.Builder}
    */
   WorkbasketPriorityReport.Builder createWorkbasketPriorityReportBuilder();
 
   /**
-   * Provides a {@link ClassificationCategoryReport.Builder} for creating a {@link
+   * Provides a {@linkplain ClassificationCategoryReport.Builder} for creating a {@link
    * ClassificationCategoryReport}.
    *
-   * @return a {@link ClassificationCategoryReport.Builder}
+   * @return a {@linkplain ClassificationCategoryReport.Builder}
    */
   ClassificationCategoryReport.Builder createClassificationCategoryReportBuilder();
 
   /**
-   * Provides a {@link ClassificationReport.Builder} for creating a {@link ClassificationReport} or
-   * a {@link pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport}.
+   * Provides a {@linkplain ClassificationReport.Builder} for creating a {@linkplain
+   * ClassificationReport} or a {@linkplain
+   * pro.taskana.monitor.api.reports.ClassificationReport.DetailedClassificationReport}.
    *
-   * @return a {@link ClassificationReport.Builder}
+   * @return a {@linkplain ClassificationReport.Builder}
    */
   ClassificationReport.Builder createClassificationReportBuilder();
 
   /**
-   * Provides a {@link TaskCustomFieldValueReport.Builder} for creating a {@link
+   * Provides a {@linkplain TaskCustomFieldValueReport.Builder} for creating a {@link
    * TaskCustomFieldValueReport}.
    *
    * @param taskCustomField the customField whose values should appear in the report
-   * @return a {@link TaskCustomFieldValueReport.Builder}
+   * @return a {@linkplain TaskCustomFieldValueReport.Builder}
    */
   TaskCustomFieldValueReport.Builder createTaskCustomFieldValueReportBuilder(
       TaskCustomField taskCustomField);
 
   /**
-   * Provides a {@link TaskStatusReport.Builder} for creating a {@link TaskStatusReport}.
+   * Provides a {@linkplain TaskStatusReport.Builder} for creating a {@linkplain TaskStatusReport}.
    *
-   * @return a {@link TaskStatusReport.Builder}
+   * @return a {@linkplain TaskStatusReport.Builder}
    */
   TaskStatusReport.Builder createTaskStatusReportBuilder();
 
   /**
-   * Provides a {@link TimestampReport.Builder} for creating a {@link TimestampReport}.
+   * Provides a {@linkplain TimestampReport.Builder} for creating a {@linkplain TimestampReport}.
    *
-   * @return a {@link TimestampReport.Builder}
+   * @return a {@linkplain TimestampReport.Builder}
    */
   TimestampReport.Builder createTimestampReportBuilder();
 }

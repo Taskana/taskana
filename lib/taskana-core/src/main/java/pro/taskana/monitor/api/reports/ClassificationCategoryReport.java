@@ -28,7 +28,7 @@ public class ClassificationCategoryReport
     super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION CATEGORIES"});
   }
 
-  /** Builder for {@link ClassificationCategoryReport}. */
+  /** Builder for {@linkplain ClassificationCategoryReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 

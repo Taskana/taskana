@@ -10,12 +10,12 @@ import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 public class WorkbasketAccessItemQueryFilterParameter
     implements QueryParameter<WorkbasketAccessItemQuery, Void> {
 
-  /** Filter by the key of the workbasket. This is an exact match. */
+  /** Filter by the key of the Workbasket. This is an exact match. */
   @JsonProperty("workbasket-key")
   private final String[] workbasketKey;
 
   /**
-   * Filter by the key of the workbasket. This results in a substring search.. (% is appended to the
+   * Filter by the key of the Workbasket. This results in a substring search.. (% is appended to the
    * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */

@@ -4,69 +4,73 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 
 /**
  * Interface for WorkbasketAccessItem. This interface is used to control access of users to
- * workbaskets.
+ * {@linkplain Workbasket Workbaskets}.
  */
 public interface WorkbasketAccessItem {
 
   /**
    * Returns the current id of the WorkbasketAccessItem.
    *
-   * @return Id
+   * @return id
    */
   String getId();
 
   /**
-   * Returns the Id of the referenced workbasket.
+   * Returns the {@linkplain WorkbasketSummary#getId() id} of the referenced {@linkplain
+   * Workbasket}.
    *
-   * @return the workbasket Id
+   * @return {@linkplain WorkbasketSummary#getId() workbasketId}
    */
   String getWorkbasketId();
 
   /**
-   * Returns the Key of the referenced workbasket.
+   * Returns the {@linkplain WorkbasketSummary#getKey() key} of the referenced {@linkplain
+   * Workbasket}.
    *
-   * @return the workbasket Key
+   * @return {@linkplain WorkbasketSummary#getKey() key}
    */
   String getWorkbasketKey();
 
   /**
-   * Returns the group id or user id for which this WorkbasketAccessItem controls access
+   * Returns the id of the group or the user for which this WorkbasketAccessItem controls access
    * permissions.
    *
-   * @return access id, this is the group id or user id
+   * @return the accessId, this is the group id or user id
    */
   String getAccessId();
 
   /**
    * Returns the name of the group or user for which this WorkbasketAccessItem controls access
-   * permissions.
+   * {@linkplain WorkbasketPermission permissions}.
    *
-   * @return access name, this is the name of the group or user
+   * @return the accessName, this is the name of the group or user
    */
   String getAccessName();
 
   /**
    * Set the name of the group or user for which this WorkbasketAccessItem controls access
-   * permissions.
+   * {@linkplain WorkbasketPermission permissions}.
    *
    * @param name the name of the group or user for which this WorkbasketAccessItem controls access
-   *     permissions.
+   *     {@linkplain WorkbasketPermission permissions}
    */
   void setAccessName(String name);
 
   /**
-   * Sets a given permission for the referenced workbasket.
+   * Sets a given {@linkplain WorkbasketPermission permissions} for the referenced {@link
+   * Workbasket}.
    *
-   * @param permission the permission which is set.
-   * @param value the value for the permission.
+   * @param permission the {@linkplain WorkbasketPermission permissions} which is set
+   * @param value the value for the {@linkplain WorkbasketPermission permissions}
    */
   void setPermission(WorkbasketPermission permission, boolean value);
 
   /**
-   * Returns weather the given permission is permitted or not.
+   * Returns whether the given {@linkplain WorkbasketPermission permissions} is permitted or not.
    *
-   * @param permission the permission in question.
-   * @return True, when the given permission is permitted. Otherwise false.
+   * @param permission the {@linkplain WorkbasketPermission permissions} in question
+   * @return True, if the given {@linkplain WorkbasketPermission permissions} is permitted;
+   *     otherwise false
    */
   boolean getPermission(WorkbasketPermission permission);
 

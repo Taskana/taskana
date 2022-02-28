@@ -30,7 +30,7 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
         new String[] {"DOMAINS"});
   }
 
-  /** Builder for {@link TaskStatusReport}. */
+  /** Builder for {@linkplain TaskStatusReport}. */
   public interface Builder extends Report.Builder<TaskQueryItem, TaskStatusColumnHeader> {
 
     @Override

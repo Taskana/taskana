@@ -16,261 +16,265 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 public interface TaskSummary {
 
   /**
-   * Gets the id of the Task.
+   * Returns the id of the {@linkplain Task}.
    *
    * @return taskId
    */
   String getId();
 
   /**
-   * Gets the external id of the Task.
+   * Returns the externalId of the {@linkplain Task}.
    *
-   * @return the external Id
+   * @return externalId
    */
   String getExternalId();
 
   /**
-   * Gets the name of the creator of the Task.
+   * Returns the name of the creator of the {@linkplain Task}.
    *
    * @return creator
    */
   String getCreator();
 
   /**
-   * Gets the time when the task was created.
+   * Returns the time when the {@linkplain Task} was created.
    *
-   * @return the created {@link Instant}
+   * @return the created Instant
    */
   Instant getCreated();
 
   /**
-   * Gets the time when the Task was claimed.
+   * Returns the time when the {@linkplain Task} was claimed.
    *
-   * @return the claimed {@link Instant}
+   * @return the claimed Instant
    */
   Instant getClaimed();
 
   /**
-   * Gets the time when the Task was completed.
+   * Returns the time when the {@linkplain Task} was completed.
    *
-   * @return the completed {@link Instant}
+   * @return the completed Instant
    */
   Instant getCompleted();
 
   /**
-   * Gets the time when the Task was last modified.
+   * Returns the time when the {@linkplain Task} was last modified.
    *
-   * @return the last modified {@link Instant}
+   * @return the last modified Instant
    */
   Instant getModified();
 
   /**
-   * Gets the time when the Task is planned to be executed.
+   * Returns the time when the {@linkplain Task} is planned to be executed.
    *
-   * @return the planned {@link Instant}
+   * @return the planned Instant
    */
   Instant getPlanned();
 
   /**
-   * Gets the time when the surrounding process was started.
+   * Returns the time when the surrounding process was started.
    *
-   * @return the received {@link Instant}
+   * @return the received Instant
    */
   Instant getReceived();
 
   /**
-   * Gets the time when the Task is due.
+   * Returns the time when the {@linkplain Task} is due.
    *
-   * @return the due {@link Instant}
+   * @return the due Instant
    */
   Instant getDue();
 
   /**
-   * Gets the name of the Task.
+   * Returns the name of the {@linkplain Task}.
    *
-   * @return the Task's name
+   * @return name
    */
   String getName();
 
   /**
-   * Gets the note attached to the Task.
+   * Returns the note attached to the {@linkplain Task}.
    *
-   * @return the Task's note
+   * @return note
    */
   String getNote();
 
   /**
-   * Gets the description of the Task.
+   * Returns the description of the {@linkplain Task}.
    *
-   * @return the Task's description
+   * @return description
    */
   String getDescription();
 
   /**
-   * Gets the priority of the Task.
+   * Returns the priority of the {@linkplain Task}.
    *
-   * @return the Task's priority
+   * @return priority
    */
   int getPriority();
 
   /**
-   * Gets the manualPriority of the Task. If the value of manualPriority is zero or greater, the
-   * priority is automatically set to manualPriority. In this case, all computations of priority are
-   * disabled. If the value of manualPriority is negative, Tasks are not prioritized manually.
+   * Gets the manualPriority of the {@linkplain Task}. If the value of manualPriority is zero or
+   * greater, the priority is automatically set to manualPriority. In this case, all computations of
+   * priority are disabled. If the value of manualPriority is negative, Tasks are not prioritized
+   * manually.
    *
    * @return the manualPriority of the Task
    */
   int getManualPriority();
 
   /**
-   * Gets the state of the Task.
+   * Returns the state of the {@linkplain Task}.
    *
-   * @return the Task's state
+   * @return state
    */
   TaskState getState();
 
   /**
-   * Gets the {@link ClassificationSummary} of the Task.
+   * Returns the {@linkplain ClassificationSummary} of the {@linkplain Task}.
    *
-   * @return the Task's {@link ClassificationSummary}
+   * @return {@linkplain ClassificationSummary}
    */
   ClassificationSummary getClassificationSummary();
 
   /**
-   * Gets the {@link WorkbasketSummary} of the Task.
+   * Returns the {@linkplain WorkbasketSummary} of the {@linkplain Task}.
    *
-   * @return the Task's {@link WorkbasketSummary}
+   * @return {@linkplain WorkbasketSummary}
    */
   WorkbasketSummary getWorkbasketSummary();
 
   /**
-   * Gets the {@link AttachmentSummary attachmentSummaries} of the Task.
+   * Returns the {@linkplain AttachmentSummary attachmentSummaries} of the {@linkplain Task}.
    *
-   * @return the Task's {@link AttachmentSummary attachmentSummaries}
+   * @return {@linkplain AttachmentSummary attachmentSummaries}
    */
   List<AttachmentSummary> getAttachmentSummaries();
 
   /**
-   * Gets the secondary {@link ObjectReference}s of the Task.
+   * Returns the {@linkplain ObjectReference secondaryObjectReferences} of the {@linkplain Task}.
    *
-   * @return the Task's secondary {@link ObjectReference}s
+   * @return {@linkplain ObjectReference secondaryObjectReferences}
    */
   List<ObjectReference> getSecondaryObjectReferences();
 
   /**
-   * Add an {@link ObjectReference} to the list of secondary {@link ObjectReference}s.<br>
-   * NULL will be ignored and an ObjectReference with the same ID will be replaced by the newer one.
-   * <br>
+   * Add an {@linkplain ObjectReference} to the List of secondary {@linkplain ObjectReference
+   * objectReferences}.<br>
+   * NULL will be ignored and an {@linkplain ObjectReference} with the same {@linkplain
+   * ObjectReference#getId() id} will be replaced by the newer one. <br>
    *
-   * @param objectReference the secondary {@link ObjectReference objectReference} to be added to the
-   *     Task
+   * @param objectReference the secondary {@linkplain ObjectReference objectReference} to be added
+   *     to the {@linkplain Task}
    */
   void addSecondaryObjectReference(ObjectReference objectReference);
 
   /**
-   * Add an {@link ObjectReference} to the list of secondary {@link ObjectReference}s.<br>
-   * NULL will be ignored and an ObjectReference with the same ID will be replaced by the newer one.
-   * <br>
+   * Add an {@linkplain ObjectReference} to the List of secondary {@linkplain ObjectReference}s.<br>
+   * NULL will be ignored and an ObjectReference with the same {@linkplain ObjectReference#getId()
+   * id} will be replaced by the newer one. <br>
    *
-   * @param company of the {@link ObjectReference objectReference} to be added to the Task
-   * @param system of the {@link ObjectReference objectReference} to be added to the Task
-   * @param systemInstance of the {@link ObjectReference objectReference} to be added to the Task
-   * @param type of the {@link ObjectReference objectReference} to be added to the Task
-   * @param value of the {@link ObjectReference objectReference} to be added to the Task
+   * @param company of the {@linkplain ObjectReference objectReference} to be added to the Task
+   * @param system of the {@linkplain ObjectReference objectReference} to be added to the Task
+   * @param systemInstance of the {@linkplain ObjectReference objectReference} to be added to the
+   *     Task
+   * @param type of the {@linkplain ObjectReference objectReference} to be added to the Task
+   * @param value of the {@linkplain ObjectReference objectReference} to be added to the Task
    */
   void addSecondaryObjectReference(
       String company, String system, String systemInstance, String type, String value);
 
   /**
-   * Removes a secondary {@link ObjectReference} of the current Task locally, when the ID is
-   * represented and does return the removed {@link ObjectReference} or null if there was no match.
-   * <br>
-   * The changed Task need to be updated calling the {@link TaskService#updateTask(Task)}.
+   * Removes a secondary {@linkplain ObjectReference} of the current Task locally, when the ID is
+   * represented and does return the removed {@linkplain ObjectReference} or null if there was no
+   * match. <br>
+   * The changed Task need to be updated calling the {@linkplain TaskService#updateTask(Task)}.
    *
-   * @param objectReferenceID ID of the {@link ObjectReference} which should be removed.
-   * @return the {@link ObjectReference} which will be removed after updating OR null if there was
-   *     no matching {@link ObjectReference}
+   * @param objectReferenceID {@linkplain ObjectReference#getId() id} of the {@linkplain
+   *     ObjectReference} which should be removed
+   * @return the {@linkplain ObjectReference} which will be removed after updating or null if there
+   *     was no matching {@linkplain ObjectReference}
    */
   ObjectReference removeSecondaryObjectReference(String objectReferenceID);
 
   /**
-   * Gets the domain of the Task.
+   * Returns the domain of the {@linkplain Task}.
    *
-   * @return the Task's domain
+   * @return domain
    */
   String getDomain();
 
   /**
-   * Gets the businessProcessId of the Task.
+   * Returns the businessProcessId of the {@linkplain Task}.
    *
-   * @return the Task's businessProcessId
+   * @return businessProcessId
    */
   String getBusinessProcessId();
 
   /**
-   * Gets the parentBusinessProcessId of the Task.
+   * Returns the parentBusinessProcessId of the {@linkplain Task}.
    *
-   * @return the Task's parentBusinessProcessId
+   * @return parentBusinessProcessId
    */
   String getParentBusinessProcessId();
 
   /**
-   * Gets the owner of the Task.
+   * Returns the owner of the {@linkplain Task}.
    *
-   * @return the Task's owner
+   * @return owner
    */
   String getOwner();
 
   /**
-   * Gets the owner's long name of the Task.
+   * Returns long name of the owner of the {@linkplain Task}.
    *
-   * @return the long name of the Task owner
+   * @return the long name of the owner
    */
   String getOwnerLongName();
 
   /**
-   * Gets the primary {@link ObjectReference} of the Task.
+   * Returns the primary {@linkplain ObjectReference} of the {@linkplain Task}.
    *
-   * @return the Task's primary {@link ObjectReference}
+   * @return the Tasks primary {@linkplain ObjectReference}
    */
   ObjectReference getPrimaryObjRef();
 
   /**
-   * Gets the isRead flag of the Task.
+   * Returns the isRead flag of the {@linkplain Task}.
    *
-   * @return the Task's isRead flag
+   * @return the Tasks isRead flag
    */
   boolean isRead();
 
   /**
-   * Gets the isTransferred flag of the Task.
+   * Returns the isTransferred flag of the {@linkplain Task}.
    *
-   * @return the Task's isTransferred flag.
+   * @return the Tasks isTransferred flag
    */
   boolean isTransferred();
 
   /**
-   * Returns whether the Task is prioritized manually. That means that the priority is set to the
-   * value of the manualPriority of the Task.
+   * Returns whether the {@linkplain Task} is prioritized manually. That means that the priority is
+   * set to the value of the manualPriority of the {@linkplain Task}.
    *
    * @return true, if Tasks are prioritized manually; false otherwise
    */
   boolean isManualPriorityActive();
 
   /**
-   * Gets the custom attribute of the Task.
+   * Returns the value of the specified {@linkplain TaskCustomField} of the {@linkplain Task}.
    *
-   * @param customField identifies which custom attribute is requested.
+   * @param customField identifies which {@linkplain TaskCustomField} is requested
    * @return the value for the given customField
-   * @deprecated Use {@link #getCustomField(TaskCustomField)} instead
+   * @deprecated Use {@linkplain #getCustomField(TaskCustomField)} instead
    */
   String getCustomAttribute(TaskCustomField customField);
 
   /**
-   * Gets the custom attribute of the task.
+   * Returns the value of the specified {@linkplain TaskCustomField} of the {@linkplain Task}.
    *
-   * @param customField identifies which custom attribute is requested.
-   * @return the value for the given customField
+   * @param customField identifies which {@linkplain TaskCustomField} is requested
+   * @return the value for the given {@linkplain TaskCustomField}
    */
   String getCustomField(TaskCustomField customField);
 

@@ -27,7 +27,7 @@ public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColum
     super(timeIntervalColumnHeaders, new String[] {"WORKBASKET"});
   }
 
-  /** Builder for {@link WorkbasketReport}. */
+  /** Builder for {@linkplain WorkbasketReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
@@ -39,7 +39,7 @@ public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColum
         throws NotAuthorizedException, InvalidArgumentException;
 
     /**
-     * Adds a list of {@link CombinedClassificationFilter} to the builder. The created report
+     * Adds a list of {@linkplain CombinedClassificationFilter} to the builder. The created report
      * contains only tasks with a pair of a classificationId for a task and a classificationId for
      * the corresponding attachment in this list.
      *

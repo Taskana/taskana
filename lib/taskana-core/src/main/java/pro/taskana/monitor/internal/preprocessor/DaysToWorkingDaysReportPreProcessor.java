@@ -9,7 +9,7 @@ import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.monitor.api.reports.item.QueryItemPreprocessor;
 
 /**
- * Uses {@link WorkingDaysToDaysConverter} to convert an &lt;I&gt;s age to working days.
+ * Uses {@linkplain WorkingDaysToDaysConverter} to convert an &lt;I&gt;s age to working days.
  *
  * @param <I> QueryItem which is being processed
  */

@@ -39,7 +39,7 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
     return new TimestampRow(key, columnSize);
   }
 
-  /** Builder for {@link TimestampReport}. */
+  /** Builder for {@linkplain TimestampReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<
           TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader> {

@@ -4,7 +4,7 @@ package pro.taskana.user.api.models;
 public interface User {
 
   /**
-   * Gets the id of the User.
+   * Returns the id of the User.
    *
    * @return userId
    */
@@ -18,7 +18,7 @@ public interface User {
   void setId(String id);
 
   /**
-   * Gets the first name of the User.
+   * Returns the first name of the User.
    *
    * @return firstName
    */
@@ -32,7 +32,7 @@ public interface User {
   void setFirstName(String firstName);
 
   /**
-   * Gets the last name of the User.
+   * Returns the last name of the User.
    *
    * @return lastName
    */
@@ -46,7 +46,7 @@ public interface User {
   void setLastName(String lastName);
 
   /**
-   * Gets the full name of the User.
+   * Returns the full name of the User.
    *
    * @return fullName
    */
@@ -60,7 +60,7 @@ public interface User {
   void setFullName(String fullName);
 
   /**
-   * Gets the long name of the User.
+   * Returns the long name of the User.
    *
    * @return longName
    */
@@ -74,7 +74,7 @@ public interface User {
   void setLongName(String longName);
 
   /**
-   * Gets the email address of the User.
+   * Returns the email address of the User.
    *
    * @return email
    */
@@ -88,7 +88,7 @@ public interface User {
   void setEmail(String email);
 
   /**
-   * Gets the phone number of the User.
+   * Returns the phone number of the User.
    *
    * @return phone
    */
@@ -102,7 +102,7 @@ public interface User {
   void setPhone(String phone);
 
   /**
-   * Gets the mobile phone number of the User.
+   * Returns the mobile phone number of the User.
    *
    * @return mobilePhone
    */
@@ -116,63 +116,63 @@ public interface User {
   void setMobilePhone(String mobilePhone);
 
   /**
-   * Gets the orgLevel4 of the User.
+   * Returns the orgLevel4 of the User.
    *
    * @return orgLevel4
    */
   String getOrgLevel4();
 
   /**
-   * Sets the fourth organization level of the User.
+   * Sets the orgLevel4 of the User.
    *
    * @param orgLevel4 the fourth organization level of the User
    */
   void setOrgLevel4(String orgLevel4);
 
   /**
-   * Gets the orgLevel3 of the User.
+   * Returns the orgLevel3 of the User.
    *
    * @return orgLevel3
    */
   String getOrgLevel3();
 
   /**
-   * Sets the third organization level of the User.
+   * Sets the orgLevel3 of the User.
    *
    * @param orgLevel3 the third organization level of the User
    */
   void setOrgLevel3(String orgLevel3);
 
   /**
-   * Gets the orgLevel2 of the User.
+   * Returns the orgLevel2 of the User.
    *
    * @return orgLevel2
    */
   String getOrgLevel2();
 
   /**
-   * Sets the second organization level of the User.
+   * Sets the orgLevel2 of the User.
    *
    * @param orgLevel2 the second organization level of the User
    */
   void setOrgLevel2(String orgLevel2);
 
   /**
-   * Gets the orgLevel1 of the User.
+   * Returns the orgLevel1 of the User.
    *
    * @return orgLevel1
    */
   String getOrgLevel1();
 
   /**
-   * Sets the first organization level of the User.
+   * Sets the orgLevel1 of the User.
    *
    * @param orgLevel1 the first organization level of the User
    */
   void setOrgLevel1(String orgLevel1);
 
   /**
-   * Gets the data of the User.
+   * Returns the data of the User.
    *
    * @return data
    */
@@ -185,5 +185,10 @@ public interface User {
    */
   void setData(String data);
 
+  /**
+   * Duplicates this User.
+   *
+   * @return a copy of this User
+   */
   User copy();
 }

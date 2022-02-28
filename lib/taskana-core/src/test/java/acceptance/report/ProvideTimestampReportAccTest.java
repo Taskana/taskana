@@ -20,7 +20,7 @@ import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 import pro.taskana.monitor.api.reports.row.TimestampRow;
 
-/** Test class for {@link TimestampReport}. */
+/** Test class for {@linkplain TimestampReport}. */
 @ExtendWith(JaasExtension.class)
 class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 

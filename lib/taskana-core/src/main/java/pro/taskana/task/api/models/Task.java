@@ -7,8 +7,10 @@ import java.util.Map;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.user.api.models.User;
+import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** task-Interface to specify attribute interactions. */
+/** Task-Interface to specify the model of a Task. */
 public interface Task extends TaskSummary {
 
   /**
@@ -25,28 +27,28 @@ public interface Task extends TaskSummary {
    * externalId can only be set before the Task is inserted. Taskana rejects attempts to modify
    * externalId.
    *
-   * @param externalId the external Id
+   * @param externalId the externalId
    */
   void setExternalId(String externalId);
 
   /**
    * Sets the time when the work on this Task should be started.
    *
-   * @param planned as exact {@link Instant}
+   * @param planned as exact {@linkplain Instant}
    */
   void setPlanned(Instant planned);
 
   /**
-   * Sets the time when when the surrounding process started.
+   * Sets the time when the surrounding process started.
    *
-   * @param received as exact {@link Instant}
+   * @param received as exact {@linkplain Instant}
    */
   void setReceived(Instant received);
 
   /**
    * Sets the time when the work on this Task should be finished.
    *
-   * @param due as exact {@link Instant}
+   * @param due as exact {@linkplain Instant}
    */
   void setDue(Instant due);
 
@@ -65,10 +67,13 @@ public interface Task extends TaskSummary {
   void setDescription(String description);
 
   /**
-   * Sets the Classification key that - together with the Domain from this Task's work basket -
-   * selects the appropriate {@link Classification} for this Task.
+   * Sets the {@linkplain Classification#getKey() key} of the {@linkplain Classification} that -
+   * together with the {@linkplain WorkbasketSummary#getDomain() domain} from the {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket} of the Task - selects the appropriate
+   * {@linkplain Classification} for this Task.
    *
-   * @param classificationKey the classification key for the Task
+   * @param classificationKey the {@linkplain Classification#getKey() key} of the {@linkplain
+   *     Classification} for the Task
    */
   void setClassificationKey(String classificationKey);
 
@@ -82,110 +87,113 @@ public interface Task extends TaskSummary {
   void setManualPriority(int manualPriority);
 
   /**
-   * Returns the key of the Workbasket where the Task is stored in.
+   * Returns the {@linkplain WorkbasketSummary#getKey() key} of the {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbasket} where the Task is stored in.
    *
    * @return workbasketKey
    */
   String getWorkbasketKey();
 
   /**
-   * Returns a Map of custom Attributes.
+   * Returns a Map of customAttributes.
    *
-   * @return customAttributes as {@link Map}
+   * @return customAttributes as Map
    */
   Map<String, String> getCustomAttributeMap();
 
   /**
-   * Sets a Map of custom Attributes.
+   * Sets a Map of custom attributes.
    *
-   * @param customAttributes a {@link Map} that contains the custom attributes
+   * @param customAttributes a Map that contains the custom attributes
    */
   void setCustomAttributeMap(Map<String, String> customAttributes);
 
   /**
-   * Returns a Map of Callback info.
+   * Returns the callbackInfo.
    *
-   * @return callbackInfo as {@link Map}
+   * @return callbackInfo as Map
    */
   Map<String, String> getCallbackInfo();
 
   /**
-   * Sets a Map of callback info.
+   * Sets the callbackInfo.
    *
-   * @param callbackInfo a {@link Map} that contains the callback info
+   * @param callbackInfo a {@linkplain Map} that contains the callback information
    */
   void setCallbackInfo(Map<String, String> callbackInfo);
 
   /**
-   * Sets the value for custom Attribute.
+   * Sets the value for the specified {@linkplain TaskCustomField customField}.
    *
-   * @param customField identifies which custom attribute is to be set.
-   * @param value the value of the custom attribute to be set
-   * @deprecated Use {@link #setCustomField(TaskCustomField, String)} instead
+   * @param customField identifies which {@linkplain TaskCustomField customField} is to be set
+   * @param value the value of the {@linkplain TaskCustomField customField} to be set
+   * @deprecated Use {@linkplain #setCustomField(TaskCustomField, String)} instead
    */
   void setCustomAttribute(TaskCustomField customField, String value);
 
   /**
-   * Sets the value for custom field.
+   * Sets the value for the specified {@linkplain TaskCustomField customField}.
    *
-   * @param customField identifies which custom field is to be set.
-   * @param value the value of the custom field to be set
+   * @param customField identifies which {@linkplain TaskCustomField customField} is to be set.
+   * @param value the value of the {@linkplain TaskCustomField customField} to be set
    */
   void setCustomField(TaskCustomField customField, String value);
 
   /**
-   * Add an attachment.<br>
-   * NULL will be ignored and an attachment with the same ID will be replaced by the newer one.<br>
+   * Add an {@linkplain Attachment}.<br>
+   * NULL will be ignored and an {@linkplain Attachment} with the same id will be replaced by the
+   * newer one.<br>
    *
-   * @param attachment the {@link Attachment attachment} to be added to the Task
+   * @param attachment the {@linkplain Attachment attachment} to be added to the Task
    */
   void addAttachment(Attachment attachment);
 
   /**
-   * Return the attachments for this Task. <br>
-   * Do not use List.add()/addAll() for adding Elements, because it can cause redundant data. Use
+   * Return the {@linkplain Attachment attachment} for the Task. <br>
+   * Do not use List.add()/addAll() for adding elements, because it can cause redundant data. Use
    * addAttachment(). Clear() and remove() can be used, because it's a controllable change.
    *
-   * @return the {@link List list} of {@link Attachment attachments} for this Task
+   * @return the List of {@linkplain Attachment attachments} for this Task
    */
   List<Attachment> getAttachments();
 
   /**
-   * Sets the external business process id.
+   * Sets the associated businessProcessId.
    *
-   * @param businessProcessId Sets the business process id the Task belongs to.
+   * @param businessProcessId Sets the businessProcessId the Task belongs to.
    */
   void setBusinessProcessId(String businessProcessId);
 
   /**
-   * Sets the parent business process id to group associated processes.
+   * Sets the parentBusinessProcessId. ParentBusinessProcessId is needed to group associated
+   * processes and to identify the main process.
    *
-   * @param parentBusinessProcessId Sets the parent business process id the Task belongs to
+   * @param parentBusinessProcessId the business process id of the parent the Task belongs to
    */
   void setParentBusinessProcessId(String parentBusinessProcessId);
 
   /**
-   * Sets the ownerId of this Task.
+   * Sets the id of the owner of the Task.
    *
-   * @param taskOwnerId the user id of the Task's owner
+   * @param taskOwnerId the {@linkplain User#getId() id} of the owner of the Task
    */
   void setOwner(String taskOwnerId);
 
   /**
-   * Sets the {@link ObjectReference primaryObjectReference} of the Task.
+   * Sets the {@linkplain ObjectReference primaryObjectReference} of the Task.
    *
    * @param primaryObjRef to Task main-subject
    */
   void setPrimaryObjRef(ObjectReference primaryObjRef);
 
   /**
-   * Initializes and sets the {@link ObjectReference primaryObjectReference} of the Task.
+   * Initializes and sets the {@linkplain ObjectReference primaryObjectReference} of the Task.
    *
-   * @param company of the {@link ObjectReference primaryObjectReference} to be set
-   * @param system of the {@link ObjectReference primaryObjectReference} to be set
-   * @param systemInstance of the {@link ObjectReference primaryObjectReference} to be set
-   * @param type of the {@link ObjectReference primaryObjectReference} to be set
-   * @param value of the {@link ObjectReference primaryObjectReference} to be set
+   * @param company of the {@linkplain ObjectReference primaryObjectReference} to be set
+   * @param system of the {@linkplain ObjectReference primaryObjectReference} to be set
+   * @param systemInstance of the {@linkplain ObjectReference primaryObjectReference} to be set
+   * @param type of the {@linkplain ObjectReference primaryObjectReference} to be set
+   * @param value of the {@linkplain ObjectReference primaryObjectReference} to be set
    */
   void setPrimaryObjRef(
       String company, String system, String systemInstance, String type, String value);
@@ -198,33 +206,34 @@ public interface Task extends TaskSummary {
   void setNote(String note);
 
   /**
-   * Return a summary of the current Task.
+   * Returns a summary of the current Task.
    *
-   * @return the TaskSummary object for the current Task
+   * @return the {@linkplain TaskSummary} object for the current Task
    */
   TaskSummary asSummary();
 
   /**
-   * Removes an attachment of the current Task locally, when the ID is represented and does return
-   * the removed attachment or null if there was no match.<br>
-   * The changed Task need to be updated calling the {@link TaskService#updateTask(Task)}.
+   * Removes an {@linkplain Attachment attachment} of the current Task locally, when the ID is
+   * represented and does return the removed {@linkplain Attachment attachment} or null if there was
+   * no match.<br>
+   * The changed Task need to be updated calling the {@linkplain TaskService#updateTask(Task)}.
    *
-   * @param attachmentID ID of the attachment which should be removed.
-   * @return attachment which will be removed after updating OR null if there was no matching
-   *     attachment
+   * @param attachmentID ID of the {@linkplain Attachment attachment} which should be removed.
+   * @return {@linkplain Attachment attachment} which will be removed after updating OR null if
+   *     there was no match.
    */
   Attachment removeAttachment(String attachmentID);
 
   /**
-   * Returns the category of the current classification.
+   * Returns the category of the current {@linkplain Classification}.
    *
    * @return classificationCategory
    */
   String getClassificationCategory();
 
   /**
-   * Duplicates this Task without the internal and external id. All referenced {@link Attachment}s
-   * and {@link ObjectReference}s are copied as well.
+   * Duplicates this Task without the internal and external id. All referenced {@linkplain
+   * Attachment}s and {@linkplain ObjectReference}s are copied as well.
    *
    * @return a copy of this Task
    */

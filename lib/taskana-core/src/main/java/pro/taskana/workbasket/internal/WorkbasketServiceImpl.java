@@ -946,7 +946,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
    *
    * @param oldWorkbasket the old workbasket in the system
    * @param workbasketImplToUpdate the workbasket to update
-   * @throws ConcurrencyException if the workbasket has been modified by some other process.
+   * @throws ConcurrencyException if the workbasket has been modified by some other process; that's
+   *     the case if the given modified timestamp differs from the one in the database
    */
   public void checkModifiedHasNotChanged(
       Workbasket oldWorkbasket, WorkbasketImpl workbasketImplToUpdate) throws ConcurrencyException {
