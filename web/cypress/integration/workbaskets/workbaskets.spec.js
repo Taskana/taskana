@@ -197,11 +197,6 @@ context('TASKANA Workbaskets', () => {
     cy.get('#wb-custom-4').should('have.value', Cypress.env('testValueWorkbaskets'));
   });
 
-  it('should be possible', () => {
-    cy.visitTestWorkbasket();
-    cy.visitWorkbasketsDistributionTargetsPage();
-  });
-
   it('should be possible to remove all distribution targets', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsDistributionTargetsPage();
@@ -216,5 +211,54 @@ context('TASKANA Workbaskets', () => {
       .should('have.length', 0);
 
     cy.undoWorkbaskets();
+  });
+
+  it('should filter selected distribution targets including newly transferred targets', () => {
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get('#dual-list-Right > .distribution-targets-list > .mat-toolbar > :nth-child(2)').click();
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > taskana-shared-workbasket-filter > .filter > .filter__expanded-filter > .filter__text-input > :nth-child(1) > :nth-child(2) > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix > .mat-input-element'
+    )
+      .clear()
+      .type('002');
+    cy.get('.filter__action-buttons > .filter__search-button').click();
+
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(1)'
+    ).should('contain.text', 'Basxet1');
+
+    cy.get('.filter__action-buttons > [mattooltip="Clear Workbasket filter"]').click();
+
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper'
+    )
+      .children()
+      .should('have.length', 2);
+  });
+
+  it('should filter available distribution targets', () => {
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get('#dual-list-Left > .distribution-targets-list > .mat-toolbar > :nth-child(2)').click();
+    cy.get(
+      '#dual-list-Left > .distribution-targets-list > taskana-shared-workbasket-filter > .filter > .filter__expanded-filter > .filter__text-input > :nth-child(1) > :nth-child(2) > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix > .mat-input-element'
+    )
+      .clear()
+      .type('008');
+
+    cy.get('.filter__action-buttons > .filter__search-button').click();
+
+    cy.get(
+      '#dual-list-Left > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper'
+    )
+      .children()
+      .should('have.length', 1);
+
+    cy.get(
+      '#dual-list-Left > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(1)'
+    ).should('contain.text', 'BAsxet7');
   });
 });

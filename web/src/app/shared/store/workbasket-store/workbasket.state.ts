@@ -237,7 +237,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
       tap((domain) => {
         this.location.go(this.location.path().replace(/(workbaskets).*/g, 'workbaskets/(detail:new-workbasket)'));
 
-        if (!ctx.getState().availableDistributionTargets) {
+        if (ctx.getState().availableDistributionTargets.workbaskets.length === 0) {
           ctx.dispatch(new FetchAvailableDistributionTargets(true));
         }
 
@@ -389,7 +389,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             this.notificationService.showSuccess('WORKBASKET_DISTRIBUTION_TARGET_SAVE', {
               workbasketName: ctx.getState().selectedWorkbasket.name
             });
-
+            ctx.dispatch(new FetchAvailableDistributionTargets(true));
+            ctx.dispatch(new FetchWorkbasketDistributionTargets(true));
             return of(null);
           },
           error: () => {
@@ -404,12 +405,13 @@ export class WorkbasketState implements NgxsAfterBootstrap {
     ctx: StateContext<WorkbasketStateModel>,
     action: FetchWorkbasketDistributionTargets
   ): Observable<any> {
-    const { selectedWorkbasket, distributionTargetsPage, workbasketDistributionTargets } = ctx.getState();
+    const { selectedWorkbasket, distributionTargetsPage, workbasketDistributionTargets, availableDistributionTargets } =
+      ctx.getState();
     const { filterParameter, sortParameter, refetchAll } = action;
     const nextDistributionTargetsPage = refetchAll ? 1 : distributionTargetsPage + 1;
     return this.workbasketService
       .getWorkBasketsDistributionTargets(
-        selectedWorkbasket._links.distributionTargets.href,
+        selectedWorkbasket._links?.distributionTargets.href,
         filterParameter,
         sortParameter,
         new WorkbasketQueryPagingParameter(nextDistributionTargetsPage)
@@ -422,8 +424,14 @@ export class WorkbasketState implements NgxsAfterBootstrap {
             const idArrayNoDupe = [...new Set(completeArray.map((wb) => wb.workbasketId))];
             wbt.distributionTargets = idArrayNoDupe.map((id) => completeArray.find((wb) => wb.workbasketId === id));
           }
+          const distributionTargetSet = new Set(wbt.distributionTargets.map((wb) => wb.workbasketId));
+          let availableTargets = cloneDeep(availableDistributionTargets);
+          availableTargets.workbaskets = availableTargets.workbaskets.filter((wb) => {
+            return !distributionTargetSet.has(wb.workbasketId);
+          });
           ctx.patchState({
             workbasketDistributionTargets: wbt,
+            availableDistributionTargets: availableTargets,
             distributionTargetsPage: nextDistributionTargetsPage
           });
         })
