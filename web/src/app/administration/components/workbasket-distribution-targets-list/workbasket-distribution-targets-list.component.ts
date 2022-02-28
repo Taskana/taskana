@@ -58,6 +58,7 @@ export class WorkbasketDistributionTargetsListComponent
   toolbarState = false;
 
   distributionTargets: WorkbasketDistributionTarget[];
+  distributionTargetsClone: WorkbasketDistributionTarget[];
 
   @ViewChild('workbasket') distributionTargetsList: MatSelectionList;
   @ViewChild('scroller') workbasketList: CdkVirtualScrollViewport;
@@ -69,30 +70,25 @@ export class WorkbasketDistributionTargetsListComponent
 
   ngOnInit(): void {
     if (this.side === Side.AVAILABLE) {
-      this.availableDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((wbs) => {
-        this.distributionTargets = wbs.map((wb) => {
-          return { ...wb, selected: this.allSelected };
-        });
-      });
+      this.availableDistributionTargets$.pipe(takeUntil(this.destroy$)).subscribe((wbs) => this.assignWbs(wbs));
       this.availableDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
-        if (typeof this.filter === 'undefined' || isEqual(this.filter, filter)) return;
+        if (typeof this.filter === 'undefined' || isEqual(this.filter, filter)) {
+          this.filter = filter;
+          return;
+        }
         this.filter = filter;
         this.store.dispatch(new FetchAvailableDistributionTargets(true, this.filter));
         this.selectAll(false);
       });
     } else {
-      this.workbasketDistributionTargets$.pipe().subscribe((wbs) => {
-        this.distributionTargets = wbs.map((wb) => {
-          return { ...wb };
-        });
-      });
+      this.workbasketDistributionTargets$.pipe().subscribe((wbs) => this.assignWbs(wbs));
       this.selectedDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
-        if (typeof this.filter === 'undefined' || isEqual(this.filter, filter)) return;
+        if (typeof this.filter === 'undefined' || isEqual(this.filter, filter)) {
+          this.filter = filter;
+          return;
+        }
         this.filter = filter;
-        this.store
-          .dispatch(new FetchWorkbasketDistributionTargets(true))
-          .pipe(take(1))
-          .subscribe(() => this.applyFilter());
+        this.applyFilter();
         this.selectAll(false);
       });
     }
@@ -167,6 +163,11 @@ export class WorkbasketDistributionTargetsListComponent
     this.destroy$.complete();
   }
 
+  private assignWbs(wbs: WorkbasketSummary[]) {
+    this.distributionTargets = wbs.map((wb) => ({ ...wb, selected: this.allSelected }));
+    this.distributionTargetsClone = this.distributionTargets;
+  }
+
   private applyFilter() {
     function filterExact(target: WorkbasketDistributionTarget, filterStrings: string[], attribute: string) {
       if (!!filterStrings && filterStrings?.length !== 0) {
@@ -186,7 +187,7 @@ export class WorkbasketDistributionTargetsListComponent
       return true;
     }
 
-    this.distributionTargets = this.distributionTargets?.filter((target) => {
+    this.distributionTargets = this.distributionTargetsClone?.filter((target) => {
       let matches = true;
       matches = matches && filterExact(target, this.filter.name, 'name');
       matches = matches && filterExact(target, this.filter.key, 'key');

@@ -15,6 +15,7 @@ import {
   CopyWorkbasket,
   DeselectWorkbasket,
   OnButtonPressed,
+  SaveNewWorkbasket,
   SelectComponent,
   UpdateWorkbasket,
   UpdateWorkbasketDistributionTargets
@@ -83,6 +84,22 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
     // c) saving the workbasket
     this.ngxsActions$.pipe(ofActionSuccessful(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
+      this.store
+        .dispatch(new UpdateWorkbasketDistributionTargets())
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.selectedWorkbasket$
+            .pipe(
+              take(5),
+              timeout(250),
+              catchError(() => of(null)),
+              filter((val) => val !== null)
+            )
+            .subscribe((wb) => (this.workbasket = wb));
+        });
+    });
+
+    this.ngxsActions$.pipe(ofActionSuccessful(SaveNewWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
       this.store
         .dispatch(new UpdateWorkbasketDistributionTargets())
         .pipe(takeUntil(this.destroy$))
