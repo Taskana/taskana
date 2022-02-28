@@ -26,7 +26,7 @@ public class TaskCustomFieldValueReport extends Report<MonitorQueryItem, TimeInt
     super(timeIntervalColumnHeaders, new String[] {"TASK CUSTOM FIELDS"});
   }
 
-  /** Builder for {@link TaskCustomFieldValueReport}. */
+  /** Builder for {@linkplain TaskCustomFieldValueReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 

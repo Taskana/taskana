@@ -15,31 +15,31 @@ import pro.taskana.common.rest.QueryParameter;
 public class ClassificationQueryFilterParameter
     implements QueryParameter<ClassificationQuery, Void> {
 
-  /** Filter by the name of the classification. This is an exact match. */
+  /** Filter by the name of the Classification. This is an exact match. */
   @JsonProperty("name")
   private final String[] name;
 
   /**
-   * Filter by the name of the classification. This results in a substring search. (% is appended to
+   * Filter by the name of the Classification. This results in a substring search. (% is appended to
    * the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
   @JsonProperty("name-like")
   private final String[] nameLike;
 
-  /** Filter by the key of the classification. This is an exact match. */
+  /** Filter by the key of the Classification. This is an exact match. */
   @JsonProperty("key")
   private final String[] key;
 
-  /** Filter by the category of the classification. This is an exact match. */
+  /** Filter by the category of the Classification. This is an exact match. */
   @JsonProperty("category")
   private final String[] category;
 
-  /** Filter by the domain of the classification. This is an exact match. */
+  /** Filter by the domain of the Classification. This is an exact match. */
   @JsonProperty("domain")
   private final String[] domain;
 
-  /** Filter by the type of the classification. This is an exact match. */
+  /** Filter by the type of the Classification. This is an exact match. */
   @JsonProperty("type")
   private final String[] type;
 

@@ -18,7 +18,7 @@ import pro.taskana.monitor.api.reports.row.FoldableRow;
 import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 
-/** Tests for {@link Report}. */
+/** Tests for {@linkplain Report}. */
 class ReportTest {
 
   private static final List<TimeIntervalColumnHeader> HEADERS =

@@ -15,28 +15,28 @@ public interface TaskanaHistory {
   /**
    * Initialize TaskanaHistory service.
    *
-   * @param taskanaEngine {@link TaskanaEngine} The Taskana engine for needed initialization.
+   * @param taskanaEngine {@linkplain TaskanaEngine} The Taskana engine for needed initialization.
    */
   void initialize(TaskanaEngine taskanaEngine);
 
   /**
-   * Create a new task history event.
+   * Create a new {@linkplain TaskHistoryEvent}.
    *
-   * @param event {@link TaskHistoryEvent} The event to be created.
+   * @param event {@linkplain TaskHistoryEvent} The event to be created.
    */
   void create(TaskHistoryEvent event);
 
   /**
-   * Create a new workbasket history event.
+   * Create a new {@linkplain WorkbasketHistoryEvent}.
    *
-   * @param event {@link WorkbasketHistoryEvent} The event to be created.
+   * @param event {@linkplain WorkbasketHistoryEvent} The event to be created.
    */
   void create(WorkbasketHistoryEvent event);
 
   /**
-   * Create a new classification history event.
+   * Create a new {@linkplain ClassificationHistoryEvent}.
    *
-   * @param event {@link ClassificationHistoryEvent} The event to be created.
+   * @param event {@linkplain ClassificationHistoryEvent} The event to be created.
    */
   void create(ClassificationHistoryEvent event);
 

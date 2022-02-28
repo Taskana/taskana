@@ -4,102 +4,108 @@ import pro.taskana.classification.api.ClassificationCustomField;
 
 /**
  * Interface for ClassificationSummaries. This is a specific short model-object which only requieres
- * the most important information. Specific ones can be load afterwards via ID.
+ * the most important information. Detailed information can be load afterwards via id.
  */
 public interface ClassificationSummary {
 
   /**
-   * Gets the id of the classification.
+   * Returns the id of the Classification.
    *
-   * @return classificationId
+   * @return the id of the Classification
    */
   String getId();
 
   /**
-   * Gets the key of the classification.
+   * Returns the key of the Classification.
    *
-   * @return classificationKey
+   * @return the key of the Classification
    */
   String getKey();
 
   /**
-   * Gets the category of the classification.
+   * Returns the category of the Classification.
    *
-   * @return classificationCategory
+   * @return the category of the Classification
    */
   String getCategory();
 
   /**
-   * Gets the type of the classification.
+   * Returns the type of the Classification.
    *
-   * @return classificationType
+   * @return the type of the Classification
    */
   String getType();
 
   /**
-   * Gets the domain of the classification.
+   * Returns the domain of the Classification.
    *
-   * @return classificationDomain
+   * @return the domain of the Classification
    */
   String getDomain();
 
   /**
-   * Gets the name of the classification.
+   * Returns the name of the Classification.
    *
-   * @return classificationName
+   * @return the name of the Classification
    */
   String getName();
 
   /**
-   * Gets the ID of the parent classification.
+   * Returns the id of the parent Classification.
    *
    * @return parentId
    */
   String getParentId();
 
   /**
-   * Gets the key of the parent classification.
+   * Returns the key of the parent Classification.
    *
    * @return parentKey
    */
   String getParentKey();
 
   /**
-   * Gets the service level of the classification. It is a String in ISO-8601 duration format. See
+   * Returns the serviceLevel of the Classification. It is a String in ISO-8601 duration format. See
    * the parse() method of {@code Duration} for details.
    *
-   * @return the service level
+   * @return serviceLevel
    */
   String getServiceLevel();
 
   /**
-   * Gets the application entry point of the classification.
+   * Returns the applicationEntryPoint of the Classification.
    *
-   * @return the application entry point
+   * @return applicationEntryPoint
    */
   String getApplicationEntryPoint();
 
   /**
-   * Gets the priority of the classification.
+   * Returns the priority of the Classification.
    *
-   * @return the priority
+   * @return priority
    */
   int getPriority();
 
   /**
-   * Gets the custom attribute of the classification.
+   * Returns the value of the specified {@linkplain ClassificationCustomField
+   * ClassificationCustomField} of the Classification.
    *
-   * @param customField identifies which custom attribute is requested.
-   * @return the value for the given customField
-   * @deprecated Use {@link #getCustomField(ClassificationCustomField)} instead
+   * @param customField identifies which {@linkplain ClassificationCustomField
+   *     ClassificationCustomField} is requested
+   * @return the value for the given {@linkplain ClassificationCustomField
+   *     ClassificationCustomField}
+   * @deprecated Use {@linkplain #getCustomField(ClassificationCustomField)} instead
    */
   String getCustomAttribute(ClassificationCustomField customField);
 
   /**
-   * Gets the custom field of the classification.
+   * Returns the value of the specified {@linkplain ClassificationCustomField
+   * ClassificationCustomField} of the classification.
    *
-   * @param customField identifies which custom field is requested.
-   * @return the value for the given custom field
+   * @param customField identifies which {@linkplain ClassificationCustomField
+   *     ClassificationCustomField} is requested
+   * @return the value for the given {@linkplain ClassificationCustomField
+   *     ClassificationCustomField}
    */
   String getCustomField(ClassificationCustomField customField);
 

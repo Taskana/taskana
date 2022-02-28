@@ -7,10 +7,10 @@ import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 
 /**
- * Representation of a row in a {@link Report}. It contains an array of cells whose index
- * corresponds to the {@link ColumnHeader} index in the {@link Report}.
+ * Representation of a row in a {@linkplain Report}. It contains an array of cells whose index
+ * corresponds to the {@linkplain ColumnHeader} index in the {@linkplain Report}.
  *
- * @param <I> {@link QueryItem} on which the {@link Report} is based on.
+ * @param <I> {@linkplain QueryItem} on which the {@linkplain Report} is based on.
  */
 public interface Row<I extends QueryItem> {
 

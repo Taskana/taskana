@@ -11,58 +11,59 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 public interface AttachmentSummary {
 
   /**
-   * Gets the id of the attachment.
+   * Returns the id of the {@linkplain Attachment}.
    *
    * @return attachmentId
    */
   String getId();
 
   /**
-   * Gets the id of the associated task.
+   * Returns the id of the associated {@linkplain Task}.
    *
    * @return taskId
    */
   String getTaskId();
 
   /**
-   * Gets the time when the attachment was created.
+   * Returns the time when the {@linkplain Attachment} was created.
    *
    * @return the created Instant
    */
   Instant getCreated();
 
   /**
-   * Gets the time when the attachment was last modified.
+   * Returns the time when the {@linkplain Attachment} was last modified.
    *
    * @return the last modified Instant
    */
   Instant getModified();
 
   /**
-   * Gets the {@link ObjectReference primaryObjectReference} of the attachment.
+   * Returns the {@linkplain ObjectReference primaryObjectReference} of the {@linkplain Attachment}.
    *
-   * @return {@link ObjectReference primaryObjectReference} of the attachment
+   * @return {@linkplain ObjectReference primaryObjectReference} of the {@linkplain Attachment}
    */
   ObjectReference getObjectReference();
 
   /**
-   * Gets the Channel on which the attachment was received.
+   * Returns the channel on which the {@linkplain Attachment} was received.
    *
    * @return the channel
    */
   String getChannel();
 
   /**
-   * Gets the classificationSummary of the attachment.
+   * Returns the {@linkplain ClassificationSummary classificationSummary} of the {@linkplain
+   * Attachment}.
    *
-   * @return the classification summary
+   * @return {@linkplain ClassificationSummary classificationSummary}
    */
   ClassificationSummary getClassificationSummary();
 
   /**
-   * Gets the time when the attachment was received.
+   * Returns the time when the {@linkplain Attachment} was received.
    *
-   * @return received Instant
+   * @return the received Instant
    */
   Instant getReceived();
 

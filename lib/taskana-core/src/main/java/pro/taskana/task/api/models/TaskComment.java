@@ -2,60 +2,60 @@ package pro.taskana.task.api.models;
 
 import java.time.Instant;
 
-/** TaskComment-Interface to specify TaskComment Attributes. */
+/** TaskComment-Interface to specify attributes of the TaskComment. */
 public interface TaskComment {
 
   /**
-   * Gets the id of the task comment.
+   * Returns the id of the TaskComment.
    *
    * @return taskId
    */
   String getId();
 
   /**
-   * Gets the id of the associated task.
+   * Returns the id of the associated Task.
    *
    * @return taskId
    */
   String getTaskId();
 
   /**
-   * Gets the name of the task comment-creator.
+   * Returns the id of the creator of the TaskComment.
    *
    * @return creator
    */
   String getCreator();
 
   /**
-   * Gets the long name of the task comment creator.
+   * Returns the long name of the creator of the TaskComment.
    *
-   * @return the long Name of the creator
+   * @return the long name of the creator
    */
   String getCreatorFullName();
 
   /**
-   * Gets the text field of the task comment.
+   * Returns the content of the TaskComment.
    *
    * @return textField
    */
   String getTextField();
 
   /**
-   * Sets the text field of the task comment.
+   * Sets the content of the TaskComment.
    *
-   * @param textField the text field
+   * @param textField the textField
    */
   void setTextField(String textField);
 
   /**
-   * Gets the time when the task comment was created.
+   * Returns the time when the TaskComment was created.
    *
    * @return the created Instant
    */
   Instant getCreated();
 
   /**
-   * Gets the time when the task comment was last modified.
+   * Returns the time when the TaskComment was last modified.
    *
    * @return the last modified Instant
    */

@@ -4,37 +4,37 @@ package pro.taskana.task.api.models;
 public interface ObjectReference {
 
   /**
-   * Gets the id of the ObjectReference.
+   * Returns the id of the ObjectReference.
    *
    * @return the id of the ObjectReference.
    */
   String getId();
 
   /**
-   * Gets the id of the associated task.
+   * Returns the id of the associated {@linkplain Task}.
    *
-   * @return the taskId
+   * @return taskId
    */
   String getTaskId();
 
   /**
-   * Gets the company of the ObjectReference.
+   * Returns the company of the ObjectReference.
    *
-   * @return the company
+   * @return company
    */
   String getCompany();
 
   /**
    * Sets the company of the ObjectReference.
    *
-   * @param company the company of the object reference
+   * @param company the company of the ObjectReference
    */
   void setCompany(String company);
 
   /**
-   * Gets the system of the ObjectReference.
+   * Returns the system of the ObjectReference.
    *
-   * @return the system
+   * @return system
    */
   String getSystem();
 
@@ -46,23 +46,23 @@ public interface ObjectReference {
   void setSystem(String system);
 
   /**
-   * Gets the systemInstance of the ObjectReference.
+   * Returns the systemInstance of the ObjectReference.
    *
-   * @return the systemInstance
+   * @return systemInstance
    */
   String getSystemInstance();
 
   /**
    * Sets the system instance of the ObjectReference.
    *
-   * @param systemInstance the system instance of the ObjectReference
+   * @param systemInstance the systemInstance of the ObjectReference
    */
   void setSystemInstance(String systemInstance);
 
   /**
-   * Gets the type of the ObjectReference.
+   * Returns the type of the ObjectReference.
    *
-   * @return the type
+   * @return type
    */
   String getType();
 
@@ -74,9 +74,9 @@ public interface ObjectReference {
   void setType(String type);
 
   /**
-   * Gets the value of the ObjectReference.
+   * Returns the value of the ObjectReference.
    *
-   * @return the value
+   * @return value
    */
   String getValue();
 

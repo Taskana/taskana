@@ -4,10 +4,10 @@ import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 
 /**
- * A ColumnHeader is an element of a {@link Report}. It determines weather a given &lt;Item&gt;
+ * A ColumnHeader is an element of a {@linkplain Report}. It determines weather a given &lt;Item&gt;
  * belongs into the representing column.
  *
- * @param <I> {@link QueryItem} on which the {@link Report} is based on.
+ * @param <I> {@linkplain QueryItem} on which the {@linkplain Report} is based on.
  */
 public interface ColumnHeader<I extends QueryItem> {
 

@@ -14,7 +14,7 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 
-/** This class executes a job of type {@linkplain pro.taskana.task.internal.jobs.TaskRefreshJob}. */
+/** This class executes a job of type {@linkplain TaskRefreshJob}. */
 public class TaskRefreshJob extends AbstractTaskanaJob {
 
   public static final String TASK_IDS = "taskIds";

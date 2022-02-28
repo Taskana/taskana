@@ -30,7 +30,7 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
     super(timeIntervalColumnHeaders, new String[] {"CLASSIFICATION"});
   }
 
-  /** Builder for {@link ClassificationReport}. */
+  /** Builder for {@linkplain ClassificationReport}. */
   public interface Builder
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
@@ -42,9 +42,9 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
         throws NotAuthorizedException, InvalidArgumentException;
 
     /**
-     * Returns a {@link DetailedClassificationReport} containing all tasks after applying the
+     * Returns a {@linkplain DetailedClassificationReport} containing all tasks after applying the
      * filters. If the column headers are set the report is subdivided into clusters. Its {@link
-     * FoldableRow}s contain an additional list of {@link Row}s for the classifications of the
+     * FoldableRow}s contain an additional list of {@linkplain Row}s for the classifications of the
      * attachments of the tasks.
      *
      * @return the DetailedClassificationReport

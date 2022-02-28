@@ -9,11 +9,11 @@ import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 
 /**
- * The FoldableRow extends the {@link SingleRow}. In contrast to the {@link SingleRow} the
+ * The FoldableRow extends the {@linkplain SingleRow}. In contrast to the {@linkplain SingleRow} the
  * FoldableRow contains rows which can be collapsed or expanded. The FoldableRow itself displays the
  * sum of all foldable rows.
  *
- * @param <I> the {@link QueryItem} on which the {@link Report} is based on.
+ * @param <I> the {@linkplain QueryItem} on which the {@linkplain Report} is based on.
  */
 public abstract class FoldableRow<I extends QueryItem> extends SingleRow<I> {
 

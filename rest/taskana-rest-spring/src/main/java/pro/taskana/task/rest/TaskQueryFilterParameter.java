@@ -49,17 +49,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] taskIdNotIn;
   // endregion
   // region externalId
-  /** Filter by the external id of the task. This is an exact match. */
+  /** Filter by the external id of the Task. This is an exact match. */
   @JsonProperty("external-id")
   private final String[] externalIdIn;
 
-  /** Filter by what the external id of the task shouldn't be. This is an exact match. */
+  /** Filter by what the external id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("external-id-not")
   private final String[] externalIdNotIn;
   // endregion
   // region received
   /**
-   * Filter by a time interval within which the task was received. To create an open interval you
+   * Filter by a time interval within which the Task was received. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -90,7 +90,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant receivedUntil;
 
   /**
-   * Filter by a time interval within which the task wasn't received. To create an open interval you
+   * Filter by a time interval within which the Task wasn't received. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -123,7 +123,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region created
   /**
-   * Filter by a time interval within which the task was created. To create an open interval you can
+   * Filter by a time interval within which the Task was created. To create an open interval you can
    * just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -154,7 +154,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant createdUntil;
 
   /**
-   * Filter by a time interval within which the task wasn't created. To create an open interval you
+   * Filter by a time interval within which the Task wasn't created. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -186,7 +186,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region claimed
   /**
-   * Filter by a time interval within which the task was claimed. To create an open interval you can
+   * Filter by a time interval within which the Task was claimed. To create an open interval you can
    * just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -195,7 +195,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant[] claimedWithin;
 
   /**
-   * Filter by a time interval within which the task wasn't claimed. To create an open interval you
+   * Filter by a time interval within which the Task wasn't claimed. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -205,7 +205,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region modified
   /**
-   * Filter by a time interval within which the task was modified. To create an open interval you
+   * Filter by a time interval within which the Task was modified. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -214,7 +214,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant[] modifiedWithin;
 
   /**
-   * Filter by a time interval within which the task wasn't modified. To create an open interval you
+   * Filter by a time interval within which the Task wasn't modified. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -224,7 +224,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region planned
   /**
-   * Filter by a time interval within which the task was planned. To create an open interval you can
+   * Filter by a time interval within which the Task was planned. To create an open interval you can
    * just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -255,7 +255,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant plannedUntil;
 
   /**
-   * Filter by a time interval within which the task was planned. To create an open interval you can
+   * Filter by a time interval within which the Task was planned. To create an open interval you can
    * just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -287,7 +287,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region due
   /**
-   * Filter by a time interval within which the task was due. To create an open interval you can
+   * Filter by a time interval within which the Task was due. To create an open interval you can
    * just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -318,7 +318,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant dueUntil;
 
   /**
-   * Filter by a time interval within which the task wasn't due. To create an open interval you can
+   * Filter by a time interval within which the Task wasn't due. To create an open interval you can
    * just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -350,7 +350,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region completed
   /**
-   * Filter by a time interval within which the task was completed. To create an open interval you
+   * Filter by a time interval within which the Task was completed. To create an open interval you
    * can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -381,7 +381,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant completedUntil;
 
   /**
-   * Filter by a time interval within which the task wasn't completed. To create an open interval
+   * Filter by a time interval within which the Task wasn't completed. To create an open interval
    * you can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -413,16 +413,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant completedUntilNot;
   // endregion
   // region name
-  /** Filter by the name of the task. This is an exact match. */
+  /** Filter by the name of the Task. This is an exact match. */
   @JsonProperty("name")
   private final String[] nameIn;
 
-  /** Filter by what the name of the task shouldn't be. This is an exact match. */
+  /** Filter by what the name of the Task shouldn't be. This is an exact match. */
   @JsonProperty("name-not")
   private final String[] nameNotIn;
 
   /**
-   * Filter by the name of the task. This results in a substring search (% is appended to the front
+   * Filter by the name of the Task. This results in a substring search (% is appended to the front
    * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
@@ -430,7 +430,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] nameLike;
 
   /**
-   * Filter by what the name of the task shouldn't be. This results in a substring search (% is
+   * Filter by what the name of the Task shouldn't be. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -438,16 +438,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] nameNotLike;
   // endregion
   // region creator
-  /** Filter by creator of the task. This is an exact match. */
+  /** Filter by creator of the Task. This is an exact match. */
   @JsonProperty("creator")
   private final String[] creatorIn;
 
-  /** Filter by what the creator of the task shouldn't be. This is an exact match. */
+  /** Filter by what the creator of the Task shouldn't be. This is an exact match. */
   @JsonProperty("creator-not")
   private final String[] creatorNotIn;
 
   /**
-   * Filter by the creator of the task. This results in a substring search (% is appended to the
+   * Filter by the creator of the Task. This results in a substring search (% is appended to the
    * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
@@ -455,7 +455,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] creatorLike;
 
   /**
-   * Filter by what the creator of the task shouldn't be. This results in a substring search (% is
+   * Filter by what the creator of the Task shouldn't be. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -464,7 +464,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region note
   /**
-   * Filter by the note of the task. This results in a substring search (% is appended to the front
+   * Filter by the note of the Task. This results in a substring search (% is appended to the front
    * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
@@ -472,7 +472,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] noteLike;
 
   /**
-   * Filter by what the note of the task shouldn't be. This results in a substring search (% is
+   * Filter by what the note of the Task shouldn't be. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -481,7 +481,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region description
   /**
-   * Filter by the description of the task. This results in a substring search (% is appended to the
+   * Filter by the description of the Task. This results in a substring search (% is appended to the
    * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
@@ -489,7 +489,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] descriptionLike;
 
   /**
-   * Filter by what the description of the task shouldn't be. This results in a substring search (%
+   * Filter by what the description of the Task shouldn't be. This results in a substring search (%
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -497,43 +497,43 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] descriptionNotLike;
   // endregion
   // region priority
-  /** Filter by the priority of the task. This is an exact match. */
+  /** Filter by the priority of the Task. This is an exact match. */
   @JsonProperty("priority")
   private final int[] priorityIn;
 
-  /** Filter by what the priority of the task shouldn't be. This is an exact match. */
+  /** Filter by what the priority of the Task shouldn't be. This is an exact match. */
   @JsonProperty("priority-not")
   private final int[] priorityNotIn;
   // endregion
   // region state
-  /** Filter by the task state. This is an exact match. */
+  /** Filter by the Task state. This is an exact match. */
   @JsonProperty("state")
   private final TaskState[] stateIn;
 
-  /** Filter by what the task state shouldn't be. This is an exact match. */
+  /** Filter by what the Task state shouldn't be. This is an exact match. */
   @JsonProperty("state-not")
   private final TaskState[] stateNotIn;
   // endregion
   // region classificationId
-  /** Filter by the classification id of the task. This is an exact match. */
+  /** Filter by the classification id of the Task. This is an exact match. */
   @JsonProperty("classification-id")
   private final String[] classificationIdIn;
 
-  /** Filter by what the classification id of the task shouldn't be. This is an exact match. */
+  /** Filter by what the classification id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("classification-id-not")
   private final String[] classificationIdNotIn;
   // endregion
   // region classificationKey
-  /** Filter by the classification key of the task. This is an exact match. */
+  /** Filter by the classification key of the Task. This is an exact match. */
   @JsonProperty("classification-key")
   private final String[] classificationKeyIn;
 
-  /** Filter by the classification key of the task. This is an exact match. */
+  /** Filter by the classification key of the Task. This is an exact match. */
   @JsonProperty("classification-key-not")
   private final String[] classificationKeyNotIn;
 
   /**
-   * Filter by the classification key of the task. This results in a substring search (% is appended
+   * Filter by the classification key of the Task. This results in a substring search (% is appended
    * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -541,7 +541,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] classificationKeyLike;
 
   /**
-   * Filter by what the classification key of the task shouldn't be. This results in a substring
+   * Filter by what the classification key of the Task shouldn't be. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -549,18 +549,18 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] classificationKeyNotLike;
   // endregion
   // region classificationCategory
-  /** Filter by the classification category of the task. This is an exact match. */
+  /** Filter by the classification category of the Task. This is an exact match. */
   @JsonProperty("classification-category")
   private final String[] classificationCategoryIn;
 
   /**
-   * Filter by what the classification category of the task shouldn't be. This is an exact match.
+   * Filter by what the classification category of the Task shouldn't be. This is an exact match.
    */
   @JsonProperty("classification-category-not")
   private final String[] classificationCategoryNotIn;
 
   /**
-   * Filter by the classification category of the task. This results in a substring search (% is
+   * Filter by the classification category of the Task. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -568,7 +568,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] classificationCategoryLike;
 
   /**
-   * Filter by what the classification category of the task shouldn't be. This results in a
+   * Filter by what the classification category of the Task shouldn't be. This results in a
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -576,16 +576,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] classificationCategoryNotLike;
   // endregion
   // region classificationName
-  /** Filter by the classification name of the task. This is an exact match. */
+  /** Filter by the classification name of the Task. This is an exact match. */
   @JsonProperty("classification-name")
   private final String[] classificationNameIn;
 
-  /** Filter by what the classification name of the task shouldn't be. This is an exact match. */
+  /** Filter by what the classification name of the Task shouldn't be. This is an exact match. */
   @JsonProperty("classification-name-not")
   private final String[] classificationNameNotIn;
 
   /**
-   * Filter by the classification name of the task. This results in a substring search (% is
+   * Filter by the classification name of the Task. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -593,7 +593,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] classificationNameLike;
 
   /**
-   * Filter by what the classification name of the task shouldn't be. This results in a substring
+   * Filter by what the classification name of the Task shouldn't be. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -601,44 +601,44 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] classificationNameNotLike;
   // endregion
   // region workbasketId
-  /** Filter by workbasket id of the task. This is an exact match. */
+  /** Filter by workbasket id of the Task. This is an exact match. */
   @JsonProperty("workbasket-id")
   private final String[] workbasketIdIn;
 
-  /** Filter by what the workbasket id of the task shouldn't be. This is an exact match. */
+  /** Filter by what the workbasket id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("workbasket-id-not")
   private final String[] workbasketIdNotIn;
   // endregion
   // region workbasketKeyDomain
   /**
-   * Filter by workbasket keys of the task. This parameter can only be used in combination with
+   * Filter by workbasket keys of the Task. This parameter can only be used in combination with
    * 'domain'
    */
   @JsonProperty("workbasket-key")
   private final String[] workbasketKeyIn;
 
   /**
-   * Filter by what the workbasket keys of the task aren't. This parameter can only be used in
+   * Filter by what the workbasket keys of the Task aren't. This parameter can only be used in
    * combination with 'domain'
    */
   @JsonProperty("workbasket-key-not")
   private final String[] workbasketKeyNotIn;
 
-  /** Filter by domain of the task. This is an exact match. */
+  /** Filter by domain of the Task. This is an exact match. */
   @JsonProperty("domain")
   private final String domain;
   // endregion
   // region businessProcessId
-  /** Filter by the business process id of the task. This is an exact match. */
+  /** Filter by the business process id of the Task. This is an exact match. */
   @JsonProperty("business-process-id")
   private final String[] businessProcessIdIn;
 
-  /** Filter by what the business process id of the task shouldn't be. This is an exact match. */
+  /** Filter by what the business process id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("business-process-id-not")
   private final String[] businessProcessIdNot;
 
   /**
-   * Filter by the business process id of the task. This results in a substring search (% is
+   * Filter by the business process id of the Task. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -646,7 +646,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] businessProcessIdLike;
 
   /**
-   * Filter by the business process id of the task shouldn't be. This results in a substring search
+   * Filter by the business process id of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -655,18 +655,18 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   // endregion
   // region parentBusinessProcessId
-  /** Filter by the parent business process id of the task. This is an exact match. */
+  /** Filter by the parent business process id of the Task. This is an exact match. */
   @JsonProperty("parent-business-process-id")
   private final String[] parentBusinessProcessIdIn;
 
   /**
-   * Filter by what the parent business process id of the task shouldn't be. This is an exact match.
+   * Filter by what the parent business process id of the Task shouldn't be. This is an exact match.
    */
   @JsonProperty("parent-business-process-id-not")
   private final String[] parentBusinessProcessIdNotIn;
 
   /**
-   * Filter by the parent business process id of the task. This results in a substring search (% is
+   * Filter by the parent business process id of the Task. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -674,7 +674,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] parentBusinessProcessIdLike;
 
   /**
-   * Filter by the parent business process id of the task shouldn't be. This results in a substring
+   * Filter by the parent business process id of the Task shouldn't be. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -683,16 +683,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   // endregion
   // region owner
-  /** Filter by owner of the task. This is an exact match. */
+  /** Filter by owner of the Task. This is an exact match. */
   @JsonProperty("owner")
   private final String[] ownerIn;
 
-  /** Filter by what the owner of the task shouldn't be. This is an exact match. */
+  /** Filter by what the owner of the Task shouldn't be. This is an exact match. */
   @JsonProperty("owner-not")
   private final String[] ownerNotIn;
 
   /**
-   * Filter by the owner of the task. This results in a substring search (% is appended to the front
+   * Filter by the owner of the Task. This results in a substring search (% is appended to the front
    * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
@@ -700,7 +700,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] ownerLike;
 
   /**
-   * Filter by what the owner of the task shouldn't be. This results in a substring search (% is
+   * Filter by what the owner of the Task shouldn't be. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -709,7 +709,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region primaryObjectReference
   /**
-   * Filter by the primary object reference of the task. This is an exact match. "por" is a
+   * Filter by the primary object reference of the Task. This is an exact match. "por" is a
    * parameter of complex type. Its following attributes from por[].id to por[].value can be
    * specified according to the description of complex parameters in the overview, e.g.
    * por={"value":"exampleValue"}
@@ -718,19 +718,19 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final ObjectReference[] primaryObjectReferenceIn;
   // endregion
   // region primaryObjectReferenceCompany
-  /** Filter by the company of the primary object reference of the task. This is an exact match. */
+  /** Filter by the company of the primary object reference of the Task. This is an exact match. */
   @JsonProperty("por-company")
   private final String[] porCompanyIn;
 
   /**
-   * Filter by what the company of the primary object reference of the task shouldn't be. This is an
+   * Filter by what the company of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
   @JsonProperty("por-company-not")
   private final String[] porCompanyNotIn;
 
   /**
-   * Filter by the company of the primary object reference of the task. This results in a substring
+   * Filter by the company of the primary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -738,7 +738,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porCompanyLike;
 
   /**
-   * Filter by what the company of the primary object reference of the task shouldn't be. This
+   * Filter by what the company of the primary object reference of the Task shouldn't be. This
    * results in a substring search (% is appended to the front and end of the requested value).
    * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
@@ -746,19 +746,19 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porCompanyNotLike;
   // endregion
   // region primaryObjectReferenceSystem
-  /** Filter by the system of the primary object reference of the task. This is an exact match. */
+  /** Filter by the system of the primary object reference of the Task. This is an exact match. */
   @JsonProperty("por-system")
   private final String[] porSystemIn;
 
   /**
-   * Filter by what the system of the primary object reference of the task shouldn't be. This is an
+   * Filter by what the system of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
   @JsonProperty("por-system-not")
   private final String[] porSystemNotIn;
 
   /**
-   * Filter by the system of the primary object reference of the task. This results in a substring
+   * Filter by the system of the primary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -766,7 +766,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porSystemLike;
 
   /**
-   * Filter by what the system of the primary object reference of the task shouldn't be. This
+   * Filter by what the system of the primary object reference of the Task shouldn't be. This
    * results in a substring search (% is appended to the front and end of the requested value).
    * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
@@ -775,21 +775,21 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region primaryObjectReferenceSystemInstance
   /**
-   * Filter by the system instance of the primary object reference of the task. This is an exact
+   * Filter by the system instance of the primary object reference of the Task. This is an exact
    * match.
    */
   @JsonProperty("por-instance")
   private final String[] porInstanceIn;
 
   /**
-   * Filter by what the system instance of the primary object reference of the task shouldn't be.
+   * Filter by what the system instance of the primary object reference of the Task shouldn't be.
    * This is an exact match.
    */
   @JsonProperty("por-instance-not")
   private final String[] porInstanceNotIn;
 
   /**
-   * Filter by the system instance of the primary object reference of the task. This results in a
+   * Filter by the system instance of the primary object reference of the Task. This results in a
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -797,7 +797,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porInstanceLike;
 
   /**
-   * Filter by what the system instance of the primary object reference of the task shouldn't be.
+   * Filter by what the system instance of the primary object reference of the Task shouldn't be.
    * This results in a substring search (% is appended to the front and end of the requested value).
    * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
@@ -805,19 +805,19 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porInstanceNotLike;
   // endregion
   // region primaryObjectReferenceSystemType
-  /** Filter by the type of the primary object reference of the task. This is an exact match. */
+  /** Filter by the type of the primary object reference of the Task. This is an exact match. */
   @JsonProperty("por-type")
   private final String[] porTypeIn;
 
   /**
-   * Filter by what the type of the primary object reference of the task shouldn't be. This is an
+   * Filter by what the type of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
   @JsonProperty("por-type-not")
   private final String[] porTypeNotIn;
 
   /**
-   * Filter by the type of the primary object reference of the task. This results in a substring
+   * Filter by the type of the primary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -825,7 +825,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porTypeLike;
 
   /**
-   * Filter by what the type of the primary object reference of the task shouldn't be. This results
+   * Filter by what the type of the primary object reference of the Task shouldn't be. This results
    * in a substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -833,19 +833,19 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porTypeNotLike;
   // endregion
   // region primaryObjectReferenceSystemValue
-  /** Filter by the value of the primary object reference of the task. This is an exact match. */
+  /** Filter by the value of the primary object reference of the Task. This is an exact match. */
   @JsonProperty("por-value")
   private final String[] porValueIn;
 
   /**
-   * Filter by what the value of the primary object reference of the task shouldn't be. This is an
+   * Filter by what the value of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
   @JsonProperty("por-value-not")
   private final String[] porValueNotIn;
 
   /**
-   * Filter by the value of the primary object reference of the task. This results in a substring
+   * Filter by the value of the primary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -853,7 +853,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] porValueLike;
 
   /**
-   * Filter by what the value of the primary object reference of the task shouldn't be. This results
+   * Filter by what the value of the primary object reference of the Task shouldn't be. This results
    * in a substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -862,7 +862,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region secondaryObjectReference
   /**
-   * Filter by the primary object reference of the task. This is an exact match. "sor" is a
+   * Filter by the primary object reference of the Task. This is an exact match. "sor" is a
    * parameter of complex type. Its following attributes from sor[].id to sor[].value can be
    * specified according to the description of complex parameters in the overview, e.g.
    * sor={"value":"exampleValue"}
@@ -872,13 +872,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region secondaryObjectReferenceCompany
   /**
-   * Filter by the company of the secondary object reference of the task. This is an exact match.
+   * Filter by the company of the secondary object reference of the Task. This is an exact match.
    */
   @JsonProperty("sor-company")
   private final String[] sorCompanyIn;
 
   /**
-   * Filter by the company of the secondary object references of the task. This results in a
+   * Filter by the company of the secondary object references of the Task. This results in a
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -887,12 +887,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   // endregion
   // region secondaryObjectReferenceSystem
-  /** Filter by the system of the secondary object reference of the task. This is an exact match. */
+  /** Filter by the system of the secondary object reference of the Task. This is an exact match. */
   @JsonProperty("sor-system")
   private final String[] sorSystemIn;
 
   /**
-   * Filter by the system of the secondary object reference of the task. This results in a substring
+   * Filter by the system of the secondary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -902,14 +902,14 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region secondaryObjectReferenceSystemInstance
   /**
-   * Filter by the system instance of the secondary object reference of the task. This is an exact
+   * Filter by the system instance of the secondary object reference of the Task. This is an exact
    * match.
    */
   @JsonProperty("sor-instance")
   private final String[] sorInstanceIn;
 
   /**
-   * Filter by the system instance of the secondary object reference of the task. This results in a
+   * Filter by the system instance of the secondary object reference of the Task. This results in a
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -918,12 +918,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   // endregion
   // region secondaryObjectReferenceSystemType
-  /** Filter by the type of the secondary object reference of the task. This is an exact match. */
+  /** Filter by the type of the secondary object reference of the Task. This is an exact match. */
   @JsonProperty("sor-type")
   private final String[] sorTypeIn;
 
   /**
-   * Filter by the type of the secondary object reference of the task. This results in a substring
+   * Filter by the type of the secondary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -932,12 +932,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   // endregion
   // region primaryObjectReferenceSystemValue
-  /** Filter by the value of the secondary object reference of the task. This is an exact match. */
+  /** Filter by the value of the secondary object reference of the Task. This is an exact match. */
   @JsonProperty("sor-value")
   private final String[] sorValueIn;
 
   /**
-   * Filter by the value of the secondary object reference of the task. This results in a substring
+   * Filter by the value of the secondary object reference of the Task. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -946,41 +946,41 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
   // endregion
   // region read
-  /** Filter by the is read flag of the task. This is an exact match. */
+  /** Filter by the is read flag of the Task. This is an exact match. */
   @JsonProperty("is-read")
   private final Boolean isRead;
   // endregion
   // region transferred
-  /** Filter by the is transferred flag of the task. This is an exact match. */
+  /** Filter by the is transferred flag of the Task. This is an exact match. */
   @JsonProperty("is-transferred")
   private final Boolean isTransferred;
   // endregion
   // region attachmentClassificationId
-  /** Filter by the attachment classification id of the task. This is an exact match. */
+  /** Filter by the attachment classification id of the Task. This is an exact match. */
   @JsonProperty("attachment-classification-id")
   private final String[] attachmentClassificationIdIn;
 
   /**
-   * Filter by what the attachment classification id of the task shouldn't be. This is an exact
+   * Filter by what the attachment classification id of the Task shouldn't be. This is an exact
    * match.
    */
   @JsonProperty("attachment-classification-id-not")
   private final String[] attachmentClassificationIdNotIn;
   // endregion
   // region attachmentClassificationKey
-  /** Filter by the attachment classification key of the task. This is an exact match. */
+  /** Filter by the attachment classification key of the Task. This is an exact match. */
   @JsonProperty("attachment-classification-key")
   private final String[] attachmentClassificationKeyIn;
 
   /**
-   * Filter by what the attachment classification key of the task shouldn't be. This is an exact
+   * Filter by what the attachment classification key of the Task shouldn't be. This is an exact
    * match.
    */
   @JsonProperty("attachment-classification-key-not")
   private final String[] attachmentClassificationKeyNotIn;
 
   /**
-   * Filter by the attachment classification key of the task. This results in a substring search (%
+   * Filter by the attachment classification key of the Task. This results in a substring search (%
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -988,7 +988,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentClassificationKeyLike;
 
   /**
-   * Filter by what the attachment classification key of the task shouldn't be. This results in a
+   * Filter by what the attachment classification key of the Task shouldn't be. This results in a
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -996,19 +996,19 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentClassificationKeyNotLike;
   // endregion
   // region attachmentClassificationName
-  /** Filter by the attachment classification name of the task. This is an exact match. */
+  /** Filter by the attachment classification name of the Task. This is an exact match. */
   @JsonProperty("attachment-classification-name")
   private final String[] attachmentClassificationNameIn;
 
   /**
-   * Filter by what the attachment classification name of the task shouldn't be. This is an exact
+   * Filter by what the attachment classification name of the Task shouldn't be. This is an exact
    * match.
    */
   @JsonProperty("attachment-classification-name-not")
   private final String[] attachmentClassificationNameNotIn;
 
   /**
-   * Filter by the attachment classification name of the task. This results in a substring search (%
+   * Filter by the attachment classification name of the Task. This results in a substring search (%
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -1016,7 +1016,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentClassificationNameLike;
 
   /**
-   * Filter by what the attachment classification name of the task shouldn't be. This results in a
+   * Filter by what the attachment classification name of the Task shouldn't be. This results in a
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
@@ -1024,16 +1024,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentClassificationNameNotLike;
   // endregion
   // region attachmentChannel
-  /** Filter by the attachment channel of the task. This is an exact match. */
+  /** Filter by the attachment channel of the Task. This is an exact match. */
   @JsonProperty("attachment-channel")
   private final String[] attachmentChannelIn;
 
-  /** Filter by what the attachment channel of the task shouldn't be. This is an exact match. */
+  /** Filter by what the attachment channel of the Task shouldn't be. This is an exact match. */
   @JsonProperty("attachment-channel-not")
   private final String[] attachmentChannelNotIn;
 
   /**
-   * Filter by the attachment channel of the task. This results in a substring search (% is appended
+   * Filter by the attachment channel of the Task. This results in a substring search (% is appended
    * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1041,7 +1041,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentChannelLike;
 
   /**
-   * Filter by what the attachment channel of the task shouldn't be. This results in a substring
+   * Filter by what the attachment channel of the Task shouldn't be. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -1049,16 +1049,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentChannelNotLike;
   // endregion
   // region attachmentReferenceValue
-  /** Filter by the attachment reference of the task. This is an exact match. */
+  /** Filter by the attachment reference of the Task. This is an exact match. */
   @JsonProperty("attachment-reference")
   private final String[] attachmentReferenceIn;
 
-  /** Filter by what the attachment reference of the task shouldn't be. This is an exact match. */
+  /** Filter by what the attachment reference of the Task shouldn't be. This is an exact match. */
   @JsonProperty("attachment-reference-not")
   private final String[] attachmentReferenceNotIn;
 
   /**
-   * Filter by the attachment reference of the task. This results in a substring search (% is
+   * Filter by the attachment reference of the Task. This results in a substring search (% is
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
@@ -1066,7 +1066,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] attachmentReferenceLike;
 
   /**
-   * Filter by what the attachment reference of the task shouldn't be. This results in a substring
+   * Filter by what the attachment reference of the Task shouldn't be. This results in a substring
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -1075,7 +1075,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   // endregion
   // region attachmentReceived
   /**
-   * Filter by a time interval within which the attachment of the task was received. To create an
+   * Filter by a time interval within which the attachment of the Task was received. To create an
    * open interval you can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -1084,7 +1084,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant[] attachmentReceivedWithin;
 
   /**
-   * Filter by a time interval within which the attachment of the task wasn't received. To create an
+   * Filter by a time interval within which the attachment of the Task wasn't received. To create an
    * open interval you can just leave it blank.
    *
    * <p>The format is ISO-8601.
@@ -1093,16 +1093,16 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final Instant[] attachmentReceivedNotWithin;
   // endregion
   // region customAttributes
-  /** Filter by the value of the field custom1 of the task. This is an exact match. */
+  /** Filter by the value of the field custom1 of the Task. This is an exact match. */
   @JsonProperty("custom-1")
   private final String[] custom1In;
 
-  /** Exclude values of the field custom1 of the task. */
+  /** Exclude values of the field custom1 of the Task. */
   @JsonProperty("custom-1-not")
   private final String[] custom1NotIn;
 
   /**
-   * Filter by the custom1 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom1 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1110,23 +1110,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom1Like;
 
   /**
-   * Filter by what the custom1 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom1 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-1-not-like")
   private final String[] custom1NotLike;
 
-  /** Filter by the value of the field custom2 of the task. This is an exact match. */
+  /** Filter by the value of the field custom2 of the Task. This is an exact match. */
   @JsonProperty("custom-2")
   private final String[] custom2In;
 
-  /** Filter out by values of the field custom2 of the task. This is an exact match. */
+  /** Filter out by values of the field custom2 of the Task. This is an exact match. */
   @JsonProperty("custom-2-not")
   private final String[] custom2NotIn;
 
   /**
-   * Filter by the custom2 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom2 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1134,23 +1134,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom2Like;
 
   /**
-   * Filter by what the custom2 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom2 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-2-not-like")
   private final String[] custom2NotLike;
 
-  /** Filter by the value of the field custom3 of the task. This is an exact match. */
+  /** Filter by the value of the field custom3 of the Task. This is an exact match. */
   @JsonProperty("custom-3")
   private final String[] custom3In;
 
-  /** Filter out by values of the field custom3 of the task. This is an exact match. */
+  /** Filter out by values of the field custom3 of the Task. This is an exact match. */
   @JsonProperty("custom-3-not")
   private final String[] custom3NotIn;
 
   /**
-   * Filter by the custom3 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom3 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1158,23 +1158,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom3Like;
 
   /**
-   * Filter by what the custom3 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom3 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-3-not-like")
   private final String[] custom3NotLike;
 
-  /** Filter by the value of the field custom4 of the task. This is an exact match. */
+  /** Filter by the value of the field custom4 of the Task. This is an exact match. */
   @JsonProperty("custom-4")
   private final String[] custom4In;
 
-  /** Filter out by values of the field custom4 of the task. This is an exact match. */
+  /** Filter out by values of the field custom4 of the Task. This is an exact match. */
   @JsonProperty("custom-4-not")
   private final String[] custom4NotIn;
 
   /**
-   * Filter by the custom4 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom4 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1182,23 +1182,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom4Like;
 
   /**
-   * Filter by what the custom4 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom4 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-4-not-like")
   private final String[] custom4NotLike;
 
-  /** Filter by the value of the field custom5 of the task. This is an exact match. */
+  /** Filter by the value of the field custom5 of the Task. This is an exact match. */
   @JsonProperty("custom-5")
   private final String[] custom5In;
 
-  /** Filter out by values of the field custom5 of the task. This is an exact match. */
+  /** Filter out by values of the field custom5 of the Task. This is an exact match. */
   @JsonProperty("custom-5-not")
   private final String[] custom5NotIn;
 
   /**
-   * Filter by the custom5 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom5 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1206,23 +1206,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom5Like;
 
   /**
-   * Filter by what the custom5 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom5 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-5-not-like")
   private final String[] custom5NotLike;
 
-  /** Filter by the value of the field custom6 of the task. This is an exact match. */
+  /** Filter by the value of the field custom6 of the Task. This is an exact match. */
   @JsonProperty("custom-6")
   private final String[] custom6In;
 
-  /** Filter out by values of the field custom6 of the task. This is an exact match. */
+  /** Filter out by values of the field custom6 of the Task. This is an exact match. */
   @JsonProperty("custom-6-not")
   private final String[] custom6NotIn;
 
   /**
-   * Filter by the custom6 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom6 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1230,23 +1230,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom6Like;
 
   /**
-   * Filter by what the custom6 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom6 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-6-not-like")
   private final String[] custom6NotLike;
 
-  /** Filter by the value of the field custom7 of the task. This is an exact match. */
+  /** Filter by the value of the field custom7 of the Task. This is an exact match. */
   @JsonProperty("custom-7")
   private final String[] custom7In;
 
-  /** Filter out by values of the field custom7 of the task. This is an exact match. */
+  /** Filter out by values of the field custom7 of the Task. This is an exact match. */
   @JsonProperty("custom-7-not")
   private final String[] custom7NotIn;
 
   /**
-   * Filter by the custom7 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom7 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1254,23 +1254,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom7Like;
 
   /**
-   * Filter by what the custom7 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom7 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-7-not-like")
   private final String[] custom7NotLike;
 
-  /** Filter by the value of the field custom8 of the task. This is an exact match. */
+  /** Filter by the value of the field custom8 of the Task. This is an exact match. */
   @JsonProperty("custom-8")
   private final String[] custom8In;
 
-  /** Filter out by values of the field custom8 of the task. This is an exact match. */
+  /** Filter out by values of the field custom8 of the Task. This is an exact match. */
   @JsonProperty("custom-8-not")
   private final String[] custom8NotIn;
 
   /**
-   * Filter by the custom8 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom8 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1278,23 +1278,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom8Like;
 
   /**
-   * Filter by what the custom8 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom8 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-8-not-like")
   private final String[] custom8NotLike;
 
-  /** Filter by the value of the field custom9 of the task. This is an exact match. */
+  /** Filter by the value of the field custom9 of the Task. This is an exact match. */
   @JsonProperty("custom-9")
   private final String[] custom9In;
 
-  /** Filter out by values of the field custom9 of the task. This is an exact match. */
+  /** Filter out by values of the field custom9 of the Task. This is an exact match. */
   @JsonProperty("custom-9-not")
   private final String[] custom9NotIn;
 
   /**
-   * Filter by the custom9 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom9 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1302,23 +1302,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom9Like;
 
   /**
-   * Filter by what the custom9 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom9 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-9-not-like")
   private final String[] custom9NotLike;
 
-  /** Filter by the value of the field custom10 of the task. This is an exact match. */
+  /** Filter by the value of the field custom10 of the Task. This is an exact match. */
   @JsonProperty("custom-10")
   private final String[] custom10In;
 
-  /** Filter out by values of the field custom10 of the task. This is an exact match. */
+  /** Filter out by values of the field custom10 of the Task. This is an exact match. */
   @JsonProperty("custom-10-not")
   private final String[] custom10NotIn;
 
   /**
-   * Filter by the custom10 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom10 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1326,23 +1326,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom10Like;
 
   /**
-   * Filter by what the custom10 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom10 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-10-not-like")
   private final String[] custom10NotLike;
 
-  /** Filter by the value of the field custom11 of the task. This is an exact match. */
+  /** Filter by the value of the field custom11 of the Task. This is an exact match. */
   @JsonProperty("custom-11")
   private final String[] custom11In;
 
-  /** Filter out by values of the field custom11 of the task. This is an exact match. */
+  /** Filter out by values of the field custom11 of the Task. This is an exact match. */
   @JsonProperty("custom-11-not")
   private final String[] custom11NotIn;
 
   /**
-   * Filter by the custom11 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom11 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1350,23 +1350,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom11Like;
 
   /**
-   * Filter by what the custom11 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom11 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-11-not-like")
   private final String[] custom11NotLike;
 
-  /** Filter by the value of the field custom12 of the task. This is an exact match. */
+  /** Filter by the value of the field custom12 of the Task. This is an exact match. */
   @JsonProperty("custom-12")
   private final String[] custom12In;
 
-  /** Filter out by values of the field custom12 of the task. This is an exact match. */
+  /** Filter out by values of the field custom12 of the Task. This is an exact match. */
   @JsonProperty("custom-12-not")
   private final String[] custom12NotIn;
 
   /**
-   * Filter by the custom12 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom12 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1374,23 +1374,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom12Like;
 
   /**
-   * Filter by what the custom12 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom12 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-12-not-like")
   private final String[] custom12NotLike;
 
-  /** Filter by the value of the field custom13 of the task. This is an exact match. */
+  /** Filter by the value of the field custom13 of the Task. This is an exact match. */
   @JsonProperty("custom-13")
   private final String[] custom13In;
 
-  /** Filter out by values of the field custom13 of the task. This is an exact match. */
+  /** Filter out by values of the field custom13 of the Task. This is an exact match. */
   @JsonProperty("custom-13-not")
   private final String[] custom13NotIn;
 
   /**
-   * Filter by the custom13 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom13 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1398,23 +1398,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom13Like;
 
   /**
-   * Filter by what the custom13 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom13 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-13-not-like")
   private final String[] custom13NotLike;
 
-  /** Filter by the value of the field custom14 of the task. This is an exact match. */
+  /** Filter by the value of the field custom14 of the Task. This is an exact match. */
   @JsonProperty("custom-14")
   private final String[] custom14In;
 
-  /** Filter out by values of the field custom14 of the task. This is an exact match. */
+  /** Filter out by values of the field custom14 of the Task. This is an exact match. */
   @JsonProperty("custom-14-not")
   private final String[] custom14NotIn;
 
   /**
-   * Filter by the custom14 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom14 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1422,23 +1422,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom14Like;
 
   /**
-   * Filter by what the custom14 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom14 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-14-not-like")
   private final String[] custom14NotLike;
 
-  /** Filter by the value of the field custom15 of the task. This is an exact match. */
+  /** Filter by the value of the field custom15 of the Task. This is an exact match. */
   @JsonProperty("custom-15")
   private final String[] custom15In;
 
-  /** Filter out by values of the field custom15 of the task. This is an exact match. */
+  /** Filter out by values of the field custom15 of the Task. This is an exact match. */
   @JsonProperty("custom-15-not")
   private final String[] custom15NotIn;
 
   /**
-   * Filter by the custom15 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom15 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1446,22 +1446,22 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom15Like;
 
   /**
-   * Filter by what the custom15 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom15 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
   @JsonProperty("custom-15-not-like")
   private final String[] custom15NotLike;
 
-  /** Filter by the value of the field custom16 of the task. This is an exact match. */
+  /** Filter by the value of the field custom16 of the Task. This is an exact match. */
   @JsonProperty("custom-16")
   private final String[] custom16In;
 
-  /** Filter out by values of the field custom16 of the task. This is an exact match. */
+  /** Filter out by values of the field custom16 of the Task. This is an exact match. */
   @JsonProperty("custom-16-not")
   private final String[] custom16NotIn;
   /**
-   * Filter by the custom16 field of the task. This results in a substring search (% is appended to
+   * Filter by the custom16 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
@@ -1469,7 +1469,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom16Like;
 
   /**
-   * Filter by what the custom16 field of the task shouldn't be. This results in a substring search
+   * Filter by what the custom16 field of the Task shouldn't be. This results in a substring search
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
@@ -1477,17 +1477,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] custom16NotLike;
   // endregion
   // region callbackState
-  /** Filter by the callback state of the task. This is an exact match. */
+  /** Filter by the callback state of the Task. This is an exact match. */
   @JsonProperty("callback-state")
   private final CallbackState[] callbackStateIn;
 
-  /** Filter by what the callback state of the task shouldn't be. This is an exact match. */
+  /** Filter by what the callback state of the Task shouldn't be. This is an exact match. */
   @JsonProperty("callback-state-not")
   private final CallbackState[] callbackStateNotIn;
   // endregion
   // region wildcardSearchValue
   /**
-   * Filter by wildcard search field of the task.
+   * Filter by wildcard search field of the Task.
    *
    * <p>This must be used in combination with 'wildcard-search-value'
    */
@@ -1495,7 +1495,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final WildcardSearchField[] wildcardSearchFieldIn;
 
   /**
-   * Filter by wildcard search field of the task. This is an exact match.
+   * Filter by wildcard search field of the Task. This is an exact match.
    *
    * <p>This must be used in combination with 'wildcard-search-fields'
    */

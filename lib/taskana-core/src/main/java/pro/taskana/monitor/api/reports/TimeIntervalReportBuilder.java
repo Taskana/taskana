@@ -26,24 +26,24 @@ public interface TimeIntervalReportBuilder<
     extends Report.Builder<I, H> {
 
   /**
-   * Adds a list {@linkplain TimeIntervalColumnHeader}s to the builder to subdivide the report into
-   * clusters.
+   * Adds a list {@linkplain TimeIntervalColumnHeader}s to the Builder to subdivide the {@link
+   * Report} into clusters.
    *
-   * @param columnHeaders the column headers the report should consist of.
+   * @param columnHeaders the column headers the {@linkplain Report} should consist of.
    * @return the TimeIntervalReportBuilder
    */
   B withColumnHeaders(List<H> columnHeaders);
 
   /**
-   * If this filter is used, the days of the report are counted in working days.
+   * If this filter is used, the days of the Report are counted in working days.
    *
    * @return the TimeIntervalReportBuilder
    */
   B inWorkingDays();
 
   /**
-   * Adds a list of workbasket ids to the builder. The created report contains only tasks with a
-   * workbasket id in this list.
+   * Adds a list of workbasket ids to the builder. The created {@linkplain Report} contains only
+   * {@linkplain Task}s with a workbasketId in this list.
    *
    * @param workbasketIds a list of workbasket ids
    * @return the TimeIntervalReportBuilder
@@ -51,8 +51,8 @@ public interface TimeIntervalReportBuilder<
   B workbasketIdIn(List<String> workbasketIds);
 
   /**
-   * Adds a list of states to the builder. The created report contains only tasks with a state in
-   * this list.
+   * Adds a list of states to the builder. The created {@linkplain Report} contains only {@linkplain
+   * Task Tasks} with a state in this list.
    *
    * @param states a list of states
    * @return the TimeIntervalReportBuilder
@@ -60,8 +60,8 @@ public interface TimeIntervalReportBuilder<
   B stateIn(List<TaskState> states);
 
   /**
-   * Adds a list of classificationCategories to the builder. The created report contains only tasks
-   * with a category in this list.
+   * Adds a list of classificationCategories to the builder. The created {@linkplain Report}
+   * contains only {@linkplain Task Tasks} with a category in this list.
    *
    * @param classificationCategory a list of classificationCategories
    * @return the TimeIntervalReportBuilder
@@ -69,8 +69,8 @@ public interface TimeIntervalReportBuilder<
   B classificationCategoryIn(List<String> classificationCategory);
 
   /**
-   * Adds a list of classificationIds to the builder. The created report contains only tasks with a
-   * classificationId in this list.
+   * Adds a list of classificationIds to the builder. The created {@linkplain Report} contains only
+   * {@linkplain Task Tasks} with a classificationId in this list.
    *
    * @param classificationIds a list of classificationIds
    * @return the TimeIntervalReportBuilder
@@ -78,8 +78,8 @@ public interface TimeIntervalReportBuilder<
   B classificationIdIn(List<String> classificationIds);
 
   /**
-   * Adds a list of excludedClassificationIds to the builder. The created report contains only tasks
-   * with a classificationId NOT in this list.
+   * Adds a list of excludedClassificationIds to the builder. The created {@linkplain Report}
+   * contains only {@linkplain Task Tasks} with a classificationId NOT in this list.
    *
    * @param excludedClassificationIds a list of excludedClassificationIds
    * @return the TimeIntervalReportBuilder
@@ -87,8 +87,8 @@ public interface TimeIntervalReportBuilder<
   B excludedClassificationIdIn(List<String> excludedClassificationIds);
 
   /**
-   * Adds a list of domains to the builder. The created report contains only tasks with a domain in
-   * this list.
+   * Adds a list of domains to the builder. The created {@linkplain Report} contains only
+   * {@linkplain Task Tasks} with a domain in this list.
    *
    * @param domains a list of domains
    * @return the TimeIntervalReportBuilder
@@ -98,9 +98,9 @@ public interface TimeIntervalReportBuilder<
   /**
    * Adds the values of a certain {@linkplain TaskCustomField} for exact matching to the builder.
    *
-   * <p>The created report contains only tasks with a {@linkplain
+   * <p>The created {@linkplain Report} contains only {@linkplain Task Tasks} with a {@linkplain
    * Task#getCustomField(TaskCustomField) custom attribute} value exactly matching one of the items
-   * in the list.
+   * in the List.
    *
    * @param customField the specified {@linkplain TaskCustomField}
    * @param strings the values the specified {@linkplain Task#getCustomField(TaskCustomField) custom
@@ -114,14 +114,14 @@ public interface TimeIntervalReportBuilder<
   /**
    * Excludes the values of a certain {@linkplain TaskCustomField} to the builder.
    *
-   * <p>The created report contains only tasks with a {@linkplain
+   * <p>The created {@linkplain Report} contains only {@linkplain Task Tasks} with a {@linkplain
    * Task#getCustomField(TaskCustomField) custom attribute} value not matching one of the items in
-   * the list.
+   * the List.
    *
    * @param customField the specified {@linkplain TaskCustomField}
    * @param strings the values the specified {@linkplain Task#getCustomField(TaskCustomField) custom
    *     attribute} should not match
-   * @return the modified {@linkplain TimeIntervalReportBuilder}
+   * @return the modified TimeIntervalReportBuilder
    * @throws InvalidArgumentException if filter values are not given
    */
   B customAttributeNotIn(TaskCustomField customField, String... strings)
@@ -130,7 +130,7 @@ public interface TimeIntervalReportBuilder<
   /**
    * Adds the values of a certain {@linkplain TaskCustomField} for pattern matching to the builder.
    *
-   * <p>The created report contains only tasks with a {@linkplain
+   * <p>The created {@linkplain Report} contains only {@linkplain Task Tasks} with a {@linkplain
    * Task#getCustomField(TaskCustomField) custom attribute} value pattern-matching one of the items
    * in the list. They will be compared in SQL with the LIKE operator. You may use a wildcard like %
    * to specify the pattern. If you specify multiple arguments they are combined with the OR
@@ -146,10 +146,11 @@ public interface TimeIntervalReportBuilder<
       throws InvalidArgumentException;
 
   /**
-   * Returns a list of all taskIds of the report that are in the list of selected items.
+   * Returns a list of all taskIds of the {@linkplain Report} that are in the list of selected
+   * items.
    *
    * @param selectedItems a list of selectedItems
-   * @param timestamp the task timestamp of interest
+   * @param timestamp the {@linkplain TaskTimestamp} of interest
    * @return the list of all taskIds
    * @throws InvalidArgumentException if the column headers are not initialized
    * @throws NotAuthorizedException if the user has no rights to access the monitor
@@ -159,9 +160,9 @@ public interface TimeIntervalReportBuilder<
       throws NotAuthorizedException, InvalidArgumentException;
 
   /**
-   * Returns a list of all values of an entered custom field that are in the report.
+   * Returns a list of all values of an entered custom field that are in the {@linkplain Report}.
    *
-   * @param taskCustomField the customField whose values should appear in the list
+   * @param taskCustomField the {@linkplain TaskCustomField} whose values should appear in the list
    * @return the list of all custom attribute values
    * @throws NotAuthorizedException if the user has no rights to access the monitor
    */
@@ -169,10 +170,10 @@ public interface TimeIntervalReportBuilder<
       throws NotAuthorizedException;
 
   /**
-   * Builds the given report.
+   * Builds the {@linkplain Report} for the specified {@linkplain TaskTimestamp}.
    *
-   * @param timestamp The task timestamp of interest
-   * @return The build report
+   * @param timestamp The {@linkplain TaskTimestamp} of interest
+   * @return The build {@linkplain Report}
    * @throws NotAuthorizedException if the user has no rights to access the monitor
    * @throws InvalidArgumentException if an error occurs
    */

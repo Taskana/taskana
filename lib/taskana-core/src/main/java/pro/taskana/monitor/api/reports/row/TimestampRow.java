@@ -4,7 +4,7 @@ import pro.taskana.monitor.api.reports.TimestampReport;
 import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 
 /**
- * A single Row inside the {@link TimestampReport}. It contains 4 sub-rows for each org level
+ * A single Row inside the {@linkplain TimestampReport}. It contains 4 sub-rows for each org level
  * respectively.
  */
 public class TimestampRow extends FoldableRow<TimestampQueryItem> {
@@ -24,7 +24,7 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
   }
 
   /**
-   * Row inside the {@link TimestampReport} containing the information regarding a specific org
+   * Row inside the {@linkplain TimestampReport} containing the information regarding a specific org
    * level 1.
    */
   public static final class OrgLevel1Row extends FoldableRow<TimestampQueryItem> {
@@ -45,7 +45,7 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
   }
 
   /**
-   * Row inside the {@link TimestampReport} containing the information regarding a specific org
+   * Row inside the {@linkplain TimestampReport} containing the information regarding a specific org
    * level 2.
    */
   public static final class OrgLevel2Row extends FoldableRow<TimestampQueryItem> {
@@ -66,7 +66,7 @@ public class TimestampRow extends FoldableRow<TimestampQueryItem> {
   }
 
   /**
-   * Row inside the {@link TimestampReport} containing the information regarding a specific org
+   * Row inside the {@linkplain TimestampReport} containing the information regarding a specific org
    * level 3.
    */
   public static final class OrgLevel3Row extends FoldableRow<TimestampQueryItem> {

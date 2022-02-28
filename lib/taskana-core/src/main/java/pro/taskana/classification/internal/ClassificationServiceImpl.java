@@ -508,8 +508,9 @@ public class ClassificationServiceImpl implements ClassificationService {
    *
    * @param classificationImpl the classification
    * @return the old classification
-   * @throws ConcurrencyException if the classification has been modified by some other process.
-   * @throws ClassificationNotFoundException if the given classification does not exist.
+   * @throws ConcurrencyException if the classification has been modified by some other process;
+   *     that's the case if the given modified timestamp differs from the one in the database
+   * @throws ClassificationNotFoundException if the given classification does not exist
    */
   private Classification getExistingClassificationAndVerifyTimestampHasNotChanged(
       ClassificationImpl classificationImpl)

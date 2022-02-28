@@ -9,6 +9,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
@@ -16,131 +17,167 @@ import pro.taskana.workbasket.api.WorkbasketService;
 public interface TaskanaEngine {
 
   /**
-   * The TaskService can be used for operations on all Tasks.
+   * Returns a {@linkplain TaskService} initialized with the current TaskanaEngine. {@linkplain
+   * TaskService} can be used for operations on all {@linkplain Task Tasks}.
    *
-   * @return the TaskService
+   * @return an instance of {@linkplain TaskService}
    */
   TaskService getTaskService();
 
   /**
-   * The MonitorService can be used for monitoring Tasks.
+   * Returns a {@linkplain MonitorService} initialized with the current TaskanaEngine. {@linkplain
+   * MonitorService} can be used for monitoring {@linkplain Task Tasks}.
    *
-   * @return the MonitorService
+   * @return an instance of {@linkplain MonitorService}
    */
   MonitorService getMonitorService();
 
   /**
-   * The WorkbasketService can be used for operations on all Workbaskets.
+   * Returns a {@linkplain WorkbasketService} initialized with the current TaskanaEngine. The
+   * {@linkplain WorkbasketService} can be used for operations on all {@linkplain
+   * pro.taskana.workbasket.api.models.Workbasket Workbaskets}.
    *
-   * @return the WorbasketService
+   * @return an instance of {@linkplain WorkbasketService}
    */
   WorkbasketService getWorkbasketService();
 
   /**
-   * The ClassificationService can be used for operations on all Categories.
+   * Returns a {@linkplain ClassificationService} initialized with the current TaskanaEngine. The
+   * {@linkplain ClassificationService} can be used for operations on all {@linkplain
+   * pro.taskana.classification.api.models.Classification Classifications}.
    *
-   * @return the ClassificationService
+   * @return an instance of {@linkplain ClassificationService}
    */
   ClassificationService getClassificationService();
 
   /**
-   * The JobService can be user for all job operations.
+   * Returns a {@linkplain JobService} initialized with the current TaskanaEngine. The {@linkplain
+   * JobService} can be used for all operations on {@linkplain
+   * pro.taskana.common.internal.jobs.TaskanaJob TaskanaJobs}.
    *
-   * @return the JobService
+   * @return an instance of {@linkplain JobService}
    */
   JobService getJobService();
 
+  /**
+   * Returns a {@linkplain UserService} initialized with the current TaskanaEngine. The {@linkplain
+   * UserService} can be used for all operations on {@linkplain pro.taskana.user.api.models.User
+   * Users}.
+   *
+   * @return an instance of {@linkplain UserService}
+   */
   UserService getUserService();
 
+  /**
+   * Returns a {@linkplain ConfigurationService} initialized with the current TaskanaEngine. The
+   * {@linkplain ConfigurationService} can be used to manage custom configuration options.
+   *
+   * @return an instance of {@linkplain ConfigurationService}
+   */
   ConfigurationService getConfigurationService();
 
   /**
-   * The Taskana configuration.
+   * Returns the {@linkplain TaskanaEngineConfiguration configuration} of the TaskanaEngine.
    *
-   * @return the TaskanaConfiguration
+   * @return {@linkplain TaskanaEngineConfiguration configuration}
    */
   TaskanaEngineConfiguration getConfiguration();
 
   /**
-   * The WorkingDaysToDaysConverter used to compute holidays.
+   * Returns the {@linkplain WorkingDaysToDaysConverter} of the TaskanaEngine. The {@linkplain
+   * WorkingDaysToDaysConverter} is used to compute holidays.
    *
-   * @return the converter
+   * @return {@linkplain WorkingDaysToDaysConverter}
    */
   WorkingDaysToDaysConverter getWorkingDaysToDaysConverter();
 
   /**
-   * Checks if the history plugin is enabled.
+   * Checks if the {@linkplain pro.taskana.spi.history.api.TaskanaHistory TaskanaHistory} plugin is
+   * enabled.
    *
-   * @return true if the history is enabled. Otherwise false.
+   * @return true if the history is enabled; otherwise false
    */
   boolean isHistoryEnabled();
 
   /**
-   * gets the current connection management mode.
+   * Returns the {@linkplain ConnectionManagementMode ConnectionManagementMode} of the
+   * TaskanaEngine.
    *
-   * @return the current connection management mode.
+   * @return {@linkplain ConnectionManagementMode ConnectionManagementMode}
    */
   ConnectionManagementMode getConnectionManagementMode();
 
   /**
-   * sets the connection management mode.
+   * Sets {@linkplain ConnectionManagementMode ConnectionManagementMode} of the TaskanaEngine.
    *
-   * @param mode the connection management mode Valid values are:
+   * @param mode the valid values for the {@linkplain ConnectionManagementMode} are:
    *     <ul>
-   *       <li>PARTICIPATE - taskana participates in global transaction. This is the default mode.
-   *       <li>AUTOCOMMIT - taskana commits each API call separately
-   *       <li>EXPLICIT - commit processing is managed explicitly by the client
+   *       <li>{@linkplain ConnectionManagementMode#PARTICIPATE PARTICIPATE} - taskana participates
+   *           in global transaction; this is the default mode
+   *       <li>{@linkplain ConnectionManagementMode#AUTOCOMMIT AUTOCOMMIT} - taskana commits each
+   *           API call separately
+   *       <li>{@linkplain ConnectionManagementMode#EXPLICIT EXPLICIT} - commit processing is
+   *           managed explicitly by the client
    *     </ul>
    */
   void setConnectionManagementMode(ConnectionManagementMode mode);
 
   /**
-   * Set the connection to be used by TASKANA in mode {@linkplain
-   * ConnectionManagementMode#EXPLICIT}. If this Api is called, taskana uses the connection passed
-   * by the client for all subsequent API calls until the client resets this connection. Control
-   * over commit and rollback of the connection is the responsibility of the client. In order to
-   * close the connection, closeConnection() or setConnection(null) has to be called.
+   * Set the {@code Connection} to be used by TASKANA in mode {@linkplain
+   * ConnectionManagementMode#EXPLICIT EXPLICIT}. If this API is called, TASKANA uses the {@code
+   * Connection} passed by the client for all subsequent API calls until the client resets this
+   * {@code Connection}. Control over commit and rollback of the {@code Connection} is the
+   * responsibility of the client. In order to close the {@code Connection}, {@code
+   * closeConnection()} or {@code setConnection(null)} has to be called.
    *
-   * @param connection - The java.sql.Connection that is controlled by the client
+   * @param connection - The {@code java.sql.Connection} that is controlled by the client
    * @throws SQLException if a database access error occurs
    */
   void setConnection(java.sql.Connection connection) throws SQLException;
 
   /**
-   * Closes the client's connection, sets it to null and switches to mode PARTICIPATE. Only
-   * applicable in mode EXPLICIT. Has the same effect as setConnection(null).
+   * Closes the client's connection, sets it to null and switches to mode {@linkplain
+   * ConnectionManagementMode#PARTICIPATE PARTICIPATE}. Only applicable in mode {@linkplain
+   * ConnectionManagementMode#EXPLICIT EXPLICIT}. Has the same effect as {@code
+   * setConnection(null)}.
    */
   void closeConnection();
 
   /**
-   * check whether the current user is member of one of the roles specified.
+   * Check whether the current user is member of one of the {@linkplain TaskanaRole TaskanaRoles}
+   * specified.
    *
-   * @param roles The roles that are checked for membership of the current user
-   * @return true if the current user is a member of at least one of the specified groups
+   * @param roles The {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
+   *     current user
+   * @return true if the current user is a member of at least one of the specified {@linkplain
+   *     TaskanaRole TaskanaRole}
    */
   boolean isUserInRole(TaskanaRole... roles);
 
   /**
-   * Checks whether current user is member of any of the specified roles.
+   * Checks whether current user is member of any of the specified {@linkplain TaskanaRole
+   * TaskanaRoles}.
    *
-   * @param roles The roles that are checked for membership of the current user
-   * @throws NotAuthorizedException If the current user is not member of any specified role
+   * @param roles The {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
+   *     current user
+   * @throws NotAuthorizedException If the current user is not member of any specified {@linkplain
+   *     TaskanaRole TaskanaRole}
    */
   void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
 
   /**
-   * Executes a given supplier with admin privileges and thus skips further permission checks. With
-   * great power comes great responsibility.
+   * Executes a given {@code Supplier} with admin privileges and thus skips further permission
+   * checks. With great power comes great responsibility.
    *
    * @param supplier will be executed with admin privileges
-   * @param <T> defined with the supplier return value
-   * @return output from supplier
+   * @param <T> defined with the return value of the {@code Supplier}
+   * @return output from {@code Supplier}
    */
   <T> T runAsAdmin(Supplier<T> supplier);
 
   /**
-   * Executes a given runnable with admin privileges and thus skips further permission checks. With
-   * great power comes great responsibility.
+   * Executes a given {@code Runnable} with admin privileges and thus skips further permission
+   * checks. With great power comes great responsibility.
    *
    * @see #runAsAdmin(Supplier)
    */
@@ -154,9 +191,9 @@ public interface TaskanaEngine {
   }
 
   /**
-   * Returns the CurrentUserContext class.
+   * Returns the {@linkplain CurrentUserContext} of the TaskanaEngine.
    *
-   * @return the CurrentUserContext
+   * @return {@linkplain CurrentUserContext}
    */
   CurrentUserContext getCurrentUserContext();
 
@@ -164,9 +201,12 @@ public interface TaskanaEngine {
    * Connection management mode. Controls the connection handling of taskana
    *
    * <ul>
-   *   <li>PARTICIPATE - taskana participates in global transaction. This is the default mode
-   *   <li>AUTOCOMMIT - taskana commits each API call separately
-   *   <li>EXPLICIT - commit processing is managed explicitly by the client
+   *   <li>{@linkplain ConnectionManagementMode#PARTICIPATE PARTICIPATE} - taskana participates * in
+   *       global transaction; this is the default mode *
+   *   <li>{@linkplain ConnectionManagementMode#AUTOCOMMIT AUTOCOMMIT} - taskana commits each * API
+   *       call separately *
+   *   <li>{@linkplain ConnectionManagementMode#EXPLICIT EXPLICIT} - commit processing is * managed
+   *       explicitly by the client
    * </ul>
    */
   enum ConnectionManagementMode {

@@ -1,13 +1,15 @@
 package pro.taskana.common.api;
 
-/** Service to manage the TASKANA jobs. */
+import pro.taskana.common.internal.jobs.TaskanaJob;
+
+/** Service to manage the {@linkplain TaskanaJob TaskanaJobs}. */
 public interface JobService {
 
   /**
-   * Create a schedule a new job.
+   * Initializes the given {@linkplain ScheduledJob} and inserts it into the database.
    *
-   * @param job {@link ScheduledJob} The job to be created.
-   * @return {@link ScheduledJob} The created job.
+   * @param job the {@linkplain ScheduledJob job} to be created
+   * @return the created {@linkplain ScheduledJob job}
    */
   ScheduledJob createJob(ScheduledJob job);
 }

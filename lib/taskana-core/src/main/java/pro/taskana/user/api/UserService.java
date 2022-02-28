@@ -51,7 +51,9 @@ public interface UserService {
    * @param userToCreate the {@linkplain User} which should be inserted
    * @return the inserted {@linkplain User}
    * @throws InvalidArgumentException if some fields are not set properly
-   * @throws NotAuthorizedException if the current user is not admin or business-admin
+   * @throws NotAuthorizedException if the current user is not {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserAlreadyExistException if there already exists a {@linkplain User} with the
    *     specified {@linkplain User#getId() id} inside the database
    */
@@ -67,7 +69,9 @@ public interface UserService {
    *
    * @param userToUpdate the {@linkplain User} which should be updated
    * @return the updated {@linkplain User}
-   * @throws NotAuthorizedException if the current user is not admin or business-admin
+   * @throws NotAuthorizedException if the current user is not {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
    *     {@linkplain User#getId() id} inside the database
    */
@@ -81,7 +85,9 @@ public interface UserService {
    * gets deleted.
    *
    * @param id the {@linkplain User#getId() id} of the {@linkplain User} which should be deleted
-   * @throws NotAuthorizedException if the current user is not admin or business-admin
+   * @throws NotAuthorizedException if the current user is not {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
    *     {@linkplain User#getId() id} inside the database
    */

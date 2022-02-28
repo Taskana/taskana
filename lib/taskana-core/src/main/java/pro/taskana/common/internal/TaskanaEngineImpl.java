@@ -309,7 +309,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and
    * sets the databaseId attribute.
    *
-   * @return a {@link SqlSessionFactory}
+   * @return a {@linkplain SqlSessionFactory}
    * @throws SystemException when a connection to the database could not be opened.
    */
   protected SqlSessionManager createSqlSessionManager() {

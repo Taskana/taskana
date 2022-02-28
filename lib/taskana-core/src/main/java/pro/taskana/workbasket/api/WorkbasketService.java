@@ -8,6 +8,7 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.user.api.models.User;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -20,32 +21,39 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 public interface WorkbasketService {
 
   /**
-   * Get Workbasket for a given id.
+   * Get the {@linkplain Workbasket} specified by the given {@linkplain WorkbasketSummary#getId()
+   * id}.
    *
-   * @param workbasketId the Id of the Workbasket requested
+   * @param workbasketId the {@linkplain WorkbasketSummary#getId() id} of the {@linkplain
+   *     Workbasket} requested
    * @return the requested Workbasket
-   * @throws WorkbasketNotFoundException If the Workbasket with workbasketId is not found
-   * @throws NotAuthorizedException If the current user or group does not have the permissions for
-   *     interactions.
+   * @throws WorkbasketNotFoundException If the {@linkplain Workbasket} with workbasketId is not
+   *     found
+   * @throws NotAuthorizedException If the current user or group does not have the {@linkplain
+   *     WorkbasketPermission permissions} for interactions.
    */
   Workbasket getWorkbasket(String workbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedException;
 
   /**
-   * Get Workbasket for a given key.
+   * Get the {@linkplain Workbasket} specified by the given {@linkplain WorkbasketSummary#getKey()
+   * key} and {@linkplain WorkbasketSummary#getDomain() domain}.
    *
-   * @param workbasketKey the Key of the Workbasket requested
-   * @param domain the domain of the workbasket
-   * @return the requested Workbasket
-   * @throws WorkbasketNotFoundException If the Workbasket with workbasketId is not found
-   * @throws NotAuthorizedException If the current user or group does not have the permissions for
-   *     interactions.
+   * @param workbasketKey the {@linkplain WorkbasketSummary#getKey() key} of the {@linkplain
+   *     Workbasket} requested
+   * @param domain the {@linkplain WorkbasketSummary#getDomain() domain} of the {@linkplain
+   *     Workbasket}
+   * @return the requested {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException If the {@linkplain Workbasket} with workbasketId is not
+   *     found
+   * @throws NotAuthorizedException If the current user or group does not have the {@linkplain
+   *     WorkbasketPermission permissions} for interactions.
    */
   Workbasket getWorkbasket(String workbasketKey, String domain)
       throws WorkbasketNotFoundException, NotAuthorizedException;
 
   /**
-   * Creates a new Workbasket. <br>
+   * Creates a new {@linkplain Workbasket}. <br>
    * The default values are:
    *
    * <ul>
@@ -53,91 +61,106 @@ public interface WorkbasketService {
    *       IdGenerator}
    * </ul>
    *
-   * @param workbasket The Workbasket to create
-   * @return the created and inserted Workbasket
-   * @throws InvalidArgumentException If a required property of the Workbasket is not set.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
-   * @throws WorkbasketAlreadyExistException if the Workbasket exists already
-   * @throws DomainNotFoundException if the domain does not exist in the configuration.
+   * @param workbasket The {@linkplain Workbasket} to create
+   * @return the created and inserted {@linkplain Workbasket}
+   * @throws InvalidArgumentException If a required property of the {@linkplain Workbasket} is not
+   *     set.
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
+   * @throws WorkbasketAlreadyExistException if the {@linkplain Workbasket} exists already
+   * @throws DomainNotFoundException if the {@linkplain Workbasket#getDomain() domain} does not
+   *     exist in the configuration.
    */
   Workbasket createWorkbasket(Workbasket workbasket)
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
           DomainNotFoundException;
 
   /**
-   * Update a Workbasket.
+   * Update the given {@linkplain Workbasket}.
    *
-   * @param workbasket The Workbasket to update
-   * @return the updated Workbasket
-   * @throws InvalidArgumentException if workbasket name or type is invalid
+   * @param workbasket The {@linkplain Workbasket} to update
+   * @return the updated {@linkplain Workbasket}
+   * @throws InvalidArgumentException if {@linkplain Workbasket#getName() name} or {@linkplain
+   *     Workbasket#getType() type} of the {@linkplain Workbasket} is invalid
    * @throws NotAuthorizedException if the current user is not authorized to update the {@linkplain
    *     Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found.
    * @throws ConcurrencyException if an attempt is made to update the {@linkplain Workbasket} and
-   *     another user updated it already
+   *     another user updated it already; that's the case if the given modified timestamp differs
+   *     from the one in the database
    */
   Workbasket updateWorkbasket(Workbasket workbasket)
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
           ConcurrencyException;
 
   /**
-   * Returns a new WorkbasketAccessItem which is not inserted.
+   * Returns a new {@linkplain WorkbasketAccessItem} which is not inserted.
    *
-   * @param workbasketId the workbasket id used to identify the referenced {@linkplain Workbasket}
+   * @param workbasketId the {@linkplain Workbasket#getId() id} used to identify the referenced
+   *     {@linkplain Workbasket}
    * @param accessId the group id or user id for which access is controlled
-   * @return new WorkbasketAccessItem
+   * @return new {@linkplain WorkbasketAccessItem}
    */
   WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId);
 
   /**
-   * Create and insert a new {@link WorkbasketAccessItem} with a WorkbasketId, an accessId and
-   * permissions.
+   * Create and insert a new {@linkplain WorkbasketAccessItem} with a {@linkplain
+   * WorkbasketAccessItem#getWorkbasketId() workbasketId}, an {@linkplain
+   * WorkbasketAccessItem#getAccessId() accessId} and {@linkplain
+   * WorkbasketAccessItem#getPermission(WorkbasketPermission) permissions}.
    *
-   * @param workbasketAccessItem the new workbasketAccessItem
-   * @return the created WorkbasketAccessItem
-   * @throws InvalidArgumentException if the preconditions dont match the required ones.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
-   * @throws WorkbasketNotFoundException if the workbasketAccessItem refers to a not existing
-   *     workbasket *
-   * @throws WorkbasketAccessItemAlreadyExistException if there exists already a
-   *     WorkbasketAccessItem for the same access id and workbasket
+   * @param workbasketAccessItem the new {@linkplain WorkbasketAccessItem}
+   * @return the created {@linkplain WorkbasketAccessItem}
+   * @throws InvalidArgumentException if the preconditions don't match the required ones.
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
+   * @throws WorkbasketNotFoundException if the {@linkplain WorkbasketAccessItem} refers to a not
+   *     existing workbasket
+   * @throws WorkbasketAccessItemAlreadyExistException if there exists already a {@linkplain
+   *     WorkbasketAccessItem} for the same {@linkplain WorkbasketAccessItem#getAccessId() accessId}
+   *     and {@linkplain Workbasket}
    */
   WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
       throws InvalidArgumentException, NotAuthorizedException, WorkbasketNotFoundException,
           WorkbasketAccessItemAlreadyExistException;
 
   /**
-   * This method updates a {@link WorkbasketAccessItem}.
+   * This method updates a {@linkplain WorkbasketAccessItem}.
    *
-   * @param workbasketAccessItem the {@link WorkbasketAccessItem}
+   * @param workbasketAccessItem the {@linkplain WorkbasketAccessItem}
    * @return the updated entity
-   * @throws InvalidArgumentException if accessid or workbasketId is changed in the
-   *     workbasketAccessItem
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @throws InvalidArgumentException if {@linkplain WorkbasketAccessItem#getAccessId() accessId} or
+   *     {@linkplain WorkbasketAccessItem#getWorkbasketId() workbasketId} is changed in the
+   *     {@linkplain WorkbasketAccessItem}
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
   WorkbasketAccessItem updateWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
       throws InvalidArgumentException, NotAuthorizedException;
 
   /**
-   * Deletes a specific {@link WorkbasketAccessItem}.
+   * Deletes a specific {@linkplain WorkbasketAccessItem}.
    *
-   * @param id the id of the WorbasketAccessItem to be deleted
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @param id the {@linkplain WorkbasketAccessItem#getId() id} of the {@linkplain
+   *     WorkbasketAccessItem} to be deleted
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
   void deleteWorkbasketAccessItem(String id) throws NotAuthorizedException;
 
   /**
    * This method checks the authorization for the actual User.
    *
-   * @param workbasketId the id of the workbasket we want to access
-   * @param permission the needed {@link WorkbasketPermission} If more than one permission is
-   *     specified, the current user needs all of them.
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket} we
+   *     want to access
+   * @param permission the needed {@linkplain WorkbasketPermission}; if more than one {@linkplain
+   *     WorkbasketPermission permission} is specified, the current user needs all of them
    * @throws NotAuthorizedException if the current user has not the requested authorization for the
-   *     specified workbasket
+   *     specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
    *     given {@linkplain Workbasket#getId() id}.
    */
@@ -147,20 +170,22 @@ public interface WorkbasketService {
   /**
    * This method checks the authorization for the actual User.
    *
-   * @param workbasketKey the key of the workbasket we want to access
-   * @param domain the domain of the workbasket we want to access
-   * @param permission the needed {@link WorkbasketPermission}. If more than one permission is
-   *     specified, the current user needs all of them.
-   * @throws NotAuthorizedException if the current user has not the requested permission for the
-   *     specified workbasket
-   * @throws WorkbasketNotFoundException if no workbasket can be found for the given key+domain
-   *     values.
+   * @param workbasketKey the {@linkplain Workbasket#getKey() key} of the {@linkplain Workbasket} we
+   *     want to access
+   * @param domain the {@linkplain Workbasket#getDomain() domain} of the {@linkplain Workbasket} we
+   *     want to access
+   * @param permission the needed {@linkplain WorkbasketPermission}; if more than one {@linkplain
+   *     WorkbasketPermission permission} is specified, the current user needs all of them.
+   * @throws NotAuthorizedException if the current user has not the requested {@linkplain
+   *     WorkbasketPermission permission} for the specified {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException if no {@linkplain Workbasket} can be found for the given
+   *     {@linkplain Workbasket#getKey() key} and {@linkplain Workbasket#getDomain() domain} values.
    */
   void checkAuthorization(String workbasketKey, String domain, WorkbasketPermission... permission)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Get all {@link WorkbasketAccessItem s} for a {@linkplain Workbasket}.
+   * Get all {@linkplain WorkbasketAccessItem}s for a {@linkplain Workbasket}.
    *
    * @param workbasketId the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket}
    * @return List of {@linkplain WorkbasketAccessItem}s for the {@linkplain Workbasket}
@@ -172,25 +197,29 @@ public interface WorkbasketService {
       throws NotAuthorizedException;
 
   /**
-   * Setting up the new WorkbasketAccessItems for a Workbasket. Already stored values will be
-   * completely replaced by the current ones.
+   * Setting up the new {@linkplain WorkbasketAccessItem}s for a {@linkplain Workbasket}. Already
+   * stored values will be completely replaced by the current ones.
    *
-   * <p>Preconditions for each {@link WorkbasketAccessItem} then {@code wbAccessItems}:
+   * <p>Preconditions for each {@linkplain WorkbasketAccessItem} then {@code wbAccessItems}:
    *
    * <ul>
-   *   <li>{@link WorkbasketAccessItem#getWorkbasketId()} is not null
-   *   <li>{@link WorkbasketAccessItem#getWorkbasketId()} is equal to {@code workbasketId}
-   *   <li>{@link WorkbasketAccessItem#getAccessId()} is unique
+   *   <li>{@linkplain WorkbasketAccessItem#getWorkbasketId()} is not null
+   *   <li>{@linkplain WorkbasketAccessItem#getWorkbasketId()} is equal to {@code workbasketId}
+   *   <li>{@linkplain WorkbasketAccessItem#getAccessId()} is unique
    * </ul>
    *
-   * @param workbasketId ID of the access-target workbasket.
-   * @param wbAccessItems List of WorkbasketAccessItems which does replace all current stored ones.
+   * @param workbasketId {@linkplain Workbasket#getId() id} of the access-target {@linkplain
+   *     Workbasket}.
+   * @param wbAccessItems List of {@linkplain WorkbasketAccessItem}s which does replace all current
+   *     stored ones.
    * @throws InvalidArgumentException will be thrown when the parameter {@code wbAccessItems} is
    *     NULL or member doesn't match the preconditions
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws WorkbasketAccessItemAlreadyExistException if {@code wbAccessItems} contains multiple
-   *     accessItems with the same accessId.
+   *     {@linkplain WorkbasketAccessItem} with the same {@linkplain
+   *     WorkbasketAccessItem#getAccessId() accessId}.
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
    *     given {@linkplain Workbasket#getId() id}.
    */
@@ -201,114 +230,128 @@ public interface WorkbasketService {
   /**
    * This method provides a query builder for querying the database.
    *
-   * @return a {@link WorkbasketQuery}
+   * @return a {@linkplain WorkbasketQuery}
    */
   WorkbasketQuery createWorkbasketQuery();
 
   /**
    * This method provides a query builder for querying the database.
    *
-   * @return a {@link WorkbasketAccessItemQuery}
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @return a {@linkplain WorkbasketAccessItemQuery}
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
   WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException;
 
   /**
-   * Returns a new workbasket which is not inserted.
+   * Returns a new {@linkplain Workbasket} which is not inserted.
    *
-   * @param key the workbasket key used to identify the workbasket
-   * @param domain the domain of the new workbasket
-   * @return new Workbasket
+   * @param key the {@linkplain Workbasket#getKey() key} used to identify the {@linkplain
+   *     Workbasket}
+   * @param domain the {@linkplain Workbasket#getDomain() domain} of the new {@linkplain Workbasket}
+   * @return new {@linkplain Workbasket}
    */
   Workbasket newWorkbasket(String key, String domain);
 
   /**
-   * Returns a set with all permissions of the current user at this workbasket.<br>
-   * If the workbasketId is invalid, an empty list of permissions is returned since there is no
-   * distinction made between the situation that the workbasket is not found and the caller has no
-   * permissions on the workbasket.
+   * Returns a set with all {@linkplain WorkbasketPermission permissions} of the current user at
+   * this {@linkplain Workbasket}.<br>
+   * If the workbasketId is invalid, an empty List of {@linkplain WorkbasketPermission}s is returned
+   * since there is no distinction made between the situation that the {@linkplain Workbasket} is
+   * not found and the caller has no {@linkplain WorkbasketPermission permissions} on the
+   * {@linkplain Workbasket}.
    *
-   * @param workbasketId the id of the referenced workbasket
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the referenced {@linkplain
+   *     Workbasket}
    * @return a {@link List} with all {@link WorkbasketPermission}s of the caller on the requested
-   *     workbasket.
+   *     {@linkplain Workbasket}.
    */
   List<WorkbasketPermission> getPermissionsForWorkbasket(String workbasketId);
 
   /**
-   * Returns the distribution targets for a given workbasket.
+   * Returns the distribution targets for a given {@linkplain Workbasket}.
    *
-   * @param workbasketId the id of the referenced workbasket
-   * @return the distribution targets of the specified workbasket
-   * @throws NotAuthorizedException if the current user has no read permission for the specified
-   *     workbasket
-   * @throws WorkbasketNotFoundException if the workbasket doesn't exist
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the referenced {@linkplain
+   *     Workbasket}
+   * @return the distribution targets of the specified {@linkplain Workbasket}
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ permission} for the specified {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionTargets(String workbasketId)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Returns the distribution targets for a given workbasket.
+   * Returns the distribution targets for a given {@linkplain Workbasket}.
    *
-   * @param workbasketKey the key of the referenced workbasket
-   * @param domain the domain of the referenced workbasket
-   * @return the distribution targets of the specified workbasket
-   * @throws NotAuthorizedException if the current user has no read permission for the specified
-   *     workbasket
-   * @throws WorkbasketNotFoundException if the workbasket doesn't exist
+   * @param workbasketKey the {@linkplain Workbasket#getKey() key} of the referenced {@linkplain
+   *     Workbasket}
+   * @param domain the {@linkplain Workbasket#getDomain() domain} of the referenced {@linkplain
+   *     Workbasket}
+   * @return the distribution targets of the specified {@linkplain Workbasket}
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ permission} for the specified {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionTargets(String workbasketKey, String domain)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Set the distribution targets for a workbasket.
+   * Set the distribution targets for a {@linkplain Workbasket}.
    *
-   * @param sourceWorkbasketId the id of the source workbasket for which the distribution targets
-   *     are to be set
-   * @param targetWorkbasketIds a list of the ids of the target workbaskets
-   * @throws NotAuthorizedException if the current used doesn't have READ permission for the source
-   *     workbasket
-   * @throws WorkbasketNotFoundException if either the source workbasket or any of the target
-   *     workbaskets don't exist
+   * @param sourceWorkbasketId the {@linkplain Workbasket#getId() id} of the source {@linkplain
+   *     Workbasket} for which the distribution targets are to be set
+   * @param targetWorkbasketIds a list of the ids of the target {@linkplain Workbasket}s
+   * @throws NotAuthorizedException if the current used doesn't have {@linkplain
+   *     WorkbasketPermission#READ READ permission} for the source {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException if either the source {@linkplain Workbasket} or any of the
+   *     target {@linkplain Workbasket}s don't exist
    */
   void setDistributionTargets(String sourceWorkbasketId, List<String> targetWorkbasketIds)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Add a distribution target to a workbasket. If the specified distribution target exists already,
-   * the method silently returns without doing anything.
+   * Add a distribution target to a {@linkplain Workbasket}. If the specified distribution target
+   * exists already, the method silently returns without doing anything.
    *
-   * @param sourceWorkbasketId the id of the source workbasket
-   * @param targetWorkbasketId the id of the target workbasket
-   * @throws NotAuthorizedException if the current user doesn't have READ permission for the source
-   *     workbasket
-   * @throws WorkbasketNotFoundException if either the source workbasket or the target workbasket
-   *     doesn't exist
+   * @param sourceWorkbasketId the {@linkplain Workbasket#getId() id} of the source {@linkplain
+   *     Workbasket}
+   * @param targetWorkbasketId the {@linkplain Workbasket#getId() id} of the target {@linkplain
+   *     Workbasket}
+   * @throws NotAuthorizedException if the current user doesn't have {@linkplain
+   *     WorkbasketPermission#READ READ permission} for the source {@linkplain Workbasket}s
+   * @throws WorkbasketNotFoundException if either the source {@linkplain Workbasket} or the target
+   *     {@linkplain Workbasket} doesn't exist
    */
   void addDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Remove a distribution target from a workbasket. If the specified distribution target doesn't
-   * exist, the method silently returns without doing anything.
+   * Remove a distribution target from a {@linkplain Workbasket}. If the specified distribution
+   * target doesn't exist, the method silently returns without doing anything.
    *
-   * @param sourceWorkbasketId The id of the source workbasket
-   * @param targetWorkbasketId The id of the target workbasket
-   * @throws NotAuthorizedException If the current user doesn't have READ permission for the source
-   *     workbasket
+   * @param sourceWorkbasketId The {@linkplain Workbasket#getId() id} of the source {@linkplain
+   *     Workbasket}
+   * @param targetWorkbasketId The {@linkplain Workbasket#getId() id} of the target {@linkplain
+   *     Workbasket}
+   * @throws NotAuthorizedException If the current user doesn't have {@linkplain
+   *     WorkbasketPermission#READ READ permission} for the source {@linkplain Workbasket}
    */
   void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
       throws NotAuthorizedException;
 
   /**
-   * Deletes the workbasket by the given ID of it.
+   * Deletes the {@linkplain Workbasket} by the given {@linkplain Workbasket#getId() id}.
    *
-   * @param workbasketId Id of the workbasket which should be deleted.
-   * @return true if the workbasket was deleted successfully. false if the workbasket is marked for
-   *     deletion.
-   * @throws NotAuthorizedException if the current user got no permissions for this interaction.
-   * @throws WorkbasketNotFoundException if the workbasket does not exist.
-   * @throws WorkbasketInUseException if the workbasket does contain task-content.
+   * @param workbasketId {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket} which
+   *     should be deleted.
+   * @return true if the {@linkplain Workbasket} was deleted successfully; false if the {@linkplain
+   *     Workbasket} is marked for deletion
+   * @throws NotAuthorizedException if the current user got no {@linkplain WorkbasketPermission}s
+   *     for this interaction
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} does not exist
+   * @throws WorkbasketInUseException if the {@linkplain Workbasket} does contain task-content
    * @throws InvalidArgumentException if the workbasketId is NULL or EMPTY
    */
   boolean deleteWorkbasket(String workbasketId)
@@ -316,47 +359,54 @@ public interface WorkbasketService {
           InvalidArgumentException;
 
   /**
-   * Deletes a list of workbaskets.
+   * Deletes the list of {@linkplain Workbasket}s specified via {@linkplain Workbasket#getId() ids}.
    *
-   * @param workbasketsIds the ids of the workbaskets to delete.
-   * @return the result of the operations with Id and Exception for each failed workbasket deletion.
-   * @throws InvalidArgumentException if the WorkbasketIds parameter list is NULL or empty
-   * @throws NotAuthorizedException if the current user got no permission for this interaction.
+   * @param workbasketsIds the {@linkplain Workbasket#getId() ids} of the {@linkplain Workbasket}s
+   *     to delete.
+   * @return the result of the operations and an Exception for each failed workbasket deletion
+   * @throws InvalidArgumentException if the WorkbasketIds parameter List is NULL or empty
+   * @throws NotAuthorizedException if the current user got no {@linkplain WorkbasketPermission} for
+   *     this interaction
    */
   BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
       throws NotAuthorizedException, InvalidArgumentException;
 
   /**
-   * Returns the distribution sources for a given workbasket.
+   * Returns the distribution sources for a given {@linkplain Workbasket}.
    *
-   * @param workbasketId the id of the referenced workbasket
-   * @return the workbaskets that are distribution sources of the specified workbasket.
-   * @throws NotAuthorizedException if the current user has no read permission for the specified
-   *     workbasket
-   * @throws WorkbasketNotFoundException if the workbasket doesn't exist
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the referenced {@linkplain
+   *     Workbasket}
+   * @return the workbaskets that are distribution sources of the specified {@linkplain Workbasket}.
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ permission} for the specified {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionSources(String workbasketId)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Returns the distribution sources for a given workbasket.
+   * Returns the distribution sources for a given {@linkplain Workbasket}.
    *
-   * @param workbasketKey the key of the referenced workbasket
-   * @param domain the domain of the referenced workbasket
-   * @return the workbaskets that are distribution sources of the specified workbasket.
-   * @throws NotAuthorizedException if the current user has no read permission for the specified
-   *     workbasket
-   * @throws WorkbasketNotFoundException if the workbasket doesn't exist
+   * @param workbasketKey the {@linkplain Workbasket#getKey() key} of the referenced {@linkplain
+   *     Workbasket}
+   * @param domain the {@linkplain Workbasket#getDomain() domain} of the referenced {@linkplain
+   *     Workbasket}
+   * @return the workbaskets that are distribution sources of the specified {@linkplain Workbasket}.
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ permission} for the specified {@linkplain Workbasket}
+   * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionSources(String workbasketKey, String domain)
       throws NotAuthorizedException, WorkbasketNotFoundException;
 
   /**
-   * Deletes all WorkbasketAccessItems using the given AccessId of a user.
+   * Deletes all {@linkplain WorkbasketAccessItem}s using the given {@linkplain
+   * WorkbasketAccessItem#getAccessId()}.
    *
-   * @param accessId of a taskana-user.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @param accessId {@linkplain User#getId() id} of a taskana-{@linkplain User}.
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
+   *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
   void deleteWorkbasketAccessItemsForAccessId(String accessId) throws NotAuthorizedException;
 }

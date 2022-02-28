@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
@@ -21,128 +24,141 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
+import pro.taskana.workbasket.api.models.Workbasket;
 
 /** The Task Service manages all operations on tasks. */
 public interface TaskService {
 
   /**
-   * Claim an existing task for the current user.
+   * Claim an existing {@linkplain Task} for the current user.
    *
-   * @param taskId the id of the task to be claimed
-   * @return claimed Task
-   * @throws TaskNotFoundException if the task with taskId was not found
-   * @throws InvalidStateException if the state of the task with taskId is not READY
-   * @throws InvalidOwnerException if the task with taskId is claimed by some else
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to be claimed
+   * @return claimed {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
+   * @throws InvalidStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is not {@linkplain TaskState#READY READY}
+   * @throws InvalidOwnerException if the {@linkplain Task} with taskId is claimed by some else
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task claim(String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException;
 
   /**
-   * Claim an existing task for the current user even if it is already claimed by someone else.
+   * Claim an existing {@linkplain Task} for the current user even if it is already claimed by
+   * someone else.
    *
-   * @param taskId the id of the task to be claimed
-   * @return claimed Task
-   * @throws TaskNotFoundException if the task with taskId was not found
-   * @throws InvalidStateException if the state of the task with taskId is not READY
-   * @throws InvalidOwnerException if the task with taskId is claimed by someone else
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to be claimed
+   * @return claimed {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
+   * @throws InvalidStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is not READY
+   * @throws InvalidOwnerException if the {@linkplain Task} with taskId is claimed by someone else
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceClaim(String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException;
 
   /**
-   * Cancel the claim of an existing task if it was claimed by the current user before.
+   * Cancel the claim of an existing {@linkplain Task} if it was claimed by the current user before.
    *
-   * @param taskId id of the task which should be unclaimed.
+   * @param taskId {@linkplain Task#getId() id} of the task which should be unclaimed.
    * @return updated unclaimed task
-   * @throws TaskNotFoundException if the task can't be found or does not exist
-   * @throws InvalidStateException if the task is already in an end state.
-   * @throws InvalidOwnerException if the task is claimed by another user.
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @throws TaskNotFoundException if the {@linkplain Task} can't be found or does not exist
+   * @throws InvalidStateException if the {@linkplain Task} is already in an end {@linkplain
+   *     Task#getState() state}.
+   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user.
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the task is in
    */
   Task cancelClaim(String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException;
 
   /**
-   * Cancel the claim of an existing task even if it was claimed by another user.
+   * Cancel the claim of an existing {@linkplain Task} even if it was claimed by another user.
    *
-   * @param taskId id of the task which should be unclaimed.
-   * @return updated unclaimed task
-   * @throws TaskNotFoundException if the task can't be found or does not exist
-   * @throws InvalidStateException if the task is already in an end state.
-   * @throws InvalidOwnerException if forceCancel is false and the task is claimed by another user.
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @param taskId id of the {@linkplain Task} which should be unclaimed.
+   * @return updated unclaimed {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} can't be found or does not exist
+   * @throws InvalidStateException if the {@linkplain Task} is already in an end {@linkplain
+   *     Task#getState() state}
+   * @throws InvalidOwnerException if forceCancel is false and the {@linkplain Task} is claimed by
+   *     another user.
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCancelClaim(String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException;
 
   /**
-   * Complete a claimed Task as owner/admin and update State and Timestamps. If task is already
-   * completed, the task is returned as itself.
+   * Complete a claimed {@linkplain Task} as owner/admin and update {@linkplain Task#getState()
+   * state} and Timestamps. If {@linkplain Task} is already completed, the {@linkplain Task} is
+   * returned as itself.
    *
-   * @param taskId - Id of the Task which should be completed.
-   * @return Task - updated task after completion.
-   * @throws InvalidStateException if Task wasn't claimed before.
-   * @throws TaskNotFoundException if the given Task can't be found in DB.
+   * @param taskId - {@linkplain Task#getId() id} of the {@linkplain Task} which should be
+   *     completed.
+   * @return Task - updated {@linkplain Task} after completion.
+   * @throws InvalidStateException if {@linkplain Task} wasn't claimed before.
+   * @throws TaskNotFoundException if the given {@linkplain Task} can't be found in DB.
    * @throws InvalidOwnerException if current user is not the task-owner or administrator.
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task completeTask(String taskId)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException;
 
   /**
-   * Completes a Task and updates State and Timestamps in every case if the Task exists. If task is
-   * already completed, the task is returned as itself.
+   * Completes a {@linkplain Task} and updates {@linkplain Task#getState() state} and Timestamps in
+   * every case if the {@linkplain Task} exists. If {@linkplain Task} is already completed, the
+   * {@linkplain Task} is returned as itself.
    *
-   * @param taskId - Id of the Task which should be completed.
-   * @return Task - updated task after completion.
-   * @throws InvalidStateException if Task wasn't claimed before.
-   * @throws TaskNotFoundException if the given Task can't be found in DB.
+   * @param taskId - {@linkplain Task#getId() id} of the {@linkplain Task} which should be
+   *     completed.
+   * @return Task - updated {@linkplain Task} after completion.
+   * @throws InvalidStateException if {@linkplain Task} wasn't claimed before.
+   * @throws TaskNotFoundException if the given {@linkplain Task} can't be found in DB.
    * @throws InvalidOwnerException if current user is not the task-owner or administrator.
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCompleteTask(String taskId)
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException;
 
   /**
-   * Inserts a not existing Task. <br>
-   * The default values of the created Task are:
+   * Inserts a not existing {@linkplain Task}. <br>
+   * The default values of the created {@linkplain Task} are:
    *
    * <ul>
-   *   <li><b>id</b> - generated by {@linkplain pro.taskana.common.internal.util.IdGenerator
-   *       IdGenerator}
-   *   <li><b>externalId</b> - generated by IdGenerator
-   *   <li><b>businessProcessId</b> - generated by IdGenerator
-   *   <li><b>name</b> - name of its Classification
-   *   <li><b>description</b> - description of its Classification
-   *   <li><b>creator</b> - id of current user
-   *   <li><b>state</b> - 'READY'
-   *   <li><b>isRead</b> - {@code false}
-   *   <li><b>isTransferred</b> - {@code false}
+   *   <li><b>{@linkplain Task#getId() id}</b> - generated by {@linkplain IdGenerator}
+   *   <li><b>{@linkplain Task#getExternalId() externalId}</b> - generated by IdGenerator
+   *   <li><b>{@linkplain Task#getBusinessProcessId() businessProcessId}</b> - generated by
+   *       IdGenerator
+   *   <li><b>{@linkplain Task#getName() name}</b> - name of its Classification
+   *   <li><b>{@linkplain Task#getDescription() description}</b> - description of its Classification
+   *   <li><b>{@linkplain Task#getCreator() creator}</b> - id of current user
+   *   <li><b>{@linkplain Task#getState() state}</b> - 'READY'
+   *   <li><b>{@linkplain Task#isRead() isRead}</b> - {@code false}
+   *   <li><b>{@linkplain Task#isTransferred() isTransferred}</b> - {@code false}
    * </ul>
    *
-   * @param taskToCreate the transient task object to be inserted
-   * @return the created and inserted task
-   * @throws TaskAlreadyExistException if the Task does already exist.
-   * @throws NotAuthorizedException thrown if the current user is not authorized to create that task
-   * @throws WorkbasketNotFoundException thrown if the workbasket referenced by the task is not
-   *     found
-   * @throws ClassificationNotFoundException thrown if the Classification referenced by the task is
-   *     not found
+   * @param taskToCreate the transient {@linkplain Task} object to be inserted
+   * @return the created and inserted {@linkplain Task}
+   * @throws TaskAlreadyExistException if the {@linkplain Task} does already exist.
+   * @throws NotAuthorizedException thrown if the current user is not authorized to create that
+   *     {@linkplain Task}
+   * @throws WorkbasketNotFoundException thrown if the workbasket referenced by the {@linkplain
+   *     Task} is not found
+   * @throws ClassificationNotFoundException thrown if the Classification referenced by the
+   *     {@linkplain Task} is not found
    * @throws InvalidArgumentException thrown if the primary ObjectReference is invalid
    * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
    *     without using the task-methods
@@ -155,20 +171,20 @@ public interface TaskService {
           ObjectReferencePersistenceException;
 
   /**
-   * Gets the details of a task by Id without checking permissions.
+   * Gets the details of a {@linkplain Task} by {@linkplain Task#getId() id} without checking
+   * permissions.
    *
-   * @param taskId the id of the task
-   * @return the Task
-   * @throws TaskNotFoundException thrown of the {@link Task} with taskId is not found
-   * @throws NotAuthorizedException if the current user has no READ permission for the workbasket
-   *     the task is in.
+   * @param taskId the {@linkplain Task#getId()} of the {@linkplain Task}
+   * @return the {@linkplain Task}
+   * @throws TaskNotFoundException thrown of the {@linkplain Task} with taskId is not found
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission#READ
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in.
    */
   Task getTask(String taskId) throws TaskNotFoundException, NotAuthorizedException;
 
   /**
-   * Transfers a {@linkplain Task} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
-   * Task#isTransferred transfer} flag.
+   * Transfers a {@linkplain Task} to another {@linkplain Workbasket} while always setting the
+   * {@linkplain Task#isTransferred transfer} flag.
    *
    * @see #transfer(String, String, boolean)
    */
@@ -180,35 +196,32 @@ public interface TaskService {
   }
 
   /**
-   * Transfers a {@linkplain Task} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * Transfers a {@linkplain Task} to another {@linkplain Workbasket}.
    *
-   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
-   * {@code true}.
+   * <p>The transfer resets the {@linkplain Task#isRead() read} flag and sets the {@linkplain
+   * Task#isTransferred() transfer} flag if {@code setTransferFlag} is {@code true}.
    *
-   * @param taskId the id of the {@linkplain Task} which should be transferred
-   * @param destinationWorkbasketId the id of the target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}
+   * @param taskId the {@linkplain Task#getId()} of the {@linkplain Task} which should be
+   *     transferred
+   * @param destinationWorkbasketId the {@linkplain Workbasket#getId() id} of the target {@linkplain
+   *     Workbasket}
    * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
    *     flag or not
    * @return the transferred {@linkplain Task}
    * @throws TaskNotFoundException Thrown if the {@linkplain Task} with taskId was not found.
-   * @throws WorkbasketNotFoundException Thrown if the target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} was not found.
+   * @throws WorkbasketNotFoundException Thrown if the target {@linkplain Workbasket} was not found.
    * @throws NotAuthorizedException Thrown if the current user is not authorized to transfer this
-   *     {@linkplain Task} to the target {@linkplain pro.taskana.workbasket.api.models.Workbasket
-   *     Workbasket}
-   * @throws InvalidStateException Thrown if the {@linkplain Task} is in a state which does not
-   *     allow transferring
+   *     {@linkplain Task} to the target {@linkplain Workbasket}
+   * @throws InvalidStateException Thrown if the {@linkplain Task} is in a {@linkplain
+   *     Task#getState() state} which does not allow transferring
    */
   Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException;
 
   /**
-   * Transfers a {@linkplain Task} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
-   * Task#isTransferred transfer} flag.
+   * Transfers a {@linkplain Task} to another {@linkplain Workbasket} while always setting the
+   * {@linkplain Task#isTransferred transfer} flag.
    *
    * @see #transfer(String, String, String, boolean)
    */
@@ -220,106 +233,106 @@ public interface TaskService {
   }
 
   /**
-   * Transfers a {@linkplain Task} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * Transfers a {@linkplain Task} to another {@linkplain Workbasket}.
    *
-   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
-   * {@code true}.
+   * <p>The transfer resets the {@linkplain Task#isRead() read} flag and sets the transfer flag if
+   * {@code setTransferFlag} is {@code true}.
    *
    * @param taskId the id of the {@linkplain Task} which should be transferred
-   * @param workbasketKey the key of the target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}
-   * @param domain the domain of the target {@linkplain pro.taskana.workbasket.api.models.Workbasket
-   *     Workbasket}
+   * @param workbasketKey the key of the target {@linkplain Workbasket}
+   * @param domain the domain of the target {@linkplain Workbasket}
    * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
    *     flag or not
    * @return the transferred {@linkplain Task}
-   * @throws TaskNotFoundException Thrown if the {@link Task} with taskId was not found.
-   * @throws WorkbasketNotFoundException Thrown if the target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} was not found.
+   * @throws TaskNotFoundException Thrown if the {@linkplain Task} with taskId was not found.
+   * @throws WorkbasketNotFoundException Thrown if the target {@linkplain Workbasket} was not found.
    * @throws NotAuthorizedException Thrown if the current user is not authorized to transfer this
-   *     {@linkplain Task} to the target Workbasket
-   * @throws InvalidStateException Thrown if the {@linkplain Task} is in a state which does not
-   *     allow transferring
+   *     {@linkplain Task} to the target {@linkplain Workbasket}
+   * @throws InvalidStateException Thrown if the {@linkplain Task} is in a {@linkplain
+   *     Task#getState()} which does not allow transferring
    */
   Task transfer(String taskId, String workbasketKey, String domain, boolean setTransferFlag)
       throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedException,
           InvalidStateException;
 
   /**
-   * Marks a task as read.
+   * Marks a {@linkplain Task} as read.
    *
-   * @param taskId the id of the task to be updated
-   * @param isRead the new status of the read flag.
-   * @return the updated Task
-   * @throws TaskNotFoundException Thrown if the {@link Task} with taskId was not found
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to be updated
+   * @param isRead the new status of the {@linkplain Task#isRead() read} flag
+   * @return the updated {@linkplain Task}
+   * @throws TaskNotFoundException Thrown if the {@linkplain Task} with taskId was not found
+   * @throws NotAuthorizedException if the current user has no {@linkplain WorkbasketPermission
+   *     READ} permission for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task setTaskRead(String taskId, boolean isRead)
       throws TaskNotFoundException, NotAuthorizedException;
 
   /**
-   * This method provides a query builder for querying the database.
+   * Provides a query builder for querying the database.
    *
-   * @return a {@link TaskQuery}
+   * @return a {@linkplain TaskQuery}
    */
   TaskQuery createTaskQuery();
 
   /**
    * This method provides a query builder for querying the database.
    *
-   * @return a {@link TaskCommentQuery}
+   * @return a {@linkplain TaskCommentQuery}
    */
   TaskCommentQuery createTaskCommentQuery();
 
   /**
-   * Returns a not inserted instance of {@link Task}. The returned task has no workbasket Id set.
-   * When createTask() is invoked for this task, TaskService will call the TaskRouting SPI to
-   * determine a workbasket for the task. If the TaskRouting API is not active, e.g. because no
-   * TaskRouter is registered, or the TaskRouter(s) don't find a workbasket, the task will not be
-   * inserted.
+   * Returns a not inserted instance of {@linkplain Task}. The returned {@linkplain Task} has no
+   * {@linkplain Task#getWorkbasketSummary() w} set. When createTask() is invoked for this task,
+   * TaskService will call the TaskRouting SPI to determine a workbasket for the task. If the
+   * TaskRouting API is not active, e.g. because no TaskRouter is registered, or the TaskRouter(s)
+   * don't find a workbasket, the task will not be inserted.
    *
    * @return an empty new Task
    */
   Task newTask();
 
   /**
-   * Returns a not inserted instance of {@link Task}.
+   * Returns a not inserted instance of {@linkplain Task}.
    *
-   * @param workbasketId the id of the workbasket to which the task belongs
-   * @return an empty new Task
+   * @param workbasketId the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket} to
+   *     which the task belongs
+   * @return an empty new {@linkplain Task}
    */
   Task newTask(String workbasketId);
 
   /**
-   * Returns a not inserted instance of {@link Task}.
+   * Returns a not inserted instance of {@linkplain Task}.
    *
-   * @param workbasketKey the key of the workbasket to which the task belongs
-   * @param domain the domain of the workbasket to which the task belongs
-   * @return an empty new Task
+   * @param workbasketKey the {@linkplain Workbasket#getKey() key} of the {@linkplain Workbasket} to
+   *     which the {@linkplain Task} belongs
+   * @param domain the {@linkplain Workbasket#getDomain() domain} of the {@linkplain Workbasket} to
+   *     which the {@linkplain Task} belongs
+   * @return an empty new {@linkplain Task}
    */
   Task newTask(String workbasketKey, String domain);
 
   /**
-   * Returns a not inserted instance of {@link TaskComment}.
+   * Returns a not inserted instance of {@linkplain TaskComment}.
    *
-   * @param taskId The id of the task to which the task comment belongs
-   * @return an empty new TaskComment
+   * @param taskId The {@linkplain Task#getId() id} of the {@linkplain Task} to which the task
+   *     comment belongs
+   * @return an empty new {@linkplain TaskComment}
    */
   TaskComment newTaskComment(String taskId);
 
   /**
-   * Returns a not inserted instance of {@link Attachment}.
+   * Returns a not inserted instance of {@linkplain Attachment}.
    *
-   * @return an empty new Attachment
+   * @return an empty new {@linkplain Attachment}
    */
   Attachment newAttachment();
 
   /**
-   * Returns a not inserted instance of {@link ObjectReference}.
+   * Returns a not inserted instance of {@linkplain ObjectReference}.
    *
-   * @return an empty new ObjectReference
+   * @return an empty new {@linkplain ObjectReference}
    */
   ObjectReference newObjectReference();
 
@@ -327,23 +340,26 @@ public interface TaskService {
       String company, String system, String systemInstance, String type, String value);
 
   /**
-   * Update a task.
+   * Update a {@linkplain Task}.
    *
-   * @param task the task to be updated in the database
-   * @return the updated task
-   * @throws InvalidArgumentException if the task to be updated contains invalid properties like
-   *     e.g. invalid object references
-   * @throws TaskNotFoundException if the id of the task is not found in the database
-   * @throws ConcurrencyException if the task has already been updated by another user
-   * @throws ClassificationNotFoundException if the updated task refers to a classification that
-   *     cannot be found
-   * @throws NotAuthorizedException if the current user is not authorized to update the task
-   * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
-   *     without using the task-methods
-   * @throws ObjectReferencePersistenceException if an ObjectReference with ID will be added
-   *     multiple times without using the task-methods
-   * @throws InvalidStateException if an attempt is made to change the owner of the task and the
-   *     task is not in state READY .
+   * @param task the {@linkplain Task} to be updated in the database
+   * @return the updated {@linkplain Task}
+   * @throws InvalidArgumentException if the {@linkplain Task} to be updated contains invalid
+   *     properties like e.g. invalid {@linkplain ObjectReference}s
+   * @throws TaskNotFoundException if the id of the {@linkplain Task} is not found in the database
+   * @throws ConcurrencyException if the {@linkplain Task} has been updated by another user in the
+   *     meantime; that's the case if the given modified timestamp differs from the one in the
+   *     database
+   * @throws ClassificationNotFoundException if the updated {@linkplain Task} refers to a {@link
+   *     Classification} that cannot be found
+   * @throws NotAuthorizedException if the current user is not authorized to update the {@linkplain
+   *     Task}
+   * @throws AttachmentPersistenceException if an {@linkplain Attachment} with ID will be added
+   *     multiple times without using the Task-methods
+   * @throws ObjectReferencePersistenceException if an {@linkplain ObjectReference} with ID will be
+   *     added multiple times without using the Task-methods
+   * @throws InvalidStateException if an attempt is made to change the owner of the {@linkplain
+   *     Task} that state isn't READY.
    */
   Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
@@ -351,9 +367,8 @@ public interface TaskService {
           ObjectReferencePersistenceException, InvalidStateException;
 
   /**
-   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
-   * Task#isTransferred transfer} flag.
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain Workbasket} while always
+   * setting the {@linkplain Task#isTransferred transfer} flag.
    *
    * @see #transferTasks(String, List, boolean)
    */
@@ -365,33 +380,32 @@ public interface TaskService {
   }
 
   /**
-   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain Workbasket}.
    *
-   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
-   * {@code true}. Exceptions will be thrown if the caller got no permissions on the target or it
-   * does not exist. Other Exceptions will be stored and returned in the end.
+   * <p>The transfer resets the {@linkplain Task#isRead() read flag} and sets the {@linkplain
+   * Task#isTransferred() transfer flag} if {@code setTransferFlag} is {@code true}. Exceptions will
+   * be thrown if the caller got no {@linkplain WorkbasketPermission} on the target or if the target
+   * {@linkplain Workbasket} does not exist. Other Exceptions will be stored and returned in the
+   * end.
    *
-   * @param destinationWorkbasketId target {@linkplain pro.taskana.workbasket.api.models.Workbasket
-   *     Workbasket} id
+   * @param destinationWorkbasketId {@linkplain Workbasket#getId() id} of the target {@linkplain
+   *     Workbasket}
    * @param taskIds list of source {@linkplain Task Tasks} which will be moved
    * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
    *     flag or not
-   * @return Bulkresult with ID and Error in it for failed transactions.
+   * @return Bulkresult with {@linkplain Task#getId() ids} and Error in it for failed transactions
    * @throws NotAuthorizedException if the caller has no permissions on target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}.
-   * @throws InvalidArgumentException if the method parameters are EMPTY or NULL.
-   * @throws WorkbasketNotFoundException if the target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} can not be found.
+   *     Workbasket}
+   * @throws InvalidArgumentException if the method parameters are EMPTY or NULL
+   * @throws WorkbasketNotFoundException if the target {@linkplain Workbasket} can not be found
    */
   BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
   /**
-   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket} while always setting the {@linkplain
-   * Task#isTransferred} flag.
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain Workbasket} while always
+   * setting the {@linkplain Task#isTransferred} flag.
    *
    * @see #transferTasks(String, String, List, boolean)
    */
@@ -403,26 +417,24 @@ public interface TaskService {
   }
 
   /**
-   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain
-   * pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * Transfers a list of {@linkplain Task Tasks} to another {@linkplain Workbasket}.
    *
-   * <p>The transfer resets the read flag and sets the transfer flag if {@code setTransferFlag} is
-   * {@code true}. Exceptions will be thrown if the caller got no permissions on the target or it
-   * does not exist. Other Exceptions will be stored and returned in the end.
+   * <p>The transfer resets the {@linkplain Task#isRead() read flag} and sets the {@linkplain
+   * Task#isTransferred() transfer flag} if {@code setTransferFlag} is {@code true}. Exceptions will
+   * be thrown if the caller got no {@linkplain WorkbasketPermission Permission} on the target
+   * {@linkplain Workbasket} or if it does not exist. Other Exceptions will be stored and returned
+   * in the end.
    *
-   * @param destinationWorkbasketKey target {@linkplain pro.taskana.workbasket.api.models.Workbasket
-   *     Workbasket} key
-   * @param destinationWorkbasketDomain target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} domain
-   * @param taskIds list of source {@linkplain Task Tasks} which will be moved
+   * @param destinationWorkbasketKey target {@linkplain Workbasket#getKey()} Workbasket}
+   * @param destinationWorkbasketDomain target {@linkplain Workbasket#getDomain() domain}
+   * @param taskIds List of source {@linkplain Task Tasks} which will be moved
    * @param setTransferFlag the control about whether to set the {@linkplain Task#isTransferred()}
    *     flag or not
-   * @return BulkResult with ID and Error in it for failed transactions.
-   * @throws NotAuthorizedException if the caller has no permissions on target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket}.
+   * @return BulkResult with {@linkplain Task#getId() id} and Error in it for failed transactions.
+   * @throws NotAuthorizedException if the caller has no {@linkplain WorkbasketPermission} on target
+   *     {@linkplain Workbasket}.
    * @throws InvalidArgumentException if the method parameters are EMPTY or NULL.
-   * @throws WorkbasketNotFoundException if the target {@linkplain
-   *     pro.taskana.workbasket.api.models.Workbasket Workbasket} can not be found.
+   * @throws WorkbasketNotFoundException if the target {@linkplain Workbasket} can not be found.
    */
   BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketKey,
@@ -432,44 +444,51 @@ public interface TaskService {
       throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException;
 
   /**
-   * Deletes the task with the given Id.
+   * Deletes the {@linkplain Task} with the given {@linkplain Task#getId() id}.
    *
-   * @param taskId The Id of the task to delete.
-   * @throws TaskNotFoundException If the given Id does not refer to an existing task.
-   * @throws InvalidStateException If the state of the referenced task is not an end state.
-   * @throws NotAuthorizedException if the current user is not member of role ADMIN
+   * @param taskId The {@linkplain Task#getId() id} of the {@linkplain Task} to delete.
+   * @throws TaskNotFoundException If the given {@linkplain Task#getId() id} does not refer to an
+   *     existing {@linkplain Task}.
+   * @throws InvalidStateException If the {@linkplain Task#getState() state} of the referenced
+   *     {@linkplain Task} is not an end state.
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     TaskanaRole#ADMIN}
    */
   void deleteTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
   /**
-   * Deletes the task with the given Id even if it is not completed.
+   * Deletes the {@linkplain Task} with the given {@linkplain Task#getId() id} even if it is not
+   * completed.
    *
-   * @param taskId The Id of the task to delete.
-   * @throws TaskNotFoundException If the given Id does not refer to an existing task.
-   * @throws InvalidStateException If the state of the referenced task is not an end state and
-   *     forceDelete is false.
-   * @throws NotAuthorizedException if the current user is not member of role ADMIN
+   * @param taskId The {@linkplain Task#getId() id} of the {@linkplain Task} to delete.
+   * @throws TaskNotFoundException If the given {@linkplain Task#getId() id} does not refer to an
+   *     existing {@linkplain Task}.
+   * @throws InvalidStateException If the state of the referenced {@linkplain Task} is not an end
+   *     state and forceDelete is false.
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
+   *     TaskanaRole#ADMIN}
    */
   void forceDeleteTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
   /**
-   * Selects and claims the first task which is returned by the task query.
+   * Selects and claims the first {@linkplain Task} which is returned by the {@linkplain TaskQuery}.
    *
-   * @param taskQuery the task query.
-   * @return the task that got selected and claimed
-   * @throws InvalidOwnerException if the task is claimed by someone else
-   * @throws NotAuthorizedException if the current user has no read permission for the workbasket
-   *     the task is in
+   * @param taskQuery the {@linkplain TaskQuery}.
+   * @return the {@linkplain Task} that got selected and claimed
+   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by someone else
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the {@linkplain Task} is in
    */
   Task selectAndClaim(TaskQuery taskQuery) throws NotAuthorizedException, InvalidOwnerException;
 
   /**
-   * Deletes a list of tasks.
+   * Deletes a list of {@linkplain Task Tasks}.
    *
-   * @param tasks the ids of the tasks to delete.
-   * @return the result of the operations with Id and Exception for each failed task deletion.
+   * @param tasks the {@linkplain Task#getId() ids} of the tasks to delete.
+   * @return the result of the operations with each {@linkplain Task#getId() id} and Exception for
+   *     each failed task deletion.
    * @throws InvalidArgumentException if the TaskIds parameter is NULL
    * @throws NotAuthorizedException if the current user is not member of role ADMIN
    */
@@ -477,189 +496,223 @@ public interface TaskService {
       throws InvalidArgumentException, NotAuthorizedException;
 
   /**
-   * Completes a list of tasks.
+   * Completes a list of {@linkplain Task Tasks}.
    *
-   * @param taskIds of the tasks which should be completed.
-   * @return the result of the operations with Id and Exception for each failed task completion.
-   * @throws InvalidArgumentException If the taskId parameter is NULL.
+   * @param taskIds {@linkplain Task#getId() ids} of the {@linkplain Task Tasks} which should be
+   *     completed
+   * @return the result of the operations with each {@linkplain Task#getId() id} and Exception for
+   *     each failed completion
+   * @throws InvalidArgumentException If the taskIds parameter is NULL
    */
   BulkOperationResults<String, TaskanaException> completeTasks(List<String> taskIds)
       throws InvalidArgumentException;
 
   /**
-   * Completes a list of tasks.
+   * Completes each existing {@linkplain Task} in the given List in every case, independent of the
+   * {@linkplain Task#getOwner() owner} or {@linkplain Task#getState() state} of the {@linkplain
+   * Task}. If the {@linkplain Task} is already {@linkplain TaskState#COMPLETED completed}, the
+   * {@linkplain Task} stays unchanged.
    *
    * @see TaskService#forceCompleteTask
-   * @param taskIds of the tasks which should be completed.
-   * @return the result of the operations with Id and Exception for each failed task completion.
-   * @throws InvalidArgumentException If the taskId parameter is NULL.
+   * @param taskIds {@linkplain Task#getId() id} of the {@linkplain Task Tasks} which should be
+   *     completed
+   * @return the result of the operations with {@linkplain Task#getId() id} and Exception for each
+   *     failed completion
+   * @throws InvalidArgumentException If the taskIds parameter is NULL
    */
   BulkOperationResults<String, TaskanaException> forceCompleteTasks(List<String> taskIds)
       throws InvalidArgumentException;
 
   /**
-   * Updates tasks with a matching {@link ObjectReference}.
+   * Updates specified {@linkplain TaskCustomField TaskCustomFields} of {@linkplain Task Tasks}
+   * associated with the given {@linkplain ObjectReference}.
    *
-   * @param selectionCriteria the {@link ObjectReference} that is used to select the tasks.
-   * @param customFieldsToUpdate a {@link Map} that contains as key the identification of the custom
-   *     field and as value the corresponding new value of that custom field.
-   * @return a list of the Ids of all modified tasks
+   * @param selectionCriteria the {@linkplain ObjectReference} that is used to select the tasks
+   * @param customFieldsToUpdate a Map that contains as key the identification of the {@linkplain
+   *     TaskCustomField} and as value the corresponding new value of that field
+   * @return a list of the {@linkplain Task#getId() ids} of all modified {@linkplain Task Tasks}
    * @throws InvalidArgumentException if the given selectionCriteria is invalid or the given
-   *     customFieldsToUpdate are null or empty.
+   *     customFieldsToUpdate are NULL or empty
    */
   List<String> updateTasks(
       ObjectReference selectionCriteria, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException;
 
   /**
-   * Updates tasks with matching taskIds.
+   * Updates specified {@linkplain TaskCustomField TaskCustomFields} for all given {@linkplain Task
+   * Tasks}.
    *
-   * @param taskIds the taskIds that are used to select the tasks.
-   * @param customFieldsToUpdate a {@link Map} that contains as key the identification of the custom
-   *     field and as value the corresponding new value of that custom field.
-   * @return a list of the Ids of all modified tasks
-   * @throws InvalidArgumentException if the given customFieldsToUpdate are null or empty.
+   * @param taskIds the {@linkplain Task#getId() taskIds} that are used to select the {@linkplain
+   *     Task Tasks}.
+   * @param customFieldsToUpdate a Map that contains as key the identification of the {@linkplain
+   *     TaskCustomField} and as value the corresponding new value of that {@linkplain
+   *     TaskCustomField}.
+   * @return a list of the {@linkplain Task#getId() ids} of all modified {@linkplain Task Tasks}
+   * @throws InvalidArgumentException if the given customFieldsToUpdate are NULL or empty.
    */
   List<String> updateTasks(List<String> taskIds, Map<TaskCustomField, String> customFieldsToUpdate)
       throws InvalidArgumentException;
 
   /**
-   * Create a task comment.
+   * Inserts the specified {@linkplain TaskComment} into the database.
    *
-   * @param taskComment the task comment to be created.
-   * @return the created task comment.
-   * @throws NotAuthorizedException If the current user has no authorization to create a task
-   *     comment for the given taskId in the TaskComment or is not authorized to access the task.
-   * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
-   *     existing task.
-   * @throws InvalidArgumentException If the given taskCommentId from the provided task comment is
-   *     not null or empty
+   * @param taskComment the {@linkplain TaskComment} to be created
+   * @return the created {@linkplain TaskComment}
+   * @throws NotAuthorizedException if the current user has no authorization to create a {@link
+   *     TaskComment} for the given taskId or is not authorized to access the {@linkplain Task}
+   * @throws TaskNotFoundException if the given {@linkplain TaskComment#getTaskId() taskId} does not
+   *     refer to an existing {@linkplain Task}
+   * @throws InvalidArgumentException if the {@linkplain TaskComment#getId() id} of the provided
+   *     {@link TaskComment} is not NULL or empty
    */
   TaskComment createTaskComment(TaskComment taskComment)
       throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException;
 
   /**
-   * Update a task comment.
+   * Updates the specified {@linkplain TaskComment}.
    *
-   * @param taskComment the task comment to be updated in the database.
-   * @return the updated task comment.
-   * @throws NotAuthorizedException If the current user has no authorization to update a task
-   *     comment or is not authorized to access the task.
-   * @throws ConcurrencyException if an attempt is made to update the task comment and another user.
-   *     updated it already.
-   * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
-   *     refer to an existing taskComment.
-   * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
-   *     existing task.
-   * @throws InvalidArgumentException If the given taskCommentId from the provided task comment is
-   *     null or empty
+   * @param taskComment the {@linkplain TaskComment} to be updated in the database
+   * @return the updated {@linkplain TaskComment}
+   * @throws NotAuthorizedException if the current user has no authorization to update the
+   *     {@linkplain TaskComment} or is not authorized to access the {@linkplain Task}
+   * @throws ConcurrencyException if an attempt is made to update the {@linkplain TaskComment} and
+   *     another user updated it already; that's the case if the given {} timestamp differs from the
+   *     one in the database
+   * @throws TaskCommentNotFoundException if the {@linkplain TaskComment#getId() is} of the
+   *     specified {@linkplain TaskComment}does not refer to an existing {@linkplain TaskComment}
+   * @throws TaskNotFoundException if the {@linkplain TaskComment#getTaskId() taskId} does not refer
+   *     to an existing {@linkplain Task}
+   * @throws InvalidArgumentException if the given {@linkplain TaskComment#getId() id} is NULL or
+   *     empty
    */
   TaskComment updateTaskComment(TaskComment taskComment)
       throws NotAuthorizedException, ConcurrencyException, TaskCommentNotFoundException,
           TaskNotFoundException, InvalidArgumentException;
 
   /**
-   * Deletes the task comment with the given Id.
+   * Deletes the {@linkplain TaskComment} with the given {@linkplain TaskComment#getId() id}.
    *
-   * @param taskCommentId The id of the task comment to delete.
-   * @throws NotAuthorizedException If the current user has no authorization to delete a task
+   * @param taskCommentId the {@linkplain TaskComment#getId() id} of the {@linkplain TaskComment} to
+   *     delete
+   * @throws NotAuthorizedException if the current user has no authorization to delete a task
    *     comment or is not authorized to access the task.
-   * @throws InvalidArgumentException If the taskCommentId is null/empty
-   * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
+   * @throws InvalidArgumentException if the taskCommentId is NULL or empty
+   * @throws TaskCommentNotFoundException if the given taskCommentId in the TaskComment does not
    *     refer to an existing taskComment.
-   * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
-   *     existing task.
-   * @throws InvalidArgumentException If the given taskCommentId is null or empty
+   * @throws TaskNotFoundException if the {@linkplain TaskComment#getTaskId() taskId} of the
+   *     TaskComment does not refer to an existing {@linkplain Task}.
+   * @throws InvalidArgumentException if the given taskCommentId is NULL or empty
    */
   void deleteTaskComment(String taskCommentId)
       throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
           InvalidArgumentException;
 
   /**
-   * Retrieves a task comment for a given taskCommentId.
+   * Retrieves the {@linkplain TaskComment} with the given {@linkplain TaskComment#getId() id}.
    *
-   * @param taskCommentId The id of the task comment which should be retrieved
-   * @return the task comment identified by taskCommentId
-   * @throws TaskCommentNotFoundException If the given taskCommentId in the TaskComment does not
-   *     refer to an existing taskComment.
-   * @throws NotAuthorizedException If the current user has no authorization to retrieve a
-   *     taskComment from a certain task or is not authorized to access the task.
-   * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
-   *     existing task.
-   * @throws InvalidArgumentException If the given taskCommentId is null or empty
+   * @param taskCommentId the {@linkplain TaskComment#getId() id} of the {@linkplain TaskComment}
+   *     which should be retrieved
+   * @return the {@linkplain TaskComment} identified by taskCommentId
+   * @throws TaskCommentNotFoundException if the given taskCommentId does not refer to an existing
+   *     {@linkplain TaskComment}
+   * @throws NotAuthorizedException if the current user has no authorization to retrieve a
+   *     {@linkplain TaskComment} from a certain {@linkplain Task} or is not authorized to access
+   *     the {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain TaskComment#getTaskId() taskId} of the
+   *     TaskComment does not refer to an existing {@linkplain Task}
+   * @throws InvalidArgumentException if the given taskCommentId is NULL or empty
    */
   TaskComment getTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
           InvalidArgumentException;
 
   /**
-   * Retrieves a list of task comments for a given taskId.
+   * Retrieves the List of {@linkplain TaskComment TaskComments} for the Task with given {@linkplain
+   * Task#getId() id}.
    *
-   * @param taskId The id of the task for which all task comments should be retrieved
-   * @return the list of task comments attached to task with id taskId
-   * @throws NotAuthorizedException If the current user has no authorization to retrieve a
-   *     taskComment from a certain task or is not authorized to access the task.
-   * @throws TaskNotFoundException If the given taskId in the TaskComment does not refer to an
-   *     existing task.
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} for which all task
+   *     comments should be retrieved
+   * @return the List of task comments attached to the specified {@linkplain Task}
+   * @throws NotAuthorizedException if the current user has no authorization to retrieve a
+   *     taskComment from the {@linkplain Task} or is not authorized to access the {@linkplain Task}
+   * @throws TaskNotFoundException if the given taskId does not refer to an existing {@linkplain
+   *     Task}
    */
   List<TaskComment> getTaskComments(String taskId)
       throws NotAuthorizedException, TaskNotFoundException;
 
   /**
-   * Sets the callback state on a list of tasks. Note: this method is primarily intended to be used
-   * by the TaskanaAdapter
+   * Sets the specified {@linkplain CallbackState} on a list of {@linkplain Task Tasks}. Note: this
+   * method is primarily intended to be used by the TaskanaAdapter
    *
-   * @param externalIds the EXTERNAL_IDs of the tasks on which the callback state is set.
-   * @param state the callback state that is to be set on the tasks
-   * @return the result of the operations with Id and Exception for each failed task deletion.
+   * @param externalIds the {@linkplain Task#getExternalId() externalIds} of the {@linkplain Task
+   *     Tasks} on which the {@linkplain CallbackState} is set
+   * @param state the {@linkplain CallbackState} that is to be set on the {@linkplain Task Tasks}
+   * @return the result of the operations with {@linkplain Task#getId() id} and Exception for each
+   *     failed operation
    */
   BulkOperationResults<String, TaskanaException> setCallbackStateForTasks(
       List<String> externalIds, CallbackState state);
 
   /**
-   * Sets the owner on a list of tasks. The owner will only be set on tasks that are in state READY.
+   * Sets the {@linkplain Task#getOwner() owner} on a List of {@linkplain Task Tasks}. The
+   * {@linkplain Task#getOwner() owner} will only be set on {@linkplain Task Tasks} that are in
+   * state {@linkplain TaskState#READY}.
    *
-   * @param owner the new owner of the tasks
-   * @param taskIds the IDs of the tasks on which the owner is to be set.
-   * @return the result of the operations with Id and Exception for each failed task update.
+   * @param owner the new {@linkplain Task#getOwner() owner} of the {@linkplain Task Tasks}
+   * @param taskIds the {@linkplain Task#getId() ids} of the {@linkplain Task Tasks} on which the
+   *     {@linkplain Task#getOwner() owner} is to be set
+   * @return the result of the operations with {@linkplain Task#getId() id} and Exception for each
+   *     failed {@linkplain Task}-update
    */
   BulkOperationResults<String, TaskanaException> setOwnerOfTasks(
       String owner, List<String> taskIds);
 
   /**
-   * Sets the planned property on a list of tasks. Only tasks in state READY and CLAIMED will be
-   * affected by this method. On each task, the corresponding due date is set according to the
-   * shortest service level in the classifications of the task and the task's attachments.
+   * Sets the {@linkplain Task#getPlanned() planned} Instant on a List of {@linkplain Task Tasks}.
+   * Only {@linkplain Task Tasks} in state {@linkplain TaskState#READY} and {@linkplain
+   * TaskState#CLAIMED} will be affected by this method. On each {@linkplain Task}, the
+   * corresponding {@linkplain Task#getDue() due date} is set according to the shortest serviceLevel
+   * in the {@linkplain Task#getClassificationSummary() Classification} of the {@linkplain Task} and
+   * its {@linkplain Task#getAttachments() Attachments}.
    *
-   * @param planned the new 'PLANNED" property of the tasks
-   * @param taskIds the IDs of the tasks on which the new planned property is to be set.
-   * @return the result of the operations with Id and Exception for each failed task update.
+   * @param planned the new {@linkplain Task#getPlanned() planned} Instant of the {@linkplain Task
+   *     Tasks}
+   * @param taskIds the {@linkplain Task#getId() ids} of the {@linkplain Task Tasks} on which the
+   *     new {@linkplain Task#getPlanned() planned} Instant is to be set
+   * @return the result of the operations with {@linkplain Task#getId() id} and Exception for each
+   *     failed {@linkplain Task Task} update.
    */
   BulkOperationResults<String, TaskanaException> setPlannedPropertyOfTasks(
       Instant planned, List<String> taskIds);
 
   /**
-   * Cancels a task. Cancellation means a task is obsolete from a business perspective an does not
-   * need to be completed anymore.
+   * Cancels the {@linkplain Task} with the given {@linkplain Task#getId() id}. Cancellation means a
+   * {@linkplain Task} is obsolete from a business perspective and does not need to be completed
+   * anymore.
    *
-   * @param taskId the id of the task to cancel.
-   * @return the updated task.
-   * @throws TaskNotFoundException if the Task with Id TaskId is not found
-   * @throws InvalidStateException if the task is not in state READY or CLAIMED
-   * @throws NotAuthorizedException if the current user is not authorized to see the task
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to cancel
+   * @return the updated {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId is not found
+   * @throws InvalidStateException if the {@linkplain Task} is not in state {@linkplain
+   *     TaskState#READY} or {@linkplain TaskState#CLAIMED}
+   * @throws NotAuthorizedException if the current user is not authorized to see the {@linkplain
+   *     Task}
    */
   Task cancelTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
 
   /**
-   * Terminates a task. Termination is a administrative action to complete a task. This is typically
-   * done by an administration to correct any technical issue.
+   * Terminates a {@linkplain Task}. Termination is an administrative action to complete a
+   * {@linkplain Task}. This is typically done by administration to correct any technical issue.
    *
-   * @param taskId the id of the task to cancel.
-   * @return the updated task.
-   * @throws TaskNotFoundException if the Task with Id TaskId is not found
-   * @throws InvalidStateException if the task is not in state READY or CLAIMED
-   * @throws NotAuthorizedException if the current user is not authorized to see the task
+   * @param taskId the id of the {@linkplain Task} to cancel
+   * @return the updated {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId is not found
+   * @throws InvalidStateException if the {@linkplain Task} is not in state {@linkplain
+   *     TaskState#READY} or {@linkplain TaskState#CLAIMED}
+   * @throws NotAuthorizedException if the current user is not authorized to see the {@linkplain
+   *     Task}
    */
   Task terminateTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;

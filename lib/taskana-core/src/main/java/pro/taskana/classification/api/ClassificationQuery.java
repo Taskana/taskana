@@ -1,5 +1,6 @@
 package pro.taskana.classification.api;
 
+import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
@@ -10,7 +11,7 @@ public interface ClassificationQuery
     extends BaseQuery<ClassificationSummary, ClassificationQueryColumnName> {
 
   /**
-   * Add your key to your query.
+   * Add one or multiple {@linkplain ClassificationSummary#getKey() keys} to your query.
    *
    * @param key as String
    * @return the query
@@ -18,7 +19,7 @@ public interface ClassificationQuery
   ClassificationQuery keyIn(String... key);
 
   /**
-   * Add your Id to your query.
+   * Add one or multiple {@linkplain ClassificationSummary#getId() ids} to your query.
    *
    * @param id as String
    * @return the query
@@ -26,7 +27,7 @@ public interface ClassificationQuery
   ClassificationQuery idIn(String... id);
 
   /**
-   * Add your parentIds to your query.
+   * Add one or multiple {@linkplain ClassificationSummary#getParentId() parentIds} to your query.
    *
    * @param parentId as an array of Strings
    * @return the query
@@ -34,7 +35,7 @@ public interface ClassificationQuery
   ClassificationQuery parentIdIn(String... parentId);
 
   /**
-   * Add your parentKeys to your query.
+   * Add your {@linkplain ClassificationSummary#getParentKey() parentKeys} to your query.
    *
    * @param parentKey as an array of Strings
    * @return the query
@@ -42,7 +43,7 @@ public interface ClassificationQuery
   ClassificationQuery parentKeyIn(String... parentKey);
 
   /**
-   * Add your category to your query.
+   * Add your {@linkplain ClassificationSummary#getCategory() categories} to your query.
    *
    * @param category as String
    * @return the query
@@ -50,7 +51,7 @@ public interface ClassificationQuery
   ClassificationQuery categoryIn(String... category);
 
   /**
-   * Add your type to your query.
+   * Add your {@linkplain ClassificationSummary#getType() types} to your query.
    *
    * @param type as String
    * @return the query
@@ -58,7 +59,8 @@ public interface ClassificationQuery
   ClassificationQuery typeIn(String... type);
 
   /**
-   * Add your domains to your query which are used as filter.
+   * Add your {@linkplain ClassificationSummary#getDomain() domains} to your query which are used as
+   * filter.
    *
    * @param domain or domains for filtering.
    * @return the query
@@ -66,7 +68,8 @@ public interface ClassificationQuery
   ClassificationQuery domainIn(String... domain);
 
   /**
-   * Add to your query if the Classification shall be valid in its domain.
+   * Add to your query if the {@linkplain pro.taskana.classification.api.models.Classification
+   * Classification} shall be valid in its {@linkplain ClassificationSummary#getDomain() domain}.
    *
    * @param validInDomain a simple flag showing if domain is valid
    * @return the query
@@ -74,25 +77,25 @@ public interface ClassificationQuery
   ClassificationQuery validInDomainEquals(Boolean validInDomain);
 
   /**
-   * Add your created-Dates to your query.
+   * Add your {@linkplain Classification#getCreated() created}-Dates to your query.
    *
-   * @param createdIn the {@link TimeInterval} within which the searched-for classifications were
-   *     created.
+   * @param createdIn the {@linkplain TimeInterval} within which the searched-for classifications
+   *     were created.
    * @return the query
    */
   ClassificationQuery createdWithin(TimeInterval... createdIn);
 
   /**
-   * Add your modified-Dates to your query.
+   * Add your {@linkplain Classification#getModified() modified}-Dates to your query.
    *
-   * @param modifiedIn the {@link TimeInterval} within which the searched-for classifications were
-   *     modified the last time.
+   * @param modifiedIn the {@linkplain TimeInterval} within which the searched-for classifications
+   *     were modified the last time.
    * @return the query
    */
   ClassificationQuery modifiedWithin(TimeInterval... modifiedIn);
 
   /**
-   * Add your name to your query.
+   * Add your {@linkplain ClassificationSummary#getName() names} to your query.
    *
    * @param nameIn as String
    * @return the query
@@ -100,7 +103,8 @@ public interface ClassificationQuery
   ClassificationQuery nameIn(String... nameIn);
 
   /**
-   * Add your name to your query. It will be compared in SQL with an LIKE.
+   * Add your {@linkplain ClassificationSummary#getName() names} to your query. They will be
+   * compared in SQL with a LIKE.
    *
    * @param nameLike as String
    * @return the query
@@ -108,8 +112,9 @@ public interface ClassificationQuery
   ClassificationQuery nameLike(String... nameLike);
 
   /**
-   * Add your description to your query. It will be compared in SQL with an LIKE. If you use a
-   * wildcard like % then it will be transmitted to the database.
+   * Add your {@linkplain Classification#getDescription() descriptions} to your query. They will be
+   * compared in SQL with a LIKE. If you use a wildcard like % then it will be transmitted to the
+   * database.
    *
    * @param descriptionLike your description
    * @return the query
@@ -117,7 +122,7 @@ public interface ClassificationQuery
   ClassificationQuery descriptionLike(String descriptionLike);
 
   /**
-   * Add your priority to your query.
+   * Add your {@linkplain ClassificationSummary#getPriority() priorities} to your query.
    *
    * @param priorities as integers
    * @return the query
@@ -125,7 +130,7 @@ public interface ClassificationQuery
   ClassificationQuery priorityIn(int... priorities);
 
   /**
-   * Add your serviceLevel to your query.
+   * Add your {@linkplain ClassificationSummary#getServiceLevel() serviceLevels} to your query.
    *
    * @param serviceLevelIn as String
    * @return the query
@@ -133,7 +138,8 @@ public interface ClassificationQuery
   ClassificationQuery serviceLevelIn(String... serviceLevelIn);
 
   /**
-   * Add your serviceLevel to your query. It will be compared in SQL with an LIKE.
+   * Add your {@linkplain ClassificationSummary#getServiceLevel() serviceLevels} to your query. They
+   * will be compared in SQL with a LIKE.
    *
    * @param serviceLevelLike as String
    * @return the query
@@ -141,7 +147,8 @@ public interface ClassificationQuery
   ClassificationQuery serviceLevelLike(String... serviceLevelLike);
 
   /**
-   * Add your applicationEntryPoint to your query.
+   * Add your {@linkplain ClassificationSummary#getApplicationEntryPoint() applicationEntryPoints}
+   * to your query.
    *
    * @param applicationEntryPointIn name of the applications entrypoint
    * @return the query
@@ -149,7 +156,8 @@ public interface ClassificationQuery
   ClassificationQuery applicationEntryPointIn(String... applicationEntryPointIn);
 
   /**
-   * Add your applicationEntryPoint to your query. It will be compared in SQL with an LIKE.
+   * Add your {@linkplain ClassificationSummary#getApplicationEntryPoint() applicationEntryPoints}
+   * to your query. They will be compared in SQL with a LIKE.
    *
    * @param applicationEntryPointLike name of the applications entrypoint
    * @return the query
@@ -157,9 +165,10 @@ public interface ClassificationQuery
   ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike);
 
   /**
-   * Add the values of custom attributes for exact matching to your query.
+   * Add the values of specified {@linkplain ClassificationCustomField ClassificationCustomFields}
+   * for exact matching to your query.
    *
-   * @param customField identifies which custom attribute is affected.
+   * @param customField identifies which custom attribute is affected
    * @param searchArguments the customField values of the searched for tasks
    * @return the query
    * @throws InvalidArgumentException if searchArguments is empty or null
@@ -169,9 +178,10 @@ public interface ClassificationQuery
       throws InvalidArgumentException;
 
   /**
-   * Add the values of custom attributes for pattern matching to your query. They will be compared
-   * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
-   * specify multiple arguments they are combined with the OR keyword.
+   * Add the values of specified {@linkplain ClassificationCustomField ClassificationCustomFields}
+   * for pattern matching to your query. They will be compared in SQL with the LIKE operator. You
+   * may use a wildcard like % to specify the pattern. If you specify multiple arguments they are
+   * combined with the OR keyword.
    *
    * @param customField identifies which custom attribute is affected.
    * @param searchArguments the customField values of the searched-for tasks
@@ -183,25 +193,26 @@ public interface ClassificationQuery
       throws InvalidArgumentException;
 
   /**
-   * Sort the query result by key.
+   * Sort the query result by {@linkplain ClassificationSummary#getKey() key}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   ClassificationQuery orderByKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by the parent classification ID.
+   * Sort the query result by the {@linkplain ClassificationSummary#getParentId() id of the parent}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   ClassificationQuery orderByParentId(SortDirection sortDirection);
 
   /**
-   * Sort the query result by the parent classification key.
+   * Sort the query result by the {@linkplain ClassificationSummary#getParentKey() key of the
+   * parent}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
@@ -210,16 +221,16 @@ public interface ClassificationQuery
   ClassificationQuery orderByParentKey(SortDirection sortDirection);
 
   /**
-   * Sort the query result by category.
+   * Sort the query result by {@linkplain ClassificationSummary#getCategory() category}.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order
    *     If sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   ClassificationQuery orderByCategory(SortDirection sortDirection);
 
   /**
-   * Sort the query result by domain.
+   * Sort the query result by {@linkplain ClassificationSummary#getDomain() domain}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
@@ -228,7 +239,7 @@ public interface ClassificationQuery
   ClassificationQuery orderByDomain(SortDirection sortDirection);
 
   /**
-   * Sort the query result by name.
+   * Sort the query result by {@linkplain ClassificationSummary#getName() name}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
@@ -237,7 +248,7 @@ public interface ClassificationQuery
   ClassificationQuery orderByName(SortDirection sortDirection);
 
   /**
-   * Sort the query result by service level.
+   * Sort the query result by {@linkplain ClassificationSummary#getServiceLevel() serviceLevel}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
@@ -246,7 +257,7 @@ public interface ClassificationQuery
   ClassificationQuery orderByServiceLevel(SortDirection sortDirection);
 
   /**
-   * Sort the query result by priority.
+   * Sort the query result by {@linkplain ClassificationSummary#getPriority() priority}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
@@ -255,7 +266,8 @@ public interface ClassificationQuery
   ClassificationQuery orderByPriority(SortDirection sortDirection);
 
   /**
-   * Sort the query result by the application entry point name.
+   * Sort the query result by the {@linkplain ClassificationSummary#getApplicationEntryPoint() name
+   * of the application entry point}.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
    *     If sortDirection is null, the result is sorted in ascending order
@@ -264,7 +276,8 @@ public interface ClassificationQuery
   ClassificationQuery orderByApplicationEntryPoint(SortDirection sortDirection);
 
   /**
-   * This method sorts the query result according to the value of a custom field.
+   * This method sorts the query result according to the value of the specified {@linkplain
+   * ClassificationCustomField custom field}.
    *
    * @param customField identifies which custom attribute is affected.
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
