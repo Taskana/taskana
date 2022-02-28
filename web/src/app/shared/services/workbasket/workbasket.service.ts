@@ -125,7 +125,7 @@ export class WorkbasketService {
     url: string,
     distributionTargetsIds: Set<string>
   ): Observable<WorkbasketDistributionTargets> {
-    return this.httpClient.put<WorkbasketDistributionTargets>(url, distributionTargetsIds);
+    return this.httpClient.put<WorkbasketDistributionTargets>(url, Array.from(distributionTargetsIds));
   }
 
   // DELETE

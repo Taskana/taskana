@@ -46,18 +46,6 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
    * would be ideal to completely redo whole components using drag and drop angular components and clearer logics
    */
   ngOnInit() {
-    // saving workbasket distributions targets when existing workbasket was modified
-    this.ngxsActions$.pipe(ofActionCompleted(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
-      this.onSave();
-    });
-
-    // saving workbasket distributions targets when workbasket was copied or created
-    this.ngxsActions$.pipe(ofActionCompleted(SaveNewWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
-      this.selectedWorkbasket$.pipe(take(1)).subscribe(() => {
-        this.onSave();
-      });
-    });
-
     this.selectedWorkbasket$.pipe(takeUntil(this.destroy$)).subscribe((wb) => {
       if (wb !== undefined && wb.workbasketId !== this.selectedWorkbasket?.workbasketId) {
         if (this.selectedWorkbasket?.workbasketId) {

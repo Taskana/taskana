@@ -90,6 +90,7 @@
       *ngIf="displayingDistributionTargetsPicker"
       [component]="'availableDistributionTargets'"
       [transferDistributionTargetObservable]="transferDistributionTargetObservable"
+      id="dual-list-Left"
     >
     </taskana-administration-workbasket-distribution-targets-list>
 
@@ -99,6 +100,7 @@
       [hidden]="displayingDistributionTargetsPicker && !sideBySide"
       [component]="'selectedDistributionTargets'"
       [transferDistributionTargetObservable]="transferDistributionTargetObservable"
+      id="dual-list-Right"
     >
     </taskana-administration-workbasket-distribution-targets-list>
   </div>

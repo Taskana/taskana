@@ -75,6 +75,7 @@ export class WorkbasketDistributionTargetsListComponent
         });
       });
       this.availableDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
+        if (typeof this.filter === 'undefined' || isEqual(this.filter, filter)) return;
         this.filter = filter;
         this.store.dispatch(new FetchAvailableDistributionTargets(true, this.filter));
         this.selectAll(false);
@@ -86,7 +87,7 @@ export class WorkbasketDistributionTargetsListComponent
         });
       });
       this.selectedDistributionTargetsFilter$.pipe(takeUntil(this.destroy$)).subscribe((filter) => {
-        if (isEqual(this.filter, filter)) return;
+        if (typeof this.filter === 'undefined' || isEqual(this.filter, filter)) return;
         this.filter = filter;
         this.store
           .dispatch(new FetchWorkbasketDistributionTargets(true))
@@ -144,12 +145,8 @@ export class WorkbasketDistributionTargetsListComponent
       .dispatch(new TransferDistributionTargets(targetSide, selectedWBs))
       .pipe(take(1))
       .subscribe(() => {
-        if (this.distributionTargets.length === 0) {
-          const desiredAction =
-            targetSide === Side.SELECTED
-              ? new FetchAvailableDistributionTargets(false, this.filter)
-              : new FetchWorkbasketDistributionTargets(false, this.filter);
-          this.store.dispatch(desiredAction);
+        if (this.distributionTargets.length === 0 && targetSide === Side.SELECTED) {
+          this.store.dispatch(new FetchAvailableDistributionTargets(false, this.filter));
         }
       });
   }

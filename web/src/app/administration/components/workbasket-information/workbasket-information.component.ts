@@ -22,6 +22,7 @@ import { WorkbasketComponent } from '../../models/workbasket-component';
 import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../models/button-action';
 import { AccessId } from '../../../shared/models/access-id';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -160,7 +161,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
     } else {
       this.store.dispatch(new UpdateWorkbasket(this.workbasket._links.self.href, this.workbasket)).subscribe(() => {
         this.requestInProgressService.setRequestInProgress(false);
-        this.workbasketClone = { ...this.workbasket };
+        this.workbasketClone = cloneDeep(this.workbasket);
       });
     }
   }
