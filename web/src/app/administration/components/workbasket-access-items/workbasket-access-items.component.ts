@@ -1,4 +1,6 @@
 import {
+  AfterViewChecked,
+  AfterViewInit,
   Component,
   ElementRef,
   Input,
@@ -41,7 +43,7 @@ import { ButtonAction } from '../../models/button-action';
   animations: [highlight],
   styleUrls: ['./workbasket-access-items.component.scss']
 })
-export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDestroy {
+export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit, AfterViewChecked {
   @Input()
   workbasket: Workbasket;
 
@@ -65,7 +67,6 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
   });
 
   toggleValidationAccessIdMap = new Map<number, boolean>();
-  initialized = false;
   added = false;
   isNewAccessItemsFromStore = false;
   isAccessItemsTabSelected = false;
@@ -126,10 +127,13 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
         let accessItems = [...accessItemsRepresentation.accessItems];
         accessItems = this.sortAccessItems(accessItems, 'accessId');
 
-        this.accessItemsRepresentation = { accessItems: accessItems, _links: accessItemsRepresentation._links };
+        this.accessItemsRepresentation = {
+          accessItems: accessItems,
+          _links: accessItemsRepresentation._links
+        };
         this.setAccessItemsGroups(accessItems);
-        this.accessItemsClone = this.cloneAccessItems(accessItems);
-        this.accessItemsResetClone = this.cloneAccessItems(accessItems);
+        this.accessItemsClone = this.cloneAccessItems();
+        this.accessItemsResetClone = this.cloneAccessItems();
 
         this.isNewAccessItemsFromStore = true;
       }
@@ -270,7 +274,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     this.formsValidatorService.formSubmitAttempt = false;
     this.AccessItemsForm.reset();
     this.setAccessItemsGroups(this.accessItemsResetClone);
-    this.accessItemsClone = this.cloneAccessItems(this.accessItemsResetClone);
+    this.accessItemsClone = this.cloneAccessItems();
     this.notificationsService.showSuccess('WORKBASKET_ACCESS_ITEM_RESTORE');
   }
 
@@ -333,7 +337,7 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
     checkbox.checked = areAllCheckboxesSelected;
   }
 
-  cloneAccessItems(inputaccessItem): WorkbasketAccessItems[] {
+  cloneAccessItems(): WorkbasketAccessItems[] {
     return this.AccessItemsForm.value.accessItemsGroups.map((accessItems: WorkbasketAccessItems) => ({
       ...accessItems
     }));

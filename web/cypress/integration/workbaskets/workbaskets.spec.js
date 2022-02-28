@@ -113,4 +113,108 @@ context('TASKANA Workbaskets', () => {
 
     cy.saveWorkbaskets();
   });
+
+  it('should be possible to change the name of a workbasket and switch tabs and transfer workbaskets without loosing changes', () => {
+    cy.visitTestWorkbasket();
+
+    cy.get('#workbasket-name').clear().type(Cypress.env('testValueWorkbaskets'));
+
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get(
+      '#dual-list-Left > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(1)'
+    )
+      .should('contain.text', 'Basxet1')
+      .click();
+
+    cy.get('.distribution-targets-list__action-buttons--chooser').click();
+
+    cy.get('.workbasket-details__title-name').should('contain.text', Cypress.env('testValueWorkbaskets'));
+  });
+
+  it('should be possible to transfer distribution targets and switch tabs without loosing changes', () => {
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get(
+      '#dual-list-Left > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(1)'
+    )
+      .should('contain.text', 'Basxet1')
+      .click();
+
+    cy.get('.distribution-targets-list__action-buttons--chooser').click();
+
+    cy.visitWorkbasketsInformationPage();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(2)'
+    ).should('contain.text', 'Basxet1');
+
+    cy.undoWorkbaskets();
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper'
+    )
+      .children()
+      .should('have.length', 1);
+  });
+
+  it('should be possible to transfer distribution targets and save changes from another tab', () => {
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get(
+      '#dual-list-Left > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(1)'
+    )
+      .should('contain.text', 'Basxet1')
+      .click();
+
+    cy.get('.distribution-targets-list__action-buttons--chooser').click();
+
+    cy.visitWorkbasketsInformationPage();
+    cy.saveWorkbaskets();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper > :nth-child(2)'
+    )
+      .should('contain.text', 'Basxet1')
+      .click();
+
+    cy.get('.distribution-targets-list__action-buttons--selected').click();
+    cy.saveWorkbaskets();
+  });
+
+  it('should be possible to change workbasket information and save changes from another tab', () => {
+    cy.visitTestWorkbasket();
+
+    cy.get('#wb-custom-4').clear().type(Cypress.env('testValueWorkbaskets'));
+
+    cy.visitWorkbasketsDistributionTargetsPage();
+    cy.saveWorkbaskets();
+
+    cy.visitWorkbasketsInformationPage();
+    cy.get('#wb-custom-4').should('have.value', Cypress.env('testValueWorkbaskets'));
+  });
+
+  it('should be possible', () => {
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+  });
+
+  it('should be possible to remove all distribution targets', () => {
+    cy.visitTestWorkbasket();
+    cy.visitWorkbasketsDistributionTargetsPage();
+
+    cy.get('#dual-list-Right > .distribution-targets-list > .mat-toolbar > :nth-child(4)').click();
+    cy.get('.distribution-targets-list__action-buttons--selected').click();
+
+    cy.get(
+      '#dual-list-Right > .distribution-targets-list > .mat-selection-list > .cdk-virtual-scroll-viewport > .cdk-virtual-scroll-content-wrapper'
+    )
+      .children()
+      .should('have.length', 0);
+
+    cy.undoWorkbaskets();
+  });
 });

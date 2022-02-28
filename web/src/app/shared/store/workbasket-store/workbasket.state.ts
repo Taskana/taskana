@@ -131,7 +131,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
           ctx.patchState({
             selectedWorkbasket,
             action: ACTION.READ,
-            badgeMessage: ``
+            badgeMessage: ''
           });
 
           ctx.dispatch(new GetWorkbasketAccessItems(ctx.getState().selectedWorkbasket._links.accessItems.href));
@@ -144,6 +144,8 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
           ctx.dispatch(new ClearWorkbasketFilter('selectedDistributionTargets'));
           ctx.dispatch(new ClearWorkbasketFilter('availableDistributionTargets'));
+          ctx.dispatch(new FetchWorkbasketDistributionTargets(true));
+          ctx.dispatch(new FetchAvailableDistributionTargets(true));
         })
       );
     }
@@ -416,7 +418,9 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         take(1),
         tap((wbt: WorkbasketDistributionTargets) => {
           if (!refetchAll && workbasketDistributionTargets) {
-            wbt.distributionTargets = workbasketDistributionTargets.distributionTargets.concat(wbt.distributionTargets);
+            const completeArray = workbasketDistributionTargets.distributionTargets.concat(wbt.distributionTargets);
+            const idArrayNoDupe = [...new Set(completeArray.map((wb) => wb.workbasketId))];
+            wbt.distributionTargets = idArrayNoDupe.map((id) => completeArray.find((wb) => wb.workbasketId === id));
           }
           ctx.patchState({
             workbasketDistributionTargets: wbt,
@@ -468,7 +472,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
 
   @Action(TransferDistributionTargets)
   transferDistributionTargets(ctx: StateContext<WorkbasketStateModel>, action: TransferDistributionTargets): void {
-    let { workbasketDistributionTargets, availableDistributionTargets } = ctx.getState();
+    let { availableDistributionTargets, workbasketDistributionTargets } = ctx.getState();
     const workbasketSummarySet = new Set(action.workbasketSummaries.map((wb) => wb.workbasketId));
     availableDistributionTargets = cloneDeep(availableDistributionTargets);
     workbasketDistributionTargets = cloneDeep(workbasketDistributionTargets);

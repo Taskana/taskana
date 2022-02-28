@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject, timeout } from 'rxjs';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { ACTION } from 'app/shared/models/action';
 import { DomainService } from 'app/shared/services/domain/domain.service';
-import { Select, Store } from '@ngxs/store';
-import { takeUntil } from 'rxjs/operators';
+import { Actions, ofActionSuccessful, Select, Store } from '@ngxs/store';
+import { catchError, filter, take, takeUntil } from 'rxjs/operators';
 import {
   WorkbasketAndComponentAndAction,
   WorkbasketSelectors
@@ -15,11 +15,13 @@ import {
   CopyWorkbasket,
   DeselectWorkbasket,
   OnButtonPressed,
-  SelectComponent
+  SelectComponent,
+  UpdateWorkbasket,
+  UpdateWorkbasketDistributionTargets
 } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { ButtonAction } from '../../models/button-action';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
-import { WorkbasketComponent } from '../../models/workbasket-component';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'taskana-administration-workbasket-details',
@@ -29,7 +31,6 @@ import { WorkbasketComponent } from '../../models/workbasket-component';
 export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   workbasket: Workbasket;
   action: ACTION;
-  selectedComponent: WorkbasketComponent;
 
   @Select(WorkbasketSelectors.selectedComponent)
   selectedTab$: Observable<number>;
@@ -39,6 +40,9 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
 
   @Select(WorkbasketSelectors.selectedWorkbasketAndComponentAndAction)
   selectedWorkbasketAndComponentAndAction$: Observable<WorkbasketAndComponentAndAction>;
+
+  @Select(WorkbasketSelectors.selectedWorkbasket)
+  selectedWorkbasket$: Observable<Workbasket>;
 
   destroy$ = new Subject<void>();
 
@@ -50,7 +54,8 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private domainService: DomainService,
     private requestInProgressService: RequestInProgressService,
-    private store: Store
+    private store: Store,
+    private ngxsActions$: Actions
   ) {}
 
   ngOnInit() {
@@ -58,28 +63,39 @@ export class WorkbasketDetailsComponent implements OnInit, OnDestroy {
   }
 
   getWorkbasketFromStore() {
-    // this is necessary since we receive workbaskets from store even when there is no update
-    // this would unintentionally discard changes
-
+    /*
+        get workbasket from store only when (to avoid discarding changes):
+        a) workbasket with another ID is selected (includes copying)
+        b) empty workbasket is created
+      */
     this.selectedWorkbasketAndComponentAndAction$.pipe(takeUntil(this.destroy$)).subscribe((object) => {
       const workbasket = object.selectedWorkbasket;
       const action = object.action;
-      const component = object.selectedComponent;
-
-      // get workbasket from store when:
-      // a) workbasket with another ID is selected (includes copying)
-      // b) empty workbasket is created
-      // c) saving the workbasket
 
       const isAnotherId = this.workbasket?.workbasketId !== workbasket?.workbasketId;
       const isCreation = action !== this.action && action === ACTION.CREATE;
-      const isSameComponent = component === this.selectedComponent;
-      if (isAnotherId || isCreation || isSameComponent) {
-        this.workbasket = { ...workbasket };
+      if (isAnotherId || isCreation) {
+        this.workbasket = cloneDeep(workbasket);
       }
 
       this.action = action;
-      this.selectedComponent = component;
+    });
+
+    // c) saving the workbasket
+    this.ngxsActions$.pipe(ofActionSuccessful(UpdateWorkbasket), takeUntil(this.destroy$)).subscribe(() => {
+      this.store
+        .dispatch(new UpdateWorkbasketDistributionTargets())
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.selectedWorkbasket$
+            .pipe(
+              take(5),
+              timeout(250),
+              catchError(() => of(null)),
+              filter((val) => val !== null)
+            )
+            .subscribe((wb) => (this.workbasket = wb));
+        });
     });
   }
 

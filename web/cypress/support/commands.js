@@ -36,6 +36,15 @@ Cypress.Commands.add('saveWorkbaskets', () => {
 
 /**
  * @memberof cy
+ * @method undoWorkbaskets
+ * @returns Chainable
+ */
+Cypress.Commands.add('undoWorkbaskets', () => {
+  cy.get('button').contains('Undo Changes').click();
+});
+
+/**
+ * @memberof cy
  * @method verifyPageLoad
  * @param {string} path
  * @returns Chainable
