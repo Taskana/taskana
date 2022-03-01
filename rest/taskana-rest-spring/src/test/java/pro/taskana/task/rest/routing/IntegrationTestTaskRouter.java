@@ -20,7 +20,7 @@ public class IntegrationTestTaskRouter implements TaskRoutingProvider {
   }
 
   @Override
-  public String determineWorkbasketId(Task task) {
+  public String determineWorkbasketId(String domain, Task task) {
     return DEFAULT_ROUTING_TARGET;
   }
 }

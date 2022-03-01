@@ -62,7 +62,7 @@ class TaskRoutingAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_TaskRouterDoesNotRouteTask() {
-    Task task = taskService.newTask();
+    Task task = taskService.newTaskInDomain("DOMAIN_B");
     task.setClassificationKey(classificationSummary.getKey());
     task.setPrimaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
 
@@ -74,13 +74,26 @@ class TaskRoutingAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetWorkbasketForTask_When_TaskRouterDeterminesWorkbasket() throws Exception {
-    Task task = taskService.newTask(null, "DOMAIN_A");
+    Task task = taskService.newTaskInDomain("DOMAIN_A");
     task.setClassificationKey(classificationSummary.getKey());
     task.setPrimaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
 
     Task createdTask = taskService.createTask(task);
 
     assertThat(createdTask.getWorkbasketSummary()).isEqualTo(domainAWorkbasket);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_CreateTaskInDefaultDomain_When_NoDomainIsGiven() throws Exception {
+    Task task = taskService.newTask();
+    task.setClassificationKey(classificationSummary.getKey());
+    task.setPrimaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
+
+    Task createdTask = taskService.createTask(task);
+
+    assertThat(createdTask.getWorkbasketSummary().getDomain())
+        .isEqualTo(taskanaEngine.getConfiguration().getDefaultDomain());
   }
 
   public static class TaskRoutingProviderForDomainA implements TaskRoutingProvider {
@@ -91,8 +104,8 @@ class TaskRoutingAccTest {
     public void initialize(TaskanaEngine taskanaEngine) {}
 
     @Override
-    public String determineWorkbasketId(Task task) {
-      if ("DOMAIN_A".equals(task.getDomain())) {
+    public String determineWorkbasketId(String domain, Task task) {
+      if ("DOMAIN_A".equals(domain)) {
         return domainAWorkbasketId;
       }
       return null;

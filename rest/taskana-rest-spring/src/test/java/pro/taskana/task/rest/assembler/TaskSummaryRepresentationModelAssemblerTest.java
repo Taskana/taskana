@@ -216,7 +216,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     assertThat(taskSummary.getWorkbasketSummary())
         .isNotNull()
         .hasAllNullFieldsOrPropertiesExcept(
-            "markedForDeletion", "custom1", "custom2", "custom3", "custom4");
+            "domain", "markedForDeletion", "custom1", "custom2", "custom3", "custom4");
   }
 
   @Test

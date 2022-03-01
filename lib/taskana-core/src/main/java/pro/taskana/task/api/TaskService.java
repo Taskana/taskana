@@ -274,32 +274,47 @@ public interface TaskService {
   TaskCommentQuery createTaskCommentQuery();
 
   /**
-   * Returns a not inserted instance of {@link Task}. The returned task has no workbasket Id set.
-   * When createTask() is invoked for this task, TaskService will call the TaskRouting SPI to
-   * determine a workbasket for the task. If the TaskRouting API is not active, e.g. because no
-   * TaskRouter is registered, or the TaskRouter(s) don't find a workbasket, the task will not be
-   * inserted.
+   * Returns a not inserted instance of {@linkplain Task}. The Task will be created in the default
+   * domain as it is configured in the properties.
    *
-   * @return an empty new Task
+   * <p>See {@link #newTaskInDomain(String)}
+   *
+   * @return an empty new {@linkplain Task}
    */
   Task newTask();
 
   /**
-   * Returns a not inserted instance of {@link Task}.
+   * Returns a not inserted instance of {@linkplain Task}.
    *
    * @param workbasketId the id of the workbasket to which the task belongs
-   * @return an empty new Task
+   * @return an empty new {@linkplain Task}
    */
   Task newTask(String workbasketId);
 
   /**
-   * Returns a not inserted instance of {@link Task}.
+   * Returns a not inserted instance of {@linkplain Task}.
    *
    * @param workbasketKey the key of the workbasket to which the task belongs
    * @param domain the domain of the workbasket to which the task belongs
-   * @return an empty new Task
+   * @return an empty new {@linkplain Task}
    */
   Task newTask(String workbasketKey, String domain);
+
+  /**
+   * Returns a not inserted instance of {@linkplain Task}. The returned task has no Workbasket set.
+   * When createTask() is invoked for this Task, TaskService will call the TaskRouting SPI to
+   * determine a Workbasket for the Task.
+   *
+   * <p>If no TaskRoutingProvider is active, e.g. because no TaskRouter is registered, or the
+   * TaskRouter(s) don't find a Workbasket, the {@linkplain Task} will not be inserted.
+   *
+   * <p>It is the responsibility of the TaskRouting provider to make sure that the corresponding
+   * routing rules will be applied for the given domain.
+   *
+   * @param domain the domain in which the Workbasket will be created
+   * @return an empty new {@linkplain Task}
+   */
+  Task newTaskInDomain(String domain);
 
   /**
    * Returns a not inserted instance of {@link TaskComment}.

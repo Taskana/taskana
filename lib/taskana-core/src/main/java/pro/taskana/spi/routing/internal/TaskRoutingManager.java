@@ -15,8 +15,8 @@ import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.models.Task;
 
 /**
- * Loads TaskRoutingProvider SPI implementation(s) and passes requests to determine workbasketids to
- * them.
+ * Loads {@link TaskRoutingProvider} SPI implementation(s) and passes requests to determine
+ * workbasketIds to them.
  */
 public final class TaskRoutingManager {
 
@@ -36,22 +36,25 @@ public final class TaskRoutingManager {
   }
 
   /**
-   * Determines a workbasket id for a given task. Algorithm: The task that needs a workbasket id is
-   * passed to all registered TaskRoutingProviders. If they return no or more than one workbasketId,
-   * null is returned, otherwise we return the workbasketId that was returned from the
-   * TaskRoutingProviders.
+   * Determines a workbasketId for a given {@linkplain Task}.
    *
-   * @param task the task for which a workbasketId is to be determined.
-   * @return the id of the workbasket in which the task is to be created.
+   * <p>Algorithm: The Task that needs a workbasketId is passed to all registered
+   * TaskRoutingProviders. If they return no or more than one workbasketId, null is returned,
+   * otherwise we return the workbasketId that was returned from the TaskRoutingProviders.
+   *
+   * @param domain The domain in which the {@linkplain Task} is to be routed
+   * @param task The {@linkplain Task} for which a Workbasket must be determined
+   * @return the id of the Workbasket in which the {@linkplain Task} is to be created
    */
-  public String determineWorkbasketId(Task task) {
+  public String determineWorkbasketId(String domain, Task task) {
     String workbasketId = null;
     if (isEnabled()) {
       Set<String> workbasketIds =
           taskRoutingProviders.stream()
               .map(
                   CheckedFunction.wrap(
-                      taskRoutingProvider -> taskRoutingProvider.determineWorkbasketId(task)))
+                      taskRoutingProvider ->
+                          taskRoutingProvider.determineWorkbasketId(domain, task)))
               .filter(Objects::nonNull)
               .collect(Collectors.toSet());
       if (workbasketIds.isEmpty()) {

@@ -55,7 +55,7 @@ public class DmnTaskRouter implements TaskRoutingProvider {
   }
 
   @Override
-  public String determineWorkbasketId(Task task) {
+  public String determineWorkbasketId(String domain, Task task) {
     VariableMap variables = Variables.putValue(DECISION_VARIABLE_MAP_NAME, task);
 
     DmnDecisionTableResult result = dmnEngine.evaluateDecisionTable(decision, variables);
@@ -64,23 +64,26 @@ public class DmnTaskRouter implements TaskRoutingProvider {
       return null;
     }
 
-    String workbasketKey = result.getSingleResult().getEntry(OUTPUT_WORKBASKET_KEY);
-    String domain = result.getSingleResult().getEntry(OUTPUT_DOMAIN);
+    String targetWorkbasketKey = result.getSingleResult().getEntry(OUTPUT_WORKBASKET_KEY);
+    String targetDomain = result.getSingleResult().getEntry(OUTPUT_DOMAIN);
 
     try {
 
-      return taskanaEngine.getWorkbasketService().getWorkbasket(workbasketKey, domain).getId();
+      return taskanaEngine
+          .getWorkbasketService()
+          .getWorkbasket(targetWorkbasketKey, targetDomain)
+          .getId();
     } catch (WorkbasketNotFoundException e) {
       throw new SystemException(
           String.format(
               "Unknown workbasket defined in DMN Table. key: '%s', domain: '%s'",
-              workbasketKey, domain));
+              targetWorkbasketKey, targetDomain));
     } catch (NotAuthorizedException e) {
       throw new SystemException(
           String.format(
               "The current user is not authorized to create a task in the routed workbasket. "
                   + "key: '%s', domain: '%s'",
-              workbasketKey, domain));
+              targetWorkbasketKey, targetDomain));
     }
   }
 

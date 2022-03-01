@@ -9,15 +9,16 @@ public interface TaskRoutingProvider {
   /**
    * Initialize TaskRoutingProvider service.
    *
-   * @param taskanaEngine {@link TaskanaEngine} The Taskana engine needed for initialization.
+   * @param taskanaEngine The {@link TaskanaEngine} needed for initialization.
    */
   void initialize(TaskanaEngine taskanaEngine);
 
   /**
-   * Determines a WorkbasketId for a given task.
+   * Determines a workbasketId for a given {@linkplain Task} in a given domain.
    *
-   * @param task {@link Task} The task for which a workbasket must be determined.
-   * @return the id of the workbasket in which the task is to be created.
+   * @param domain The domain in which the {@linkplain Task} is to be routed
+   * @param task The {@linkplain Task} for which a Workbasket must be determined
+   * @return the id of the Workbasket in which the {@linkplain Task} is to be created
    */
-  String determineWorkbasketId(Task task);
+  String determineWorkbasketId(String domain, Task task);
 }

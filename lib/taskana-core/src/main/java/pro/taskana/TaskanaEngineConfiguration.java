@@ -47,26 +47,26 @@ public class TaskanaEngineConfiguration {
   private static final String TASKANA_PROPERTIES = "/taskana.properties";
   private static final String TASKANA_PROPERTY_SEPARATOR = "|";
 
-  // TASKANA_SCHEMA_VERSION
   private static final String DEFAULT_SCHEMA_NAME = "TASKANA";
+  private static final String DEFAULT_DOMAIN_NAME = "DOMAIN_A";
 
-  // Taskana properties file
   protected String propertiesFileName = TASKANA_PROPERTIES;
-  // Taskana datasource configuration
+
   protected DataSource dataSource;
   protected String schemaName;
-  // Taskana role configuration
+
   protected String propertiesSeparator = TASKANA_PROPERTY_SEPARATOR;
   protected Map<TaskanaRole, Set<String>> roleMap;
 
-  // global switch to enable JAAS based authentication and Taskana
-  // authorizations
   protected boolean securityEnabled;
   protected boolean useManagedTransactions;
-  // List of configured domain names
+
   @TaskanaProperty("taskana.domains")
   protected List<String> domains = new ArrayList<>();
-  // List of configured classification types
+
+  @TaskanaProperty("taskana.domains.default")
+  protected String defaultDomain = DEFAULT_DOMAIN_NAME;
+
   @TaskanaProperty("taskana.classification.types")
   protected List<String> classificationTypes = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class TaskanaEngineConfiguration {
 
   @TaskanaProperty("taskana.custom.holidays")
   private List<CustomHoliday> customHolidays = new ArrayList<>();
-  // Properties for the monitor
+
   @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
   private boolean deleteHistoryOnTaskDeletionEnabled;
 
@@ -84,14 +84,12 @@ public class TaskanaEngineConfiguration {
   @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
   private boolean corpusChristiEnabled;
 
-  // Properties for general job execution
   @TaskanaProperty("taskana.jobs.batchSize")
   private int jobBatchSize = 100;
 
   @TaskanaProperty("taskana.jobs.maxRetries")
   private int maxNumberOfJobRetries = 3;
 
-  // Properties for the cleanup job
   @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
   private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
@@ -100,14 +98,13 @@ public class TaskanaEngineConfiguration {
 
   @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
-  // TASKANA behavior
 
   @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
   @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
   private boolean validationAllowTimestampServiceLevelMismatch = false;
-  // Property to enable/disable the addition of user full/long name through joins
+
   @TaskanaProperty("taskana.addAdditionalUserInfo")
   private boolean addAdditionalUserInfo = false;
 
@@ -351,6 +348,14 @@ public class TaskanaEngineConfiguration {
 
   public void setDomains(List<String> domains) {
     this.domains = domains;
+  }
+
+  public String getDefaultDomain() {
+    return defaultDomain;
+  }
+
+  public void setDefaultDomain(String domainName) {
+    this.defaultDomain = domainName;
   }
 
   public boolean getAddAdditionalUserInfo() {

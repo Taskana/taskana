@@ -208,7 +208,10 @@ public class TaskServiceImpl implements TaskService {
       } else if (task.getWorkbasketKey() != null) {
         workbasket = workbasketService.getWorkbasket(task.getWorkbasketKey(), task.getDomain());
       } else {
-        String workbasketId = taskanaEngine.getTaskRoutingManager().determineWorkbasketId(task);
+        String workbasketId =
+            taskanaEngine
+                .getTaskRoutingManager()
+                .determineWorkbasketId(task.getWorkbasketSummary().getDomain(), task);
         if (workbasketId != null) {
           workbasket = workbasketService.getWorkbasket(workbasketId);
           task.setWorkbasketSummary(workbasket.asSummary());
@@ -402,7 +405,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task newTask() {
-    return newTask(null);
+    return newTaskInDomain(taskanaEngine.getEngine().getConfiguration().getDefaultDomain());
   }
 
   @Override
@@ -422,7 +425,13 @@ public class TaskServiceImpl implements TaskService {
     wb.setKey(workbasketKey);
     wb.setDomain(domain);
     task.setWorkbasketSummary(wb);
+    task.setCallbackState(CallbackState.NONE);
     return task;
+  }
+
+  @Override
+  public Task newTaskInDomain(String domain) {
+    return newTask(null, domain);
   }
 
   @Override
