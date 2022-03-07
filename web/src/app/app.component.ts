@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
 import { SidenavService } from './shared/services/sidenav/sidenav.service';
@@ -27,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
   toggle: boolean = false;
 
   destroy$ = new Subject<void>();
+  @ViewChild('sidenav') public sidenav: MatSidenav;
 
   constructor(
     private router: Router,
@@ -44,11 +45,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.orientationService.onResize();
   }
 
-  @ViewChild('sidenav') public sidenav: MatSidenav;
-
   ngOnInit() {
     this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
-      if (event instanceof NavigationStart) {
+      if (event instanceof NavigationEnd) {
         this.selectedRouteService.selectRoute(event);
         this.formsValidatorService.formSubmitAttempt = false;
       }

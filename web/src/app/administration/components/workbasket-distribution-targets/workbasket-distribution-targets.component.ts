@@ -37,7 +37,7 @@ export class WorkbasketDistributionTargetsComponent implements OnInit, OnDestroy
   destroy$ = new Subject<void>();
   private selectedWorkbasket: WorkbasketSummary;
 
-  constructor(private notificationsService: NotificationService, private store: Store, private ngxsActions$: Actions) {}
+  constructor(private notificationsService: NotificationService, private store: Store) {}
 
   /**
    * Rework with modification based on old components,

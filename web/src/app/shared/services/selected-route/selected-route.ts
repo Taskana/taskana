@@ -1,24 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable()
 export class SelectedRouteService {
   public selectedRouteTriggered = new Subject<string>();
 
-  private detailRoutes: Array<string> = [
-    'workplace',
-    'administration/workbaskets',
-    'administration/classifications',
-    'monitor',
-    'administration/access-items-management',
-    'history',
-    'settings'
-  ];
+  private detailRoutes: Array<string> = ['workplace', 'administration', 'monitor', 'history', 'settings'];
 
   constructor(private router: Router) {}
 
-  selectRoute(value) {
+  selectRoute(value: NavigationEnd): void {
     this.selectedRouteTriggered.next(this.getRoute(value));
   }
 
@@ -26,11 +18,11 @@ export class SelectedRouteService {
     return this.selectedRouteTriggered.asObservable();
   }
 
-  private getRoute(event): string {
+  private getRoute(event: NavigationEnd): string {
     if (!event) {
       return this.checkUrl(this.router.url);
     }
-    return this.checkUrl(event.url);
+    return this.checkUrl(event.urlAfterRedirects);
   }
 
   private checkUrl(url: string): string {

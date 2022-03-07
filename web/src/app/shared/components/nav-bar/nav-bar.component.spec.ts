@@ -53,19 +53,11 @@ describe('NavBarComponent', () => {
   });
 
   it('should set title to workbasket if workbasket ist selected', () => {
-    route = 'workbaskets';
+    route = 'administration';
     fixture.detectChanges();
     component.setTitle(route);
-    expect(component.title).toBe('Workbaskets');
+    expect(component.title).toBe('Administration');
   });
-
-  it('should set title to classification if classification ist selected', () => {
-    route = 'classifications';
-    fixture.detectChanges();
-    component.setTitle(route);
-    expect(component.title).toBe('Classifications');
-  });
-
   it('should set title to monitor if monitor ist selected', () => {
     route = 'monitor';
     fixture.detectChanges();
@@ -78,13 +70,6 @@ describe('NavBarComponent', () => {
     fixture.detectChanges();
     component.setTitle(route);
     expect(component.title).toBe('Workplace');
-  });
-
-  it('should set title to access-items if access-items ist selected', () => {
-    route = 'access-items';
-    fixture.detectChanges();
-    component.setTitle(route);
-    expect(component.title).toBe('Access items');
   });
 
   it('should set title to history if history ist selected', () => {

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedRouteService } from 'app/shared/services/selected-route/selected-route';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { expandRight } from 'app/shared/animations/expand.animation';
 import { SidenavService } from '../../services/sidenav/sidenav.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'taskana-shared-nav-bar',
@@ -12,26 +13,26 @@ import { SidenavService } from '../../services/sidenav/sidenav.service';
 })
 export class NavBarComponent implements OnInit {
   selectedRoute = '';
-  titleWorkbaskets = 'Workbaskets';
-  titleClassifications = 'Classifications';
-  titleAccessItems = 'Access items';
+  titleAdministration = 'Administration';
   titleMonitor = 'Monitor';
   titleWorkplace = 'Workplace';
   titleHistory = 'History';
   titleSettings = 'Settings';
   toggle: boolean = false;
-  title = this.titleWorkplace;
+  title = '';
 
-  selectedRouteSubscription: Subscription;
+  destroy$ = new Subject();
 
   constructor(private selectedRouteService: SelectedRouteService, private sidenavService: SidenavService) {}
 
   ngOnInit() {
-    this.selectedRouteSubscription = this.selectedRouteService.getSelectedRoute().subscribe((value: string) => {
-      // does not work
-      this.selectedRoute = value;
-      this.setTitle(value);
-    });
+    this.selectedRouteService
+      .getSelectedRoute()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.selectedRoute = value;
+        this.setTitle(value);
+      });
   }
 
   toggleSidenav() {
@@ -40,16 +41,12 @@ export class NavBarComponent implements OnInit {
   }
 
   setTitle(value: string = '') {
-    if (value.includes('workbaskets')) {
-      this.title = this.titleWorkbaskets;
-    } else if (value.includes('classifications')) {
-      this.title = this.titleClassifications;
+    if (value.includes('administration')) {
+      this.title = this.titleAdministration;
     } else if (value.includes('monitor')) {
       this.title = this.titleMonitor;
     } else if (value.includes('workplace')) {
       this.title = this.titleWorkplace;
-    } else if (value.includes('access-items')) {
-      this.title = this.titleAccessItems;
     } else if (value.includes('history')) {
       this.title = this.titleHistory;
     } else if (value.includes('settings')) {
