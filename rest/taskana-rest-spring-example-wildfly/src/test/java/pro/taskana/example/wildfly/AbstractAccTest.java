@@ -22,7 +22,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 public class AbstractAccTest {
 
   protected RestHelper restHelper = new RestHelper(8080);
-  protected static final String DEPENDENCY_VERSION = "5.0.1-SNAPSHOT";
+  protected static final String DEPENDENCY_VERSION = "5.0.2-SNAPSHOT";
 
   protected TaskRepresentationModel getTaskResourceSample() {
     ClassificationSummaryRepresentationModel classificationResource =
