@@ -23,7 +23,7 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.bom</groupId>
-        <artifactId>wildfly-javaee7</artifactId>
+        <artifactId>wildfly-javaee8</artifactId>
         <version>${version.wildfly}</version>
         <scope>import</scope>
         <type>pom</type>
@@ -136,7 +136,7 @@
       <artifactId>spring-boot-test</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <!-- Brought in via Arquillian BOM, see dependencyManagement section
         above -->
     <dependency>

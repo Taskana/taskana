@@ -64,6 +64,9 @@ public class TaskanaWildflyConfiguration {
       Properties properties = new Properties();
       ctx = new InitialContext();
       properties.load(propertyStream);
+      LOGGER.debug(
+          "TASKANA is using datasource '{}' from application.properties.",
+          properties.getProperty("datasource.jndi"));
       dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
       return dataSource;
     } catch (Exception e) {
