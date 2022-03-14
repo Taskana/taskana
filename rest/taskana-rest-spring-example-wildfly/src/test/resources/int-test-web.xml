@@ -1,7 +1,7 @@
 <web-app version="3.1"
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
   http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
     <display-name>TaskanaRestWildflySpring</display-name>
@@ -29,7 +29,7 @@
             <url-pattern>/img/logo.png</url-pattern>
             <url-pattern>/logout</url-pattern>
         </web-resource-collection>
-        <!-- No auth-constraint means everybody has access! -->
+      <!-- No auth-constraint means everybody has access! -->
     </security-constraint>
     <security-role>
         <role-name>*</role-name>
