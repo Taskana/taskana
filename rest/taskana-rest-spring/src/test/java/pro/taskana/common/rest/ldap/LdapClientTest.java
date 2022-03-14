@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,12 +24,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 
@@ -41,7 +44,7 @@ class LdapClientTest {
 
   @Mock TaskanaEngineConfiguration taskanaEngineConfiguration;
 
-  @InjectMocks LdapClient cut;
+  @Spy @InjectMocks LdapClient cut;
 
   @Test
   void testLdap_searchGroupByDn() {
@@ -123,6 +126,37 @@ class LdapClientTest {
   }
 
   @Test
+  void shouldNot_CreateOrCriteriaWithDnAndAccessIdString_When_PropertyTypeIsSet()
+      throws InvalidArgumentException {
+
+    setUpEnvMock();
+    lenient().when(this.environment.getProperty("taskana.ldap.groupsOfUser.type")).thenReturn("dn");
+    lenient()
+        .when(
+            ldapTemplate.search(
+                any(String.class),
+                eq("(&(objectclass=person)(uid=user-1-1))"),
+                eq(2),
+                any(),
+                any(LdapClient.DnStringContextMapper.class)))
+        .thenReturn(Collections.singletonList("uid=user-1-1,cn=users,OU=Test,O=TASKANA"));
+
+    cut.init();
+
+    cut.searchGroupsAccessIdIsMemberOf("user-1-1");
+
+    String expectedFilterValue =
+        "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=TASKANA))";
+    verify(ldapTemplate)
+        .search(
+            any(String.class),
+            eq(expectedFilterValue),
+            anyInt(),
+            any(),
+            any(LdapClient.GroupContextMapper.class));
+  }
+
+  @Test
   void testLdap_getFirstPageOfaResultList() {
     setUpEnvMock();
     cut.init();
@@ -148,8 +182,9 @@ class LdapClientTest {
   void testLdap_checkForMissingConfigurations() {
     // optional config fields: minSearchForLength, maxNumberOfReturnedAccessIds, userPhoneAttribute,
     // userMobilePhoneAttribute, userEmailAttribute, userOrglevel1Attribute, userOrglevel2Attribute,
-    // userOrglevel3Attribute, userOrglevel4Attribute
-    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 9);
+    // userOrglevel3Attribute, userOrglevel4Attribute, groupsOfUser, groupsOfUserName,
+    // groupOfUserType
+    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 12);
   }
 
   @Test

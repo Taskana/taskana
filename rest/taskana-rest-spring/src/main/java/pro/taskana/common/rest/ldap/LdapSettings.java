@@ -26,7 +26,9 @@ enum LdapSettings {
   TASKANA_LDAP_GROUP_NAME_ATTRIBUTE("taskana.ldap.groupNameAttribute"),
   TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH("taskana.ldap.minSearchForLength"),
   TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS("taskana.ldap.maxNumberOfReturnedAccessIds"),
-  TASKANA_LDAP_GROUPS_OF_USER("taskana.ldap.groupsOfUser");
+  TASKANA_LDAP_GROUPS_OF_USER("taskana.ldap.groupsOfUser"),
+  TASKANA_LDAP_GROUPS_OF_USER_NAME("taskana.ldap.groupsOfUser.name"),
+  TASKANA_LDAP_GROUPS_OF_USER_TYPE("taskana.ldap.groupsOfUser.type");
 
   private final String key;
 
