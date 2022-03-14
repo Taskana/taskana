@@ -252,8 +252,10 @@ public class LdapClient {
     final AndFilter andFilter = new AndFilter();
     andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
     final OrFilter orFilter = new OrFilter();
-    orFilter.or(new EqualsFilter(getGroupsOfUser(), accessId));
-    orFilter.or(new EqualsFilter(getGroupsOfUser(), dn));
+    if (!"DN".equalsIgnoreCase(getGroupsOfUserType())) {
+      orFilter.or(new EqualsFilter(getGroupsOfUserName(), accessId));
+    }
+    orFilter.or(new EqualsFilter(getGroupsOfUserName(), dn));
     andFilter.and(orFilter);
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
@@ -302,11 +304,7 @@ public class LdapClient {
               andFilter.encode(),
               SearchControls.SUBTREE_SCOPE,
               null,
-              new AbstractContextMapper<String>() {
-                public String doMapFromContext(DirContextOperations ctx) {
-                  return getDnFromContext(ctx);
-                }
-              });
+              new DnStringContextMapper());
 
       if (distinguishedNames == null || distinguishedNames.isEmpty()) {
         return null;
@@ -456,8 +454,16 @@ public class LdapClient {
     return maxNumberOfReturnedAccessIds;
   }
 
-  public String getGroupsOfUser() {
-    return LdapSettings.TASKANA_LDAP_GROUPS_OF_USER.getValueFromEnv(env);
+  public String getGroupsOfUserName() {
+    String groupsOfUser = LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME.getValueFromEnv(env);
+    if (groupsOfUser == null || groupsOfUser.isEmpty()) {
+      groupsOfUser = LdapSettings.TASKANA_LDAP_GROUPS_OF_USER.getValueFromEnv(env);
+    }
+    return groupsOfUser;
+  }
+
+  public String getGroupsOfUserType() {
+    return LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE.getValueFromEnv(env);
   }
 
   public boolean isUser(String accessId) {
@@ -565,6 +571,9 @@ public class LdapClient {
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_2_ATTRIBUTE))
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_3_ATTRIBUTE))
         .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME))
+        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE))
         .filter(p -> p.getValueFromEnv(env) == null)
         .collect(Collectors.toList());
   }
@@ -665,6 +674,13 @@ public class LdapClient {
         accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
       }
       return accessId;
+    }
+  }
+
+  class DnStringContextMapper extends AbstractContextMapper<String> {
+    @Override
+    public String doMapFromContext(DirContextOperations ctx) {
+      return getDnFromContext(ctx);
     }
   }
 }
