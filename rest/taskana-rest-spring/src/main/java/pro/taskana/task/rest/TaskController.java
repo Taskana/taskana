@@ -438,6 +438,7 @@ public class TaskController {
     CREATOR(TaskQuery::orderByCreator),
     NOTE(TaskQuery::orderByNote),
     OWNER(TaskQuery::orderByOwner),
+    OWNER_LONG_NAME(TaskQuery::orderByOwnerLongName),
     BUSINESS_PROCESS_ID(TaskQuery::orderByBusinessProcessId),
     PARENT_BUSINESS_PROCESS_ID(TaskQuery::orderByParentBusinessProcessId),
     WORKBASKET_KEY(TaskQuery::orderByWorkbasketKey),

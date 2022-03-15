@@ -383,6 +383,36 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
+    class OwnerLongName {
+      @WithAccessId(user = "admin")
+      @Test
+      void should_ReturnOrderedResult_When_OrderByOwnerLongNameDescIsSet() {
+        List<TaskSummary> results =
+            taskanaEngine
+                .getTaskService()
+                .createTaskQuery()
+                .orderByOwnerLongName(DESCENDING)
+                .list();
+        assertThat(results.stream().filter(r -> r.getOwnerLongName() != null))
+            .hasSizeGreaterThan(2)
+            .extracting(TaskSummary::getOwnerLongName)
+            .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+      }
+
+      @WithAccessId(user = "admin")
+      @Test
+      void should_ReturnOrderedResult_When_OrderByOwnerLongNameAscIsSet() {
+        List<TaskSummary> results =
+            taskanaEngine.getTaskService().createTaskQuery().orderByOwnerLongName(ASCENDING).list();
+        assertThat(results.stream().filter(r -> r.getOwnerLongName() != null))
+            .hasSizeGreaterThan(2)
+            .extracting(TaskSummary::getOwnerLongName)
+            .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);
+      }
+    }
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
     class WorkbasketId {
       @WithAccessId(user = "admin")
       @Test

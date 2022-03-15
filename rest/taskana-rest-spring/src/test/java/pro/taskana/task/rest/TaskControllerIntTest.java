@@ -547,6 +547,21 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_SortByOwnerLongName() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS)
+            + "?sort-by=OWNER_LONG_NAME"
+            + "&order=DESCENDING";
+    HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThat(response.getBody()).isNotNull();
+    assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+  }
+
+  @Test
   void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
     resetDb();
     // required because
