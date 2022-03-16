@@ -23,6 +23,7 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 import { ButtonAction } from '../../models/button-action';
 import { AccessId } from '../../../shared/models/access-id';
 import { cloneDeep } from 'lodash';
+import { trimForm } from '../../../shared/util/form-trimmer';
 
 @Component({
   selector: 'taskana-administration-workbasket-information',
@@ -123,6 +124,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
 
   onSubmit() {
     this.formsValidatorService.formSubmitAttempt = true;
+    trimForm(this.workbasketForm);
     this.formsValidatorService.validateFormInformation(this.workbasketForm, this.toggleValidationMap).then((value) => {
       if (value && this.isOwnerValid) {
         this.onSave();

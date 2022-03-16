@@ -39,112 +39,6 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   }
 
   @Override
-  public ClassificationImpl copy(String key) {
-    return new ClassificationImpl(this, key);
-  }
-
-  @Override
-  public Boolean getIsValidInDomain() {
-    return isValidInDomain;
-  }
-
-  @Override
-  public void setIsValidInDomain(Boolean isValidInDomain) {
-    this.isValidInDomain = isValidInDomain;
-  }
-
-  @Override
-  public Instant getCreated() {
-    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  public void setCreated(Instant created) {
-    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  @Override
-  public Instant getModified() {
-    return modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  public void setModified(Instant modified) {
-    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  @Deprecated
-  @Override
-  public void setCustomAttribute(ClassificationCustomField customField, String value) {
-    setCustomField(customField, value);
-  }
-
-  @Override
-  public void setCustomField(ClassificationCustomField customField, String value) {
-    switch (customField) {
-      case CUSTOM_1:
-        custom1 = value;
-        break;
-      case CUSTOM_2:
-        custom2 = value;
-        break;
-      case CUSTOM_3:
-        custom3 = value;
-        break;
-      case CUSTOM_4:
-        custom4 = value;
-        break;
-      case CUSTOM_5:
-        custom5 = value;
-        break;
-      case CUSTOM_6:
-        custom6 = value;
-        break;
-      case CUSTOM_7:
-        custom7 = value;
-        break;
-      case CUSTOM_8:
-        custom8 = value;
-        break;
-      default:
-        throw new SystemException("Unknown customField '" + customField + "'");
-    }
-  }
-
-  @Override
-  public ClassificationSummary asSummary() {
-    ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
-    summary.setCategory(this.category);
-    summary.setDomain(this.domain);
-    summary.setId(this.id);
-    summary.setKey(this.key);
-    summary.setName(this.name);
-    summary.setType(this.type);
-    summary.setParentId(this.parentId);
-    summary.setParentKey(this.parentKey);
-    summary.setPriority(this.priority);
-    summary.setServiceLevel(this.serviceLevel);
-    summary.setApplicationEntryPoint(this.applicationEntryPoint);
-    summary.setCustom1(custom1);
-    summary.setCustom2(custom2);
-    summary.setCustom3(custom3);
-    summary.setCustom4(custom4);
-    summary.setCustom5(custom5);
-    summary.setCustom6(custom6);
-    summary.setCustom7(custom7);
-    summary.setCustom8(custom8);
-    return summary;
-  }
-
-  @Override
   protected boolean canEqual(Object other) {
     return (other instanceof ClassificationImpl);
   }
@@ -221,5 +115,111 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
         + ", custom8="
         + custom8
         + "]";
+  }
+
+  @Override
+  public ClassificationImpl copy(String key) {
+    return new ClassificationImpl(this, key);
+  }
+
+  @Override
+  public Boolean getIsValidInDomain() {
+    return isValidInDomain;
+  }
+
+  @Override
+  public void setIsValidInDomain(Boolean isValidInDomain) {
+    this.isValidInDomain = isValidInDomain;
+  }
+
+  @Override
+  public Instant getCreated() {
+    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  public void setCreated(Instant created) {
+    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  @Override
+  public Instant getModified() {
+    return modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  public void setModified(Instant modified) {
+    this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description == null ? null : description.trim();
+  }
+
+  @Deprecated
+  @Override
+  public void setCustomAttribute(ClassificationCustomField customField, String value) {
+    setCustomField(customField, value);
+  }
+
+  @Override
+  public void setCustomField(ClassificationCustomField customField, String value) {
+    switch (customField) {
+      case CUSTOM_1:
+        custom1 = value;
+        break;
+      case CUSTOM_2:
+        custom2 = value;
+        break;
+      case CUSTOM_3:
+        custom3 = value;
+        break;
+      case CUSTOM_4:
+        custom4 = value;
+        break;
+      case CUSTOM_5:
+        custom5 = value;
+        break;
+      case CUSTOM_6:
+        custom6 = value;
+        break;
+      case CUSTOM_7:
+        custom7 = value;
+        break;
+      case CUSTOM_8:
+        custom8 = value;
+        break;
+      default:
+        throw new SystemException("Unknown customField '" + customField + "'");
+    }
+  }
+
+  @Override
+  public ClassificationSummary asSummary() {
+    ClassificationSummaryImpl summary = new ClassificationSummaryImpl();
+    summary.setCategory(this.category);
+    summary.setDomain(this.domain);
+    summary.setId(this.id);
+    summary.setKey(this.key);
+    summary.setName(this.name);
+    summary.setType(this.type);
+    summary.setParentId(this.parentId);
+    summary.setParentKey(this.parentKey);
+    summary.setPriority(this.priority);
+    summary.setServiceLevel(this.serviceLevel);
+    summary.setApplicationEntryPoint(this.applicationEntryPoint);
+    summary.setCustom1(custom1);
+    summary.setCustom2(custom2);
+    summary.setCustom3(custom3);
+    summary.setCustom4(custom4);
+    summary.setCustom5(custom5);
+    summary.setCustom6(custom6);
+    summary.setCustom7(custom7);
+    summary.setCustom8(custom8);
+    return summary;
   }
 }

@@ -66,7 +66,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setKey(String key) {
-    this.key = key;
+    this.key = key == null ? null : key.trim();
   }
 
   @Override
@@ -93,7 +93,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setDomain(String domain) {
-    this.domain = domain;
+    this.domain = domain == null ? null : domain.trim();
   }
 
   @Override
@@ -102,7 +102,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name == null ? null : name.trim();
   }
 
   @Override
@@ -138,7 +138,8 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setApplicationEntryPoint(String applicationEntryPoint) {
-    this.applicationEntryPoint = applicationEntryPoint;
+    this.applicationEntryPoint =
+        applicationEntryPoint == null ? null : applicationEntryPoint.trim();
   }
 
   @Override
@@ -180,12 +181,17 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     }
   }
 
+  @Override
+  public ClassificationSummaryImpl copy() {
+    return new ClassificationSummaryImpl(this);
+  }
+
   public String getCustom1() {
     return custom1;
   }
 
   public void setCustom1(String custom1) {
-    this.custom1 = custom1;
+    this.custom1 = custom1 == null ? null : custom1.trim();
   }
 
   public String getCustom2() {
@@ -193,7 +199,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom2(String custom2) {
-    this.custom2 = custom2;
+    this.custom2 = custom2 == null ? null : custom2.trim();
   }
 
   public String getCustom3() {
@@ -201,7 +207,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom3(String custom3) {
-    this.custom3 = custom3;
+    this.custom3 = custom3 == null ? null : custom3.trim();
   }
 
   public String getCustom4() {
@@ -209,7 +215,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom4(String custom4) {
-    this.custom4 = custom4;
+    this.custom4 = custom4 == null ? null : custom4.trim();
   }
 
   public String getCustom5() {
@@ -217,7 +223,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom5(String custom5) {
-    this.custom5 = custom5;
+    this.custom5 = custom5 == null ? null : custom5.trim();
   }
 
   public String getCustom6() {
@@ -225,7 +231,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom6(String custom6) {
-    this.custom6 = custom6;
+    this.custom6 = custom6 == null ? null : custom6.trim();
   }
 
   public String getCustom7() {
@@ -233,7 +239,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom7(String custom7) {
-    this.custom7 = custom7;
+    this.custom7 = custom7 == null ? null : custom7.trim();
   }
 
   public String getCustom8() {
@@ -241,12 +247,7 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
   }
 
   public void setCustom8(String custom8) {
-    this.custom8 = custom8;
-  }
-
-  @Override
-  public ClassificationSummaryImpl copy() {
-    return new ClassificationSummaryImpl(this);
+    this.custom8 = custom8 == null ? null : custom8.trim();
   }
 
   protected boolean canEqual(Object other) {

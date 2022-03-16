@@ -21,7 +21,7 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
     super(copyFrom);
     created = copyFrom.created;
     modified = copyFrom.modified;
-    this.key = key;
+    this.key = key == null ? null : key.trim();
   }
 
   @Deprecated
