@@ -51,7 +51,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
       @WithAccessId(user = "admin")
       @Test
-      void should_sortByTaskIdDesc_When_TaskQueryFilterIsApplied() {
+      void should_sortByTaskIdDesc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService.createTaskQuery().orderByTaskId(SortDirection.DESCENDING).list();
@@ -72,7 +72,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
       @WithAccessId(user = "admin")
       @Test
-      void should_sortByTaskIdAsc_When_TaskQueryFilterIsApplied() {
+      void should_sortByTaskIdAsc_When_SortingDirectionIsNull() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results = taskService.createTaskQuery().orderByTaskId(null).list();
 
@@ -93,7 +93,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class WorkbasketName {
       @WithAccessId(user = "admin")
       @Test
-      void should_sortByWorkbasketNameAsc_When_TaskQueryFilterIsApplied() {
+      void should_sortByWorkbasketNameAsc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService.createTaskQuery().orderByWorkbasketName(SortDirection.ASCENDING).list();
@@ -107,7 +107,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
       @WithAccessId(user = "admin")
       @Test
-      void should_sortByWorkbasketNameDsc_When_TaskQueryFilterIsApplied() {
+      void should_sortByWorkbasketNameDsc() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService.createTaskQuery().orderByWorkbasketName(SortDirection.DESCENDING).list();
@@ -125,7 +125,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class Received {
       @WithAccessId(user = "admin")
       @Test
-      void should_SortByReceivedAsc_When_TaskQueryFilterIsApplied() {
+      void should_SortByReceivedAsc_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         // we filter between EPOCH and null,to avoid null as a received value
         List<TaskSummary> results =
@@ -146,7 +146,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class DomainNameAndCreated {
       @WithAccessId(user = "admin")
       @Test
-      void testSortByDomainNameAndCreated() {
+      void should_SortByDomainNameAndCreated() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
@@ -170,7 +170,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class PorSystemNoteDueAndOwner {
       @WithAccessId(user = "admin")
       @Test
-      void testSortByPorSystemNoteDueAndOwner() {
+      void should_SortByPorSystemNoteDueAndOwner_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
@@ -205,7 +205,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
       @WithAccessId(user = "admin")
       @Test
-      void testSortByPorSystemInstanceParentProcPlannedAndState() {
+      void should_SortByPorSystemInstanceParentProcPlannedAndState_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
@@ -240,7 +240,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class PorCompanyClaimed {
       @WithAccessId(user = "admin")
       @Test
-      void testSortByPorCompanyAndClaimed() {
+      void should_SortByPorCompanyAndClaimed_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
@@ -275,13 +275,12 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class WbKeyPriorityPorValueAndCompleted {
       @WithAccessId(user = "admin")
       @Test
-      void testSortByWbKeyPrioPorValueAndCompleted() {
+      void should_SortByPrioPorValueAndCompleted_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
                 .createTaskQuery()
                 .stateIn(TaskState.READY)
-                .orderByWorkbasketKey(null)
                 .workbasketIdIn("WBI:100000000000000000000000000000000015")
                 .orderByPriority(SortDirection.DESCENDING)
                 .orderByPrimaryObjectReferenceValue(SortDirection.ASCENDING)
@@ -310,7 +309,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class BpiClassificationKeyAndPorType {
       @WithAccessId(user = "admin")
       @Test
-      void testSortBpIdClassificationIdDescriptionAndPorType() {
+      void should_SortBpIdClassificationKeyAndPorType_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
@@ -344,7 +343,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
       @WithAccessId(user = "admin")
       @Test
-      void testSortByModifiedAndDomain() {
+      void should_SortByModifiedAndDomain_When_FilterIsApplied() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<TaskSummary> results =
             taskService
@@ -386,7 +385,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
     class OwnerLongName {
       @WithAccessId(user = "admin")
       @Test
-      void should_ReturnOrderedResult_When_OrderByOwnerLongNameDescIsSet() {
+      void should_OrderByOwnerLongNameDesc() {
         List<TaskSummary> results =
             taskanaEngine
                 .getTaskService()
@@ -401,7 +400,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
 
       @WithAccessId(user = "admin")
       @Test
-      void should_ReturnOrderedResult_When_OrderByOwnerLongNameAscIsSet() {
+      void should_OrderByOwnerLongNameAsc() {
         List<TaskSummary> results =
             taskanaEngine.getTaskService().createTaskQuery().orderByOwnerLongName(ASCENDING).list();
         assertThat(results.stream().filter(r -> r.getOwnerLongName() != null))
@@ -434,7 +433,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
       @Disabled
       @WithAccessId(user = "admin")
       @Test
-      void testQueryTaskValuesForClassificationName() {
+      void should_OrderByClassificationNameAndListClassificationNameColumn() {
         TaskService taskService = taskanaEngine.getTaskService();
         List<String> columnValueList =
             taskService
