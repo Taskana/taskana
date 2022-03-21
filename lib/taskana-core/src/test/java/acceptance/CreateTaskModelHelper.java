@@ -38,6 +38,7 @@ public class CreateTaskModelHelper {
     task.setDomain("");
     task.setAttachments(new ArrayList<>());
     Instant now = Instant.now().minus(Duration.ofMinutes(1L));
+    task.setReceived(now);
     task.setCreated(now);
     task.setModified(now);
     task.setState(TaskState.READY);
