@@ -222,7 +222,8 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
           // value for the error output and want to use the contains performance boost of a HashSet.
           List<String> enumConstants =
               Arrays.stream(targetType.getEnumConstants())
-                  .map(Object::toString)
+                  .map(Enum.class::cast)
+                  .map(Enum::name)
                   .collect(Collectors.toList());
           Set<String> enumConstantSet = new HashSet<>(enumConstants);
 

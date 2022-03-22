@@ -1092,6 +1092,25 @@ class TaskControllerIntTest {
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
+  @Test
+  void should_ThrowException_When_ProvidingInvalidOrder() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS)
+            + "?workbasket-id=WBI:100000000000000000000000000000000001"
+            + "&sort-by=NAME&order=WRONG";
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ThrowingCallable httpCall =
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .hasMessageContaining("\"expectedValues\":[\"ASCENDING\",\"DESCENDING\"]")
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
   @TestFactory
   Stream<DynamicTest> should_SetTransferFlagDependentOnRequestBody_When_TransferringTask() {
     Iterator<Boolean> iterator = Arrays.asList(true, false).iterator();
