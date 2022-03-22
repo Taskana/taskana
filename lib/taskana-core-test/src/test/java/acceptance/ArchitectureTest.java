@@ -555,9 +555,9 @@ class ArchitectureTest {
                 SimpleConditionEvent.violated(
                     item,
                     String.format(
-                        "Field '%s' should not have any modifier "
+                        "Field '%s' in '%s' should not have any modifier, "
                             + "except for static fields, which have to be private",
-                        field.getFullName())));
+                        field.getFullName(), item.getFullName())));
           }
         }
       }

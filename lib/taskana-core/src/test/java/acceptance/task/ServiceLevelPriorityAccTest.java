@@ -12,8 +12,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.assertj.core.data.TemporalUnitWithinOffset;
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,6 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -602,39 +599,5 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task = taskService.updateTask(task);
     assertThat(task.getDue()).isEqualTo(getInstant("2020-04-14T07:00:00")); // Tuesday
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void testSetPlannedPropertyOnAllTasks() throws Exception {
-    resetDb(false);
-
-    Instant planned = getInstant("2020-05-03T07:00:00");
-    List<TaskSummary> allTasks = taskService.createTaskQuery().list();
-    // Now update each task with updateTask() and new planned
-    final List<TaskSummary> individuallyUpdatedTasks = new ArrayList<>();
-    allTasks.forEach(t -> individuallyUpdatedTasks.add(getUpdatedTaskSummary(t, planned)));
-    // reset DB and do the same with bulk update
-    resetDb(false);
-    List<String> taskIds = allTasks.stream().map(TaskSummary::getId).collect(Collectors.toList());
-    BulkOperationResults<String, TaskanaException> bulkLog =
-        taskService.setPlannedPropertyOfTasks(planned, taskIds);
-    // check that there was no error and compare the result of the 2 operations
-    assertThat(bulkLog.containsErrors()).isFalse();
-    Map<String, Instant> bulkUpdatedTaskMap =
-        taskService.createTaskQuery().list().stream()
-            .collect(Collectors.toMap(TaskSummary::getId, TaskSummary::getDue));
-    individuallyUpdatedTasks.forEach(
-        t -> assertThat(t.getDue().equals(bulkUpdatedTaskMap.get(t.getId()))));
-  }
-
-  private TaskSummary getUpdatedTaskSummary(TaskSummary t, Instant planned) {
-    try {
-      Task task = taskService.getTask(t.getId());
-      task.setPlanned(planned);
-      return taskService.updateTask(task);
-    } catch (Exception e) {
-      return null;
-    }
   }
 }
