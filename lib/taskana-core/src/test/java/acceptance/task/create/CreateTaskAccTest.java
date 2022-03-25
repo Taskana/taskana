@@ -21,9 +21,6 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
@@ -536,65 +533,6 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testThrowsExceptionIfAttachmentIsInvalid() throws Exception {
-
-    Consumer<Attachment> testCreateTask =
-        invalidAttachment -> {
-          Task taskWithInvalidAttachment = makeNewTask(taskService);
-          taskWithInvalidAttachment.addAttachment(invalidAttachment);
-          ThrowingCallable call = () -> taskService.createTask(taskWithInvalidAttachment);
-          assertThatThrownBy(call)
-              .describedAs(
-                  "Should have thrown an InvalidArgumentException, "
-                      + "because Attachment-ObjRef is null.")
-              .isInstanceOf(InvalidArgumentException.class);
-        };
-
-    testCreateTask.accept(
-        createExampleAttachment(
-            "DOCTYPE_DEFAULT",
-            null,
-            "E-MAIL",
-            Instant.parse("2018-01-15T00:00:00Z"),
-            createSimpleCustomPropertyMap(3)));
-
-    testCreateTask.accept(
-        createExampleAttachment(
-            "DOCTYPE_DEFAULT",
-            createObjectReference("COMPANY_A", "SYSTEM_B", "INSTANCE_B", "ArchiveId", null),
-            "E-MAIL",
-            Instant.parse("2018-01-15T00:00:00Z"),
-            createSimpleCustomPropertyMap(3)));
-
-    testCreateTask.accept(
-        createExampleAttachment(
-            "DOCTYPE_DEFAULT",
-            createObjectReference(
-                "COMPANY_A",
-                "SYSTEM_B",
-                "INSTANCE_B",
-                null,
-                "12345678901234567890123456789012345678901234567890"),
-            "E-MAIL",
-            Instant.parse("2018-01-15T00:00:00Z"),
-            createSimpleCustomPropertyMap(3)));
-
-    testCreateTask.accept(
-        createExampleAttachment(
-            "DOCTYPE_DEFAULT",
-            createObjectReference(
-                null,
-                "SYSTEM_B",
-                "INSTANCE_B",
-                "ArchiveId",
-                "12345678901234567890123456789012345678901234567890"),
-            "E-MAIL",
-            Instant.parse("2018-01-15T00:00:00Z"),
-            createSimpleCustomPropertyMap(3)));
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
   void testUseCustomNameIfSetForNewTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
@@ -824,6 +762,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         .isInstanceOf(WorkbasketNotFoundException.class);
   }
 
+  // Rewritten
   @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_CreatingTaskWithAttachmentClassificationNull() {
@@ -836,75 +775,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(() -> taskService.createTask(task))
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("Classification of Attachment must not be null.");
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_ThrowException_When_CreatingTaskWithAttachmentObjectReferenceNull() {
-    TaskImpl task = (TaskImpl) makeNewTask(taskService);
-    Attachment attachment = taskService.newAttachment();
-    attachment.setClassificationSummary(task.getClassificationSummary());
-    task.addAttachment(attachment);
-
-    assertThatThrownBy(() -> taskService.createTask(task))
-        .isInstanceOf(InvalidArgumentException.class)
-        .hasMessageContaining("ObjectReference of Attachment must not be null.");
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_ThrowException_When_CreatingTaskWithNotExistingAttachmentClassification() {
-    Attachment attachment = taskService.newAttachment();
-    attachment.setObjectReference(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    ClassificationSummary classification =
-        classificationService.newClassification("NOT_EXISTING", "DOMAIN_A", "").asSummary();
-    attachment.setClassificationSummary(classification);
-
-    TaskImpl task = (TaskImpl) makeNewTask(taskService);
-    task.addAttachment(attachment);
-
-    assertThatThrownBy(() -> taskService.createTask(task))
-        .isInstanceOf(ClassificationNotFoundException.class);
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_ThrowException_When_CreatingTaskWithMissingAttachmentClassificationKey() {
-    Attachment attachment = taskService.newAttachment();
-    attachment.setObjectReference(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    ClassificationSummaryImpl classification = new ClassificationSummaryImpl();
-    attachment.setClassificationSummary(classification);
-
-    TaskImpl task = (TaskImpl) makeNewTask(taskService);
-    task.addAttachment(attachment);
-    assertThatThrownBy(() -> taskService.createTask(task))
-        .isInstanceOf(InvalidArgumentException.class)
-        .hasMessageContaining("ClassificationKey of Attachment must not be empty.");
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_FetchAttachmentClassification_When_CreatingTaskWithAttachments() throws Exception {
-    Attachment attachment = taskService.newAttachment();
-    attachment.setObjectReference(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-
-    ClassificationSummary classification =
-        classificationService.newClassification("T2000", "DOMAIN_A", "").asSummary();
-    attachment.setClassificationSummary(classification);
-    TaskImpl task = (TaskImpl) makeNewTask(taskService);
-    task.addAttachment(attachment);
-
-    assertThat(classification.getServiceLevel()).isNull();
-
-    task = (TaskImpl) taskService.createTask(task);
-    classification = task.getAttachments().get(0).getClassificationSummary();
-
-    assertThat(classification.getId()).isNotNull();
-    assertThat(classification.getDomain()).isNotNull();
-    assertThat(classification.getServiceLevel()).isNotNull();
   }
 
   private Task setTaskProperties(Task task) {
