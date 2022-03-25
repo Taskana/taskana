@@ -38,6 +38,7 @@ import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel.CustomAttribute;
@@ -675,6 +676,57 @@ class TaskControllerIntTest {
     TaskRepresentationModel repModel = response.getBody();
     assertThat(repModel).isNotNull();
     assertThat(repModel.getSecondaryObjectReferences()).isNotEmpty();
+  }
+
+  @Test
+  void should_ThrowException_When_CreatingTaskAndAttachmentAlreadyHasTaskId() {
+    TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+    AttachmentRepresentationModel attachment = new AttachmentRepresentationModel();
+    attachment.setTaskId("TKI:1");
+    attachment.setClassificationSummary(taskRepresentationModel.getClassificationSummary());
+    attachment.setObjectReference(taskRepresentationModel.getPrimaryObjRef());
+    taskRepresentationModel.setAttachments(List.of(attachment));
+
+    HttpEntity<Object> auth =
+        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("admin"));
+    String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
+
+    ThrowingCallable httpCall =
+        () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .hasMessageContaining("TaskId of Attachment should be empty")
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_ThrowException_When_UpdatingTaskAndAttachmentAlreadyHasTaskId() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
+    HttpEntity<Object> httpEntityWithoutBody =
+        new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+    ResponseEntity<TaskRepresentationModel> responseGet =
+        TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
+    TaskRepresentationModel originalTask = responseGet.getBody();
+    AttachmentRepresentationModel attachment = new AttachmentRepresentationModel();
+    attachment.setTaskId("TKI:1");
+    attachment.setClassificationSummary(originalTask.getClassificationSummary());
+    attachment.setObjectReference(originalTask.getPrimaryObjRef());
+    originalTask.setAttachments(List.of(attachment));
+    HttpEntity<TaskRepresentationModel> httpEntity =
+        new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ThrowingCallable httpCall =
+        () -> TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .hasMessageContaining("TaskId of Attachment should be empty")
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test

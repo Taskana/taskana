@@ -29,7 +29,6 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
@@ -760,21 +759,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     final Task testTask = setTaskProperties(task);
     assertThatThrownBy(() -> taskService.createTask(testTask))
         .isInstanceOf(WorkbasketNotFoundException.class);
-  }
-
-  // Rewritten
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_ThrowException_When_CreatingTaskWithAttachmentClassificationNull() {
-    TaskImpl task = (TaskImpl) makeNewTask(taskService);
-    Attachment attachment = taskService.newAttachment();
-    attachment.setObjectReference(
-        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
-    task.addAttachment(attachment);
-
-    assertThatThrownBy(() -> taskService.createTask(task))
-        .isInstanceOf(InvalidArgumentException.class)
-        .hasMessage("Classification of Attachment must not be null.");
   }
 
   private Task setTaskProperties(Task task) {

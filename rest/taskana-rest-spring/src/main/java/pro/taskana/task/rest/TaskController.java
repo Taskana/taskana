@@ -48,6 +48,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.assembler.TaskSummaryRepresentationModelAssembler;
+import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
@@ -347,6 +348,7 @@ public class TaskController {
       throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
           TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
           ObjectReferencePersistenceException {
+    verifyTaskIdOfAttachments(taskRepresentationModel.getAttachments(), null);
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
@@ -416,9 +418,21 @@ public class TaskController {
                   + "object in the payload which should be updated. ID=('%s')",
               taskId, taskRepresentationModel.getTaskId()));
     }
+    verifyTaskIdOfAttachments(
+        taskRepresentationModel.getAttachments(), taskRepresentationModel.getTaskId());
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     task = taskService.updateTask(task);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
+  }
+
+  private void verifyTaskIdOfAttachments(
+      List<AttachmentRepresentationModel> attachments, String taskId)
+      throws InvalidArgumentException {
+    for (AttachmentRepresentationModel attachment : attachments) {
+      if (attachment.getTaskId() != null && !attachment.getTaskId().equals(taskId)) {
+        throw new InvalidArgumentException("TaskId of Attachment should be empty.");
+      }
+    }
   }
 
   public enum TaskQuerySortBy implements QuerySortBy<TaskQuery> {

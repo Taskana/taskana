@@ -1,42 +1,42 @@
-package acceptance.task;
+package acceptance.task.create;
 
-import static acceptance.DefaultTestEntities.defaultTestClassification;
-import static acceptance.DefaultTestEntities.defaultTestObjectReference;
-import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
 import java.util.List;
 import java.util.stream.Stream;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.internal.util.Pair;
-import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.task.internal.builder.TaskAttachmentBuilder;
-import pro.taskana.task.internal.builder.TaskBuilder;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.TaskAttachmentBuilder;
+import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 /**
- * Acceptance test for all "create task" scenarios that involve {@linkplain Attachment Attachments}.
+ * Acceptance test for all "create task" scenarios that involve {@linkplain
+ * pro.taskana.task.api.models.Attachment Attachments}.
  */
 @TaskanaIntegrationTest
 class CreateTaskWithAttachmentAccTest {
@@ -83,7 +83,7 @@ class CreateTaskWithAttachmentAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_SetTaskIdOfAttachmentCorrectly_WhenCopyingAttachment() throws Exception {
+  void should_SetTaskIdOfAttachmentCorrectly_When_CopyingAttachment() throws Exception {
     Attachment copiedAttachment =
         taskService.getTask(defaultTaskWithAttachment.getId()).getAttachments().get(0).copy();
     Task taskToCreate = taskService.newTask(defaultWorkbasketSummary.getId());
@@ -122,79 +122,81 @@ class CreateTaskWithAttachmentAccTest {
   @TestFactory
   Stream<DynamicTest>
       should_ThrowException_When_CreatingTaskWithInvalidObjectReferenceOfAttachment() {
-    ObjectReference objRefTypeNull =
-        taskService.newObjectReference("Company", "System", "Instance", null, "Value");
-    ObjectReference objRefValueNull =
-        taskService.newObjectReference("Company", "System", "Instance", "Type", null);
-    ObjectReference objRefCompanyNull =
-        taskService.newObjectReference(null, "System", "Instance", "Type", "Value");
-    List<Pair<String, ObjectReference>> valuesForTests =
+    List<Triplet<String, ObjectReference, String>> valuesForTests =
         List.of(
-            Pair.of("ObjRef is null", null),
-            Pair.of("Type of objRef is null", objRefTypeNull),
-            Pair.of("Value of objRef is null", objRefValueNull),
-            Pair.of("Company of objRef is null", objRefCompanyNull));
+            Triplet.of("ObjRef is null", null, "ObjectReference of Attachment must not be null."),
+            Triplet.of(
+                "Type of objRef is null",
+                defaultTestObjectReference().type(null).build(),
+                "Type of ObjectReference of Attachment must not be empty"),
+            Triplet.of(
+                "Value of objRef is null",
+                defaultTestObjectReference().value(null).build(),
+                "Value of ObjectReference of Attachment must not be empty"),
+            Triplet.of(
+                "Company of objRef is null",
+                defaultTestObjectReference().company(null).build(),
+                "Company of ObjectReference of Attachment must not be empty"));
 
-    ThrowingConsumer<Pair<String, ObjectReference>> test =
-        p -> {
+    ThrowingConsumer<Triplet<String, ObjectReference, String>> test =
+        t -> {
+          ObjectReference objectReference = t.getMiddle();
+          Attachment attachment = taskService.newAttachment();
+          attachment.setClassificationSummary(defaultClassificationSummary);
+          attachment.setObjectReference(objectReference);
           Task task = taskService.newTask(defaultWorkbasketSummary.getId());
           task.setClassificationKey(defaultClassificationSummary.getKey());
           task.setPrimaryObjRef(defaultObjectReference);
-          Attachment attachment = taskService.newAttachment();
-          attachment.setClassificationSummary(defaultClassificationSummary);
-          attachment.setObjectReference(p.getRight());
           task.addAttachment(attachment);
-          assertThatThrownBy(() -> taskService.createTask(task))
-              .isInstanceOf(InvalidArgumentException.class);
+          ThrowingCallable call = () -> taskService.createTask(task);
+          String errorMessage = t.getRight();
+          assertThatThrownBy(call)
+              .isInstanceOf(InvalidArgumentException.class)
+              .hasMessageContaining(errorMessage);
         };
-
-    return DynamicTest.stream(valuesForTests.iterator(), Pair::getLeft, test);
+    return DynamicTest.stream(valuesForTests.iterator(), Triplet::getLeft, test);
   }
 
   @WithAccessId(user = "user-1-1")
   @TestFactory
   Stream<DynamicTest>
       should_ThrowException_When_CreatingTaskWithInvalidClassificationOfAttachment() {
-    Classification nonExistingClassification =
-        classificationService.newClassification(
-            "123key345", defaultWorkbasketSummary.getDomain(), "non existing type");
-    Classification classificationWithoutKey =
-        classificationService.newClassification(
-            null, defaultClassificationSummary.getDomain(), defaultClassificationSummary.getType());
-    List<Quadruple<String, Classification, String, Class<?>>> valuesForTests =
+    ClassificationSummary nonExistingClassification =
+        classificationService.newClassification("non existing", "DOMAIN_A", "Valid type");
+    ClassificationSummary classificationWithoutKey =
+        classificationService.newClassification(null, "DOMAIN_A", "Valid type");
+    List<Triplet<String, ClassificationSummary, Exception>> valuesForTests =
         List.of(
-            Quadruple.of(
-                "Classification is null",
-                null,
-                "Classification of Attachment must not be null",
-                InvalidArgumentException.class),
-            Quadruple.of(
+            Triplet.of(
                 "Classification doesn't exist",
                 nonExistingClassification,
-                "Classification with key '123key345' and domain '"
-                    + defaultWorkbasketSummary.getDomain()
-                    + "' could not be found",
-                ClassificationNotFoundException.class),
-            Quadruple.of(
+                new ClassificationNotFoundException("non existing", "DOMAIN_A")),
+            Triplet.of(
+                "Classification is null",
+                null,
+                new InvalidArgumentException("Classification of Attachment must not be null")),
+            Triplet.of(
                 "Classification has no key",
                 classificationWithoutKey,
-                "ClassificationKey of Attachment must not be empty.",
-                InvalidArgumentException.class));
+                new InvalidArgumentException(
+                    "ClassificationKey of Attachment must not be empty.")));
 
-    ThrowingConsumer<Quadruple<String, Classification, String, Class<?>>> test =
+    ThrowingConsumer<Triplet<String, ClassificationSummary, Exception>> test =
         q -> {
           Task task = taskService.newTask(defaultWorkbasketSummary.getId());
           task.setClassificationKey(defaultClassificationSummary.getKey());
           task.setPrimaryObjRef(defaultObjectReference);
           Attachment attachment = taskService.newAttachment();
-          attachment.setClassificationSummary(q.getSecond());
+          ClassificationSummary classificationSummary = q.getMiddle();
+          attachment.setClassificationSummary(classificationSummary);
           attachment.setObjectReference(defaultObjectReference);
           task.addAttachment(attachment);
+          Exception exception = q.getRight();
           assertThatThrownBy(() -> taskService.createTask(task))
-              .isInstanceOf(q.getFourth())
-              .hasMessageContaining(q.getThird());
+              .usingRecursiveComparison()
+              .isEqualTo(exception);
         };
 
-    return DynamicTest.stream(valuesForTests.iterator(), Quadruple::getFirst, test);
+    return DynamicTest.stream(valuesForTests.iterator(), Triplet::getLeft, test);
   }
 }
