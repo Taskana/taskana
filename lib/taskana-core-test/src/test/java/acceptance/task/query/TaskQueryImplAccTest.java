@@ -90,6 +90,70 @@ class TaskQueryImplAccTest {
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
+  class PermissionsTest {
+    WorkbasketSummary wb1;
+    WorkbasketSummary wb2;
+    WorkbasketSummary wbWithoutPermissions;
+    TaskSummary taskSummary1;
+    TaskSummary taskSummary2;
+    TaskSummary taskSummary3;
+    TaskSummary taskSummary4;
+    TaskSummary taskSummary5;
+
+    @WithAccessId(user = "user-1-1")
+    @BeforeAll
+    void setup() throws Exception {
+      wb1 = createWorkbasketWithPermission();
+      wb2 = createWorkbasketWithPermission();
+      wbWithoutPermissions =
+          defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
+
+      taskSummary1 = taskInWorkbasket(wb1).buildAndStoreAsSummary(taskService);
+      taskSummary2 = taskInWorkbasket(wb2).buildAndStoreAsSummary(taskService);
+      taskSummary3 =
+          taskInWorkbasket(wbWithoutPermissions).buildAndStoreAsSummary(taskService, "admin");
+      taskSummary4 =
+          taskInWorkbasket(wbWithoutPermissions).buildAndStoreAsSummary(taskService, "admin");
+      taskSummary5 =
+          taskInWorkbasket(wbWithoutPermissions).buildAndStoreAsSummary(taskService, "admin");
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_ReturnAllTasksFromWorkbasketAsAdmin_When_NoAccessItemForWorkbasketExists() {
+      List<TaskSummary> list =
+          taskService.createTaskQuery().workbasketIdIn(wbWithoutPermissions.getId()).list();
+
+      assertThat(list).containsExactlyInAnyOrder(taskSummary3, taskSummary4, taskSummary5);
+    }
+
+    @WithAccessId(user = "taskadmin")
+    @Test
+    void should_ReturnAllTasksAsTaskadmin_When_NoAccessItemForAWorkbasketExists() {
+      List<TaskSummary> list =
+          taskService
+              .createTaskQuery()
+              .workbasketIdIn(wb1.getId(), wb2.getId(), wbWithoutPermissions.getId())
+              .list();
+
+      assertThat(list)
+          .containsExactlyInAnyOrder(
+              taskSummary1, taskSummary2, taskSummary3, taskSummary4, taskSummary5);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_OnlyReturnTasksFromCorrectWorkbaskets_When_UserHasNoPermissionToOneWorkbasket() {
+      List<TaskSummary> list = taskService.createTaskQuery().list();
+
+      assertThat(list)
+          .contains(taskSummary1, taskSummary2)
+          .doesNotContain(taskSummary3, taskSummary4, taskSummary5);
+    }
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class FilterTest {
 
     @WithAccessId(user = "user-1-2")
