@@ -102,27 +102,13 @@ public class TaskQuerySqlProvider {
         + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
+        + checkForAuthorization()
         + commonTaskWhereStatement()
         + CLOSING_WHERE_TAG
-        + "), Y ("
-        + db2selectFields()
-        + ", FLAG ) AS ("
+        + ")"
         + "SELECT "
         + db2selectFields()
-        + ", ("
-        + "SELECT 1 "
-        + "FROM WORKBASKET_ACCESS_LIST s "
-        + "WHERE "
-        + "<if test='accessIdIn != null'> "
-        + "s.ACCESS_ID IN "
-        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
-        + "and </if>"
-        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only ) "
-        + "FROM X )"
-        + "SELECT "
-        + db2selectFields()
-        + "FROM Y "
-        + "WHERE FLAG = 1 "
+        + "FROM X "
         + "<if test='!orderBy.isEmpty()'>"
         + "ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach>"
         + "</if> "
@@ -182,17 +168,12 @@ public class TaskQuerySqlProvider {
         + "LEFT JOIN USER_INFO AS u ON t.owner = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
+        + checkForAuthorization()
         + commonTaskWhereStatement()
         + CLOSING_WHERE_TAG
-        + "), Y (ID, FLAG) AS ("
-        + "SELECT ID, ("
-        + "SELECT 1 FROM WORKBASKET_ACCESS_LIST s "
-        + "WHERE <if test='accessIdIn != null'> s.ACCESS_ID IN "
-        + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
-        + "and </if> "
-        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only ) "
-        + "FROM X ) SELECT COUNT(*) "
-        + "FROM Y WHERE FLAG = 1 with UR"
+        + ")"
+        + "SELECT COUNT(*) "
+        + "FROM X with UR"
         + CLOSING_SCRIPT_TAG;
   }
 
