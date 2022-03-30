@@ -509,9 +509,9 @@ public class LdapClient {
 
   String[] getLookUpGroupAttributesToReturn() {
     if (CN.equals(getGroupNameAttribute())) {
-      return new String[] {CN};
+      return new String[] {CN, getGroupSearchFilterName()};
     }
-    return new String[] {getGroupNameAttribute(), CN};
+    return new String[] {getGroupNameAttribute(), CN, getGroupSearchFilterName()};
   }
 
   String[] getLookUpUserAndGroupAttributesToReturn() {
@@ -523,7 +523,10 @@ public class LdapClient {
 
   String[] getLookUpUserAttributesToReturn() {
     return new String[] {
-      getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
+      getUserFirstnameAttribute(),
+      getUserLastnameAttribute(),
+      getUserIdAttribute(),
+      getUserSearchFilterName()
     };
   }
 
@@ -663,9 +666,10 @@ public class LdapClient {
     @Override
     public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
       final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
-      String userId = getUserIdFromContext(context);
-      if (userId != null) {
-        accessId.setAccessId(userId);
+      String[] objectClasses = context.getStringAttributes(getUserSearchFilterName());
+      if (objectClasses != null
+          && Arrays.asList(objectClasses).contains(getUserSearchFilterValue())) {
+        accessId.setAccessId(getUserIdFromContext(context));
         String firstName = context.getStringAttribute(getUserFirstnameAttribute());
         String lastName = context.getStringAttribute(getUserLastnameAttribute());
         accessId.setName(String.format("%s, %s", lastName, firstName));
