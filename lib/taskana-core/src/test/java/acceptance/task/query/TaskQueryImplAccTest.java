@@ -10,6 +10,7 @@ import acceptance.DefaultTestEntities;
 import java.security.PrivilegedActionException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.CallbackState;
+import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.WildcardSearchField;
@@ -102,6 +104,65 @@ class TaskQueryImplAccTest {
       List<TaskSummary> list = taskService.createTaskQuery().list();
 
       assertThat(list).containsExactlyInAnyOrder(taskSummary1, taskSummary2);
+    }
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_ReturnAllTasksWithAllAttributesSet_When_NotApplyingAnyFilter() throws Exception {
+      WorkbasketSummary wb = createWorkbasketWithPermission();
+      Attachment attachment =
+          TaskAttachmentBuilder.newAttachment()
+              .classificationSummary(defaultClassificationSummary)
+              .objectReference(defaultTestObjectReference().build())
+              .build();
+
+      TaskSummary taskSummary1 =
+          taskInWorkbasket(wb)
+              .externalId("external id")
+              .received(Instant.parse("2020-04-19T13:13:00.000Z"))
+              .created(Instant.parse("2020-04-20T13:13:00.000Z"))
+              .claimed(Instant.parse("2020-04-21T13:13:00.000Z"))
+              .completed(Instant.parse("2020-04-22T13:13:00.000Z"))
+              .modified(Instant.parse("2020-04-22T13:13:00.000Z"))
+              .planned(Instant.parse("2020-04-21T13:13:00.000Z"))
+              .due(Instant.parse("2020-04-21T13:13:00.000Z"))
+              .name("Name")
+              .note("Note")
+              .description("Description")
+              .state(TaskState.COMPLETED)
+              .businessProcessId("BPI:SomeNumber")
+              .parentBusinessProcessId("BPI:OtherNumber")
+              .owner("user-1-2")
+              .primaryObjRef(defaultTestObjectReference().build())
+              .manualPriority(7)
+              .read(true)
+              .transferred(true)
+              .attachments(attachment)
+              .customAttribute(TaskCustomField.CUSTOM_1, "custom1")
+              .customAttribute(TaskCustomField.CUSTOM_2, "custom2")
+              .customAttribute(TaskCustomField.CUSTOM_3, "custom3")
+              .customAttribute(TaskCustomField.CUSTOM_4, "custom4")
+              .customAttribute(TaskCustomField.CUSTOM_5, "custom5")
+              .customAttribute(TaskCustomField.CUSTOM_6, "custom6")
+              .customAttribute(TaskCustomField.CUSTOM_7, "custom7")
+              .customAttribute(TaskCustomField.CUSTOM_8, "custom8")
+              .customAttribute(TaskCustomField.CUSTOM_9, "custom9")
+              .customAttribute(TaskCustomField.CUSTOM_10, "custom10")
+              .customAttribute(TaskCustomField.CUSTOM_11, "custom11")
+              .customAttribute(TaskCustomField.CUSTOM_12, "custom12")
+              .customAttribute(TaskCustomField.CUSTOM_13, "custom13")
+              .customAttribute(TaskCustomField.CUSTOM_14, "custom14")
+              .customAttribute(TaskCustomField.CUSTOM_15, "custom15")
+              .customAttribute(TaskCustomField.CUSTOM_16, "custom16")
+              .callbackInfo(Map.of("custom", "value"))
+              .callbackState(CallbackState.CALLBACK_PROCESSING_COMPLETED)
+              .buildAndStoreAsSummary(taskService);
+      TaskSummary taskSummary2 = taskInWorkbasket(wb).buildAndStoreAsSummary(taskService);
+
+      List<TaskSummary> list = taskService.createTaskQuery().workbasketIdIn(wb.getId()).list();
+
+      assertThat(list).containsExactlyInAnyOrder(taskSummary1, taskSummary2);
+      assertThat(taskSummary1).hasNoNullFieldsOrPropertiesExcept("ownerLongName");
     }
 
     @WithAccessId(user = "user-1-1")
