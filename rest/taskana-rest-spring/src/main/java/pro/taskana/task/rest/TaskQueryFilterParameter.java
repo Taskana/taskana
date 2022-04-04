@@ -1092,6 +1092,14 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("attachment-received-not")
   private final Instant[] attachmentReceivedNotWithin;
   // endregion
+  // region withoutAttachment
+  /**
+   * In order to filter Tasks that don't have any Attachments, set 'without-attachment' to 'true'.
+   * Any other value for 'without-attachment' is invalid.
+   */
+  @JsonProperty("without-attachment")
+  private final Boolean withoutAttachment;
+  // endregion
   // region customAttributes
   /** Filter by the value of the field custom1 of the Task. This is an exact match. */
   @JsonProperty("custom-1")
@@ -1645,6 +1653,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "attachment-reference-not-like",
     "attachment-received",
     "attachment-received-not",
+    "without-attachment",
     "custom-1",
     "custom-1-not",
     "custom-1-like",
@@ -1854,6 +1863,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] attachmentReferenceNotLike,
       Instant[] attachmentReceivedWithin,
       Instant[] attachmentReceivedNotWithin,
+      Boolean withoutAttachment,
       String[] custom1In,
       String[] custom1NotIn,
       String[] custom1Like,
@@ -2062,6 +2072,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.attachmentReferenceNotLike = attachmentReferenceNotLike;
     this.attachmentReceivedWithin = attachmentReceivedWithin;
     this.attachmentReceivedNotWithin = attachmentReceivedNotWithin;
+    this.withoutAttachment = withoutAttachment;
     this.custom1In = custom1In;
     this.custom1NotIn = custom1NotIn;
     this.custom1Like = custom1Like;
@@ -2460,6 +2471,10 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
         .map(this::extractTimeIntervals)
         .ifPresent(query::attachmentNotReceivedWithin);
 
+    if (Boolean.TRUE.equals(withoutAttachment)) {
+      query.withoutAttachment();
+    }
+
     Stream.of(
             Pair.of(CUSTOM_1, of(custom1In, custom1NotIn, custom1Like, custom1NotLike)),
             Pair.of(CUSTOM_2, of(custom2In, custom2NotIn, custom2Like, custom2NotLike)),
@@ -2659,6 +2674,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     if (attachmentReceivedNotWithin != null && attachmentReceivedNotWithin.length % 2 != 0) {
       throw new InvalidArgumentException(
           "provided length of the property 'attachment-not-received' is not dividable by 2");
+    }
+
+    if (withoutAttachment != null && !withoutAttachment) {
+      throw new InvalidArgumentException(
+          "provided value of the property 'without-attachment' must be 'true'");
     }
   }
 }

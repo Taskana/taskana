@@ -1,6 +1,7 @@
 package acceptance.task.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.task.api.CallbackState.CALLBACK_PROCESSING_REQUIRED;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
@@ -10,19 +11,26 @@ import java.security.PrivilegedActionException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.WildcardSearchField;
@@ -2566,6 +2574,132 @@ class TaskQueryImplAccTest {
                 .list();
 
         assertThat(list).containsExactly(taskSummary2);
+      }
+    }
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    class WithoutAttachment {
+      WorkbasketSummary wb;
+      TaskSummary taskSummary1;
+      TaskSummary taskSummary2;
+      TaskSummary taskSummary3;
+      TaskSummary taskSummary4;
+
+      @WithAccessId(user = "user-1-1")
+      @BeforeAll
+      void setup() throws Exception {
+        wb = createWorkbasketWithPermission();
+        Attachment attachment = createAttachment().build();
+        taskSummary1 =
+            taskInWorkbasket(wb).attachments(attachment).buildAndStoreAsSummary(taskService);
+        taskSummary2 =
+            taskInWorkbasket(wb)
+                .attachments(attachment.copy(), attachment.copy())
+                .buildAndStoreAsSummary(taskService);
+        taskSummary3 = taskInWorkbasket(wb).buildAndStoreAsSummary(taskService);
+        taskSummary4 = taskInWorkbasket(wb).buildAndStoreAsSummary(taskService);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnTasksThatDontHaveAttachment() {
+        List<TaskSummary> list =
+            taskService.createTaskQuery().workbasketIdIn(wb.getId()).withoutAttachment().list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary3, taskSummary4);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @TestFactory
+      Stream<DynamicTest>
+          should_ThrowException_When_UsingWithoutAttachmentWithAnyOtherAttachmentFilter() {
+        List<Pair<String, Function<TaskQuery, TaskQuery>>> testCases =
+            List.of(
+                Pair.of("AttachmentChannelIn", query -> query.attachmentChannelIn("not important")),
+                Pair.of(
+                    "AttachmentChannelLike", query -> query.attachmentChannelLike("not important")),
+                Pair.of(
+                    "AttachmentChannelNotIn",
+                    query -> query.attachmentChannelNotIn("not important")),
+                Pair.of(
+                    "AttachmentChannelNotLike",
+                    query -> query.attachmentChannelNotLike("not important")),
+                Pair.of(
+                    "AttachmentClassificationIdIn",
+                    query -> query.attachmentClassificationIdIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationIdNotIn",
+                    query -> query.attachmentClassificationIdNotIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationKeyIn",
+                    query -> query.attachmentClassificationKeyIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationKeyIn",
+                    query -> query.attachmentClassificationKeyIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationKeyNotIn",
+                    query -> query.attachmentClassificationKeyNotIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationKeyNotLike",
+                    query -> query.attachmentClassificationKeyNotLike("not important")),
+                Pair.of(
+                    "AttachmentClassificationNameIn",
+                    query -> query.attachmentClassificationNameIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationNameLike",
+                    query -> query.attachmentClassificationNameLike("not important")),
+                Pair.of(
+                    "AttachmentClassificationNameNotIn",
+                    query -> query.attachmentClassificationNameNotIn("not important")),
+                Pair.of(
+                    "AttachmentClassificationNameNotLike",
+                    query -> query.attachmentClassificationNameNotLike("not important")),
+                Pair.of(
+                    "AttachmentReceivedWithin",
+                    query ->
+                        query.attachmentReceivedWithin(
+                            new TimeInterval(Instant.now(), Instant.now()))),
+                Pair.of(
+                    "AttachmentReceivedNotWithin",
+                    query ->
+                        query.attachmentNotReceivedWithin(
+                            new TimeInterval(Instant.now(), Instant.now()))),
+                Pair.of(
+                    "AttachmentReferenceValueIn",
+                    query -> query.attachmentReferenceValueIn("not important")),
+                Pair.of(
+                    "AttachmentReferenceValueLike",
+                    query -> query.attachmentReferenceValueLike("not important")),
+                Pair.of(
+                    "AttachmentReferenceValueNotIn",
+                    query -> query.attachmentReferenceValueNotIn("not important")),
+                Pair.of(
+                    "AttachmentReferenceValueNotLike",
+                    query -> query.attachmentReferenceValueNotLike("not important")),
+                Pair.of(
+                    "AttachmentReferenceValueNotLike, AttachmentClassificationKeyNotLike",
+                    query ->
+                        query
+                            .attachmentReferenceValueNotLike("not important")
+                            .attachmentClassificationKeyNotLike("not important")));
+
+        ThrowingConsumer<Pair<String, Function<TaskQuery, TaskQuery>>> test =
+            p -> {
+              Function<TaskQuery, TaskQuery> addAttachmentFilter = p.getRight();
+
+              TaskQuery query =
+                  taskService.createTaskQuery().workbasketIdIn(wb.getId()).withoutAttachment();
+              query = addAttachmentFilter.apply(query);
+
+              assertThatThrownBy(query::list)
+                  .isInstanceOf(IllegalArgumentException.class)
+                  .hasMessageContaining(
+                      "The param \"withoutAttachment\" can only be used "
+                          + "without adding attributes of attachment as filter parameter");
+            };
+
+        return DynamicTest.stream(testCases.iterator(), Pair::getLeft, test);
       }
     }
 
