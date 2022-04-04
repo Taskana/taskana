@@ -4,6 +4,7 @@ import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
@@ -1457,6 +1458,17 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @return the query
    */
   TaskQuery orderByAttachmentReceived(SortDirection sortDirection);
+
+  // endregion
+  // region withoutAttachment
+
+  /**
+   * This method adds the condition that only {@linkplain Task Tasks} that don't have any
+   * {@linkplain Attachment Attachments} will be included in the {@linkplain TaskQuery}.
+   *
+   * @return the {@linkplain TaskQuery}
+   */
+  TaskQuery withoutAttachment();
 
   // endregion
   // region secondaryObjectReference

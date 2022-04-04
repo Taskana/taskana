@@ -640,6 +640,30 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_ReturnFilteredTasks_When_GettingTaskWithoutAttachments() {
+    String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?without-attachment=true";
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+    assertThat(response.getBody()).isNotNull();
+    assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(83);
+  }
+
+  @Test
+  void should_ThrowException_When_WithoutAttachmentsIsSetToFalse() {
+    String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?without-attachment=false";
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    assertThatThrownBy(
+            () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE))
+        .isInstanceOf(HttpStatusCodeException.class)
+        .hasMessageContaining("provided value of the property 'without-attachment' must be 'true'");
+  }
+
+  @Test
   void should_NotGetEmptyObjectReferencesList_When_GettingTaskWithObjectReferences() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000001");

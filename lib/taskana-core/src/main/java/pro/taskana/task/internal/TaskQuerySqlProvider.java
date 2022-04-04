@@ -429,6 +429,7 @@ public class TaskQuerySqlProvider {
             + "LIKE #{wildcardSearchValueLike}"
             + "</foreach>)"
             + "</if> ");
+    sb.append("<if test='withoutAttachment'> AND a.ID IS NULL</if> ");
     sb.append(commonTaskObjectReferenceWhereStatement());
     sb.append(commonTaskSecondaryObjectReferencesWhereStatement());
     return sb;
