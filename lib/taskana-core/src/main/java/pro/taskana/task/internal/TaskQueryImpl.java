@@ -256,6 +256,9 @@ public class TaskQueryImpl implements TaskQuery {
   private TimeInterval[] attachmentReceivedWithin;
   private TimeInterval[] attachmentReceivedNotWithin;
   // endregion
+  // region withoutAttachment
+  private boolean withoutAttachment;
+  // endregion
   // region secondaryObjectReferences
   private ObjectReference[] secondaryObjectReferences;
   // endregion
@@ -391,6 +394,7 @@ public class TaskQueryImpl implements TaskQuery {
     this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
     this.orderBy = new ArrayList<>();
     this.filterByAccessIdIn = true;
+    this.withoutAttachment = false;
     this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo();
   }
 
@@ -1394,6 +1398,16 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   // endregion
+  // region withoutAttachment
+
+  @Override
+  public TaskQuery withoutAttachment() {
+    this.joinWithAttachments = true;
+    this.withoutAttachment = true;
+    return this;
+  }
+
+  // endregion
 
   public String[] getOwnerLongNameIn() {
     return ownerLongNameIn;
@@ -2082,6 +2096,31 @@ public class TaskQueryImpl implements TaskQuery {
           "The params \"wildcardSearchFieldIn\" and \"wildcardSearchValueLike\""
               + " must be used together!");
     }
+    if (withoutAttachment
+        && (attachmentChannelIn != null
+            || attachmentChannelLike != null
+            || attachmentChannelNotIn != null
+            || attachmentChannelNotLike != null
+            || attachmentClassificationIdIn != null
+            || attachmentClassificationIdNotIn != null
+            || attachmentClassificationKeyIn != null
+            || attachmentClassificationKeyLike != null
+            || attachmentClassificationKeyNotIn != null
+            || attachmentClassificationKeyNotLike != null
+            || attachmentClassificationNameIn != null
+            || attachmentClassificationNameLike != null
+            || attachmentClassificationNameNotIn != null
+            || attachmentClassificationNameNotLike != null
+            || attachmentReceivedWithin != null
+            || attachmentReceivedNotWithin != null
+            || attachmentReferenceIn != null
+            || attachmentReferenceLike != null
+            || attachmentReferenceNotIn != null
+            || attachmentReferenceNotLike != null)) {
+      throw new IllegalArgumentException(
+          "The param \"withoutAttachment\" can only be used "
+              + "without adding attributes of attachment as filter parameter");
+    }
   }
 
   private String getDatabaseId() {
@@ -2453,6 +2492,8 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(attachmentReceivedWithin)
         + ", attachmentReceivedNotWithin="
         + Arrays.toString(attachmentReceivedNotWithin)
+        + ", withoutAttachment="
+        + withoutAttachment
         + ", secondaryObjectReferences="
         + Arrays.toString(secondaryObjectReferences)
         + ", sorCompanyIn="
