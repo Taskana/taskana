@@ -43,29 +43,27 @@ describe('TaskPriorityReportComponent', () => {
   let debugElement: DebugElement;
   let component: TaskPriorityReportComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([SettingsState]), MatTableModule, HttpClientTestingModule, MatDividerModule],
-        declarations: [TaskPriorityReportComponent, GermanTimeFormatPipe, CanvasStub, TaskPriorityReportFilterStub],
-        providers: [
-          RequestInProgressService,
-          { provide: MonitorService, useValue: monitorServiceSpy },
-          { provide: NotificationService, useValue: notificationServiceSpy }
-        ]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([SettingsState]), MatTableModule, HttpClientTestingModule, MatDividerModule],
+      declarations: [TaskPriorityReportComponent, GermanTimeFormatPipe, CanvasStub, TaskPriorityReportFilterStub],
+      providers: [
+        RequestInProgressService,
+        { provide: MonitorService, useValue: monitorServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy }
+      ]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(TaskPriorityReportComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.debugElement.componentInstance;
-      const store: Store = TestBed.inject(Store);
-      store.reset({
-        ...store.snapshot(),
-        settings: settingsStateMock
-      });
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(TaskPriorityReportComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.debugElement.componentInstance;
+    const store: Store = TestBed.inject(Store);
+    store.reset({
+      ...store.snapshot(),
+      settings: settingsStateMock
+    });
+    fixture.detectChanges();
+  }));
 
   it('should create the component', () => {
     expect(component).toBeTruthy();

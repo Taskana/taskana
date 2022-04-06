@@ -13,25 +13,23 @@ describe('CanvasComponent', () => {
   let debugElement: DebugElement;
   let component: CanvasComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([SettingsState]), HttpClientTestingModule, MatDialogModule],
-        declarations: [CanvasComponent]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([SettingsState]), HttpClientTestingModule, MatDialogModule],
+      declarations: [CanvasComponent]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(CanvasComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.debugElement.componentInstance;
-      component.id = '1';
-      const store: Store = TestBed.inject(Store);
-      store.reset({
-        ...store.snapshot(),
-        settings: settingsStateMock
-      });
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(CanvasComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.debugElement.componentInstance;
+    component.id = '1';
+    const store: Store = TestBed.inject(Store);
+    store.reset({
+      ...store.snapshot(),
+      settings: settingsStateMock
+    });
+    fixture.detectChanges();
+  }));
 
   it('should create the component', () => {
     expect(component).toBeTruthy();

@@ -43,33 +43,31 @@ xdescribe('ImportExportComponent', () => {
     })
   );
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [],
-        declarations: [ImportExportComponent],
-        providers: [
-          StartupService,
-          TaskanaEngineService,
-          WindowRefService,
-          WorkbasketDefinitionService,
-          ClassificationDefinitionService,
-          ImportExportService,
-          { provide: DomainService, useClass: domainServiceSpy },
-          { provide: NotificationService, useClass: notificationServiceSpy },
-          { provide: HttpClient, useClass: httpSpy }
-        ]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [],
+      declarations: [ImportExportComponent],
+      providers: [
+        StartupService,
+        TaskanaEngineService,
+        WindowRefService,
+        WorkbasketDefinitionService,
+        ClassificationDefinitionService,
+        ImportExportService,
+        { provide: DomainService, useClass: domainServiceSpy },
+        { provide: NotificationService, useClass: notificationServiceSpy },
+        { provide: HttpClient, useClass: httpSpy }
+      ]
+    }).compileComponents();
 
-      jest.clearAllMocks();
+    jest.clearAllMocks();
 
-      fixture = TestBed.createComponent(ImportExportComponent);
-      debugElement = fixture.debugElement;
-      app = fixture.debugElement.componentInstance;
-      app.currentSelection = TaskanaType.WORKBASKETS;
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(ImportExportComponent);
+    debugElement = fixture.debugElement;
+    app = fixture.debugElement.componentInstance;
+    app.currentSelection = TaskanaType.WORKBASKETS;
+    fixture.detectChanges();
+  }));
 
   it('should create component', () => {
     expect(app).toBeTruthy();
