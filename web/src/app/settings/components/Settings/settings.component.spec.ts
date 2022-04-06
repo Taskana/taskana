@@ -29,41 +29,39 @@ describe('SettingsComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot([SettingsState]),
-          HttpClientTestingModule,
-          FormsModule,
-          MatIconModule,
-          MatFormFieldModule,
-          MatInputModule,
-          MatTooltipModule,
-          NoopAnimationsModule
-        ],
-        declarations: [SettingsComponent],
-        providers: [
-          RequestInProgressService,
-          {
-            provide: NotificationService,
-            useValue: notificationServiceSpy
-          }
-        ]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([SettingsState]),
+        HttpClientTestingModule,
+        FormsModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTooltipModule,
+        NoopAnimationsModule
+      ],
+      declarations: [SettingsComponent],
+      providers: [
+        RequestInProgressService,
+        {
+          provide: NotificationService,
+          useValue: notificationServiceSpy
+        }
+      ]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(SettingsComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.debugElement.componentInstance;
-      store = TestBed.inject(Store);
-      actions$ = TestBed.inject(Actions);
-      store.reset({
-        ...store.snapshot(),
-        settings: settingsStateMock
-      });
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(SettingsComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.debugElement.componentInstance;
+    store = TestBed.inject(Store);
+    actions$ = TestBed.inject(Actions);
+    store.reset({
+      ...store.snapshot(),
+      settings: settingsStateMock
+    });
+    fixture.detectChanges();
+  }));
 
   it('should create component', () => {
     expect(component).toBeTruthy();

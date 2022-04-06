@@ -28,18 +28,16 @@ describe('NavBarComponent', () => {
   let debugElement: DebugElement;
   let route = '';
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [NavBarComponent, SvgIconStub],
-        imports: [MatIconModule, HttpClientTestingModule, MatToolbarModule],
-        providers: [
-          { provide: SidenavService, useValue: SidenavServiceSpy },
-          { provide: SelectedRouteService, useValue: SelectedRouteServiceSpy }
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [NavBarComponent, SvgIconStub],
+      imports: [MatIconModule, HttpClientTestingModule, MatToolbarModule],
+      providers: [
+        { provide: SidenavService, useValue: SidenavServiceSpy },
+        { provide: SelectedRouteService, useValue: SelectedRouteServiceSpy }
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavBarComponent);

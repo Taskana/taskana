@@ -58,39 +58,37 @@ describe('WorkbasketDistributionTargetsComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          MatIconModule,
-          MatDialogModule,
-          MatToolbarModule,
-          MatButtonModule,
-          NgxsModule.forRoot([WorkbasketState])
-        ],
-        declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
-        providers: [
-          { provide: WorkbasketService, useValue: workbasketServiceSpy },
-          { provide: NotificationService, useValue: notificationsServiceSpy },
-          { provide: ActivatedRoute, useValue: activatedRouteMock },
-          { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
-          { provide: DomainService, useValue: domainServiceSpy }
-        ]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        MatIconModule,
+        MatDialogModule,
+        MatToolbarModule,
+        MatButtonModule,
+        NgxsModule.forRoot([WorkbasketState])
+      ],
+      declarations: [WorkbasketDistributionTargetsComponent, WorkbasketDistributionTargetsListStub],
+      providers: [
+        { provide: WorkbasketService, useValue: workbasketServiceSpy },
+        { provide: NotificationService, useValue: notificationsServiceSpy },
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy }
+      ]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(WorkbasketDistributionTargetsComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.componentInstance;
-      store = TestBed.inject(Store);
-      actions$ = TestBed.inject(Actions);
-      store.reset({
-        ...store.snapshot(),
-        engineConfiguration: engineConfigurationMock,
-        workbasket: workbasketReadStateMock
-      });
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(WorkbasketDistributionTargetsComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.componentInstance;
+    store = TestBed.inject(Store);
+    actions$ = TestBed.inject(Actions);
+    store.reset({
+      ...store.snapshot(),
+      engineConfiguration: engineConfigurationMock,
+      workbasket: workbasketReadStateMock
+    });
+    fixture.detectChanges();
+  }));
 
   it('should create component', () => {
     expect(component).toBeTruthy();

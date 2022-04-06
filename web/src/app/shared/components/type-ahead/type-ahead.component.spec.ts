@@ -20,29 +20,27 @@ describe('TypeAheadComponent with AccessId input', () => {
   let debugElement: DebugElement;
   let component: TypeAheadComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot([]),
-          MatFormFieldModule,
-          MatInputModule,
-          MatAutocompleteModule,
-          MatTooltipModule,
-          NoopAnimationsModule,
-          FormsModule,
-          ReactiveFormsModule
-        ],
-        declarations: [TypeAheadComponent],
-        providers: [{ provide: AccessIdsService, useValue: accessIdService }]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([]),
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatTooltipModule,
+        NoopAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule
+      ],
+      declarations: [TypeAheadComponent],
+      providers: [{ provide: AccessIdsService, useValue: accessIdService }]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(TypeAheadComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(TypeAheadComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }));
 
   it('should create component', () => {
     expect(component).toBeTruthy();

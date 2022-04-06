@@ -73,46 +73,44 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
     setRequestInProgress: jest.fn().mockReturnValue(of(null))
   };
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          MatIconModule,
-          MatToolbarModule,
-          MatListModule,
-          MatDialogModule,
-          MatTooltipModule,
-          InfiniteScrollModule,
-          ScrollingModule,
-          NoopAnimationsModule,
-          NgxsModule.forRoot([WorkbasketState])
-        ],
-        declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],
-        providers: [
-          { provide: HttpClient, useValue: httpSpy },
-          {
-            provide: DomainService,
-            useValue: domainServiceSpy
-          },
-          { provide: ActivatedRoute, useValue: activatedRouteMock },
-          { provide: RequestInProgressService, useValue: requestInProgressServiceSpy }
-        ]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        MatIconModule,
+        MatToolbarModule,
+        MatListModule,
+        MatDialogModule,
+        MatTooltipModule,
+        InfiniteScrollModule,
+        ScrollingModule,
+        NoopAnimationsModule,
+        NgxsModule.forRoot([WorkbasketState])
+      ],
+      declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],
+      providers: [
+        { provide: HttpClient, useValue: httpSpy },
+        {
+          provide: DomainService,
+          useValue: domainServiceSpy
+        },
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy }
+      ]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(WorkbasketDistributionTargetsListComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.componentInstance;
-      component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
-      component.side = Side.AVAILABLE;
-      component.transferDistributionTargetObservable = EMPTY;
-      store = TestBed.inject(Store);
-      store.reset({
-        ...store.snapshot(),
-        engineConfiguration: engineConfigurationMock,
-        workbasket: workbasketReadStateMock
-      });
-    })
-  );
+    fixture = TestBed.createComponent(WorkbasketDistributionTargetsListComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.componentInstance;
+    component.distributionTargets = workbasketReadStateMock.paginatedWorkbasketsSummary.workbaskets;
+    component.side = Side.AVAILABLE;
+    component.transferDistributionTargetObservable = EMPTY;
+    store = TestBed.inject(Store);
+    store.reset({
+      ...store.snapshot(),
+      engineConfiguration: engineConfigurationMock,
+      workbasket: workbasketReadStateMock
+    });
+  }));
 
   it('should create component', () => {
     expect(component).toBeTruthy();

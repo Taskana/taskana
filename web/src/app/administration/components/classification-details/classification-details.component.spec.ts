@@ -104,49 +104,47 @@ describe('ClassificationDetailsComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot([ClassificationState, EngineConfigurationState]),
-          FormsModule,
-          MatIconModule,
-          MatToolbarModule,
-          MatDividerModule,
-          MatFormFieldModule,
-          MatInputModule,
-          MatOptionModule,
-          MatSelectModule,
-          MatProgressBarModule,
-          MatMenuModule,
-          MatTooltipModule,
-          NoopAnimationsModule
-        ],
-        declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
-        providers: [
-          { provide: ClassificationsService, useValue: classificationServiceSpy },
-          { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
-          { provide: DomainService, useValue: domainServiceSpy },
-          { provide: ImportExportService, useValue: importExportServiceSpy },
-          { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
-          { provide: FormsValidatorService, useValue: formsValidatorServiceSpy },
-          { provide: NotificationService, useValue: notificationServiceSpy }
-        ]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([ClassificationState, EngineConfigurationState]),
+        FormsModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatProgressBarModule,
+        MatMenuModule,
+        MatTooltipModule,
+        NoopAnimationsModule
+      ],
+      declarations: [ClassificationDetailsComponent, InputStub, FieldErrorDisplayStub, SvgIconStub, TextareaStub],
+      providers: [
+        { provide: ClassificationsService, useValue: classificationServiceSpy },
+        { provide: ClassificationCategoriesService, useValue: classificationCategoriesServiceSpy },
+        { provide: DomainService, useValue: domainServiceSpy },
+        { provide: ImportExportService, useValue: importExportServiceSpy },
+        { provide: RequestInProgressService, useValue: requestInProgressServiceSpy },
+        { provide: FormsValidatorService, useValue: formsValidatorServiceSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy }
+      ]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(ClassificationDetailsComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.debugElement.componentInstance;
-      store = TestBed.inject(Store);
-      actions$ = TestBed.inject(Actions);
-      store.reset({
-        ...store.snapshot(),
-        classification: classificationStateMock,
-        engineConfiguration: engineConfigurationMock
-      });
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(ClassificationDetailsComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.debugElement.componentInstance;
+    store = TestBed.inject(Store);
+    actions$ = TestBed.inject(Actions);
+    store.reset({
+      ...store.snapshot(),
+      classification: classificationStateMock,
+      engineConfiguration: engineConfigurationMock
+    });
+    fixture.detectChanges();
+  }));
 
   it('should create component', () => {
     expect(component).toBeTruthy();

@@ -15,31 +15,29 @@ describe('TaskPriorityReportFilterComponent', () => {
   let debugElement: DebugElement;
   let component: TaskPriorityReportFilterComponent;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot([SettingsState]),
-          HttpClientTestingModule,
-          MatCheckboxModule,
-          MatExpansionModule,
-          NoopAnimationsModule,
-          MatDialogModule
-        ],
-        declarations: [TaskPriorityReportFilterComponent]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([SettingsState]),
+        HttpClientTestingModule,
+        MatCheckboxModule,
+        MatExpansionModule,
+        NoopAnimationsModule,
+        MatDialogModule
+      ],
+      declarations: [TaskPriorityReportFilterComponent]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(TaskPriorityReportFilterComponent);
-      debugElement = fixture.debugElement;
-      component = fixture.debugElement.componentInstance;
-      const store: Store = TestBed.inject(Store);
-      store.reset({
-        ...store.snapshot(),
-        settings: settingsStateMock
-      });
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(TaskPriorityReportFilterComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.debugElement.componentInstance;
+    const store: Store = TestBed.inject(Store);
+    store.reset({
+      ...store.snapshot(),
+      settings: settingsStateMock
+    });
+    fixture.detectChanges();
+  }));
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
