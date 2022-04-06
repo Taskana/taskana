@@ -431,7 +431,7 @@ class ArchitectureTest {
   }
 
   private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifierAndPrivateConstants() {
-    return new ArchCondition<>("only have fields with no modifier") {
+    return new ArchCondition<JavaClass>("only have fields with no modifier") {
       final Set<JavaModifier> modifiersForConstants =
           Set.of(JavaModifier.PRIVATE, JavaModifier.STATIC, JavaModifier.FINAL);
 
