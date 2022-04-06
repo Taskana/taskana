@@ -7,7 +7,7 @@ import { NgxsModule } from '@ngxs/store';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -29,7 +29,7 @@ describe('TypeAheadComponent with AccessId input', () => {
           MatInputModule,
           MatAutocompleteModule,
           MatTooltipModule,
-          BrowserAnimationsModule,
+          NoopAnimationsModule,
           FormsModule,
           ReactiveFormsModule
         ],

@@ -1,8 +1,8 @@
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { pathsToModuleNameMapper } = require('ts-jest');
 const { compilerOptions } = require('./tsconfig');
-require('jest-preset-angular/ngcc-jest-processor');
 
 module.exports = {
+  globalSetup: 'jest-preset-angular/global-setup',
   preset: 'jest-preset-angular',
   roots: ['<rootDir>/src'],
   modulePaths: ['<rootDir>'],

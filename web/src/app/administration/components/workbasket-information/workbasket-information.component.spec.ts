@@ -22,11 +22,11 @@ import { ClassificationCategoriesService } from '../../../shared/services/classi
 import { ACTION } from '../../../shared/models/action';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MarkWorkbasketForDeletion, UpdateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import {
-  selectedWorkbasketMock,
   engineConfigurationMock,
+  selectedWorkbasketMock,
   workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
 import { StartupService } from '../../../shared/services/startup/startup.service';
@@ -97,7 +97,7 @@ describe('WorkbasketInformationComponent', () => {
           TypeaheadModule.forRoot(),
           ReactiveFormsModule,
           RouterTestingModule.withRoutes([]),
-          BrowserAnimationsModule,
+          NoopAnimationsModule,
           MatProgressBarModule,
           MatDividerModule,
           MatFormFieldModule,

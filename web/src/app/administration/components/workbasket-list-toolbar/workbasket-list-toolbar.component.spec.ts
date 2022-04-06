@@ -8,7 +8,7 @@ import { WorkbasketState } from '../../../shared/store/workbasket-store/workbask
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Direction, Sorting, WorkbasketQuerySortParameter } from '../../../shared/models/sorting';
 import { ACTION } from '../../../shared/models/action';
 import { TaskanaType } from '../../../shared/models/taskana-type';
@@ -56,7 +56,7 @@ describe('WorkbasketListToolbarComponent', () => {
         HttpClientTestingModule,
         RouterTestingModule,
         NgxsModule.forRoot([WorkbasketState]),
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         MatIconModule,
         MatDialogModule
       ],

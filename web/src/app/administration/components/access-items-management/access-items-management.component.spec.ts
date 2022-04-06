@@ -12,10 +12,10 @@ import { ClassificationCategoriesService } from '../../../shared/services/classi
 import { AccessItemsManagementState } from '../../../shared/store/access-items-management-store/access-items-management.state';
 import { Observable } from 'rxjs';
 import { GetAccessItems } from '../../../shared/store/access-items-management-store/access-items-management.actions';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { TypeAheadComponent } from '../../../shared/components/type-ahead/type-ahead.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Direction, Sorting, WorkbasketAccessItemQuerySortParameter } from '../../../shared/models/sorting';
 import { StartupService } from '../../../shared/services/startup/startup.service';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
@@ -79,7 +79,7 @@ describe('AccessItemsManagementComponent', () => {
         ReactiveFormsModule,
         MatDialogModule,
         TypeaheadModule.forRoot(),
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         MatFormFieldModule,
         MatSelectModule,
         MatAutocompleteModule,

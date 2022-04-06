@@ -7,7 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskPriorityReportFilterComponent } from './task-priority-report-filter.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 
 describe('TaskPriorityReportFilterComponent', () => {
@@ -23,7 +23,7 @@ describe('TaskPriorityReportFilterComponent', () => {
           HttpClientTestingModule,
           MatCheckboxModule,
           MatExpansionModule,
-          BrowserAnimationsModule,
+          NoopAnimationsModule,
           MatDialogModule
         ],
         declarations: [TaskPriorityReportFilterComponent]

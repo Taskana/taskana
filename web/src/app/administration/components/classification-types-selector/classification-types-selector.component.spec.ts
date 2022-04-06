@@ -9,7 +9,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { classificationStateMock } from '../../../shared/store/mock-data/mock-store';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 
 const classificationServiceSpy = jest.fn();
@@ -24,12 +24,7 @@ describe('ClassificationTypesSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([ClassificationState]),
-        MatFormFieldModule,
-        MatSelectModule,
-        BrowserAnimationsModule
-      ],
+      imports: [NgxsModule.forRoot([ClassificationState]), MatFormFieldModule, MatSelectModule, NoopAnimationsModule],
       declarations: [ClassificationTypesSelectorComponent],
       providers: [
         { provide: ClassificationsService, useValue: classificationServiceSpy },
