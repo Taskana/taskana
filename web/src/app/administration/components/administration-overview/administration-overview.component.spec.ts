@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 
 const domainServiceSpy: Partial<DomainService> = {
@@ -28,7 +28,7 @@ describe('AdministrationOverviewComponent', () => {
         MatTabsModule,
         RouterTestingModule.withRoutes([]),
         HttpClientTestingModule,
-        BrowserAnimationsModule
+        NoopAnimationsModule
       ],
       declarations: [AdministrationOverviewComponent],
       providers: [{ provide: DomainService, useValue: domainServiceSpy }, TaskanaEngineService]

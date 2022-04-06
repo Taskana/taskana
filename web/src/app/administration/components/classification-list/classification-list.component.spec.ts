@@ -15,7 +15,7 @@ import { EngineConfigurationState } from '../../../shared/store/engine-configura
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -82,7 +82,7 @@ describe('ClassificationListComponent', () => {
         MatMenuModule,
         MatFormFieldModule,
         MatInputModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         MatProgressBarModule
       ],
       declarations: [

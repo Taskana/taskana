@@ -7,7 +7,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SettingsState } from '../../../shared/store/settings-store/settings.state';
 import { SettingsComponent } from './settings.component';
@@ -40,7 +40,7 @@ describe('SettingsComponent', () => {
           MatFormFieldModule,
           MatInputModule,
           MatTooltipModule,
-          BrowserAnimationsModule
+          NoopAnimationsModule
         ],
         declarations: [SettingsComponent],
         providers: [

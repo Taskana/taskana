@@ -3,7 +3,7 @@ import { Component, DebugElement, Input, Pipe, PipeTransform } from '@angular/co
 import { WorkbasketDistributionTargetsListComponent } from './workbasket-distribution-targets-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { WorkbasketType } from '../../../shared/models/workbasket-type';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { engineConfigurationMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -84,7 +84,7 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
           MatTooltipModule,
           InfiniteScrollModule,
           ScrollingModule,
-          BrowserAnimationsModule,
+          NoopAnimationsModule,
           NgxsModule.forRoot([WorkbasketState])
         ],
         declarations: [WorkbasketDistributionTargetsListComponent, FilterStub, SpinnerStub, IconTypeStub, OrderByMock],

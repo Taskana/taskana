@@ -6,7 +6,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('PaginationComponent', () => {
   let fixture: ComponentFixture<PaginationComponent>;
@@ -21,7 +21,7 @@ describe('PaginationComponent', () => {
         FormsModule,
         MatFormFieldModule,
         MatInputModule,
-        BrowserAnimationsModule
+        NoopAnimationsModule
       ],
       declarations: [PaginationComponent],
       providers: []

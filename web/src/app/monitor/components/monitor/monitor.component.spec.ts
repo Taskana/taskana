@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { MonitorComponent } from './monitor.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,7 +15,7 @@ describe('MonitorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MonitorComponent],
-      imports: [MatTabsModule, RouterModule, RouterTestingModule, HttpClientTestingModule, BrowserAnimationsModule]
+      imports: [MatTabsModule, RouterModule, RouterTestingModule, HttpClientTestingModule, NoopAnimationsModule]
     }).compileComponents();
   }));
 

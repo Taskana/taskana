@@ -23,7 +23,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CopyWorkbasket, CreateWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { take } from 'rxjs/operators';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -89,7 +89,7 @@ describe('WorkbasketDetailsComponent', () => {
         MatMenuModule,
         MatToolbarModule,
         MatTooltipModule,
-        BrowserAnimationsModule
+        NoopAnimationsModule
       ],
       declarations: [
         WorkbasketDetailsComponent,

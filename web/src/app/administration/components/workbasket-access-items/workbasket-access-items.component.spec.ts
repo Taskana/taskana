@@ -21,15 +21,15 @@ import { StartupService } from '../../../shared/services/startup/startup.service
 import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import {
-  workbasketAccessItemsMock,
   engineConfigurationMock,
-  selectedWorkbasketMock
+  selectedWorkbasketMock,
+  workbasketAccessItemsMock
 } from '../../../shared/store/mock-data/mock-store';
 import {
   GetWorkbasketAccessItems,
   UpdateWorkbasketAccessItems
 } from '../../../shared/store/workbasket-store/workbasket.actions';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -80,7 +80,7 @@ describe('WorkbasketAccessItemsComponent', () => {
         NgxsModule.forRoot([WorkbasketState, EngineConfigurationState]),
         HttpClientTestingModule,
         RouterTestingModule.withRoutes([]),
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
