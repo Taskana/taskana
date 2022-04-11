@@ -3,6 +3,7 @@ package testapi.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.priorityservice.TestPriorityServiceProvider;
+import java.sql.Connection;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -71,12 +72,56 @@ class TestContainerExtensionTest {
     @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
 
     @Test
-    void should_CreateNewDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
+    void should_CreateNewDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext()
+        throws Exception {
       DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
       DataSource topLevelDataSource =
           TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+      String nestedDataSourceUrl;
+      String topLevelDataSourceUrl;
+      try (Connection connection = nestedDataSource.getConnection()) {
+        nestedDataSourceUrl = connection.getMetaData().getURL();
+      }
+      try (Connection connection = topLevelDataSource.getConnection()) {
+        topLevelDataSourceUrl = connection.getMetaData().getURL();
+      }
 
-      assertThat(nestedDataSource).isNotSameAs(topLevelDataSource).isNotNull();
+      assertThat(nestedDataSourceUrl).isNotEqualTo(topLevelDataSourceUrl).isNotNull();
+    }
+
+    @CleanTaskanaContext
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    class NestedNestedTestClassAnnotatedWithCleanTaskanaContext {
+      @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+
+      @Test
+      void should_CreateNewDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext()
+          throws Exception {
+        DataSource nestedNestedDataSource = taskanaEngineConfiguration.getDatasource();
+        DataSource nestedDataSource =
+            NestedTestClassAnnotatedWithCleanTaskanaContext.this.taskanaEngineConfiguration
+                .getDatasource();
+        DataSource topLevelDataSource =
+            TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+        String nestedNestedDataSourceUrl;
+        String nestedDataSourceUrl;
+        String topLevelDataSourceUrl;
+        try (Connection connection = nestedNestedDataSource.getConnection()) {
+          nestedNestedDataSourceUrl = connection.getMetaData().getURL();
+        }
+        try (Connection connection = nestedDataSource.getConnection()) {
+          nestedDataSourceUrl = connection.getMetaData().getURL();
+        }
+        try (Connection connection = topLevelDataSource.getConnection()) {
+          topLevelDataSourceUrl = connection.getMetaData().getURL();
+        }
+
+        assertThat(nestedNestedDataSourceUrl)
+            .isNotEqualTo(nestedDataSourceUrl)
+            .isNotEqualTo(topLevelDataSourceUrl)
+            .isNotNull();
+      }
     }
   }
 
