@@ -116,8 +116,8 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
      * Excludes the values of a certain {@linkplain TaskCustomField} to the builder.
      *
      * <p>The created report contains only tasks with a {@linkplain
-     * Task#getCustomField(TaskCustomField) custom attribute} value not matching one of the
-     * items in the list.
+     * Task#getCustomField(TaskCustomField) custom attribute} value not matching one of the items in
+     * the list.
      *
      * @param customField the specified {@linkplain TaskCustomField}
      * @param strings the values the specified {@linkplain Task#getCustomField(TaskCustomField)

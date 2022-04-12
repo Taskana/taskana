@@ -39,85 +39,6 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   }
 
   @Override
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationImpl);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), isValidInDomain, created, modified, description);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof ClassificationImpl)) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    ClassificationImpl other = (ClassificationImpl) obj;
-    return Objects.equals(isValidInDomain, other.isValidInDomain)
-        && Objects.equals(created, other.created)
-        && Objects.equals(modified, other.modified)
-        && Objects.equals(description, other.description);
-  }
-
-  @Override
-  public String toString() {
-    return "ClassificationImpl [id="
-        + id
-        + ", key="
-        + key
-        + ", parentId="
-        + parentId
-        + ", parentKey="
-        + parentKey
-        + ", category="
-        + category
-        + ", type="
-        + type
-        + ", domain="
-        + domain
-        + ", isValidInDomain="
-        + isValidInDomain
-        + ", created="
-        + created
-        + ", modified="
-        + modified
-        + ", name="
-        + name
-        + ", description="
-        + description
-        + ", priority="
-        + priority
-        + ", serviceLevel="
-        + serviceLevel
-        + ", applicationEntryPoint="
-        + applicationEntryPoint
-        + ", custom1="
-        + custom1
-        + ", custom2="
-        + custom2
-        + ", custom3="
-        + custom3
-        + ", custom4="
-        + custom4
-        + ", custom5="
-        + custom5
-        + ", custom6="
-        + custom6
-        + ", custom7="
-        + custom7
-        + ", custom8="
-        + custom8
-        + "]";
-  }
-
-  @Override
   public ClassificationImpl copy(String key) {
     return new ClassificationImpl(this, key);
   }
@@ -221,5 +142,84 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     summary.setCustom7(custom7);
     summary.setCustom8(custom8);
     return summary;
+  }
+
+  @Override
+  protected boolean canEqual(Object other) {
+    return (other instanceof ClassificationImpl);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), isValidInDomain, created, modified, description);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof ClassificationImpl)) {
+      return false;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    ClassificationImpl other = (ClassificationImpl) obj;
+    return Objects.equals(isValidInDomain, other.isValidInDomain)
+        && Objects.equals(created, other.created)
+        && Objects.equals(modified, other.modified)
+        && Objects.equals(description, other.description);
+  }
+
+  @Override
+  public String toString() {
+    return "ClassificationImpl [id="
+        + id
+        + ", key="
+        + key
+        + ", parentId="
+        + parentId
+        + ", parentKey="
+        + parentKey
+        + ", category="
+        + category
+        + ", type="
+        + type
+        + ", domain="
+        + domain
+        + ", isValidInDomain="
+        + isValidInDomain
+        + ", created="
+        + created
+        + ", modified="
+        + modified
+        + ", name="
+        + name
+        + ", description="
+        + description
+        + ", priority="
+        + priority
+        + ", serviceLevel="
+        + serviceLevel
+        + ", applicationEntryPoint="
+        + applicationEntryPoint
+        + ", custom1="
+        + custom1
+        + ", custom2="
+        + custom2
+        + ", custom3="
+        + custom3
+        + ", custom4="
+        + custom4
+        + ", custom5="
+        + custom5
+        + ", custom6="
+        + custom6
+        + ", custom7="
+        + custom7
+        + ", custom8="
+        + custom8
+        + "]";
   }
 }
