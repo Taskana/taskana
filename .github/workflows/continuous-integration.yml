@@ -16,6 +16,6 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
       - name: foo
-        run: echo ${{ github }}
+        run: toJson(${{ github }})
       - name: bar
-        run: ${{ github.repository }}/${{ github.ref }}
+        run: echo ${{ github.workflow }}-${{ github.repository }}/${{ github.ref }}
