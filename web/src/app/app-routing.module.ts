@@ -45,6 +45,7 @@ const appRoutes: Routes = [
         loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule)
       },
       {
+        canActivate: [BusinessAdminGuard],
         path: '**',
         redirectTo: 'administration/workbaskets'
       }
@@ -55,10 +56,12 @@ const appRoutes: Routes = [
     component: NoAccessComponent
   },
   {
+    canActivate: [BusinessAdminGuard],
     path: '**',
     redirectTo: 'taskana/administration/workbaskets'
   }
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(appRoutes, { useHash: true })],
   exports: [RouterModule]
