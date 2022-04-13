@@ -9,7 +9,7 @@ on:
   pull_request:
 
 concurrency:
-  group: ${{ github.repository }}/${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.repository }}/${{ github.ref }}
   cancel-in-progress: true
 
 env:
