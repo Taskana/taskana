@@ -57,7 +57,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./mvnw -B dependency:go-offline
-          ./mvnw -B dependency:go-offline -f rest/taskana-rest-spring-example-wildfly
           ./mvnw -B test -Dtest=GibtEsNet -DfailIfNoTests=false
       - name: Upload taskana artifacts
         uses: actions/upload-artifact@v3
@@ -266,6 +265,8 @@ jobs:
             database: DB2
           - module: taskana-rest-spring-example-boot
             database: DB2
+          - module: taskana-rest-spring-example-wildfly
+            database: POSTGRES_10
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -303,44 +304,11 @@ jobs:
         if: failure()
         uses: andymckay/cancel-action@0.2
 
-  # As soon as we can upgrade the JDK to 11 we can add wildfly to the test matrix
-  compile_and_test_taskana-rest-spring-example-wildfly:
-    runs-on: ubuntu-20.04
-    name: Compile and test taskana-rest-spring-example-wildfly on POSTGRES_10
-    needs: [ compile_backend ]
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-      - name: Set up JDK 8
-        uses: actions/setup-java@v3
-        with:
-          distribution: adopt
-          java-version: 8
-      - name: Cache maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
-      - name: Download taskana artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Start database
-        run: docker-databases/prepare_db.sh POSTGRES_10
-      - name: Test
-        run: ./mvnw -B verify -f rest/taskana-rest-spring-example-wildfly
-      - name: Cancel workflow
-        if: failure()
-        uses: andymckay/cancel-action@0.2
-
   release_artifacts:
     runs-on: ubuntu-20.04
     name: Release artifacts to OSS Sonatype
     if: github.repository == 'Taskana/taskana' && ( startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/master' ) && github.head_ref == ''
-    needs:
-      [ test_frontend, test_e2e, test_backend, compile_and_test_taskana-rest-spring-example-wildfly ]
+    needs: [ test_frontend, test_e2e, test_backend ]
     # as documented in the gpg manual (https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html)
     # we should execute this command before interacting with gpg (otherwise gpg won't work)
     env:
@@ -409,8 +377,7 @@ jobs:
     runs-on: ubuntu-20.04
     name: Deploy demo app to IBM Cloud Foundry
     if: github.repository == 'Taskana/taskana' && github.ref == 'refs/heads/master' && github.head_ref == ''
-    needs:
-      [ test_frontend, test_e2e, test_backend, compile_and_test_taskana-rest-spring-example-wildfly ]
+    needs: [ test_frontend, test_e2e, test_backend ]
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -465,8 +432,7 @@ jobs:
     name: Upload SonarQube analysis to sonarcloud
     # no pull request and not on release
     if: github.head_ref == '' && !startsWith(github.ref, 'refs/tags')
-    needs:
-      [ test_frontend, test_e2e, test_backend, compile_and_test_taskana-rest-spring-example-wildfly ]
+    needs: [ test_frontend, test_e2e, test_backend ]
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
