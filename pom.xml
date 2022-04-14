@@ -89,7 +89,7 @@
     <version.jacoco>0.8.8</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
-    <version.testcontainers>1.17.0</version.testcontainers>
+    <version.testcontainers>1.17.1</version.testcontainers>
 
     <!-- AspectJ dependencies -->
     <version.aspectj-maven-plugin>1.14.0</version.aspectj-maven-plugin>
