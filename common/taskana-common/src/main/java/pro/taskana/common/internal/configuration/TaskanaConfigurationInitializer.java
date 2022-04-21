@@ -1,5 +1,7 @@
 package pro.taskana.common.internal.configuration;
 
+import static java.util.function.Predicate.not;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -110,7 +112,7 @@ public class TaskanaConfigurationInitializer {
   static List<String> splitStringAndTrimElements(
       String str, String separator, UnaryOperator<String> modifier) {
     return Arrays.stream(str.split(Pattern.quote(separator)))
-        .filter(s -> !s.isEmpty())
+        .filter(not(String::isEmpty))
         .map(String::trim)
         .map(modifier)
         .collect(Collectors.toList());
@@ -134,7 +136,7 @@ public class TaskanaConfigurationInitializer {
             .filter(m -> m.getName().toLowerCase().contains(field.getName().toLowerCase()))
             .findFirst();
 
-    if (!hasSetterMethod.isPresent()) {
+    if (hasSetterMethod.isEmpty()) {
       throw new SystemException("No setter method for " + field.getName());
     }
 

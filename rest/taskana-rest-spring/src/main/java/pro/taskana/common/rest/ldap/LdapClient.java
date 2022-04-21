@@ -1,5 +1,7 @@
 package pro.taskana.common.rest.ldap;
 
+import static java.util.function.Predicate.not;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -565,18 +567,18 @@ public class LdapClient {
   List<LdapSettings> checkForMissingConfigurations() {
     return Arrays.stream(LdapSettings.values())
         // optional settings
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_EMAIL_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_PHONE_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_MOBILE_PHONE_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_1_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_2_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_3_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME))
-        .filter(p -> !p.equals(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE))
+        .filter(not(LdapSettings.TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_MIN_SEARCH_FOR_LENGTH::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_EMAIL_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_PHONE_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_MOBILE_PHONE_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_1_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_2_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_3_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE::equals))
         .filter(p -> p.getValueFromEnv(env) == null)
         .collect(Collectors.toList());
   }

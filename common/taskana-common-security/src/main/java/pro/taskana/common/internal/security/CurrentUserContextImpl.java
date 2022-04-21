@@ -1,5 +1,7 @@
 package pro.taskana.common.internal.security;
 
+import static java.util.function.Predicate.not;
+
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.Principal;
@@ -131,7 +133,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
       Set<Principal> principals = subject.getPrincipals();
       LOGGER.trace("Public principals of caller: {}", principals);
       return principals.stream()
-          .filter(principal -> !(principal instanceof GroupPrincipal))
+          .filter(not(GroupPrincipal.class::isInstance))
           .map(Principal::getName)
           .filter(Objects::nonNull)
           .map(this::convertAccessId)

@@ -1,5 +1,7 @@
 package pro.taskana.task.internal.jobs.helper;
 
+import static java.util.Objects.nonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
@@ -83,6 +85,6 @@ public class TaskUpdatePriorityWorker {
   }
 
   public static IntPredicate hasDifferentPriority(TaskSummary taskSummary) {
-    return prio -> taskSummary != null && prio != taskSummary.getPriority();
+    return prio -> nonNull(taskSummary) && prio != taskSummary.getPriority();
   }
 }

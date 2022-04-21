@@ -6,6 +6,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
 import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.base.DescribedPredicate;
@@ -256,7 +257,7 @@ class ArchitectureTest {
         TASKANA_SUB_PACKAGES.stream()
             .map(p -> p.split("\\.")[2])
             .distinct()
-            .filter(d -> !"common".equals(d))
+            .filter(not("common"::equals))
             .map(d -> ".." + d + "..");
     ThrowingConsumer<String> testMethod =
         p ->
@@ -285,7 +286,7 @@ class ArchitectureTest {
         TASKANA_SUB_PACKAGES.stream()
             .map(p -> p.split("\\.")[2])
             .distinct()
-            .filter(d -> !"monitor".equals(d))
+            .filter(not("monitor"::equals))
             .map(d -> ".." + d + "..");
 
     ThrowingConsumer<String> testMethod =
@@ -352,7 +353,7 @@ class ArchitectureTest {
   }
 
   private ArchCondition<JavaClass> implementToString() {
-    return new ArchCondition<JavaClass>("implement toString()") {
+    return new ArchCondition<>("implement toString()") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
         boolean implementToString =
@@ -371,7 +372,7 @@ class ArchitectureTest {
   }
 
   private ArchCondition<JavaClass> notImplementToString() {
-    return new ArchCondition<JavaClass>("not implement toString()") {
+    return new ArchCondition<>("not implement toString()") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
         boolean implementToString =
@@ -389,7 +390,7 @@ class ArchitectureTest {
   }
 
   private ArchCondition<JavaClass> beAnnotatedWithTestInstancePerClass() {
-    return new ArchCondition<JavaClass>("be annotated with @TestInstance(Lifecycle.PER_CLASS)") {
+    return new ArchCondition<>("be annotated with @TestInstance(Lifecycle.PER_CLASS)") {
       @Override
       public void check(JavaClass item, ConditionEvents events) {
         Optional<TestInstance> testInstanceOptional =
@@ -408,7 +409,7 @@ class ArchitectureTest {
   }
 
   private DescribedPredicate<JavaClass> areNestedTaskanaIntegrationTestClasses() {
-    return new DescribedPredicate<JavaClass>("are nested TaskanaIntegrationTest classes") {
+    return new DescribedPredicate<>("are nested TaskanaIntegrationTest classes") {
 
       @Override
       public boolean apply(JavaClass input) {
@@ -431,7 +432,7 @@ class ArchitectureTest {
   }
 
   private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifierAndPrivateConstants() {
-    return new ArchCondition<JavaClass>("only have fields with no modifier") {
+    return new ArchCondition<>("only have fields with no modifier") {
       final Set<JavaModifier> modifiersForConstants =
           Set.of(JavaModifier.PRIVATE, JavaModifier.STATIC, JavaModifier.FINAL);
 
@@ -456,7 +457,7 @@ class ArchitectureTest {
 
   private static ArchCondition<JavaClass> beDefinedInTaskanaSubPackages(
       List<Pattern> excludePackages) {
-    return new ArchCondition<JavaClass>("all be defined in TASKANA_SUB_PACKAGES") {
+    return new ArchCondition<>("all be defined in TASKANA_SUB_PACKAGES") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
         if (TASKANA_SUB_PACKAGES.stream().noneMatch(p -> javaClass.getPackageName().startsWith(p))
@@ -529,7 +530,7 @@ class ArchitectureTest {
               return values;
             });
 
-    return new ArchCondition<JavaClass>("not use the SQL function 'CURRENT_TIMESTAMP'") {
+    return new ArchCondition<>("not use the SQL function 'CURRENT_TIMESTAMP'") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
         for (JavaMethod method : javaClass.getAllMethods()) {

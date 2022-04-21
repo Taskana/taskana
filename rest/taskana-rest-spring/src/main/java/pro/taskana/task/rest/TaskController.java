@@ -1,7 +1,11 @@
 package pro.taskana.task.rest;
 
+import static java.util.function.Predicate.not;
+
 import java.beans.ConstructorProperties;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -130,9 +134,10 @@ public class TaskController {
     BulkOperationResults<String, TaskanaException> result =
         taskService.deleteTasks(taskIdsToDelete);
 
+    Set<String> failedIds = new HashSet<>(result.getFailedIds());
     List<TaskSummary> successfullyDeletedTaskSummaries =
         taskSummaries.stream()
-            .filter(summary -> !result.getFailedIds().contains(summary.getId()))
+            .filter(not(summary -> failedIds.contains(summary.getId())))
             .collect(Collectors.toList());
 
     return ResponseEntity.ok(

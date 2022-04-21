@@ -1,5 +1,7 @@
 package pro.taskana.common.rest;
 
+import static java.util.function.Predicate.not;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -228,7 +230,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
           Set<String> enumConstantSet = new HashSet<>(enumConstants);
 
           return getRejectedValues(typeMismatchException)
-              .filter(value -> !enumConstantSet.contains(value))
+              .filter(not(enumConstantSet::contains))
               .map(value -> new MalformedQueryParameter(queryParameter, value, enumConstants))
               .collect(Collectors.toList());
         }

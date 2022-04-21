@@ -1,5 +1,6 @@
 package pro.taskana.task.internal;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.time.Duration;
@@ -71,7 +72,9 @@ class ServiceLevelHandler {
     }
     if (priorityChanged) {
       List<MinimalTaskSummary> tasksWithoutManualPriority =
-          tasks.stream().filter(t -> !t.isManualPriorityActive()).collect(Collectors.toList());
+          tasks.stream()
+              .filter(not(MinimalTaskSummary::isManualPriorityActive))
+              .collect(Collectors.toList());
       updateTaskPriorityOnClassificationUpdate(
           tasksWithoutManualPriority, attachments, allInvolvedClassifications);
     }

@@ -36,6 +36,7 @@ public interface Workbasket extends WorkbasketSummary {
    * @param value the value of the {@linkplain WorkbasketCustomField} to be set
    * @deprecated Use {@linkplain #setCustomField(WorkbasketCustomField, String)} instead
    */
+  @Deprecated
   void setCustomAttribute(WorkbasketCustomField customField, String value);
 
   /**

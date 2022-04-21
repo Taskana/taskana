@@ -1,5 +1,7 @@
 package pro.taskana.task.internal;
 
+import static java.util.function.Predicate.not;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +81,7 @@ public class ObjectReferenceHandler {
 
     List<ObjectReference> newObjectReferences =
         newTaskImpl.getSecondaryObjectReferences().stream()
-            .filter(o -> !oldObjectReferencesIds.contains(o.getId()))
+            .filter(not(o -> oldObjectReferencesIds.contains(o.getId())))
             .collect(Collectors.toList());
 
     for (ObjectReference objectReference : newObjectReferences) {

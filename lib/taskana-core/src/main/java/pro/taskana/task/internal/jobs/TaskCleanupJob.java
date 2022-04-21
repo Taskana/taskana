@@ -1,5 +1,8 @@
 package pro.taskana.task.internal.jobs;
 
+import static java.util.Objects.nonNull;
+import static java.util.function.Predicate.not;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -111,9 +114,9 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
 
       List<String> taskIdsNotAllCompletedSameParentBusiness =
           numberParentTasksShouldHave.entrySet().stream()
-              .filter(entry -> entry.getKey() != null)
-              .filter(entry -> !entry.getKey().isEmpty())
-              .filter(entry -> !entry.getValue().equals(countParentTask.get(entry.getKey())))
+              .filter(entry -> nonNull(entry.getKey()))
+              .filter(not(entry -> entry.getKey().isEmpty()))
+              .filter(not(entry -> entry.getValue().equals(countParentTask.get(entry.getKey()))))
               .map(Map.Entry::getKey)
               .collect(Collectors.toList());
 

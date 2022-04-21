@@ -1,6 +1,7 @@
 package acceptance.task.query;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
@@ -392,7 +393,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
                 .createTaskQuery()
                 .orderByOwnerLongName(DESCENDING)
                 .list();
-        assertThat(results.stream().filter(r -> r.getOwnerLongName() != null))
+        assertThat(results)
+            .filteredOn(r -> nonNull(r.getOwnerLongName()))
             .hasSizeGreaterThan(2)
             .extracting(TaskSummary::getOwnerLongName)
             .isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
@@ -403,7 +405,8 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
       void should_OrderByOwnerLongNameAsc() {
         List<TaskSummary> results =
             taskanaEngine.getTaskService().createTaskQuery().orderByOwnerLongName(ASCENDING).list();
-        assertThat(results.stream().filter(r -> r.getOwnerLongName() != null))
+        assertThat(results)
+            .filteredOn(r -> nonNull(r.getOwnerLongName()))
             .hasSizeGreaterThan(2)
             .extracting(TaskSummary::getOwnerLongName)
             .isSortedAccordingTo(CASE_INSENSITIVE_ORDER);

@@ -1,5 +1,6 @@
 package pro.taskana.common.internal.util;
 
+import static java.util.function.Predicate.not;
 import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.lang.reflect.Field;
@@ -51,9 +52,9 @@ public class ObjectAttributeChangeDetector {
     List<JSONObject> changedAttributes =
         ReflectionUtil.retrieveAllFields(objectClass).stream()
             .peek(field -> field.setAccessible(true))
-            .filter(field -> !"customAttributes".equals(field.getName()))
+            .filter(not(field -> "customAttributes".equals(field.getName())))
             .map(wrap(field -> Triplet.of(field, field.get(oldObject), field.get(newObject))))
-            .filter(t -> !Objects.equals(t.getMiddle(), t.getRight()))
+            .filter(not(t -> Objects.equals(t.getMiddle(), t.getRight())))
             .map(t -> generateChangedAttribute(t.getLeft(), t.getMiddle(), t.getRight()))
             .collect(Collectors.toList());
 
