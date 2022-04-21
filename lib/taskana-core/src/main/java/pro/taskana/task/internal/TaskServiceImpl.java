@@ -1,5 +1,7 @@
 package pro.taskana.task.internal;
 
+import static java.util.function.Predicate.not;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -955,7 +957,7 @@ public class TaskServiceImpl implements TaskService {
               .collect(Collectors.toSet());
       List<MinimalTaskSummary> tasksAuthorizedFor =
           existingTasks.stream()
-              .filter(t -> !taskIdsToRemove.contains(t.getTaskId()))
+              .filter(not(t -> taskIdsToRemove.contains(t.getTaskId())))
               .collect(Collectors.toList());
       return Pair.of(tasksAuthorizedFor, bulkLog);
     }
@@ -969,7 +971,7 @@ public class TaskServiceImpl implements TaskService {
             .map(MinimalTaskSummary::getTaskId)
             .collect(Collectors.toSet());
     requestTaskIds.stream()
-        .filter(taskId -> !existingTaskIds.contains(taskId))
+        .filter(not(existingTaskIds::contains))
         .forEach(taskId -> bulkLog.addError(taskId, new TaskNotFoundException(taskId)));
     return bulkLog;
   }

@@ -96,6 +96,7 @@ public interface ClassificationSummary {
    *     ClassificationCustomField}
    * @deprecated Use {@linkplain #getCustomField(ClassificationCustomField)} instead
    */
+  @Deprecated
   String getCustomAttribute(ClassificationCustomField customField);
 
   /**

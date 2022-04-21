@@ -1,5 +1,6 @@
 package acceptance.classification.create;
 
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -66,7 +67,7 @@ class CreateClassificationAccTest {
         classificationService.createClassificationQuery().keyIn("Key1").list();
 
     assertThat(classifications)
-        .allMatch(c -> c.getId() != null)
+        .allMatch(c -> nonNull(c.getId()))
         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
         .containsExactlyInAnyOrder(
             classification.asSummary(), expectedMasterClassification.asSummary());
@@ -133,7 +134,7 @@ class CreateClassificationAccTest {
                   .list();
 
           assertThat(classifications)
-              .allMatch(c -> c.getId() != null)
+              .allMatch(c -> nonNull(c.getId()))
               .contains(childClassification.asSummary());
         };
 

@@ -1,5 +1,6 @@
 package pro.taskana.task.rest.assembler;
 
+import static java.util.function.Predicate.not;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -179,7 +180,8 @@ public class TaskRepresentationModelAssembler
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));
     task.setCallbackInfo(
         repModel.getCallbackInfo().stream()
-            .filter(e -> Objects.nonNull(e.getKey()) && !e.getKey().isEmpty())
+            .filter(e -> Objects.nonNull(e.getKey()))
+            .filter(not(e -> e.getKey().isEmpty()))
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));
     return task;
   }

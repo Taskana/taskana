@@ -1,6 +1,7 @@
 package pro.taskana;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static java.util.function.Predicate.not;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,12 +37,11 @@ class SpringArchitectureTest {
   }
 
   private ArchCondition<JavaClass> shouldOnlyHaveAnnotatedFields() {
-    return new ArchCondition<JavaClass>(
-        "all fields should have a @JsonProperty or @JsonIgnore annotation") {
+    return new ArchCondition<>("all fields should have a @JsonProperty or @JsonIgnore annotation") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents events) {
         javaClass.getAllFields().stream()
-            .filter(field -> !field.reflect().isSynthetic())
+            .filter(not(field -> field.reflect().isSynthetic()))
             .filter(
                 field ->
                     Stream.of(JsonProperty.class, JsonIgnore.class)

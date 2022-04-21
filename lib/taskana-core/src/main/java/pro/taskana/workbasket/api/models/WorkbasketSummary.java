@@ -66,6 +66,7 @@ public interface WorkbasketSummary {
    * @return the value for the given {@linkplain WorkbasketCustomField}
    * @deprecated Use {@linkplain #getCustomField(WorkbasketCustomField)} instead
    */
+  @Deprecated
   String getCustomAttribute(WorkbasketCustomField customField);
 
   /**

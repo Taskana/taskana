@@ -1,5 +1,7 @@
 package pro.taskana.common.internal.util;
 
+import static java.util.function.Predicate.not;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +36,7 @@ public class ReflectionUtil {
       fields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
       currentClass = currentClass.getSuperclass();
     }
-    return fields.stream().filter(f -> !f.isSynthetic()).collect(Collectors.toList());
+    return fields.stream().filter(not(Field::isSynthetic)).collect(Collectors.toList());
   }
 
   // safe because both Long.class and long.class are of type Class<Long>

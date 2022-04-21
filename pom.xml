@@ -192,16 +192,6 @@
       </build>
     </profile>
     <profile>
-      <id>jdk8-compatibility</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <properties>
-        <maven.compiler.release>8</maven.compiler.release>
-        <maven.compiler.testRelease>${java.version}</maven.compiler.testRelease>
-      </properties>
-    </profile>
-    <profile>
       <id>snapshot</id>
       <build>
         <plugins>

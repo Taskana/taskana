@@ -268,6 +268,7 @@ public interface TaskSummary {
    * @return the value for the given customField
    * @deprecated Use {@linkplain #getCustomField(TaskCustomField)} instead
    */
+  @Deprecated
   String getCustomAttribute(TaskCustomField customField);
 
   /**

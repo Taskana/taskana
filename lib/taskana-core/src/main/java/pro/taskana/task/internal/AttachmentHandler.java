@@ -1,5 +1,7 @@
 package pro.taskana.task.internal;
 
+import static java.util.function.Predicate.not;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +89,7 @@ public class AttachmentHandler {
 
     List<Attachment> newAttachments =
         newTaskImpl.getAttachments().stream()
-            .filter(a -> !oldAttachmentIds.contains(a.getId()))
+            .filter(not(a -> oldAttachmentIds.contains(a.getId())))
             .collect(Collectors.toList());
 
     for (Attachment attachment : newAttachments) {

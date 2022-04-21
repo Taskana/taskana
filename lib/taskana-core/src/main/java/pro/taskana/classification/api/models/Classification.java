@@ -134,6 +134,7 @@ public interface Classification extends ClassificationSummary {
    *     to be set
    * @deprecated Use {@linkplain #setCustomField(ClassificationCustomField, String)} instead
    */
+  @Deprecated
   void setCustomAttribute(ClassificationCustomField customField, String value);
 
   /**

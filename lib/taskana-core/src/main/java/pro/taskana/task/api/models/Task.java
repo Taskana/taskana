@@ -129,6 +129,7 @@ public interface Task extends TaskSummary {
    * @param value the value of the {@linkplain TaskCustomField customField} to be set
    * @deprecated Use {@linkplain #setCustomField(TaskCustomField, String)} instead
    */
+  @Deprecated
   void setCustomAttribute(TaskCustomField customField, String value);
 
   /**

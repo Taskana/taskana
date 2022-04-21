@@ -1,5 +1,6 @@
 package pro.taskana.simplehistory.impl.jobs;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
@@ -165,7 +166,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
         (parentBusinessProcessId, taskHistoryIdsByEventType) -> {
           if (taskHistoryIdsByEventType.get(TaskHistoryEventType.CREATED.getName()).size()
               == taskHistoryIdsByEventType.entrySet().stream()
-                  .filter(entry -> !entry.getKey().equals(TaskHistoryEventType.CREATED.getName()))
+                  .filter(
+                      not(entry -> entry.getKey().equals(TaskHistoryEventType.CREATED.getName())))
                   .mapToInt(stringListEntry -> stringListEntry.getValue().size())
                   .sum()) {
             taskIdsToDeleteHistoryEventsFor.addAll(
