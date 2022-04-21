@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
+import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 /**
@@ -73,7 +74,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_CURRENT_USER),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             ParameterizedTypeReference.forType(TaskanaUserInfoRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
@@ -90,7 +91,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
         TEMPLATE.exchange(
             restHelper.toUrl("/taskana" + RestEndpoints.URL_ACCESS_ID + "?search-for=rig"),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {});
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).hasSize(2);
@@ -105,7 +106,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
                 "/taskana" + RestEndpoints.URL_TASKS_ID,
                 "TKI:000000000000000000000000000000000001"),
             HttpMethod.GET,
-            new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
+            new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
             ParameterizedTypeReference.forType(TaskRepresentationModel.class));
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();

@@ -22,6 +22,13 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 public class AbstractAccTest {
 
   protected static final String DEPENDENCY_VERSION = "5.1.1-SNAPSHOT";
+
+  static {
+    Runtime.getRuntime().addShutdownHook(new Thread(AbstractAccTest::stopPostgresDb));
+
+    startPostgresDb();
+  }
+
   protected RestHelper restHelper = new RestHelper(8080);
 
   protected TaskRepresentationModel getTaskResourceSample() {
@@ -51,7 +58,7 @@ public class AbstractAccTest {
     return RestHelper.TEMPLATE.exchange(
         restHelper.toUrl("/taskana" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
         HttpMethod.GET,
-        new HttpEntity<>(restHelper.generateHeadersForUser("teamlead-1")),
+        new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
         ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
   }
 
@@ -60,7 +67,7 @@ public class AbstractAccTest {
     return RestHelper.TEMPLATE.exchange(
         restHelper.toUrl("/taskana" + RestEndpoints.URL_TASKS),
         HttpMethod.POST,
-        new HttpEntity<>(taskRepresentationModel, restHelper.generateHeadersForUser("teamlead-1")),
+        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1")),
         ParameterizedTypeReference.forType(TaskRepresentationModel.class));
   }
 
@@ -77,5 +84,53 @@ public class AbstractAccTest {
       stringBuilder.append(str);
     }
     return stringBuilder.toString();
+  }
+
+  private static void stopPostgresDb() {
+    try {
+      boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+      ProcessBuilder builder = new ProcessBuilder();
+      if (isWindows) {
+        builder.command(
+            "cmd.exe", "/c", "docker-compose -f ../../docker-databases/docker-compose.yml down -v");
+      } else {
+        builder.command(
+            "sh", "-c", "docker-compose -f ../../docker-databases/docker-compose.yml down -v");
+      }
+      Process process = builder.start();
+      int exitCode = process.waitFor();
+      if (exitCode != 0) {
+        throw new RuntimeException("could not start postgres db!");
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static void startPostgresDb() {
+    try {
+      boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+      ProcessBuilder builder = new ProcessBuilder();
+      if (isWindows) {
+        builder.command(
+            "cmd.exe",
+            "/c",
+            "docker-compose -f ../../docker-databases/docker-compose.yml up -d",
+            "taskana-postgres_10");
+      } else {
+        builder.command(
+            "sh",
+            "-c",
+            "docker-compose -f ../../docker-databases/docker-compose.yml up -d",
+            "taskana-postgres_10");
+      }
+      Process process = builder.start();
+      int exitCode = process.waitFor();
+      if (exitCode != 0) {
+        throw new RuntimeException("could not start postgres db!");
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
