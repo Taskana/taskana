@@ -47,38 +47,22 @@ function mapDBToDockerComposeServiceName() {
 
 function main() {
   [[ $# -eq 0 || "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
-  propFile="$HOME/taskanaUnitTest.properties"
   scriptDir=$(dirname "$0")
 
   case "$1" in
   H2)
-    [[ -f "$propFile" ]] && rm "$propFile"
     ;;
   DB2|DB2_11_5)
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
-
-    echo 'jdbcDriver=com.ibm.db2.jcc.DB2Driver' > $propFile
-    echo 'jdbcUrl=jdbc:db2://localhost:5101/tskdb' >> $propFile
-    echo 'dbUserName=db2inst1' >> $propFile
-    echo 'dbPassword=db2inst1-pwd' >> $propFile
-    echo 'schemaName=TASKANA' >> $propFile
     ;;
   POSTGRES|POSTGRES_10)
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
-   
-    echo 'jdbcDriver=org.postgresql.Driver' > $propFile
-    echo 'jdbcUrl=jdbc:postgresql://localhost:5102/postgres' >> $propFile
-    echo 'dbUserName=postgres' >> $propFile
-    echo 'dbPassword=postgres' >> $propFile
-    echo 'schemaName=taskana' >> $propFile
     ;;
   stop)
     # this variable is necessary, so that the script can terminate properly
     # when the provided database name does not match. PLEASE DO NOT INLINE!
     local composeServiceName="$(mapDBToDockerComposeServiceName "$2")"
     docker-compose -f $scriptDir/docker-compose.yml rm -f -s -v $composeServiceName
-
-    [[ -f "$propFile" ]] && rm "$propFile"
     ;;
   *)
     echo "unknown database '$1'" >&2
