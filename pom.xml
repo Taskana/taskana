@@ -44,7 +44,7 @@
     <version.json>20220320</version.json>
 
     <!-- build dependencies -->
-    <version.checkstyle>9.3</version.checkstyle>
+    <version.checkstyle>10.2</version.checkstyle>
     <version.google-java-format>1.15.0</version.google-java-format>
     <version.maven.checkstyle>3.1.2</version.maven.checkstyle>
     <version.maven.jar>3.2.2</version.maven.jar>
