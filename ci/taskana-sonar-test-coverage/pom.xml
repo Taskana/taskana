@@ -59,6 +59,11 @@
       <artifactId>taskana-spring</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-test-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- all rest dependencies -->
     <dependency>
