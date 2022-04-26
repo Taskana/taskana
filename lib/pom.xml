@@ -22,5 +22,6 @@
     <module>taskana-spring</module>
     <module>taskana-cdi-example</module>
     <module>taskana-spring-example</module>
+    <module>taskana-test-api</module>
   </modules>
 </project>
