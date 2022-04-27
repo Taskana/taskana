@@ -1,8 +1,10 @@
 # Configuration file for Cloud Foundry, see https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
 applications:
-- name: taskana-rest-spring-example-boot
-  path: ../rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
-  buildpacks: 
-  - https://github.com/cloudfoundry/java-buildpack.git
-  memory: 1G
-  disk_quota: 512M
+  - name: taskana-rest-spring-example-boot
+    path: ../rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
+    buildpacks:
+      - https://github.com/cloudfoundry/java-buildpack.git
+    memory: 1G
+    disk_quota: 512M
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 11.+ } }'
