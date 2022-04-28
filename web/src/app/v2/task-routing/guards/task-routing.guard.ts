@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { TaskanaEngineService } from '../services/taskana-engine/taskana-engine.service';
+import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable({

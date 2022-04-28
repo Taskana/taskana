@@ -11,6 +11,7 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "allowedCommonJsDependencies": ["chart.js"],
             "aot": true,
             "sourceMap": {
               "scripts": true

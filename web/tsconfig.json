@@ -10,8 +10,39 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"]
+    "target": "es2017",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "paths": {
+      "@task/*": [
+        "app/v2/task/*"
+      ],
+      "@shared/*": [
+        "app/v2/shared/*"
+      ],
+      "@classification/*": [
+        "app/v2/classification/*"
+      ],
+      "@history/*": [
+        "app/v2/history/*"
+      ],
+      "@monitor/*": [
+        "app/v2/monitor/*"
+      ],
+      "@shell/*": [
+        "app/v2/shell/*"
+      ],
+      "@task-routing/*": [
+        "app/v2/task-routing/*"
+      ],
+      "@workbasket/*": [
+        "app/v2/workbasket/*"
+      ]
+    }
   }
 }

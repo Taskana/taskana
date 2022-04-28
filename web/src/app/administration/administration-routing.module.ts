@@ -69,7 +69,7 @@ const routes: Routes = [
       {
         path: 'task-routing',
         canActivate: [DomainGuard],
-        loadChildren: () => import('../task-routing/task-routing.module').then((m) => m.TaskRoutingModule)
+        loadChildren: () => import('@task-routing/task-routing.module').then((m) => m.TaskRoutingModule)
       }
     ]
   },
