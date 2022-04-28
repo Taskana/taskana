@@ -357,7 +357,7 @@ jobs:
           -pl :taskana-parent,\
           :taskana-common-parent,:taskana-common-logging,:taskana-common,:taskana-common-security,\
           :taskana-common-data,:taskana-common-test,\
-          :taskana-lib-parent,:taskana-core,:taskana-cdi,:taskana-spring, :taskana-test-api,\
+          :taskana-lib-parent,:taskana-core,:taskana-cdi,:taskana-spring,:taskana-test-api,\
           :taskana-rest-parent,:taskana-web,:taskana-rest-spring,\
           :taskana-history-parent,:taskana-simplehistory-provider,:taskana-simplehistory-rest-spring,:taskana-loghistory-provider,\
           :taskana-routing-parent,:taskana-spi-routing-dmn-router,:taskana-routing-rest
