@@ -60,6 +60,7 @@ import { UserGuard } from './shared/guards/user.guard';
 import { ClassificationCategoriesService } from './shared/services/classification-categories/classification-categories.service';
 import { environment } from '../environments/environment';
 import { STATES } from './shared/store';
+import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
 const DECLARATIONS = [AppComponent, NavBarComponent, UserInformationComponent, NoAccessComponent, SidenavListComponent];
 
@@ -87,6 +88,7 @@ const MODULES = [
   MatProgressSpinnerModule,
   NgxsModule.forRoot(STATES, { developmentMode: !environment.production }),
   NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production, maxAge: 25 }),
+  NgxsRouterPluginModule.forRoot(),
   HttpClientXsrfModule
 ];
 

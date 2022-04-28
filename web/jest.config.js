@@ -14,6 +14,6 @@ module.exports = {
   // coverageReporters: ['html', 'text'],
   coverageDirectory: 'coverage/taskana-web',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
-    prefix: '<rootDir>/'
+    prefix: `<rootDir>/${compilerOptions.baseUrl}/`
   })
 };

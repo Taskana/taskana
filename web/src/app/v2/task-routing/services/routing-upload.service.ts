@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { StartupService } from '../shared/services/startup/startup.service';
+import { StartupService } from 'app/shared/services/startup/startup.service';
 
 @Injectable({
   providedIn: 'root'

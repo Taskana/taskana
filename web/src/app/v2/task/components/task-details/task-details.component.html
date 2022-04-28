@@ -1,0 +1,8 @@
+<div *ngIf="selectedTask$ | async as task">
+  <div>
+    <p>{{task.taskId}}</p>
+    <p>{{task.name}}</p>
+    <p>{{task.priority}}</p>
+    <p>{{task.owner}}</p>
+  </div>
+</div>

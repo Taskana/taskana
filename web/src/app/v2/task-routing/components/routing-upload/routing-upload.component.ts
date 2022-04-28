@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RoutingUploadService } from '../routing-upload.service';
-import { NotificationService } from '../../shared/services/notifications/notification.service';
+import { RoutingUploadService } from '@task-routing/services/routing-upload.service';
+import { NotificationService } from 'app/shared/services/notifications/notification.service';
 import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({

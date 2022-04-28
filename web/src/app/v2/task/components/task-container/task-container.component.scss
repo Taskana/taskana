@@ -1,0 +1,13 @@
+.task-list-container {
+  display: flex;
+  flex-direction: row;
+}
+
+taskana-task-list {
+  width: 500px;
+  min-width: 500px;
+}
+
+router-outlet {
+  flex-grow: 1;
+}
