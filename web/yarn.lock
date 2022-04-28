@@ -1544,7 +1544,7 @@
   dependencies:
     tslib "^1.9.0"
 
-"@ngxs/router-plugin@^3.7.3":
+"@ngxs/router-plugin@3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@ngxs/router-plugin/-/router-plugin-3.7.3.tgz#76a4a275a9758a2a0124603087143bd75fffebd2"
   integrity sha512-KeerQ1h3We3kKENQboJVID/39eKbhfAxZ9JBUcl9WVHjQoOShOdocNQ/34neReJEzW5VTToM7MQt0tDmN48Eig==
