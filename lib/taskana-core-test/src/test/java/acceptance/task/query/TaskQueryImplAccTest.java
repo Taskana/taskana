@@ -1,12 +1,11 @@
 package acceptance.task.query;
 
-import static acceptance.DefaultTestEntities.defaultTestClassification;
-import static acceptance.DefaultTestEntities.defaultTestObjectReference;
-import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.task.api.CallbackState.CALLBACK_PROCESSING_REQUIRED;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
-import acceptance.DefaultTestEntities;
 import java.security.PrivilegedActionException;
 import java.time.Instant;
 import java.util.List;
@@ -16,15 +15,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.security.CurrentUserContext;
-import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
@@ -36,6 +32,9 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.builder.ObjectReferenceBuilder;
 import pro.taskana.task.internal.builder.TaskAttachmentBuilder;
 import pro.taskana.task.internal.builder.TaskBuilder;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -73,8 +72,7 @@ class TaskQueryImplAccTest {
 
   private WorkbasketSummary createWorkbasketWithPermission() throws PrivilegedActionException {
     WorkbasketSummary workbasketSummary =
-        DefaultTestEntities.defaultTestWorkbasket()
-            .buildAndStoreAsSummary(workbasketService, "businessadmin");
+        defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
     persistPermission(workbasketSummary);
     return workbasketSummary;
   }
@@ -262,6 +260,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Received {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -316,6 +315,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Created {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -370,6 +370,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Claimed {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -424,6 +425,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Modified {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -478,6 +480,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Planned {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -588,6 +591,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Completed {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -765,6 +769,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Note {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -801,6 +806,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Description {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -1240,6 +1246,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class WorkbasketId {
+
       WorkbasketSummary wb1;
       WorkbasketSummary wb2;
       TaskSummary taskSummary1;
@@ -1335,6 +1342,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class BusinessProcessId {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -1543,6 +1551,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class PrimaryObjectReference {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -1975,6 +1984,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Read {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2009,6 +2019,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class Transferred {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2047,6 +2058,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class AttachmentClassificationId {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2278,6 +2290,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class AttachmentChannel {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2440,6 +2453,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class AttachmentReceived {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2494,6 +2508,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class QueryingObjectReferenceCombinations {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2615,6 +2630,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class ObjectReferenceValue {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2688,6 +2704,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class ObjectReferenceType {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2766,6 +2783,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class ObjectReferenceCompany {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2840,6 +2858,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class ObjectReferenceSystem {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
@@ -2930,6 +2949,7 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class ObjectReferenceSystemInstance {
+
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;

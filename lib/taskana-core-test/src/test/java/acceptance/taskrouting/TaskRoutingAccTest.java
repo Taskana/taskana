@@ -3,22 +3,22 @@ package acceptance.taskrouting;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import acceptance.DefaultTestEntities;
 import acceptance.taskrouting.TaskRoutingAccTest.TaskRoutingProviderForDomainA;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
-import testapi.WithServiceProvider;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.testapi.DefaultTestEntities;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.WithServiceProvider;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
