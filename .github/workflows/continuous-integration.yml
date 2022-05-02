@@ -245,6 +245,7 @@ jobs:
           - taskana-common-logging
           - taskana-common-test
           - taskana-core
+          - taskana-core-test
           - taskana-cdi
           - taskana-cdi-example
           - taskana-test-api
@@ -263,6 +264,10 @@ jobs:
           - module: taskana-core
             database: POSTGRES
           - module: taskana-core
+            database: DB2
+          - module: taskana-core-test
+            database: POSTGRES
+          - module: taskana-core-test
             database: DB2
           - module: taskana-test-api
             database: POSTGRES

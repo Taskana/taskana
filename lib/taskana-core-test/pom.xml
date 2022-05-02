@@ -1,0 +1,67 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>taskana-core-test</artifactId>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>The tests for the taskana-core module</description>
+
+  <parent>
+    <groupId>pro.taskana</groupId>
+    <artifactId>taskana-lib-parent</artifactId>
+    <version>5.1.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-test-api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.db2.jcc</groupId>
+      <artifactId>db2jcc4</artifactId>
+      <version>${version.db2}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <!-- this repository is needed to fetch com.ibm.db2.jcc -->
+    <repository>
+      <id>novatec public</id>
+      <name>novatec-repository</name>
+      <url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>
+    </repository>
+  </repositories>
+</project>

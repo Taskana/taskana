@@ -115,6 +115,7 @@
       ${project.basedir}/../../ci/taskana-sonar-test-coverage/target/site/jacoco-aggregate/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.sources>src/main/java</sonar.sources>
+    <sonar.tests>src/test/java</sonar.tests>
   </properties>
 
   <modules>
