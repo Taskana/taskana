@@ -1,23 +1,20 @@
 package acceptance.taskcomment.update;
 
-import static acceptance.DefaultTestEntities.defaultTestClassification;
-import static acceptance.DefaultTestEntities.defaultTestObjectReference;
-import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
@@ -25,6 +22,9 @@ import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.task.internal.builder.TaskCommentBuilder;
 import pro.taskana.task.internal.models.TaskCommentImpl;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;

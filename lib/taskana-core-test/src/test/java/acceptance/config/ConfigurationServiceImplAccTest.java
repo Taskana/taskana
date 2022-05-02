@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.common.internal.ConfigurationMapper;
 import pro.taskana.common.internal.ConfigurationServiceImpl;
 import pro.taskana.common.internal.util.ResourceUtil;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
 
 @TaskanaIntegrationTest
 public class ConfigurationServiceImplAccTest {

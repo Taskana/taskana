@@ -1,22 +1,23 @@
 package acceptance.classification.query;
 
-import static acceptance.DefaultTestEntities.defaultTestClassification;
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.security.WithAccessId;
 
 /** Acceptance test for classification queries and authorization. */
 @TaskanaIntegrationTest
 class ClassificationQueryAccTest {
+
   @TaskanaInject ClassificationService classificationService;
 
   @WithAccessId(user = "businessadmin")

@@ -4,7 +4,6 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import acceptance.DefaultTestEntities;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -17,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
@@ -32,11 +29,15 @@ import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.internal.util.Pair;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.testapi.DefaultTestEntities;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.security.WithAccessId;
 
 /** Acceptance test for all "create classification" scenarios. */
 @TaskanaIntegrationTest
 class CreateClassificationAccTest {
+
   @TaskanaInject ClassificationService classificationService;
 
   @WithAccessId(user = "businessadmin")

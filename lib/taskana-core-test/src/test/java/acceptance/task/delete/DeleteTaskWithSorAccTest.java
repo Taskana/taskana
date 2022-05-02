@@ -1,21 +1,17 @@
 package acceptance.task.delete;
 
-import static acceptance.DefaultTestEntities.defaultTestClassification;
-import static acceptance.DefaultTestEntities.defaultTestObjectReference;
-import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
-import acceptance.TaskanaEngineProxy;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
@@ -23,6 +19,10 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.ObjectReferenceMapper;
 import pro.taskana.task.internal.builder.ObjectReferenceBuilder;
 import pro.taskana.task.internal.builder.TaskBuilder;
+import pro.taskana.testapi.TaskanaEngineProxy;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -33,6 +33,7 @@ import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
  */
 @TaskanaIntegrationTest
 class DeleteTaskWithSorAccTest {
+
   @TaskanaInject TaskService taskService;
   @TaskanaInject WorkbasketService workbasketService;
   @TaskanaInject ClassificationService classificationService;
