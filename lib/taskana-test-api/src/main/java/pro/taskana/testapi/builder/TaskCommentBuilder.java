@@ -1,4 +1,4 @@
-package pro.taskana.task.internal.builder;
+package pro.taskana.testapi.builder;
 
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;

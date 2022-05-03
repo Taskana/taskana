@@ -1,13 +1,13 @@
-package acceptance.builder;
+package pro.taskana.testapi.tests.builder;
 
-import static acceptance.DefaultTestEntities.defaultTestObjectReference;
-import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static pro.taskana.classification.internal.builder.ClassificationBuilder.newClassification;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
-import static pro.taskana.task.internal.builder.TaskCommentBuilder.newTaskComment;
-import static pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
+import static pro.taskana.testapi.builder.ClassificationBuilder.newClassification;
+import static pro.taskana.testapi.builder.TaskCommentBuilder.newTaskComment;
+import static pro.taskana.testapi.builder.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
+import static pro.taskana.testapi.tests.DefaultTestEntities.defaultTestObjectReference;
+import static pro.taskana.testapi.tests.DefaultTestEntities.defaultTestWorkbasket;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,21 +19,21 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
-import pro.taskana.task.internal.builder.TaskBuilder;
-import pro.taskana.task.internal.builder.TaskCommentBuilder;
 import pro.taskana.task.internal.models.TaskCommentImpl;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.TaskCommentBuilder;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;

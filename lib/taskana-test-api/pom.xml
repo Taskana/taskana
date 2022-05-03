@@ -59,8 +59,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- test dependencies -->
-        <dependency>
+      <!-- test dependencies -->
+      <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
@@ -90,7 +90,7 @@
 
     <repositories>
     <!-- this repository is needed to fetch com.ibm.db2.jcc -->
-        <repository>
+      <repository>
             <id>novatec public</id>
             <name>novatec-repository</name>
             <url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>

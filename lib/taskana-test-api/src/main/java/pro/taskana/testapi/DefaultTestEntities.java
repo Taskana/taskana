@@ -2,10 +2,10 @@ package pro.taskana.testapi;
 
 import java.util.UUID;
 
-import pro.taskana.classification.internal.builder.ClassificationBuilder;
-import pro.taskana.task.internal.builder.ObjectReferenceBuilder;
+import pro.taskana.testapi.builder.ClassificationBuilder;
+import pro.taskana.testapi.builder.ObjectReferenceBuilder;
+import pro.taskana.testapi.builder.WorkbasketBuilder;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.internal.builder.WorkbasketBuilder;
 
 public class DefaultTestEntities {
 
