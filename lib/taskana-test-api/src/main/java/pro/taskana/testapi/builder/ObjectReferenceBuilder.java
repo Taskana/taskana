@@ -1,4 +1,4 @@
-package pro.taskana.task.internal.builder;
+package pro.taskana.testapi.builder;
 
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;

@@ -1,7 +1,7 @@
-package acceptance.builder;
+package pro.taskana.testapi.tests.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pro.taskana.task.internal.builder.ObjectReferenceBuilder.newObjectReference;
+import static pro.taskana.testapi.builder.ObjectReferenceBuilder.newObjectReference;
 
 import org.junit.jupiter.api.Test;
 

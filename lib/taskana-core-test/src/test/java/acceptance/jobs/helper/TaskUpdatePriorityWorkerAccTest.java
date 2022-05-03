@@ -2,7 +2,6 @@ package acceptance.jobs.helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import acceptance.DefaultTestEntities;
 import acceptance.priorityservice.TestPriorityServiceProvider;
 import java.time.Instant;
 import java.util.List;
@@ -12,26 +11,27 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
-import testapi.WithServiceProvider;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityWorker;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.testapi.DefaultTestEntities;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.WithServiceProvider;
+import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 @TaskanaIntegrationTest
 class TaskUpdatePriorityWorkerAccTest {

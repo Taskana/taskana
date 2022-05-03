@@ -18,11 +18,11 @@ import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.WithServiceProvider;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 @WithServiceProvider(
     serviceProviderInterface = TaskRoutingProvider.class,

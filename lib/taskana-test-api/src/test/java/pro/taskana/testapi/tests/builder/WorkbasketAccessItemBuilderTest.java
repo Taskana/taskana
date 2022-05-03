@@ -1,23 +1,23 @@
-package acceptance.builder;
+package pro.taskana.testapi.tests.builder;
 
-import static acceptance.DefaultTestEntities.defaultTestWorkbasket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
-import static pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
+import static pro.taskana.testapi.builder.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
+import static pro.taskana.testapi.tests.DefaultTestEntities.defaultTestWorkbasket;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
-import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 @TaskanaIntegrationTest
