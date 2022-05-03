@@ -1,8 +1,8 @@
-package acceptance.builder;
+package pro.taskana.testapi.tests.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static pro.taskana.classification.internal.builder.ClassificationBuilder.newClassification;
+import static pro.taskana.testapi.builder.ClassificationBuilder.newClassification;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,18 +13,18 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.classification.internal.builder.ClassificationBuilder;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.internal.util.Quadruple;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.ClassificationBuilder;
+import pro.taskana.testapi.security.WithAccessId;
 
 @TaskanaIntegrationTest
 class ClassificationBuilderTest {

@@ -1,22 +1,22 @@
-package acceptance.builder;
+package pro.taskana.testapi.tests.builder;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import acceptance.DefaultTestEntities;
 import java.time.Instant;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import testapi.TaskanaInject;
-import testapi.TaskanaIntegrationTest;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.classification.internal.builder.ClassificationBuilder;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
-import pro.taskana.task.internal.builder.TaskAttachmentBuilder;
 import pro.taskana.task.internal.models.AttachmentImpl;
+import pro.taskana.testapi.TaskanaInject;
+import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.ClassificationBuilder;
+import pro.taskana.testapi.builder.TaskAttachmentBuilder;
+import pro.taskana.testapi.tests.DefaultTestEntities;
 
 @TaskanaIntegrationTest
 class TaskAttachmentBuilderTest {

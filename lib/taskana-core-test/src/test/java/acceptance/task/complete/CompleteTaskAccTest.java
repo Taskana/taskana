@@ -30,16 +30,16 @@ import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 @TaskanaIntegrationTest
 class CompleteTaskAccTest {

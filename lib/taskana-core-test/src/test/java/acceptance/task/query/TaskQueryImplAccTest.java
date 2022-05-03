@@ -29,16 +29,16 @@ import pro.taskana.task.api.WildcardSearchField;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.task.internal.builder.ObjectReferenceBuilder;
-import pro.taskana.task.internal.builder.TaskAttachmentBuilder;
-import pro.taskana.task.internal.builder.TaskBuilder;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.ObjectReferenceBuilder;
+import pro.taskana.testapi.builder.TaskAttachmentBuilder;
+import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
-import pro.taskana.workbasket.internal.builder.WorkbasketAccessItemBuilder;
 
 @TaskanaIntegrationTest
 class TaskQueryImplAccTest {
