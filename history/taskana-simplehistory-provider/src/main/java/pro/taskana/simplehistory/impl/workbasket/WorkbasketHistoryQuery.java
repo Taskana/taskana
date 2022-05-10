@@ -273,6 +273,16 @@ public interface WorkbasketHistoryQuery
   WorkbasketHistoryQuery orderByUserId(SortDirection sortDirection);
 
   /**
+   * Sort the query result by {@linkplain WorkbasketHistoryEvent#getId() id} of the {@linkplain
+   * WorkbasketHistoryEvent}.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  WorkbasketHistoryQuery orderById(SortDirection sortDirection);
+
+  /**
    * Sort the query result by Domain.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.

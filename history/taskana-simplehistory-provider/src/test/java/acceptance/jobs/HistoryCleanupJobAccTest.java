@@ -20,6 +20,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.internal.util.Pair;
+import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob;
@@ -32,7 +33,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
   @BeforeEach
   void before() throws Exception {
-    resetDb(getSchemaName());
+    resetDb(DataSourceGenerator.getSchemaName());
   }
 
   @Test

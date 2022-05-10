@@ -29,14 +29,13 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   private static final String SQL_EXCEPTION_MESSAGE =
       "Method openConnection() could not open a connection to the database.";
 
-  private TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  private final TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  private final List<String> orderColumns;
 
   @SuppressWarnings("unused")
   private WorkbasketHistoryQueryColumnName columnName;
 
   private List<String> orderBy;
-  private List<String> orderColumns;
-
   private String[] idIn;
   private String[] workbasketIdIn;
   private String[] eventTypeIn;
@@ -411,6 +410,11 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   @Override
   public WorkbasketHistoryQuery orderByUserId(SortDirection sortDirection) {
     return addOrderCriteria("USER_ID", sortDirection);
+  }
+
+  @Override
+  public WorkbasketHistoryQuery orderById(SortDirection sortDirection) {
+    return addOrderCriteria("ID", sortDirection);
   }
 
   @Override

@@ -273,10 +273,14 @@ jobs:
             database: POSTGRES
           - module: taskana-test-api
             database: DB2
+          - module: taskana-simplehistory-provider
+            database: DB2
+          - module: taskana-simplehistory-provider
+            database: POSTGRES
           - module: taskana-rest-spring-example-boot
             database: DB2
           - module: taskana-rest-spring-example-wildfly
-            database: POSTGRES_10
+            database: POSTGRES
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
