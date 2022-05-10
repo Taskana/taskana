@@ -81,12 +81,12 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
 
     assertThat(offsetAndLimitResult).hasSize(2);
     assertThat(offsetAndLimitResult.get(0).getUserId())
-        .isNotEqualTo(regularResult.get(0).getUserId());
-    assertThat(offsetAndLimitResult.get(0).getUserId()).isEqualTo(regularResult.get(1).getUserId());
+        .isNotEqualTo(regularResult.get(0).getUserId())
+        .isEqualTo(regularResult.get(1).getUserId());
   }
 
   @Test
-  void should_ReturnEmptyList_When_ProvidingWrongContraints() {
+  void should_ReturnEmptyList_When_ProvidingWrongConstraints() {
     List<ClassificationHistoryEvent> result =
         historyService.createClassificationHistoryQuery().list(1, 1000);
     assertThat(result).hasSize(10);
@@ -120,7 +120,7 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
     ClassificationHistoryQuery query =
         getHistoryService().createClassificationHistoryQuery().userIdIn("peter");
 
-    assertThatThrownBy(() -> query.single()).isInstanceOf(TooManyResultsException.class);
+    assertThatThrownBy(query::single).isInstanceOf(TooManyResultsException.class);
   }
 
   @Test

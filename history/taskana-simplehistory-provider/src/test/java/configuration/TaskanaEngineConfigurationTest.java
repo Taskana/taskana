@@ -8,15 +8,16 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.test.config.DataSourceGenerator;
 
 /** Unit Test for TaskanaEngineConfigurationTest. */
 class TaskanaEngineConfigurationTest extends AbstractAccTest {
 
   @Test
   void testCreateTaskanaEngine() throws Exception {
-    DataSource ds = getDataSource();
+    DataSource ds = DataSourceGenerator.getDataSource();
     TaskanaEngineConfiguration taskEngineConfiguration =
-        new TaskanaEngineConfiguration(ds, false, false, getSchemaName());
+        new TaskanaEngineConfiguration(ds, false, false, DataSourceGenerator.getSchemaName());
 
     TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
 

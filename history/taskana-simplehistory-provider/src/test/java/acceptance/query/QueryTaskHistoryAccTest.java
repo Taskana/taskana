@@ -77,8 +77,8 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
     assertThat(offsetAndLimitResult).hasSize(2);
     assertThat(offsetAndLimitResult.get(0).getUserId())
-        .isNotEqualTo(regularResult.get(0).getUserId());
-    assertThat(offsetAndLimitResult.get(0).getUserId()).isEqualTo(regularResult.get(1).getUserId());
+        .isNotEqualTo(regularResult.get(0).getUserId())
+        .isEqualTo(regularResult.get(1).getUserId());
   }
 
   @Test
@@ -276,10 +276,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
     assertThat(returnValues).hasSize(14);
 
     returnValues =
-        getHistoryService()
-            .createTaskHistoryQuery()
-            .parentBusinessProcessIdLike("BPI:01", " %")
-            .list();
+        getHistoryService().createTaskHistoryQuery().parentBusinessProcessIdLike("BPI:01%").list();
     assertThat(returnValues).hasSize(7);
 
     returnValues =

@@ -20,14 +20,9 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 
-/** Test for Workbasket History queries. */
 class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
 
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
-
-  public QueryWorkbasketHistoryAccTest() {
-    super();
-  }
 
   @Test
   void should_ConfirmEquality_When_UsingListValuesAscendingAndDescending() {
@@ -53,7 +48,6 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
 
   @Test
   void should_ReturnHistoryEvents_For_ComplexQuery() {
-
     WorkbasketHistoryQuery query =
         historyService
             .createWorkbasketHistoryQuery()
@@ -82,12 +76,12 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
 
     assertThat(offsetAndLimitResult).hasSize(2);
     assertThat(offsetAndLimitResult.get(0).getUserId())
-        .isNotEqualTo(regularResult.get(0).getUserId());
-    assertThat(offsetAndLimitResult.get(0).getUserId()).isEqualTo(regularResult.get(1).getUserId());
+        .isNotEqualTo(regularResult.get(0).getUserId())
+        .isEqualTo(regularResult.get(1).getUserId());
   }
 
   @Test
-  void should_ReturnEmptyList_When_ProvidingWrongContraints() {
+  void should_ReturnEmptyList_When_ProvidingWrongConstraints() {
     List<WorkbasketHistoryEvent> result =
         historyService.createWorkbasketHistoryQuery().list(1, 1000);
     assertThat(result).hasSize(9);
@@ -117,11 +111,10 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
 
   @Test
   void should_ThrowException_When_SingleMethodRetrievesMoreThanOneEventFromDatabase() {
-
     WorkbasketHistoryQuery query =
         getHistoryService().createWorkbasketHistoryQuery().userIdIn("peter");
 
-    assertThatThrownBy(() -> query.single()).isInstanceOf(TooManyResultsException.class);
+    assertThatThrownBy(query::single).isInstanceOf(TooManyResultsException.class);
   }
 
   @Test
@@ -277,6 +270,10 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
         historyService
             .createWorkbasketHistoryQuery()
             .orderByCustomAttribute(1, SortDirection.ASCENDING)
+            // values of custom1 do not differ and are larger than 3 (n=5).
+            // Therefore, in order to guarantee the sort order,
+            // we have to define a secondary (unique) sort option
+            .orderById(SortDirection.ASCENDING)
             .listPage(0, 3);
     assertThat(results)
         .extracting(WorkbasketHistoryEvent::getId)
@@ -289,6 +286,10 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
         historyService
             .createWorkbasketHistoryQuery()
             .orderByCustomAttribute(2, SortDirection.ASCENDING)
+            // values of custom1 do not differ and are larger than 3 (n=5).
+            // Therefore, in order to guarantee the sort order,
+            // we have to define a secondary (unique) sort option
+            .orderById(SortDirection.ASCENDING)
             .listPage(0, 3);
     assertThat(results)
         .extracting(WorkbasketHistoryEvent::getId)
@@ -301,6 +302,10 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
         historyService
             .createWorkbasketHistoryQuery()
             .orderByCustomAttribute(3, SortDirection.ASCENDING)
+            // values of custom1 do not differ and are larger than 3 (n=5).
+            // Therefore, in order to guarantee the sort order,
+            // we have to define a secondary (unique) sort option
+            .orderById(SortDirection.ASCENDING)
             .listPage(0, 3);
     assertThat(results)
         .extracting(WorkbasketHistoryEvent::getId)
@@ -313,6 +318,10 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
         historyService
             .createWorkbasketHistoryQuery()
             .orderByCustomAttribute(4, SortDirection.ASCENDING)
+            // values of custom1 do not differ and are larger than 3 (n=5).
+            // Therefore, in order to guarantee the sort order,
+            // we have to define a secondary (unique) sort option
+            .orderById(SortDirection.ASCENDING)
             .listPage(0, 3);
     assertThat(results)
         .extracting(WorkbasketHistoryEvent::getId)
@@ -324,7 +333,6 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
 
   @Test
   void should_ReturnHistoryEvents_For_DifferentLikeAttributes() {
-
     List<WorkbasketHistoryEvent> returnValues =
         historyService
             .createWorkbasketHistoryQuery()

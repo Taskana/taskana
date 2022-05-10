@@ -10,11 +10,11 @@ export TOP_PID=$$
 #H
 #H %FILE% <database>
 #H
-#H   downloads and starts docker image for taskana unit tests.
+#H   downloads and starts docker image for TASKANA unit tests.
 #H
 #H %FILE% stop [database]
 #H
-#H   stops the database and removes 'taskanaUnitTest.properties'.
+#H   stops the database.
 #H   If no database was provided all databases are stopped.
 #H
 #H database:

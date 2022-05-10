@@ -79,5 +79,18 @@
       <artifactId>postgresql</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.ibm.db2.jcc</groupId>
+      <artifactId>db2jcc4</artifactId>
+      <version>${version.db2}</version>
+    </dependency>
   </dependencies>
+
+ <repositories>
+    <repository>
+      <id>novatec public</id>
+      <name>novatec-repository</name>
+      <url>https://repository.novatec-gmbh.de/content/repositories/novatec/</url>
+    </repository>
+  </repositories>
 </project>
