@@ -20,19 +20,6 @@ public interface UserService {
   User newUser();
 
   /**
-   * Gets a {@linkplain User}.
-   *
-   * <p>If a {@linkplain User} with the specified {@linkplain User#getId() id} is existing in the
-   * database, it is returned.
-   *
-   * @param id the {@linkplain User#getId() id} of the {@linkplain User} to be retrieved
-   * @return the retrieved {@linkplain User}
-   * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
-   *     {@linkplain User#getId() id} inside the database
-   */
-  User getUser(String id) throws UserNotFoundException;
-
-  /**
    * Creates a new {@linkplain User}.
    *
    * <p>If all checks have passed the specified {@linkplain User} will be inserted into the
@@ -59,6 +46,19 @@ public interface UserService {
    */
   User createUser(User userToCreate)
       throws InvalidArgumentException, NotAuthorizedException, UserAlreadyExistException;
+
+  /**
+   * Gets a {@linkplain User}.
+   *
+   * <p>If a {@linkplain User} with the specified {@linkplain User#getId() id} is existing in the
+   * database, it is returned.
+   *
+   * @param id the {@linkplain User#getId() id} of the {@linkplain User} to be retrieved
+   * @return the retrieved {@linkplain User}
+   * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
+   *     {@linkplain User#getId() id} inside the database
+   */
+  User getUser(String id) throws UserNotFoundException;
 
   /**
    * Updates an existing {@linkplain User}.
