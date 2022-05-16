@@ -78,9 +78,9 @@ class TerminateTaskAccTest extends AbstractAccTest {
   }
 
   @WithAccessId(user = "user-1-2")
-  @Test
+  @WithAccessId(user = "user-taskrouter")
+  @TestTemplate
   void should_ThrowException_When_UserIsNotInAdministrativeRole() {
-
     ThrowingCallable taskanaCall =
         () -> taskService.terminateTask("TKI:000000000000000000000000000000000000");
 

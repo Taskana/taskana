@@ -15,7 +15,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
-/** Test taskana's role configuration. */
+/** Test the role configuration of TASKANA. */
 class TaskanaRoleConfigAccTest {
 
   @TempDir Path tempDir;
@@ -61,6 +61,10 @@ class TaskanaRoleConfigAccTest {
     Set<String> monitorAccessIds = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.MONITOR);
     assertThat(monitorAccessIds)
         .containsExactlyInAnyOrder("monitor", "cn=monitor-users,cn=groups,ou=test,o=taskana");
+
+    Set<String> taskRouters = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.TASK_ROUTER);
+    assertThat(taskRouters)
+        .containsExactlyInAnyOrder("cn=routers,cn=groups,ou=test,o=taskana", "user-taskrouter");
   }
 
   @Test

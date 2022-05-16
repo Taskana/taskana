@@ -37,6 +37,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
     @WithAccessId(user = "monitor")
     @WithAccessId(user = "teamlead-1")
     @WithAccessId(user = "user-1-1")
+    @WithAccessId(user = "user-taskrouter")
     @TestTemplate
     void should_FindAllAccessibleTasksDependentOnTheUser_When_MakingTaskQuery() {
       TaskService taskService = taskanaEngine.getTaskService();
@@ -58,6 +59,9 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
           break;
         case "user-1-1":
           expectedSize = 7;
+          break;
+        case "user-taskrouter":
+          expectedSize = 0;
           break;
         default:
           throw new SystemException(

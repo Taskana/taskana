@@ -107,6 +107,17 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "user-1-1", groups = "cn=routers,cn=groups,OU=Test,O=TASKANA")
+  @Test
+  void should_ThrowException_When_UserHasNoTransferAuthorizationAndIsMemeberOfTaskRouterRole()
+      throws Exception {
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
+
+    assertThatThrownBy(
+            () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005"))
+        .isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_ThrowException_When_DestinationWorkbasketDoesNotExist() throws Exception {

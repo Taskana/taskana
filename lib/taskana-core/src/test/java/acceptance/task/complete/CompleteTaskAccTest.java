@@ -128,6 +128,14 @@ class CompleteTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_ThrowException_When_UserIsNotAuthorized() {
+    ThrowingCallable call =
+        () -> taskService.completeTask("TKI:000000000000000000000000000000000001");
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_UserIsNotAuthorizedOnTask() {

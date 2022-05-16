@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
@@ -160,6 +161,20 @@ class UpdateTaskAccTest extends AbstractAccTest {
     task3.setPrimaryObjRef(createObjectReference(null, "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     assertThatThrownBy(() -> taskService.updateTask(task3))
         .isInstanceOf(InvalidArgumentException.class);
+  }
+
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_ThrowException_When_UserIsNotAuthorized() {
+    TaskImpl task = new TaskImpl();
+    task.setId("TKI:000000000000000000000000000000000000");
+    task.setPrimaryObjRef(
+        taskService.newObjectReference("company", "system", "instance", "value", "type"));
+    task.setClassificationKey("L1050");
+    task.setWorkbasketKey("USER-1-2");
+
+    assertThatThrownBy(() -> taskService.updateTask(task))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "user-1-1")

@@ -127,6 +127,15 @@ class GetTaskAccTest extends AbstractAccTest {
     assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedException.class);
   }
 
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_ThrowException_When_UserIsNotAuthorizedToGetTaskAndMemberOfTaskRouterRole() {
+    ThrowingCallable getTaskCall =
+        () -> taskService.getTask("TKI:000000000000000000000000000000000000");
+
+    assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedException.class);
+  }
+
   @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate

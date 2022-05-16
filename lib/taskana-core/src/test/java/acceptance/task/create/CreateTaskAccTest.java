@@ -59,6 +59,38 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
   }
 
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_CreateTask_When_UserIsMemberOfTaskRouterRole() throws Exception {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task newTask = taskService.newTask("WBI:100000000000000000000000000000000006");
+    newTask.setClassificationKey("T2100");
+    ObjectReferenceImpl objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    objectReference.setTaskId(newTask.getId());
+    newTask.setPrimaryObjRef(objectReference);
+
+    Task createdTask = taskService.createTask(newTask);
+
+    assertThat(createdTask).isNotNull();
+  }
+
+  @WithAccessId(user = "user-1-1", groups = "cn=routers,cn=groups,OU=Test,O=TASKANA")
+  @Test
+  void should_CreateTask_When_UserIsMemberOfGroupWithTaskRouterRole() throws Exception {
+    TaskService taskService = taskanaEngine.getTaskService();
+    Task newTask = taskService.newTask("WBI:100000000000000000000000000000000010");
+    newTask.setClassificationKey("T2100");
+    ObjectReferenceImpl objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    objectReference.setTaskId(newTask.getId());
+    newTask.setPrimaryObjRef(objectReference);
+
+    Task createdTask = taskService.createTask(newTask);
+
+    assertThat(createdTask).isNotNull();
+  }
+
   @WithAccessId(user = "user-1-1")
   @Test
   void should_BeAbleToCreateNewTask_When_TaskCopy() throws Exception {
