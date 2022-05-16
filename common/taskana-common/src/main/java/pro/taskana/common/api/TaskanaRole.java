@@ -6,13 +6,14 @@ import java.util.stream.Collectors;
 
 import pro.taskana.common.api.exceptions.SystemException;
 
-/** This enum contains all roles that are known to taskana. */
+/** The TaskanaRole enum contains all roles that are known to TASKANA. */
 public enum TaskanaRole {
   USER("taskana.roles.user"),
   BUSINESS_ADMIN("taskana.roles.businessadmin"),
   ADMIN("taskana.roles.admin"),
   MONITOR("taskana.roles.monitor"),
-  TASK_ADMIN("taskana.roles.taskadmin");
+  TASK_ADMIN("taskana.roles.taskadmin"),
+  TASK_ROUTER("taskana.roles.taskrouter");
 
   private final String propertyName;
 

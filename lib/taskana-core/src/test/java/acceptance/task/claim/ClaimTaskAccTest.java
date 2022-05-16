@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -79,6 +80,13 @@ class ClaimTaskAccTest extends AbstractAccTest {
           taskService.claim(task.getId());
         };
     assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
+  }
+
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_ThrowNotAuthorizedException_When_UserHasNoReadPermission() throws Exception {
+    assertThatThrownBy(() -> taskService.claim("TKI:000000000000000000000000000000000000"))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "user-1-2")

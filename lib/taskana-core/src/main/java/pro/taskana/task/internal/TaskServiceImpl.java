@@ -226,10 +226,12 @@ public class TaskServiceImpl implements TaskService {
       task.setWorkbasketSummary(workbasket.asSummary());
       task.setDomain(workbasket.getDomain());
 
-      workbasketService.checkAuthorization(
-          task.getWorkbasketSummary().getId(), WorkbasketPermission.APPEND);
+      if (!taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ROUTER)) {
+        workbasketService.checkAuthorization(
+            task.getWorkbasketSummary().getId(), WorkbasketPermission.APPEND);
+      }
 
-      // we do use the key and not the ID to make sure that we use the classification from the right
+      // we do use the key and not the id to make sure that we use the classification from the right
       // domain.
       // otherwise we would have to check the classification and its domain for validity.
       String classificationKey = task.getClassificationKey();

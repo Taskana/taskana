@@ -92,7 +92,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
       if (!taskanaEngine
           .getEngine()
-          .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN)) {
+          .isUserInRole(
+              TaskanaRole.ADMIN,
+              TaskanaRole.BUSINESS_ADMIN,
+              TaskanaRole.TASK_ADMIN,
+              TaskanaRole.TASK_ROUTER)) {
         this.checkAuthorization(workbasketId, WorkbasketPermission.READ);
       }
       return result;
@@ -106,7 +110,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       throws WorkbasketNotFoundException, NotAuthorizedException {
     if (!taskanaEngine
         .getEngine()
-        .isUserInRole(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN)) {
+        .isUserInRole(
+            TaskanaRole.ADMIN,
+            TaskanaRole.BUSINESS_ADMIN,
+            TaskanaRole.TASK_ADMIN,
+            TaskanaRole.TASK_ROUTER)) {
       this.checkAuthorization(workbasketKey, domain, WorkbasketPermission.READ);
     }
 

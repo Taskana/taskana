@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskState;
@@ -78,6 +79,13 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(numTasksClaimed).isEqualTo(taskSummaries.size() - 1);
     long newNumTasksCancelled = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
     assertThat(newNumTasksCancelled).isEqualTo(numTasksCancelled + 1);
+  }
+
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_ThrowException_When_UserNotAuthorized() {
+    assertThatThrownBy(() -> taskService.cancelTask("TKI:000000000000000000000000000000000001"))
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "admin")

@@ -31,6 +31,15 @@ class DeleteTaskAccTest extends AbstractAccTest {
   void testDeleteSingleTaskNotAuthorized() {
     ThrowingCallable call =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000037");
+
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+  }
+
+  @WithAccessId(user = "user-taskrouter")
+  @Test
+  void should_ThrowNotAuthorizedException_When_UserIsMemberOfTaskRouterRole() {
+    ThrowingCallable call =
+        () -> taskService.deleteTask("TKI:000000000000000000000000000000000037");
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
