@@ -14,6 +14,10 @@
     <version>5.1.1-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <sonar.tests/>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
