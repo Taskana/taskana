@@ -750,6 +750,32 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_CreateTaskWithCorrectPriorityAndThenDeleteIt_When_NotSpecifyingManualPriority() {
+    TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+
+    String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
+    HttpEntity<TaskRepresentationModel> auth =
+        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<TaskRepresentationModel> responseCreate =
+        TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+    assertThat(responseCreate.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(responseCreate.getBody()).isNotNull();
+    // The classification of taskRepresentationModel with the key "L11010" has priority=1
+    assertThat(responseCreate.getBody().getPriority()).isEqualTo(1);
+    assertThat(responseCreate.getBody().getManualPriority()).isEqualTo(-1);
+
+    String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
+    String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);
+    HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskRepresentationModel> responseDeleted =
+        TEMPLATE.exchange(
+            url2, HttpMethod.DELETE, auth2, ParameterizedTypeReference.forType(Void.class));
+    assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+  }
+
+  @Test
   void should_GetPriorityCorrectly_When_GettingTaskWithManualPriority() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000070000000000000079");

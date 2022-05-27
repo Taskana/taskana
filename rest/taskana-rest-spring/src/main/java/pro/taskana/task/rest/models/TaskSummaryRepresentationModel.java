@@ -1,5 +1,7 @@
 package pro.taskana.task.rest.models;
 
+import static pro.taskana.task.api.models.TaskSummary.DEFAULT_MANUAL_PRIORITY;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ public class TaskSummaryRepresentationModel
    * priority is automatically set to manualPriority. In this case, all computations of priority are
    * disabled. If the value of manualPriority is negative, Tasks are not prioritized manually.
    */
-  protected int manualPriority;
+  protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
   /** The current task state. */
   protected TaskState state;
   /** The classification of this task. */
