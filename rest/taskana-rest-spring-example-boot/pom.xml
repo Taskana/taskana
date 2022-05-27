@@ -15,6 +15,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
+  <properties>
+    <sonar.tests/>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>

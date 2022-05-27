@@ -14,6 +14,11 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
+
+  <properties>
+    <sonar.sources/>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
