@@ -21,8 +21,6 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 /** Entity which contains the most important information about a Task. */
 public class TaskSummaryImpl implements TaskSummary {
 
-  private static final int DEFAULT_MANUAL_PRIORITY = -1;
-
   protected String id;
   protected String externalId;
   protected Instant received;

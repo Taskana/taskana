@@ -15,6 +15,8 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
  */
 public interface TaskSummary {
 
+  public static int DEFAULT_MANUAL_PRIORITY = -1;
+
   /**
    * Returns the id of the {@linkplain Task}.
    *
