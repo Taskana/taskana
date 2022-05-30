@@ -49,20 +49,17 @@
 
   </div>
 
-  <!-- SPINNER -->
-  <taskana-shared-spinner [isRunning]="requestInProgress >= 0"></taskana-shared-spinner>
-
   <!-- WORKBASKET LIST -->
   <mat-selection-list #workbasket [multiple]="true">
     <cdk-virtual-scroll-viewport #scroller
                                  class="{{toolbarState?  'distribution-targets-list__list--with-filter' : 'distribution-targets-list__list--no-filter'}}"
                                  itemSize="90">
       <mat-list-option
-        (click)="updateSelectAll(!workbasket.selected) && (workbasket.selected = !workbasket.selected)"
-        *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
-        [selected]="workbasket.selected"
-        [value]="workbasket.workbasketId"
-        class="workbasket-distribution-targets__workbaskets-item">
+          (click)="updateSelectAll(!workbasket.selected) && (workbasket.selected = !workbasket.selected)"
+          *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
+          [selected]="workbasket.selected"
+          [value]="workbasket.workbasketId"
+          class="workbasket-distribution-targets__workbaskets-item">
 
         <div class="distribution-targets-list__item-wrapper">
 
@@ -84,9 +81,9 @@
           <!-- MARKED FOR DELETION -->
           <div *ngIf="workbasket.markedForDeletion" class="workbaskets-item__marked">
             <span
-              class="material-icons md-20 red "
-              matTooltip="Marked for deletion"
-              title="Marked for deletion">error</span>
+                class="material-icons md-20 red "
+                matTooltip="Marked for deletion"
+                title="Marked for deletion">error</span>
           </div>
         </div>
 
