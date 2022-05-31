@@ -5,8 +5,8 @@ import pro.taskana.task.api.models.Task;
 /** Event fired if a task is claimed. */
 public class TaskClaimedEvent extends TaskHistoryEvent {
 
-  public TaskClaimedEvent(String id, Task task, String userId) {
-    super(id, task, userId, null);
+  public TaskClaimedEvent(String id, Task task, String userId, String details) {
+    super(id, task, userId, details);
     eventType = (TaskHistoryEventType.CLAIMED.getName());
     created = task.getClaimed();
   }

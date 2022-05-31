@@ -1162,6 +1162,10 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
+
+      TaskImpl oldTask = task.copy();
+      oldTask.setId(taskId);
+      oldTask.setExternalId(task.getExternalId());
       Instant now = Instant.now();
 
       checkPreconditionsForClaimTask(task, forceClaim);
@@ -1171,11 +1175,15 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
+        String changeDetails =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(oldTask, task);
+
         historyEventManager.createEvent(
             new TaskClaimedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                changeDetails));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1189,6 +1197,14 @@ public class TaskServiceImpl implements TaskService {
     task.setClaimed(now);
     task.setRead(true);
     task.setState(TaskState.CLAIMED);
+  }
+
+  private static void cancelClaimActionsOnTask(TaskSummaryImpl task, Instant now) {
+    task.setOwner(null);
+    task.setModified(now);
+    task.setClaimed(null);
+    task.setRead(true);
+    task.setState(TaskState.READY);
   }
 
   private static void completeActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
@@ -1249,6 +1265,11 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
+
+      TaskImpl oldTask = task.copy();
+      oldTask.setId(taskId);
+      oldTask.setExternalId(task.getExternalId());
+
       TaskState state = task.getState();
       if (state.isEndState()) {
         throw new InvalidTaskStateException(
@@ -1258,21 +1279,21 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidOwnerException(userId, taskId);
       }
       Instant now = Instant.now();
-      task.setOwner(null);
-      task.setModified(now);
-      task.setClaimed(null);
-      task.setRead(true);
-      task.setState(TaskState.READY);
+      cancelClaimActionsOnTask(task, now);
       taskMapper.update(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
+        String changeDetails =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(oldTask, task);
+
         historyEventManager.createEvent(
             new TaskClaimCancelledEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                changeDetails));
       }
     } finally {
       taskanaEngine.returnConnection();
