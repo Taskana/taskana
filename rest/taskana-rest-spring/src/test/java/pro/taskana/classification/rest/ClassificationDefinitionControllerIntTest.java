@@ -3,6 +3,7 @@ package pro.taskana.classification.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -200,7 +201,7 @@ class ClassificationDefinitionControllerIntTest {
   @Test
   void should_ThrowError_When_ImportModifiesTypeOfExistingClassification() throws Exception {
     ClassificationRepresentationModel classification =
-        getClassificationWithKeyAndDomain("T6310", "");
+        getClassificationWithKeyAndDomain("T6310", MASTER_DOMAIN);
     classification.setType("DOCUMENT");
     ClassificationCollectionRepresentationModel clList =
         new ClassificationCollectionRepresentationModel(List.of(classification));

@@ -1,5 +1,7 @@
 package acceptance;
 
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class CreateTaskModelHelper {
     task.setExternalId(id);
     task.setName(name);
     task.setWorkbasketKey(workbasketKey);
-    task.setDomain("");
+    task.setDomain(MASTER_DOMAIN);
     task.setAttachments(new ArrayList<>());
     Instant now = Instant.now().minus(Duration.ofMinutes(1L));
     task.setReceived(now);
