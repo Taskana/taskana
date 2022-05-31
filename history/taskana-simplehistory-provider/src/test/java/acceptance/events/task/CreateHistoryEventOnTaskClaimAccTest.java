@@ -3,7 +3,10 @@ package acceptance.events.task;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
+import java.time.Instant;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -27,8 +30,8 @@ class CreateHistoryEventOnTaskClaimAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_CreateClaimedHistoryEvent_When_TaskIsClaimed() throws Exception {
-
     final String taskId = "TKI:000000000000000000000000000000000047";
+    final Instant oldModified = taskService.getTask(taskId).getModified();
 
     TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
@@ -40,14 +43,51 @@ class CreateHistoryEventOnTaskClaimAccTest extends AbstractAccTest {
 
     assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.READY);
     Task task = taskService.claim(taskId);
+
     assertThat(task.getState()).isEqualTo(TaskState.CLAIMED);
 
     events =
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
 
-    String eventType = events.get(0).getEventType();
+    TaskHistoryEvent event = events.get(0);
 
-    assertThat(eventType).isEqualTo(TaskHistoryEventType.CLAIMED.getName());
+    assertThat(event.getEventType()).isEqualTo(TaskHistoryEventType.CLAIMED.getName());
+
+    event = historyService.getTaskHistoryEvent(event.getId());
+
+    assertThat(event.getDetails()).isNotNull();
+
+    JSONArray changes = new JSONObject(event.getDetails()).getJSONArray("changes");
+
+    JSONObject expectedClaimed =
+        new JSONObject()
+            .put("newValue", task.getModified().toString())
+            .put("fieldName", "claimed")
+            .put("oldValue", "");
+    JSONObject expectedModified =
+        new JSONObject()
+            .put("newValue", task.getModified().toString())
+            .put("fieldName", "modified")
+            .put("oldValue", oldModified.toString());
+    JSONObject expectedState =
+        new JSONObject()
+            .put("newValue", "CLAIMED")
+            .put("fieldName", "state")
+            .put("oldValue", "READY");
+    JSONObject expectedOwner =
+        new JSONObject().put("newValue", "admin").put("fieldName", "owner").put("oldValue", "");
+    JSONObject expectedIsRead =
+        new JSONObject().put("newValue", true).put("fieldName", "isRead").put("oldValue", false);
+
+    JSONArray expectedChanges =
+        new JSONArray()
+            .put(expectedClaimed)
+            .put(expectedModified)
+            .put(expectedState)
+            .put(expectedOwner)
+            .put(expectedIsRead);
+
+    assertThat(changes.similar(expectedChanges)).isTrue();
   }
 }
