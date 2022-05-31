@@ -3,6 +3,7 @@ package acceptance.classification.create;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -43,7 +44,8 @@ class CreateClassificationAccTest {
   @WithAccessId(user = "businessadmin")
   @Test
   void should_OnlyCreateOneClassification_When_CreatingMasterClassification() throws Exception {
-    Classification classification = classificationService.newClassification("Key0", "", "TASK");
+    Classification classification =
+        classificationService.newClassification("Key0", MASTER_DOMAIN, "TASK");
 
     classification = classificationService.createClassification(classification);
 
@@ -62,7 +64,7 @@ class CreateClassificationAccTest {
 
     ClassificationImpl expectedMasterClassification =
         (ClassificationImpl) classification.copy("Key1");
-    expectedMasterClassification.setDomain("");
+    expectedMasterClassification.setDomain(MASTER_DOMAIN);
 
     List<ClassificationSummary> classifications =
         classificationService.createClassificationQuery().keyIn("Key1").list();
@@ -81,7 +83,7 @@ class CreateClassificationAccTest {
     Classification masterClassification =
         DefaultTestEntities.defaultTestClassification()
             .key("Key2")
-            .domain("")
+            .domain(MASTER_DOMAIN)
             .type("TASK")
             .buildAndStore(classificationService);
 
@@ -222,7 +224,7 @@ class CreateClassificationAccTest {
   @Test
   void should_ThrowException_TryingToCreateClassificationWithInvalidParentKey() {
     Classification classification =
-        classificationService.newClassification("KeyErrCreation", "", "TASK");
+        classificationService.newClassification("KeyErrCreation", MASTER_DOMAIN, "TASK");
     classification.setParentKey("UNKNOWN_KEY");
 
     assertThatThrownBy(() -> classificationService.createClassification(classification))
@@ -233,7 +235,8 @@ class CreateClassificationAccTest {
   @WithAccessId(user = "businessadmin")
   @Test
   void should_ThrowException_TryingToCreateClassificationWithInvalidParentId() {
-    Classification classification = classificationService.newClassification("KeyErr", "", "TASK");
+    Classification classification =
+        classificationService.newClassification("KeyErr", MASTER_DOMAIN, "TASK");
     classification.setParentId("UNKNOWN_ID");
 
     assertThatThrownBy(() -> classificationService.createClassification(classification))
@@ -245,7 +248,8 @@ class CreateClassificationAccTest {
   @Test
   void should_ThrowException_TryingToCreateClassificationWithExplicitId() {
     ClassificationImpl classification =
-        (ClassificationImpl) classificationService.newClassification("KeyErrCreation", "", "TASK");
+        (ClassificationImpl)
+            classificationService.newClassification("KeyErrCreation", MASTER_DOMAIN, "TASK");
     classification.setId("EXPLICIT ID");
 
     assertThatThrownBy(() -> classificationService.createClassification(classification))
@@ -258,7 +262,7 @@ class CreateClassificationAccTest {
   @TestTemplate
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin(WithAccessId accessId) {
     Classification classification =
-        classificationService.newClassification("KeyErrCreation", "", "TASK");
+        classificationService.newClassification("KeyErrCreation", MASTER_DOMAIN, "TASK");
     MismatchedRoleException expectedException =
         new MismatchedRoleException(accessId.user(), TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
@@ -291,7 +295,8 @@ class CreateClassificationAccTest {
   @Test
   void should_SetDefaultServiceLevel_When_TryingToCreateClassificationWithEmptyServiceLevel()
       throws Exception {
-    Classification classification = classificationService.newClassification("Key5", "", "TASK");
+    Classification classification =
+        classificationService.newClassification("Key5", MASTER_DOMAIN, "TASK");
     classification.setServiceLevel("");
 
     classification = classificationService.createClassification(classification);
@@ -302,7 +307,8 @@ class CreateClassificationAccTest {
   @WithAccessId(user = "businessadmin")
   @Test
   void should_SetDefaultValues_When_CreatingClassificationWithoutSpecificValues() throws Exception {
-    Classification classification = classificationService.newClassification("Key6", "", "TASK");
+    Classification classification =
+        classificationService.newClassification("Key6", MASTER_DOMAIN, "TASK");
     classification = classificationService.createClassification(classification);
 
     assertThat(classification.getServiceLevel()).isEqualTo("P0D");

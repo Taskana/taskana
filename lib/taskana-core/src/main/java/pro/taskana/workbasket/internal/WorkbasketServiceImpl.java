@@ -1,5 +1,7 @@
 package pro.taskana.workbasket.internal;
 
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,7 +159,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
       if (historyEventManager.isEnabled()) {
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
-                newWorkbasket("", ""), newWorkbasket);
+                newWorkbasket("", MASTER_DOMAIN), newWorkbasket);
 
         historyEventManager.createEvent(
             new WorkbasketCreatedEvent(
@@ -818,7 +820,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(
-                  workbasketToDelete, newWorkbasket("", ""));
+                  workbasketToDelete, newWorkbasket("", MASTER_DOMAIN));
 
           historyEventManager.createEvent(
               new WorkbasketDeletedEvent(

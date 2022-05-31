@@ -2,6 +2,7 @@ package pro.taskana.classification.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -51,7 +52,7 @@ class ClassificationControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent())
         .extracting(ClassificationSummaryRepresentationModel::getDomain)
-        .containsOnly("");
+        .containsOnly(MASTER_DOMAIN);
   }
 
   @Test
@@ -318,7 +319,7 @@ class ClassificationControllerIntTest {
     for (ClassificationSummaryRepresentationModel classification :
         response.getBody().getContent()) {
       if ("NEW_CLASS_P2".equals(classification.getKey())
-          && "".equals(classification.getDomain())
+          && MASTER_DOMAIN.equals(classification.getDomain())
           && "T2100".equals(classification.getParentKey())) {
         foundClassificationCreated = true;
         break;

@@ -16,6 +16,7 @@ import static pro.taskana.classification.api.ClassificationQueryColumnName.TYPE;
 import static pro.taskana.classification.api.ClassificationQueryColumnName.VALID_IN_DOMAIN;
 import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 import static pro.taskana.common.api.BaseQuery.SortDirection.DESCENDING;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import acceptance.AbstractAccTest;
 import java.text.Collator;
@@ -62,17 +63,23 @@ class QueryClassificationAccTest extends AbstractAccTest {
     assertThat(columnValueList).hasSize(2);
 
     columnValueList =
-        classificationService.createClassificationQuery().domainIn("").listValues(TYPE, null);
+        classificationService
+            .createClassificationQuery()
+            .domainIn(MASTER_DOMAIN)
+            .listValues(TYPE, null);
     assertThat(columnValueList).hasSize(2);
 
     columnValueList =
-        classificationService.createClassificationQuery().domainIn("").listValues(CREATED, null);
+        classificationService
+            .createClassificationQuery()
+            .domainIn(MASTER_DOMAIN)
+            .listValues(CREATED, null);
     assertThat(columnValueList).hasSize(1);
 
     columnValueList =
         classificationService
             .createClassificationQuery()
-            .domainIn("")
+            .domainIn(MASTER_DOMAIN)
             .validInDomainEquals(false)
             .listValues(VALID_IN_DOMAIN, null);
     assertThat(columnValueList).hasSize(1); // all are false in ""
@@ -96,7 +103,7 @@ class QueryClassificationAccTest extends AbstractAccTest {
         classificationService
             .createClassificationQuery()
             .keyIn("L10000")
-            .domainIn("DOMAIN_A", "DOMAIN_B", "")
+            .domainIn("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN)
             .list();
 
     assertThat(classifications).hasSize(2);

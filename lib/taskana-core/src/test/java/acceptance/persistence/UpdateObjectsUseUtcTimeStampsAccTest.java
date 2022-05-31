@@ -1,6 +1,7 @@
 package acceptance.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
@@ -116,7 +117,8 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     ClassificationService classificationService = taskanaEngine.getClassificationService();
     final long amountOfClassificationsBefore =
         classificationService.createClassificationQuery().count();
-    Classification classification = classificationService.newClassification("Key0", "", "TASK");
+    Classification classification =
+        classificationService.newClassification("Key0", MASTER_DOMAIN, "TASK");
     classification.setIsValidInDomain(true);
     classification.setServiceLevel("P1D");
     classification = classificationService.createClassification(classification);

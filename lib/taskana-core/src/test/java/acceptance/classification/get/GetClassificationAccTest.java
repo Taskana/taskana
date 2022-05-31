@@ -10,6 +10,7 @@ import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_5;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_6;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -121,7 +122,7 @@ class GetClassificationAccTest extends AbstractAccTest {
 
   @Test
   void testGetClassificationByNullKeyFails() {
-    ThrowingCallable call = () -> classificationService.getClassification(null, "");
+    ThrowingCallable call = () -> classificationService.getClassification(null, MASTER_DOMAIN);
     assertThatThrownBy(call).isInstanceOf(ClassificationNotFoundException.class);
   }
 
@@ -142,7 +143,8 @@ class GetClassificationAccTest extends AbstractAccTest {
 
   @Test
   void testGetOneClassificationForMasterDomain() throws Exception {
-    Classification classification = classificationService.getClassification("L10000", "");
+    Classification classification =
+        classificationService.getClassification("L10000", MASTER_DOMAIN);
     assertThat(classification).isNotNull();
     assertThat(classification.getDomain()).isEmpty();
     assertThat(classification.getPriority()).isEqualTo(999L);

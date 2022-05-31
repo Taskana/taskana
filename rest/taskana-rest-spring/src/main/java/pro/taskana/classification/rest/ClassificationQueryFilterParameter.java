@@ -1,5 +1,6 @@
 package pro.taskana.classification.rest;
 
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -143,7 +144,7 @@ public class ClassificationQueryFilterParameter
     this.key = key;
     this.category = category;
     if (domain != null && domain.length == 0) {
-      this.domain = new String[] {""};
+      this.domain = new String[] {MASTER_DOMAIN};
     } else {
       this.domain = domain;
     }

@@ -1,5 +1,7 @@
 package pro.taskana.classification.internal;
 
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
+
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Duration;
@@ -75,7 +77,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       taskanaEngine.openConnection();
       result = classificationMapper.findByKeyAndDomain(key, domain);
       if (result == null) {
-        result = classificationMapper.findByKeyAndDomain(key, "");
+        result = classificationMapper.findByKeyAndDomain(key, MASTER_DOMAIN);
         if (result == null) {
           throw new ClassificationNotFoundException(key, domain);
         }
@@ -115,12 +117,12 @@ public class ClassificationServiceImpl implements ClassificationService {
         throw new ClassificationNotFoundException(classificationId);
       }
 
-      if (classification.getDomain().equals("")) {
+      if (classification.getDomain().equals(MASTER_DOMAIN)) {
         // master mode - delete all associated classifications in every domain.
         List<ClassificationSummary> classificationsInDomain =
             createClassificationQuery().keyIn(classification.getKey()).list();
         for (ClassificationSummary classificationInDomain : classificationsInDomain) {
-          if (!"".equals(classificationInDomain.getDomain())) {
+          if (!MASTER_DOMAIN.equals(classificationInDomain.getDomain())) {
             deleteClassification(classificationInDomain.getId());
           }
         }
@@ -138,7 +140,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         if (historyEventManager.isEnabled()) {
           String details =
               ObjectAttributeChangeDetector.determineChangesInAttributes(
-                  classification, newClassification("", "", ""));
+                  classification, newClassification("", MASTER_DOMAIN, ""));
 
           historyEventManager.createEvent(
               new ClassificationDeletedEvent(
@@ -182,7 +184,7 @@ public class ClassificationServiceImpl implements ClassificationService {
           InvalidArgumentException, MalformedServiceLevelException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     if (!taskanaEngine.domainExists(classification.getDomain())
-        && !"".equals(classification.getDomain())) {
+        && !MASTER_DOMAIN.equals(classification.getDomain())) {
       throw new DomainNotFoundException(classification.getDomain());
     }
     ClassificationImpl classificationImpl;
@@ -207,7 +209,7 @@ public class ClassificationServiceImpl implements ClassificationService {
       if (historyEventManager.isEnabled()) {
         String details =
             ObjectAttributeChangeDetector.determineChangesInAttributes(
-                newClassification("", "", ""), classificationImpl);
+                newClassification("", MASTER_DOMAIN, ""), classificationImpl);
 
         historyEventManager.createEvent(
             new ClassificationCreatedEvent(
@@ -359,17 +361,17 @@ public class ClassificationServiceImpl implements ClassificationService {
   }
 
   private void addClassificationToMasterDomain(ClassificationImpl classification) {
-    if (!Objects.equals(classification.getDomain(), "")) {
+    if (!Objects.equals(classification.getDomain(), MASTER_DOMAIN)) {
       ClassificationImpl masterClassification = classification.copy(classification.getKey());
       masterClassification.setId(
           IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_CLASSIFICATION));
       masterClassification.setParentKey(classification.getParentKey());
-      masterClassification.setDomain("");
+      masterClassification.setDomain(MASTER_DOMAIN);
       masterClassification.setIsValidInDomain(false);
       try {
         if (classification.getParentKey() != null && !classification.getParentKey().isEmpty()) {
           masterClassification.setParentId(
-              getClassification(classification.getParentKey(), "").getId());
+              getClassification(classification.getParentKey(), MASTER_DOMAIN).getId());
         }
         this.getClassification(masterClassification.getKey(), masterClassification.getDomain());
         throw new ClassificationAlreadyExistException(masterClassification);
