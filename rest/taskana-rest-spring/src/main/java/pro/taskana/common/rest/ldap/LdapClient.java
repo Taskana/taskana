@@ -232,7 +232,8 @@ public class LdapClient {
     // given DN.
     // https://stackoverflow.com/questions/55285743/spring-ldaptemplate-how-to-lookup-fully-qualified-dn-with-configured-base-dn
     // Therefore we have to remove the base name from the dn before performing the lookup
-    String nameWithoutBaseDn = getNameWithoutBaseDn(dn);
+    String nameWithoutBaseDn = getNameWithoutBaseDn(dn).toLowerCase();
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
