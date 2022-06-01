@@ -47,12 +47,22 @@ class LdapClientTest {
   @Spy @InjectMocks LdapClient cut;
 
   @Test
-  void testLdap_searchGroupByDn() {
-
+  void should_SearchGroupByDn_For_LdapCall() {
     setUpEnvMock();
     cut.init();
 
     cut.searchAccessIdByDn("cn=developersgroup,ou=groups,o=taskanatest");
+
+    verify(ldapTemplate)
+        .lookup(eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.DnContextMapper.class));
+  }
+
+  @Test
+  void should_ConvertAccessIdToLowercase_When_SearchingGroupByDn() {
+    setUpEnvMock();
+    cut.init();
+
+    cut.searchAccessIdByDn("cn=Developersgroup,ou=groups,o=taskanatest");
 
     verify(ldapTemplate)
         .lookup(eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.DnContextMapper.class));
