@@ -86,6 +86,8 @@ class TransactionTest {
 
   private Connection getConnection() throws Exception {
     return DriverManager.getConnection(
-        "jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", UUID.randomUUID().toString());
+        "jdbc:h2:mem:task-engine;NON_KEYWORDS=KEY,VALUE;IGNORECASE=TRUE;LOCK_MODE=0",
+        "SA",
+        UUID.randomUUID().toString());
   }
 }

@@ -36,7 +36,8 @@ public class TaskanaWildflyConfiguration {
       @Value("${taskana.schemaName:TASKANA}") String schemaName) {
     DataSourceProperties props = new DataSourceProperties();
     props.setUrl(
-        "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS "
+        "jdbc:h2:mem:taskana;NON_KEYWORDS=KEY,VALUE;IGNORECASE=TRUE;LOCK_MODE=0;"
+            + "INIT=CREATE SCHEMA IF NOT EXISTS "
             + schemaName);
     return props;
   }

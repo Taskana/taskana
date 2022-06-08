@@ -63,7 +63,7 @@ public final class DataSourceGenerator {
   private static DataSource createDataSourceForH2() {
     String jdbcDriver = "org.h2.Driver";
     String jdbcUrl =
-        "jdbc:h2:mem:taskana;LOCK_MODE=0;"
+        "jdbc:h2:mem:taskana;NON_KEYWORDS=KEY,VALUE;LOCK_MODE=0;"
             + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
             + "SET COLLATION DEFAULT_de_DE ";
     String dbUserName = "sa";

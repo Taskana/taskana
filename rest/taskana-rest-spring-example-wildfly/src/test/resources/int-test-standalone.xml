@@ -226,7 +226,7 @@
                   jndi-name="java:jboss/datasources/ExampleDS"
                   pool-name="ExampleDS" enabled="true"
                   use-java-context="true">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+                    <connection-url>jdbc:h2:mem:test;NON_KEYWORDS=KEY,VALUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
                     </connection-url>
                     <driver>h2</driver>
                     <security>
@@ -238,7 +238,7 @@
                             jndi-name="java:/TaskanaDS/H2"
                             pool-name="TASKANA Datasource" enabled="true"
                             use-ccm="false">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
+                    <connection-url>jdbc:h2:mem:test;NON_KEYWORDS=KEY,VALUE;DB_CLOSE_DELAY=-1
                     </connection-url>
                     <driver-class>org.h2.Driver</driver-class>
                     <driver>h2</driver>

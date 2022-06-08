@@ -30,9 +30,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbaskets";
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues";
-  private final InternalTaskanaEngine taskanaEngine;
-  private final List<String> orderBy;
-  private final List<String> orderColumns;
   private WorkbasketQueryColumnName columnName;
   private String[] accessIds;
   private String[] idIn;
@@ -66,7 +63,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   private String[] orgLevel3Like;
   private String[] orgLevel4In;
   private String[] orgLevel4Like;
-  private boolean markedForDeletion;
+  private Boolean markedForDeletion;
+
+  private InternalTaskanaEngine taskanaEngine;
+  private List<String> orderBy;
+  private List<String> orderColumns;
   private boolean joinWithAccessList;
   private boolean checkReadPermission;
   private boolean usedToAugmentTasks;
@@ -543,7 +544,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     return orgLevel4Like;
   }
 
-  public boolean isMarkedForDeletion() {
+  public Boolean isMarkedForDeletion() {
     return markedForDeletion;
   }
 
