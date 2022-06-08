@@ -11,7 +11,7 @@
                         <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
                                 <property name="driverClass" value="org.h2.Driver" />
                                 <property name="url"
-                                        value="jdbc:h2:mem:task-engine;DB_CLOSE_DELAY=1000;IGNORECASE=TRUE;LOCK_MODE=0" />
+                                        value="jdbc:h2:mem:task-engine;NON_KEYWORDS=KEY,VALUE;DB_CLOSE_DELAY=1000;IGNORECASE=TRUE;LOCK_MODE=0" />
                                 <property name="username" value="SA" />
                                 <property name="password" value="SA" />
                         </bean>

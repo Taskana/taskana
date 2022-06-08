@@ -11,7 +11,8 @@ import pro.taskana.common.internal.configuration.DbSchemaCreator;
 class SampleDataGeneratorTest {
 
   private static final String JDBC_URL =
-      "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA";
+      "jdbc:h2:mem:taskana;NON_KEYWORDS=KEY,VALUE;"
+          + "IGNORECASE=TRUE;LOCK_MODE=0;INIT=CREATE SCHEMA IF NOT EXISTS TASKANA";
 
   @Test
   void getScriptsValidSql() {

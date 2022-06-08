@@ -75,7 +75,8 @@ public class TaskanaProducersTest {
 
   private Connection getConnection() throws Exception {
     return DriverManager.getConnection(
-        "jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0",
+        "jdbc:h2:~/taskana-h2-data/testdb;NON_KEYWORDS=KEY,VALUE;AUTO_SERVER=TRUE;"
+            + "IGNORECASE=TRUE;LOCK_MODE=0",
         "SA",
         "SA");
   }

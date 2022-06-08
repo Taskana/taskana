@@ -226,7 +226,8 @@ public class TaskanaEngineConfiguration {
   public static DataSource createDefaultDataSource() {
     String driverClass = "org.h2.Driver";
     String jdbcUrl =
-        "jdbc:h2:mem:taskana;IGNORECASE=TRUE;LOCK_MODE=0;"
+        "jdbc:h2:mem:taskana;NON_KEYWORDS=KEY,VALUE;"
+            + "IGNORECASE=TRUE;LOCK_MODE=0;"
             + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
             + "SET COLLATION DEFAULT_de_DE";
     String username = "sa";

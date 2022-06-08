@@ -92,7 +92,11 @@ public class TestContainerExtension implements InvocationInterceptor {
         new PooledDataSource(
             Thread.currentThread().getContextClassLoader(),
             "org.h2.Driver",
-            "jdbc:h2:mem:taskana;LOCK_MODE=0;INIT=SET COLLATION DEFAULT_de_DE",
+            "jdbc:h2:mem:"
+                + "taskana"
+                + ";NON_KEYWORDS=KEY,VALUE;LOCK_MODE=0;"
+                + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
+                + "SET COLLATION DEFAULT_de_DE ",
             "sa",
             "sa");
     ds.setPoolTimeToWait(50);
