@@ -1,35 +1,42 @@
 package acceptance;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.assignableTo;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
+import static com.tngtech.archunit.core.domain.properties.CanBeAnnotated.Predicates.annotatedWith;
+import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
-import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields;
+import static com.tngtech.archunit.library.GeneralCodingRules.ACCESS_STANDARD_STREAMS;
+import static com.tngtech.archunit.library.GeneralCodingRules.BE_ANNOTATED_WITH_AN_INJECTION_ANNOTATION;
+import static com.tngtech.archunit.library.GeneralCodingRules.THROW_GENERIC_EXCEPTIONS;
+import static com.tngtech.archunit.library.GeneralCodingRules.USE_JAVA_UTIL_LOGGING;
+import static com.tngtech.archunit.library.GeneralCodingRules.USE_JODATIME;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static com.tngtech.archunit.library.freeze.FreezingArchRule.freeze;
 import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.domain.JavaClass.Predicates;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
-import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import com.tngtech.archunit.library.dependencies.SliceAssignment;
+import com.tngtech.archunit.library.dependencies.SliceIdentifier;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -47,47 +54,37 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import testapi.TaskanaIntegrationTest;
 
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
+import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.MapCreator;
 
 /**
- * Test architecture of classes in taskana. For more info and examples see
- * https://www.archunit.org/userguide/html/000_Index.html.
+ * Test architecture of classes in TASKANA. For more info and examples see <a
+ * href="https://www.archunit.org/userguide/html/000_Index.html">ArchUnit User Guide</a>.
  */
 class ArchitectureTest {
-  private static final List<String> TASKANA_SUB_PACKAGES =
+
+  // region Test setup
+
+  private static final List<String> TASKANA_ROOT_PACKAGES =
       List.of(
-          "pro.taskana.sampledata",
-          "pro.taskana.common.internal",
-          "pro.taskana.common.api",
-          "pro.taskana.common.test",
-          "pro.taskana.classification.api",
-          "pro.taskana.classification.internal",
-          "pro.taskana.spi.history.api",
-          "pro.taskana.spi.history.internal",
-          "pro.taskana.monitor.api",
-          "pro.taskana.monitor.internal",
-          "pro.taskana.task.api",
-          "pro.taskana.task.internal",
-          "pro.taskana.user.api",
-          "pro.taskana.user.api.exceptions",
-          "pro.taskana.user.api.models",
-          "pro.taskana.user.internal",
-          "pro.taskana.workbasket.api",
-          "pro.taskana.workbasket.internal",
-          "pro.taskana.spi.routing.api",
-          "pro.taskana.spi.routing.internal",
-          "pro.taskana.spi.task.api",
-          "pro.taskana.spi.task.internal",
-          "pro.taskana.spi.priority.api",
-          "pro.taskana.spi.priority.internal");
+          "pro.taskana.classification",
+          "pro.taskana.common",
+          "pro.taskana.monitor",
+          "pro.taskana.spi",
+          "pro.taskana.task",
+          "pro.taskana.user",
+          "pro.taskana.workbasket");
+
   private static JavaClasses importedClasses;
 
   @BeforeAll
@@ -97,262 +94,304 @@ class ArchitectureTest {
         new ClassFileImporter().importPackages("pro.taskana", "acceptance", "testapi");
   }
 
-  @Test
-  void apiClassesShouldNotDependOnInternalClasses() {
-    ArchRule myRule =
-        classes()
-            .that()
-            .resideInAPackage("..api..")
-            .should()
-            .onlyDependOnClassesThat(
-                Predicates.resideOutsideOfPackage("..pro.taskana..internal..")
-                    .or(
-                        Predicates.assignableTo(LoggingAspect.class)
-                            .or(Predicates.assignableTo(MapCreator.class))));
-    myRule.check(importedClasses);
-  }
+  // endregion
+
+  // region Coding Guidelines
 
   @Test
-  void utilityClassesShouldNotBeInitializable() {
-    ArchRule myRule =
-        classes()
-            .that()
-            .resideInAPackage("..util..")
-            .and()
-            .areNotNestedClasses()
-            .should()
-            .haveOnlyPrivateConstructors();
-
-    myRule.check(importedClasses);
-  }
-
-  @Test
-  @Disabled("until we have renamed all tests")
   void testMethodNamesShouldMatchAccordingToOurGuidelines() {
-    ArchRule myRule =
-        methods()
-            .that()
-            .areAnnotatedWith(Test.class)
-            .or()
-            .areAnnotatedWith(TestFactory.class)
-            .and()
-            .areNotDeclaredIn(ArchitectureTest.class)
-            .should()
-            .bePackagePrivate()
-            .andShould()
-            .haveNameMatching("^should_[A-Z][^_]+_(For|When)_[A-Z][^_]+$");
-
-    myRule.check(importedClasses);
-  }
-
-  @Test
-  void exceptionsShouldBePlacedInExceptionPackage() {
-    ArchRule myRule =
-        classes()
-            .that()
-            .haveSimpleNameEndingWith("Exception")
-            .should()
-            .resideInAPackage("..exceptions..");
-
-    myRule.check(importedClasses);
-  }
-
-  @Test
-  void exceptionsThatShouldNotHaveToStringMethod() {
-    ArchRule myRule =
-        classes()
-            .that()
-            .areAssignableTo(TaskanaException.class)
-            .or()
-            .areAssignableTo(TaskanaRuntimeException.class)
-            .and()
-            .doNotBelongToAnyOf(TaskanaRuntimeException.class, TaskanaException.class)
-            .should(notImplementToString());
-
-    myRule.check(importedClasses);
-  }
-
-  @Test
-  void exceptionsThatShouldHaveToStringMethod() {
-    ArchRule myRule =
-        classes()
-            .that()
-            .areAssignableFrom(TaskanaRuntimeException.class)
-            .or()
-            .areAssignableFrom(TaskanaException.class)
-            .should(implementToString());
-
-    myRule.check(importedClasses);
-  }
-
-  @Test
-  void onlyExceptionsShouldResideInExceptionPackage() {
-    ArchRule myRule =
-        classes()
-            .that()
-            .resideInAPackage("..exceptions")
-            .and()
-            .doNotBelongToAnyOf(ErrorCode.class)
-            .should()
-            .beAssignableTo(
-                Predicates.assignableTo(TaskanaException.class)
-                    .or(Predicates.assignableTo(TaskanaRuntimeException.class)))
-            .andShould()
-            .bePublic()
-            .andShould()
-            .haveSimpleNameEndingWith("Exception");
-    myRule.check(importedClasses);
-  }
-
-  @Test
-  void noClassShouldThrowGenericException() {
-    NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS.check(importedClasses);
-  }
-
-  @Test
-  void noClassShouldAccessStandardStreams() {
-    NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(importedClasses);
-  }
-
-  @Test
-  void everySubpackageShouldBeTestsForCyclicDependencies() {
-    List<Pattern> excludePackages =
-        Stream.of(
-                "pro.taskana", // from TaskanaEngineConfiguration
-                "acceptance.*", // all our acceptance tests
-                "testapi.*" // our test API
-                )
-            .map(Pattern::compile)
-            .collect(Collectors.toList());
-    ArchRule myRule = classes().should(beDefinedInTaskanaSubPackages(excludePackages));
-    myRule.check(importedClasses);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> everyPackageWhichIsTestedForCyclicDependenciesShouldExist() {
-    return DynamicTest.stream(
-        TASKANA_SUB_PACKAGES.iterator(),
-        p -> String.format("package '%s' exists", p),
-        p -> assertThat(importedClasses.containPackage(p)).isTrue());
-  }
-
-  /*
-   * Test for cycles with subpackages
-   * https://www.archunit.org/userguide/html/000_Index.html#_cycle_checks
-   */
-  @TestFactory
-  Stream<DynamicTest> everySubPackageShouldBeFreeOfCyclicDependencies() {
-    Stream<String> packagesToTest = TASKANA_SUB_PACKAGES.stream().map(s -> s + ".(*)..");
-    ThrowingConsumer<String> testMethod =
-        p -> slices().matching(p).should().beFreeOfCycles().check(importedClasses);
-    return DynamicTest.stream(
-        packagesToTest.iterator(),
-        p -> p.replaceAll(Pattern.quote("pro.taskana."), "") + " is free of cycles",
-        testMethod);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> commonClassesShouldNotDependOnOtherDomainClasses() {
-    Stream<String> packagesToTest =
-        TASKANA_SUB_PACKAGES.stream()
-            .map(p -> p.split("\\.")[2])
-            .distinct()
-            .filter(not("common"::equals))
-            .map(d -> ".." + d + "..");
-    ThrowingConsumer<String> testMethod =
-        p ->
-            noClasses()
-                .that()
-                .haveNameNotMatching(".*TaskanaEngine.*")
+    // Frozen, so it can be improved over time:
+    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
+    freeze(
+            methods()
+                .that(
+                    are(
+                        annotatedWith(Test.class)
+                            .or(annotatedWith(TestFactory.class))
+                            .or(annotatedWith(TestTemplate.class))))
                 .and()
-                .haveSimpleNameNotEndingWith("ObjectAttributeChangeDetectorTest")
-                .and()
-                .haveSimpleNameNotEndingWith("AbstractTaskanaJob")
-                .and()
-                .resideInAPackage("..common..")
-                .and()
-                .resideOutsideOfPackage("..common.test..")
+                .areNotDeclaredIn(ArchitectureTest.class)
                 .should()
-                .dependOnClassesThat()
-                .resideInAPackage(p)
-                .check(importedClasses);
-    return DynamicTest.stream(
-        packagesToTest.iterator(), p -> p + " should not be used by common", testMethod);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> classesShouldNotDependOnMonitorDomainClasses() {
-    Stream<String> packagesToTest =
-        TASKANA_SUB_PACKAGES.stream()
-            .map(p -> p.split("\\.")[2])
-            .distinct()
-            .filter(not("monitor"::equals))
-            .map(d -> ".." + d + "..");
-
-    ThrowingConsumer<String> testMethod =
-        p ->
-            noClasses()
-                .that()
-                .resideInAPackage(p)
-                .and()
-                .haveNameNotMatching(".*TaskanaEngine.*")
-                .should()
-                .dependOnClassesThat()
-                .resideInAnyPackage("..monitor..")
-                .check(importedClasses);
-    return DynamicTest.stream(
-        packagesToTest.iterator(),
-        p -> String.format("Domain %s should not depend on monitor", p),
-        testMethod);
+                .bePackagePrivate()
+                .andShould()
+                .haveNameMatching("^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$"))
+        .check(importedClasses);
   }
 
   @Test
   void classesShouldNotUseJunit5Assertions() {
-    ArchRule rule =
-        noClasses()
-            .that()
-            .haveSimpleNameNotEndingWith("ArchitectureTest")
-            .should()
-            .dependOnClassesThat()
-            .haveFullyQualifiedName(org.junit.jupiter.api.Assertions.class.getName())
-            .because("we consistently want to use assertj in our tests");
-    rule.check(importedClasses);
+    classes()
+        .that()
+        .areNotAssignableFrom(ArchitectureTest.class)
+        .should()
+        .onlyDependOnClassesThat()
+        .areNotAssignableTo(org.junit.jupiter.api.Assertions.class)
+        .because("we consistently want to use assertj in our tests")
+        .check(importedClasses);
   }
 
   @Test
   void mapperClassesShouldNotUseCurrentTimestampSqlFunction() {
-    ArchRule rule =
-        classes()
-            .that()
-            .haveSimpleNameEndingWith("Mapper")
-            .should(notUseCurrentTimestampSqlFunction());
-
-    rule.check(importedClasses);
+    classes()
+        .that()
+        .haveSimpleNameEndingWith("Mapper")
+        .should(notUseCurrentTimestampSqlFunction())
+        .check(importedClasses);
   }
 
   @Test
   void taskanaIntegrationTestsShouldOnlyHavePackagePrivateFields() {
-    ArchRule rule =
-        classes()
-            .that()
-            .areAnnotatedWith(TaskanaIntegrationTest.class)
-            .or(areNestedTaskanaIntegrationTestClasses())
-            .should(onlyHaveFieldsWithNoModifierAndPrivateConstants());
-
-    rule.check(importedClasses);
+    classes()
+        .that()
+        .areAnnotatedWith(TaskanaIntegrationTest.class)
+        .or(areNestedTaskanaIntegrationTestClasses())
+        .should(onlyHaveFieldsWithNoModifierAndPrivateConstants())
+        .check(importedClasses);
   }
 
   @Test
   void nestedTaskanaIntegrationTestsShouldBeAnnotatedWithTestInstance() {
-    ArchRule rule =
-        classes()
-            .that(areNestedTaskanaIntegrationTestClasses())
-            .should(beAnnotatedWithTestInstancePerClass());
-
-    rule.check(importedClasses);
+    classes()
+        .that(areNestedTaskanaIntegrationTestClasses())
+        .should(beAnnotatedWithTestInstancePerClass())
+        .check(importedClasses);
   }
 
-  private ArchCondition<JavaClass> implementToString() {
+  @Test
+  void noClassShouldThrowGenericException() {
+    noClasses().should(THROW_GENERIC_EXCEPTIONS).check(importedClasses);
+  }
+
+  @Test
+  void noClassShouldAccessStandardStreams() {
+    noClasses().should(ACCESS_STANDARD_STREAMS).check(importedClasses);
+  }
+
+  @Test
+  void utilityClassesShouldNotBeInitializable() {
+    classes()
+        .that()
+        .resideInAPackage("..util..")
+        .and()
+        .areNotNestedClasses()
+        .should()
+        .haveOnlyPrivateConstructors()
+        .check(importedClasses);
+  }
+
+  @Test
+  void noClassesShouldUseFieldInjection() {
+    // Frozen, so it can be improved over time:
+    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
+    freeze(
+            noFields()
+                .should(BE_ANNOTATED_WITH_AN_INJECTION_ANNOTATION)
+                .as("no classes should use field injection")
+                .because(
+                    "field injection is considered harmful; use constructor injection or setter"
+                        + " injection instead; see https://stackoverflow.com/q/39890849 for"
+                        + " detailed explanations"))
+        .check(importedClasses);
+  }
+
+  @Test
+  void noClassesShouldUseJavaUtilLogging() {
+    noClasses().should(USE_JAVA_UTIL_LOGGING).check(importedClasses);
+  }
+
+  @Test
+  void noClassesShouldUseJodatime() {
+    noClasses()
+        .should(USE_JODATIME)
+        .because("modern Java projects use the [java.time] API instead")
+        .check(importedClasses);
+  }
+
+  // endregion
+
+  // region Dependencies
+  @Test
+  void apiClassesShouldNotDependOnInternalClasses() {
+    classes()
+        .that()
+        .resideInAPackage("..api..")
+        .should()
+        .onlyDependOnClassesThat(
+            resideOutsideOfPackage("..pro.taskana..internal..")
+                .or(assignableTo(LoggingAspect.class).or(assignableTo(MapCreator.class))))
+        .check(importedClasses);
+  }
+
+  @Test
+  void packagesShouldBeFreeOfCyclicDependencies() {
+    // Frozen, so it can be improved over time:
+    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
+    freeze(slices().matching("pro.taskana.(**)").should().beFreeOfCycles()).check(importedClasses);
+  }
+
+  @Test
+  void classesShouldBeFreeOfCyclicDependencies() {
+    SliceAssignment everySingleClass =
+        new SliceAssignment() {
+          // this will specify which classes belong together in the same slice
+          @Override
+          public SliceIdentifier getIdentifierOf(JavaClass javaClass) {
+            return SliceIdentifier.of(javaClass.getFullName());
+          }
+
+          // this will be part of the rule description if the test fails
+          @Override
+          public String getDescription() {
+            return "every single class";
+          }
+        };
+
+    freeze(slices().assignedFrom(everySingleClass).should().beFreeOfCycles())
+        .check(importedClasses);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> rootModulesShouldExist() {
+    Function<String, String> descriptionProvider = p -> String.format("Package '%s' exists", p);
+
+    ThrowingConsumer<String> testProvider =
+        p -> assertThat(importedClasses.containPackage(p)).isTrue();
+
+    return DynamicTest.stream(TASKANA_ROOT_PACKAGES.stream(), descriptionProvider, testProvider);
+  }
+
+  @Test
+  @Disabled("Needs to be replaced")
+  void allClassesAreInsideApiOrInternal() {
+    classes()
+        .that()
+        .resideOutsideOfPackages("acceptance..", "testapi..", "..test..")
+        .should()
+        .resideInAnyPackage("..api..", "..internal..")
+        .check(importedClasses);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> commonClassesShouldNotDependOnOtherPackages() {
+
+    Stream<String> input = TASKANA_ROOT_PACKAGES.stream().filter(not("pro.taskana.common"::equals));
+
+    Function<String, String> descriptionProvider =
+        p -> String.format("Common classes of %s should not depend on domain classes", p);
+
+    ThrowingConsumer<String> testDefinitionProvider =
+        rootPackage ->
+            classes()
+                .that()
+                .resideInAPackage("..common..")
+                .and()
+                .areNotAssignableTo(TaskanaEngine.class)
+                .and()
+                .areNotAssignableTo(InternalTaskanaEngine.class)
+                .should()
+                .onlyDependOnClassesThat()
+                .resideOutsideOfPackage(rootPackage + "..")
+                .check(importedClasses);
+
+    return DynamicTest.stream(input, descriptionProvider, testDefinitionProvider);
+  }
+
+  @Test
+  void classesShouldNotDependOnMonitorDomainClasses() {
+    noClasses()
+        .that()
+        .resideInAPackage("pro.taskana..")
+        .and()
+        .areNotAssignableTo(TaskanaEngine.class)
+        .and()
+        .resideOutsideOfPackage("..monitor..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage("..monitor..")
+        .check(importedClasses);
+  }
+
+  // endregion
+
+  // region Structure
+
+  @Test
+  void exceptionsShouldNotImplementToStringMethod() {
+    classes()
+        .that()
+        .areAssignableTo(TaskanaException.class)
+        .or()
+        .areAssignableTo(TaskanaRuntimeException.class)
+        .and()
+        .doNotBelongToAnyOf(TaskanaRuntimeException.class, TaskanaException.class)
+        .should(notImplementToString())
+        .check(importedClasses);
+  }
+
+  @Test
+  void rootExceptionsShouldImplementToStringMethod() {
+    classes()
+        .that()
+        .areAssignableFrom(TaskanaRuntimeException.class)
+        .or()
+        .areAssignableFrom(TaskanaException.class)
+        .should(implementToString())
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldBePlacedInExceptionPackage() {
+    classes()
+        .that()
+        .areAssignableTo(Throwable.class)
+        .should()
+        .resideInAPackage("..exceptions")
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsPackageShouldOnlyContainExceptions() {
+    classes()
+        .that()
+        .resideInAPackage("..exceptions..")
+        .and()
+        .doNotBelongToAnyOf(ErrorCode.class)
+        .should()
+        .beAssignableTo(Throwable.class)
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldHaveSuffixException() {
+    classes()
+        .that()
+        .areAssignableTo(Throwable.class)
+        .should()
+        .haveSimpleNameEndingWith("Exception")
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldInheritFromTaskanaRootExceptions() {
+    classes()
+        .that()
+        .areAssignableTo(Throwable.class)
+        .should()
+        .beAssignableTo(
+            assignableTo(TaskanaException.class).or(assignableTo(TaskanaRuntimeException.class)))
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldBePublic() {
+    classes().that().areAssignableTo(Throwable.class).should().bePublic().check(importedClasses);
+  }
+
+  // endregion
+
+  // region Helper Methods
+
+  private static ArchCondition<JavaClass> implementToString() {
     return new ArchCondition<>("implement toString()") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
@@ -371,7 +410,7 @@ class ArchitectureTest {
     };
   }
 
-  private ArchCondition<JavaClass> notImplementToString() {
+  private static ArchCondition<JavaClass> notImplementToString() {
     return new ArchCondition<>("not implement toString()") {
       @Override
       public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
@@ -389,7 +428,7 @@ class ArchitectureTest {
     };
   }
 
-  private ArchCondition<JavaClass> beAnnotatedWithTestInstancePerClass() {
+  private static ArchCondition<JavaClass> beAnnotatedWithTestInstancePerClass() {
     return new ArchCondition<>("be annotated with @TestInstance(Lifecycle.PER_CLASS)") {
       @Override
       public void check(JavaClass item, ConditionEvents events) {
@@ -408,7 +447,7 @@ class ArchitectureTest {
     };
   }
 
-  private DescribedPredicate<JavaClass> areNestedTaskanaIntegrationTestClasses() {
+  private static DescribedPredicate<JavaClass> areNestedTaskanaIntegrationTestClasses() {
     return new DescribedPredicate<>("are nested TaskanaIntegrationTest classes") {
 
       @Override
@@ -431,7 +470,7 @@ class ArchitectureTest {
     };
   }
 
-  private ArchCondition<JavaClass> onlyHaveFieldsWithNoModifierAndPrivateConstants() {
+  private static ArchCondition<JavaClass> onlyHaveFieldsWithNoModifierAndPrivateConstants() {
     return new ArchCondition<>("only have fields with no modifier") {
       final Set<JavaModifier> modifiersForConstants =
           Set.of(JavaModifier.PRIVATE, JavaModifier.STATIC, JavaModifier.FINAL);
@@ -450,24 +489,6 @@ class ArchitectureTest {
                             + "except for static fields, which have to be private",
                         field.getFullName())));
           }
-        }
-      }
-    };
-  }
-
-  private static ArchCondition<JavaClass> beDefinedInTaskanaSubPackages(
-      List<Pattern> excludePackages) {
-    return new ArchCondition<>("all be defined in TASKANA_SUB_PACKAGES") {
-      @Override
-      public void check(JavaClass javaClass, ConditionEvents events) {
-        if (TASKANA_SUB_PACKAGES.stream().noneMatch(p -> javaClass.getPackageName().startsWith(p))
-            && excludePackages.stream()
-                .noneMatch(p -> p.matcher(javaClass.getPackageName()).matches())) {
-          String message =
-              String.format(
-                  "Package '%s' was not declared in TASKANA_SUB_PACKAGES",
-                  javaClass.getPackageName());
-          events.add(SimpleConditionEvent.violated(javaClass, message));
         }
       }
     };
@@ -561,4 +582,6 @@ class ArchitectureTest {
       throws Exception {
     return clazz.getMethod(methodName).invoke(null).toString();
   }
+
+  // endregion
 }
