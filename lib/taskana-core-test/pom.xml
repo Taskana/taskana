@@ -59,6 +59,24 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit</artifactId>
+      <version>${version.archunit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.openpojo</groupId>
+      <artifactId>openpojo</artifactId>
+      <version>${version.openpojo}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>nl.jqno.equalsverifier</groupId>
+      <artifactId>equalsverifier</artifactId>
+      <version>${version.equalsverifier}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.ibm.db2.jcc</groupId>
       <artifactId>db2jcc4</artifactId>
       <version>${version.db2}</version>
