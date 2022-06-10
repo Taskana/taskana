@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ErrorCode implements Serializable {
+public final class ErrorCode implements Serializable {
   private final String key;
   // Unfortunately this is necessary. The Map interface does not implement Serializable..
   private final HashMap<String, Serializable> messageVariables;
