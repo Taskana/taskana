@@ -6567,115 +6567,6 @@ Cycle detected: Slice common.api -> \
     - Method <pro.taskana.common.api.exceptions.MismatchedRoleException.getRoles()> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)
 Cycle detected: Slice common.api -> \
                 Slice monitor.api -> \
-                Slice monitor.api.reports -> \
-                Slice task.api -> \
-                Slice task.api.models -> \
-                Slice workbasket.api.models -> \
-                Slice workbasket.api -> \
-                Slice workbasket.api.exceptions -> \
-                Slice common.internal.util -> \
-                Slice common.api.exceptions -> \
-                Slice common.api\
-  1. Dependencies of Slice common.api\
-    - Method <pro.taskana.common.api.TaskanaEngine.getMonitorService()> has return type <pro.taskana.monitor.api.MonitorService> in (TaskanaEngine.java:0)\
-  2. Dependencies of Slice monitor.api\
-    - Method <pro.taskana.monitor.api.MonitorService.createClassificationCategoryReportBuilder()> has return type <pro.taskana.monitor.api.reports.ClassificationCategoryReport$Builder> in (MonitorService.java:0)\
-    - Method <pro.taskana.monitor.api.MonitorService.createClassificationReportBuilder()> has return type <pro.taskana.monitor.api.reports.ClassificationReport$Builder> in (MonitorService.java:0)\
-    - Method <pro.taskana.monitor.api.MonitorService.createTaskCustomFieldValueReportBuilder(pro.taskana.task.api.TaskCustomField)> has return type <pro.taskana.monitor.api.reports.TaskCustomFieldValueReport$Builder> in (MonitorService.java:0)\
-    - Method <pro.taskana.monitor.api.MonitorService.createTaskStatusReportBuilder()> has return type <pro.taskana.monitor.api.reports.TaskStatusReport$Builder> in (MonitorService.java:0)\
-    - Method <pro.taskana.monitor.api.MonitorService.createTimestampReportBuilder()> has return type <pro.taskana.monitor.api.reports.TimestampReport$Builder> in (MonitorService.java:0)\
-    - Method <pro.taskana.monitor.api.MonitorService.createWorkbasketPriorityReportBuilder()> has return type <pro.taskana.monitor.api.reports.WorkbasketPriorityReport$Builder> in (MonitorService.java:0)\
-    - Method <pro.taskana.monitor.api.MonitorService.createWorkbasketReportBuilder()> has return type <pro.taskana.monitor.api.reports.WorkbasketReport$Builder> in (MonitorService.java:0)\
-  3. Dependencies of Slice monitor.api.reports\
-    - Constructor <pro.taskana.monitor.api.reports.TaskStatusReport.<init>(java.util.List)> has generic parameter type <java.util.List<pro.taskana.task.api.TaskState>> with type argument depending on <pro.taskana.task.api.TaskState> in (TaskStatusReport.java:0)\
-    - Method <pro.taskana.monitor.api.reports.TaskStatusReport$Builder.stateIn(java.util.List)> has generic parameter type <java.util.List<pro.taskana.task.api.TaskState>> with type argument depending on <pro.taskana.task.api.TaskState> in (TaskStatusReport.java:0)\
-    - Method <pro.taskana.monitor.api.reports.TimeIntervalReportBuilder.customAttributeIn(pro.taskana.task.api.TaskCustomField, [Ljava.lang.String;)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (TimeIntervalReportBuilder.java:0)\
-    - Method <pro.taskana.monitor.api.reports.TimeIntervalReportBuilder.customAttributeLike(pro.taskana.task.api.TaskCustomField, [Ljava.lang.String;)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (TimeIntervalReportBuilder.java:0)\
-    - Method <pro.taskana.monitor.api.reports.TimeIntervalReportBuilder.customAttributeNotIn(pro.taskana.task.api.TaskCustomField, [Ljava.lang.String;)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (TimeIntervalReportBuilder.java:0)\
-    - Method <pro.taskana.monitor.api.reports.TimeIntervalReportBuilder.listCustomAttributeValuesForCustomAttributeName(pro.taskana.task.api.TaskCustomField)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (TimeIntervalReportBuilder.java:0)\
-    - Method <pro.taskana.monitor.api.reports.TimeIntervalReportBuilder.stateIn(java.util.List)> has generic parameter type <java.util.List<pro.taskana.task.api.TaskState>> with type argument depending on <pro.taskana.task.api.TaskState> in (TimeIntervalReportBuilder.java:0)\
-    - Method <pro.taskana.monitor.api.reports.WorkbasketPriorityReport$Builder.customAttributeIn(pro.taskana.task.api.TaskCustomField, [Ljava.lang.String;)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (WorkbasketPriorityReport.java:0)\
-    - Method <pro.taskana.monitor.api.reports.WorkbasketPriorityReport$Builder.customAttributeLike(pro.taskana.task.api.TaskCustomField, [Ljava.lang.String;)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (WorkbasketPriorityReport.java:0)\
-    - Method <pro.taskana.monitor.api.reports.WorkbasketPriorityReport$Builder.customAttributeNotIn(pro.taskana.task.api.TaskCustomField, [Ljava.lang.String;)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (WorkbasketPriorityReport.java:0)\
-    - Method <pro.taskana.monitor.api.reports.WorkbasketPriorityReport$Builder.stateIn(java.util.List)> has generic parameter type <java.util.List<pro.taskana.task.api.TaskState>> with type argument depending on <pro.taskana.task.api.TaskState> in (WorkbasketPriorityReport.java:0)\
-    - Constructor <pro.taskana.monitor.api.reports.TaskStatusReport.<init>(java.util.List)> calls method <pro.taskana.task.api.TaskState.values()> in (TaskStatusReport.java:27)\
-  4. Dependencies of Slice task.api\
-    - Class <pro.taskana.task.api.ObjectReferenceQuery> has generic interface <pro.taskana.common.api.BaseQuery<pro.taskana.task.api.models.ObjectReference, pro.taskana.task.api.ObjectReferenceQueryColumnName>> with type argument depending on <pro.taskana.task.api.models.ObjectReference> in (ObjectReferenceQuery.java:0)\
-    - Class <pro.taskana.task.api.TaskCommentQuery> has generic interface <pro.taskana.common.api.BaseQuery<pro.taskana.task.api.models.TaskComment, pro.taskana.task.api.TaskCommentQueryColumnName>> with type argument depending on <pro.taskana.task.api.models.TaskComment> in (TaskCommentQuery.java:0)\
-    - Class <pro.taskana.task.api.TaskQuery> has generic interface <pro.taskana.common.api.BaseQuery<pro.taskana.task.api.models.TaskSummary, pro.taskana.task.api.TaskQueryColumnName>> with type argument depending on <pro.taskana.task.api.models.TaskSummary> in (TaskQuery.java:0)\
-    - Method <pro.taskana.task.api.TaskQuery.primaryObjectReferenceIn([Lpro.taskana.task.api.models.ObjectReference;)> depends on component type <pro.taskana.task.api.models.ObjectReference> in (TaskQuery.java:0)\
-    - Method <pro.taskana.task.api.TaskQuery.secondaryObjectReferenceIn([Lpro.taskana.task.api.models.ObjectReference;)> depends on component type <pro.taskana.task.api.models.ObjectReference> in (TaskQuery.java:0)\
-    - Method <pro.taskana.task.api.TaskService.cancelClaim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.cancelTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.claim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.completeTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTask(pro.taskana.task.api.models.Task)> has parameter of type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTask(pro.taskana.task.api.models.Task)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTaskComment(pro.taskana.task.api.models.TaskComment)> has parameter of type <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTaskComment(pro.taskana.task.api.models.TaskComment)> has return type <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.forceCancelClaim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.forceClaim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.forceCompleteTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.getTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.getTaskComment(java.lang.String)> has return type <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.getTaskComments(java.lang.String)> has generic return type <java.util.List<pro.taskana.task.api.models.TaskComment>> with type argument depending on <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.newAttachment()> has return type <pro.taskana.task.api.models.Attachment> in (TaskService.java:0)\
-    (18 further dependencies have been omitted...)\
-  5. Dependencies of Slice task.api.models\
-    - Method <pro.taskana.task.api.models.TaskSummary.getWorkbasketSummary()> has return type <pro.taskana.workbasket.api.models.WorkbasketSummary> in (TaskSummary.java:0)\
-  6. Dependencies of Slice workbasket.api.models\
-    - Method <pro.taskana.workbasket.api.models.Workbasket.setCustomAttribute(pro.taskana.workbasket.api.WorkbasketCustomField, java.lang.String)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (Workbasket.java:0)\
-    - Method <pro.taskana.workbasket.api.models.Workbasket.setCustomField(pro.taskana.workbasket.api.WorkbasketCustomField, java.lang.String)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (Workbasket.java:0)\
-    - Method <pro.taskana.workbasket.api.models.Workbasket.setType(pro.taskana.workbasket.api.WorkbasketType)> has parameter of type <pro.taskana.workbasket.api.WorkbasketType> in (Workbasket.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketAccessItem.getPermission(pro.taskana.workbasket.api.WorkbasketPermission)> has parameter of type <pro.taskana.workbasket.api.WorkbasketPermission> in (WorkbasketAccessItem.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketAccessItem.setPermission(pro.taskana.workbasket.api.WorkbasketPermission, boolean)> has parameter of type <pro.taskana.workbasket.api.WorkbasketPermission> in (WorkbasketAccessItem.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketSummary.getCustomAttribute(pro.taskana.workbasket.api.WorkbasketCustomField)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (WorkbasketSummary.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketSummary.getCustomField(pro.taskana.workbasket.api.WorkbasketCustomField)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (WorkbasketSummary.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketSummary.getType()> has return type <pro.taskana.workbasket.api.WorkbasketType> in (WorkbasketSummary.java:0)\
-  7. Dependencies of Slice workbasket.api\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.addDistributionTarget(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.checkAuthorization(java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.checkAuthorization(java.lang.String, java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.createWorkbasket(pro.taskana.workbasket.api.models.Workbasket)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.createWorkbasketAccessItem(pro.taskana.workbasket.api.models.WorkbasketAccessItem)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.createWorkbasketAccessItem(pro.taskana.workbasket.api.models.WorkbasketAccessItem)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.deleteWorkbasket(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketInUseException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.deleteWorkbasket(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionSources(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionSources(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionTargets(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionTargets(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getWorkbasket(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getWorkbasket(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.setDistributionTargets(java.lang.String, java.util.List)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.setWorkbasketAccessItems(java.lang.String, java.util.List)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.setWorkbasketAccessItems(java.lang.String, java.util.List)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.updateWorkbasket(pro.taskana.workbasket.api.models.Workbasket)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-  8. Dependencies of Slice workbasket.api.exceptions\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException.<init>(java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object)> in (WorkbasketNotFoundException.java:20)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException.<init>(java.lang.String, java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (WorkbasketAlreadyExistException.java:21)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketInUseException.<init>(java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object)> in (WorkbasketInUseException.java:22)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketMarkedForDeletionException.<init>(java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object)> in (WorkbasketMarkedForDeletionException.java:22)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException.<init>(java.lang.String, java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (WorkbasketAccessItemAlreadyExistException.java:23)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException.<init>(java.lang.String, java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (WorkbasketNotFoundException.java:29)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException.<init>(java.lang.String, java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (MismatchedWorkbasketPermissionException.java:33)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException.<init>(java.lang.String, java.lang.String, java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (MismatchedWorkbasketPermissionException.java:60)\
-  9. Dependencies of Slice common.internal.util\
-    - Method <pro.taskana.common.internal.util.CheckedRunnable.lambda$0(pro.taskana.common.internal.util.CheckedRunnable)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedRunnable.java:13)\
-    - Method <pro.taskana.common.internal.util.CheckedConsumer.lambda$0(pro.taskana.common.internal.util.CheckedConsumer, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedConsumer.java:14)\
-    - Method <pro.taskana.common.internal.util.CheckedFunction.lambda$0(pro.taskana.common.internal.util.CheckedFunction, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedFunction.java:14)\
-    - Method <pro.taskana.common.internal.util.CheckedSupplier.lambda$0(pro.taskana.common.internal.util.CheckedSupplier)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedSupplier.java:15)\
-    - Method <pro.taskana.common.internal.util.CheckedFunction.lambda$1(pro.taskana.common.internal.util.CheckedFunction, java.lang.Class, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedFunction.java:28)\
-    - Method <pro.taskana.common.internal.util.ObjectAttributeChangeDetector.determineChangesInAttributes(java.lang.Object, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (ObjectAttributeChangeDetector.java:33)\
-    - Method <pro.taskana.common.internal.util.FileLoaderUtil.openFileFromClasspathOrSystem(java.lang.String, java.lang.Class)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (FileLoaderUtil.java:36)\
-    - Method <pro.taskana.common.internal.util.FileLoaderUtil.openFileFromClasspathOrSystem(java.lang.String, java.lang.Class)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (FileLoaderUtil.java:42)\
-    - Method <pro.taskana.common.internal.util.ObjectAttributeChangeDetector.determineChangesInAttributes(java.lang.Object, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (ObjectAttributeChangeDetector.java:45)\
-  10. Dependencies of Slice common.api.exceptions\
-    - Constructor <pro.taskana.common.api.exceptions.MismatchedRoleException.<init>(java.lang.String, [Lpro.taskana.common.api.TaskanaRole;)> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)\
-    - Field <pro.taskana.common.api.exceptions.MismatchedRoleException.roles> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)\
-    - Method <pro.taskana.common.api.exceptions.MismatchedRoleException.getRoles()> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)
-Cycle detected: Slice common.api -> \
-                Slice monitor.api -> \
                 Slice task.api -> \
                 Slice task.api.models -> \
                 Slice workbasket.api.models -> \
@@ -6899,95 +6790,6 @@ Cycle detected: Slice common.api -> \
     - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException.<init>(java.lang.String, java.lang.String)> calls constructor <pro.taskana.common.api.exceptions.NotFoundException.<init>(java.lang.String, pro.taskana.common.api.exceptions.ErrorCode)> in (WorkbasketNotFoundException.java:29)\
     (5 further dependencies have been omitted...)\
   8. Dependencies of Slice common.api.exceptions\
-    - Constructor <pro.taskana.common.api.exceptions.MismatchedRoleException.<init>(java.lang.String, [Lpro.taskana.common.api.TaskanaRole;)> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)\
-    - Field <pro.taskana.common.api.exceptions.MismatchedRoleException.roles> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)\
-    - Method <pro.taskana.common.api.exceptions.MismatchedRoleException.getRoles()> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)
-Cycle detected: Slice common.api -> \
-                Slice monitor.api -> \
-                Slice task.api -> \
-                Slice task.api.models -> \
-                Slice workbasket.api.models -> \
-                Slice workbasket.api -> \
-                Slice workbasket.api.exceptions -> \
-                Slice common.internal.util -> \
-                Slice common.api.exceptions -> \
-                Slice common.api\
-  1. Dependencies of Slice common.api\
-    - Method <pro.taskana.common.api.TaskanaEngine.getMonitorService()> has return type <pro.taskana.monitor.api.MonitorService> in (TaskanaEngine.java:0)\
-  2. Dependencies of Slice monitor.api\
-    - Method <pro.taskana.monitor.api.MonitorService.createTaskCustomFieldValueReportBuilder(pro.taskana.task.api.TaskCustomField)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (MonitorService.java:0)\
-  3. Dependencies of Slice task.api\
-    - Class <pro.taskana.task.api.ObjectReferenceQuery> has generic interface <pro.taskana.common.api.BaseQuery<pro.taskana.task.api.models.ObjectReference, pro.taskana.task.api.ObjectReferenceQueryColumnName>> with type argument depending on <pro.taskana.task.api.models.ObjectReference> in (ObjectReferenceQuery.java:0)\
-    - Class <pro.taskana.task.api.TaskCommentQuery> has generic interface <pro.taskana.common.api.BaseQuery<pro.taskana.task.api.models.TaskComment, pro.taskana.task.api.TaskCommentQueryColumnName>> with type argument depending on <pro.taskana.task.api.models.TaskComment> in (TaskCommentQuery.java:0)\
-    - Class <pro.taskana.task.api.TaskQuery> has generic interface <pro.taskana.common.api.BaseQuery<pro.taskana.task.api.models.TaskSummary, pro.taskana.task.api.TaskQueryColumnName>> with type argument depending on <pro.taskana.task.api.models.TaskSummary> in (TaskQuery.java:0)\
-    - Method <pro.taskana.task.api.TaskQuery.primaryObjectReferenceIn([Lpro.taskana.task.api.models.ObjectReference;)> depends on component type <pro.taskana.task.api.models.ObjectReference> in (TaskQuery.java:0)\
-    - Method <pro.taskana.task.api.TaskQuery.secondaryObjectReferenceIn([Lpro.taskana.task.api.models.ObjectReference;)> depends on component type <pro.taskana.task.api.models.ObjectReference> in (TaskQuery.java:0)\
-    - Method <pro.taskana.task.api.TaskService.cancelClaim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.cancelTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.claim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.completeTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTask(pro.taskana.task.api.models.Task)> has parameter of type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTask(pro.taskana.task.api.models.Task)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTaskComment(pro.taskana.task.api.models.TaskComment)> has parameter of type <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.createTaskComment(pro.taskana.task.api.models.TaskComment)> has return type <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.forceCancelClaim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.forceClaim(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.forceCompleteTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.getTask(java.lang.String)> has return type <pro.taskana.task.api.models.Task> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.getTaskComment(java.lang.String)> has return type <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.getTaskComments(java.lang.String)> has generic return type <java.util.List<pro.taskana.task.api.models.TaskComment>> with type argument depending on <pro.taskana.task.api.models.TaskComment> in (TaskService.java:0)\
-    - Method <pro.taskana.task.api.TaskService.newAttachment()> has return type <pro.taskana.task.api.models.Attachment> in (TaskService.java:0)\
-    (18 further dependencies have been omitted...)\
-  4. Dependencies of Slice task.api.models\
-    - Method <pro.taskana.task.api.models.TaskSummary.getWorkbasketSummary()> has return type <pro.taskana.workbasket.api.models.WorkbasketSummary> in (TaskSummary.java:0)\
-  5. Dependencies of Slice workbasket.api.models\
-    - Method <pro.taskana.workbasket.api.models.Workbasket.setCustomAttribute(pro.taskana.workbasket.api.WorkbasketCustomField, java.lang.String)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (Workbasket.java:0)\
-    - Method <pro.taskana.workbasket.api.models.Workbasket.setCustomField(pro.taskana.workbasket.api.WorkbasketCustomField, java.lang.String)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (Workbasket.java:0)\
-    - Method <pro.taskana.workbasket.api.models.Workbasket.setType(pro.taskana.workbasket.api.WorkbasketType)> has parameter of type <pro.taskana.workbasket.api.WorkbasketType> in (Workbasket.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketAccessItem.getPermission(pro.taskana.workbasket.api.WorkbasketPermission)> has parameter of type <pro.taskana.workbasket.api.WorkbasketPermission> in (WorkbasketAccessItem.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketAccessItem.setPermission(pro.taskana.workbasket.api.WorkbasketPermission, boolean)> has parameter of type <pro.taskana.workbasket.api.WorkbasketPermission> in (WorkbasketAccessItem.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketSummary.getCustomAttribute(pro.taskana.workbasket.api.WorkbasketCustomField)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (WorkbasketSummary.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketSummary.getCustomField(pro.taskana.workbasket.api.WorkbasketCustomField)> has parameter of type <pro.taskana.workbasket.api.WorkbasketCustomField> in (WorkbasketSummary.java:0)\
-    - Method <pro.taskana.workbasket.api.models.WorkbasketSummary.getType()> has return type <pro.taskana.workbasket.api.WorkbasketType> in (WorkbasketSummary.java:0)\
-  6. Dependencies of Slice workbasket.api\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.addDistributionTarget(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.checkAuthorization(java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.checkAuthorization(java.lang.String, java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.createWorkbasket(pro.taskana.workbasket.api.models.Workbasket)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.createWorkbasketAccessItem(pro.taskana.workbasket.api.models.WorkbasketAccessItem)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.createWorkbasketAccessItem(pro.taskana.workbasket.api.models.WorkbasketAccessItem)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.deleteWorkbasket(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketInUseException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.deleteWorkbasket(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionSources(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionSources(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionTargets(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getDistributionTargets(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getWorkbasket(java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.getWorkbasket(java.lang.String, java.lang.String)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.setDistributionTargets(java.lang.String, java.util.List)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.setWorkbasketAccessItems(java.lang.String, java.util.List)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.setWorkbasketAccessItems(java.lang.String, java.util.List)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-    - Method <pro.taskana.workbasket.api.WorkbasketService.updateWorkbasket(pro.taskana.workbasket.api.models.Workbasket)> throws type <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException> in (WorkbasketService.java:0)\
-  7. Dependencies of Slice workbasket.api.exceptions\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException.<init>(java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object)> in (WorkbasketNotFoundException.java:20)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException.<init>(java.lang.String, java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (WorkbasketAlreadyExistException.java:21)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketInUseException.<init>(java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object)> in (WorkbasketInUseException.java:22)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketMarkedForDeletionException.<init>(java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object)> in (WorkbasketMarkedForDeletionException.java:22)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException.<init>(java.lang.String, java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (WorkbasketAccessItemAlreadyExistException.java:23)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException.<init>(java.lang.String, java.lang.String)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (WorkbasketNotFoundException.java:29)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException.<init>(java.lang.String, java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (MismatchedWorkbasketPermissionException.java:33)\
-    - Constructor <pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException.<init>(java.lang.String, java.lang.String, java.lang.String, [Lpro.taskana.workbasket.api.WorkbasketPermission;)> calls method <pro.taskana.common.internal.util.MapCreator.of(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object)> in (MismatchedWorkbasketPermissionException.java:60)\
-  8. Dependencies of Slice common.internal.util\
-    - Method <pro.taskana.common.internal.util.CheckedRunnable.lambda$0(pro.taskana.common.internal.util.CheckedRunnable)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedRunnable.java:13)\
-    - Method <pro.taskana.common.internal.util.CheckedConsumer.lambda$0(pro.taskana.common.internal.util.CheckedConsumer, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedConsumer.java:14)\
-    - Method <pro.taskana.common.internal.util.CheckedFunction.lambda$0(pro.taskana.common.internal.util.CheckedFunction, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedFunction.java:14)\
-    - Method <pro.taskana.common.internal.util.CheckedSupplier.lambda$0(pro.taskana.common.internal.util.CheckedSupplier)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedSupplier.java:15)\
-    - Method <pro.taskana.common.internal.util.CheckedFunction.lambda$1(pro.taskana.common.internal.util.CheckedFunction, java.lang.Class, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String, java.lang.Throwable)> in (CheckedFunction.java:28)\
-    - Method <pro.taskana.common.internal.util.ObjectAttributeChangeDetector.determineChangesInAttributes(java.lang.Object, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (ObjectAttributeChangeDetector.java:33)\
-    - Method <pro.taskana.common.internal.util.FileLoaderUtil.openFileFromClasspathOrSystem(java.lang.String, java.lang.Class)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (FileLoaderUtil.java:36)\
-    - Method <pro.taskana.common.internal.util.FileLoaderUtil.openFileFromClasspathOrSystem(java.lang.String, java.lang.Class)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (FileLoaderUtil.java:42)\
-    - Method <pro.taskana.common.internal.util.ObjectAttributeChangeDetector.determineChangesInAttributes(java.lang.Object, java.lang.Object)> calls constructor <pro.taskana.common.api.exceptions.SystemException.<init>(java.lang.String)> in (ObjectAttributeChangeDetector.java:45)\
-  9. Dependencies of Slice common.api.exceptions\
     - Constructor <pro.taskana.common.api.exceptions.MismatchedRoleException.<init>(java.lang.String, [Lpro.taskana.common.api.TaskanaRole;)> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)\
     - Field <pro.taskana.common.api.exceptions.MismatchedRoleException.roles> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)\
     - Method <pro.taskana.common.api.exceptions.MismatchedRoleException.getRoles()> depends on component type <pro.taskana.common.api.TaskanaRole> in (MismatchedRoleException.java:0)
@@ -7582,3 +7384,57 @@ Cycle detected: Slice task.api -> \
     - Method <pro.taskana.task.api.models.TaskSummary.getCustomAttribute(pro.taskana.task.api.TaskCustomField)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (TaskSummary.java:0)\
     - Method <pro.taskana.task.api.models.TaskSummary.getCustomField(pro.taskana.task.api.TaskCustomField)> has parameter of type <pro.taskana.task.api.TaskCustomField> in (TaskSummary.java:0)\
     - Method <pro.taskana.task.api.models.TaskSummary.getState()> has return type <pro.taskana.task.api.TaskState> in (TaskSummary.java:0)
+Cycle detected: Slice testapi -> \
+                Slice testapi.extensions -> \
+                Slice testapi\
+  1. Dependencies of Slice testapi\
+    - Class <pro.taskana.testapi.TaskanaIntegrationTest> has annotation member of type <pro.taskana.testapi.extensions.TaskanaDependencyInjectionExtension> in (TaskanaIntegrationTest.java:0)\
+    - Class <pro.taskana.testapi.TaskanaIntegrationTest> has annotation member of type <pro.taskana.testapi.extensions.TaskanaInitializationExtension> in (TaskanaIntegrationTest.java:0)\
+    - Class <pro.taskana.testapi.TaskanaIntegrationTest> has annotation member of type <pro.taskana.testapi.extensions.TestContainerExtension> in (TaskanaIntegrationTest.java:0)\
+  2. Dependencies of Slice testapi.extensions\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.CleanTaskanaContext> in (TestContainerExtension.java:41)\
+    - Method <pro.taskana.testapi.extensions.TaskanaDependencyInjectionExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.TaskanaInject> in (TaskanaDependencyInjectionExtension.java:44)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.DockerContainerCreator.createDockerContainer(pro.taskana.common.internal.configuration.DB)> in (TestContainerExtension.java:46)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.lambda$0(org.junit.jupiter.api.extension.ExtensionContext$Store, org.testcontainers.containers.JdbcDatabaseContainer)> calls method <pro.taskana.testapi.DockerContainerCreator.createDataSource(org.testcontainers.containers.JdbcDatabaseContainer)> in (TestContainerExtension.java:50)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.CleanTaskanaContext> in (TaskanaInitializationExtension.java:54)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.WithServiceProvider> in (TaskanaInitializationExtension.java:55)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.TaskanaEngineConfigurationModifier> in (TestContainerExtension.java:55)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> checks instanceof <pro.taskana.testapi.TaskanaEngineConfigurationModifier> in (TaskanaInitializationExtension.java:56)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.WithServiceProvider> in (TestContainerExtension.java:56)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> checks instanceof <pro.taskana.testapi.TaskanaEngineConfigurationModifier> in (TaskanaInitializationExtension.java:61)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.TaskanaEngineConfigurationModifier.modify(pro.taskana.TaskanaEngineConfiguration)> in (TaskanaInitializationExtension.java:64)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.afterAll(org.junit.jupiter.api.extension.ExtensionContext)> references class object <pro.taskana.testapi.CleanTaskanaContext> in (TestContainerExtension.java:73)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.generateTaskanaEntityMap(pro.taskana.common.api.TaskanaEngine)> calls constructor <pro.taskana.testapi.TaskanaEngineProxy.<init>(pro.taskana.common.api.TaskanaEngine)> in (TaskanaInitializationExtension.java:97)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.generateTaskanaEntityMap(pro.taskana.common.api.TaskanaEngine)> calls method <pro.taskana.testapi.TaskanaEngineProxy.getSqlSession()> in (TaskanaInitializationExtension.java:103)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.generateTaskanaEntityMap(pro.taskana.common.api.TaskanaEngine)> calls method <pro.taskana.testapi.TaskanaEngineProxy.getEngine()> in (TaskanaInitializationExtension.java:108)
+Cycle detected: Slice testapi -> \
+                Slice testapi.extensions -> \
+                Slice testapi.util -> \
+                Slice testapi\
+  1. Dependencies of Slice testapi\
+    - Class <pro.taskana.testapi.TaskanaIntegrationTest> has annotation member of type <pro.taskana.testapi.extensions.TaskanaDependencyInjectionExtension> in (TaskanaIntegrationTest.java:0)\
+    - Class <pro.taskana.testapi.TaskanaIntegrationTest> has annotation member of type <pro.taskana.testapi.extensions.TaskanaInitializationExtension> in (TaskanaIntegrationTest.java:0)\
+    - Class <pro.taskana.testapi.TaskanaIntegrationTest> has annotation member of type <pro.taskana.testapi.extensions.TestContainerExtension> in (TaskanaIntegrationTest.java:0)\
+  2. Dependencies of Slice testapi.extensions\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass(java.lang.Class)> in (TestContainerExtension.java:41)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore(org.junit.jupiter.api.extension.ExtensionContext)> in (TestContainerExtension.java:42)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass(java.lang.Class)> in (TaskanaInitializationExtension.java:53)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore(org.junit.jupiter.api.extension.ExtensionContext)> in (TaskanaInitializationExtension.java:57)\
+    - Method <pro.taskana.testapi.extensions.TaskanaDependencyInjectionExtension.getTaskanaEntityMap(org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore(org.junit.jupiter.api.extension.ExtensionContext)> in (TaskanaDependencyInjectionExtension.java:61)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore(org.junit.jupiter.api.extension.ExtensionContext, java.lang.Class)> in (TestContainerExtension.java:61)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.interceptTestClassConstructor(org.junit.jupiter.api.extension.InvocationInterceptor$Invocation, org.junit.jupiter.api.extension.ReflectiveInvocationContext, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore(org.junit.jupiter.api.extension.ExtensionContext)> in (TestContainerExtension.java:62)\
+    - Method <pro.taskana.testapi.extensions.TaskanaInitializationExtension.postProcessTestInstance(java.lang.Object, org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ServiceProviderExtractor.extractServiceProviders(java.lang.Class)> in (TaskanaInitializationExtension.java:69)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.afterAll(org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass(java.lang.Class)> in (TestContainerExtension.java:72)\
+    - Method <pro.taskana.testapi.extensions.TestContainerExtension.afterAll(org.junit.jupiter.api.extension.ExtensionContext)> calls method <pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore(org.junit.jupiter.api.extension.ExtensionContext)> in (TestContainerExtension.java:74)\
+  3. Dependencies of Slice testapi.util\
+    - Method <pro.taskana.testapi.util.ServiceProviderExtractor.groupServiceProvidersByServiceProviderInterface(java.util.List)> has generic parameter type <java.util.List<pro.taskana.testapi.WithServiceProvider>> with type argument depending on <pro.taskana.testapi.WithServiceProvider> in (ServiceProviderExtractor.java:0)\
+    - Method <pro.taskana.testapi.util.ServiceProviderExtractor.lambda$5(pro.taskana.testapi.WithServiceProvider)> has parameter of type <pro.taskana.testapi.WithServiceProvider> in (ServiceProviderExtractor.java:0)\
+    - Method <pro.taskana.testapi.util.ServiceProviderExtractor.extractServiceProviders(java.lang.Class)> references class object <pro.taskana.testapi.WithServiceProvider> in (ServiceProviderExtractor.java:36)\
+    - Method <pro.taskana.testapi.util.ExtensionCommunicator.determineNamespace(java.lang.Class)> references class object <pro.taskana.testapi.CleanTaskanaContext> in (ExtensionCommunicator.java:42)\
+    - Method <pro.taskana.testapi.util.ExtensionCommunicator.determineNamespace(java.lang.Class)> references class object <pro.taskana.testapi.CleanTaskanaContext> in (ExtensionCommunicator.java:43)\
+    - Method <pro.taskana.testapi.util.ExtensionCommunicator.determineNamespace(java.lang.Class)> references class object <pro.taskana.testapi.WithServiceProvider> in (ExtensionCommunicator.java:44)\
+    - Method <pro.taskana.testapi.util.ExtensionCommunicator.determineNamespace(java.lang.Class)> references class object <pro.taskana.testapi.WithServiceProvider> in (ExtensionCommunicator.java:45)\
+    - Method <pro.taskana.testapi.util.ExtensionCommunicator.determineNamespace(java.lang.Class)> references class object <pro.taskana.testapi.TaskanaEngineConfigurationModifier> in (ExtensionCommunicator.java:46)\
+    - Method <pro.taskana.testapi.util.ExtensionCommunicator.determineNamespace(java.lang.Class)> references class object <pro.taskana.testapi.TaskanaEngineConfigurationModifier> in (ExtensionCommunicator.java:48)\
+    - Method <pro.taskana.testapi.util.ServiceProviderExtractor.groupServiceProvidersByServiceProviderInterface(java.util.List)> references method <pro.taskana.testapi.WithServiceProvider.serviceProviderInterface()> in (ServiceProviderExtractor.java:61)\
+    - Method <pro.taskana.testapi.util.ServiceProviderExtractor.lambda$5(pro.taskana.testapi.WithServiceProvider)> calls method <pro.taskana.testapi.WithServiceProvider.serviceProviders()> in (ServiceProviderExtractor.java:63)

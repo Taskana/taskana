@@ -1,3 +1,0 @@
-Field <pro.taskana.common.test.BaseRestDocTest.objectMapper> is annotated with @Autowired in (BaseRestDocTest.java:0)
-Field <pro.taskana.common.test.BaseRestDocTest.requestMappingHandlerAdapter> is annotated with @Autowired in (BaseRestDocTest.java:0)
-Field <pro.taskana.common.test.BaseRestDocTest.restHelper> is annotated with @Autowired in (BaseRestDocTest.java:0)

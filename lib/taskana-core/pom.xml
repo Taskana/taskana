@@ -94,24 +94,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>nl.jqno.equalsverifier</groupId>
-      <artifactId>equalsverifier</artifactId>
-      <version>${version.equalsverifier}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.openpojo</groupId>
-      <artifactId>openpojo</artifactId>
-      <version>${version.openpojo}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.tngtech.archunit</groupId>
-      <artifactId>archunit</artifactId>
-      <version>${version.archunit}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
       <version>${version.testcontainers}</version>
