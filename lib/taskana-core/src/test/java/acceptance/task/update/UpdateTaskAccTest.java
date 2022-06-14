@@ -260,6 +260,18 @@ class UpdateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_SetPlannedCorrectly_When_PlannedSetToALateTime() throws Exception {
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    Instant planned = Instant.parse("2022-06-17T23:14:31.0Z");
+    task.setPlanned(planned);
+    Task updatedTask = taskService.updateTask(task);
+    updatedTask = taskService.getTask(updatedTask.getId());
+
+    assertThat(updatedTask.getPlanned()).isEqualTo(planned);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_ThrowException_When_ModificationOfWorkbasketKeyIsAttempted() throws Exception {
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
