@@ -7,7 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,8 +85,7 @@ public class WorkingDaysToDaysConverter {
   }
 
   public boolean isWorkingDay(Instant referenceDate) {
-    LocalDate dateToCheck =
-        LocalDateTime.ofInstant(referenceDate, ZoneId.systemDefault()).toLocalDate();
+    LocalDate dateToCheck = LocalDateTime.ofInstant(referenceDate, ZoneOffset.UTC).toLocalDate();
     return !isWeekend(dateToCheck) && !isHoliday(dateToCheck);
   }
 
