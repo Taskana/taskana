@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -32,7 +31,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     customAttributes = new HashMap<>(copyFrom.customAttributes);
     callbackInfo = new HashMap<>(copyFrom.callbackInfo);
     callbackState = copyFrom.callbackState;
-    attachments = copyFrom.attachments.stream().map(Attachment::copy).collect(Collectors.toList());
+    attachments = new ArrayList<>(copyFrom.attachments);
   }
 
   public Map<String, String> getCustomAttributes() {
