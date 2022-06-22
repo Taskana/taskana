@@ -66,223 +66,129 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean addWorkbasketNameToSelectClauseForOrdering = false;
   private boolean joinWithUserInfo;
 
-  // region id
   private String[] taskId;
   private String[] taskIdNotIn;
-  // endregion
-  // region externalId
   private String[] externalIdIn;
   private String[] externalIdNotIn;
-  // endregion
-  // region received
   private TimeInterval[] receivedWithin;
   private TimeInterval[] receivedNotWithin;
-
-  // endregion
-  // region created
   private TimeInterval[] createdWithin;
   private TimeInterval[] createdNotWithin;
-  // endregion
-  // region claimed
   private TimeInterval[] claimedWithin;
   private TimeInterval[] claimedNotWithin;
-  // endregion
-  // region modified
   private TimeInterval[] modifiedWithin;
   private TimeInterval[] modifiedNotWithin;
-  // endregion
-  // region planned
   private TimeInterval[] plannedWithin;
   private TimeInterval[] plannedNotWithin;
-  // endregion
-  // region due
   private TimeInterval[] dueWithin;
   private TimeInterval[] dueNotWithin;
-  // endregion
-  // region completed
   private TimeInterval[] completedWithin;
   private TimeInterval[] completedNotWithin;
-  // endregion
-  // region name
   private String[] nameIn;
   private String[] nameNotIn;
   private String[] nameLike;
   private String[] nameNotLike;
-  // endregion
-  // region creator
   private String[] creatorIn;
   private String[] creatorNotIn;
   private String[] creatorLike;
   private String[] creatorNotLike;
-  // endregion
-  // region note
   private String[] noteLike;
   private String[] noteNotLike;
-  // endregion
-  // region description
   private String[] descriptionLike;
   private String[] descriptionNotLike;
-  // endregion
-  // region priority
   private int[] priority;
   private int[] priorityNotIn;
-  // endregion
-  // region state
   private TaskState[] stateIn;
   private TaskState[] stateNotIn;
-  // endregion
-  // region classificationId
   private String[] classificationIdIn;
   private String[] classificationIdNotIn;
-  // endregion
-  // region classificationKey
   private String[] classificationKeyIn;
   private String[] classificationKeyNotIn;
   private String[] classificationKeyLike;
   private String[] classificationKeyNotLike;
-  // endregion
-  // region classificationCategory
   private String[] classificationCategoryIn;
   private String[] classificationCategoryNotIn;
   private String[] classificationCategoryLike;
   private String[] classificationCategoryNotLike;
-  // endregion
-  // region classificationName
   private String[] classificationNameIn;
   private String[] classificationNameNotIn;
   private String[] classificationNameLike;
   private String[] classificationNameNotLike;
-  // endregion
-  // region workbasketId
   private String[] workbasketIdIn;
   private String[] workbasketIdNotIn;
-  // endregion
-  // region workbasketKeyDomain
   private KeyDomain[] workbasketKeyDomainIn;
   private KeyDomain[] workbasketKeyDomainNotIn;
-  // endregion
-  // region businessProcessId
   private String[] businessProcessIdIn;
   private String[] businessProcessIdNotIn;
   private String[] businessProcessIdLike;
   private String[] businessProcessIdNotLike;
-  // endregion
-  // region parentBusinessProcessId
   private String[] parentBusinessProcessIdIn;
   private String[] parentBusinessProcessIdNotIn;
   private String[] parentBusinessProcessIdLike;
   private String[] parentBusinessProcessIdNotLike;
-  // endregion
-  // region owner
   private String[] ownerIn;
   private String[] ownerNotIn;
   private String[] ownerLike;
   private String[] ownerNotLike;
-  // endregion
-  // region ownerLongName
   private String[] ownerLongNameIn;
   private String[] ownerLongNameNotIn;
   private String[] ownerLongNameLike;
   private String[] ownerLongNameNotLike;
-  // endregion
-  // region primaryObjectReference
   private ObjectReference[] objectReferences;
-  // endregion
-  // region primaryObjectReferenceCompany
   private String[] porCompanyIn;
   private String[] porCompanyNotIn;
   private String[] porCompanyLike;
   private String[] porCompanyNotLike;
-  // endregion
-  // region primaryObjectReferenceSystem
   private String[] porSystemIn;
   private String[] porSystemNotIn;
   private String[] porSystemLike;
   private String[] porSystemNotLike;
-  // endregion
-  // region primaryObjectReferenceSystemInstance
   private String[] porSystemInstanceIn;
   private String[] porSystemInstanceNotIn;
   private String[] porSystemInstanceLike;
   private String[] porSystemInstanceNotLike;
-  // endregion
-  // region primaryObjectReferenceSystemType
   private String[] porTypeIn;
   private String[] porTypeNotIn;
   private String[] porTypeLike;
   private String[] porTypeNotLike;
-  // endregion
-  // region primaryObjectReferenceSystemValue
   private String[] porValueIn;
   private String[] porValueNotIn;
   private String[] porValueLike;
   private String[] porValueNotLike;
-  // endregion
-  // region read
   private Boolean isRead;
-  // endregion
-  // region transferred
   private Boolean isTransferred;
-  // endregion
-  // region attachmentClassificationId
   private String[] attachmentClassificationIdIn;
   private String[] attachmentClassificationIdNotIn;
   private String[] attachmentClassificationNameIn;
   private String[] attachmentClassificationNameNotIn;
-  // endregion
-  // region attachmentClassificationKey
   private String[] attachmentClassificationKeyIn;
   private String[] attachmentClassificationKeyNotIn;
   private String[] attachmentClassificationKeyLike;
   private String[] attachmentClassificationKeyNotLike;
-  // endregion
-  // region attachmentClassificationName
   private String[] attachmentClassificationNameLike;
   private String[] attachmentClassificationNameNotLike;
-  // endregion
-  // region attachmentChannel
   private String[] attachmentChannelIn;
   private String[] attachmentChannelNotIn;
   private String[] attachmentChannelLike;
   private String[] attachmentChannelNotLike;
-  // endregion
-  // region attachmentReferenceValue
   private String[] attachmentReferenceIn;
   private String[] attachmentReferenceNotIn;
   private String[] attachmentReferenceLike;
   private String[] attachmentReferenceNotLike;
-  // endregion
-  // region attachmentReceived
   private TimeInterval[] attachmentReceivedWithin;
   private TimeInterval[] attachmentReceivedNotWithin;
-  // endregion
-  // region withoutAttachment
   private boolean withoutAttachment;
-  // endregion
-  // region secondaryObjectReferences
   private ObjectReference[] secondaryObjectReferences;
-  // endregion
-  // region secondaryObjectReferenceCompany
   private String[] sorCompanyIn;
   private String[] sorCompanyLike;
-  // endregion
-  // region secondaryObjectReferenceValue
   private String[] sorValueIn;
   private String[] sorValueLike;
-  // endregion
-  // region secondaryObjectReferenceSystem
   private String[] sorSystemIn;
   private String[] sorSystemLike;
-  // endregion
-  // region secondaryObjectReferenceSystemInstance
   private String[] sorSystemInstanceIn;
   private String[] sorSystemInstanceLike;
-  // endregion
-  // region secondaryObjectReferenceType
   private String[] sorTypeIn;
   private String[] sorTypeLike;
-  // endregion
-  // region customAttributes
   private String[] custom1In;
   private boolean custom1InContainsNull;
   private String[] custom1NotIn;
@@ -379,15 +285,10 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean custom16NotInContainsNull;
   private String[] custom16Like;
   private String[] custom16NotLike;
-  // endregion
-  // region callbackState
   private CallbackState[] callbackStateIn;
   private CallbackState[] callbackStateNotIn;
-  // endregion
-  // region wildcardSearchValue
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
-  // endregion
 
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -397,8 +298,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.withoutAttachment = false;
     this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo();
   }
-
-  // region id
 
   @Override
   public TaskQuery idIn(String... taskIds) {
@@ -417,9 +316,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("ID", sortDirection);
   }
 
-  // endregion
-  // region externalId
-
   @Override
   public TaskQuery externalIdIn(String... externalIds) {
     this.externalIdIn = externalIds;
@@ -431,9 +327,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.externalIdNotIn = externalIds;
     return this;
   }
-
-  // endregion
-  // region received
 
   @Override
   public TaskQuery receivedWithin(TimeInterval... intervals) {
@@ -454,9 +347,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("RECEIVED", sortDirection);
   }
 
-  // endregion
-  // region created
-
   @Override
   public TaskQuery createdWithin(TimeInterval... intervals) {
     validateAllIntervals(intervals);
@@ -475,9 +365,6 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByCreated(SortDirection sortDirection) {
     return addOrderCriteria("CREATED", sortDirection);
   }
-
-  // endregion
-  // region claimed
 
   @Override
   public TaskQuery claimedWithin(TimeInterval... intervals) {
@@ -498,9 +385,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("CLAIMED", sortDirection);
   }
 
-  // endregion
-  // region modified
-
   @Override
   public TaskQuery modifiedWithin(TimeInterval... intervals) {
     validateAllIntervals(intervals);
@@ -519,9 +403,6 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByModified(SortDirection sortDirection) {
     return addOrderCriteria("MODIFIED", sortDirection);
   }
-
-  // endregion
-  // region planned
 
   @Override
   public TaskQuery plannedWithin(TimeInterval... intervals) {
@@ -542,9 +423,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("PLANNED", sortDirection);
   }
 
-  // endregion
-  // region due
-
   @Override
   public TaskQuery dueWithin(TimeInterval... intervals) {
     validateAllIntervals(intervals);
@@ -564,9 +442,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("DUE", sortDirection);
   }
 
-  // endregion
-  // region completed
-
   @Override
   public TaskQuery completedWithin(TimeInterval... intervals) {
     validateAllIntervals(intervals);
@@ -585,9 +460,6 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByCompleted(SortDirection sortDirection) {
     return addOrderCriteria("COMPLETED", sortDirection);
   }
-
-  // endregion
-  // region name
 
   @Override
   public TaskQuery nameIn(String... names) {
@@ -618,9 +490,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("NAME", sortDirection);
   }
 
-  // endregion
-  // region creator
-
   @Override
   public TaskQuery creatorIn(String... creators) {
     this.creatorIn = creators;
@@ -650,9 +519,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("CREATOR", sortDirection);
   }
 
-  // endregion
-  // region note
-
   @Override
   public TaskQuery noteLike(String... note) {
     this.noteLike = toLowerCopy(note);
@@ -670,9 +536,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("NOTE", sortDirection);
   }
 
-  // endregion
-  // region description
-
   @Override
   public TaskQuery descriptionLike(String... description) {
     this.descriptionLike = toLowerCopy(description);
@@ -684,9 +547,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.descriptionNotLike = toLowerCopy(description);
     return this;
   }
-
-  // endregion
-  // region priority
 
   @Override
   public TaskQuery priorityIn(int... priorities) {
@@ -705,9 +565,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("PRIORITY", sortDirection);
   }
 
-  // endregion
-  // region state
-
   @Override
   public TaskQuery stateIn(TaskState... states) {
     this.stateIn = states;
@@ -725,9 +582,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("STATE", sortDirection);
   }
 
-  // endregion
-  // region classificationId
-
   @Override
   public TaskQuery classificationIdIn(String... classificationId) {
     this.classificationIdIn = classificationId;
@@ -739,9 +593,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.classificationIdNotIn = classificationIds;
     return this;
   }
-
-  // endregion
-  // region classificationKey
 
   @Override
   public TaskQuery classificationKeyIn(String... classificationKey) {
@@ -774,9 +625,6 @@ public class TaskQueryImpl implements TaskQuery {
         : addOrderCriteria("t.CLASSIFICATION_KEY", sortDirection);
   }
 
-  // endregion
-  // region classificationCategory
-
   @Override
   public TaskQuery classificationCategoryIn(String... classificationCategories) {
     this.classificationCategoryIn = classificationCategories;
@@ -800,9 +648,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.classificationCategoryNotLike = toLowerCopy(classificationCategories);
     return this;
   }
-
-  // endregion
-  // region classificationName
 
   @Override
   public TaskQuery classificationNameIn(String... classificationNames) {
@@ -841,9 +686,6 @@ public class TaskQueryImpl implements TaskQuery {
         : addOrderCriteria("c.NAME", sortDirection);
   }
 
-  // endregion
-  // region workbasketId
-
   @Override
   public TaskQuery workbasketIdIn(String... workbasketIds) {
     this.workbasketIdIn = workbasketIds;
@@ -861,9 +703,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("WORKBASKET_ID", sortDirection);
   }
 
-  // endregion
-  // region workbasketKeyDomain
-
   @Override
   public TaskQuery workbasketKeyDomainIn(KeyDomain... workbasketIdentifiers) {
     this.workbasketKeyDomainIn = workbasketIdentifiers;
@@ -875,9 +714,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.workbasketKeyDomainNotIn = workbasketIdentifiers;
     return this;
   }
-
-  // endregion
-  // region businessProcessId
 
   @Override
   public TaskQuery businessProcessIdIn(String... businessProcessIds) {
@@ -908,9 +744,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("BUSINESS_PROCESS_ID", sortDirection);
   }
 
-  // endregion
-  // region parentBusinessProcessId
-
   @Override
   public TaskQuery parentBusinessProcessIdIn(String... parentBusinessProcessIds) {
     this.parentBusinessProcessIdIn = parentBusinessProcessIds;
@@ -939,9 +772,6 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByParentBusinessProcessId(SortDirection sortDirection) {
     return addOrderCriteria("PARENT_BUSINESS_PROCESS_ID", sortDirection);
   }
-
-  // endregion
-  // region owner
 
   @Override
   public TaskQuery ownerIn(String... owners) {
@@ -972,8 +802,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("OWNER", sortDirection);
   }
 
-  // endregion
-
   public TaskQuery ownerLongNameIn(String... longNames) {
     joinWithUserInfo = true;
     this.ownerLongNameIn = longNames;
@@ -1001,16 +829,11 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // region primaryObjectReference
-
   @Override
   public TaskQuery primaryObjectReferenceIn(ObjectReference... objectReferences) {
     this.objectReferences = objectReferences;
     return this;
   }
-
-  // endregion
-  // region primaryObjectReferenceCompany
 
   @Override
   public TaskQuery primaryObjectReferenceCompanyIn(String... companies) {
@@ -1041,9 +864,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("POR_COMPANY", sortDirection);
   }
 
-  // endregion
-  // region primaryObjectReferenceSystem
-
   @Override
   public TaskQuery primaryObjectReferenceSystemIn(String... systems) {
     this.porSystemIn = systems;
@@ -1072,9 +892,6 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByPrimaryObjectReferenceSystem(SortDirection sortDirection) {
     return addOrderCriteria("POR_SYSTEM", sortDirection);
   }
-
-  // endregion
-  // region primaryObjectReferenceSystemInstance
 
   @Override
   public TaskQuery primaryObjectReferenceSystemInstanceIn(String... systemInstances) {
@@ -1105,9 +922,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("POR_INSTANCE", sortDirection);
   }
 
-  // endregion
-  // region primaryObjectReferenceSystemType
-
   @Override
   public TaskQuery primaryObjectReferenceTypeIn(String... types) {
     this.porTypeIn = types;
@@ -1136,9 +950,6 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByPrimaryObjectReferenceType(SortDirection sortDirection) {
     return addOrderCriteria("POR_TYPE", sortDirection);
   }
-
-  // endregion
-  // region primaryObjectReferenceSystemValue
 
   @Override
   public TaskQuery primaryObjectReferenceValueIn(String... values) {
@@ -1169,26 +980,17 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("POR_VALUE", sortDirection);
   }
 
-  // endregion
-  // region read
-
   @Override
   public TaskQuery readEquals(Boolean isRead) {
     this.isRead = isRead;
     return this;
   }
 
-  // endregion
-  // region transferred
-
   @Override
   public TaskQuery transferredEquals(Boolean isTransferred) {
     this.isTransferred = isTransferred;
     return this;
   }
-
-  // endregion
-  // region attachmentClassificationId
 
   @Override
   public TaskQuery attachmentClassificationIdIn(String... attachmentClassificationId) {
@@ -1212,9 +1014,6 @@ public class TaskQueryImpl implements TaskQuery {
         ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
         : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
   }
-
-  // endregion
-  // region attachmentClassificationKey
 
   @Override
   public TaskQuery attachmentClassificationKeyIn(String... attachmentClassificationKeys) {
@@ -1253,9 +1052,6 @@ public class TaskQueryImpl implements TaskQuery {
         : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
   }
 
-  // endregion
-  // region attachmentClassificationName
-
   @Override
   public TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName) {
     joinWithAttachmentClassifications = true;
@@ -1293,9 +1089,6 @@ public class TaskQueryImpl implements TaskQuery {
         : addOrderCriteria("ac.NAME", sortDirection);
   }
 
-  // endregion
-  // region attachmentChannel
-
   @Override
   public TaskQuery attachmentChannelIn(String... attachmentChannel) {
     joinWithAttachments = true;
@@ -1330,9 +1123,6 @@ public class TaskQueryImpl implements TaskQuery {
     addAttachmentColumnsToSelectClauseForOrdering = true;
     return addOrderCriteria("CHANNEL", sortDirection);
   }
-
-  // endregion
-  // region attachmentReferenceValue
 
   @Override
   public TaskQuery attachmentReferenceValueIn(String... referenceValue) {
@@ -1369,9 +1159,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria("REF_VALUE", sortDirection);
   }
 
-  // endregion
-  // region attachmentReceived
-
   @Override
   public TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn) {
     validateAllIntervals(receivedIn);
@@ -1397,17 +1184,12 @@ public class TaskQueryImpl implements TaskQuery {
         : addOrderCriteria("a.RECEIVED", sortDirection);
   }
 
-  // endregion
-  // region withoutAttachment
-
   @Override
   public TaskQuery withoutAttachment() {
     this.joinWithAttachments = true;
     this.withoutAttachment = true;
     return this;
   }
-
-  // endregion
 
   public String[] getOwnerLongNameIn() {
     return ownerLongNameIn;
@@ -1425,8 +1207,6 @@ public class TaskQueryImpl implements TaskQuery {
     return ownerLongNameNotLike;
   }
 
-  // region secondaryObjectReference
-
   @Override
   public TaskQuery secondaryObjectReferenceIn(ObjectReference... objectReferences) {
     this.joinWithSecondaryObjectReferences = true;
@@ -1434,8 +1214,6 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // endregion
-  // region secondaryObjectReferenceCompany
   public TaskQuery sorCompanyIn(String... companyIn) {
     joinWithSecondaryObjectReferences = true;
     sorCompanyIn = companyIn;
@@ -1448,8 +1226,6 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // endregion
-  // region secondaryObjectReferenceSystem
   public TaskQuery sorSystemIn(String... systemIn) {
     joinWithSecondaryObjectReferences = true;
     sorSystemIn = systemIn;
@@ -1462,8 +1238,6 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // endregion
-  // region secondaryObjectReferenceSystemInstance
   public TaskQuery sorSystemInstanceIn(String... systemInstanceIn) {
     joinWithSecondaryObjectReferences = true;
     sorSystemInstanceIn = systemInstanceIn;
@@ -1476,8 +1250,6 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // endregion
-  // region secondaryObjectReferenceType
   public TaskQuery sorTypeIn(String... typeIn) {
     joinWithSecondaryObjectReferences = true;
     sorTypeIn = typeIn;
@@ -1490,8 +1262,6 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // endregion
-  // region secondaryObjectReferenceValue
   @Override
   public TaskQuery sorValueIn(String... valueIn) {
     joinWithSecondaryObjectReferences = true;
@@ -1504,9 +1274,6 @@ public class TaskQueryImpl implements TaskQuery {
     sorValueLike = toLowerCopy(valueLike);
     return this;
   }
-
-  // endregion
-  // region customAttributes
 
   @Override
   public TaskQuery customAttributeIn(TaskCustomField customField, String... strings)
@@ -1876,9 +1643,6 @@ public class TaskQueryImpl implements TaskQuery {
     return addOrderCriteria(customField.name(), sortDirection);
   }
 
-  // endregion
-  // region callbackState
-
   @Override
   public TaskQuery callbackStateIn(CallbackState... states) {
     this.callbackStateIn = states;
@@ -1891,23 +1655,17 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  // endregion
-  // region wildcardSearchValue
-
   @Override
   public TaskQuery wildcardSearchValueLike(String wildcardSearchValue) {
     this.wildcardSearchValueLike = wildcardSearchValue.toLowerCase();
     return this;
   }
-  // endregion
 
   @Override
   public TaskQuery wildcardSearchFieldsIn(WildcardSearchField... wildcardSearchFields) {
     this.wildcardSearchFieldIn = wildcardSearchFields;
     return this;
   }
-
-  // endregion
 
   @Override
   public ObjectReferenceQuery createObjectReferenceQuery() {
