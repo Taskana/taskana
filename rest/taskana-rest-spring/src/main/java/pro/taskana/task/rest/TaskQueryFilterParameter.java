@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -1493,6 +1494,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt1 of the Task. */
   @JsonProperty("custom-int-1-not")
   private final Integer[] customInt1NotIn;
+  /** Filter by the range of value of the field customInt1 of the Task. */
+  @JsonProperty("custom-int-1-within")
+  private final Integer[] customInt1Within;
+  /** Exclude range of values of the field customInt1 of the Task. */
+  @JsonProperty("custom-int-1-not-within")
+  private final Integer[] customInt1NotWithin;
   /** Filter by the value of the field customInt2 of the Task. This is an exact match. */
   @JsonProperty("custom-int-2")
   private final Integer[] customInt2In;
@@ -1500,6 +1507,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt2 of the Task. */
   @JsonProperty("custom-int-2-not")
   private final Integer[] customInt2NotIn;
+  /** Filter by the range of value of the field customInt2 of the Task. */
+  @JsonProperty("custom-int-2-within")
+  private final Integer[] customInt2Within;
+  /** Exclude range of values of the field customInt2 of the Task. */
+  @JsonProperty("custom-int-2-not-within")
+  private final Integer[] customInt2NotWithin;
   /** Filter by the value of the field customInt3 of the Task. This is an exact match. */
   @JsonProperty("custom-int-3")
   private final Integer[] customInt3In;
@@ -1507,6 +1520,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt3 of the Task. */
   @JsonProperty("custom-int-3-not")
   private final Integer[] customInt3NotIn;
+  /** Filter by the range of value of the field customInt3 of the Task. */
+  @JsonProperty("custom-int-3-within")
+  private final Integer[] customInt3Within;
+  /** Exclude range of values of the field customInt3 of the Task. */
+  @JsonProperty("custom-int-3-not-within")
+  private final Integer[] customInt3NotWithin;
   /** Filter by the value of the field customInt4 of the Task. This is an exact match. */
   @JsonProperty("custom-int-4")
   private final Integer[] customInt4In;
@@ -1514,6 +1533,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt4 of the Task. */
   @JsonProperty("custom-int-4-not")
   private final Integer[] customInt4NotIn;
+  /** Filter by the range of value of the field customInt4 of the Task. */
+  @JsonProperty("custom-int-4-within")
+  private final Integer[] customInt4Within;
+  /** Exclude range of values of the field customInt4 of the Task. */
+  @JsonProperty("custom-int-4-not-within")
+  private final Integer[] customInt4NotWithin;
   /** Filter by the value of the field customInt5 of the Task. This is an exact match. */
   @JsonProperty("custom-int-5")
   private final Integer[] customInt5In;
@@ -1521,6 +1546,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt5 of the Task. */
   @JsonProperty("custom-int-5-not")
   private final Integer[] customInt5NotIn;
+  /** Filter by the range of value of the field customInt5 of the Task. */
+  @JsonProperty("custom-int-5-within")
+  private final Integer[] customInt5Within;
+  /** Exclude range of values of the field customInt5 of the Task. */
+  @JsonProperty("custom-int-5-not-within")
+  private final Integer[] customInt5NotWithin;
   /** Filter by the value of the field customInt6 of the Task. This is an exact match. */
   @JsonProperty("custom-int-6")
   private final Integer[] customInt6In;
@@ -1528,6 +1559,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt6 of the Task. */
   @JsonProperty("custom-int-6-not")
   private final Integer[] customInt6NotIn;
+  /** Filter by the range of value of the field customInt6 of the Task. */
+  @JsonProperty("custom-int-6-within")
+  private final Integer[] customInt6Within;
+  /** Exclude range of values of the field customInt6 of the Task. */
+  @JsonProperty("custom-int-6-not-within")
+  private final Integer[] customInt6NotWithin;
   /** Filter by the value of the field customInt7 of the Task. This is an exact match. */
   @JsonProperty("custom-int-7")
   private final Integer[] customInt7In;
@@ -1535,6 +1572,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt7 of the Task. */
   @JsonProperty("custom-int-7-not")
   private final Integer[] customInt7NotIn;
+  /** Filter by the range of value of the field customInt7 of the Task. */
+  @JsonProperty("custom-int-7-within")
+  private final Integer[] customInt7Within;
+  /** Exclude range of values of the field customInt7 of the Task. */
+  @JsonProperty("custom-int-7-not-within")
+  private final Integer[] customInt7NotWithin;
   /** Filter by the value of the field customInt8 of the Task. This is an exact match. */
   @JsonProperty("custom-int-8")
   private final Integer[] customInt8In;
@@ -1542,6 +1585,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Exclude values of the field customInt8 of the Task. */
   @JsonProperty("custom-int-8-not")
   private final Integer[] customInt8NotIn;
+  /** Filter by the range of value of the field customInt8 of the Task. */
+  @JsonProperty("custom-int-8-within")
+  private final Integer[] customInt8Within;
+  /** Exclude range of values of the field customInt8 of the Task. */
+  @JsonProperty("custom-int-8-not-within")
+  private final Integer[] customInt8NotWithin;
   // endregion
   // region callbackState
   /** Filter by the callback state of the Task. This is an exact match. */
@@ -1779,20 +1828,36 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "custom-16-not-like",
     "custom-int-1",
     "custom-int-1-not",
+    "custom-int-1-within",
+    "custom-int-1-not-within",
     "custom-int-2",
     "custom-int-2-not",
+    "custom-int-2-within",
+    "custom-int-2-not-within",
     "custom-int-3",
     "custom-int-3-not",
+    "custom-int-3-within",
+    "custom-int-3-not-within",
     "custom-int-4",
     "custom-int-4-not",
+    "custom-int-4-within",
+    "custom-int-4-not-within",
     "custom-int-5",
     "custom-int-5-not",
+    "custom-int-5-within",
+    "custom-int-5-not-within",
     "custom-int-6",
     "custom-int-6-not",
+    "custom-int-6-within",
+    "custom-int-6-not-within",
     "custom-int-7",
     "custom-int-7-not",
+    "custom-int-7-within",
+    "custom-int-7-not-within",
     "custom-int-8",
     "custom-int-8-not",
+    "custom-int-8-within",
+    "custom-int-8-not-within",
     "callback-state",
     "callback-state-not",
     "wildcard-search-fields",
@@ -2005,20 +2070,36 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] custom16NotLike,
       Integer[] customInt1In,
       Integer[] customInt1NotIn,
+      Integer[] customInt1Within,
+      Integer[] customInt1NotWithin,
       Integer[] customInt2In,
       Integer[] customInt2NotIn,
+      Integer[] customInt2Within,
+      Integer[] customInt2NotWithin,
       Integer[] customInt3In,
       Integer[] customInt3NotIn,
+      Integer[] customInt3Within,
+      Integer[] customInt3NotWithin,
       Integer[] customInt4In,
       Integer[] customInt4NotIn,
+      Integer[] customInt4Within,
+      Integer[] customInt4NotWithin,
       Integer[] customInt5In,
       Integer[] customInt5NotIn,
+      Integer[] customInt5Within,
+      Integer[] customInt5NotWithin,
       Integer[] customInt6In,
       Integer[] customInt6NotIn,
+      Integer[] customInt6Within,
+      Integer[] customInt6NotWithin,
       Integer[] customInt7In,
       Integer[] customInt7NotIn,
+      Integer[] customInt7Within,
+      Integer[] customInt7NotWithin,
       Integer[] customInt8In,
       Integer[] customInt8NotIn,
+      Integer[] customInt8Within,
+      Integer[] customInt8NotWithin,
       CallbackState[] callbackStateIn,
       CallbackState[] callbackStateNotIn,
       WildcardSearchField[] wildcardSearchFieldIn,
@@ -2230,20 +2311,36 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.custom16NotLike = custom16NotLike;
     this.customInt1In = customInt1In;
     this.customInt1NotIn = customInt1NotIn;
+    this.customInt1Within = customInt1Within;
+    this.customInt1NotWithin = customInt1NotWithin;
     this.customInt2In = customInt2In;
     this.customInt2NotIn = customInt2NotIn;
+    this.customInt2Within = customInt2Within;
+    this.customInt2NotWithin = customInt2NotWithin;
     this.customInt3In = customInt3In;
     this.customInt3NotIn = customInt3NotIn;
+    this.customInt3Within = customInt3Within;
+    this.customInt3NotWithin = customInt3NotWithin;
     this.customInt4In = customInt4In;
     this.customInt4NotIn = customInt4NotIn;
+    this.customInt4Within = customInt4Within;
+    this.customInt4NotWithin = customInt4NotWithin;
     this.customInt5In = customInt5In;
     this.customInt5NotIn = customInt5NotIn;
+    this.customInt5Within = customInt5Within;
+    this.customInt5NotWithin = customInt5NotWithin;
     this.customInt6In = customInt6In;
     this.customInt6NotIn = customInt6NotIn;
+    this.customInt6Within = customInt6Within;
+    this.customInt6NotWithin = customInt6NotWithin;
     this.customInt7In = customInt7In;
     this.customInt7NotIn = customInt7NotIn;
+    this.customInt7Within = customInt7Within;
+    this.customInt7NotWithin = customInt7NotWithin;
     this.customInt8In = customInt8In;
     this.customInt8NotIn = customInt8NotIn;
+    this.customInt8Within = customInt8Within;
+    this.customInt8NotWithin = customInt8NotWithin;
     this.callbackStateIn = callbackStateIn;
     this.callbackStateNotIn = callbackStateNotIn;
     this.wildcardSearchFieldIn = wildcardSearchFieldIn;
@@ -2614,20 +2711,42 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
             });
 
     Stream.of(
-            Pair.of(TaskCustomIntField.CUSTOM_INT_1, Pair.of(customInt1In, customInt1NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_2, Pair.of(customInt2In, customInt2NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_3, Pair.of(customInt3In, customInt3NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_4, Pair.of(customInt4In, customInt4NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_5, Pair.of(customInt5In, customInt5NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_6, Pair.of(customInt6In, customInt6NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_7, Pair.of(customInt7In, customInt7NotIn)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_8, Pair.of(customInt8In, customInt8NotIn)))
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_1,
+                of(customInt1In, customInt1NotIn, customInt1Within, customInt1NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_2,
+                of(customInt2In, customInt2NotIn, customInt2Within, customInt2NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_3,
+                of(customInt3In, customInt3NotIn, customInt3Within, customInt3NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_4,
+                of(customInt4In, customInt4NotIn, customInt4Within, customInt4NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_5,
+                of(customInt5In, customInt5NotIn, customInt5Within, customInt5NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_6,
+                of(customInt6In, customInt6NotIn, customInt6Within, customInt6NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_7,
+                of(customInt7In, customInt7NotIn, customInt7Within, customInt7NotWithin)),
+            Pair.of(
+                TaskCustomIntField.CUSTOM_INT_8,
+                of(customInt8In, customInt8NotIn, customInt8Within, customInt8NotWithin)))
         .forEach(
             pair -> {
-              Optional.ofNullable(pair.getRight().getLeft())
+              Optional.ofNullable(pair.getRight().getFirst())
                   .ifPresent(wrap(l -> query.customIntAttributeIn(pair.getLeft(), l)));
-              Optional.ofNullable(pair.getRight().getRight())
+              Optional.ofNullable(pair.getRight().getSecond())
                   .ifPresent(wrap(l -> query.customIntAttributeNotIn(pair.getLeft(), l)));
+              Optional.ofNullable(pair.getRight().getThird())
+                  .map(this::extractIntIntervals)
+                  .ifPresent(wrap(l -> query.customIntAttributeWithin(pair.getLeft(), l)));
+              Optional.ofNullable(pair.getRight().getFourth())
+                  .map(this::extractIntIntervals)
+                  .ifPresent(wrap(l -> query.customIntAttributeNotWithin(pair.getLeft(), l)));
             });
 
     Optional.ofNullable(callbackStateIn).ifPresent(query::callbackStateIn);
@@ -2795,9 +2914,202 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
           "provided length of the property 'claimed-not-in' is not dividable by 2");
     }
 
-    if (attachmentReceivedNotWithin != null && attachmentReceivedNotWithin.length % 2 != 0) {
+    if (customInt1Within != null && customInt1Within.length % 2 != 0) {
       throw new InvalidArgumentException(
-          "provided length of the property 'attachment-not-received' is not dividable by 2");
+          "provided length of the property 'custom-int-1-within' is not dividable by 2");
+    }
+    if (customInt1Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt1Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-1-within' shouldn't consist of two 'null' values");
+    }
+
+    if (customInt2Within != null && customInt2Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-2-within' is not dividable by 2");
+    }
+
+    if (customInt2Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt2Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-2-within' shouldn't consist of two 'null' values");
+    }
+
+    if (customInt3Within != null && customInt3Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-3-within' is not dividable by 2");
+    }
+
+    if (customInt3Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt3Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-3-within' shouldn't consist of two 'null' values");
+    }
+
+    if (customInt4Within != null && customInt4Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-4-within' is not dividable by 2");
+    }
+    if (customInt4Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt4Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-4-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt5Within != null && customInt5Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-5-within' is not dividable by 2");
+    }
+    if (customInt5Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt5Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-5-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt6Within != null && customInt6Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-6-within' is not dividable by 2");
+    }
+    if (customInt6Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt6Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-6-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt7Within != null && customInt7Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-7-within' is not dividable by 2");
+    }
+    if (customInt7Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt7Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-7-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt8Within != null && customInt8Within.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-8-within' is not dividable by 2");
+    }
+    if (customInt8Within != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt8Within), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-8-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt1NotWithin != null && customInt1NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-1-not-within' is not dividable by 2");
+    }
+    if (customInt1NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt1NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-1-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt2NotWithin != null && customInt2NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-2-not-within' is not dividable by 2");
+    }
+    if (customInt2NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt2NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-2-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt3NotWithin != null && customInt3NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-3-not-within' is not dividable by 2");
+    }
+    if (customInt3NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt3NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-3-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt4NotWithin != null && customInt4NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-4-not-within' is not dividable by 2");
+    }
+    if (customInt4NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt4NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-4-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt5NotWithin != null && customInt5NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-5-not-within' is not dividable by 2");
+    }
+    if (customInt5NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt5NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-5-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt6NotWithin != null && customInt6NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-6-not-within' is not dividable by 2");
+    }
+    if (customInt6NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt6NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-6-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt7NotWithin != null && customInt7NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-7-not-within' is not dividable by 2");
+    }
+    if (customInt7NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt7NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-7-not-within' shouldn't consist of two 'null' values");
+    }
+    if (customInt8NotWithin != null && customInt8NotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'custom-int-8-not-within' is not dividable by 2");
+    }
+    if (customInt8NotWithin != null
+        && (Collections.indexOfSubList(
+                    Arrays.asList(customInt8NotWithin), Collections.nCopies(2, (Integer) null))
+                % 2
+            == 0)) {
+      throw new InvalidArgumentException(
+          "Each interval in 'custom-int-8-not-within' shouldn't consist of two 'null' values");
     }
 
     if (withoutAttachment != null && !withoutAttachment) {

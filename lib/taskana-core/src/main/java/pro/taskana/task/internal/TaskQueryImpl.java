@@ -8,6 +8,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
@@ -290,20 +291,36 @@ public class TaskQueryImpl implements TaskQuery {
   // region customIntAttributes
   private Integer[] customInt1In;
   private Integer[] customInt1NotIn;
+  private IntInterval[] customInt1Within;
+  private IntInterval[] customInt1NotWithin;
   private Integer[] customInt2In;
   private Integer[] customInt2NotIn;
+  private IntInterval[] customInt2Within;
+  private IntInterval[] customInt2NotWithin;
   private Integer[] customInt3In;
   private Integer[] customInt3NotIn;
+  private IntInterval[] customInt3Within;
+  private IntInterval[] customInt3NotWithin;
   private Integer[] customInt4In;
   private Integer[] customInt4NotIn;
+  private IntInterval[] customInt4Within;
+  private IntInterval[] customInt4NotWithin;
   private Integer[] customInt5In;
   private Integer[] customInt5NotIn;
+  private IntInterval[] customInt5Within;
+  private IntInterval[] customInt5NotWithin;
   private Integer[] customInt6In;
   private Integer[] customInt6NotIn;
+  private IntInterval[] customInt6Within;
+  private IntInterval[] customInt6NotWithin;
   private Integer[] customInt7In;
   private Integer[] customInt7NotIn;
+  private IntInterval[] customInt7Within;
+  private IntInterval[] customInt7NotWithin;
   private Integer[] customInt8In;
   private Integer[] customInt8NotIn;
+  private IntInterval[] customInt8Within;
+  private IntInterval[] customInt8NotWithin;
   // endregion
   // region callbackState
   private CallbackState[] callbackStateIn;
@@ -351,14 +368,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery receivedWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.receivedWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery receivedNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.receivedNotWithin = intervals;
     return this;
   }
@@ -370,14 +387,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery createdWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.createdWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery createdNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.createdNotWithin = intervals;
     return this;
   }
@@ -389,14 +406,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery claimedWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.claimedWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery claimedNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.claimedNotWithin = intervals;
     return this;
   }
@@ -408,14 +425,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery modifiedWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.modifiedWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery modifiedNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.modifiedNotWithin = intervals;
     return this;
   }
@@ -427,14 +444,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery plannedWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.plannedWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery plannedNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.plannedNotWithin = intervals;
     return this;
   }
@@ -446,14 +463,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery dueWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.dueWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery dueNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.dueNotWithin = intervals;
     return this;
   }
@@ -465,14 +482,14 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery completedWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.completedWithin = intervals;
     return this;
   }
 
   @Override
   public TaskQuery completedNotWithin(TimeInterval... intervals) {
-    validateAllIntervals(intervals);
+    validateAllTimeIntervals(intervals);
     this.completedNotWithin = intervals;
     return this;
   }
@@ -1182,7 +1199,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn) {
-    validateAllIntervals(receivedIn);
+    validateAllTimeIntervals(receivedIn);
     joinWithAttachments = true;
     this.attachmentReceivedWithin = receivedIn;
     return this;
@@ -1190,7 +1207,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery attachmentNotReceivedWithin(TimeInterval... receivedNotIn) {
-    validateAllIntervals(receivedNotIn);
+    validateAllTimeIntervals(receivedNotIn);
     joinWithAttachments = true;
     this.attachmentReceivedNotWithin = receivedNotIn;
     return this;
@@ -1760,6 +1777,76 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery customIntAttributeWithin(
+      TaskCustomIntField customIntField, IntInterval... values) {
+    validateAllIntIntervals(values);
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1Within = values;
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2Within = values;
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3Within = values;
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4Within = values;
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5Within = values;
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6Within = values;
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7Within = values;
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8Within = values;
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
+    return this;
+  }
+
+  @Override
+  public TaskQuery customIntAttributeNotWithin(
+      TaskCustomIntField customIntField, IntInterval... values) {
+    validateAllIntIntervals(values);
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1NotWithin = values;
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2NotWithin = values;
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3NotWithin = values;
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4NotWithin = values;
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5NotWithin = values;
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6NotWithin = values;
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7NotWithin = values;
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8NotWithin = values;
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
+    return this;
+  }
+
+  @Override
   public TaskQuery callbackStateIn(CallbackState... states) {
     this.callbackStateIn = states;
     return this;
@@ -1956,10 +2043,18 @@ public class TaskQueryImpl implements TaskQuery {
     return DB.isDb2(getDatabaseId()) ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
   }
 
-  private void validateAllIntervals(TimeInterval[] intervals) {
+  private void validateAllTimeIntervals(TimeInterval[] intervals) {
     for (TimeInterval ti : intervals) {
       if (!ti.isValid()) {
         throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+      }
+    }
+  }
+
+  private void validateAllIntIntervals(IntInterval[] intervals) {
+    for (IntInterval ti : intervals) {
+      if (!ti.isValid()) {
+        throw new IllegalArgumentException("IntInterval " + ti + " is invalid.");
       }
     }
   }
@@ -2522,38 +2617,66 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(customInt1In)
         + ", customInt1NotIn="
         + Arrays.toString(customInt1NotIn)
+        + ", customInt1Within="
+        + Arrays.toString(customInt1Within)
+        + ", customInt1NotWithin="
+        + Arrays.toString(customInt1NotWithin)
         + ", customInt2In="
         + Arrays.toString(customInt2In)
         + ", customInt2NotIn="
         + Arrays.toString(customInt2NotIn)
+        + ", customInt2Within="
+        + Arrays.toString(customInt2Within)
+        + ", customInt2NotWithin="
+        + Arrays.toString(customInt2NotWithin)
         + ", customInt3In="
         + Arrays.toString(customInt3In)
         + ", customInt3NotIn="
         + Arrays.toString(customInt3NotIn)
+        + ", customInt3Within="
+        + Arrays.toString(customInt3Within)
+        + ", customInt3NotWithin="
+        + Arrays.toString(customInt3NotWithin)
         + ", customInt4In="
         + Arrays.toString(customInt4In)
         + ", customInt4NotIn="
         + Arrays.toString(customInt4NotIn)
+        + ", customInt4Within="
+        + Arrays.toString(customInt4Within)
+        + ", customInt4NotWithin="
+        + Arrays.toString(customInt4NotWithin)
         + ", customInt5In="
         + Arrays.toString(customInt5In)
         + ", customInt5NotIn="
         + Arrays.toString(customInt5NotIn)
+        + ", customInt5Within="
+        + Arrays.toString(customInt5Within)
+        + ", customInt5NotWithin="
+        + Arrays.toString(customInt5NotWithin)
         + ", customInt6In="
         + Arrays.toString(customInt6In)
         + ", customInt6NotIn="
         + Arrays.toString(customInt6NotIn)
+        + ", customInt6Within="
+        + Arrays.toString(customInt6Within)
+        + ", customInt6NotWithin="
+        + Arrays.toString(customInt6NotWithin)
         + ", customInt7In="
         + Arrays.toString(customInt7In)
         + ", customInt7NotIn="
-        + Arrays.toString(custom7NotIn)
-        + ", custom7Like="
-        + Arrays.toString(custom7Like)
-        + ", custom7NotLike="
-        + Arrays.toString(custom7NotLike)
-        + ", custom8In="
-        + Arrays.toString(custom8In)
-        + ", custom8NotIn="
-        + Arrays.toString(custom8NotIn)
+        + Arrays.toString(customInt7NotIn)
+        + ", customInt7Within="
+        + Arrays.toString(customInt7Within)
+        + ", customInt7NotWithin="
+        + Arrays.toString(customInt7NotWithin)
+        + ", customInt8In="
+        + Arrays.toString(customInt8In)
+        + ", customInt8NotIn="
+        + Arrays.toString(customInt8NotIn)
+        + ", customInt8Within="
+        + Arrays.toString(customInt8Within)
+        + ", customInt8NotWithin="
+        + Arrays.toString(customInt8NotWithin)
         + ", callbackStateIn="
         + Arrays.toString(callbackStateIn)
         + ", callbackStateNotIn="

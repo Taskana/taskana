@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TimeInterval;
 
 public interface QueryParameter<E, R> {
@@ -26,5 +27,17 @@ public interface QueryParameter<E, R> {
     }
 
     return timeIntervalsList.toArray(new TimeInterval[0]);
+  }
+
+  default IntInterval[] extractIntIntervals(Integer[] boundaries) {
+    List<IntInterval> intervalsList = new ArrayList<>();
+    for (int i = 0; i < boundaries.length - 1; i += 2) {
+      Integer left = boundaries[i];
+      Integer right = boundaries[i + 1];
+      if (left != null || right != null) {
+        intervalsList.add(new IntInterval(left, right));
+      }
+    }
+    return intervalsList.toArray(new IntInterval[0]);
   }
 }

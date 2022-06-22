@@ -6,15 +6,14 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.DB2_WITH_UR;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
-import static pro.taskana.common.internal.util.SqlProviderUtil.whereInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
-import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotLike;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import pro.taskana.common.internal.util.SqlProviderUtil;
 import pro.taskana.task.api.TaskCommentQueryColumnName;
 
 public class TaskCommentQuerySqlProvider {
@@ -95,10 +94,10 @@ public class TaskCommentQuerySqlProvider {
     whereNotIn("creatorNotIn", "tc.CREATOR", sb);
     whereLike("creatorLike", "tc.CREATOR", sb);
     whereNotLike("creatorNotLike", "tc.CREATOR", sb);
-    whereInTime("createdIn", "tc.CREATED", sb);
-    whereNotInTime("createdNotIn", "tc.CREATED", sb);
-    whereInTime("modifiedIn", "tc.MODIFIED", sb);
-    whereNotInTime("modifiedNotIn", "tc.MODIFIED", sb);
+    SqlProviderUtil.whereInInterval("createdIn", "tc.CREATED", sb);
+    SqlProviderUtil.whereNotInInterval("createdNotIn", "tc.CREATED", sb);
+    SqlProviderUtil.whereInInterval("modifiedIn", "tc.MODIFIED", sb);
+    SqlProviderUtil.whereNotInInterval("modifiedNotIn", "tc.MODIFIED", sb);
     return sb.toString();
   }
 
