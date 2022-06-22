@@ -8,15 +8,14 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereCustomIntStatements;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereCustomStatements;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
-import static pro.taskana.common.internal.util.SqlProviderUtil.whereInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
-import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotInTime;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotLike;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import pro.taskana.common.internal.util.SqlProviderUtil;
 import pro.taskana.task.api.TaskQueryColumnName;
 
 public class TaskQuerySqlProvider {
@@ -422,22 +421,22 @@ public class TaskQuerySqlProvider {
     whereLike("noteLike", "t.NOTE", sb);
     whereNotLike("noteNotLike", "t.NOTE", sb);
 
-    whereInTime("attachmentReceivedWithin", "a.RECEIVED", sb);
-    whereNotInTime("attachmentReceivedNotWithin", "a.RECEIVED", sb);
-    whereInTime("claimedWithin", "t.CLAIMED", sb);
-    whereNotInTime("claimedNotWithin", "t.CLAIMED", sb);
-    whereInTime("completedWithin", "t.COMPLETED", sb);
-    whereNotInTime("completedNotWithin", "t.COMPLETED", sb);
-    whereInTime("createdWithin", "t.CREATED", sb);
-    whereNotInTime("createdNotWithin", "t.CREATED", sb);
-    whereInTime("dueWithin", "t.DUE", sb);
-    whereNotInTime("dueNotWithin", "t.DUE", sb);
-    whereInTime("modifiedWithin", "t.MODIFIED", sb);
-    whereNotInTime("modifiedNotWithin", "t.MODIFIED", sb);
-    whereInTime("plannedWithin", "t.PLANNED", sb);
-    whereNotInTime("plannedNotWithin", "t.PLANNED", sb);
-    whereInTime("receivedWithin", "t.RECEIVED", sb);
-    whereNotInTime("receivedNotWithin", "t.RECEIVED", sb);
+    SqlProviderUtil.whereInInterval("attachmentReceivedWithin", "a.RECEIVED", sb);
+    SqlProviderUtil.whereNotInInterval("attachmentReceivedNotWithin", "a.RECEIVED", sb);
+    SqlProviderUtil.whereInInterval("claimedWithin", "t.CLAIMED", sb);
+    SqlProviderUtil.whereNotInInterval("claimedNotWithin", "t.CLAIMED", sb);
+    SqlProviderUtil.whereInInterval("completedWithin", "t.COMPLETED", sb);
+    SqlProviderUtil.whereNotInInterval("completedNotWithin", "t.COMPLETED", sb);
+    SqlProviderUtil.whereInInterval("createdWithin", "t.CREATED", sb);
+    SqlProviderUtil.whereNotInInterval("createdNotWithin", "t.CREATED", sb);
+    SqlProviderUtil.whereInInterval("dueWithin", "t.DUE", sb);
+    SqlProviderUtil.whereNotInInterval("dueNotWithin", "t.DUE", sb);
+    SqlProviderUtil.whereInInterval("modifiedWithin", "t.MODIFIED", sb);
+    SqlProviderUtil.whereNotInInterval("modifiedNotWithin", "t.MODIFIED", sb);
+    SqlProviderUtil.whereInInterval("plannedWithin", "t.PLANNED", sb);
+    SqlProviderUtil.whereNotInInterval("plannedNotWithin", "t.PLANNED", sb);
+    SqlProviderUtil.whereInInterval("receivedWithin", "t.RECEIVED", sb);
+    SqlProviderUtil.whereNotInInterval("receivedNotWithin", "t.RECEIVED", sb);
 
     whereLike("ownerLongNameLike", "u.LONG_NAME", sb);
     whereNotLike("ownerLongNameNotLike", "u.LONG_NAME", sb);

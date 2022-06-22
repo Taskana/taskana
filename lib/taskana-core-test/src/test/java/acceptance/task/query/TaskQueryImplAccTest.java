@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
@@ -24,10 +25,12 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.util.Pair;
+import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
@@ -235,7 +238,7 @@ class TaskQueryImplAccTest {
               .customAttribute(TaskCustomField.CUSTOM_14, "custom14")
               .customAttribute(TaskCustomField.CUSTOM_15, "custom15")
               .customAttribute(TaskCustomField.CUSTOM_16, "custom16")
-              .customIntField(TaskCustomIntField.CUSTOM_INT_1, (Integer) 1)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_1, 1)
               .customIntField(TaskCustomIntField.CUSTOM_INT_2, 2)
               .customIntField(TaskCustomIntField.CUSTOM_INT_3, 3)
               .customIntField(TaskCustomIntField.CUSTOM_INT_4, 4)
@@ -3297,6 +3300,69 @@ class TaskQueryImplAccTest {
 
       @WithAccessId(user = "user-1-1")
       @TestFactory
+      Stream<DynamicTest> should_ThrowException_When_QueryingForCustomIntWithinInvalidInterval() {
+        List<Quadruple<String, TaskCustomIntField, IntInterval, IntInterval>> testCases =
+            List.of(
+                Quadruple.of(
+                    "CustomInt1",
+                    TaskCustomIntField.CUSTOM_INT_1,
+                    new IntInterval(4, 1),
+                    new IntInterval(-10, -8)),
+                Quadruple.of(
+                    "CustomInt2",
+                    TaskCustomIntField.CUSTOM_INT_2,
+                    new IntInterval(null, null),
+                    new IntInterval(0, null)),
+                Quadruple.of(
+                    "CustomInt3",
+                    TaskCustomIntField.CUSTOM_INT_3,
+                    new IntInterval(-1, 5),
+                    new IntInterval(null, null)),
+                Quadruple.of(
+                    "CustomInt4",
+                    TaskCustomIntField.CUSTOM_INT_4,
+                    new IntInterval(0, -5),
+                    new IntInterval(-2, -10)),
+                Quadruple.of(
+                    "CustomInt5",
+                    TaskCustomIntField.CUSTOM_INT_5,
+                    new IntInterval(null, null),
+                    new IntInterval(0, -50)),
+                Quadruple.of(
+                    "CustomInt6",
+                    TaskCustomIntField.CUSTOM_INT_6,
+                    new IntInterval(4, 9),
+                    new IntInterval(0, -5)),
+                Quadruple.of(
+                    "CustomInt7",
+                    TaskCustomIntField.CUSTOM_INT_7,
+                    new IntInterval(null, null),
+                    new IntInterval(null, null)),
+                Quadruple.of(
+                    "CustomInt8",
+                    TaskCustomIntField.CUSTOM_INT_8,
+                    new IntInterval(123, 122),
+                    new IntInterval(1, 0)));
+
+        ThrowingConsumer<Quadruple<String, TaskCustomIntField, IntInterval, IntInterval>> test =
+            q -> {
+              ThrowingCallable result =
+                  () ->
+                      taskService
+                          .createTaskQuery()
+                          .workbasketIdIn(wb.getId())
+                          .customIntAttributeWithin(q.getSecond(), q.getThird(), q.getFourth())
+                          .list();
+              assertThatThrownBy(result)
+                  .isInstanceOf(IllegalArgumentException.class)
+                  .hasMessageContaining("IntInterval");
+            };
+
+        return DynamicTest.stream(testCases.iterator(), Quadruple::getFirst, test);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @TestFactory
       Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntIn() {
         List<Triplet<String, Integer, TaskCustomIntField>> testCases =
             List.of(
@@ -3349,6 +3415,126 @@ class TaskQueryImplAccTest {
             };
 
         return DynamicTest.stream(testCases.iterator(), Triplet::getLeft, test);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @TestFactory
+      Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntWithin() {
+        List<Quadruple<String, TaskCustomIntField, IntInterval, IntInterval>> testCases =
+            List.of(
+                Quadruple.of(
+                    "CustomInt1",
+                    TaskCustomIntField.CUSTOM_INT_1,
+                    new IntInterval(1, 1),
+                    new IntInterval(-10, -8)),
+                Quadruple.of(
+                    "CustomInt2",
+                    TaskCustomIntField.CUSTOM_INT_2,
+                    new IntInterval(0, null),
+                    new IntInterval(0, null)),
+                Quadruple.of(
+                    "CustomInt3",
+                    TaskCustomIntField.CUSTOM_INT_3,
+                    new IntInterval(-1, 5),
+                    new IntInterval(0, null)),
+                Quadruple.of(
+                    "CustomInt4",
+                    TaskCustomIntField.CUSTOM_INT_4,
+                    new IntInterval(0, 1),
+                    new IntInterval(-2, 22)),
+                Quadruple.of(
+                    "CustomInt5",
+                    TaskCustomIntField.CUSTOM_INT_5,
+                    new IntInterval(3, 9),
+                    new IntInterval(-1000, -50)),
+                Quadruple.of(
+                    "CustomInt6",
+                    TaskCustomIntField.CUSTOM_INT_6,
+                    new IntInterval(4, 9),
+                    new IntInterval(0, null)),
+                Quadruple.of(
+                    "CustomInt7",
+                    TaskCustomIntField.CUSTOM_INT_7,
+                    new IntInterval(4, 9),
+                    new IntInterval(11, 22)),
+                Quadruple.of(
+                    "CustomInt8",
+                    TaskCustomIntField.CUSTOM_INT_8,
+                    new IntInterval(123, 124),
+                    new IntInterval(1, null)));
+
+        ThrowingConsumer<Quadruple<String, TaskCustomIntField, IntInterval, IntInterval>> test =
+            q -> {
+              List<TaskSummary> result =
+                  taskService
+                      .createTaskQuery()
+                      .workbasketIdIn(wb.getId())
+                      .customIntAttributeWithin(q.getSecond(), q.getThird(), q.getFourth())
+                      .list();
+              assertThat(result).containsExactly(taskSummary1);
+            };
+
+        return DynamicTest.stream(testCases.iterator(), Quadruple::getFirst, test);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @TestFactory
+      Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntNotWithin() {
+        List<Quadruple<String, TaskCustomIntField, IntInterval, IntInterval>> testCases =
+            List.of(
+                Quadruple.of(
+                    "CustomInt1",
+                    TaskCustomIntField.CUSTOM_INT_1,
+                    new IntInterval(1, 1),
+                    new IntInterval(0, 10)),
+                Quadruple.of(
+                    "CustomInt2",
+                    TaskCustomIntField.CUSTOM_INT_2,
+                    new IntInterval(0, null),
+                    new IntInterval(0, null)),
+                Quadruple.of(
+                    "CustomInt3",
+                    TaskCustomIntField.CUSTOM_INT_3,
+                    new IntInterval(-1, 5),
+                    new IntInterval(2, 25)),
+                Quadruple.of(
+                    "CustomInt4",
+                    TaskCustomIntField.CUSTOM_INT_4,
+                    new IntInterval(-3, 9),
+                    new IntInterval(-2, 22)),
+                Quadruple.of(
+                    "CustomInt5",
+                    TaskCustomIntField.CUSTOM_INT_5,
+                    new IntInterval(3, 9),
+                    new IntInterval(-1000, 1000)),
+                Quadruple.of(
+                    "CustomInt6",
+                    TaskCustomIntField.CUSTOM_INT_6,
+                    new IntInterval(4, 9),
+                    new IntInterval(0, null)),
+                Quadruple.of(
+                    "CustomInt7",
+                    TaskCustomIntField.CUSTOM_INT_7,
+                    new IntInterval(4, 9),
+                    new IntInterval(null, 22)),
+                Quadruple.of(
+                    "CustomInt8",
+                    TaskCustomIntField.CUSTOM_INT_8,
+                    new IntInterval(0, 124),
+                    new IntInterval(1, null)));
+
+        ThrowingConsumer<Quadruple<String, TaskCustomIntField, IntInterval, IntInterval>> test =
+            q -> {
+              List<TaskSummary> result =
+                  taskService
+                      .createTaskQuery()
+                      .workbasketIdIn(wb.getId())
+                      .customIntAttributeNotWithin(q.getSecond(), q.getThird(), q.getFourth())
+                      .list();
+              assertThat(result).containsExactly(taskSummary2);
+            };
+
+        return DynamicTest.stream(testCases.iterator(), Quadruple::getFirst, test);
       }
     }
 

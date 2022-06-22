@@ -1,6 +1,7 @@
 package pro.taskana.task.api;
 
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -1704,6 +1705,33 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @throws InvalidArgumentException if searchArguments are not given
    */
   TaskQuery customIntAttributeNotIn(TaskCustomIntField customIntField, Integer... searchArguments)
+      throws InvalidArgumentException;
+
+  /**
+   * Add the values of specified {@linkplain TaskCustomIntField} for a range matching to your query.
+   * If the lower bound is NULL, then all values smaller than the upper bound will be accepted. If
+   * the upper bound is NULL, then all values greater than the lower bound will be accepted.
+   *
+   * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
+   * @param values identify the intervals that are used for filtering
+   * @return the query
+   * @throws InvalidArgumentException if searchArguments are not given
+   */
+  TaskQuery customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values)
+      throws InvalidArgumentException;
+
+  /**
+   * Exclude the values of specified {@linkplain TaskCustomIntField} inside the given range from
+   * your query. If the lower bound is NULL, then all values smaller than the upper bound will be
+   * excluded. If the upper bound is NULL, then all values greater than the lower bound will be
+   * excluded.
+   *
+   * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
+   * @param values identify the intervals that are used for filtering
+   * @return the query
+   * @throws InvalidArgumentException if searchArguments are not given
+   */
+  TaskQuery customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values)
       throws InvalidArgumentException;
 
   /**

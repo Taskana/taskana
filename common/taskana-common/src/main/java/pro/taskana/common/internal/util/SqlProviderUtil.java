@@ -59,7 +59,7 @@ public class SqlProviderUtil {
     return whereNotIn(collection, column, new StringBuilder());
   }
 
-  public static StringBuilder whereInTime(String collection, String column, StringBuilder sb) {
+  public static StringBuilder whereInInterval(String collection, String column, StringBuilder sb) {
     return sb.append("<if test='")
         .append(collection)
         .append(" !=null'> AND (<foreach item='item' collection='")
@@ -73,11 +73,12 @@ public class SqlProviderUtil {
         .append(" &lt;=#{item.end} </if>)</foreach>)</if> ");
   }
 
-  public static StringBuilder whereInTime(String collection, String column) {
-    return whereInTime(collection, column, new StringBuilder());
+  public static StringBuilder whereInInterval(String collection, String column) {
+    return whereInInterval(collection, column, new StringBuilder());
   }
 
-  public static StringBuilder whereNotInTime(String collection, String column, StringBuilder sb) {
+  public static StringBuilder whereNotInInterval(
+      String collection, String column, StringBuilder sb) {
     return sb.append("<if test='")
         .append(collection)
         .append(" !=null'> AND (<foreach item='item' collection='")
@@ -91,8 +92,8 @@ public class SqlProviderUtil {
         .append(" &gt; #{item.end} </if>)</foreach>)</if> ");
   }
 
-  public static StringBuilder whereNotInTime(String collection, String column) {
-    return whereNotInTime(collection, column, new StringBuilder());
+  public static StringBuilder whereNotInInterval(String collection, String column) {
+    return whereNotInInterval(collection, column, new StringBuilder());
   }
 
   public static StringBuilder whereLike(String collection, String column, StringBuilder sb) {
@@ -150,6 +151,8 @@ public class SqlProviderUtil {
               String column = baseColumn + "_" + x;
               whereIn(baseCollection + x + "In", column, sb);
               whereNotIn(baseCollection + x + "NotIn", column, sb);
+              whereInInterval(baseCollection + x + "Within", column, sb);
+              whereNotInInterval(baseCollection + x + "NotWithin", column, sb);
             });
     return sb;
   }

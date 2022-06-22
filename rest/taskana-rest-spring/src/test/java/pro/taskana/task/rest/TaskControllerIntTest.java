@@ -207,6 +207,73 @@ class TaskControllerIntTest {
   }
 
   @TestFactory
+  Stream<DynamicTest>
+      should_ThrowException_For_SpecifiedWorkbasketIdAndCustomIntFieldWithinIncorrectInterval() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-within=%s"
+                          + "&custom-int-%s-within=23"
+                          + "&custom-int-%s-within=15",
+                      i, i, i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ThrowingCallable httpCall =
+              () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThatThrownBy(httpCall)
+              .isInstanceOf(HttpStatusCodeException.class)
+              .hasMessageContaining(
+                  "provided length of the property 'custom-int-"
+                      + i
+                      + "-within' is not dividable by 2")
+              .extracting(HttpStatusCodeException.class::cast)
+              .extracting(HttpStatusCodeException::getStatusCode)
+              .isEqualTo(HttpStatus.BAD_REQUEST);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest>
+      should_ThrowException_For_SpecifiedWorkbasketIdAndCustomIntFieldWithinNullInterval() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-within="
+                          + "&custom-int-%s-within=",
+                      i, i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ThrowingCallable httpCall =
+              () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThatThrownBy(httpCall)
+              .isInstanceOf(HttpStatusCodeException.class)
+              .hasMessageContaining(
+                  "Each interval in 'custom-int-"
+                      + i
+                      + "-within' shouldn't consist of two 'null' values")
+              .extracting(HttpStatusCodeException.class::cast)
+              .extracting(HttpStatusCodeException::getStatusCode)
+              .isEqualTo(HttpStatus.BAD_REQUEST);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
   Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldWithin() {
     List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
     ThrowingConsumer<Integer> test =
