@@ -149,6 +149,15 @@ class TaskQueryImplAccTest {
               taskSummary1, taskSummary2, taskSummary3, taskSummary4, taskSummary5);
     }
 
+    @WithAccessId(user = "admin")
+    @Test
+    void should_CountAllTasksFromWorkbasketAsAdmin_When_NoAccessItemForWorkbasketExists() {
+      long result =
+          taskService.createTaskQuery().workbasketIdIn(wbWithoutPermissions.getId()).count();
+
+      assertThat(result).isEqualTo(3);
+    }
+
     @WithAccessId(user = "user-1-1")
     @Test
     void should_OnlyReturnTasksFromCorrectWorkbaskets_When_UserHasNoPermissionToOneWorkbasket() {
