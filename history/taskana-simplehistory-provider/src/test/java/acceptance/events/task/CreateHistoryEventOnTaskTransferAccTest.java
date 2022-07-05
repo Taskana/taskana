@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 
 import acceptance.AbstractAccTest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.json.JSONArray;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -35,23 +38,39 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> should_CreateTransferredHistoryEvent_When_TaskIsTransferred() {
-    List<Triplet<String, String, Consumer<String>>> testCases =
+    List<Quadruple<String, String, String, Consumer<String>>> testCases =
         List.of(
-            Triplet.of(
-                "Using WorkbasketId",
+            /*
+            The workbasketId of the source Workbasket is parametrized. Putting the tested Tasks
+            into the same Workbasket would result in changes to the test data. This would require
+            changing tests that already use the tested Tasks. That's why workbasketId is
+            parametrized.
+            */
+            Quadruple.of(
+                "Using WorkbasketId; Task doesn't have an Attachment"
+                    + " or any secondary Object References",
                 "TKI:000000000000000000000000000000000003",
+                "WBI:100000000000000000000000000000000001",
                 wrap(
                     (String taskId) ->
                         taskService.transfer(taskId, "WBI:100000000000000000000000000000000006"))),
-            Triplet.of(
+            Quadruple.of(
+                "Using WorkbasketId; Task has Attachment and secondary Object Reference",
+                "TKI:000000000000000000000000000000000053",
+                "WBI:100000000000000000000000000000000015",
+                wrap(
+                    (String taskId) ->
+                        taskService.transfer(taskId, "WBI:100000000000000000000000000000000006"))),
+            Quadruple.of(
                 "Using WorkbasketKey and Domain",
                 "TKI:000000000000000000000000000000000004",
+                "WBI:100000000000000000000000000000000001",
                 wrap((String taskId) -> taskService.transfer(taskId, "USER-1-1", "DOMAIN_A"))));
 
-    ThrowingConsumer<Triplet<String, String, Consumer<String>>> test =
-        t -> {
-          String taskId = t.getMiddle();
-          Consumer<String> transferMethod = t.getRight();
+    ThrowingConsumer<Quadruple<String, String, String, Consumer<String>>> test =
+        q -> {
+          String taskId = q.getSecond();
+          Consumer<String> transferMethod = q.getFourth();
 
           TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
@@ -68,42 +87,63 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
                   (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
 
           assertThat(events).hasSize(1);
+          String sourceWorkbasketId = q.getThird();
           assertTransferHistoryEvent(
               events.get(0).getId(),
-              "WBI:100000000000000000000000000000000001",
+              sourceWorkbasketId,
               "WBI:100000000000000000000000000000000006",
               "admin");
         };
 
-    return DynamicTest.stream(testCases.iterator(), Triplet::getLeft, test);
+    return DynamicTest.stream(testCases.iterator(), Quadruple::getFirst, test);
   }
 
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> should_CreateTransferredHistoryEvents_When_TaskBulkTransfer() {
-    List<Triplet<String, List<String>, Consumer<List<String>>>> testCases =
+    List<Triplet<String, Map<String, String>, Consumer<List<String>>>> testCases =
         List.of(
+            /*
+            The workbasketId of the source Workbasket is parametrized. Putting the tested Tasks
+            into the same Workbasket would result in changes to the test data. This would require
+            changing tests that already use the tested Tasks. That's why workbasketId is
+            parametrized.
+            */
             Triplet.of(
                 "Using WorkbasketId",
-                List.of(
-                    "TKI:000000000000000000000000000000000021",
-                    "TKI:000000000000000000000000000000000022"),
+                Map.ofEntries(
+                    Map.entry(
+                        "TKI:000000000000000000000000000000000021",
+                        "WBI:100000000000000000000000000000000001"),
+                    Map.entry(
+                        "TKI:000000000000000000000000000000000022",
+                        "WBI:100000000000000000000000000000000001"),
+                    Map.entry(
+                        "TKI:000000000000000000000000000000000002",
+                        "WBI:100000000000000000000000000000000006")),
                 wrap(
                     (List<String> taskIds) ->
                         taskService.transferTasks(
                             "WBI:100000000000000000000000000000000007", taskIds))),
             Triplet.of(
                 "Using WorkbasketKey and Domain",
-                List.of(
-                    "TKI:000000000000000000000000000000000023",
-                    "TKI:000000000000000000000000000000000024"),
+                Map.ofEntries(
+                    Map.entry(
+                        "TKI:000000000000000000000000000000000023",
+                        "WBI:100000000000000000000000000000000001"),
+                    Map.entry(
+                        "TKI:000000000000000000000000000000000024",
+                        "WBI:100000000000000000000000000000000001"),
+                    Map.entry(
+                        "TKI:000000000000000000000000000000000055",
+                        "WBI:100000000000000000000000000000000015")),
                 wrap(
                     (List<String> taskIds) ->
                         taskService.transferTasks("USER-1-2", "DOMAIN_A", taskIds))));
 
-    ThrowingConsumer<Triplet<String, List<String>, Consumer<List<String>>>> test =
+    ThrowingConsumer<Triplet<String, Map<String, String>, Consumer<List<String>>>> test =
         t -> {
-          List<String> taskIds = t.getMiddle();
+          Map<String, String> taskIds = t.getMiddle();
           Consumer<List<String>> transferMethod = t.getRight();
 
           TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
@@ -113,27 +153,27 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
                   (TaskHistoryQueryImpl)
                       historyService
                           .createTaskHistoryQuery()
-                          .taskIdIn(taskIds.toArray(new String[0])));
+                          .taskIdIn(taskIds.keySet().toArray(new String[0])));
 
           assertThat(events).isEmpty();
 
-          transferMethod.accept(taskIds);
+          transferMethod.accept(new ArrayList<>(taskIds.keySet()));
 
           events =
               taskHistoryQueryMapper.queryHistoryEvents(
                   (TaskHistoryQueryImpl)
                       historyService
                           .createTaskHistoryQuery()
-                          .taskIdIn(taskIds.toArray(new String[0])));
+                          .taskIdIn(taskIds.keySet().toArray(new String[0])));
 
           assertThat(events)
               .extracting(TaskHistoryEvent::getTaskId)
-              .containsExactlyInAnyOrderElementsOf(taskIds);
+              .containsExactlyInAnyOrderElementsOf(taskIds.keySet());
 
           for (TaskHistoryEvent event : events) {
             assertTransferHistoryEvent(
                 event.getId(),
-                "WBI:100000000000000000000000000000000001",
+                taskIds.get(event.getTaskId()),
                 "WBI:100000000000000000000000000000000007",
                 "admin");
           }

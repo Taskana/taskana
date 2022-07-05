@@ -5,11 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Stream;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
@@ -28,66 +32,86 @@ class CreateHistoryEventOnTaskClaimAccTest extends AbstractAccTest {
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
   @WithAccessId(user = "admin")
-  @Test
-  void should_CreateClaimedHistoryEvent_When_TaskIsClaimed() throws Exception {
-    final String taskId = "TKI:000000000000000000000000000000000047";
-    final Instant oldModified = taskService.getTask(taskId).getModified();
+  @TestFactory
+  Stream<DynamicTest> should_CreateClaimedHistoryEvent_When_TaskIsClaimed() {
+    List<Pair<String, String>> list =
+        List.of(
+            Pair.of(
+                "With Attachment and secondary Object Reference",
+                "TKI:000000000000000000000000000000000053"),
+            Pair.of(
+                "Without Attachment and secondary Object References",
+                "TKI:000000000000000000000000000000000047"));
 
-    TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
+    ThrowingConsumer<Pair<String, String>> test =
+        pair -> {
+          final Instant oldModified = taskService.getTask(pair.getRight()).getModified();
 
-    List<TaskHistoryEvent> events =
-        taskHistoryQueryMapper.queryHistoryEvents(
-            (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
+          TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
-    assertThat(events).isEmpty();
+          List<TaskHistoryEvent> events =
+              taskHistoryQueryMapper.queryHistoryEvents(
+                  (TaskHistoryQueryImpl)
+                      historyService.createTaskHistoryQuery().taskIdIn(pair.getRight()));
 
-    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.READY);
-    Task task = taskService.claim(taskId);
+          assertThat(events).isEmpty();
 
-    assertThat(task.getState()).isEqualTo(TaskState.CLAIMED);
+          assertThat(taskService.getTask(pair.getRight()).getState()).isEqualTo(TaskState.READY);
+          Task task = taskService.claim(pair.getRight());
 
-    events =
-        taskHistoryQueryMapper.queryHistoryEvents(
-            (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
+          assertThat(task.getState()).isEqualTo(TaskState.CLAIMED);
 
-    TaskHistoryEvent event = events.get(0);
+          events =
+              taskHistoryQueryMapper.queryHistoryEvents(
+                  (TaskHistoryQueryImpl)
+                      historyService.createTaskHistoryQuery().taskIdIn(pair.getRight()));
 
-    assertThat(event.getEventType()).isEqualTo(TaskHistoryEventType.CLAIMED.getName());
+          TaskHistoryEvent event = events.get(0);
 
-    event = historyService.getTaskHistoryEvent(event.getId());
+          assertThat(event.getEventType()).isEqualTo(TaskHistoryEventType.CLAIMED.getName());
 
-    assertThat(event.getDetails()).isNotNull();
+          event = historyService.getTaskHistoryEvent(event.getId());
 
-    JSONArray changes = new JSONObject(event.getDetails()).getJSONArray("changes");
+          assertThat(event.getDetails()).isNotNull();
 
-    JSONObject expectedClaimed =
-        new JSONObject()
-            .put("newValue", task.getModified().toString())
-            .put("fieldName", "claimed")
-            .put("oldValue", "");
-    JSONObject expectedModified =
-        new JSONObject()
-            .put("newValue", task.getModified().toString())
-            .put("fieldName", "modified")
-            .put("oldValue", oldModified.toString());
-    JSONObject expectedState =
-        new JSONObject()
-            .put("newValue", "CLAIMED")
-            .put("fieldName", "state")
-            .put("oldValue", "READY");
-    JSONObject expectedOwner =
-        new JSONObject().put("newValue", "admin").put("fieldName", "owner").put("oldValue", "");
-    JSONObject expectedIsRead =
-        new JSONObject().put("newValue", true).put("fieldName", "isRead").put("oldValue", false);
+          JSONArray changes = new JSONObject(event.getDetails()).getJSONArray("changes");
 
-    JSONArray expectedChanges =
-        new JSONArray()
-            .put(expectedClaimed)
-            .put(expectedModified)
-            .put(expectedState)
-            .put(expectedOwner)
-            .put(expectedIsRead);
+          JSONObject expectedClaimed =
+              new JSONObject()
+                  .put("newValue", task.getModified().toString())
+                  .put("fieldName", "claimed")
+                  .put("oldValue", "");
+          JSONObject expectedModified =
+              new JSONObject()
+                  .put("newValue", task.getModified().toString())
+                  .put("fieldName", "modified")
+                  .put("oldValue", oldModified.toString());
+          JSONObject expectedState =
+              new JSONObject()
+                  .put("newValue", "CLAIMED")
+                  .put("fieldName", "state")
+                  .put("oldValue", "READY");
+          JSONObject expectedOwner =
+              new JSONObject()
+                  .put("newValue", "admin")
+                  .put("fieldName", "owner")
+                  .put("oldValue", "");
+          JSONObject expectedIsRead =
+              new JSONObject()
+                  .put("newValue", true)
+                  .put("fieldName", "isRead")
+                  .put("oldValue", false);
 
-    assertThat(changes.similar(expectedChanges)).isTrue();
+          JSONArray expectedChanges =
+              new JSONArray()
+                  .put(expectedClaimed)
+                  .put(expectedModified)
+                  .put(expectedState)
+                  .put(expectedOwner)
+                  .put(expectedIsRead);
+
+          assertThat(changes.similar(expectedChanges)).isTrue();
+        };
+    return DynamicTest.stream(list.iterator(), Pair::getLeft, test);
   }
 }
