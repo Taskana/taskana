@@ -70,14 +70,14 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
   @Test
   void should_ConfirmQueryListOffset_When_ProvidingOffsetAndLimit() {
     List<WorkbasketHistoryEvent> offsetAndLimitResult =
-        historyService.createWorkbasketHistoryQuery().list(1, 2);
+        historyService.createWorkbasketHistoryQuery().orderById(SortDirection.ASCENDING).list(1, 2);
     List<WorkbasketHistoryEvent> regularResult =
-        historyService.createWorkbasketHistoryQuery().list();
+        historyService.createWorkbasketHistoryQuery().orderById(SortDirection.ASCENDING).list();
 
     assertThat(offsetAndLimitResult).hasSize(2);
-    assertThat(offsetAndLimitResult.get(0).getUserId())
-        .isNotEqualTo(regularResult.get(0).getUserId())
-        .isEqualTo(regularResult.get(1).getUserId());
+    assertThat(offsetAndLimitResult.get(0))
+        .isNotEqualTo(regularResult.get(0))
+        .isEqualTo(regularResult.get(1));
   }
 
   @Test
