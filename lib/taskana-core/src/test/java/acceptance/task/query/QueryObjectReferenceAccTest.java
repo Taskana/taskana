@@ -18,10 +18,10 @@ class QueryObjectReferenceAccTest extends AbstractAccTest {
   void testQueryObjectReferenceValuesForColumnName() {
     TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
     List<String> columnValues = taskQuery.createObjectReferenceQuery().listValues(COMPANY, null);
-    assertThat(columnValues).hasSize(3);
+    assertThat(columnValues).hasSize(4);
 
     columnValues = taskQuery.createObjectReferenceQuery().listValues(SYSTEM, null);
-    assertThat(columnValues).hasSize(3);
+    assertThat(columnValues).hasSize(4);
 
     columnValues =
         taskQuery.createObjectReferenceQuery().systemIn("System1").listValues(SYSTEM, null);
