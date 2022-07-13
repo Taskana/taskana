@@ -191,16 +191,19 @@ class DeleteTaskAccTest extends AbstractAccTest {
         List.of(
             "TKI:000000000000000000000000000000000039",
             "TKI:000000000000000000000000000000000040",
-            "TKI:000000000000000000000000000000000028");
+            "TKI:000000000000000000000000000000000028",
+            "INVALID_TASK_ID");
 
     BulkOperationResults<String, TaskanaException> results = taskService.deleteTasks(taskIdList);
 
     assertThat(results.containsErrors()).isTrue();
 
     assertThat(results.getErrorMap().keySet())
-        .containsExactly("TKI:000000000000000000000000000000000028");
-    assertThat(results.getErrorMap().values())
-        .hasOnlyElementsOfType(InvalidTaskStateException.class);
+        .containsExactlyInAnyOrder("TKI:000000000000000000000000000000000028", "INVALID_TASK_ID");
+    assertThat(results.getErrorMap().get("TKI:000000000000000000000000000000000028"))
+        .isInstanceOf(InvalidTaskStateException.class);
+    assertThat(results.getErrorMap().get("INVALID_TASK_ID"))
+        .isInstanceOf(TaskNotFoundException.class);
 
     Task notDeletedTask = taskService.getTask("TKI:000000000000000000000000000000000028");
     assertThat(notDeletedTask).isNotNull();

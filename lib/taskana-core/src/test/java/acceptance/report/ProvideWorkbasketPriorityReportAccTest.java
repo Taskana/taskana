@@ -63,7 +63,7 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
             .createWorkbasketPriorityReportBuilder()
             .withColumnHeaders(LOW_TEST_HEADERS)
             .buildReport();
-    int[] expectedCells = {45, 9};
+    int[] expectedCells = {47, 9};
     assertThat(priorityReport)
         .extracting(Report::getSumRow)
         .extracting(Row::getCells)
@@ -224,7 +224,7 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
     int[] row1 = report.getRow("USER-1-1").getCells();
     assertThat(row1).isEqualTo(new int[] {8, 0, 0});
     int[] row2 = report.getRow("USER-1-2").getCells();
-    assertThat(row2).isEqualTo(new int[] {4, 0, 0});
+    assertThat(row2).isEqualTo(new int[] {6, 0, 0});
     int[] row3 = report.getRow("USER-1-3").getCells();
     assertThat(row3).isEqualTo(new int[] {5, 0, 0});
     int[] row4 = report.getRow("TPK-VIP-1").getCells();

@@ -97,7 +97,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
     @Test
     void should_ReturnStateValues_When_ListValuesForStateIsInvoked() {
       List<String> columnValueList = TASK_SERVICE.createTaskQuery().listValues(STATE, null);
-      assertThat(columnValueList).hasSize(5);
+      assertThat(columnValueList).hasSize(7);
     }
 
     @WithAccessId(user = "admin")

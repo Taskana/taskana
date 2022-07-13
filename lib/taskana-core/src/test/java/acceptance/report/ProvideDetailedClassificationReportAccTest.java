@@ -152,8 +152,8 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row3.getFoldableRowCount()).isEqualTo(3);
 
     FoldableRow<DetailedMonitorQueryItem> row4 = report.getRow("L40000");
-    assertThat(row4.getTotalValue()).isEqualTo(10);
-    assertThat(row4.getFoldableRow("N/A").getTotalValue()).isEqualTo(10);
+    assertThat(row4.getTotalValue()).isEqualTo(12);
+    assertThat(row4.getFoldableRow("N/A").getTotalValue()).isEqualTo(12);
     assertThat(row4.getCells()).isEmpty();
     assertThat(row4.getFoldableRowCount()).isEqualTo(1);
 
@@ -163,7 +163,7 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(row5.getCells()).isEmpty();
     assertThat(row5.getFoldableRowCount()).isEqualTo(1);
 
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -184,12 +184,12 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(report.getRow("L10000").getTotalValue()).isEqualTo(10);
     assertThat(report.getRow("L20000").getTotalValue()).isEqualTo(10);
     assertThat(report.getRow("L30000").getTotalValue()).isEqualTo(8);
-    assertThat(report.getRow("L40000").getTotalValue()).isEqualTo(10);
+    assertThat(report.getRow("L40000").getTotalValue()).isEqualTo(12);
     assertThat(report.getRow("L50000").getTotalValue()).isEqualTo(16);
 
     int[] sumRow = report.getSumRow().getCells();
-    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 5});
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 7});
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -254,10 +254,10 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment3.getCells()).isEqualTo(new int[] {2, 0, 0, 0, 2});
 
     FoldableRow<DetailedMonitorQueryItem> line4 = report.getRow("L40000");
-    assertThat(line4.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 4});
+    assertThat(line4.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 6});
 
     Row<DetailedMonitorQueryItem> detailedLineNoAttachment4 = line4.getFoldableRow("N/A");
-    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 4});
+    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 6});
 
     FoldableRow<DetailedMonitorQueryItem> line5 = report.getRow("L50000");
     assertThat(line5.getCells()).isEqualTo(new int[] {3, 3, 0, 6, 4});
@@ -312,10 +312,10 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment3.getCells()).isEqualTo(new int[] {0, 0, 4, 0, 0});
 
     FoldableRow<DetailedMonitorQueryItem> line4 = report.getRow("L40000");
-    assertThat(line4.getCells()).isEqualTo(new int[] {0, 0, 10, 0, 0});
+    assertThat(line4.getCells()).isEqualTo(new int[] {0, 0, 12, 0, 0});
 
     Row<DetailedMonitorQueryItem> detailedLineNoAttachment4 = line4.getFoldableRow("N/A");
-    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {0, 0, 10, 0, 0});
+    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {0, 0, 12, 0, 0});
 
     FoldableRow<DetailedMonitorQueryItem> line5 = report.getRow("L50000");
     assertThat(line5.getCells()).isEqualTo(new int[] {0, 0, 16, 0, 0});
@@ -483,10 +483,10 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment3.getCells()).isEqualTo(new int[] {2, 0, 0, 0, 2});
 
     FoldableRow<DetailedMonitorQueryItem> line4 = report.getRow("L40000");
-    assertThat(line4.getCells()).isEqualTo(new int[] {4, 0, 2, 0, 4});
+    assertThat(line4.getCells()).isEqualTo(new int[] {4, 0, 2, 0, 6});
 
     Row<DetailedMonitorQueryItem> detailedLineNoAttachment4 = line4.getFoldableRow("N/A");
-    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {4, 0, 2, 0, 4});
+    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {4, 0, 2, 0, 6});
 
     FoldableRow<DetailedMonitorQueryItem> line5 = report.getRow("L50000");
     assertThat(line5.getCells()).isEqualTo(new int[] {6, 0, 0, 0, 10});
@@ -525,10 +525,10 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLine1WithoutAttachment.getCells()).isEqualTo(new int[] {2, 0, 0, 0, 2});
 
     FoldableRow<DetailedMonitorQueryItem> line2 = report.getRow("L40000");
-    assertThat(line2.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 4});
+    assertThat(line2.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 6});
 
     Row<DetailedMonitorQueryItem> detailedLine2WithoutAttachment = line2.getFoldableRow("N/A");
-    assertThat(detailedLine2WithoutAttachment.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 4});
+    assertThat(detailedLine2WithoutAttachment.getCells()).isEqualTo(new int[] {2, 2, 2, 0, 6});
   }
 
   @WithAccessId(user = "monitor")
@@ -633,10 +633,10 @@ class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
     assertThat(detailedLineNoAttachment3.getCells()).isEqualTo(new int[] {1, 0, 0, 0, 1});
 
     FoldableRow<DetailedMonitorQueryItem> line4 = report.getRow("L40000");
-    assertThat(line4.getCells()).isEqualTo(new int[] {1, 1, 2, 0, 2});
+    assertThat(line4.getCells()).isEqualTo(new int[] {1, 1, 2, 0, 4});
 
     Row<DetailedMonitorQueryItem> detailedLineNoAttachment4 = line4.getFoldableRow("N/A");
-    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {1, 1, 2, 0, 2});
+    assertThat(detailedLineNoAttachment4.getCells()).isEqualTo(new int[] {1, 1, 2, 0, 4});
 
     FoldableRow<DetailedMonitorQueryItem> line5 = report.getRow("L50000");
     assertThat(line5.getCells()).isEqualTo(new int[] {1, 2, 0, 2, 0});
