@@ -2,10 +2,12 @@ package pro.taskana.task.api;
 
 import java.util.Arrays;
 
-/** This enum contains all status of the tasks. */
+/** The TaskState contains all status of a {@linkplain pro.taskana.task.api.models.Task Task}. */
 public enum TaskState {
   READY,
   CLAIMED,
+  READY_FOR_REVIEW,
+  IN_REVIEW,
   COMPLETED,
   CANCELLED,
   TERMINATED;

@@ -88,14 +88,14 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
-    assertThat(report.getRow("Geschaeftsstelle A").getTotalValue()).isEqualTo(25);
+    assertThat(report.getRow("Geschaeftsstelle A").getTotalValue()).isEqualTo(27);
     assertThat(report.getRow("Geschaeftsstelle B").getTotalValue()).isEqualTo(11);
     assertThat(report.getRow("Geschaeftsstelle C").getTotalValue()).isEqualTo(18);
     assertThat(report.getRow("Geschaeftsstelle A").getCells()).isEmpty();
     assertThat(report.getRow("Geschaeftsstelle B").getCells()).isEmpty();
     assertThat(report.getRow("Geschaeftsstelle C").getCells()).isEmpty();
 
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -110,12 +110,12 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(2);
 
     assertThat(report.getRow("Vollkasko").getTotalValue()).isEqualTo(22);
-    assertThat(report.getRow("Teilkasko").getTotalValue()).isEqualTo(32);
+    assertThat(report.getRow("Teilkasko").getTotalValue()).isEqualTo(34);
 
     assertThat(report.getRow("Vollkasko").getCells()).isEmpty();
     assertThat(report.getRow("Teilkasko").getCells()).isEmpty();
 
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -134,13 +134,13 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report).isNotNull();
     assertThat(report.rowSize()).isEqualTo(3);
 
-    assertThat(report.getRow("Geschaeftsstelle A").getTotalValue()).isEqualTo(25);
+    assertThat(report.getRow("Geschaeftsstelle A").getTotalValue()).isEqualTo(27);
     assertThat(report.getRow("Geschaeftsstelle B").getTotalValue()).isEqualTo(11);
     assertThat(report.getRow("Geschaeftsstelle C").getTotalValue()).isEqualTo(18);
 
-    assertThat(report.getSumRow().getCells()).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 5});
+    assertThat(report.getSumRow().getCells()).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 7});
 
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -175,7 +175,7 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
-    assertThat(row1).isEqualTo(new int[] {11, 4, 3, 4, 3});
+    assertThat(row1).isEqualTo(new int[] {11, 4, 3, 4, 5});
 
     int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
     assertThat(row2).isEqualTo(new int[] {5, 3, 0, 3, 0});
@@ -200,7 +200,7 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
-    assertThat(row1).isEqualTo(new int[] {0, 1, 24, 0, 0});
+    assertThat(row1).isEqualTo(new int[] {0, 1, 26, 0, 0});
 
     int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
     assertThat(row2).isEqualTo(new int[] {0, 1, 10, 0, 0});
@@ -224,7 +224,7 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
-    assertThat(row1).isEqualTo(new int[] {15, 0, 3, 0, 7});
+    assertThat(row1).isEqualTo(new int[] {15, 0, 3, 0, 9});
 
     int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
     assertThat(row2).isEqualTo(new int[] {8, 0, 0, 0, 3});
@@ -305,7 +305,7 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(3);
 
     int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
-    assertThat(row1).isEqualTo(new int[] {2, 1, 2, 1, 3});
+    assertThat(row1).isEqualTo(new int[] {2, 1, 2, 1, 5});
 
     int[] row2 = report.getRow("Geschaeftsstelle B").getCells();
     assertThat(row2).isEqualTo(new int[] {2, 0, 0, 0, 0});
@@ -359,7 +359,7 @@ class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(1);
 
     int[] row1 = report.getRow("Geschaeftsstelle A").getCells();
-    assertThat(row1).isEqualTo(new int[] {11, 4, 3, 4, 3});
+    assertThat(row1).isEqualTo(new int[] {11, 4, 3, 4, 5});
   }
 
   @WithAccessId(user = "monitor")

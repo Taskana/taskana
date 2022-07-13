@@ -175,7 +175,8 @@ class CompleteTaskAccTest {
     InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
     assertThat(e.getTaskId()).isEqualTo(task.getId());
     assertThat(e.getTaskState()).isEqualTo(task.getState());
-    assertThat(e.getRequiredTaskStates()).containsExactlyInAnyOrder(TaskState.CLAIMED);
+    assertThat(e.getRequiredTaskStates())
+        .containsExactlyInAnyOrder(TaskState.CLAIMED, TaskState.IN_REVIEW);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -401,8 +402,8 @@ class CompleteTaskAccTest {
     assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
     assertThat(results.getErrorForId(task.getId()))
         .hasMessage(
-            "Task with id '%s' is in state: '%s', but must be in one of these states: '[%s]'",
-            task.getId(), TaskState.READY, TaskState.CLAIMED);
+            "Task with id '%s' is in state: '%s', but must be in one of these states: '[%s, %s]'",
+            task.getId(), TaskState.READY, TaskState.CLAIMED, TaskState.IN_REVIEW);
   }
 
   @WithAccessId(user = "user-1-1")

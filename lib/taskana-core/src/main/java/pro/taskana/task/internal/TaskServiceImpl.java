@@ -1196,7 +1196,11 @@ public class TaskServiceImpl implements TaskService {
     task.setModified(now);
     task.setClaimed(now);
     task.setRead(true);
-    task.setState(TaskState.CLAIMED);
+    if (Set.of(TaskState.READY_FOR_REVIEW, TaskState.IN_REVIEW).contains(task.getState())) {
+      task.setState(TaskState.IN_REVIEW);
+    } else {
+      task.setState(TaskState.CLAIMED);
+    }
   }
 
   private static void cancelClaimActionsOnTask(TaskSummaryImpl task, Instant now) {
@@ -1204,7 +1208,11 @@ public class TaskServiceImpl implements TaskService {
     task.setModified(now);
     task.setClaimed(null);
     task.setRead(true);
-    task.setState(TaskState.READY);
+    if (task.getState() == TaskState.IN_REVIEW) {
+      task.setState(TaskState.READY_FOR_REVIEW);
+    } else {
+      task.setState(TaskState.READY);
+    }
   }
 
   private static void completeActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
@@ -1223,13 +1231,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    if (!forced && state == TaskState.CLAIMED && !task.getOwner().equals(userId)) {
+    if (!forced
+        && (state == TaskState.CLAIMED || state == TaskState.IN_REVIEW)
+        && !task.getOwner().equals(userId)) {
       throw new InvalidOwnerException(userId, task.getId());
     }
   }
 
   private static boolean taskIsNotClaimed(TaskSummary task) {
-    return task.getClaimed() == null || task.getState() != TaskState.CLAIMED;
+    return task.getClaimed() == null
+        || (task.getState() != TaskState.CLAIMED && task.getState() != TaskState.IN_REVIEW);
   }
 
   private static void checkIfTaskIsTerminatedOrCancelled(TaskSummary task)
@@ -1245,7 +1256,8 @@ public class TaskServiceImpl implements TaskService {
   private void checkPreconditionsForCompleteTask(TaskSummary task)
       throws InvalidStateException, InvalidOwnerException {
     if (taskIsNotClaimed(task)) {
-      throw new InvalidTaskStateException(task.getId(), task.getState(), TaskState.CLAIMED);
+      throw new InvalidTaskStateException(
+          task.getId(), task.getState(), TaskState.CLAIMED, TaskState.IN_REVIEW);
     } else if (!taskanaEngine
             .getEngine()
             .getCurrentUserContext()
@@ -1275,7 +1287,9 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidTaskStateException(
             taskId, state, EnumUtil.allValuesExceptFor(TaskState.END_STATES));
       }
-      if (state == TaskState.CLAIMED && !forceUnclaim && !userId.equals(task.getOwner())) {
+      if ((state == TaskState.CLAIMED || state == TaskState.IN_REVIEW)
+          && !forceUnclaim
+          && !userId.equals(task.getOwner())) {
         throw new InvalidOwnerException(userId, taskId);
       }
       Instant now = Instant.now();

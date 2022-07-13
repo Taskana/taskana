@@ -21,7 +21,6 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 
-/** Acceptance test for all "task status report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 
@@ -90,20 +89,20 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(5);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
-    assertThat(row1.getCells()).isEqualTo(new int[] {18, 2, 0, 0, 0});
+    assertThat(row1.getCells()).isEqualTo(new int[] {18, 2, 0, 0, 0, 0, 0});
     assertThat(row1.getTotalValue()).isEqualTo(20);
 
     Row<TaskQueryItem> row2 = report.getRow("USER-1-2");
-    assertThat(row2.getCells()).isEqualTo(new int[] {19, 1, 0, 0, 0});
-    assertThat(row2.getTotalValue()).isEqualTo(20);
+    assertThat(row2.getCells()).isEqualTo(new int[] {19, 1, 1, 1, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(22);
 
     Row<TaskQueryItem> row3 = report.getRow("USER-1-3");
-    assertThat(row3.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});
+    assertThat(row3.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0, 0, 0});
     assertThat(row3.getTotalValue()).isEqualTo(10);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {42, 12, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(54);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {42, 12, 1, 1, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -119,20 +118,20 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(5);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
-    assertThat(row1.getCells()).isEqualTo(new int[] {15, 2, 0, 0, 0});
+    assertThat(row1.getCells()).isEqualTo(new int[] {15, 2, 0, 0, 0, 0, 0});
     assertThat(row1.getTotalValue()).isEqualTo(17);
 
     Row<TaskQueryItem> row2 = report.getRow("USER-1-2");
-    assertThat(row2.getCells()).isEqualTo(new int[] {14, 1, 0, 0, 0});
-    assertThat(row2.getTotalValue()).isEqualTo(15);
+    assertThat(row2.getCells()).isEqualTo(new int[] {14, 1, 1, 1, 0, 0, 0});
+    assertThat(row2.getTotalValue()).isEqualTo(17);
 
     Row<TaskQueryItem> row3 = report.getRow("USER-1-3");
-    assertThat(row3.getCells()).isEqualTo(new int[] {3, 3, 0, 0, 0});
+    assertThat(row3.getCells()).isEqualTo(new int[] {3, 3, 0, 0, 0, 0, 0});
     assertThat(row3.getTotalValue()).isEqualTo(6);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {33, 8, 0, 0, 0});
-    assertThat(sumRow.getTotalValue()).isEqualTo(41);
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {33, 8, 1, 1, 0, 0, 0});
+    assertThat(sumRow.getTotalValue()).isEqualTo(43);
   }
 
   @WithAccessId(user = "monitor")
@@ -202,11 +201,11 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(4);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-1");
-    assertThat(row1.getCells()).isEqualTo(new int[] {3, 1, 0, 0, 0});
+    assertThat(row1.getCells()).isEqualTo(new int[] {3, 1, 0, 0, 0, 0, 0});
     assertThat(row1.getTotalValue()).isEqualTo(4);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 5, 0, 0, 0});
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 5, 0, 0, 0, 0, 0});
     assertThat(sumRow.getTotalValue()).isEqualTo(9);
   }
 
@@ -223,11 +222,11 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
     assertThat(report.rowSize()).isEqualTo(1);
 
     Row<TaskQueryItem> row1 = report.getRow("USER-1-3");
-    assertThat(row1.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});
+    assertThat(row1.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0, 0, 0});
     assertThat(row1.getTotalValue()).isEqualTo(10);
 
     Row<TaskQueryItem> sumRow = report.getSumRow();
-    assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0});
+    assertThat(sumRow.getCells()).isEqualTo(new int[] {4, 6, 0, 0, 0, 0, 0});
     assertThat(sumRow.getTotalValue()).isEqualTo(10);
   }
 }

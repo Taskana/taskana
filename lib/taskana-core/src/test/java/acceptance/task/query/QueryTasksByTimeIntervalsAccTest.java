@@ -47,7 +47,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
               .orderByCreated(asc)
               .list();
 
-      assertThat(results).hasSize(53);
+      assertThat(results).hasSize(62);
       TaskSummary previousSummary = null;
       for (TaskSummary taskSummary : results) {
         Instant cr = taskSummary.getCreated();
@@ -93,7 +93,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
       List<TaskSummary> results =
           taskService.createTaskQuery().createdWithin(interval1).orderByCreated(asc).list();
 
-      assertThat(results).hasSize(52);
+      assertThat(results).hasSize(61);
       TaskSummary previousSummary = null;
       for (TaskSummary taskSummary : results) {
         Instant cr = taskSummary.getCreated();
@@ -123,7 +123,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
               .orderByCreated(asc)
               .list();
 
-      assertThat(results).hasSize(38);
+      assertThat(results).hasSize(45);
       TaskSummary previousSummary = null;
       for (TaskSummary taskSummary : results) {
         Instant cr = taskSummary.getClaimed();
@@ -192,7 +192,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
       List<TaskSummary> results =
           taskService.createTaskQuery().plannedWithin(interval).orderByPlanned(asc).list();
 
-      assertThat(results).hasSize(85);
+      assertThat(results).hasSize(94);
       TaskSummary previousSummary = null;
       for (TaskSummary taskSummary : results) {
         Instant cr = taskSummary.getPlanned();
@@ -215,7 +215,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
       List<TaskSummary> results =
           taskService.createTaskQuery().dueWithin(interval).orderByPlanned(asc).list();
 
-      assertThat(results).hasSize(85);
+      assertThat(results).hasSize(94);
       TaskSummary previousSummary = null;
       for (TaskSummary taskSummary : results) {
         Instant cr = taskSummary.getDue();
@@ -265,8 +265,8 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
                 .createTaskQuery()
                 .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
                 .count();
-        assertThat(results).hasSize(41);
-        assertThat(resultCount).isEqualTo(41);
+        assertThat(results).hasSize(50);
+        assertThat(resultCount).isEqualTo(50);
       }
 
       @WithAccessId(user = "admin")
@@ -293,7 +293,7 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
                         Instant.parse("2018-01-29T15:55:18Z"),
                         Instant.parse("2018-01-29T15:55:21Z")))
                 .count();
-        assertThat(resultCount).isEqualTo(61);
+        assertThat(resultCount).isEqualTo(70);
         assertThat(resultCount2).isEqualTo(4);
       }
     }

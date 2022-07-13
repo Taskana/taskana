@@ -96,11 +96,11 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     assertThat(report.getRow("EXTERN").getTotalValue()).isEqualTo(36);
     assertThat(report.getRow("AUTOMATIC").getTotalValue()).isEqualTo(8);
-    assertThat(report.getRow("MANUAL").getTotalValue()).isEqualTo(10);
+    assertThat(report.getRow("MANUAL").getTotalValue()).isEqualTo(12);
     assertThat(report.getRow("EXTERN").getCells()).isEmpty();
     assertThat(report.getRow("AUTOMATIC").getCells()).isEmpty();
     assertThat(report.getRow("MANUAL").getCells()).isEmpty();
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -120,11 +120,11 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
 
     assertThat(report.getRow("EXTERN").getTotalValue()).isEqualTo(36);
     assertThat(report.getRow("AUTOMATIC").getTotalValue()).isEqualTo(8);
-    assertThat(report.getRow("MANUAL").getTotalValue()).isEqualTo(10);
+    assertThat(report.getRow("MANUAL").getTotalValue()).isEqualTo(12);
 
     int[] sumRow = report.getSumRow().getCells();
-    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 5});
-    assertThat(report.getSumRow().getTotalValue()).isEqualTo(54);
+    assertThat(sumRow).isEqualTo(new int[] {10, 9, 11, 0, 4, 0, 8, 7, 7});
+    assertThat(report.getSumRow().getTotalValue()).isEqualTo(56);
   }
 
   @WithAccessId(user = "monitor")
@@ -149,7 +149,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row2).isEqualTo(new int[] {2, 1, 0, 1, 4});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertThat(row3).isEqualTo(new int[] {2, 2, 2, 0, 4});
+    assertThat(row3).isEqualTo(new int[] {2, 2, 2, 0, 6});
   }
 
   @WithAccessId(user = "monitor")
@@ -190,7 +190,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row2).isEqualTo(new int[] {0, 0, 8, 0, 0});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertThat(row3).isEqualTo(new int[] {0, 0, 10, 0, 0});
+    assertThat(row3).isEqualTo(new int[] {0, 0, 12, 0, 0});
   }
 
   @WithAccessId(user = "monitor")
@@ -214,7 +214,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row2).isEqualTo(new int[] {3, 0, 0, 0, 5});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertThat(row3).isEqualTo(new int[] {4, 0, 2, 0, 4});
+    assertThat(row3).isEqualTo(new int[] {4, 0, 2, 0, 6});
   }
 
   @WithAccessId(user = "monitor")
@@ -292,7 +292,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row1).isEqualTo(new int[] {2, 1, 0, 1, 4});
 
     int[] row2 = report.getRow("MANUAL").getCells();
-    assertThat(row2).isEqualTo(new int[] {2, 2, 2, 0, 4});
+    assertThat(row2).isEqualTo(new int[] {2, 2, 2, 0, 6});
   }
 
   @WithAccessId(user = "monitor")
@@ -345,7 +345,7 @@ class ProvideClassificationCategoryReportAccTest extends AbstractReportAccTest {
     assertThat(row2).isEqualTo(new int[] {1, 0, 0, 1, 1});
 
     int[] row3 = report.getRow("MANUAL").getCells();
-    assertThat(row3).isEqualTo(new int[] {1, 1, 2, 0, 2});
+    assertThat(row3).isEqualTo(new int[] {1, 1, 2, 0, 4});
   }
 
   @WithAccessId(user = "monitor")
