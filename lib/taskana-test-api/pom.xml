@@ -59,6 +59,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.db2</groupId>
+      <artifactId>jcc</artifactId>
+      <version>${version.db2}</version>
+    </dependency>
     <!-- test dependencies -->
     <dependency>
       <groupId>org.assertj</groupId>
@@ -68,22 +81,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.ibm.db2</groupId>
-      <artifactId>jcc</artifactId>
-      <version>${version.db2}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
