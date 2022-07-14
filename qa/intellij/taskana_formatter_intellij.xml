@@ -10,6 +10,11 @@
   <option name="LINE_SEPARATOR" value="&#xA;" />
   <option name="RIGHT_MARGIN" value="100" />
   <option name="SOFT_MARGINS" value="100" />
+  <option name="DO_NOT_FORMAT">
+    <list>
+      <fileSet type="globPattern" pattern="taskana_formatter_intellij.xml" />
+    </list>
+  </option>
   <AndroidXmlCodeStyleSettings>
     <option name="LAYOUT_SETTINGS">
       <value>
@@ -91,7 +96,6 @@
     <option name="INDENT_CHAINED_CALLS" value="false" />
   </TypeScriptCodeStyleSettings>
   <XML>
-    <option name="XML_KEEP_WHITESPACES" value="true" />
     <option name="XML_KEEP_LINE_BREAKS_IN_TEXT" value="false" />
     <option name="XML_KEEP_BLANK_LINES" value="1" />
   </XML>
