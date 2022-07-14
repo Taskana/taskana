@@ -86,7 +86,7 @@
     </dependency>
   </dependencies>
 
- <repositories>
+  <repositories>
     <repository>
       <id>novatec public</id>
       <name>novatec-repository</name>
