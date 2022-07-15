@@ -101,7 +101,7 @@
     <version.javax.activation>1.1.1</version.javax.activation>
 
     <!-- database driver versions -->
-    <version.db2>11.5.6.0</version.db2>
+    <version.db2>11.5.7.0</version.db2>
 
     <!-- sonar settings -->
     <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
