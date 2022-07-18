@@ -8,7 +8,7 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Super class for all workbasket related events. */
+/** The WorkbasketHistoryEvent is a super class for all workbasket related events. */
 public class WorkbasketHistoryEvent {
 
   protected String id;

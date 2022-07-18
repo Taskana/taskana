@@ -31,7 +31,6 @@ import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionExcep
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/** Acceptance test for all "transfer task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TransferTaskAccTest extends AbstractAccTest {
 

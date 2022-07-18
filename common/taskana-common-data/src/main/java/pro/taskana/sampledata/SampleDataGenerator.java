@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.internal.configuration.DB;
 
-/** This class generates sample data for manual testing purposes. */
+/** The SampleDataGenerator generates sample and test data. */
 public class SampleDataGenerator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);

@@ -24,7 +24,6 @@ import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 
-/** Acceptance test for all "work on task" scenarios. This includes claim, complete... */
 @ExtendWith(JaasExtension.class)
 class ClaimTaskAccTest extends AbstractAccTest {
 

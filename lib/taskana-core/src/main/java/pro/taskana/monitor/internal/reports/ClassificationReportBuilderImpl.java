@@ -23,7 +23,6 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 
-/** The implementation of ClassificationReportBuilder. */
 public class ClassificationReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements ClassificationReport.Builder {

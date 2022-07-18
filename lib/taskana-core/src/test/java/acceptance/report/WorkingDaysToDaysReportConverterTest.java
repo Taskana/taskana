@@ -12,7 +12,6 @@ import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverter;
 
-/** Test for the DaysToWorkingDaysReportConverter. */
 class WorkingDaysToDaysReportConverterTest {
 
   private final WorkingDaysToDaysConverter converter;

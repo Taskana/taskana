@@ -16,7 +16,6 @@ import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 import pro.taskana.task.api.TaskCustomField;
 
-/** The implementation of CustomFieldValueReportBuilder. */
 public class TaskCustomFieldValueReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements TaskCustomFieldValueReport.Builder {

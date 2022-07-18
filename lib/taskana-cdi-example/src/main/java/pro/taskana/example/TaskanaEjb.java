@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import pro.taskana.task.api.TaskService;
 
-/** example Taskana EJB. */
+/** The TaskanaEjb is an example Taskana EJB. */
 @Stateless
 public class TaskanaEjb {
 

@@ -23,7 +23,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
-/** TODO. */
+/** The TaskanaProducers ... TODO. */
 @ApplicationScoped
 public class TaskanaProducers {
 

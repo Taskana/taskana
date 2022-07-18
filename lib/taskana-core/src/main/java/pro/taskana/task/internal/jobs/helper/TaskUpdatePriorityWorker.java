@@ -57,7 +57,7 @@ public class TaskUpdatePriorityWorker {
   /**
    * This will return all relevant task ids. This may result in a LOT! of ids
    *
-   * @return list of task ids.
+   * @return list of task ids
    */
   public List<String> getAllRelevantTaskIds() {
     return taskanaEngine

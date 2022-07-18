@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.user.api.models.User;
 
 /**
- * This exception is thrown when a {@linkplain User} was tried to be created with an {@linkplain
- * User#getId() id} already existing.
+ * The UserAlreadyExistException is thrown when a {@linkplain User} was tried to be created with an
+ * {@linkplain User#getId() id} already existing.
  */
 public class UserAlreadyExistException extends TaskanaException {
   public static final String ERROR_KEY = "USER_ALREADY_EXISTS";

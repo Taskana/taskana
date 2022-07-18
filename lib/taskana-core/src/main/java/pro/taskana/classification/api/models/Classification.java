@@ -132,7 +132,7 @@ public interface Classification extends ClassificationSummary {
    *     identifies which custom attribute is to be set
    * @param value the value of the {@linkplain ClassificationCustomField ClassificationCustomField}
    *     to be set
-   * @deprecated Use {@linkplain #setCustomField(ClassificationCustomField, String)} instead
+   * @deprecated use {@linkplain #setCustomField(ClassificationCustomField, String)} instead
    */
   @Deprecated
   void setCustomAttribute(ClassificationCustomField customField, String value);

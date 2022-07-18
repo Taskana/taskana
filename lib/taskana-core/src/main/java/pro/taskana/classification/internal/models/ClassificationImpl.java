@@ -9,7 +9,6 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;
 
-/** Classification entity. */
 public class ClassificationImpl extends ClassificationSummaryImpl implements Classification {
 
   private Boolean isValidInDomain;

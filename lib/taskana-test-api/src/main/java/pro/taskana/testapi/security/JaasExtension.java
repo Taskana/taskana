@@ -42,7 +42,7 @@ import pro.taskana.common.api.security.GroupPrincipal;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.testapi.security.WithAccessId.WithAccessIds;
 
-/** Runner for integration tests that enables JAAS subject. */
+/** The JaasExtension is the Runner for integration tests that enables JAAS subject. */
 public class JaasExtension implements InvocationInterceptor, TestTemplateInvocationContextProvider {
 
   private static final String ACCESS_IDS_STORE_KEY = "accessIds";

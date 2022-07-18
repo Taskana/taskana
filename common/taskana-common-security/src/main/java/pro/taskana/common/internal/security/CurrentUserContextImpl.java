@@ -77,7 +77,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
    * Returns the unique security name of the first public credentials found in the WSSubject as
    * userid.
    *
-   * @return the userid of the caller. If the userid could not be obtained, null is returned.
+   * @return the userid of the caller; if the userid could not be obtained, null is returned
    */
   private String getUserIdFromWsSubject() {
     try {

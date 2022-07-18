@@ -9,8 +9,9 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 
 /**
- * This exception is thrown when the {@linkplain MinimalTaskSummary#getCallbackState() callback
- * state} of the {@linkplain Task} doesn't allow the requested operation.
+ * The InvalidCallbackStateException is thrown when the {@linkplain
+ * MinimalTaskSummary#getCallbackState() callback state} of the {@linkplain Task} doesn't allow the
+ * requested operation.
  */
 public class InvalidCallbackStateException extends InvalidStateException {
 

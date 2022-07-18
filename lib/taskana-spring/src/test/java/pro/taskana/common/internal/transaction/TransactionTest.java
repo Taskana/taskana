@@ -24,7 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import pro.taskana.task.api.TaskService;
 
-/** TODO. */
+/** The TransactionTest ... */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration("classpath:test-applicationContext.xml")

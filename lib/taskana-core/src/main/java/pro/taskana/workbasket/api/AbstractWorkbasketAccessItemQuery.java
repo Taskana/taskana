@@ -41,8 +41,8 @@ public interface AbstractWorkbasketAccessItemQuery<
   /**
    * Sort the query result by workbasket id.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   Q orderByWorkbasketId(SortDirection sortDirection);
@@ -50,8 +50,8 @@ public interface AbstractWorkbasketAccessItemQuery<
   /**
    * Sort the query result by access Id.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   Q orderByAccessId(SortDirection sortDirection);
@@ -59,8 +59,8 @@ public interface AbstractWorkbasketAccessItemQuery<
   /**
    * Sort the query result by Id.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   Q orderById(SortDirection sortDirection);

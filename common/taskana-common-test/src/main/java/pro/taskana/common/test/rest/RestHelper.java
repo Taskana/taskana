@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/** Helps to simplify rest api testing. */
+/** The RestHelper helps to simplify rest api testing. */
 @Component
 public class RestHelper {
 
@@ -69,7 +69,7 @@ public class RestHelper {
   /**
    * Return a REST template which is capable of dealing with responses in HAL format.
    *
-   * @return RestTemplate
+   * @return the RestTemplate
    */
   private static RestTemplate getRestTemplate() {
     ObjectMapper mapper =

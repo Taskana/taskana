@@ -19,7 +19,6 @@ import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance test for all "query tasks by workbasket with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksWithPaginationAccTest extends AbstractAccTest {
 

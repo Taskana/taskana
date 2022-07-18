@@ -19,8 +19,8 @@ import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
 
 /**
- * Job to cleanup completed workbaskets after a period of time if there are no pending tasks
- * associated to the workbasket.
+ * The WorkbasketCleanupJob cleans up completed workbaskets after a period of time if there are no
+ * pending tasks associated to the workbasket.
  */
 public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 

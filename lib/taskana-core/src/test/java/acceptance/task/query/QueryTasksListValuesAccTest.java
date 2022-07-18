@@ -29,7 +29,6 @@ import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.TaskServiceImpl;
 
-/** Acceptance test for listing the column values within a workbasket. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksListValuesAccTest extends AbstractAccTest {
 

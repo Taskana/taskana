@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.util.regex.Matcher;
 import org.junit.jupiter.api.Test;
 
-/** Test SampleDataGenerator. */
 class SqlReplacerTest {
 
   @Test

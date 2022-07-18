@@ -10,7 +10,7 @@ import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 
 /**
- * FOR INTERNAL USE ONLY.
+ * The InternalTaskanaEngine is FOR INTERNAL USE ONLY.
  *
  * <p>Contains all actions which are necessary within taskana.
  */
@@ -74,28 +74,28 @@ public interface InternalTaskanaEngine {
   /**
    * Retrieve TaskanaEngine.
    *
-   * @return The nested TaskanaEngine.
+   * @return the nested TaskanaEngine
    */
   TaskanaEngine getEngine();
 
   /**
    * Retrieve HistoryEventProducer.
    *
-   * @return the HistoryEventProducer instance.
+   * @return the HistoryEventProducer instance
    */
   HistoryEventManager getHistoryEventManager();
 
   /**
    * Retrieve TaskRoutingProducer.
    *
-   * @return the TaskRoutingProducer instance.
+   * @return the TaskRoutingProducer instance
    */
   TaskRoutingManager getTaskRoutingManager();
 
   /**
    * Retrieve CreateTaskPreprocessorManager.
    *
-   * @return the CreateTaskPreprocessorManager instance.
+   * @return the CreateTaskPreprocessorManager instance
    */
   CreateTaskPreprocessorManager getCreateTaskPreprocessorManager();
 

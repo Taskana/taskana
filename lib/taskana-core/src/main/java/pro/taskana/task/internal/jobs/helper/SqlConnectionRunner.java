@@ -8,7 +8,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.util.CheckedConsumer;
 
-/** Run low level SQL Statements reusing the taskana datasource. */
+/** The SqlConnectionRunner runs low level SQL Statements reusing the taskana datasource. */
 public class SqlConnectionRunner {
 
   private final TaskanaEngine taskanaEngine;
@@ -20,7 +20,7 @@ public class SqlConnectionRunner {
   /**
    * Run custom queries on a given connection. Please check for committing changes.
    *
-   * @param consumer consumes a connection.
+   * @param consumer consumes a connection
    * @throws SystemException will pass on any checked SQLException as a runtime SystemException
    */
   public void runWithConnection(CheckedConsumer<Connection, SQLException> consumer) {

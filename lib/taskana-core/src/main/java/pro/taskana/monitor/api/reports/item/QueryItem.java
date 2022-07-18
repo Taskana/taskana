@@ -12,7 +12,7 @@ public interface QueryItem {
    * The key of a QueryItem determines its {@linkplain pro.taskana.monitor.api.reports.row.Row row}
    * within a {@linkplain Report}.
    *
-   * @return the key of this QueryItem.
+   * @return the key of this QueryItem
    */
   String getKey();
 

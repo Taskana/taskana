@@ -7,8 +7,8 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
 
 /**
- * This exception is thrown when an {@linkplain Attachment} should be inserted to the DB, but it
- * does already exist. <br>
+ * The AttachmentPersistenceException is thrown when an {@linkplain Attachment} should be inserted
+ * to the DB, but it does already exist. <br>
  * This may happen when a not inserted {@linkplain Attachment} with the same {@linkplain
  * Attachment#getId() id} will be added twice on a {@linkplain Task}. This can't happen if the
  * correct {@linkplain Task}-Methods will be used instead of the List ones.

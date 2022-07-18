@@ -91,7 +91,6 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** This is the implementation of TaskService. */
 @SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
 public class TaskServiceImpl implements TaskService {
 

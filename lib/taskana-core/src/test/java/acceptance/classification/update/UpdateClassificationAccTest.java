@@ -28,7 +28,6 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** Acceptance test for all "update classification" scenarios. */
 @ExtendWith(JaasExtension.class)
 class UpdateClassificationAccTest extends AbstractAccTest {
 

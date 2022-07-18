@@ -39,7 +39,6 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksWithSortingAccTest extends AbstractAccTest {
 

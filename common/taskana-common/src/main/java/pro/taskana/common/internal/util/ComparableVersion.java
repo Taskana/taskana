@@ -34,7 +34,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 /**
- * Generic implementation of version comparison. Features:
+ * The ComparableVersion contains a generic implementation of version comparison. Features:
  *
  * <ul>
  *   <li>mixing of '<code>-</code>' (hyphen) and '<code>.</code>' (dot) separators,
@@ -221,7 +221,10 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     boolean isNull();
   }
 
-  /** Represents a numeric item in the version item list that can be represented with an int. */
+  /**
+   * The IntItem represents a numeric item in the version item list that can be represented with an
+   * int.
+   */
   private static class IntItem implements Item {
     public static final IntItem ZERO = new IntItem();
     private final int value;
@@ -294,7 +297,10 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     }
   }
 
-  /** Represents a numeric item in the version item list that can be represented with a long. */
+  /**
+   * The LongItem represents a numeric item in the version item list that can be represented with a
+   * long.
+   */
   private static class LongItem implements Item {
     private final long value;
 
@@ -363,7 +369,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     }
   }
 
-  /** Represents a numeric item in the version item list. */
+  /** The BigIntegerItem represents a numeric item in the version item list. */
   private static class BigIntegerItem implements Item {
     private final BigInteger value;
 
@@ -430,7 +436,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     }
   }
 
-  /** Represents a string in the version item list, usually a qualifier. */
+  /** The StringItem represents a String in the version item list, usually a qualifier. */
   private static class StringItem implements Item {
     private static final List<String> QUALIFIERS =
         Arrays.asList("alpha", "beta", "milestone", "rc", "snapshot", "", "sp");
@@ -549,8 +555,8 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
   }
 
   /**
-   * Represents a version list item. This class is used both for the global item list and for
-   * sub-lists (which start with '-(number)' in the version specification).
+   * The ListItem represents a version list item. This class is used both for the global item list
+   * and for sub-lists (which start with '-(number)' in the version specification).
    */
   private static class ListItem extends ArrayList<Item> implements Item {
 

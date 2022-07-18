@@ -14,7 +14,6 @@ import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
-/** WorkbasketAccessItemQueryImpl for generating dynamic SQL. */
 public class WorkbasketAccessItemQueryImpl implements WorkbasketAccessItemQuery {
 
   private static final String LINK_TO_MAPPER =

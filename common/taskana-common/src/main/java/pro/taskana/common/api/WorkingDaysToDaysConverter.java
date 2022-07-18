@@ -54,7 +54,7 @@ public class WorkingDaysToDaysConverter {
    *
    * @param germanHolidaysEnabled identifier for German holidays
    * @param corpusChristiEnabled identifier for Corpus Christi - dependent from
-   *     germanHolidaysEnabled and thus only validated if German holidays are enabled.
+   *     germanHolidaysEnabled and thus only validated if German holidays are enabled
    * @param customHolidays additional custom holidays
    */
   public WorkingDaysToDaysConverter(

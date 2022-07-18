@@ -13,7 +13,7 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityWorker;
 
-/** Job to recalculate the priority of each task that is not in an endstate. */
+/** The TaskUpdatePriorityJob recalculates the priority of each task that is not in an endstate. */
 public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskUpdatePriorityJob.class);
@@ -65,7 +65,7 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
    * Initializes the TaskUpdatePriorityJob schedule. <br>
    * All scheduled jobs are cancelled/deleted and a new one is scheduled.
    *
-   * @param taskanaEngine the TASKANA engine.
+   * @param taskanaEngine the TASKANA engine
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();

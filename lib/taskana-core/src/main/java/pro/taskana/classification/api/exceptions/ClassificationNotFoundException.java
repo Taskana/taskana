@@ -5,7 +5,10 @@ import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.common.internal.util.MapCreator;
 
-/** Thrown if a specific {@linkplain Classification} is not in the database. */
+/**
+ * The ClassificationNotFoundException is thrown if a specific {@linkplain Classification} is not in
+ * the database.
+ */
 public class ClassificationNotFoundException extends NotFoundException {
 
   public static final String ERROR_KEY_ID = "CLASSIFICATION_WITH_ID_NOT_FOUND";

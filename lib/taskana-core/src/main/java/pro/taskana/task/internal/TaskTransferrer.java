@@ -36,7 +36,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
-/** This class is responsible for the transfer of Tasks to another Workbasket. */
+/** The TaskTransferrer is responsible for the transfer of Tasks to another Workbasket. */
 final class TaskTransferrer {
 
   private final InternalTaskanaEngine taskanaEngine;

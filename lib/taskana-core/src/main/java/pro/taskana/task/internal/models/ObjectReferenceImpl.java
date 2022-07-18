@@ -5,7 +5,6 @@ import java.util.Objects;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** ObjectReference entity. */
 public class ObjectReferenceImpl implements ObjectReference {
   private String id;
   private String taskId;

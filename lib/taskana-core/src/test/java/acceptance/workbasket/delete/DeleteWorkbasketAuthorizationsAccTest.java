@@ -14,7 +14,6 @@ import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
 
-/** Acceptance test for all "delete workbasket authorizations" scenarios. */
 @ExtendWith(JaasExtension.class)
 class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 

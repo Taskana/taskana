@@ -2,7 +2,7 @@ package pro.taskana.common.internal.transaction;
 
 import java.util.function.Supplier;
 
-/** This functional interface provides support for transactions. */
+/** The TaskanaTransactionProvider functional interface provides support for transactions. */
 @FunctionalInterface
 public interface TaskanaTransactionProvider {
 

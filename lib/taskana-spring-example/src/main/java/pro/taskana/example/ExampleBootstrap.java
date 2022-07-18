@@ -27,7 +27,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/** TODO. */
+/** The ExampleBootstrap ... TODO. */
 @Component
 @Transactional
 public class ExampleBootstrap {

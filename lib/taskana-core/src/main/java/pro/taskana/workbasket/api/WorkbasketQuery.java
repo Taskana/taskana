@@ -143,10 +143,10 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * should be checked. READ permission will always be checked by default.<br>
    * The AccessIds and the given permission will throw a Exception if they would be NULL.
    *
-   * @param permission which should be used for results.
-   * @param accessIds Users which sould be checked for given permissions on workbaskets.
-   * @return the current query object.
-   * @throws InvalidArgumentException if permission OR the accessIds are NULL.
+   * @param permission which should be used for results
+   * @param accessIds users which should be checked for given permissions on workbaskets
+   * @return the current query object
+   * @throws InvalidArgumentException if permission OR the accessIds are NULL
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    */
@@ -157,16 +157,16 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * Add condition to query if the caller (one of the accessIds of the caller) has the given
    * permission on the workbasket.
    *
-   * @param permission the permission for the query condition.
-   * @return the updated query.
+   * @param permission the permission for the query condition
+   * @return the updated query
    */
   WorkbasketQuery callerHasPermission(WorkbasketPermission permission);
 
   /**
    * Sort the query result by name.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByName(SortDirection sortDirection);
@@ -174,8 +174,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by key.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByKey(SortDirection sortDirection);
@@ -183,8 +183,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by description.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByDescription(SortDirection sortDirection);
@@ -192,8 +192,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by owner.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByOwner(SortDirection sortDirection);
@@ -201,8 +201,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by type.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByType(SortDirection sortDirection);
@@ -210,8 +210,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by domain.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByDomain(SortDirection sortDirection);
@@ -229,9 +229,9 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * This method sorts the query result according to the value of a custom field.
    *
-   * @param customField identifies which custom attribute is affected.
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param customField identifies which custom attribute is affected
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByCustomAttribute(
@@ -240,8 +240,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by organization level 1.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel1(SortDirection sortDirection);
@@ -249,8 +249,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by organization level 2.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel2(SortDirection sortDirection);
@@ -258,8 +258,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by organization level 3.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel3(SortDirection sortDirection);
@@ -267,8 +267,8 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Sort the query result by organization level 4.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   WorkbasketQuery orderByOrgLevel4(SortDirection sortDirection);
@@ -276,7 +276,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Add the values of custom attributes for exact matching to your query.
    *
-   * @param customField identifies which custom attribute is affected.
+   * @param customField identifies which custom attribute is affected
    * @param searchArguments the customField values of the searched for tasks
    * @return the query
    */
@@ -287,7 +287,7 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
    * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param customField identifies which custom attribute is affected.
+   * @param customField identifies which custom attribute is affected
    * @param searchArguments the customField values of the searched-for tasks
    * @return the query
    */

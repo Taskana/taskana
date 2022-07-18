@@ -16,7 +16,6 @@ import org.junit.jupiter.api.TestFactory;
 
 import pro.taskana.common.api.WorkingDaysToDaysConverter.EasterCalculator;
 
-/** Test for the WorkingDaysToDaysConverter. */
 class WorkingDaysToDaysConverterTest {
 
   private final WorkingDaysToDaysConverter converter;

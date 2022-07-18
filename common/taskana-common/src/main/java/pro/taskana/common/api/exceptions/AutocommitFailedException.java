@@ -1,8 +1,8 @@
 package pro.taskana.common.api.exceptions;
 
 /**
- * This exception is thrown when using TASKANA with the AUTOCOMMIT ConnectionManagementMode and an
- * attempt to commit fails.
+ * The AutocommitFailedException is thrown when using TASKANA with the AUTOCOMMIT
+ * ConnectionManagementMode and an attempt to commit fails.
  */
 public class AutocommitFailedException extends TaskanaRuntimeException {
 

@@ -69,7 +69,7 @@ public interface WorkbasketAccessItem {
    * Returns whether the given {@linkplain WorkbasketPermission permissions} is permitted or not.
    *
    * @param permission the {@linkplain WorkbasketPermission permissions} in question
-   * @return True, if the given {@linkplain WorkbasketPermission permissions} is permitted;
+   * @return true, if the given {@linkplain WorkbasketPermission permissions} is permitted;
    *     otherwise false
    */
   boolean getPermission(WorkbasketPermission permission);

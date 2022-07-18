@@ -103,6 +103,13 @@
       <artifactId>taskana-loghistory-provider</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <!-- checkstyle dependency -->
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>custom-checkstyle</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

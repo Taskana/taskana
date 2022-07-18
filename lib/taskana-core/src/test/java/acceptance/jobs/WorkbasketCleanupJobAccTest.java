@@ -22,7 +22,6 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
-/** Acceptance test for all "jobs workbasket runner" scenarios. */
 @ExtendWith(JaasExtension.class)
 class WorkbasketCleanupJobAccTest extends AbstractAccTest {
 

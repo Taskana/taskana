@@ -9,7 +9,6 @@ import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** The most important fields of the Attachment entity. */
 public class AttachmentSummaryImpl implements AttachmentSummary {
 
   protected String id;

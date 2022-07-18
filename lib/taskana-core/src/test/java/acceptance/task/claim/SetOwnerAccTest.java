@@ -27,7 +27,6 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
-/** Acceptance test for all "set owner" scenarios. */
 @ExtendWith(JaasExtension.class)
 class SetOwnerAccTest extends AbstractAccTest {
 

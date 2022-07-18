@@ -7,7 +7,7 @@ import java.util.Objects;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Super class for all task related events. */
+/** The TaskHistoryEvent is a super class for all task related events. */
 public class TaskHistoryEvent {
 
   protected String id;

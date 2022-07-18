@@ -10,7 +10,6 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
-/** Unit Test for TaskanaEngineConfigurationTest. */
 class TaskanaEngineConfigurationTest extends AbstractAccTest {
 
   @Test

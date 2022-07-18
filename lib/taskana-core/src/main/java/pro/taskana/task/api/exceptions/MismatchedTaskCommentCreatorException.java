@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.TaskComment;
 
 /**
- * This exception is thrown when the current user is not the creator of the {@linkplain TaskComment}
- * it tries to modify.
+ * The MismatchedTaskCommentCreatorException is thrown when the current user is not the creator of
+ * the {@linkplain TaskComment} it tries to modify.
  */
 public class MismatchedTaskCommentCreatorException extends NotAuthorizedException {
 

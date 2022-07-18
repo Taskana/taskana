@@ -2,7 +2,7 @@ package pro.taskana.spi.history.api.events.task;
 
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Event fired if a task is transferred. */
+/** The TaskTransferredEvent is fired if a task is transferred. */
 public class TaskTransferredEvent extends TaskHistoryEvent {
 
   public TaskTransferredEvent(

@@ -13,7 +13,6 @@ import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** Acceptance test for all "query classifications with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryObjectReferencesWithPaginationAccTest extends AbstractAccTest {
 

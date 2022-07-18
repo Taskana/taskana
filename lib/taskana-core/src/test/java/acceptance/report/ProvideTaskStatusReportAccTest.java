@@ -21,7 +21,6 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 
-/** Acceptance test for all "task status report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
 

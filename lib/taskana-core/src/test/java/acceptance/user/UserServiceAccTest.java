@@ -23,7 +23,6 @@ import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.user.api.models.User;
 
-/** Acceptance test which tests the functionality of the UserService. */
 @ExtendWith(JaasExtension.class)
 class UserServiceAccTest extends AbstractAccTest {
   private static final UserService USER_SERVICE = taskanaEngine.getUserService();

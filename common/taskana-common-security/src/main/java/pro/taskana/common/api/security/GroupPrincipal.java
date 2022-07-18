@@ -3,7 +3,7 @@ package pro.taskana.common.api.security;
 import java.security.Principal;
 import java.util.Objects;
 
-/** Represents a group with a name. */
+/** The GroupPrincipal represents a group with its name. */
 public class GroupPrincipal implements Principal {
 
   private final String name;

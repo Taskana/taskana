@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 
-/** Test SampleDataGenerator. */
 class SampleDataGeneratorTest {
 
   private static final String JDBC_URL =

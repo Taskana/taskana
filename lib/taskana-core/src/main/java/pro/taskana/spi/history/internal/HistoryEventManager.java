@@ -12,7 +12,10 @@ import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEv
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
-/** Creates and deletes events and emits them to the registered history service providers. */
+/**
+ * The HistoryEventManager creates and deletes events and emits them to the registered history
+ * service providers.
+ */
 public final class HistoryEventManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventManager.class);

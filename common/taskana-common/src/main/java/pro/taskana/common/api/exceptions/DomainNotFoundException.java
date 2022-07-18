@@ -2,7 +2,10 @@ package pro.taskana.common.api.exceptions;
 
 import pro.taskana.common.internal.util.MapCreator;
 
-/** This exception is thrown when the specified domain is not found in the configuration. */
+/**
+ * The DomainNotFoundException is thrown when the specified domain is not found in the
+ * configuration.
+ */
 public class DomainNotFoundException extends NotFoundException {
 
   public static final String ERROR_KEY = "DOMAIN_NOT_FOUND";

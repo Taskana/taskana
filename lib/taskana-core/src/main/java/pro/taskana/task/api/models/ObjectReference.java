@@ -6,7 +6,7 @@ public interface ObjectReference {
   /**
    * Returns the id of the ObjectReference.
    *
-   * @return the id of the ObjectReference.
+   * @return the id of the ObjectReference
    */
   String getId();
 

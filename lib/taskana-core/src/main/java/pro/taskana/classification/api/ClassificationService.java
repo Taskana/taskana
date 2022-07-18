@@ -15,6 +15,7 @@ import pro.taskana.task.api.models.Task;
 /**
  * The ClassificationService manages all operations on {@linkplain Classification Classifications}.
  */
+@SuppressWarnings("all")
 public interface ClassificationService {
 
   // region Classification

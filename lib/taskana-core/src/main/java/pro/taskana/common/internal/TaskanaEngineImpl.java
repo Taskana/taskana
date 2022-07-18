@@ -72,7 +72,6 @@ import pro.taskana.workbasket.internal.WorkbasketMapper;
 import pro.taskana.workbasket.internal.WorkbasketQueryMapper;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 
-/** This is the implementation of TaskanaEngine. */
 public class TaskanaEngineImpl implements TaskanaEngine {
 
   // must match the VERSION value in table
@@ -310,7 +309,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    * sets the databaseId attribute.
    *
    * @return a {@linkplain SqlSessionFactory}
-   * @throws SystemException when a connection to the database could not be opened.
+   * @throws SystemException when a connection to the database could not be opened
    */
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
@@ -376,7 +375,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   /**
    * creates the MyBatis transaction factory.
    *
-   * @param useManagedTransactions true, if managed transations should be used. Otherwise false.
+   * @param useManagedTransactions true, if managed transations should be used; otherwise false
    */
   private void createTransactionFactory(boolean useManagedTransactions) {
     if (useManagedTransactions) {
@@ -387,7 +386,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   /**
-   * With sessionStack, we maintain a Stack of SqlSessionManager objects on a per thread basis.
+   * The SessionStack maintains a Stack of SqlSessionManager objects on a per thread basis.
    * SqlSessionManager is the MyBatis object that wraps database connections. The purpose of this
    * stack is to keep track of nested calls. Each external API call is wrapped into
    * taskanaEngineImpl.openConnection(); ..... taskanaEngineImpl.returnConnection(); calls. In order
@@ -405,7 +404,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     /**
      * Get latest SqlSession from session stack.
      *
-     * @return Stack of SqlSessionManager
+     * @return the Stack of SqlSessionManager
      */
     private Deque<SqlSessionManager> getSessionStack() {
       Deque<SqlSessionManager> stack = sessionStack.get();
@@ -428,7 +427,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
   }
 
-  /** Internal Engine for internal operations. */
+  /** The InternalTaskanaEngineImpl is for internal operations. */
   private class InternalTaskanaEngineImpl implements InternalTaskanaEngine {
 
     @Override

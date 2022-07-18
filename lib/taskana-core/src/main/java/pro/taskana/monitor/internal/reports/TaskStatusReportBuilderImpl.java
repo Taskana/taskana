@@ -16,7 +16,6 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** The implementation of TaskStatusReportBuilder. */
 public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
 
   private final InternalTaskanaEngine taskanaEngine;

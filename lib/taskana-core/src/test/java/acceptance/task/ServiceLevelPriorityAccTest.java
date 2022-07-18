@@ -33,7 +33,6 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ServiceLevelPriorityAccTest extends AbstractAccTest {
 

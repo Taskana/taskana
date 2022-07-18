@@ -9,34 +9,34 @@ import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEv
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
-/** Interface for TASKANA History Service Provider. */
+/** The TaskanaHistory provides an interface for a History Service. */
 public interface TaskanaHistory {
 
   /**
    * Initialize TaskanaHistory service.
    *
-   * @param taskanaEngine {@linkplain TaskanaEngine} The Taskana engine for needed initialization.
+   * @param taskanaEngine {@linkplain TaskanaEngine} The Taskana engine for needed initialization
    */
   void initialize(TaskanaEngine taskanaEngine);
 
   /**
    * Create a new {@linkplain TaskHistoryEvent}.
    *
-   * @param event {@linkplain TaskHistoryEvent} The event to be created.
+   * @param event {@linkplain TaskHistoryEvent} The event to be created
    */
   void create(TaskHistoryEvent event);
 
   /**
    * Create a new {@linkplain WorkbasketHistoryEvent}.
    *
-   * @param event {@linkplain WorkbasketHistoryEvent} The event to be created.
+   * @param event {@linkplain WorkbasketHistoryEvent} The event to be created
    */
   void create(WorkbasketHistoryEvent event);
 
   /**
    * Create a new {@linkplain ClassificationHistoryEvent}.
    *
-   * @param event {@linkplain ClassificationHistoryEvent} The event to be created.
+   * @param event {@linkplain ClassificationHistoryEvent} The event to be created
    */
   void create(ClassificationHistoryEvent event);
 
@@ -44,8 +44,8 @@ public interface TaskanaHistory {
    * Delete history events by taskIds. Invalid/non-existing taskIds will be ignored
    *
    * @param taskIds the task ids for which all history events must be deleted
-   * @throws InvalidArgumentException If the list of taskIds is null
-   * @throws NotAuthorizedException If the user has no permission to delete events
+   * @throws InvalidArgumentException if the list of taskIds is null
+   * @throws NotAuthorizedException if the user has no permission to delete events
    */
   void deleteHistoryEventsByTaskIds(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException;

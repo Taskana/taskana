@@ -45,7 +45,6 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
 
-/** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksAccTest extends AbstractAccTest {
 

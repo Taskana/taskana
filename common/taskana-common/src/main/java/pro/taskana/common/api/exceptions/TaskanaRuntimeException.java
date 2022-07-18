@@ -1,6 +1,6 @@
 package pro.taskana.common.api.exceptions;
 
-/** The common base class for TASKANA's runtime exceptions. */
+/** The TaskanaRuntimeException is the common base class for TASKANA's runtime exceptions. */
 public class TaskanaRuntimeException extends RuntimeException {
 
   private final ErrorCode errorCode;

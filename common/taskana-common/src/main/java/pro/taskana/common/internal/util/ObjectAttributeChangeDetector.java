@@ -23,7 +23,7 @@ public class ObjectAttributeChangeDetector {
    *
    * @param oldObject the old object for the comparison
    * @param newObject the new object for the comparison
-   * @param <T> The generic type parameter
+   * @param <T> the generic type parameter
    * @return the details of all changed fields as JSON string
    * @throws SystemException when any parameter is null or the class of oldObject and newObject do
    *     not match

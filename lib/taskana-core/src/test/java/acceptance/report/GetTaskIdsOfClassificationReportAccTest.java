@@ -24,7 +24,6 @@ import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 
-/** Acceptance test for all "get task ids of classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
 

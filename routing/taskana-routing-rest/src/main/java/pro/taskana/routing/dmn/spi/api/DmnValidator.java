@@ -9,7 +9,7 @@ public interface DmnValidator {
   /**
    * Initialize DmnValidator.
    *
-   * @param taskanaEngine {@link TaskanaEngine} The Taskana engine needed for initialization.
+   * @param taskanaEngine {@link TaskanaEngine} the Taskana engine needed for initialization
    */
   void initialize(TaskanaEngine taskanaEngine);
 

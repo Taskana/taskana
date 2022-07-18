@@ -9,7 +9,6 @@ import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Workbasket entity. */
 public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket {
 
   private Instant created;

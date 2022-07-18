@@ -8,8 +8,8 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
 
 /**
- * This exception is thrown when a specific {@linkplain Classification} was tried to be deleted
- * while still being in use. <br>
+ * The ClassificationInUseException is thrown when a specific {@linkplain Classification} was tried
+ * to be deleted while still being in use. <br>
  * This could mean that there are either {@linkplain Task Tasks} or {@linkplain Attachment
  * Attachments} associated with it.
  */

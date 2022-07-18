@@ -5,7 +5,7 @@ import java.time.Instant;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketType;
 
-/** Workbasket entity interface. */
+/** The Workbasket entity interface. */
 public interface Workbasket extends WorkbasketSummary {
 
   /**
@@ -34,7 +34,7 @@ public interface Workbasket extends WorkbasketSummary {
    *
    * @param customField identifies which {@linkplain WorkbasketCustomField} is to be set
    * @param value the value of the {@linkplain WorkbasketCustomField} to be set
-   * @deprecated Use {@linkplain #setCustomField(WorkbasketCustomField, String)} instead
+   * @deprecated use {@linkplain #setCustomField(WorkbasketCustomField, String)} instead
    */
   @Deprecated
   void setCustomAttribute(WorkbasketCustomField customField, String value);

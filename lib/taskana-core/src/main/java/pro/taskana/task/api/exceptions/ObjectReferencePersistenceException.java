@@ -7,8 +7,8 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 
 /**
- * This exception is thrown when an {@linkplain ObjectReference} should be inserted to the DB, but
- * it does already exist. <br>
+ * The ObjectReferencePersistenceException is thrown when an {@linkplain ObjectReference} should be
+ * inserted to the DB, but it does already exist. <br>
  * This may happen when a not inserted {@linkplain ObjectReference} with the same {@linkplain
  * ObjectReference#getId() id} will be added twice on a {@linkplain Task}. This can't happen if the
  * correct {@linkplain Task}-Methods will be used instead of the List ones.

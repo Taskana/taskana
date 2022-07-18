@@ -6,7 +6,6 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** WorkbasketAccessItemImpl Entity. */
 public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
   private String id;

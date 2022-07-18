@@ -14,7 +14,7 @@ import pro.taskana.workbasket.api.AccessItemQueryColumnName;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /**
- * AbstractWorkbasketAccessItemQueryImpl for generating dynamic SQL.
+ * The AbstractWorkbasketAccessItemQueryImpl for generating dynamic SQL.
  *
  * @param <Q> the actual WorkbasketAccessItemQuery behind this abstract class
  * @param <T> the workbasket access item

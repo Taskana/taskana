@@ -68,8 +68,7 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 
 /**
- * Test architecture of classes in TASKANA. For more info and examples see <a
- * href="https://www.archunit.org/userguide/html/000_Index.html">ArchUnit User Guide</a>.
+ * The ArchitectureTest tests the architecture of classes in TASKANA. For more info and examples see
  */
 @Disabled
 class ArchitectureTest {

@@ -31,7 +31,6 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
 
-/** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TaskCleanupJobAccTest extends AbstractAccTest {
 

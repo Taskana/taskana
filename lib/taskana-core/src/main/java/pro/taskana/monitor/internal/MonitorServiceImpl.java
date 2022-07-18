@@ -18,7 +18,6 @@ import pro.taskana.monitor.internal.reports.WorkbasketPriorityReportBuilderImpl;
 import pro.taskana.monitor.internal.reports.WorkbasketReportBuilderImpl;
 import pro.taskana.task.api.TaskCustomField;
 
-/** This is the implementation of MonitorService. */
 public class MonitorServiceImpl implements MonitorService {
 
   private final InternalTaskanaEngine taskanaEngine;

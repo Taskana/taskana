@@ -15,7 +15,6 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance test for task queries and authorization. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksByRoleAccTest extends AbstractAccTest {
 

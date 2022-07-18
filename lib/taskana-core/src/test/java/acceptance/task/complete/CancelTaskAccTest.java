@@ -19,7 +19,6 @@ import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance tests for all "cancel task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CancelTaskAccTest extends AbstractAccTest {
 

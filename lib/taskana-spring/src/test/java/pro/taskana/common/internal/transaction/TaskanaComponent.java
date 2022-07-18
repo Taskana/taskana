@@ -15,7 +15,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
-/** TODO. */
+/** The TaskanaComponent ... */
 @Component
 @Transactional
 public class TaskanaComponent {

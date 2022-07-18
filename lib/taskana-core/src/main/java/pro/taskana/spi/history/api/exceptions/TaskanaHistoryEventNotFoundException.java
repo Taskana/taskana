@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /**
- * This exception is thrown when the {@linkplain TaskHistoryEvent} with the specified {@linkplain
- * TaskHistoryEvent#getId() id} was not found.
+ * The TaskanaHistoryEventNotFoundException is thrown when the {@linkplain TaskHistoryEvent} with
+ * the specified {@linkplain TaskHistoryEvent#getId() id} was not found.
  */
 public class TaskanaHistoryEventNotFoundException extends NotFoundException {
 

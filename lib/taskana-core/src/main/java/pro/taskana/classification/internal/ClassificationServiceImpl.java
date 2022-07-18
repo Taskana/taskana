@@ -43,7 +43,6 @@ import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskMapper;
 
-/** This is the implementation of ClassificationService. */
 public class ClassificationServiceImpl implements ClassificationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
@@ -401,9 +400,9 @@ public class ClassificationServiceImpl implements ClassificationService {
   /**
    * Fill missing values and validate classification before saving the classification.
    *
-   * @param classification the classification which will be verified.
+   * @param classification the classification which will be verified
    * @throws InvalidArgumentException if the given classification has no key, the type is not valid
-   *     or the category for the provided type is invalid.
+   *     or the category for the provided type is invalid
    * @throws MalformedServiceLevelException if the given service level of the {@linkplain
    *     Classification} is invalid
    */
@@ -553,7 +552,7 @@ public class ClassificationServiceImpl implements ClassificationService {
    *
    * @param classificationImpl the new classification
    * @param oldClassification the old classification
-   * @throws ClassificationNotFoundException if the given classification does not exist.
+   * @throws ClassificationNotFoundException if the given classification does not exist
    */
   private void checkExistenceOfParentClassification(
       Classification oldClassification, ClassificationImpl classificationImpl)

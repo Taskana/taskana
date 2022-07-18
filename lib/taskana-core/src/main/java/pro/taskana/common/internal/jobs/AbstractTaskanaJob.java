@@ -10,7 +10,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
-/** Abstract base for all background jobs of TASKANA. */
+/** The AbstractTaskanaJob is the abstract base for all background jobs of TASKANA. */
 public abstract class AbstractTaskanaJob implements TaskanaJob {
 
   protected final TaskanaEngineImpl taskanaEngineImpl;

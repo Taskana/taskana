@@ -22,7 +22,6 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.AttachmentMapper;
 
-/** Acceptance test for all "delete task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class DeleteTaskAccTest extends AbstractAccTest {
 

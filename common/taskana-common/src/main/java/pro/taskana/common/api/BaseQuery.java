@@ -15,7 +15,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    * This method will return a list of defined {@link T} objects. In case of a TaskQuery, this
    * method can throw a NotAuthorizedToQueryWorkbasketException.
    *
-   * @return List containing elements of type T
+   * @return result of the Query as List containing elements of type T
    */
   List<T> list();
 
@@ -23,9 +23,9 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    * This method will return a list of defined {@link T} objects with specified offset and an limit.
    * In case of a TaskQuery, this method can throw a NotAuthorizedToQueryWorkbasketException.
    *
-   * @param offset index of the first element which should be returned.
-   * @param limit number of elements which should be returned beginning with offset.
-   * @return List containing elements of type T
+   * @param offset index of the first element which should be returned
+   * @param limit number of elements which should be returned beginning with offset
+   * @return result of the query as List containing elements of type T
    */
   List<T> list(int offset, int limit);
 
@@ -35,10 +35,10 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    * All called orderBy()-Methods will be override. Just the current column-values will be ordered
    * itself by the given direction.
    *
-   * @param dbColumnName column name of a existing DB Table.
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
-   * @return a list of all existing values.
+   * @param dbColumnName column name of an existing DB Table
+   * @param sortDirection determines whether the result is sorted in ascending or descending order
+   *     if sortDirection is NULL, the result is sorted in ascending order
+   * @return the List of all existing values
    */
   List<String> listValues(U dbColumnName, SortDirection sortDirection);
 
@@ -48,9 +48,9 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    * elements. In case of a TaskQuery, this method can throw a
    * NotAuthorizedToQueryWorkbasketException.
    *
-   * @param pageNumber current pagination page starting at 1.
-   * @param pageSize amount of elements for this page.
-   * @return resulList for the current query starting at X and returning max Y elements.
+   * @param pageNumber current pagination page starting at 1
+   * @param pageSize amount of elements for this page
+   * @return resulList for the current query starting at X and returning max Y elements
    */
   default List<T> listPage(int pageNumber, int pageSize) {
     int offset = (pageNumber < 1) ? 0 : ((pageNumber - 1) * pageSize);
@@ -63,7 +63,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    * TooManyResultsException. In case of a TaskQuery, this method can throw a
    * NotAuthorizedToQueryWorkbasketException.
    *
-   * @return T a single object of given Type.
+   * @return result of the query as a single object of type T
    */
   T single();
 
@@ -72,7 +72,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    * afterwards. In case of a TaskQuery, this method can throw a
    * NotAuthorizedToQueryWorkbasketException.
    *
-   * @return resultRowCount
+   * @return number of rows in the query result
    */
   long count();
 

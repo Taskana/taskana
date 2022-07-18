@@ -7,7 +7,6 @@ import java.util.Objects;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 
-/** Attachment entity. */
 public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment {
 
   private Map<String, String> customAttributes = new HashMap<>();

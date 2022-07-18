@@ -17,7 +17,6 @@ import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 
-/** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)
 class SqlConnectionRunnerAccTest extends AbstractAccTest {
 

@@ -15,7 +15,7 @@ import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * A WorkbasketReport aggregates {@linkplain Task} related data.
+ * The WorkbasketPriorityReport aggregates {@linkplain Task} related data.
  *
  * <p>Each {@linkplain Row} represents a {@linkplain Workbasket}.
  *
@@ -35,7 +35,7 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
 
     /**
      * Adds {@linkplain WorkbasketType WorkbasketTypes} to the builder. The created report will only
-     * contain Tasks from {@linkplain Workbasket}s with one of the provided types.
+     * contain Tasks from {@linkplain Workbasket Workbaskets} with one of the provided types.
      *
      * @param workbasketTypes the workbasketTypes to include in the report
      * @return the builder
@@ -148,10 +148,10 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
         throws InvalidArgumentException;
 
     /**
-     * Adds a list of {@linkplain PriorityColumnHeader}s to the builder to subdivide the report into
-     * clusters.
+     * Adds a list of {@linkplain PriorityColumnHeader PriorityColumnHeaders} to the builder to
+     * subdivide the report into clusters.
      *
-     * @param columnHeaders the column headers the report should consist of.
+     * @param columnHeaders the column headers the report should consist of
      * @return the builder
      */
     Builder withColumnHeaders(List<PriorityColumnHeader> columnHeaders);

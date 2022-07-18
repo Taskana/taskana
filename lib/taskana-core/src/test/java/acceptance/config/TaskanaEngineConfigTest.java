@@ -10,7 +10,6 @@ import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
-/** Test of configuration. */
 class TaskanaEngineConfigTest {
 
   @Test

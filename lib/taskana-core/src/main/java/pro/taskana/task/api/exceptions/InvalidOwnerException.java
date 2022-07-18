@@ -5,7 +5,10 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.Task;
 
-/** This exception is thrown when the current user is not the owner of the {@linkplain Task}. */
+/**
+ * The InvalidOwnerException is thrown when the current user is not the owner of the {@linkplain
+ * Task}.
+ */
 public class InvalidOwnerException extends TaskanaException {
   public static final String ERROR_KEY = "TASK_INVALID_OWNER";
   private final String taskId;

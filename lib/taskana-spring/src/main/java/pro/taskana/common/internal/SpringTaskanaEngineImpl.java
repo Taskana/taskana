@@ -6,7 +6,6 @@ import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 
 import pro.taskana.SpringTaskanaEngineConfiguration;
 
-/** This class configures the TaskanaEngine for spring. */
 public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {
 
   public SpringTaskanaEngineImpl(

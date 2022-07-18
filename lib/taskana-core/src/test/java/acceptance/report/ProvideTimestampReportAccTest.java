@@ -20,7 +20,6 @@ import pro.taskana.monitor.api.reports.item.TimestampQueryItem;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 import pro.taskana.monitor.api.reports.row.TimestampRow;
 
-/** Test class for {@linkplain TimestampReport}. */
 @ExtendWith(JaasExtension.class)
 class ProvideTimestampReportAccTest extends AbstractReportAccTest {
 
@@ -100,7 +99,7 @@ class ProvideTimestampReportAccTest extends AbstractReportAccTest {
    * the separation for org level1. Since every OrgLevelRow is a FoldableRow this is sufficient to
    * prove that the separation/grouping by detail mechanism works.
    *
-   * @throws Exception if any error occurs during the test.
+   * @throws Exception if any error occurs during the test
    */
   @WithAccessId(user = "monitor")
   @Test

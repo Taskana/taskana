@@ -16,7 +16,6 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 
-/** Acceptance test for all "query tasks by workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksByWorkbasketAccTest extends AbstractAccTest {
 

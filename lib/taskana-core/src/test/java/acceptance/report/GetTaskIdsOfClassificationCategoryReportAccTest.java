@@ -27,7 +27,6 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
-/** Acceptance test for all "get task ids of category report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class GetTaskIdsOfClassificationCategoryReportAccTest extends AbstractReportAccTest {
 

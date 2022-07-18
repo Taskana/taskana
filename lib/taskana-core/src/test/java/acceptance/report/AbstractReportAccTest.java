@@ -8,7 +8,6 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
-/** Abstract test class for all report building tests. */
 public abstract class AbstractReportAccTest {
 
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;

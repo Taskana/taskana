@@ -7,7 +7,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 
-/** Utility class to enable unit tests to access mappers directly. */
+/** The TaskanaEngineProxy is a utility class to enable unit tests to access mappers directly. */
 public class TaskanaEngineProxy {
 
   private final InternalTaskanaEngine engine;

@@ -7,7 +7,7 @@ import java.util.Objects;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskState;
 
-/** A convenience class to represent pairs of task id and task state. */
+/** The MinimalTaskSummary is a convenience class to represent pairs of task id and task state. */
 public class MinimalTaskSummary {
 
   private String taskId;

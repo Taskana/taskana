@@ -8,7 +8,7 @@ public interface TaskanaJob {
   /**
    * Execute the TaskanaJob.
    *
-   * @throws TaskanaException if any exception occurs during the execution.
+   * @throws TaskanaException if any exception occurs during the execution
    */
   void run() throws TaskanaException;
 }

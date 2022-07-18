@@ -19,7 +19,6 @@ import pro.taskana.task.api.TaskCommentQueryColumnName;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 
-/** Test for TaskComment queries. */
 @ExtendWith(JaasExtension.class)
 class QueryTaskCommentAccTest extends AbstractAccTest {
 

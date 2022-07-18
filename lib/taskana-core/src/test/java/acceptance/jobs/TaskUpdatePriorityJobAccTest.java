@@ -21,7 +21,6 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.internal.jobs.TaskUpdatePriorityJob;
 
-/** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 

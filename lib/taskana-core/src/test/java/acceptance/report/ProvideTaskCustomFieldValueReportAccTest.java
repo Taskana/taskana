@@ -27,7 +27,6 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
-/** Acceptance test for all "classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideTaskCustomFieldValueReportAccTest extends AbstractReportAccTest {
 

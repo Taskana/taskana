@@ -5,7 +5,10 @@ import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.TaskComment;
 
-/** This exception is thrown when a specific {@linkplain TaskComment} is not in the database. */
+/**
+ * The TaskCommentNotFoundException is thrown when a specific {@linkplain TaskComment} is not in the
+ * database.
+ */
 public class TaskCommentNotFoundException extends NotFoundException {
 
   public static final String ERROR_KEY = "TASK_COMMENT_NOT_FOUND";

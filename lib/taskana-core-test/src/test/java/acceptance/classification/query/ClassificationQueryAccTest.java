@@ -14,7 +14,6 @@ import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.security.WithAccessId;
 
-/** Acceptance test for classification queries and authorization. */
 @TaskanaIntegrationTest
 class ClassificationQueryAccTest {
 

@@ -40,7 +40,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/** Test for internal transaction management. */
+/** The TaskanaTransactionIntTest tests internal transaction management. */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
     classes = TaskanaConfigTestApplication.class,

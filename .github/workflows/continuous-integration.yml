@@ -258,6 +258,7 @@ jobs:
           - taskana-loghistory-provider
           - taskana-simplehistory-provider
           - taskana-simplehistory-rest-spring
+          - custom-checkstyle
         database:
           - H2
         include:

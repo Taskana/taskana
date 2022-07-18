@@ -7,7 +7,6 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.SpringTaskanaEngineImpl;
 
-/** This class configures the TaskanaEngineConfiguration for spring. */
 public class SpringTaskanaEngineConfiguration extends TaskanaEngineConfiguration {
 
   public SpringTaskanaEngineConfiguration(

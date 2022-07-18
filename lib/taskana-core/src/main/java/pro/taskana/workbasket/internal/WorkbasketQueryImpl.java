@@ -21,7 +21,6 @@ import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** WorkbasketQuery for generating dynamic SQL. */
 public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   private static final String LINK_TO_MAPPER =

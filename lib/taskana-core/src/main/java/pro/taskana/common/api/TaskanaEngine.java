@@ -147,7 +147,7 @@ public interface TaskanaEngine {
    * Check whether the current user is member of one of the {@linkplain TaskanaRole TaskanaRoles}
    * specified.
    *
-   * @param roles The {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
+   * @param roles the {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
    *     current user
    * @return true if the current user is a member of at least one of the specified {@linkplain
    *     TaskanaRole TaskanaRole}
@@ -158,9 +158,9 @@ public interface TaskanaEngine {
    * Checks whether current user is member of any of the specified {@linkplain TaskanaRole
    * TaskanaRoles}.
    *
-   * @param roles The {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
+   * @param roles the {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
    *     current user
-   * @throws NotAuthorizedException If the current user is not member of any specified {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of any specified {@linkplain
    *     TaskanaRole TaskanaRole}
    */
   void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;

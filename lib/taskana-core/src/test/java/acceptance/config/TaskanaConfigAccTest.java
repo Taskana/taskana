@@ -17,7 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
-/** Test taskana configuration without roles. */
+/** The TaskanaConfigAccTest tests configuration without roles. */
 class TaskanaConfigAccTest {
 
   @TempDir Path tempDir;

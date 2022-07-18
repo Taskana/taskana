@@ -6,9 +6,9 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;
 
 /**
- * This exception is thrown when a {@linkplain Classification} does already exits, but was tried to
- * be created with the same {@linkplain Classification#getId() id} and {@linkplain
- * Classification#getDomain() domain}.
+ * The ClassificationAlreadyExistException is thrown when a {@linkplain Classification} does already
+ * exits, but was tried to be created with the same {@linkplain Classification#getId() id} and
+ * {@linkplain Classification#getDomain() domain}.
  */
 public class ClassificationAlreadyExistException extends TaskanaException {
 

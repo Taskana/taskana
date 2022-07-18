@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * This exception is thrown when a specific {@linkplain Workbasket} does have content and is tried
- * to be deleted.
+ * The WorkbasketInUseException is thrown when a specific {@linkplain Workbasket} does have content
+ * and is tried to be deleted.
  */
 public class WorkbasketInUseException extends TaskanaException {
 

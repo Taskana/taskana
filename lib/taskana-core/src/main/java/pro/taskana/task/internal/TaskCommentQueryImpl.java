@@ -18,7 +18,6 @@ import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
-/** TaskCommentQuery for generating dynamic sql. */
 public class TaskCommentQueryImpl implements TaskCommentQuery {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentQueryImpl.class);

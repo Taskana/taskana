@@ -19,7 +19,7 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
-/** Rest Controller. */
+/** The TaskanaTestController is a Rest Controller. */
 @RestController
 public class TaskanaTestController {
 

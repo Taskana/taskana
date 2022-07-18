@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 
-/** Class to start an Application to test Taskana. */
+/** The TaskanaConfigTestApplication starts an Application to test Taskana. */
 @SpringBootApplication
 @Import(TaskanaConfig.class)
 @SuppressWarnings("checkstyle:hideutilityclassconstructor")

@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.user.api.models.User;
 
 /**
- * This exception is thrown when a specific {@linkplain User} referenced by its {@linkplain
- * User#getId() id} is not in the database.
+ * The UserNotFoundException is thrown when a specific {@linkplain User} referenced by its
+ * {@linkplain User#getId() id} is not in the database.
  */
 public class UserNotFoundException extends NotFoundException {
   public static final String ERROR_KEY = "USER_NOT_FOUND";

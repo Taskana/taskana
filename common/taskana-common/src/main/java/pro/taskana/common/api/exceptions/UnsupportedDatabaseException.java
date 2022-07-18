@@ -3,7 +3,8 @@ package pro.taskana.common.api.exceptions;
 import pro.taskana.common.internal.util.MapCreator;
 
 /**
- * This exception is thrown when the database name doesn't match to one of the desired databases.
+ * The UnsupportedDatabaseException is thrown when the database name doesn't match to one of the
+ * desired databases.
  */
 public class UnsupportedDatabaseException extends TaskanaRuntimeException {
 

@@ -35,8 +35,8 @@ import pro.taskana.common.internal.configuration.TaskanaProperty;
 import pro.taskana.common.internal.util.FileLoaderUtil;
 
 /**
- * This central class creates the TaskanaEngine and holds all the information about DB and Security.
- * <br>
+ * The TaskanaEngineConfiguration is a central class creates the TaskanaEngine and holds all the
+ * information about DB and Security. <br>
  * Security is enabled by default.
  */
 @SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
@@ -256,7 +256,7 @@ public class TaskanaEngineConfiguration {
    * @param jdbcUrl the url to which the jdbc driver connects
    * @param username the user name for database access
    * @param password the password for database access
-   * @return DataSource
+   * @return the DataSource
    */
   public static DataSource createDatasource(
       String driver, String jdbcUrl, String username, String password) {

@@ -28,7 +28,7 @@ import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Job to cleanup completed tasks after a period of time. */
+/** The TaskCleanupJob cleans up completed tasks after a period of time. */
 public class TaskCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
@@ -70,7 +70,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
    * Initializes the TaskCleanupJob schedule. <br>
    * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
    *
-   * @param taskanaEngine the TASKANA engine.
+   * @param taskanaEngine the TASKANA engine
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine) {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();

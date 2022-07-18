@@ -23,7 +23,6 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** Acceptance test for all "create workbasket" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CreateWorkbasketAccTest extends AbstractAccTest {
 

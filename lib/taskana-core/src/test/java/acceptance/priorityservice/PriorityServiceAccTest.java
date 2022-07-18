@@ -25,7 +25,6 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 
-/** Acceptance test for all priority computation scenarios. */
 @Disabled("Until we enable the use of Test-SPI's in only specific tests")
 @ExtendWith(JaasExtension.class)
 class PriorityServiceAccTest extends AbstractAccTest {

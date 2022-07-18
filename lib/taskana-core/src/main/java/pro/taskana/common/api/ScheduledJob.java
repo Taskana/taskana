@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
 
-/** This class holds all data that go into the Job table. */
+/** The ScheduledJob holds all data that go into the Job table. */
 public class ScheduledJob {
 
   Map<String, String> arguments;

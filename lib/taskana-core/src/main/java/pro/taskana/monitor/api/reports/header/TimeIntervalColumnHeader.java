@@ -8,13 +8,13 @@ import java.util.Locale;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 
 /**
- * A TimeIntervalColumnHeader has a lower and an upper age limit which subdivide the count of tasks
- * into different sections. Days in past are represented as negative values and days in the future
- * are represented as positive values. To avoid tasks are counted multiple times or not be listed in
- * the report, these TimeIntervalColumnHeaders should not overlap and should not have gaps. If the
- * TimeIntervalColumnHeader should represent a single day, lowerAgeLimit and upperAgeLimit have to
- * be equal. The outer cluster of a report should have open ends. These open ends are represented
- * with Integer.MIN_VALUE and Integer.MAX_VALUE.
+ * The TimeIntervalColumnHeader has a lower and an upper age limit which subdivide the count of
+ * tasks into different sections. Days in past are represented as negative values and days in the
+ * future are represented as positive values. To avoid tasks are counted multiple times or not be
+ * listed in the report, these TimeIntervalColumnHeaders should not overlap and should not have
+ * gaps. If the TimeIntervalColumnHeader should represent a single day, lowerAgeLimit and
+ * upperAgeLimit have to be equal. The outer cluster of a report should have open ends. These open
+ * ends are represented with Integer.MIN_VALUE and Integer.MAX_VALUE.
  */
 public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
 
@@ -67,7 +67,7 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
     return getDisplayName();
   }
 
-  /** for Date representation. */
+  /** The Date is a TimeIntervalColumnHeader containing a date. */
   public static class Date extends TimeIntervalColumnHeader {
 
     public Date(int ageInDays) {
@@ -82,7 +82,7 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
     }
   }
 
-  /** For representation of Range. */
+  /** The Range is a TimeIntervalColumnHeader containing a range in days. */
   public static class Range extends TimeIntervalColumnHeader {
 
     public Range(int ageInDays) {

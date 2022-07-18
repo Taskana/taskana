@@ -4,8 +4,9 @@ import pro.taskana.monitor.api.reports.ClassificationReport;
 import pro.taskana.monitor.api.reports.item.DetailedMonitorQueryItem;
 
 /**
- * Represents a single Row inside {@linkplain ClassificationReport.DetailedClassificationReport}.
- * The collapsing criteria is the attachement key of each {@linkplain DetailedMonitorQueryItem}.
+ * The DetailedClassificationRow represents a single Row inside {@linkplain
+ * ClassificationReport.DetailedClassificationReport}. The collapsing criteria is the attachement
+ * key of each {@linkplain DetailedMonitorQueryItem}.
  */
 public class DetailedClassificationRow extends FoldableRow<DetailedMonitorQueryItem> {
 

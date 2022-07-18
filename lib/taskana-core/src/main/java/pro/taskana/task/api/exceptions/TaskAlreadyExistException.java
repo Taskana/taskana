@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.Task;
 
 /**
- * This exception is thrown when a {@linkplain Task} is going to be created, but a {@linkplain Task}
- * with the same {@linkplain Task#getExternalId() external id} does already exist.
+ * The TaskAlreadyExistException is thrown when a {@linkplain Task} is going to be created, but a
+ * {@linkplain Task} with the same {@linkplain Task#getExternalId() external id} does already exist.
  */
 public class TaskAlreadyExistException extends TaskanaException {
 

@@ -15,8 +15,8 @@ import pro.taskana.task.api.models.Task;
 /**
  * "Super" Interface for all TimeIntervalReportBuilders.
  *
- * @param <B> the true Builder behind this Interface.
- * @param <I> the AgeQueryItem which will be inserted into the Report.
+ * @param <B> the true Builder behind this Interface
+ * @param <I> the AgeQueryItem which will be inserted into the Report
  * @param <H> the column Header
  */
 public interface TimeIntervalReportBuilder<
@@ -26,8 +26,8 @@ public interface TimeIntervalReportBuilder<
     extends Report.Builder<I, H> {
 
   /**
-   * Adds a list {@linkplain TimeIntervalColumnHeader}s to the Builder to subdivide the {@link
-   * Report} into clusters.
+   * Adds a list {@linkplain TimeIntervalColumnHeader TimeIntervalColumnHeaders} to the Builder to
+   * subdivide the {@link Report} into clusters.
    *
    * @param columnHeaders the column headers the {@linkplain Report} should consist of.
    * @return the TimeIntervalReportBuilder
@@ -43,7 +43,7 @@ public interface TimeIntervalReportBuilder<
 
   /**
    * Adds a list of workbasket ids to the builder. The created {@linkplain Report} contains only
-   * {@linkplain Task}s with a workbasketId in this list.
+   * {@linkplain Task Tasks} with a workbasketId in this list.
    *
    * @param workbasketIds a list of workbasket ids
    * @return the TimeIntervalReportBuilder
@@ -172,8 +172,8 @@ public interface TimeIntervalReportBuilder<
   /**
    * Builds the {@linkplain Report} for the specified {@linkplain TaskTimestamp}.
    *
-   * @param timestamp The {@linkplain TaskTimestamp} of interest
-   * @return The build {@linkplain Report}
+   * @param timestamp the {@linkplain TaskTimestamp} of interest
+   * @return the build {@linkplain Report}
    * @throws NotAuthorizedException if the user has no rights to access the monitor
    * @throws InvalidArgumentException if an error occurs
    */

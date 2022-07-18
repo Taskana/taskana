@@ -6,7 +6,6 @@ import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;
 
-/** Implementation for the short summaries of a classification entity. */
 public class ClassificationSummaryImpl implements ClassificationSummary {
 
   protected String id;

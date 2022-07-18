@@ -5,7 +5,10 @@ import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/** This exception is thrown when a specific {@linkplain Workbasket} is not in the database. */
+/**
+ * The WorkbasketNotFoundException is thrown when a specific {@linkplain Workbasket} is not in the
+ * database.
+ */
 public class WorkbasketNotFoundException extends NotFoundException {
 
   public static final String ERROR_KEY_ID = "WORKBASKET_WITH_ID_NOT_FOUND";

@@ -16,13 +16,13 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 
 /**
- * The DaysToWorkingDaysReportConverter provides a method to convert an age in days into an age in
+ * The WorkingDaysToDaysReportConverter provides a method to convert an age in days into an age in
  * working days. Before the method convertDaysToWorkingDays() can be used, the
  * WorkingDaysToDaysConverter has to be initialized. For a list of {@linkplain
- * TimeIntervalColumnHeader}s the converter creates a "table" with integer that represents the age
- * in days from the largest lower limit until the smallest upper limit of the
- * timeIntervalColumnHeaders. This table is valid for a whole day until the converter is initialized
- * with bigger limits.
+ * TimeIntervalColumnHeader TimeIntervalColumnHeaders} the converter creates a "table" with integer
+ * that represents the age in days from the largest lower limit until the smallest upper limit of
+ * the timeIntervalColumnHeaders. This table is valid for a whole day until the converter is
+ * initialized with bigger limits.
  */
 public class WorkingDaysToDaysReportConverter {
 
@@ -47,13 +47,13 @@ public class WorkingDaysToDaysReportConverter {
   }
 
   /**
-   * Initializes the WorkingDaysToDaysConverter for a list of {@linkplain TimeIntervalColumnHeader}s
-   * and a referenceDate. A new table is only created if there are bigger limits or the date has
-   * changed.
+   * Initializes the WorkingDaysToDaysConverter for a list of {@linkplain TimeIntervalColumnHeader
+   * TimeIntervalColumnHeaders} and a referenceDate. A new table is only created if there are bigger
+   * limits or the date has changed.
    *
-   * @param columnHeaders a list of {@linkplain TimeIntervalColumnHeader}s that determines the size
-   *     of the table
-   * @param converter the converter used by taskana to determine if a specific day is a working day.
+   * @param columnHeaders a list of {@linkplain TimeIntervalColumnHeader TimeIntervalColumnHeaders}
+   *     that determines the size of the table
+   * @param converter the converter used by taskana to determine if a specific day is a working day
    * @param referenceDate a {@linkplain Instant} that represents the current day of the table
    * @return an instance of the WorkingDaysToDaysConverter
    * @throws InvalidArgumentException thrown if columnHeaders or referenceDate is null

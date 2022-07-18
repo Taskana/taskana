@@ -56,7 +56,6 @@ import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
-/** This is the implementation of WorkbasketService. */
 public class WorkbasketServiceImpl implements WorkbasketService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketServiceImpl.class);

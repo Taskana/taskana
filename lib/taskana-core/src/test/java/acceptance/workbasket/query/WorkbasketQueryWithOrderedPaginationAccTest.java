@@ -13,7 +13,6 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Acceptance test for all "query classifications with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)
 class WorkbasketQueryWithOrderedPaginationAccTest extends AbstractAccTest {
 

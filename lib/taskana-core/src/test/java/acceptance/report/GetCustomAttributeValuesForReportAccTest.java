@@ -14,7 +14,6 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskCustomField;
 
-/** Acceptance test for all "classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class GetCustomAttributeValuesForReportAccTest extends AbstractReportAccTest {
 

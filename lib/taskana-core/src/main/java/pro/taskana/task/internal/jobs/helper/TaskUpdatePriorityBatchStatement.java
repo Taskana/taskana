@@ -6,7 +6,10 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Update a lot of priorities for tasks in a performant way without the need to write SQL. */
+/**
+ * The TaskUpdatePriorityBatchStatement updates a lot of priorities for tasks in a performant way
+ * without the need to write SQL.
+ */
 public class TaskUpdatePriorityBatchStatement {
 
   private static final Logger LOGGER =

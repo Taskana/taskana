@@ -17,10 +17,7 @@ import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.task.internal.TaskServiceImpl;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
 
-/**
- * This class executes a job of type {@linkplain
- * pro.taskana.classification.internal.jobs.ClassificationChangedJob}.
- */
+/** The ClassificationChangedJob executes a job of type {@linkplain ClassificationChangedJob}. */
 public class ClassificationChangedJob extends AbstractTaskanaJob {
 
   public static final String CLASSIFICATION_ID = "classificationId";

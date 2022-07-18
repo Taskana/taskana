@@ -31,7 +31,6 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
-/** Acceptance test for all "detailed classification report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideDetailedClassificationReportAccTest extends AbstractReportAccTest {
 

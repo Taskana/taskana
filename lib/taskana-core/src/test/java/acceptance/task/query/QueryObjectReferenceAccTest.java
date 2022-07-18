@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.models.ObjectReference;
 
-/** Acceptance test for all "get classification" scenarios. */
 class QueryObjectReferenceAccTest extends AbstractAccTest {
 
   @Test

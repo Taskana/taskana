@@ -15,7 +15,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * A TimestampReport aggregates {@linkplain Task} related data.
+ * The TimestampReport aggregates {@linkplain Task} related data.
  *
  * <p>Each {@linkplain FoldableRow} represents a {@linkplain TaskTimestamp} and can be expanded to
  * display the four organization levels of the corresponding {@linkplain Workbasket}.

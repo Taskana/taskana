@@ -20,7 +20,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketService;
 
-/** Class to set /load configuration for Taskana Library. */
+/** The TaskanaConfig sets /loads configuration for Taskana Library. */
 @Configuration
 @EnableTransactionManagement()
 public class TaskanaConfig {

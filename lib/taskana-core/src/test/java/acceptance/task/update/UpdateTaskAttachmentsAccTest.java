@@ -30,10 +30,6 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/**
- * Acceptance test for the usecase of adding/removing an attachment of a task and update the result
- * correctly.
- */
 @ExtendWith(JaasExtension.class)
 class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 

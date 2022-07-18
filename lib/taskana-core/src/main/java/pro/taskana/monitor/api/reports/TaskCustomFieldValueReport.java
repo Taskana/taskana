@@ -14,7 +14,7 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.Task;
 
 /**
- * A TaskCustomFieldValueReport aggregates {@linkplain Task} related data.
+ * The TaskCustomFieldValueReport aggregates {@linkplain Task} related data.
  *
  * <p>Each {@linkplain Row} represents a value of the requested {@linkplain TaskCustomField}.
  *

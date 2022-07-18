@@ -21,7 +21,10 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** Handles all operations on secondary {@link ObjectReference}s. */
+/**
+ * The ObjectReferenceHandler handles all operations on secondary {@link ObjectReference
+ * ObjectReferences}.
+ */
 public class ObjectReferenceHandler {
   private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceHandler.class);
   private final ObjectReferenceMapper objectReferenceMapper;

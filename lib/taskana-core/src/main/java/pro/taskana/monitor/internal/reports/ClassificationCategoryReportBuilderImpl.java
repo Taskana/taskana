@@ -15,7 +15,6 @@ import pro.taskana.monitor.api.reports.item.MonitorQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 
-/** The implementation of CategoryReportBuilder. */
 public class ClassificationCategoryReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, MonitorQueryItem, TimeIntervalColumnHeader>
     implements ClassificationCategoryReport.Builder {

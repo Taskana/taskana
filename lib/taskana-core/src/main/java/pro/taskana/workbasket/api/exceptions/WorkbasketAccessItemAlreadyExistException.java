@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /**
- * This exception is thrown when an already existing {@linkplain WorkbasketAccessItem} was tried to
- * be created.
+ * The WorkbasketAccessItemAlreadyExistException is thrown when an already existing {@linkplain
+ * WorkbasketAccessItem} was tried to be created.
  */
 public class WorkbasketAccessItemAlreadyExistException extends TaskanaException {
 

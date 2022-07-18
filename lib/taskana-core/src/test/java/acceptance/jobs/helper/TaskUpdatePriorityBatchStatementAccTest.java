@@ -13,7 +13,6 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityBatchStatement;
 
-/** Acceptance test for all "jobs tasks runner" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TaskUpdatePriorityBatchStatementAccTest extends AbstractAccTest {
 

@@ -13,7 +13,6 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** Acceptance test for all "set workbasket access item" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 

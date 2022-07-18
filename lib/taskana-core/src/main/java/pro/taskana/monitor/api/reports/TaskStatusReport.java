@@ -14,7 +14,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * A TaskStatusReport aggregates {@linkplain Task} related data.
+ * The TaskStatusReport aggregates {@linkplain Task} related data.
  *
  * <p>Each {@linkplain Row} represents a {@linkplain Workbasket}.
  *

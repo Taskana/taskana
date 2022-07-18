@@ -12,7 +12,6 @@ import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
 
-/** Acceptance test for all "get workbasket authorizations" scenarios. */
 @ExtendWith(JaasExtension.class)
 class GetWorkbasketAuthorizationsAccTest extends AbstractAccTest {
 

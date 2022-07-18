@@ -26,7 +26,6 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Acceptance test for all "query workbasket by permission" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryWorkbasketAccTest extends AbstractAccTest {
 

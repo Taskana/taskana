@@ -10,8 +10,8 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /**
- * Interface for TaskSummary. This is a specific short model-object which only contains the most
- * important information.
+ * The TaskSummary is a specific short model-object which only contains the most important
+ * information.
  */
 public interface TaskSummary {
 
@@ -172,7 +172,8 @@ public interface TaskSummary {
   void addSecondaryObjectReference(ObjectReference objectReference);
 
   /**
-   * Add an {@linkplain ObjectReference} to the List of secondary {@linkplain ObjectReference}s.<br>
+   * Add an {@linkplain ObjectReference} to the List of secondary {@linkplain ObjectReference
+   * ObjectReferences}.<br>
    * NULL will be ignored and an ObjectReference with the same {@linkplain ObjectReference#getId()
    * id} will be replaced by the newer one. <br>
    *
@@ -268,7 +269,7 @@ public interface TaskSummary {
    *
    * @param customField identifies which {@linkplain TaskCustomField} is requested
    * @return the value for the given customField
-   * @deprecated Use {@linkplain #getCustomField(TaskCustomField)} instead
+   * @deprecated use {@linkplain #getCustomField(TaskCustomField)} instead
    */
   @Deprecated
   String getCustomAttribute(TaskCustomField customField);

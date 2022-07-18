@@ -11,7 +11,6 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.test.security.JaasExtension;
 
-/** Acceptance test for all "query classifications with pagination" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryClassificationWithPaginationAccTest extends AbstractAccTest {
 

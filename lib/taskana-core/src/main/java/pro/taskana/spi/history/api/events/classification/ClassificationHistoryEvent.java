@@ -8,7 +8,7 @@ import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;
 
-/** Super class for all classification related events. */
+/** The ClassificationHistoryEvent is the super class for all classification related events. */
 public class ClassificationHistoryEvent {
 
   protected String id;

@@ -22,7 +22,6 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.WorkbasketType;
 
-/** Acceptance test for all "workbasket priority report" scenarios. */
 @ExtendWith(JaasExtension.class)
 class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
 

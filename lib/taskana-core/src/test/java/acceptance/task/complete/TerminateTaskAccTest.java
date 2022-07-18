@@ -18,7 +18,6 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.models.TaskSummary;
 
-/** Acceptance tests for "terminate task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class TerminateTaskAccTest extends AbstractAccTest {
 

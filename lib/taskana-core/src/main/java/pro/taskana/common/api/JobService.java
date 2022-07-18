@@ -2,7 +2,10 @@ package pro.taskana.common.api;
 
 import pro.taskana.common.internal.jobs.TaskanaJob;
 
-/** Service to manage the {@linkplain TaskanaJob TaskanaJobs}. */
+/**
+ * The JobService manages the {@linkplain TaskanaJob TaskanaJobs} and controls all related
+ * activities.
+ */
 public interface JobService {
 
   /**

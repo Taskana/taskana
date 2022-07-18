@@ -15,8 +15,8 @@ import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.models.Task;
 
 /**
- * Loads TaskRoutingProvider SPI implementation(s) and passes requests to determine workbasketids to
- * them.
+ * The TaskRoutingManager loads TaskRoutingProvider SPI implementation(s) and passes requests to
+ * determine workbasketids to them.
  */
 public final class TaskRoutingManager {
 
@@ -41,8 +41,8 @@ public final class TaskRoutingManager {
    * null is returned, otherwise we return the workbasketId that was returned from the
    * TaskRoutingProviders.
    *
-   * @param task the task for which a workbasketId is to be determined.
-   * @return the id of the workbasket in which the task is to be created.
+   * @param task the task for which a workbasketId is to be determined
+   * @return the id of the workbasket in which the task is to be created
    */
   public String determineWorkbasketId(Task task) {
     String workbasketId = null;

@@ -24,7 +24,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
-/** check classes with a custom equals and hashcode implementation for correctness. */
 class PojoTest {
 
   private static final List<Class<?>> POJO_CLASSES = getPojoClasses();

@@ -37,7 +37,6 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** Acceptance test for all "update task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class UpdateTaskAccTest extends AbstractAccTest {
 

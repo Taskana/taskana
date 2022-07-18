@@ -5,7 +5,7 @@ import pro.taskana.common.api.exceptions.NotFoundException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.Task;
 
-/** This exception is thrown when a specific {@linkplain Task} is not in the database. */
+/** The TaskNotFoundException is thrown when a specific {@linkplain Task} is not in the database. */
 public class TaskNotFoundException extends NotFoundException {
 
   public static final String ERROR_KEY = "TASK_NOT_FOUND";

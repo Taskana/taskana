@@ -6,8 +6,8 @@ import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * This exception is thrown when a {@linkplain Workbasket}, which was {@linkplain
- * Workbasket#isMarkedForDeletion() marked for deletion}, could not be deleted.
+ * The WorkbasketMarkedForDeletionException is thrown when a {@linkplain Workbasket}, which was
+ * {@linkplain Workbasket#isMarkedForDeletion() marked for deletion}, could not be deleted.
  */
 public class WorkbasketMarkedForDeletionException extends TaskanaException {
 

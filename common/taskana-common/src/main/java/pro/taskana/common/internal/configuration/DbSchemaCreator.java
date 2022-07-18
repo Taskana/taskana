@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.internal.util.ComparableVersion;
 
-/** This class create the schema for taskana. */
+/** The DbSchemaCreator creates the schema for taskana. */
 public class DbSchemaCreator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
@@ -51,7 +51,7 @@ public class DbSchemaCreator {
   /**
    * Run all db scripts.
    *
-   * @throws SQLException will be thrown if there will be some incorrect SQL statements invoked.
+   * @throws SQLException will be thrown if there will be some incorrect SQL statements invoked
    */
   public void run() throws SQLException {
     try (Connection connection = dataSource.getConnection()) {

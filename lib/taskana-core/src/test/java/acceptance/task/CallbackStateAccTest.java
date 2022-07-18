@@ -27,7 +27,6 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CallbackStateAccTest extends AbstractAccTest {
 

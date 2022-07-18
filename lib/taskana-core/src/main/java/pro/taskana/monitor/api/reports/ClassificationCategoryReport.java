@@ -14,7 +14,7 @@ import pro.taskana.monitor.api.reports.row.Row;
 import pro.taskana.task.api.models.Task;
 
 /**
- * A ClassificationCategoryReport aggregates {@linkplain Task} related data.
+ * The ClassificationCategoryReport aggregates {@linkplain Task} related data.
  *
  * <p>Each {@linkplain Row} represents a {@linkplain Classification} {@linkplain
  * Classification#getCategory() category}.

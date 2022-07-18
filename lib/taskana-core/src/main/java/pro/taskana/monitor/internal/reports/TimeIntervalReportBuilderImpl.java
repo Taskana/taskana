@@ -23,13 +23,6 @@ import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverte
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskState;
 
-/**
- * Implementation of {@linkplain TimeIntervalReportBuilder}.
- *
- * @param <B> the true Builder behind this Interface
- * @param <I> the true AgeQueryItem inside the Report
- * @param <H> the column header
- */
 abstract class TimeIntervalReportBuilderImpl<
         B extends TimeIntervalReportBuilder<B, I, H>,
         I extends AgeQueryItem,

@@ -18,7 +18,6 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
-/** Acceptance test for all "delete classification" scenarios. */
 @ExtendWith(JaasExtension.class)
 class DeleteClassificationAccTest extends AbstractAccTest {
 

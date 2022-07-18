@@ -1,6 +1,6 @@
 package pro.taskana.common.api.exceptions;
 
-/** This exception is thrown when a method is called with an invalid argument. */
+/** The InvalidArgumentException is thrown when a method is called with an invalid argument. */
 public class InvalidArgumentException extends TaskanaException {
 
   public static final String ERROR_KEY = "INVALID_ARGUMENT";

@@ -32,7 +32,6 @@ import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketExcep
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
-/** TaskQuery for generating dynamic sql. */
 public class TaskQueryImpl implements TaskQuery {
 
   private static final String LINK_TO_MAPPER =

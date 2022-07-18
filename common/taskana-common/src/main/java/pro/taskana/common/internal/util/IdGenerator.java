@@ -2,7 +2,7 @@ package pro.taskana.common.internal.util;
 
 import java.util.UUID;
 
-/** This class contains util methods for generating ids. */
+/** The IdGenerator contains util methods for generating ids. */
 public final class IdGenerator {
 
   public static final String ID_PREFIX_CLASSIFICATION = "CLI";

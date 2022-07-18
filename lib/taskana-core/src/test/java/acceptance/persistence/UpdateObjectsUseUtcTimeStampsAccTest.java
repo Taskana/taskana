@@ -31,7 +31,6 @@ import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** Acceptance test for access to timestamps from different timezones. */
 @ExtendWith(JaasExtension.class)
 class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
 

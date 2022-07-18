@@ -2,7 +2,7 @@ package pro.taskana.sampledata;
 
 import java.util.stream.Stream;
 
-/** Provides a sample data set. */
+/** The SampleDataProvider provides scripts to create test and sample data. */
 public final class SampleDataProvider {
 
   static final String TEST_TASK = "/sql/test-data/task.sql";

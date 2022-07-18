@@ -30,7 +30,7 @@ import pro.taskana.task.internal.models.AttachmentSummaryImpl;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** This class handles service level manipulations. */
+/** The ServiceLevelHandler handles service level manipulations. */
 class ServiceLevelHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceLevelHandler.class);
@@ -324,7 +324,7 @@ class ServiceLevelHandler {
    * @param task the task for the difference between planned and due must be duration
    * @param duration the serviceLevel for the task
    * @param calcPlanned the planned timestamp that was calculated based on due and duration
-   * @throws InvalidArgumentException if service level is violated.
+   * @throws InvalidArgumentException if service level is violated
    */
   private void ensureServiceLevelIsNotViolated(
       TaskImpl task, Duration duration, Instant calcPlanned) throws InvalidArgumentException {

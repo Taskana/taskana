@@ -8,8 +8,8 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 
 /**
- * This exception is thrown when the {@linkplain Task#getState() state} of the {@linkplain Task}
- * doesn't allow the requested operation.
+ * The InvalidTaskStateException is thrown when the {@linkplain Task#getState() state} of the
+ * {@linkplain Task} doesn't allow the requested operation.
  */
 public class InvalidTaskStateException extends InvalidStateException {
 

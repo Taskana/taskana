@@ -21,7 +21,7 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 
-/** This class is the mybatis mapping of task. */
+/** The TaskMapper contains the mybatis mapping of task. */
 @SuppressWarnings("checkstyle:LineLength")
 public interface TaskMapper {
 

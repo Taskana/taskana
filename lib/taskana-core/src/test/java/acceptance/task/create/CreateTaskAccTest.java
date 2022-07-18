@@ -43,7 +43,6 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
-/** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class CreateTaskAccTest extends AbstractAccTest {
 

@@ -20,13 +20,8 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 
-/** Acceptance test for all "get task" scenarios. */
 @ExtendWith(JaasExtension.class)
 class GetTaskAccTest extends AbstractAccTest {
-
-  GetTaskAccTest() {
-    super();
-  }
 
   @WithAccessId(user = "user-1-1")
   @Test

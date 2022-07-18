@@ -6,10 +6,10 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;
 
 /**
- * This exception is thrown when the {@linkplain Classification#getServiceLevel() service level} of
- * the {@linkplain Classification} has not the required format. The {@linkplain
- * Classification#getServiceLevel() service level} has to be a positive ISO-8601 duration format and
- * TASKANA only supports whole days. The format must be 'PnD'.
+ * The MalformedServiceLevelException is thrown when the {@linkplain
+ * Classification#getServiceLevel() service level} of the {@linkplain Classification} has not the
+ * required format. The {@linkplain Classification#getServiceLevel() service level} has to be a
+ * positive ISO-8601 duration format and TASKANA only supports whole days. The format must be 'PnD'.
  */
 public class MalformedServiceLevelException extends TaskanaException {
 

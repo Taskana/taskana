@@ -3,8 +3,8 @@ package pro.taskana.common.api.exceptions;
 import pro.taskana.common.internal.util.MapCreator;
 
 /**
- * This exception is thrown when an attempt is made to update an object that has already been
- * updated by another user.
+ * The ConcurrencyException is thrown when an attempt is made to update an object that has already
+ * been updated by another user.
  */
 public class ConcurrencyException extends TaskanaException {
 

@@ -9,8 +9,8 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
- * This exception is thrown when the current user does not have a certain {@linkplain
- * WorkbasketPermission permission} on a {@linkplain Workbasket}.
+ * The MismatchedWorkbasketPermissionException is thrown when the current user does not have a
+ * certain {@linkplain WorkbasketPermission permission} on a {@linkplain Workbasket}.
  */
 public class MismatchedWorkbasketPermissionException extends NotAuthorizedException {
 

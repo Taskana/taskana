@@ -30,7 +30,7 @@ import pro.taskana.task.internal.TaskServiceImpl;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.user.api.models.User;
 
-/** Base class for all acceptance tests. */
+/** The AbstractAccTest is the base class for all acceptance tests. */
 public abstract class AbstractAccTest {
 
   public static final String GROUP_1_DN =

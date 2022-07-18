@@ -9,17 +9,19 @@ import pro.taskana.task.api.models.TaskComment;
 public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQueryColumnName> {
 
   /**
-   * Filter for {@linkplain TaskComment}s which are containing one of the given taskCommentIds.
+   * Filter for {@linkplain TaskComment TaskComments} which are containing one of the given
+   * taskCommentIds.
    *
-   * @param taskCommentIds The ids of the searched-for {@linkplain TaskComment}s.
+   * @param taskCommentIds the ids of the searched-for {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery idIn(String... taskCommentIds);
 
   /**
-   * Filter for {@linkplain TaskComment}s which are containing non of the given taskCommentIds.
+   * Filter for {@linkplain TaskComment TaskComments} which are containing non of the given
+   * taskCommentIds.
    *
-   * @param taskCommentIds The ids of the searched-for {@linkplain TaskComment}s.
+   * @param taskCommentIds the ids of the searched-for {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery idNotIn(String... taskCommentIds);
@@ -28,7 +30,7 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * Add your taskCommentIds for pattern matching to your query. It will be compared in SQL with a
    * LIKE. If you use a wildcard like % then it will be transmitted to the database.
    *
-   * @param taskCommentIds The ids of the searched-for {@linkplain TaskComment}s.
+   * @param taskCommentIds the ids of the searched-for {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery idLike(String... taskCommentIds);
@@ -38,7 +40,7 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * will be compared in SQL with a LIKE. If you use a wildcard like % then it will be transmitted
    * to the database.
    *
-   * @param taskCommentIds The ids of the searched-for {@linkplain TaskComment}s.
+   * @param taskCommentIds the ids of the searched-for {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery idNotLike(String... taskCommentIds);
@@ -74,7 +76,7 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
   /**
    * Add the UserIds of the creator to your query.
    *
-   * @param creators of the queried {@linkplain TaskComment}s
+   * @param creators of the queried {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery creatorIn(String... creators);
@@ -82,7 +84,7 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
   /**
    * Add the UserIds of the creator to your query, which should not be contained.
    *
-   * @param creators of the queried {@linkplain TaskComment}s
+   * @param creators of the queried {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery creatorNotIn(String... creators);
@@ -92,7 +94,7 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param creators of the queried {@linkplain TaskComment}s
+   * @param creators of the queried {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery creatorLike(String... creators);
@@ -102,7 +104,7 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * contained. It will be compared in SQL with the LIKE operator. You may use a wildcard like % to
    * specify the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param creators of the queried {@linkplain TaskComment}s
+   * @param creators of the queried {@linkplain TaskComment TaskComments}
    * @return the query
    */
   TaskCommentQuery creatorNotLike(String... creators);
@@ -158,8 +160,8 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
   /**
    * This method sorts the query result according to the created timestamp.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   TaskCommentQuery orderByCreated(SortDirection sortDirection);
@@ -167,8 +169,8 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
   /**
    * This method sorts the query result according to the modified timestamp.
    *
-   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
-   *     If sortDirection is null, the result is sorted in ascending order
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is null, the result is sorted in ascending order
    * @return the query
    */
   TaskCommentQuery orderByModified(SortDirection sortDirection);

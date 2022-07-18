@@ -18,7 +18,7 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
 
 /**
- * A ClassificationReport aggregates {@linkplain Task} related data.
+ * The ClassificationReport aggregates {@linkplain Task} related data.
  *
  * <p>Each {@linkplain Row} represents a {@linkplain Classification}.
  *
@@ -44,8 +44,8 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
     /**
      * Returns a {@linkplain DetailedClassificationReport} containing all tasks after applying the
      * filters. If the column headers are set the report is subdivided into clusters. Its {@link
-     * FoldableRow}s contain an additional list of {@linkplain Row}s for the classifications of the
-     * attachments of the tasks.
+     * FoldableRow FoldableRows} contain an additional list of {@linkplain Row Rows} for the
+     * classifications of the attachments of the tasks.
      *
      * @return the DetailedClassificationReport
      * @throws InvalidArgumentException if the column headers are not initialized
@@ -59,10 +59,10 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
   }
 
   /**
-   * A DetailedClassificationReport aggregates {@linkplain Task} related data.
+   * The DetailedClassificationReport aggregates {@linkplain Task} related data.
    *
    * <p>Each {@linkplain FoldableRow} represents a {@linkplain Classification} and can be expanded
-   * to show the {@linkplain Classification} of {@linkplain Attachment}s.
+   * to show the {@linkplain Classification} of {@linkplain Attachment Attachments}.
    *
    * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TimeInterval}.
    */

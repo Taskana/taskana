@@ -22,7 +22,6 @@ import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.DaysToWorkingDaysReportPreProcessor;
 import pro.taskana.task.api.TaskState;
 
-/** The implementation of {@linkplain TimestampReport.Builder}. */
 public class TimestampReportBuilderImpl
     extends TimeIntervalReportBuilderImpl<Builder, TimestampQueryItem, TimeIntervalColumnHeader>
     implements TimestampReport.Builder {

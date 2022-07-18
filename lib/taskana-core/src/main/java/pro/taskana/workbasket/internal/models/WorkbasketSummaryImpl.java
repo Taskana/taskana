@@ -7,7 +7,6 @@ import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** This entity contains the most important information about a workbasket. */
 public class WorkbasketSummaryImpl implements WorkbasketSummary {
 
   protected String id;

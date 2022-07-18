@@ -10,7 +10,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.user.api.models.User;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Task-Interface to specify the model of a Task. */
+/** The Task specifies the model of a task. */
 public interface Task extends TaskSummary {
 
   /**
@@ -127,7 +127,7 @@ public interface Task extends TaskSummary {
    *
    * @param customField identifies which {@linkplain TaskCustomField customField} is to be set
    * @param value the value of the {@linkplain TaskCustomField customField} to be set
-   * @deprecated Use {@linkplain #setCustomField(TaskCustomField, String)} instead
+   * @deprecated use {@linkplain #setCustomField(TaskCustomField, String)} instead
    */
   @Deprecated
   void setCustomAttribute(TaskCustomField customField, String value);
@@ -135,7 +135,7 @@ public interface Task extends TaskSummary {
   /**
    * Sets the value for the specified {@linkplain TaskCustomField customField}.
    *
-   * @param customField identifies which {@linkplain TaskCustomField customField} is to be set.
+   * @param customField identifies which {@linkplain TaskCustomField customField} is to be set
    * @param value the value of the {@linkplain TaskCustomField customField} to be set
    */
   void setCustomField(TaskCustomField customField, String value);
@@ -161,7 +161,7 @@ public interface Task extends TaskSummary {
   /**
    * Sets the associated businessProcessId.
    *
-   * @param businessProcessId Sets the businessProcessId the Task belongs to.
+   * @param businessProcessId sets the businessProcessId the Task belongs to
    */
   void setBusinessProcessId(String businessProcessId);
 
@@ -202,7 +202,7 @@ public interface Task extends TaskSummary {
   /**
    * Sets/Changing the custom note for this Task.
    *
-   * @param note the custom note for this Task.
+   * @param note the custom note for this Task
    */
   void setNote(String note);
 
@@ -219,9 +219,9 @@ public interface Task extends TaskSummary {
    * no match.<br>
    * The changed Task need to be updated calling the {@linkplain TaskService#updateTask(Task)}.
    *
-   * @param attachmentID ID of the {@linkplain Attachment attachment} which should be removed.
+   * @param attachmentID id of the {@linkplain Attachment attachment} which should be removed
    * @return {@linkplain Attachment attachment} which will be removed after updating OR null if
-   *     there was no match.
+   *     there was no match
    */
   Attachment removeAttachment(String attachmentID);
 
@@ -234,7 +234,7 @@ public interface Task extends TaskSummary {
 
   /**
    * Duplicates this Task without the internal and external id. All referenced {@linkplain
-   * Attachment}s and {@linkplain ObjectReference}s are copied as well.
+   * Attachment Attachments} and {@linkplain ObjectReference ObjectReferences} are copied as well.
    *
    * @return a copy of this Task
    */
