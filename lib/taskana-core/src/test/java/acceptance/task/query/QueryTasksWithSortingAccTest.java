@@ -534,7 +534,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
                   .hasSizeGreaterThan(2)
                   .extracting(t -> t.getCustomIntField(s))
                   .filteredOn(Objects::nonNull)
-                  .isSortedAccordingTo(Integer::compareTo);
+                  .isSorted();
             });
       }
 
@@ -552,7 +552,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
                   taskanaEngine
                       .getTaskService()
                       .createTaskQuery()
-                      .orderByCustomIntAttribute(s, ASCENDING)
+                      .orderByCustomIntAttribute(s, DESCENDING)
                       .list();
 
               assertThat(results)

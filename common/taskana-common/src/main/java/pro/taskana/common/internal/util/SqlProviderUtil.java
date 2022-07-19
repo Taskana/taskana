@@ -24,7 +24,7 @@ public class SqlProviderUtil {
         .append("</when>")
         .append("<otherwise>0=1</otherwise>")
         .append("</choose>");
-    if (column.contains("t.CUSTOM_") && !column.contains("INT")) {
+    if (column.matches("t.CUSTOM_\\d+")) {
       sb.append("<if test='" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
     }
     return sb.append(")</if> ");
@@ -47,7 +47,7 @@ public class SqlProviderUtil {
         .append("</when>")
         .append("<otherwise>1=1</otherwise>")
         .append("</choose>");
-    if (column.contains("t.CUSTOM_") && !column.contains("INT")) {
+    if (column.matches("t.CUSTOM_\\d+")) {
       sb.append("<if test='" + collection + "ContainsNull'> AND " + column + " IS NOT NULL </if>");
       sb.append("<if test='!" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
     }

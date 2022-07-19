@@ -8,8 +8,8 @@ import java.util.Objects;
  */
 public class IntInterval {
 
-  private Integer begin;
-  private Integer end;
+  private final Integer begin;
+  private final Integer end;
 
   public IntInterval(Integer begin, Integer end) {
     this.begin = begin;
@@ -28,16 +28,8 @@ public class IntInterval {
     return begin;
   }
 
-  public void setBegin(Integer begin) {
-    this.begin = begin;
-  }
-
   public Integer getEnd() {
     return end;
-  }
-
-  public void setEnd(Integer end) {
-    this.end = end;
   }
 
   @Override

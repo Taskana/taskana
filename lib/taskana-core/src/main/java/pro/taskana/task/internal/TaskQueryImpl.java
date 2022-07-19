@@ -287,8 +287,6 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean custom16NotInContainsNull;
   private String[] custom16Like;
   private String[] custom16NotLike;
-  // endregion
-  // region customIntAttributes
   private Integer[] customInt1In;
   private Integer[] customInt1NotIn;
   private IntInterval[] customInt1Within;
@@ -1688,35 +1686,30 @@ public class TaskQueryImpl implements TaskQuery {
       throw new InvalidArgumentException(
           "At least one Integer has to be provided as a search parameter");
     }
-    List<Integer> conditionList = new ArrayList<>(Arrays.asList(values));
-    boolean containsNull = conditionList.contains(null);
-    if (containsNull) {
-      conditionList.remove(null);
-    }
     switch (customIntField) {
       case CUSTOM_INT_1:
-        this.customInt1NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt1NotIn = values;
         break;
       case CUSTOM_INT_2:
-        this.customInt2NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt2NotIn = values;
         break;
       case CUSTOM_INT_3:
-        this.customInt3NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt3NotIn = values;
         break;
       case CUSTOM_INT_4:
-        this.customInt4NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt4NotIn = values;
         break;
       case CUSTOM_INT_5:
-        this.customInt5NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt5NotIn = values;
         break;
       case CUSTOM_INT_6:
-        this.customInt6NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt6NotIn = values;
         break;
       case CUSTOM_INT_7:
-        this.customInt7NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt7NotIn = values;
         break;
       case CUSTOM_INT_8:
-        this.customInt8NotIn = conditionList.toArray(new Integer[0]);
+        this.customInt8NotIn = values;
         break;
       default:
         throw new SystemException("Unknown custom int field '" + customIntField + "'");
@@ -1732,36 +1725,30 @@ public class TaskQueryImpl implements TaskQuery {
           "At least one Integer has to be provided as a search parameter");
     }
 
-    List<Integer> conditionList = new ArrayList<>(Arrays.asList(values));
-    boolean containsNull = conditionList.contains(null);
-    if (containsNull) {
-      conditionList.remove(null);
-    }
-
     switch (customIntField) {
       case CUSTOM_INT_1:
-        this.customInt1In = conditionList.toArray(new Integer[0]);
+        this.customInt1In = values;
         break;
       case CUSTOM_INT_2:
-        this.customInt2In = conditionList.toArray(new Integer[0]);
+        this.customInt2In = values;
         break;
       case CUSTOM_INT_3:
-        this.customInt3In = conditionList.toArray(new Integer[0]);
+        this.customInt3In = values;
         break;
       case CUSTOM_INT_4:
-        this.customInt4In = conditionList.toArray(new Integer[0]);
+        this.customInt4In = values;
         break;
       case CUSTOM_INT_5:
-        this.customInt5In = conditionList.toArray(new Integer[0]);
+        this.customInt5In = values;
         break;
       case CUSTOM_INT_6:
-        this.customInt6In = conditionList.toArray(new Integer[0]);
+        this.customInt6In = values;
         break;
       case CUSTOM_INT_7:
-        this.customInt7In = conditionList.toArray(new Integer[0]);
+        this.customInt7In = values;
         break;
       case CUSTOM_INT_8:
-        this.customInt8In = conditionList.toArray(new Integer[0]);
+        this.customInt8In = values;
         break;
       default:
         throw new SystemException("Unknown custom int attribute '" + customIntField + "'");

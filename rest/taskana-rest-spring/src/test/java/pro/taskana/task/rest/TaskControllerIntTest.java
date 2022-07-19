@@ -182,6 +182,81 @@ class TaskControllerIntTest {
   }
 
   @TestFactory
+  Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldFrom() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-from=%s",
+                      i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldFromAndTo() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-from=-1&custom-int-%s-to=123",
+                      i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldTo() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-to=%s",
+                      i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
   Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldNotIn() {
     List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
     ThrowingConsumer<Integer> test =
@@ -229,9 +304,10 @@ class TaskControllerIntTest {
           assertThatThrownBy(httpCall)
               .isInstanceOf(HttpStatusCodeException.class)
               .hasMessageContaining(
-                  "provided length of the property 'custom-int-"
-                      + i
-                      + "-within' is not dividable by 2")
+                  String.format(
+                      "provided length of the property 'custom-int-%s-within' is not dividable by"
+                          + " 2",
+                      i))
               .extracting(HttpStatusCodeException.class::cast)
               .extracting(HttpStatusCodeException::getStatusCode)
               .isEqualTo(HttpStatus.BAD_REQUEST);
@@ -262,9 +338,11 @@ class TaskControllerIntTest {
           assertThatThrownBy(httpCall)
               .isInstanceOf(HttpStatusCodeException.class)
               .hasMessageContaining(
-                  "Each interval in 'custom-int-"
-                      + i
-                      + "-within' shouldn't consist of two 'null' values")
+                  String.format(
+                      "Each interval in 'custom-int-"
+                          + i
+                          + "-within' shouldn't consist of two 'null' values",
+                      i))
               .extracting(HttpStatusCodeException.class::cast)
               .extracting(HttpStatusCodeException::getStatusCode)
               .isEqualTo(HttpStatus.BAD_REQUEST);

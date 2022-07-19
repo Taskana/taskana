@@ -9,8 +9,8 @@ import java.util.Objects;
  */
 public class TimeInterval {
 
-  private Instant begin;
-  private Instant end;
+  private final Instant begin;
+  private final Instant end;
 
   public TimeInterval(Instant begin, Instant end) {
     this.begin = begin;
@@ -38,16 +38,8 @@ public class TimeInterval {
     return begin;
   }
 
-  public void setBegin(Instant begin) {
-    this.begin = begin;
-  }
-
   public Instant getEnd() {
     return end;
-  }
-
-  public void setEnd(Instant end) {
-    this.end = end;
   }
 
   @Override
