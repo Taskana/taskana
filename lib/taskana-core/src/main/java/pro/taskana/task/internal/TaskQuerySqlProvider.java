@@ -8,14 +8,15 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereCustomIntStatements;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereCustomStatements;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereInInterval;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotInInterval;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotLike;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import pro.taskana.common.internal.util.SqlProviderUtil;
 import pro.taskana.task.api.TaskQueryColumnName;
 
 public class TaskQuerySqlProvider {
@@ -283,21 +284,23 @@ public class TaskQuerySqlProvider {
 
   private static String db2selectFields() {
     // needs to be the same order as the commonSelectFields (TaskQueryColumnValue)
-    return "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME,"
-        + " CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE,"
-        + " CLASSIFICATION_CATEGORY, TCLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID,"
-        + " WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER,"
-        + " POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ,"
-        + " IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6,"
-        + " CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13,"
-        + " CUSTOM_14, CUSTOM_15, CUSTOM_16, CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3,"
-        + " CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8 <if"
-        + " test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if><if"
-        + " test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">,"
-        + " ACNAME</if><if test=\"addAttachmentColumnsToSelectClauseForOrdering\">,"
-        + " ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED</if><if"
-        + " test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if><if"
-        + " test=\"joinWithUserInfo\">, ULONG_NAME </if>";
+    return "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, "
+        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, CLASSIFICATION_CATEGORY, "
+        + "TCLASSIFICATION_KEY, CLASSIFICATION_ID, "
+        + "WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, "
+        + "BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, "
+        + "POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, "
+        + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
+        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, "
+        + "CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3,  CUSTOM_INT_4,  CUSTOM_INT_5, "
+        + "CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8"
+        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if>"
+        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME</if>"
+        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
+        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED"
+        + "</if>"
+        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if>"
+        + "<if test=\"joinWithUserInfo\">, ULONG_NAME </if>";
   }
 
   private static String checkForAuthorization() {
@@ -421,22 +424,22 @@ public class TaskQuerySqlProvider {
     whereLike("noteLike", "t.NOTE", sb);
     whereNotLike("noteNotLike", "t.NOTE", sb);
 
-    SqlProviderUtil.whereInInterval("attachmentReceivedWithin", "a.RECEIVED", sb);
-    SqlProviderUtil.whereNotInInterval("attachmentReceivedNotWithin", "a.RECEIVED", sb);
-    SqlProviderUtil.whereInInterval("claimedWithin", "t.CLAIMED", sb);
-    SqlProviderUtil.whereNotInInterval("claimedNotWithin", "t.CLAIMED", sb);
-    SqlProviderUtil.whereInInterval("completedWithin", "t.COMPLETED", sb);
-    SqlProviderUtil.whereNotInInterval("completedNotWithin", "t.COMPLETED", sb);
-    SqlProviderUtil.whereInInterval("createdWithin", "t.CREATED", sb);
-    SqlProviderUtil.whereNotInInterval("createdNotWithin", "t.CREATED", sb);
-    SqlProviderUtil.whereInInterval("dueWithin", "t.DUE", sb);
-    SqlProviderUtil.whereNotInInterval("dueNotWithin", "t.DUE", sb);
-    SqlProviderUtil.whereInInterval("modifiedWithin", "t.MODIFIED", sb);
-    SqlProviderUtil.whereNotInInterval("modifiedNotWithin", "t.MODIFIED", sb);
-    SqlProviderUtil.whereInInterval("plannedWithin", "t.PLANNED", sb);
-    SqlProviderUtil.whereNotInInterval("plannedNotWithin", "t.PLANNED", sb);
-    SqlProviderUtil.whereInInterval("receivedWithin", "t.RECEIVED", sb);
-    SqlProviderUtil.whereNotInInterval("receivedNotWithin", "t.RECEIVED", sb);
+    whereInInterval("attachmentReceivedWithin", "a.RECEIVED", sb);
+    whereNotInInterval("attachmentReceivedNotWithin", "a.RECEIVED", sb);
+    whereInInterval("claimedWithin", "t.CLAIMED", sb);
+    whereNotInInterval("claimedNotWithin", "t.CLAIMED", sb);
+    whereInInterval("completedWithin", "t.COMPLETED", sb);
+    whereNotInInterval("completedNotWithin", "t.COMPLETED", sb);
+    whereInInterval("createdWithin", "t.CREATED", sb);
+    whereNotInInterval("createdNotWithin", "t.CREATED", sb);
+    whereInInterval("dueWithin", "t.DUE", sb);
+    whereNotInInterval("dueNotWithin", "t.DUE", sb);
+    whereInInterval("modifiedWithin", "t.MODIFIED", sb);
+    whereNotInInterval("modifiedNotWithin", "t.MODIFIED", sb);
+    whereInInterval("plannedWithin", "t.PLANNED", sb);
+    whereNotInInterval("plannedNotWithin", "t.PLANNED", sb);
+    whereInInterval("receivedWithin", "t.RECEIVED", sb);
+    whereNotInInterval("receivedNotWithin", "t.RECEIVED", sb);
 
     whereLike("ownerLongNameLike", "u.LONG_NAME", sb);
     whereNotLike("ownerLongNameNotLike", "u.LONG_NAME", sb);

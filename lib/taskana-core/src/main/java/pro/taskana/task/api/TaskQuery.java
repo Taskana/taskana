@@ -1620,6 +1620,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    */
   TaskQuery sorValueLike(String... valueLike);
 
+  // endregion
   // region customAttributes
 
   /**
@@ -1715,10 +1716,8 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
    * @param values identify the intervals that are used for filtering
    * @return the query
-   * @throws InvalidArgumentException if searchArguments are not given
    */
-  TaskQuery customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values)
-      throws InvalidArgumentException;
+  TaskQuery customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values);
 
   /**
    * Exclude the values of specified {@linkplain TaskCustomIntField} inside the given range from
@@ -1745,6 +1744,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    */
   TaskQuery orderByCustomIntAttribute(
       TaskCustomIntField customIntField, SortDirection sortDirection);
+
   // endregion
   // region callbackState
 

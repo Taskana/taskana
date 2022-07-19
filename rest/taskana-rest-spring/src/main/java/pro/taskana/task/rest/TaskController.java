@@ -78,6 +78,8 @@ public class TaskController {
    * @title Get a list of all Tasks
    * @param request the HTTP request
    * @param filterParameter the filter parameters
+   * @param filterCustomFields the filter parameters regarding TaskCustomFields
+   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
    * @return the Tasks with the given filter, sort and paging options.
@@ -87,16 +89,22 @@ public class TaskController {
   public ResponseEntity<TaskSummaryPagedRepresentationModel> getTasks(
       HttpServletRequest request,
       TaskQueryFilterParameter filterParameter,
+      TaskQueryFilterCustomFields filterCustomFields,
+      TaskQueryFilterCustomIntFields filterCustomIntFields,
       TaskQuerySortParameter sortParameter,
       QueryPagingParameter<TaskSummary, TaskQuery> pagingParameter) {
     QueryParamsValidator.validateParams(
         request,
         TaskQueryFilterParameter.class,
+        TaskQueryFilterCustomFields.class,
+        TaskQueryFilterCustomIntFields.class,
         QuerySortParameter.class,
         QueryPagingParameter.class);
     TaskQuery query = taskService.createTaskQuery();
 
     filterParameter.apply(query);
+    filterCustomFields.apply(query);
+    filterCustomIntFields.apply(query);
     sortParameter.apply(query);
 
     List<TaskSummary> taskSummaries = pagingParameter.apply(query);
@@ -112,8 +120,10 @@ public class TaskController {
    * applied.
    *
    * @title Delete multiple Tasks
-   * @param filterParameter the filter parameters.
-   * @return the deleted task summaries.
+   * @param filterParameter the filter parameters
+   * @param filterCustomFields the filter parameters regarding TaskCustomFields
+   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
+   * @return the deleted task summaries
    * @throws InvalidArgumentException TODO: this is never thrown
    * @throws NotAuthorizedException if the current user is not authorized to delete the requested
    *     Tasks.
@@ -121,10 +131,14 @@ public class TaskController {
   @DeleteMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskSummaryCollectionRepresentationModel> deleteTasks(
-      TaskQueryFilterParameter filterParameter)
+      TaskQueryFilterParameter filterParameter,
+      TaskQueryFilterCustomFields filterCustomFields,
+      TaskQueryFilterCustomIntFields filterCustomIntFields)
       throws InvalidArgumentException, NotAuthorizedException {
     TaskQuery query = taskService.createTaskQuery();
     filterParameter.apply(query);
+    filterCustomFields.apply(query);
+    filterCustomIntFields.apply(query);
 
     List<TaskSummary> taskSummaries = query.list();
 
@@ -192,6 +206,8 @@ public class TaskController {
    * This endpoint selects the first Task returned by the Task Query and claims it.
    *
    * @param filterParameter the filter parameters
+   * @param filterCustomFields the filter parameters regarding TaskCustomFields
+   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
    * @param sortParameter the sort parameters
    * @return the claimed Task
    * @throws InvalidOwnerException if the Task is already claimed by someone else
@@ -202,11 +218,16 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
-      TaskQueryFilterParameter filterParameter, TaskQuerySortParameter sortParameter)
+      TaskQueryFilterParameter filterParameter,
+      TaskQueryFilterCustomFields filterCustomFields,
+      TaskQueryFilterCustomIntFields filterCustomIntFields,
+      TaskQuerySortParameter sortParameter)
       throws InvalidOwnerException, NotAuthorizedException {
     TaskQuery query = taskService.createTaskQuery();
 
     filterParameter.apply(query);
+    filterCustomFields.apply(query);
+    filterCustomIntFields.apply(query);
     sortParameter.apply(query);
 
     Task selectedAndClaimedTask = taskService.selectAndClaim(query);
