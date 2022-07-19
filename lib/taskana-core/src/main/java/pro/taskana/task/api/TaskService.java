@@ -16,6 +16,7 @@ import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -98,6 +99,39 @@ public interface TaskService {
   Task forceCancelClaim(String taskId)
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException;
+
+  /**
+   * Request review for an existing {@linkplain Task} that is in {@linkplain TaskState#CLAIMED}.
+   *
+   * @param taskId the {@linkplain Task#getId() id} of the specified {@linkplain Task}
+   * @return the {@linkplain Task} after a review has been requested
+   * @throws InvalidTaskStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is not in {@linkplain TaskState#CLAIMED}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
+   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
+   * @throws NotAuthorizedException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+   */
+  Task requestReview(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException;
+
+  /**
+   * Request review for an existing {@linkplain Task} even if the current user is not the
+   * {@linkplain Task#getOwner() owner} or the Task is not in {@linkplain TaskState#CLAIMED} yet.
+   *
+   * @param taskId the {@linkplain Task#getId() id} of the specified {@linkplain Task}
+   * @return the {@linkplain Task} after a review has been requested
+   * @throws InvalidTaskStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is one of the {@linkplain TaskState#END_STATES}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
+   * @throws InvalidOwnerException cannot be thrown
+   * @throws NotAuthorizedException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+   */
+  Task forceRequestReview(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException;
 
   /**
    * Complete a claimed {@linkplain Task} as {@linkplain Task#getOwner() owner} or {@linkplain

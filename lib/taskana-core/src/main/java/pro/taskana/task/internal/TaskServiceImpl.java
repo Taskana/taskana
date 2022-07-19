@@ -47,6 +47,7 @@ import pro.taskana.spi.history.api.events.task.TaskClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.TaskClaimedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCompletedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskRequestReviewEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
@@ -165,6 +166,20 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     return this.cancelClaim(taskId, true);
+  }
+
+  @Override
+  public Task requestReview(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException {
+    return requestReview(taskId, false);
+  }
+
+  @Override
+  public Task forceRequestReview(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException {
+    return requestReview(taskId, true);
   }
 
   @Override
@@ -1163,9 +1178,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
 
-      TaskImpl oldTask = task.copy();
-      oldTask.setId(taskId);
-      oldTask.setExternalId(task.getExternalId());
+      TaskImpl oldTask = duplicateTaskExactly(task);
       Instant now = Instant.now();
 
       checkPreconditionsForClaimTask(task, forceClaim);
@@ -1180,6 +1193,53 @@ public class TaskServiceImpl implements TaskService {
 
         historyEventManager.createEvent(
             new TaskClaimedEvent(
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
+                task,
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                changeDetails));
+      }
+    } finally {
+      taskanaEngine.returnConnection();
+    }
+    return task;
+  }
+
+  private Task requestReview(String taskId, boolean force)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidTaskStateException,
+          InvalidOwnerException {
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
+    TaskImpl task;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) getTask(taskId);
+
+      TaskImpl oldTask = duplicateTaskExactly(task);
+
+      if (force && task.getState().isEndState()) {
+        throw new InvalidTaskStateException(
+            task.getId(), task.getState(), EnumUtil.allValuesExceptFor(TaskState.END_STATES));
+      }
+      if (!force && task.getState() != TaskState.CLAIMED) {
+        throw new InvalidTaskStateException(task.getId(), task.getState(), TaskState.CLAIMED);
+      }
+      if (!force && !task.getOwner().equals(userId)) {
+        throw new InvalidOwnerException(userId, task.getId());
+      }
+
+      task.setState(TaskState.READY_FOR_REVIEW);
+      task.setOwner(null);
+      task.setModified(Instant.now());
+
+      taskMapper.update(task);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Requested review for Task '{}' by user '{}'.", taskId, userId);
+      }
+      if (historyEventManager.isEnabled()) {
+        String changeDetails =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(oldTask, task);
+
+        historyEventManager.createEvent(
+            new TaskRequestReviewEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
@@ -1278,9 +1338,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
 
-      TaskImpl oldTask = task.copy();
-      oldTask.setId(taskId);
-      oldTask.setExternalId(task.getExternalId());
+      TaskImpl oldTask = duplicateTaskExactly(task);
 
       TaskState state = task.getState();
       if (state.isEndState()) {
@@ -1903,5 +1961,14 @@ public class TaskServiceImpl implements TaskService {
                     IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                     task,
                     taskanaEngine.getEngine().getCurrentUserContext().getUserid())));
+  }
+
+  private TaskImpl duplicateTaskExactly(TaskImpl task) {
+    TaskImpl oldTask = task.copy();
+    oldTask.setId(task.getId());
+    oldTask.setExternalId(task.getExternalId());
+    oldTask.setAttachments(task.getAttachments());
+    oldTask.setSecondaryObjectReferences(task.getSecondaryObjectReferences());
+    return oldTask;
   }
 }
