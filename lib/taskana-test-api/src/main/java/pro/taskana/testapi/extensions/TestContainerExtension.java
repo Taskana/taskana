@@ -11,13 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import pro.taskana.common.internal.configuration.DB;
@@ -25,11 +22,24 @@ import pro.taskana.testapi.CleanTaskanaContext;
 import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
 import pro.taskana.testapi.WithServiceProvider;
 
-public class TestContainerExtension implements AfterAllCallback, InvocationInterceptor {
+public class TestContainerExtension implements InvocationInterceptor {
 
   public static final String STORE_DATA_SOURCE = "datasource";
-  public static final String STORE_CONTAINER = "container";
   public static final String STORE_SCHEMA_NAME = "schemaName";
+
+  public static final DataSource DATA_SOURCE;
+
+  public static final DB EXECUTION_DATABASE = retrieveDatabaseFromEnv();
+
+  static {
+    Optional<JdbcDatabaseContainer<?>> container = createDockerContainer(EXECUTION_DATABASE);
+    if (container.isPresent()) {
+      container.get().start();
+      DATA_SOURCE = createDataSource(container.get());
+    } else {
+      DATA_SOURCE = createDataSourceForH2();
+    }
+  }
 
   @Override
   public <T> T interceptTestClassConstructor(
@@ -40,18 +50,8 @@ public class TestContainerExtension implements AfterAllCallback, InvocationInter
     Class<?> testClass = extensionContext.getRequiredTestClass();
     if (isTopLevelClass(testClass) || isAnnotated(testClass, CleanTaskanaContext.class)) {
       Store store = getClassLevelStore(extensionContext);
-      DB db = retrieveDatabaseFromEnv();
-      store.put(STORE_SCHEMA_NAME, determineSchemaName(db));
-
-      createDockerContainer(db)
-          .ifPresentOrElse(
-              container -> {
-                container.start();
-                store.put(STORE_DATA_SOURCE, createDataSource(container));
-                store.put(STORE_CONTAINER, container);
-              },
-              () -> store.put(STORE_DATA_SOURCE, createDataSourceForH2()));
-
+      store.put(STORE_SCHEMA_NAME, determineSchemaName());
+      store.put(STORE_DATA_SOURCE, DATA_SOURCE);
     } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)
         || isAnnotated(testClass, WithServiceProvider.class)) {
       // since the implementation of TaskanaEngineConfigurationModifier implies the generation of a
@@ -66,24 +66,14 @@ public class TestContainerExtension implements AfterAllCallback, InvocationInter
     return invocation.proceed();
   }
 
-  @Override
-  public void afterAll(ExtensionContext context) {
-    Class<?> testClass = context.getRequiredTestClass();
-    if (isTopLevelClass(testClass)
-        || AnnotationSupport.isAnnotated(testClass, CleanTaskanaContext.class)) {
-      Optional.ofNullable(getClassLevelStore(context).get(STORE_CONTAINER))
-          .map(JdbcDatabaseContainer.class::cast)
-          .ifPresent(GenericContainer::stop);
-    }
-  }
-
   private static void copyValue(String key, Store source, Store destination) {
     Object value = source.get(key);
     destination.put(key, value);
   }
 
-  private static String determineSchemaName(DB db) {
-    return db == DB.POSTGRES ? "taskana" : "TASKANA";
+  private static String determineSchemaName() {
+    String uniqueId = "A" + UUID.randomUUID().toString().replace("-", "_");
+    return EXECUTION_DATABASE == DB.POSTGRES ? uniqueId.toLowerCase() : uniqueId;
   }
 
   private static DB retrieveDatabaseFromEnv() {
@@ -102,11 +92,7 @@ public class TestContainerExtension implements AfterAllCallback, InvocationInter
         new PooledDataSource(
             Thread.currentThread().getContextClassLoader(),
             "org.h2.Driver",
-            "jdbc:h2:mem:"
-                + UUID.randomUUID()
-                + ";LOCK_MODE=0;"
-                + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
-                + "SET COLLATION DEFAULT_de_DE ",
+            "jdbc:h2:mem:taskana;LOCK_MODE=0;INIT=SET COLLATION DEFAULT_de_DE",
             "sa",
             "sa");
     ds.setPoolTimeToWait(50);
