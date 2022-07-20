@@ -15,6 +15,7 @@ import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresenta
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -110,6 +111,14 @@ public class TaskRepresentationModelAssembler
     repModel.setCustom14(task.getCustomField(TaskCustomField.CUSTOM_14));
     repModel.setCustom15(task.getCustomField(TaskCustomField.CUSTOM_15));
     repModel.setCustom16(task.getCustomField(TaskCustomField.CUSTOM_16));
+    repModel.setCustomInt1(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_1));
+    repModel.setCustomInt2(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_2));
+    repModel.setCustomInt3(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_3));
+    repModel.setCustomInt4(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_4));
+    repModel.setCustomInt5(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_5));
+    repModel.setCustomInt6(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_6));
+    repModel.setCustomInt7(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_7));
+    repModel.setCustomInt8(task.getCustomIntField(TaskCustomIntField.CUSTOM_INT_8));
     try {
       repModel.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
     } catch (Exception e) {
@@ -167,6 +176,14 @@ public class TaskRepresentationModelAssembler
     task.setCustomField(TaskCustomField.CUSTOM_14, repModel.getCustom14());
     task.setCustomField(TaskCustomField.CUSTOM_15, repModel.getCustom15());
     task.setCustomField(TaskCustomField.CUSTOM_16, repModel.getCustom16());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_1, repModel.getCustomInt1());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_2, repModel.getCustomInt2());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_3, repModel.getCustomInt3());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_4, repModel.getCustomInt4());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_5, repModel.getCustomInt5());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_6, repModel.getCustomInt6());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_7, repModel.getCustomInt7());
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_8, repModel.getCustomInt8());
     task.setAttachments(
         repModel.getAttachments().stream()
             .map(attachmentAssembler::toEntityModel)

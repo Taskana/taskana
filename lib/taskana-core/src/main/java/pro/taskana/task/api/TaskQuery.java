@@ -1680,6 +1680,44 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByCustomAttribute(TaskCustomField customField, SortDirection sortDirection);
 
   // endregion
+  // region customIntAttributes
+
+  /**
+   * Add the values of the specified {@linkplain TaskCustomIntField} for exact matching to your
+   * query.
+   *
+   * @param customField identifies which {@linkplain TaskCustomIntField} is affected
+   * @param searchArguments the corresponding values of the searched for {@linkplain Task Tasks}
+   * @return the query
+   * @throws InvalidArgumentException if searchArguments are not given
+   */
+  TaskQuery customIntAttributeIn(TaskCustomIntField customField, Integer... searchArguments)
+      throws InvalidArgumentException;
+
+  /**
+   * Exclude these values of the specified {@linkplain TaskCustomIntField} from your query.
+   *
+   * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
+   * @param searchArguments the corresponding customIntField values of the searched for {@linkplain
+   *     Task Tasks}
+   * @return the query
+   * @throws InvalidArgumentException if searchArguments are not given
+   */
+  TaskQuery customIntAttributeNotIn(TaskCustomIntField customIntField, Integer... searchArguments)
+      throws InvalidArgumentException;
+
+  /**
+   * This method sorts the query result according to the value of the specified {@linkplain
+   * TaskCustomIntField}.
+   *
+   * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
+   * @param sortDirection determines whether the result is sorted in ascending or descending order;
+   *     if sortDirection is NULL, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByCustomIntAttribute(
+      TaskCustomIntField customIntField, SortDirection sortDirection);
+  // endregion
   // region callbackState
 
   /**

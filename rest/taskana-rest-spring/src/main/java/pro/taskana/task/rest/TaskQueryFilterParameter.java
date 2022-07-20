@@ -32,6 +32,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.task.api.CallbackState;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.WildcardSearchField;
@@ -1484,6 +1485,64 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("custom-16-not-like")
   private final String[] custom16NotLike;
   // endregion
+  // region customIntField
+  /** Filter by the value of the field customInt1 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-1")
+  private final Integer[] customInt1In;
+
+  /** Exclude values of the field customInt1 of the Task. */
+  @JsonProperty("custom-int-1-not")
+  private final Integer[] customInt1NotIn;
+  /** Filter by the value of the field customInt2 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-2")
+  private final Integer[] customInt2In;
+
+  /** Exclude values of the field customInt2 of the Task. */
+  @JsonProperty("custom-int-2-not")
+  private final Integer[] customInt2NotIn;
+  /** Filter by the value of the field customInt3 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-3")
+  private final Integer[] customInt3In;
+
+  /** Exclude values of the field customInt3 of the Task. */
+  @JsonProperty("custom-int-3-not")
+  private final Integer[] customInt3NotIn;
+  /** Filter by the value of the field customInt4 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-4")
+  private final Integer[] customInt4In;
+
+  /** Exclude values of the field customInt4 of the Task. */
+  @JsonProperty("custom-int-4-not")
+  private final Integer[] customInt4NotIn;
+  /** Filter by the value of the field customInt5 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-5")
+  private final Integer[] customInt5In;
+
+  /** Exclude values of the field customInt5 of the Task. */
+  @JsonProperty("custom-int-5-not")
+  private final Integer[] customInt5NotIn;
+  /** Filter by the value of the field customInt6 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-6")
+  private final Integer[] customInt6In;
+
+  /** Exclude values of the field customInt6 of the Task. */
+  @JsonProperty("custom-int-6-not")
+  private final Integer[] customInt6NotIn;
+  /** Filter by the value of the field customInt7 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-7")
+  private final Integer[] customInt7In;
+
+  /** Exclude values of the field customInt7 of the Task. */
+  @JsonProperty("custom-int-7-not")
+  private final Integer[] customInt7NotIn;
+  /** Filter by the value of the field customInt8 of the Task. This is an exact match. */
+  @JsonProperty("custom-int-8")
+  private final Integer[] customInt8In;
+
+  /** Exclude values of the field customInt8 of the Task. */
+  @JsonProperty("custom-int-8-not")
+  private final Integer[] customInt8NotIn;
+  // endregion
   // region callbackState
   /** Filter by the callback state of the Task. This is an exact match. */
   @JsonProperty("callback-state")
@@ -1718,6 +1777,22 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "custom-16-not",
     "custom-16-like",
     "custom-16-not-like",
+    "custom-int-1",
+    "custom-int-1-not",
+    "custom-int-2",
+    "custom-int-2-not",
+    "custom-int-3",
+    "custom-int-3-not",
+    "custom-int-4",
+    "custom-int-4-not",
+    "custom-int-5",
+    "custom-int-5-not",
+    "custom-int-6",
+    "custom-int-6-not",
+    "custom-int-7",
+    "custom-int-7-not",
+    "custom-int-8",
+    "custom-int-8-not",
     "callback-state",
     "callback-state-not",
     "wildcard-search-fields",
@@ -1928,6 +2003,22 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] custom16NotIn,
       String[] custom16Like,
       String[] custom16NotLike,
+      Integer[] customInt1In,
+      Integer[] customInt1NotIn,
+      Integer[] customInt2In,
+      Integer[] customInt2NotIn,
+      Integer[] customInt3In,
+      Integer[] customInt3NotIn,
+      Integer[] customInt4In,
+      Integer[] customInt4NotIn,
+      Integer[] customInt5In,
+      Integer[] customInt5NotIn,
+      Integer[] customInt6In,
+      Integer[] customInt6NotIn,
+      Integer[] customInt7In,
+      Integer[] customInt7NotIn,
+      Integer[] customInt8In,
+      Integer[] customInt8NotIn,
       CallbackState[] callbackStateIn,
       CallbackState[] callbackStateNotIn,
       WildcardSearchField[] wildcardSearchFieldIn,
@@ -2137,6 +2228,22 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.custom16NotIn = custom16NotIn;
     this.custom16Like = custom16Like;
     this.custom16NotLike = custom16NotLike;
+    this.customInt1In = customInt1In;
+    this.customInt1NotIn = customInt1NotIn;
+    this.customInt2In = customInt2In;
+    this.customInt2NotIn = customInt2NotIn;
+    this.customInt3In = customInt3In;
+    this.customInt3NotIn = customInt3NotIn;
+    this.customInt4In = customInt4In;
+    this.customInt4NotIn = customInt4NotIn;
+    this.customInt5In = customInt5In;
+    this.customInt5NotIn = customInt5NotIn;
+    this.customInt6In = customInt6In;
+    this.customInt6NotIn = customInt6NotIn;
+    this.customInt7In = customInt7In;
+    this.customInt7NotIn = customInt7NotIn;
+    this.customInt8In = customInt8In;
+    this.customInt8NotIn = customInt8NotIn;
     this.callbackStateIn = callbackStateIn;
     this.callbackStateNotIn = callbackStateNotIn;
     this.wildcardSearchFieldIn = wildcardSearchFieldIn;
@@ -2504,6 +2611,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
               Optional.ofNullable(pair.getRight().getFourth())
                   .map(this::wrapElementsInLikeStatement)
                   .ifPresent(wrap(l -> query.customAttributeNotLike(pair.getLeft(), l)));
+            });
+
+    Stream.of(
+            Pair.of(TaskCustomIntField.CUSTOM_INT_1, Pair.of(customInt1In, customInt1NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_2, Pair.of(customInt2In, customInt2NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_3, Pair.of(customInt3In, customInt3NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_4, Pair.of(customInt4In, customInt4NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_5, Pair.of(customInt5In, customInt5NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_6, Pair.of(customInt6In, customInt6NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_7, Pair.of(customInt7In, customInt7NotIn)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_8, Pair.of(customInt8In, customInt8NotIn)))
+        .forEach(
+            pair -> {
+              Optional.ofNullable(pair.getRight().getLeft())
+                  .ifPresent(wrap(l -> query.customIntAttributeIn(pair.getLeft(), l)));
+              Optional.ofNullable(pair.getRight().getRight())
+                  .ifPresent(wrap(l -> query.customIntAttributeNotIn(pair.getLeft(), l)));
             });
 
     Optional.ofNullable(callbackStateIn).ifPresent(query::callbackStateIn);

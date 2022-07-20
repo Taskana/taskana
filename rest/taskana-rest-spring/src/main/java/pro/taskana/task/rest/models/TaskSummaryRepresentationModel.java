@@ -10,10 +10,8 @@ import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/** EntityModel class for {@link WorkbasketSummary}. */
 public class TaskSummaryRepresentationModel
     extends RepresentationModel<TaskSummaryRepresentationModel> {
 
@@ -114,6 +112,22 @@ public class TaskSummaryRepresentationModel
   protected String custom15;
   /** A custom property with name "16". */
   protected String custom16;
+  /** A custom property with name "1". */
+  protected Integer customInt1;
+  /** A custom int property with name "1". */
+  protected Integer customInt2;
+  /** A custom int property with name "2". */
+  protected Integer customInt3;
+  /** A custom int property with name "3". */
+  protected Integer customInt4;
+  /** A custom int property with name "4". */
+  protected Integer customInt5;
+  /** A custom int property with name "5". */
+  protected Integer customInt6;
+  /** A custom int property with name "6". */
+  protected Integer customInt7;
+  /** A custom int property with name "7". */
+  protected Integer customInt8;
   /** Secondary object references of the task. */
   protected List<ObjectReferenceRepresentationModel> secondaryObjectReferences = new ArrayList<>();
   /** The attachment summaries of this task. */
@@ -464,5 +478,69 @@ public class TaskSummaryRepresentationModel
 
   public void setCustom16(String custom16) {
     this.custom16 = custom16;
+  }
+
+  public Integer getCustomInt1() {
+    return customInt1;
+  }
+
+  public void setCustomInt1(Integer customInt1) {
+    this.customInt1 = customInt1;
+  }
+
+  public Integer getCustomInt2() {
+    return customInt2;
+  }
+
+  public void setCustomInt2(Integer customInt2) {
+    this.customInt2 = customInt2;
+  }
+
+  public Integer getCustomInt3() {
+    return customInt3;
+  }
+
+  public void setCustomInt3(Integer customInt3) {
+    this.customInt3 = customInt3;
+  }
+
+  public Integer getCustomInt4() {
+    return customInt4;
+  }
+
+  public void setCustomInt4(Integer customInt4) {
+    this.customInt4 = customInt4;
+  }
+
+  public Integer getCustomInt5() {
+    return customInt5;
+  }
+
+  public void setCustomInt5(Integer customInt5) {
+    this.customInt5 = customInt5;
+  }
+
+  public Integer getCustomInt6() {
+    return customInt6;
+  }
+
+  public void setCustomInt6(Integer customInt6) {
+    this.customInt6 = customInt6;
+  }
+
+  public Integer getCustomInt7() {
+    return customInt7;
+  }
+
+  public void setCustomInt7(Integer customInt7) {
+    this.customInt7 = customInt7;
+  }
+
+  public Integer getCustomInt8() {
+    return customInt8;
+  }
+
+  public void setCustomInt8(Integer customInt8) {
+    this.customInt8 = customInt8;
   }
 }

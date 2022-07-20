@@ -5,6 +5,7 @@ import java.util.List;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -280,6 +281,14 @@ public interface TaskSummary {
    * @return the value for the given {@linkplain TaskCustomField}
    */
   String getCustomField(TaskCustomField customField);
+
+  /**
+   * Returns the value of the specified {@linkplain TaskCustomIntField} of the {@linkplain Task}.
+   *
+   * @param customIntField identifies which {@linkplain TaskCustomIntField} is requested
+   * @return the value for the given {@linkplain TaskCustomIntField}
+   */
+  Integer getCustomIntField(TaskCustomIntField customIntField);
 
   /**
    * Duplicates this TaskSummary without the internal and external id.

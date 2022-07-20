@@ -11,6 +11,7 @@ import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.Task;
@@ -171,6 +172,38 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
   }
 
   @Override
+  public void setCustomIntField(TaskCustomIntField customIntField, Integer value) {
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        customInt1 = value;
+        break;
+      case CUSTOM_INT_2:
+        customInt2 = value;
+        break;
+      case CUSTOM_INT_3:
+        customInt3 = value;
+        break;
+      case CUSTOM_INT_4:
+        customInt4 = value;
+        break;
+      case CUSTOM_INT_5:
+        customInt5 = value;
+        break;
+      case CUSTOM_INT_6:
+        customInt6 = value;
+        break;
+      case CUSTOM_INT_7:
+        customInt7 = value;
+        break;
+      case CUSTOM_INT_8:
+        customInt8 = value;
+        break;
+      default:
+        throw new SystemException("Unknown customIntField '" + customIntField + "'");
+    }
+  }
+
+  @Override
   public void addAttachment(Attachment attachmentToAdd) {
     if (attachments == null) {
       attachments = new ArrayList<>();
@@ -232,6 +265,14 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     taskSummary.setCustom14(custom14);
     taskSummary.setCustom15(custom15);
     taskSummary.setCustom16(custom16);
+    taskSummary.setCustomInt1(customInt1);
+    taskSummary.setCustomInt2(customInt2);
+    taskSummary.setCustomInt3(customInt3);
+    taskSummary.setCustomInt4(customInt4);
+    taskSummary.setCustomInt5(customInt5);
+    taskSummary.setCustomInt6(customInt6);
+    taskSummary.setCustomInt7(customInt7);
+    taskSummary.setCustomInt8(customInt8);
     taskSummary.setDue(due);
     taskSummary.setId(id);
     taskSummary.setModified(modified);
@@ -405,6 +446,22 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + custom15
         + ", custom16="
         + custom16
+        + ", customInt1="
+        + customInt1
+        + ", customInt2="
+        + customInt2
+        + ", customInt3="
+        + customInt3
+        + ", customInt4="
+        + customInt4
+        + ", customInt5="
+        + customInt5
+        + ", customInt6="
+        + customInt6
+        + ", customInt7="
+        + customInt7
+        + ", customInt8="
+        + customInt8
         + "]";
   }
 }

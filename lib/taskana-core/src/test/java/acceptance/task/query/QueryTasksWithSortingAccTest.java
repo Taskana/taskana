@@ -31,6 +31,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
@@ -510,6 +511,56 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
             .extracting(t -> t.getCustomField(customField))
             .filteredOn(Objects::nonNull)
             .isSortedAccordingTo(comparator);
+      }
+
+      @WithAccessId(user = "admin")
+      @TestFactory
+      Stream<DynamicTest> should_ReturnOrderedResult_When_OrderByCustomIntXAscIsSet() {
+        Iterator<TaskCustomIntField> iterator =
+            Arrays.stream(TaskCustomIntField.values()).iterator();
+
+        return DynamicTest.stream(
+            iterator,
+            s -> String.format("order by %s asc", s),
+            s -> {
+              List<TaskSummary> results =
+                  taskanaEngine
+                      .getTaskService()
+                      .createTaskQuery()
+                      .orderByCustomIntAttribute(s, ASCENDING)
+                      .list();
+
+              assertThat(results)
+                  .hasSizeGreaterThan(2)
+                  .extracting(t -> t.getCustomIntField(s))
+                  .filteredOn(Objects::nonNull)
+                  .isSortedAccordingTo(Integer::compareTo);
+            });
+      }
+
+      @WithAccessId(user = "admin")
+      @TestFactory
+      Stream<DynamicTest> should_ReturnOrderedResult_When_OrderByCustomIntXDescIsSet() {
+        Iterator<TaskCustomIntField> iterator =
+            Arrays.stream(TaskCustomIntField.values()).iterator();
+
+        return DynamicTest.stream(
+            iterator,
+            s -> String.format("order by %s desc", s),
+            s -> {
+              List<TaskSummary> results =
+                  taskanaEngine
+                      .getTaskService()
+                      .createTaskQuery()
+                      .orderByCustomIntAttribute(s, ASCENDING)
+                      .list();
+
+              assertThat(results)
+                  .hasSizeGreaterThan(2)
+                  .extracting(t -> t.getCustomIntField(s))
+                  .filteredOn(Objects::nonNull)
+                  .isSortedAccordingTo(Comparator.reverseOrder());
+            });
       }
     }
 

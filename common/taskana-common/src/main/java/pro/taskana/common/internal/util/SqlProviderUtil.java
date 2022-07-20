@@ -24,7 +24,7 @@ public class SqlProviderUtil {
         .append("</when>")
         .append("<otherwise>0=1</otherwise>")
         .append("</choose>");
-    if (column.contains("t.CUSTOM_")) {
+    if (column.contains("t.CUSTOM_") && !column.contains("INT")) {
       sb.append("<if test='" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
     }
     return sb.append(")</if> ");
@@ -47,7 +47,7 @@ public class SqlProviderUtil {
         .append("</when>")
         .append("<otherwise>1=1</otherwise>")
         .append("</choose>");
-    if (column.contains("t.CUSTOM_")) {
+    if (column.contains("t.CUSTOM_") && !column.contains("INT")) {
       sb.append("<if test='" + collection + "ContainsNull'> AND " + column + " IS NOT NULL </if>");
       sb.append("<if test='!" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
     }
@@ -140,5 +140,17 @@ public class SqlProviderUtil {
   public static StringBuilder whereCustomStatements(
       String baseCollection, String baseColumn, int customBound) {
     return whereCustomStatements(baseCollection, baseColumn, customBound, new StringBuilder());
+  }
+
+  public static StringBuilder whereCustomIntStatements(
+      String baseCollection, String baseColumn, int customBound, StringBuilder sb) {
+    IntStream.rangeClosed(1, customBound)
+        .forEach(
+            x -> {
+              String column = baseColumn + "_" + x;
+              whereIn(baseCollection + x + "In", column, sb);
+              whereNotIn(baseCollection + x + "NotIn", column, sb);
+            });
+    return sb;
   }
 }
