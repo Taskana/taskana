@@ -11,6 +11,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
@@ -65,6 +66,14 @@ public class TaskSummaryImpl implements TaskSummary {
   protected String custom14;
   protected String custom15;
   protected String custom16;
+  protected Integer customInt1;
+  protected Integer customInt2;
+  protected Integer customInt3;
+  protected Integer customInt4;
+  protected Integer customInt5;
+  protected Integer customInt6;
+  protected Integer customInt7;
+  protected Integer customInt8;
 
   public TaskSummaryImpl() {}
 
@@ -113,6 +122,14 @@ public class TaskSummaryImpl implements TaskSummary {
     custom14 = copyFrom.custom14;
     custom15 = copyFrom.custom15;
     custom16 = copyFrom.custom16;
+    customInt1 = copyFrom.customInt1;
+    customInt2 = copyFrom.customInt2;
+    customInt3 = copyFrom.customInt3;
+    customInt4 = copyFrom.customInt4;
+    customInt5 = copyFrom.customInt5;
+    customInt6 = copyFrom.customInt6;
+    customInt7 = copyFrom.customInt7;
+    customInt8 = copyFrom.customInt8;
   }
 
   @Override
@@ -426,6 +443,31 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   @Override
+  public Integer getCustomIntField(TaskCustomIntField customIntField) {
+
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        return customInt1;
+      case CUSTOM_INT_2:
+        return customInt2;
+      case CUSTOM_INT_3:
+        return customInt3;
+      case CUSTOM_INT_4:
+        return customInt4;
+      case CUSTOM_INT_5:
+        return customInt5;
+      case CUSTOM_INT_6:
+        return customInt6;
+      case CUSTOM_INT_7:
+        return customInt7;
+      case CUSTOM_INT_8:
+        return customInt8;
+      default:
+        throw new SystemException("Unknown custom int field '" + customIntField + "'");
+    }
+  }
+
+  @Override
   public boolean isManualPriorityActive() {
     return manualPriority >= 0;
   }
@@ -660,6 +702,70 @@ public class TaskSummaryImpl implements TaskSummary {
     this.custom16 = custom16 == null ? null : custom16.trim();
   }
 
+  public Integer getCustomInt1() {
+    return customInt1;
+  }
+
+  public void setCustomInt1(Integer customInt1) {
+    this.customInt1 = customInt1;
+  }
+
+  public Integer getCustomInt2() {
+    return customInt2;
+  }
+
+  public void setCustomInt2(Integer customInt2) {
+    this.customInt2 = customInt2;
+  }
+
+  public Integer getCustomInt3() {
+    return customInt3;
+  }
+
+  public void setCustomInt3(Integer customInt3) {
+    this.customInt3 = customInt3;
+  }
+
+  public Integer getCustomInt4() {
+    return customInt4;
+  }
+
+  public void setCustomInt4(Integer customInt4) {
+    this.customInt4 = customInt4;
+  }
+
+  public Integer getCustomInt5() {
+    return customInt5;
+  }
+
+  public void setCustomInt5(Integer customInt5) {
+    this.customInt5 = customInt5;
+  }
+
+  public Integer getCustomInt6() {
+    return customInt6;
+  }
+
+  public void setCustomInt6(Integer customInt6) {
+    this.customInt6 = customInt6;
+  }
+
+  public Integer getCustomInt7() {
+    return customInt7;
+  }
+
+  public void setCustomInt7(Integer customInt7) {
+    this.customInt7 = customInt7;
+  }
+
+  public Integer getCustomInt8() {
+    return customInt8;
+  }
+
+  public void setCustomInt8(Integer customInt8) {
+    this.customInt8 = customInt8;
+  }
+
   protected boolean canEqual(Object other) {
     return (other instanceof TaskSummaryImpl);
   }
@@ -709,7 +815,15 @@ public class TaskSummaryImpl implements TaskSummary {
         custom13,
         custom14,
         custom15,
-        custom16);
+        custom16,
+        customInt1,
+        customInt2,
+        customInt3,
+        customInt4,
+        customInt5,
+        customInt6,
+        customInt7,
+        customInt8);
   }
 
   @Override
@@ -766,7 +880,15 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(custom13, other.custom13)
         && Objects.equals(custom14, other.custom14)
         && Objects.equals(custom15, other.custom15)
-        && Objects.equals(custom16, other.custom16);
+        && Objects.equals(custom16, other.custom16)
+        && Objects.equals(customInt1, other.customInt1)
+        && Objects.equals(customInt2, other.customInt2)
+        && Objects.equals(customInt3, other.customInt3)
+        && Objects.equals(customInt4, other.customInt4)
+        && Objects.equals(customInt5, other.customInt5)
+        && Objects.equals(customInt6, other.customInt6)
+        && Objects.equals(customInt7, other.customInt7)
+        && Objects.equals(customInt8, other.customInt8);
   }
 
   @Override
@@ -857,6 +979,22 @@ public class TaskSummaryImpl implements TaskSummary {
         + custom15
         + ", custom16="
         + custom16
+        + ", customInt1="
+        + customInt1
+        + ", customInt2="
+        + customInt2
+        + ", customInt3="
+        + customInt3
+        + ", customInt4="
+        + customInt4
+        + ", customInt5="
+        + customInt5
+        + ", customInt6="
+        + customInt6
+        + ", customInt7="
+        + customInt7
+        + ", customInt8="
+        + customInt8
         + "]";
   }
 }

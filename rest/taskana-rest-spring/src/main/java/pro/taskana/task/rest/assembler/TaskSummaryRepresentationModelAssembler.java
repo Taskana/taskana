@@ -12,6 +12,7 @@ import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
@@ -102,6 +103,14 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setCustom14(taskSummary.getCustomField(TaskCustomField.CUSTOM_14));
     repModel.setCustom15(taskSummary.getCustomField(TaskCustomField.CUSTOM_15));
     repModel.setCustom16(taskSummary.getCustomField(TaskCustomField.CUSTOM_16));
+    repModel.setCustomInt1(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_1));
+    repModel.setCustomInt2(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_2));
+    repModel.setCustomInt3(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_3));
+    repModel.setCustomInt4(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_4));
+    repModel.setCustomInt5(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_5));
+    repModel.setCustomInt6(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_6));
+    repModel.setCustomInt7(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_7));
+    repModel.setCustomInt8(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_8));
     return repModel;
   }
 
@@ -160,6 +169,14 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setCustom14(repModel.getCustom14());
     taskSummary.setCustom15(repModel.getCustom15());
     taskSummary.setCustom16(repModel.getCustom16());
+    taskSummary.setCustomInt1(repModel.getCustomInt1());
+    taskSummary.setCustomInt2(repModel.getCustomInt2());
+    taskSummary.setCustomInt3(repModel.getCustomInt3());
+    taskSummary.setCustomInt4(repModel.getCustomInt4());
+    taskSummary.setCustomInt5(repModel.getCustomInt5());
+    taskSummary.setCustomInt6(repModel.getCustomInt6());
+    taskSummary.setCustomInt7(repModel.getCustomInt7());
+    taskSummary.setCustomInt8(repModel.getCustomInt8());
     return taskSummary;
   }
 

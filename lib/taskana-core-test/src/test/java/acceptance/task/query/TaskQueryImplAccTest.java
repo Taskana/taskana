@@ -28,8 +28,10 @@ import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.util.Pair;
+import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
@@ -233,6 +235,14 @@ class TaskQueryImplAccTest {
               .customAttribute(TaskCustomField.CUSTOM_14, "custom14")
               .customAttribute(TaskCustomField.CUSTOM_15, "custom15")
               .customAttribute(TaskCustomField.CUSTOM_16, "custom16")
+              .customIntField(TaskCustomIntField.CUSTOM_INT_1, (Integer) 1)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_2, 2)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_3, 3)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_4, 4)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_5, 5)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_6, 6)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_7, 7)
+              .customIntField(TaskCustomIntField.CUSTOM_INT_8, 8)
               .callbackInfo(Map.of("custom", "value"))
               .callbackState(CallbackState.CALLBACK_PROCESSING_COMPLETED)
               .buildAndStoreAsSummary(taskService);
@@ -3247,6 +3257,100 @@ class TaskQueryImplAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class CustomAttributes {}
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    class CustomIntFields {
+      WorkbasketSummary wb;
+      TaskSummary taskSummary1;
+      TaskSummary taskSummary2;
+      TaskSummary taskSummary3;
+
+      @WithAccessId(user = "user-1-1")
+      @BeforeAll
+      void setup() throws Exception {
+        wb = createWorkbasketWithPermission();
+        taskSummary1 =
+            taskInWorkbasket(wb)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_1, 1)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_2, 2)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_3, 3)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_4, 4)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_5, 5)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_6, 6)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_7, 7)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_8, 8)
+                .buildAndStoreAsSummary(taskService);
+        taskSummary2 =
+            taskInWorkbasket(wb)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_1, -1)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_2, -2)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_3, -3)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_4, -4)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_5, -5)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_6, -6)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_7, -7)
+                .customIntField(TaskCustomIntField.CUSTOM_INT_8, -8)
+                .buildAndStoreAsSummary(taskService);
+        taskSummary3 = taskInWorkbasket(wb).buildAndStoreAsSummary(taskService);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @TestFactory
+      Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntIn() {
+        List<Triplet<String, Integer, TaskCustomIntField>> testCases =
+            List.of(
+                Triplet.of("CustomInt1", 1, TaskCustomIntField.CUSTOM_INT_1),
+                Triplet.of("CustomInt2", 2, TaskCustomIntField.CUSTOM_INT_2),
+                Triplet.of("CustomInt3", 3, TaskCustomIntField.CUSTOM_INT_3),
+                Triplet.of("CustomInt4", 4, TaskCustomIntField.CUSTOM_INT_4),
+                Triplet.of("CustomInt5", 5, TaskCustomIntField.CUSTOM_INT_5),
+                Triplet.of("CustomInt6", 6, TaskCustomIntField.CUSTOM_INT_6),
+                Triplet.of("CustomInt7", 7, TaskCustomIntField.CUSTOM_INT_7),
+                Triplet.of("CustomInt8", 8, TaskCustomIntField.CUSTOM_INT_8));
+
+        ThrowingConsumer<Triplet<String, Integer, TaskCustomIntField>> test =
+            t -> {
+              List<TaskSummary> result =
+                  taskService
+                      .createTaskQuery()
+                      .workbasketIdIn(wb.getId())
+                      .customIntAttributeIn(t.getRight(), t.getMiddle())
+                      .list();
+              assertThat(result).containsExactly(taskSummary1);
+            };
+
+        return DynamicTest.stream(testCases.iterator(), Triplet::getLeft, test);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @TestFactory
+      Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntNotIn() {
+        List<Triplet<String, Integer, TaskCustomIntField>> testCases =
+            List.of(
+                Triplet.of("CustomInt1", 1, TaskCustomIntField.CUSTOM_INT_1),
+                Triplet.of("CustomInt2", 2, TaskCustomIntField.CUSTOM_INT_2),
+                Triplet.of("CustomInt3", 3, TaskCustomIntField.CUSTOM_INT_3),
+                Triplet.of("CustomInt4", 4, TaskCustomIntField.CUSTOM_INT_4),
+                Triplet.of("CustomInt5", 5, TaskCustomIntField.CUSTOM_INT_5),
+                Triplet.of("CustomInt6", 6, TaskCustomIntField.CUSTOM_INT_6),
+                Triplet.of("CustomInt7", 7, TaskCustomIntField.CUSTOM_INT_7),
+                Triplet.of("CustomInt8", 8, TaskCustomIntField.CUSTOM_INT_8));
+
+        ThrowingConsumer<Triplet<String, Integer, TaskCustomIntField>> test =
+            t -> {
+              List<TaskSummary> result =
+                  taskService
+                      .createTaskQuery()
+                      .workbasketIdIn(wb.getId())
+                      .customIntAttributeNotIn(t.getRight(), t.getMiddle())
+                      .list();
+              assertThat(result).containsExactlyInAnyOrder(taskSummary2);
+            };
+
+        return DynamicTest.stream(testCases.iterator(), Triplet::getLeft, test);
+      }
+    }
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)

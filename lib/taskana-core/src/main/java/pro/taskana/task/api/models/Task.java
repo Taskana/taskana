@@ -6,6 +6,7 @@ import java.util.Map;
 
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.user.api.models.User;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -139,6 +140,15 @@ public interface Task extends TaskSummary {
    * @param value the value of the {@linkplain TaskCustomField customField} to be set
    */
   void setCustomField(TaskCustomField customField, String value);
+
+  /**
+   * Sets the value for the specified {@linkplain TaskCustomIntField custoIntField}.
+   *
+   * @param customIntField identifies which {@linkplain TaskCustomIntField customIntField} is to be
+   *     set
+   * @param value the value of the {@linkplain TaskCustomIntField customIntField} to be set
+   */
+  void setCustomIntField(TaskCustomIntField customIntField, Integer value);
 
   /**
    * Add an {@linkplain Attachment}.<br>

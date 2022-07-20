@@ -27,6 +27,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Attachment;
@@ -150,6 +151,14 @@ class TaskBuilderTest {
             .customAttribute(TaskCustomField.CUSTOM_14, "custom14")
             .customAttribute(TaskCustomField.CUSTOM_15, "custom15")
             .customAttribute(TaskCustomField.CUSTOM_16, "custom16")
+            .customIntField(TaskCustomIntField.CUSTOM_INT_1, 1)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_2, 2)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_3, 3)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_4, 4)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_5, 5)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_6, 6)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_7, 7)
+            .customIntField(TaskCustomIntField.CUSTOM_INT_8, 8)
             .callbackInfo(Map.of("custom", "value"))
             .callbackState(CallbackState.CALLBACK_PROCESSING_COMPLETED)
             .buildAndStore(taskService);
@@ -194,6 +203,14 @@ class TaskBuilderTest {
     expectedTask.setCustomField(TaskCustomField.CUSTOM_14, "custom14");
     expectedTask.setCustomField(TaskCustomField.CUSTOM_15, "custom15");
     expectedTask.setCustomField(TaskCustomField.CUSTOM_16, "custom16");
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_1, 1);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_2, 2);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_3, 3);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_4, 4);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_5, 5);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_6, 6);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_7, 7);
+    expectedTask.setCustomIntField(TaskCustomIntField.CUSTOM_INT_8, 8);
     expectedTask.setCallbackInfo(Map.of("custom", "value"));
     expectedTask.setCallbackState(CallbackState.CALLBACK_PROCESSING_COMPLETED);
 

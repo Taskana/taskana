@@ -20,6 +20,7 @@ import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.ObjectReferenceQuery;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskQueryColumnName;
 import pro.taskana.task.api.TaskState;
@@ -285,6 +286,26 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean custom16NotInContainsNull;
   private String[] custom16Like;
   private String[] custom16NotLike;
+  // endregion
+  // region customIntAttributes
+  private Integer[] customInt1In;
+  private Integer[] customInt1NotIn;
+  private Integer[] customInt2In;
+  private Integer[] customInt2NotIn;
+  private Integer[] customInt3In;
+  private Integer[] customInt3NotIn;
+  private Integer[] customInt4In;
+  private Integer[] customInt4NotIn;
+  private Integer[] customInt5In;
+  private Integer[] customInt5NotIn;
+  private Integer[] customInt6In;
+  private Integer[] customInt6NotIn;
+  private Integer[] customInt7In;
+  private Integer[] customInt7NotIn;
+  private Integer[] customInt8In;
+  private Integer[] customInt8NotIn;
+  // endregion
+  // region callbackState
   private CallbackState[] callbackStateIn;
   private CallbackState[] callbackStateNotIn;
   private WildcardSearchField[] wildcardSearchFieldIn;
@@ -1644,6 +1665,101 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery customIntAttributeNotIn(TaskCustomIntField customIntField, Integer... values)
+      throws InvalidArgumentException {
+    if (values.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one Integer has to be provided as a search parameter");
+    }
+    List<Integer> conditionList = new ArrayList<>(Arrays.asList(values));
+    boolean containsNull = conditionList.contains(null);
+    if (containsNull) {
+      conditionList.remove(null);
+    }
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8NotIn = conditionList.toArray(new Integer[0]);
+        break;
+      default:
+        throw new SystemException("Unknown custom int field '" + customIntField + "'");
+    }
+    return this;
+  }
+
+  @Override
+  public TaskQuery customIntAttributeIn(TaskCustomIntField customIntField, Integer... values)
+      throws InvalidArgumentException {
+    if (values.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one Integer has to be provided as a search parameter");
+    }
+
+    List<Integer> conditionList = new ArrayList<>(Arrays.asList(values));
+    boolean containsNull = conditionList.contains(null);
+    if (containsNull) {
+      conditionList.remove(null);
+    }
+
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7In = conditionList.toArray(new Integer[0]);
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8In = conditionList.toArray(new Integer[0]);
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
+
+    return this;
+  }
+
+  @Override
+  public TaskQuery orderByCustomIntAttribute(
+      TaskCustomIntField customIntField, SortDirection sortDirection) {
+    return addOrderCriteria(customIntField.name(), sortDirection);
+  }
+
+  @Override
   public TaskQuery callbackStateIn(CallbackState... states) {
     this.callbackStateIn = states;
     return this;
@@ -2402,6 +2518,42 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(custom16Like)
         + ", custom16NotLike="
         + Arrays.toString(custom16NotLike)
+        + ", customInt1In="
+        + Arrays.toString(customInt1In)
+        + ", customInt1NotIn="
+        + Arrays.toString(customInt1NotIn)
+        + ", customInt2In="
+        + Arrays.toString(customInt2In)
+        + ", customInt2NotIn="
+        + Arrays.toString(customInt2NotIn)
+        + ", customInt3In="
+        + Arrays.toString(customInt3In)
+        + ", customInt3NotIn="
+        + Arrays.toString(customInt3NotIn)
+        + ", customInt4In="
+        + Arrays.toString(customInt4In)
+        + ", customInt4NotIn="
+        + Arrays.toString(customInt4NotIn)
+        + ", customInt5In="
+        + Arrays.toString(customInt5In)
+        + ", customInt5NotIn="
+        + Arrays.toString(customInt5NotIn)
+        + ", customInt6In="
+        + Arrays.toString(customInt6In)
+        + ", customInt6NotIn="
+        + Arrays.toString(customInt6NotIn)
+        + ", customInt7In="
+        + Arrays.toString(customInt7In)
+        + ", customInt7NotIn="
+        + Arrays.toString(custom7NotIn)
+        + ", custom7Like="
+        + Arrays.toString(custom7Like)
+        + ", custom7NotLike="
+        + Arrays.toString(custom7NotLike)
+        + ", custom8In="
+        + Arrays.toString(custom8In)
+        + ", custom8NotIn="
+        + Arrays.toString(custom8NotIn)
         + ", callbackStateIn="
         + Arrays.toString(callbackStateIn)
         + ", callbackStateNotIn="

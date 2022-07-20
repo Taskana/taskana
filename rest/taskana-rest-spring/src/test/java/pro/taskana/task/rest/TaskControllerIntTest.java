@@ -136,6 +136,157 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_GetCustomIntCorrectly_When_GettingTaskWithCustomIntValues() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000025");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
+
+    ResponseEntity<TaskRepresentationModel> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+
+    TaskRepresentationModel repModel = response.getBody();
+    assertThat(repModel).isNotNull();
+    assertThat(repModel.getCustomInt1()).isEqualTo(1);
+    assertThat(repModel.getCustomInt2()).isEqualTo(2);
+    assertThat(repModel.getCustomInt3()).isEqualTo(3);
+    assertThat(repModel.getCustomInt4()).isEqualTo(4);
+    assertThat(repModel.getCustomInt5()).isEqualTo(5);
+    assertThat(repModel.getCustomInt6()).isEqualTo(6);
+    assertThat(repModel.getCustomInt7()).isEqualTo(7);
+    assertThat(repModel.getCustomInt8()).isEqualTo(8);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldIn() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s=%s",
+                      i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldNotIn() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-not=25",
+                      i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldWithin() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-within=%s"
+                          + "&custom-int-%s-within=15",
+                      i, i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest>
+      should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldWithinOpenLowerBound() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-within="
+                          + "&custom-int-%s-within=%s",
+                      i, i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).hasSize(22);
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @TestFactory
+  Stream<DynamicTest>
+      should_GetAllTasks_For_SpecifiedWorkbasketIdAndCustomIntFieldNotWithinOpenUpperBound() {
+    List<Integer> customIntValues = List.of(1, 2, 3, 4, 5, 6, 7, 8);
+    ThrowingConsumer<Integer> test =
+        i -> {
+          String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS)
+                  + String.format(
+                      "?workbasket-id=WBI:100000000000000000000000000000000001"
+                          + "&custom-int-%s-not-within=%s"
+                          + "&custom-int-%s-not-within=",
+                      i, i, i);
+          HttpEntity<Object> auth =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+          ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+              TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+          assertThat(response.getBody()).isNotNull();
+          assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+          assertThat(response.getBody().getContent()).isEmpty();
+        };
+
+    return DynamicTest.stream(customIntValues.iterator(), c -> "customInt" + c, test);
+  }
+
+  @Test
   void should_GetAllTasks_For_SpecifiesWorkbasketIdWithinSinglePlannedTimeInterval() {
     Instant plannedFromInstant = Instant.now().minus(6, ChronoUnit.DAYS);
     Instant plannedToInstant = Instant.now().minus(3, ChronoUnit.DAYS);

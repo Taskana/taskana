@@ -27,6 +27,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.AttachmentSummary;
@@ -120,6 +121,14 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setCustom14("custom14");
     task.setCustom15("custom15");
     task.setCustom16("custom16");
+    task.setCustomInt1(1);
+    task.setCustomInt2(2);
+    task.setCustomInt3(3);
+    task.setCustomInt4(4);
+    task.setCustomInt5(5);
+    task.setCustomInt6(6);
+    task.setCustomInt7(7);
+    task.setCustomInt8(8);
 
     TaskSummaryRepresentationModel repModel = assembler.toModel(task);
 
@@ -186,6 +195,14 @@ class TaskSummaryRepresentationModelAssemblerTest {
     repModel.setCustom14("custom14");
     repModel.setCustom15("custom15");
     repModel.setCustom16("custom16");
+    repModel.setCustomInt1(1);
+    repModel.setCustomInt2(2);
+    repModel.setCustomInt3(3);
+    repModel.setCustomInt4(4);
+    repModel.setCustomInt5(5);
+    repModel.setCustomInt6(6);
+    repModel.setCustomInt7(7);
+    repModel.setCustomInt8(8);
     // when
     TaskSummary task = assembler.toEntityModel(repModel);
     // then
@@ -276,6 +293,14 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setCustom14("custom14");
     task.setCustom15("custom15");
     task.setCustom16("custom16");
+    task.setCustomInt1(1);
+    task.setCustomInt2(2);
+    task.setCustomInt3(3);
+    task.setCustomInt4(4);
+    task.setCustomInt5(5);
+    task.setCustomInt6(6);
+    task.setCustomInt7(7);
+    task.setCustomInt8(8);
     // when
     TaskSummaryRepresentationModel repModel = assembler.toModel(task);
     TaskSummary task2 = assembler.toEntityModel(repModel);
@@ -332,6 +357,22 @@ class TaskSummaryRepresentationModelAssemblerTest {
     assertThat(taskSummary.getCustomField(CUSTOM_14)).isEqualTo(repModel.getCustom14());
     assertThat(taskSummary.getCustomField(CUSTOM_15)).isEqualTo(repModel.getCustom15());
     assertThat(taskSummary.getCustomField(CUSTOM_16)).isEqualTo(repModel.getCustom16());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_1))
+        .isEqualTo(repModel.getCustomInt1());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_2))
+        .isEqualTo(repModel.getCustomInt2());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_3))
+        .isEqualTo(repModel.getCustomInt3());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_4))
+        .isEqualTo(repModel.getCustomInt4());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_5))
+        .isEqualTo(repModel.getCustomInt5());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_6))
+        .isEqualTo(repModel.getCustomInt6());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_7))
+        .isEqualTo(repModel.getCustomInt7());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_8))
+        .isEqualTo(repModel.getCustomInt8());
     testEqualityAttachments(
         taskSummary.getAttachmentSummaries(), repModel.getAttachmentSummaries());
   }

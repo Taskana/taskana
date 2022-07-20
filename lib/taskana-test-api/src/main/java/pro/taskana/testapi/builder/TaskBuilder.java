@@ -14,6 +14,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -176,6 +177,11 @@ public class TaskBuilder {
 
   public TaskBuilder customAttribute(TaskCustomField customField, String value) {
     testTask.setCustomField(customField, value);
+    return this;
+  }
+
+  public TaskBuilder customIntField(TaskCustomIntField customIntField, Integer value) {
+    testTask.setCustomIntField(customIntField, value);
     return this;
   }
 

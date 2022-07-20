@@ -60,6 +60,14 @@ public interface TaskQueryMapper {
   @Result(property = "custom14", column = "CUSTOM_14")
   @Result(property = "custom15", column = "CUSTOM_15")
   @Result(property = "custom16", column = "CUSTOM_16")
+  @Result(property = "customInt1", column = "CUSTOM_INT_1")
+  @Result(property = "customInt2", column = "CUSTOM_INT_2")
+  @Result(property = "customInt3", column = "CUSTOM_INT_3")
+  @Result(property = "customInt4", column = "CUSTOM_INT_4")
+  @Result(property = "customInt5", column = "CUSTOM_INT_5")
+  @Result(property = "customInt6", column = "CUSTOM_INT_6")
+  @Result(property = "customInt7", column = "CUSTOM_INT_7")
+  @Result(property = "customInt8", column = "CUSTOM_INT_8")
   List<TaskSummaryImpl> queryTaskSummaries(TaskQueryImpl taskQuery);
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryTaskSummariesDb2")
@@ -113,6 +121,14 @@ public interface TaskQueryMapper {
   @Result(property = "custom14", column = "CUSTOM_14")
   @Result(property = "custom15", column = "CUSTOM_15")
   @Result(property = "custom16", column = "CUSTOM_16")
+  @Result(property = "customInt1", column = "CUSTOM_INT_1")
+  @Result(property = "customInt2", column = "CUSTOM_INT_2")
+  @Result(property = "customInt3", column = "CUSTOM_INT_3")
+  @Result(property = "customInt4", column = "CUSTOM_INT_4")
+  @Result(property = "customInt5", column = "CUSTOM_INT_5")
+  @Result(property = "customInt6", column = "CUSTOM_INT_6")
+  @Result(property = "customInt7", column = "CUSTOM_INT_7")
+  @Result(property = "customInt8", column = "CUSTOM_INT_8")
   List<TaskSummaryImpl> queryTaskSummariesDb2(TaskQueryImpl taskQuery);
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "countQueryTasks")

@@ -15,6 +15,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Attachment;
@@ -30,7 +31,6 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
-/** Test for {@link TaskRepresentationModelAssembler}. */
 @TaskanaSpringBootTest
 class TaskRepresentationModelAssemblerTest {
 
@@ -113,6 +113,14 @@ class TaskRepresentationModelAssemblerTest {
     repModel.setCustom14("custom14");
     repModel.setCustom15("custom15");
     repModel.setCustom16("custom16");
+    repModel.setCustomInt1(1);
+    repModel.setCustomInt2(2);
+    repModel.setCustomInt3(3);
+    repModel.setCustomInt4(4);
+    repModel.setCustomInt5(5);
+    repModel.setCustomInt6(6);
+    repModel.setCustomInt7(7);
+    repModel.setCustomInt8(8);
     // when
     Task task = assembler.toEntityModel(repModel);
     // then
@@ -207,6 +215,14 @@ class TaskRepresentationModelAssemblerTest {
     task.setCustomField(TaskCustomField.CUSTOM_14, "custom14");
     task.setCustomField(TaskCustomField.CUSTOM_15, "custom15");
     task.setCustomField(TaskCustomField.CUSTOM_16, "custom16");
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_1, 1);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_2, 2);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_3, 3);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_4, 4);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_5, 5);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_6, 6);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_7, 7);
+    task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_8, 8);
     // when
     TaskRepresentationModel repModel = assembler.toModel(task);
     // then
@@ -272,6 +288,14 @@ class TaskRepresentationModelAssemblerTest {
     task.setCustom14("custom14");
     task.setCustom15("custom15");
     task.setCustom16("custom16");
+    task.setCustomInt1(1);
+    task.setCustomInt2(2);
+    task.setCustomInt3(3);
+    task.setCustomInt4(4);
+    task.setCustomInt5(5);
+    task.setCustomInt6(6);
+    task.setCustomInt7(7);
+    task.setCustomInt8(8);
     // when
     TaskRepresentationModel repModel = assembler.toModel(task);
     Task task2 = assembler.toEntityModel(repModel);
