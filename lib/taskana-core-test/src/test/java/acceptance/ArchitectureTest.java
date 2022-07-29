@@ -16,6 +16,7 @@ import static com.tngtech.archunit.library.GeneralCodingRules.USE_JODATIME;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 import static com.tngtech.archunit.library.freeze.FreezingArchRule.freeze;
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toCollection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.base.DescribedPredicate;
@@ -57,6 +58,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -252,6 +254,40 @@ class ArchitectureTest {
         .check(importedClasses);
   }
 
+  @Test
+  void moduleTaskShouldOnlyDependOn() {
+    // FIXME should not depend on spi
+    moduleShouldOnlyDependOn("task", List.of("workbasket", "classification", "common", "spi"));
+  }
+
+  @Test
+  void moduleClassificationShouldOnlyDependOn() {
+    moduleShouldOnlyDependOn("workbasket", List.of("common"));
+  }
+
+  @Test
+  void moduleWorkbasketShouldOnlyDependOn() {
+    moduleShouldOnlyDependOn("workbasket", List.of("common"));
+  }
+
+  @Test
+  @Disabled("Test is failing for an unknown reason")
+  void moduleMonitorShouldOnlyDependOn() {
+    // FIXME fails for some unknown reason...
+    moduleShouldOnlyDependOn("monitor", List.of("common", "classification", "task", "workbasket"));
+  }
+
+  @Test
+  void moduleUserShouldOnlyDependOn() {
+    moduleShouldOnlyDependOn("user", List.of("common"));
+  }
+
+  @Test
+  void moduleSpiShouldOnlyDependOn() {
+    // FIXME should not depend on task, classification and workbasket
+    moduleShouldOnlyDependOn("spi", List.of("common", "task", "classification", "workbasket"));
+  }
+
   @TestFactory
   Stream<DynamicTest> rootModulesShouldExist() {
     Function<String, String> descriptionProvider = p -> String.format("Package '%s' exists", p);
@@ -392,6 +428,38 @@ class ArchitectureTest {
   // endregion
 
   // region Helper Methods
+
+  /**
+   * Test the dependencies of the packages. Adds the prefix <code>pro.taskana</code> to every given
+   * value.
+   *
+   * @param module the module which should be tested
+   * @param dependentModules the expected dependent modules
+   */
+  private void moduleShouldOnlyDependOn(String module, List<String> dependentModules) {
+
+    String moduleTemplate = "pro.taskana.%s..";
+
+    String moduleUndertest = String.format(moduleTemplate, module);
+
+    List<String> dependentModulesList =
+        dependentModules.stream()
+            .map(dp -> String.format(moduleTemplate, dp))
+            .collect(toCollection(ArrayList::new));
+    dependentModulesList.addAll(List.of("java..", "org.."));
+    dependentModulesList.add(moduleUndertest);
+
+    classes()
+        .that()
+        .resideInAPackage(moduleUndertest)
+        .should()
+        .onlyAccessClassesThat()
+        .resideInAnyPackage(dependentModulesList.toArray(new String[0]))
+        .orShould()
+        .dependOnClassesThat()
+        .areAssignableTo(TaskanaEngineConfiguration.class)
+        .check(importedClasses);
+  }
 
   private static ArchCondition<JavaClass> implementToString() {
     return new ArchCondition<>("implement toString()") {
