@@ -71,7 +71,6 @@ import pro.taskana.testapi.TaskanaIntegrationTest;
  * Test architecture of classes in TASKANA. For more info and examples see <a
  * href="https://www.archunit.org/userguide/html/000_Index.html">ArchUnit User Guide</a>.
  */
-@Disabled
 class ArchitectureTest {
 
   // region Test setup
@@ -224,6 +223,7 @@ class ArchitectureTest {
   }
 
   @Test
+  @Disabled("Not working as expected, see https://github.com/TNG/ArchUnit/issues/923")
   void packagesShouldBeFreeOfCyclicDependencies() {
     // Frozen, so it can be improved over time:
     // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
@@ -231,6 +231,7 @@ class ArchitectureTest {
   }
 
   @Test
+  @Disabled("Not working as expected, see https://github.com/TNG/ArchUnit/issues/923")
   void classesShouldBeFreeOfCyclicDependencies() {
     SliceAssignment everySingleClass =
         new SliceAssignment() {
