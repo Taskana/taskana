@@ -11,42 +11,42 @@ public interface TaskHistoryQuery extends BaseQuery<TaskHistoryEvent, TaskHistor
   /**
    * Add your Id to your query.
    *
-   * @param idIn as String
+   * @param ids as String
    * @return the query
    */
-  TaskHistoryQuery idIn(String... idIn);
+  TaskHistoryQuery idIn(String... ids);
 
   /**
    * Add your businessProcessId to your query.
    *
-   * @param businessProcessId as String
+   * @param businessProcessIds as String
    * @return the query
    */
-  TaskHistoryQuery businessProcessIdIn(String... businessProcessId);
+  TaskHistoryQuery businessProcessIdIn(String... businessProcessIds);
 
   /**
    * Add your parentBusinessProcessId to your query.
    *
-   * @param parentBusinessProcessId as String
+   * @param parentBusinessProcessIds as String
    * @return the query
    */
-  TaskHistoryQuery parentBusinessProcessIdIn(String... parentBusinessProcessId);
+  TaskHistoryQuery parentBusinessProcessIdIn(String... parentBusinessProcessIds);
 
   /**
    * Add your taskId to your query.
    *
-   * @param taskId as String
+   * @param taskIds as String
    * @return the query
    */
-  TaskHistoryQuery taskIdIn(String... taskId);
+  TaskHistoryQuery taskIdIn(String... taskIds);
 
   /**
    * Add your eventType to your query.
    *
-   * @param eventType as String
+   * @param eventTypes as String
    * @return the query
    */
-  TaskHistoryQuery eventTypeIn(String... eventType);
+  TaskHistoryQuery eventTypeIn(String... eventTypes);
 
   /**
    * Add your created TimeInterval to your query.
@@ -60,241 +60,241 @@ public interface TaskHistoryQuery extends BaseQuery<TaskHistoryEvent, TaskHistor
   /**
    * Add your userId to your query.
    *
-   * @param userId as String
+   * @param userIds as String
    * @return the query
    */
-  TaskHistoryQuery userIdIn(String... userId);
+  TaskHistoryQuery userIdIn(String... userIds);
 
   /**
    * Add your domain to your query.
    *
-   * @param domain as String
+   * @param domains as String
    * @return the query
    */
-  TaskHistoryQuery domainIn(String... domain);
+  TaskHistoryQuery domainIn(String... domains);
 
   /**
    * Add your workbasketKey to your query.
    *
-   * @param workbasketKey as String
+   * @param workbasketKeys as String
    * @return the query
    */
-  TaskHistoryQuery workbasketKeyIn(String... workbasketKey);
+  TaskHistoryQuery workbasketKeyIn(String... workbasketKeys);
 
   /**
    * Add your porCompany to your query.
    *
-   * @param porCompany as String
+   * @param porCompanies as String
    * @return the query
    */
-  TaskHistoryQuery porCompanyIn(String... porCompany);
+  TaskHistoryQuery porCompanyIn(String... porCompanies);
 
   /**
    * Add your porSystem to your query.
    *
-   * @param porSystem as String
+   * @param porSystems as String
    * @return the query
    */
-  TaskHistoryQuery porSystemIn(String... porSystem);
+  TaskHistoryQuery porSystemIn(String... porSystems);
 
   /**
    * Add your porInstance to your query.
    *
-   * @param porInstance as String
+   * @param porInstances as String
    * @return the query
    */
-  TaskHistoryQuery porInstanceIn(String... porInstance);
+  TaskHistoryQuery porInstanceIn(String... porInstances);
 
   /**
    * Add your porType to your query.
    *
-   * @param porType as String
+   * @param porTypes as String
    * @return the query
    */
-  TaskHistoryQuery porTypeIn(String... porType);
+  TaskHistoryQuery porTypeIn(String... porTypes);
 
   /**
    * Add your porValue to your query.
    *
-   * @param porValue as String
+   * @param porValues as String
    * @return the query
    */
-  TaskHistoryQuery porValueIn(String... porValue);
+  TaskHistoryQuery porValueIn(String... porValues);
 
   /**
    * Add your taskClassificationKey to your query.
    *
-   * @param taskClassificationKey as String
+   * @param taskClassificationKeys as String
    * @return the query
    */
-  TaskHistoryQuery taskClassificationKeyIn(String... taskClassificationKey);
+  TaskHistoryQuery taskClassificationKeyIn(String... taskClassificationKeys);
 
   /**
    * Add your taskClassificationCategory to your query.
    *
-   * @param taskClassificationCategory as String
+   * @param taskClassificationCategories as String
    * @return the query
    */
-  TaskHistoryQuery taskClassificationCategoryIn(String... taskClassificationCategory);
+  TaskHistoryQuery taskClassificationCategoryIn(String... taskClassificationCategories);
 
   /**
    * Add your attachmentClassificationKey to your query.
    *
-   * @param attachmentClassificationKey as String
+   * @param attachmentClassificationKeys as String
    * @return the query
    */
-  TaskHistoryQuery attachmentClassificationKeyIn(String... attachmentClassificationKey);
+  TaskHistoryQuery attachmentClassificationKeyIn(String... attachmentClassificationKeys);
 
   /**
    * Add your oldValue to your query.
    *
-   * @param oldValue as String
+   * @param oldValues as String
    * @return the query
    */
-  TaskHistoryQuery oldValueIn(String... oldValue);
+  TaskHistoryQuery oldValueIn(String... oldValues);
 
   /**
    * Add your newValue to your query.
    *
-   * @param newValue as String
+   * @param newValues as String
    * @return the query
    */
-  TaskHistoryQuery newValueIn(String... newValue);
+  TaskHistoryQuery newValueIn(String... newValues);
 
   /**
    * Add your businessProcessId to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param businessProcessId as String
+   * @param businessProcessIds as String
    * @return the query
    */
-  TaskHistoryQuery businessProcessIdLike(String... businessProcessId);
+  TaskHistoryQuery businessProcessIdLike(String... businessProcessIds);
 
   /**
    * Add your parentBusinessProcessId to your query. It will be compared in SQL with an LIKE. If you
    * use a wildcard like % then it will be transmitted to the database.
    *
-   * @param parentBusinessProcessId as String
+   * @param parentBusinessProcessIds as String
    * @return the query
    */
-  TaskHistoryQuery parentBusinessProcessIdLike(String... parentBusinessProcessId);
+  TaskHistoryQuery parentBusinessProcessIdLike(String... parentBusinessProcessIds);
 
   /**
    * Add your taskId to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param taskId as String
+   * @param taskIds as String
    * @return the query
    */
-  TaskHistoryQuery taskIdLike(String... taskId);
+  TaskHistoryQuery taskIdLike(String... taskIds);
 
   /**
    * Add your eventType to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param eventType as String
+   * @param eventTypes as Strings
    * @return the query
    */
-  TaskHistoryQuery eventTypeLike(String... eventType);
+  TaskHistoryQuery eventTypeLike(String... eventTypes);
 
   /**
    * Add your userId to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param userId as String
+   * @param userIds as String
    * @return the query
    */
-  TaskHistoryQuery userIdLike(String... userId);
+  TaskHistoryQuery userIdLike(String... userIds);
 
   /**
    * Add your domain to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param domain as String
+   * @param domains as String
    * @return the query
    */
-  TaskHistoryQuery domainLike(String... domain);
+  TaskHistoryQuery domainLike(String... domains);
 
   /**
    * Add your workbasketKey to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param workbasketKey as String
+   * @param workbasketKeys as String
    * @return the query
    */
-  TaskHistoryQuery workbasketKeyLike(String... workbasketKey);
+  TaskHistoryQuery workbasketKeyLike(String... workbasketKeys);
 
   /**
    * Add your porCompany to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param porCompany as String
+   * @param porCompanies as String
    * @return the query
    */
-  TaskHistoryQuery porCompanyLike(String... porCompany);
+  TaskHistoryQuery porCompanyLike(String... porCompanies);
 
   /**
    * Add your porSystem to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param porSystem as String
+   * @param porSystems as String
    * @return the query
    */
-  TaskHistoryQuery porSystemLike(String... porSystem);
+  TaskHistoryQuery porSystemLike(String... porSystems);
 
   /**
    * Add your porInstance to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param porInstance as String
+   * @param porInstances as String
    * @return the query
    */
-  TaskHistoryQuery porInstanceLike(String... porInstance);
+  TaskHistoryQuery porInstanceLike(String... porInstances);
 
   /**
    * Add your porType to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param porType as String
+   * @param porTypes as String
    * @return the query
    */
-  TaskHistoryQuery porTypeLike(String... porType);
+  TaskHistoryQuery porTypeLike(String... porTypes);
 
   /**
    * Add your porValue to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param porValue as String
+   * @param porValues as String
    * @return the query
    */
-  TaskHistoryQuery porValueLike(String... porValue);
+  TaskHistoryQuery porValueLike(String... porValues);
 
   /**
    * Add your taskClassificationKey to your query. It will be compared in SQL with an LIKE. If you
    * use a wildcard like % then it will be transmitted to the database.
    *
-   * @param taskClassificationKey as String
+   * @param taskClassificationKeys as String
    * @return the query
    */
-  TaskHistoryQuery taskClassificationKeyLike(String... taskClassificationKey);
+  TaskHistoryQuery taskClassificationKeyLike(String... taskClassificationKeys);
 
   /**
    * Add your taskClassificationCategory to your query. It will be compared in SQL with an LIKE. If
    * you use a wildcard like % then it will be transmitted to the database.
    *
-   * @param taskClassificationCategory as String
+   * @param taskClassificationCategories as String
    * @return the query
    */
-  TaskHistoryQuery taskClassificationCategoryLike(String... taskClassificationCategory);
+  TaskHistoryQuery taskClassificationCategoryLike(String... taskClassificationCategories);
 
   /**
    * Add your attachmentClassificationKey to your query. It will be compared in SQL with an LIKE. If
    * you use a wildcard like % then it will be transmitted to the database.
    *
-   * @param attachmentClassificationKey as String
+   * @param attachmentClassificationKeys as String
    * @return the query
    */
-  TaskHistoryQuery attachmentClassificationKeyLike(String... attachmentClassificationKey);
+  TaskHistoryQuery attachmentClassificationKeyLike(String... attachmentClassificationKeys);
 
   /**
    * Add your oldValue to your query. It will be compared in SQL with an LIKE. If you use a wildcard
@@ -309,10 +309,10 @@ public interface TaskHistoryQuery extends BaseQuery<TaskHistoryEvent, TaskHistor
    * Add your newValue to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param newValue as String
+   * @param newValues as String
    * @return the query
    */
-  TaskHistoryQuery newValueLike(String... newValue);
+  TaskHistoryQuery newValueLike(String... newValues);
 
   /**
    * Add the values of custom attributes for exact matching to your query.

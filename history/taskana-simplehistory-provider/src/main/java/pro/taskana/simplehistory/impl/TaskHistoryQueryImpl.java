@@ -266,14 +266,14 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   }
 
   @Override
-  public TaskHistoryQuery idIn(String... idIn) {
-    this.idIn = idIn;
+  public TaskHistoryQuery idIn(String... ids) {
+    this.idIn = ids;
     return this;
   }
 
   @Override
-  public TaskHistoryQuery businessProcessIdIn(String... businessProcessId) {
-    this.businessProcessIdIn = businessProcessId;
+  public TaskHistoryQuery businessProcessIdIn(String... businessProcessIds) {
+    this.businessProcessIdIn = businessProcessIds;
     return this;
   }
 

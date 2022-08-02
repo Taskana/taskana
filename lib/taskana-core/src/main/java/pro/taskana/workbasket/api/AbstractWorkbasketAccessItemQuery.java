@@ -25,18 +25,18 @@ public interface AbstractWorkbasketAccessItemQuery<
   /**
    * Add the {@linkplain Workbasket#getId() id} to your query.
    *
-   * @param workbasketId the {@linkplain Workbasket#getId() id} of the Workbasket
+   * @param workbasketIds the {@linkplain Workbasket#getId() id} of the Workbasket
    * @return the query
    */
-  Q workbasketIdIn(String... workbasketId);
+  Q workbasketIdIn(String... workbasketIds);
 
   /**
    * Add your accessIds to your query.
    *
-   * @param accessId as access Ids
+   * @param accessIds as access Ids
    * @return the query
    */
-  Q accessIdIn(String... accessId);
+  Q accessIdIn(String... accessIds);
 
   /**
    * Sort the query result by workbasket id.

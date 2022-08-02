@@ -18,18 +18,18 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Filter for summaries which contain one of the given taskIds.
    *
-   * @param taskIds The ids of the searched-for tasks.
+   * @param ids The ids of the searched-for tasks.
    * @return the taskQuery
    */
-  TaskQuery idIn(String... taskIds);
+  TaskQuery idIn(String... ids);
 
   /**
    * Exclude summaries which contain one of the given taskIds.
    *
-   * @param taskIds The ids of the searched-for tasks.
+   * @param ids The ids of the searched-for tasks.
    * @return the taskQuery
    */
-  TaskQuery idNotIn(String... taskIds);
+  TaskQuery idNotIn(String... ids);
 
   /**
    * This method sorts the query result according to the primary task id.
@@ -415,20 +415,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple
    * arguments they are combined with the OR keyword.
    *
-   * @param note your custom note
+   * @param notes your custom notes
    * @return the query
    */
-  TaskQuery noteLike(String... note);
+  TaskQuery noteLike(String... notes);
 
   /**
    * Exclude your custom note for pattern matching from your query. It will be compared in SQL with
    * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param note your custom note
+   * @param notes your custom notes
    * @return the query
    */
-  TaskQuery noteNotLike(String... note);
+  TaskQuery noteNotLike(String... notes);
 
   /**
    * This method sorts the query result according to the note.
@@ -447,20 +447,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * LIKE operator. You may use a wildcard like % to specify the pattern. If you specify multiple
    * arguments they are combined with the OR keyword.
    *
-   * @param description your description
+   * @param descriptions your descriptions
    * @return the query
    */
-  TaskQuery descriptionLike(String... description);
+  TaskQuery descriptionLike(String... descriptions);
 
   /**
    * Exclude your description for pattern matching from your query. It will be compared in SQL with
    * the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param description your description
+   * @param descriptions your descriptions
    * @return the query
    */
-  TaskQuery descriptionNotLike(String... description);
+  TaskQuery descriptionNotLike(String... descriptions);
 
   // endregion
   // region priority
@@ -942,20 +942,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
    * If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param company the company of your primary object reference
+   * @param companies the companies of your primary object reference
    * @return the query
    */
-  TaskQuery primaryObjectReferenceCompanyLike(String... company);
+  TaskQuery primaryObjectReferenceCompanyLike(String... companies);
 
   /**
    * Exclude the company of the primary object reference for pattern matching from your query. It
    * will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify the
    * pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param company the company of your primary object reference
+   * @param companies the companies of your primary object reference
    * @return the query
    */
-  TaskQuery primaryObjectReferenceCompanyNotLike(String... company);
+  TaskQuery primaryObjectReferenceCompanyNotLike(String... companies);
 
   /**
    * This method sorts the query result according to the company of the primary object reference.
@@ -1190,20 +1190,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add the attachment classification Ids for exact matching to your query.
    *
-   * @param attachmentClassificationId the attachmentClassificationId values of the searched for
+   * @param attachmentClassificationIds the attachmentClassificationId values of the searched for
    *     tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationIdIn(String... attachmentClassificationId);
+  TaskQuery attachmentClassificationIdIn(String... attachmentClassificationIds);
 
   /**
    * Exclude the attachment classification Ids for exact matching from your query.
    *
-   * @param attachmentClassificationId the attachmentClassificationId values of the searched for
+   * @param attachmentClassificationIds the attachmentClassificationId values of the searched for
    *     tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationIdNotIn(String... attachmentClassificationId);
+  TaskQuery attachmentClassificationIdNotIn(String... attachmentClassificationIds);
 
   /**
    * This method sorts the query result according to the attachment classification id. (Should only
@@ -1241,22 +1241,22 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
    * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param attachmentClassificationKey the attachmentClassificationKeys values of the searched for
+   * @param attachmentClassificationKeys the attachmentClassificationKey values of the searched for
    *     tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey);
+  TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKeys);
 
   /**
    * Exclude the attachment classification Keys for pattern matching from your query. It will be
    * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
    * If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param attachmentClassificationKey the attachmentClassificationKeys values of the searched for
+   * @param attachmentClassificationKeys the attachmentClassificationKey values of the searched for
    *     tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationKeyNotLike(String... attachmentClassificationKey);
+  TaskQuery attachmentClassificationKeyNotLike(String... attachmentClassificationKeys);
 
   /**
    * This method sorts the query result according to the attachment classification key. (Should only
@@ -1274,42 +1274,42 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add the attachment classification names for exact matching to your query.
    *
-   * @param attachmentClassificationName the attachmentClassificationName values of the searched for
-   *     tasks
+   * @param attachmentClassificationNames the attachmentClassificationName values of the searched
+   *     for tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName);
+  TaskQuery attachmentClassificationNameIn(String... attachmentClassificationNames);
 
   /**
    * Exclude the attachment classification names for exact matching from your query.
    *
-   * @param attachmentClassificationName the attachmentClassificationName values of the searched for
-   *     tasks
+   * @param attachmentClassificationNames the attachmentClassificationName values of the searched
+   *     for tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationNameNotIn(String... attachmentClassificationName);
+  TaskQuery attachmentClassificationNameNotIn(String... attachmentClassificationNames);
 
   /**
    * Add the values of attachment classification names for pattern matching to your query. They will
    * be compared in SQL with the LIKE operator. You may use a wildcard like % to specify the
    * pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param attachmentClassificationName the attachmentClassificationName values of the searched-for
-   *     tasks
+   * @param attachmentClassificationNames the attachmentClassificationName values of the
+   *     searched-for tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName);
+  TaskQuery attachmentClassificationNameLike(String... attachmentClassificationNames);
 
   /**
    * Exclude the values of attachment classification names for pattern matching from your query.
    * They will be compared in SQL with the LIKE operator. You may use a wildcard like % to specify
    * the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param attachmentClassificationName the attachmentClassificationName values of the searched-for
-   *     tasks
+   * @param attachmentClassificationNames the attachmentClassificationName values of the
+   *     searched-for tasks
    * @return the query
    */
-  TaskQuery attachmentClassificationNameNotLike(String... attachmentClassificationName);
+  TaskQuery attachmentClassificationNameNotLike(String... attachmentClassificationNames);
 
   /**
    * This method sorts the query result according to the attachment classification name. (Should
@@ -1327,18 +1327,18 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add the values of attachment channel for exact matching to your query.
    *
-   * @param attachmentChannel the attachmentChannel values of the searched for tasks
+   * @param attachmentChannels the attachmentChannel values of the searched for tasks
    * @return the query
    */
-  TaskQuery attachmentChannelIn(String... attachmentChannel);
+  TaskQuery attachmentChannelIn(String... attachmentChannels);
 
   /**
    * Exclude the values of attachment channel for exact matching from your query.
    *
-   * @param attachmentChannel the attachmentChannel values of the searched for tasks
+   * @param attachmentChannels the attachmentChannel values of the searched for tasks
    * @return the query
    */
-  TaskQuery attachmentChannelNotIn(String... attachmentChannel);
+  TaskQuery attachmentChannelNotIn(String... attachmentChannels);
 
   /**
    * This method sorts the query result according to the owner's long name. (Should only be used if
@@ -1355,20 +1355,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
    * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param attachmentChannel the attachmentChannel values of the searched-for tasks
+   * @param attachmentChannels the attachmentChannel values of the searched-for tasks
    * @return the query
    */
-  TaskQuery attachmentChannelLike(String... attachmentChannel);
+  TaskQuery attachmentChannelLike(String... attachmentChannels);
 
   /**
    * Exclude the values of attachment channel for pattern matching from your query. They will be
    * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
    * If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param attachmentChannel the attachmentChannel values of the searched-for tasks
+   * @param attachmentChannels the attachmentChannel values of the searched-for tasks
    * @return the query
    */
-  TaskQuery attachmentChannelNotLike(String... attachmentChannel);
+  TaskQuery attachmentChannelNotLike(String... attachmentChannels);
 
   /**
    * This method sorts the query result according to the attachment channel. (Should only be used if
@@ -1386,38 +1386,38 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add the values of reference values for exact matching to your query.
    *
-   * @param referenceValue the referenceValue values of the searched for tasks
+   * @param referenceValues the referenceValue values of the searched for tasks
    * @return the query
    */
-  TaskQuery attachmentReferenceValueIn(String... referenceValue);
+  TaskQuery attachmentReferenceValueIn(String... referenceValues);
 
   /**
    * Exclude the values of reference values for exact matching from your query.
    *
-   * @param referenceValue the referenceValue values of the searched for tasks
+   * @param referenceValues the referenceValue values of the searched for tasks
    * @return the query
    */
-  TaskQuery attachmentReferenceValueNotIn(String... referenceValue);
+  TaskQuery attachmentReferenceValueNotIn(String... referenceValues);
 
   /**
    * Add the values of reference values for pattern matching to your query. They will be compared in
    * SQL with the LIKE operator. You may use a wildcard like % to specify the pattern. If you
    * specify multiple arguments they are combined with the OR keyword.
    *
-   * @param referenceValue the referenceValue values of the searched-for tasks
+   * @param referenceValues the referenceValue values of the searched-for tasks
    * @return the query
    */
-  TaskQuery attachmentReferenceValueLike(String... referenceValue);
+  TaskQuery attachmentReferenceValueLike(String... referenceValues);
 
   /**
    * Exclude the values of reference values for pattern matching to your query. They will be
    * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
    * If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param referenceValue the referenceValue values of the searched-for tasks
+   * @param referenceValues the referenceValue values of the searched-for tasks
    * @return the query
    */
-  TaskQuery attachmentReferenceValueNotLike(String... referenceValue);
+  TaskQuery attachmentReferenceValueNotLike(String... referenceValues);
 
   /**
    * This method sorts the query result according to the attachment reference value. (Should only be
@@ -1494,11 +1494,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * {@linkplain Task#getSecondaryObjectReferences() secondaryObjectReferences} for exact matching
    * to your query.
    *
-   * @param companyIn the {@linkplain ObjectReference#getCompany() company} values of the searched
+   * @param companies the {@linkplain ObjectReference#getCompany() company} values of the searched
    *     for {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorCompanyIn(String... companyIn);
+  TaskQuery sorCompanyIn(String... companies);
 
   /**
    * Add the values of {@linkplain ObjectReference#getCompany() company} of at least one of the
@@ -1507,11 +1507,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * % to specify the pattern. If you specify multiple arguments they are combined with the OR
    * keyword.
    *
-   * @param companyLike the {@linkplain ObjectReference#getCompany() company} values of the
+   * @param companies the {@linkplain ObjectReference#getCompany() company} values of the
    *     searched-for {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorCompanyLike(String... companyLike);
+  TaskQuery sorCompanyLike(String... companies);
 
   // endregion
   // region secondaryObjectReferenceSystem
@@ -1521,11 +1521,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * {@linkplain Task#getSecondaryObjectReferences() secondaryObjectReferences} for exact matching
    * to your query.
    *
-   * @param systemIn the {@linkplain ObjectReference#getSystem() system} values of the searched for
+   * @param systems the {@linkplain ObjectReference#getSystem() system} values of the searched for
    *     {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorSystemIn(String... systemIn);
+  TaskQuery sorSystemIn(String... systems);
 
   /**
    * Add the values of {@linkplain ObjectReference#getSystem system} of at least one of the
@@ -1534,11 +1534,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * % to specify the pattern. If you specify multiple arguments they are combined with the OR
    * keyword.
    *
-   * @param systemLike the {@linkplain ObjectReference#getSystem system} values of the searched-for
+   * @param systems the {@linkplain ObjectReference#getSystem system} values of the searched-for
    *     {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorSystemLike(String... systemLike);
+  TaskQuery sorSystemLike(String... systems);
 
   // endregion
   // region secondaryObjectReferenceSystemInstance
@@ -1548,11 +1548,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * least one of the {@linkplain Task#getSecondaryObjectReferences() secondaryObjectReferences} for
    * exact matching to your query.
    *
-   * @param systemInstanceIn the {@linkplain ObjectReference#getSystemInstance() systemInstance}
+   * @param systemInstances the {@linkplain ObjectReference#getSystemInstance() systemInstance}
    *     values of the searched for {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorSystemInstanceIn(String... systemInstanceIn);
+  TaskQuery sorSystemInstanceIn(String... systemInstances);
 
   /**
    * Add the values of {@linkplain ObjectReference#getSystemInstance() systemInstance} of at least
@@ -1561,11 +1561,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * use a wildcard like % to specify the pattern. If you specify multiple arguments they are
    * combined with the OR keyword.
    *
-   * @param systemInstanceLike the {@linkplain ObjectReference#getSystemInstance() systemInstance}
+   * @param systemInstances the {@linkplain ObjectReference#getSystemInstance() systemInstance}
    *     values of the searched-for {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorSystemInstanceLike(String... systemInstanceLike);
+  TaskQuery sorSystemInstanceLike(String... systemInstances);
 
   // endregion
   // region secondaryObjectReferenceType
@@ -1575,11 +1575,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * {@linkplain Task#getSecondaryObjectReferences() secondaryObjectReferences} for exact matching
    * to your query.
    *
-   * @param typeIn the {@linkplain ObjectReference#getType() type} values of the searched for
+   * @param types the {@linkplain ObjectReference#getType() type} values of the searched for
    *     {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorTypeIn(String... typeIn);
+  TaskQuery sorTypeIn(String... types);
 
   /**
    * Add the values of {@linkplain ObjectReference#getType type} of at least one of the {@linkplain
@@ -1587,11 +1587,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query. They will be compared in SQL with the LIKE operator. You may use a wildcard like % to
    * specify the pattern. If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param typeLike the {@linkplain ObjectReference#getType type} values of the searched-for
+   * @param types the {@linkplain ObjectReference#getType type} values of the searched-for
    *     {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorTypeLike(String... typeLike);
+  TaskQuery sorTypeLike(String... types);
 
   // endregion
   // region secondaryObjectReferenceValue
@@ -1601,11 +1601,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * {@linkplain Task#getSecondaryObjectReferences() secondaryObjectReferences} for exact matching
    * to your query.
    *
-   * @param valueIn the {@linkplain ObjectReference#getValue() value} values of the searched for
+   * @param values the {@linkplain ObjectReference#getValue() value} values of the searched for
    *     {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorValueIn(String... valueIn);
+  TaskQuery sorValueIn(String... values);
 
   /**
    * Add the values of {@linkplain ObjectReference#getValue() value} of at least one of the
@@ -1614,11 +1614,11 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * % to specify the pattern. If you specify multiple arguments they are combined with the OR
    * keyword.
    *
-   * @param valueLike the {@linkplain ObjectReference#getValue() value} values of the searched-for
+   * @param values the {@linkplain ObjectReference#getValue() value} values of the searched-for
    *     {@linkplain Task Tasks}
    * @return the {@linkplain TaskQuery}
    */
-  TaskQuery sorValueLike(String... valueLike);
+  TaskQuery sorValueLike(String... values);
 
   // endregion
   // region customAttributes

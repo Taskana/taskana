@@ -81,17 +81,17 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery idIn(String... id) {
-    if (id != null && id.length != 0) {
-      this.idIn = id;
+  public WorkbasketQuery idIn(String... ids) {
+    if (ids != null && ids.length != 0) {
+      this.idIn = ids;
     }
     return this;
   }
 
   @Override
-  public WorkbasketQuery keyIn(String... key) {
-    if (key != null && key.length != 0) {
-      this.keyIn = key;
+  public WorkbasketQuery keyIn(String... keys) {
+    if (keys != null && keys.length != 0) {
+      this.keyIn = keys;
     }
     return this;
   }
@@ -121,14 +121,14 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery domainIn(String... domain) {
-    this.domainIn = domain;
+  public WorkbasketQuery domainIn(String... domains) {
+    this.domainIn = domains;
     return this;
   }
 
   @Override
-  public WorkbasketQuery typeIn(WorkbasketType... type) {
-    this.type = type;
+  public WorkbasketQuery typeIn(WorkbasketType... types) {
+    this.type = types;
     return this;
   }
 
@@ -147,8 +147,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery descriptionLike(String... description) {
-    this.descriptionLike = toLowerCopy(description);
+  public WorkbasketQuery descriptionLike(String... descriptions) {
+    this.descriptionLike = toLowerCopy(descriptions);
     return this;
   }
 
@@ -224,8 +224,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery domainLike(String... domain) {
-    this.domainLike = toLowerCopy(domain);
+  public WorkbasketQuery domainLike(String... domains) {
+    this.domainLike = toLowerCopy(domains);
     return this;
   }
 
@@ -300,50 +300,50 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery orgLevel1In(String... orgLevel1) {
-    this.orgLevel1In = orgLevel1;
+  public WorkbasketQuery orgLevel1In(String... orgLevels1) {
+    this.orgLevel1In = orgLevels1;
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel1Like(String... orgLevel1) {
-    this.orgLevel1Like = toLowerCopy(orgLevel1);
+  public WorkbasketQuery orgLevel1Like(String... orgLevels1) {
+    this.orgLevel1Like = toLowerCopy(orgLevels1);
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel2In(String... orgLevel2) {
-    this.orgLevel2In = orgLevel2;
+  public WorkbasketQuery orgLevel2In(String... orgLevels2) {
+    this.orgLevel2In = orgLevels2;
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel2Like(String... orgLevel2) {
-    this.orgLevel2Like = toLowerCopy(orgLevel2);
+  public WorkbasketQuery orgLevel2Like(String... orgLevels2) {
+    this.orgLevel2Like = toLowerCopy(orgLevels2);
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel3In(String... orgLevel3) {
-    this.orgLevel3In = orgLevel3;
+  public WorkbasketQuery orgLevel3In(String... orgLevels3) {
+    this.orgLevel3In = orgLevels3;
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel3Like(String... orgLevel3) {
-    this.orgLevel3Like = toLowerCopy(orgLevel3);
+  public WorkbasketQuery orgLevel3Like(String... orgLevels3) {
+    this.orgLevel3Like = toLowerCopy(orgLevels3);
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel4In(String... orgLevel4) {
-    this.orgLevel4In = orgLevel4;
+  public WorkbasketQuery orgLevel4In(String... orgLevels4) {
+    this.orgLevel4In = orgLevels4;
     return this;
   }
 
   @Override
-  public WorkbasketQuery orgLevel4Like(String... orgLevel4) {
-    this.orgLevel4Like = toLowerCopy(orgLevel4);
+  public WorkbasketQuery orgLevel4Like(String... orgLevels4) {
+    this.orgLevel4Like = toLowerCopy(orgLevels4);
     return this;
   }
 

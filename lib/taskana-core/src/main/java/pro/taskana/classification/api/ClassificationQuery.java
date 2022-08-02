@@ -17,64 +17,64 @@ public interface ClassificationQuery
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getKey() key} equal to any of the passed values.
    *
-   * @param key the values of interest
+   * @param keys the values of interest
    * @return the query
    */
-  ClassificationQuery keyIn(String... key);
+  ClassificationQuery keyIn(String... keys);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have an {@linkplain
    * Classification#getId() id} equal to any of the passed values.
    *
-   * @param id the values of interest
+   * @param ids the values of interest
    * @return the query
    */
-  ClassificationQuery idIn(String... id);
+  ClassificationQuery idIn(String... ids);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getParentId() parentId} equal to any of the passed values.
    *
-   * @param parentId the values of interest
+   * @param parentIds the values of interest
    * @return the query
    */
-  ClassificationQuery parentIdIn(String... parentId);
+  ClassificationQuery parentIdIn(String... parentIds);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getParentKey() parentKey} equal to any of the passed values.
    *
-   * @param parentKey the values of interest
+   * @param parentKeys the values of interest
    * @return the query
    */
-  ClassificationQuery parentKeyIn(String... parentKey);
+  ClassificationQuery parentKeyIn(String... parentKeys);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getCategory() category} equal to any of the passed values.
    *
-   * @param category the values of interest
+   * @param categories the values of interest
    * @return the query
    */
-  ClassificationQuery categoryIn(String... category);
+  ClassificationQuery categoryIn(String... categories);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getType() type} equal to any of the passed values.
    *
-   * @param type the values of interest
+   * @param types the values of interest
    * @return the query
    */
-  ClassificationQuery typeIn(String... type);
+  ClassificationQuery typeIn(String... types);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getDomain() domain} equal to any of the passed values.
    *
-   * @param domain the values of interest
+   * @param domains the values of interest
    * @return the query
    */
-  ClassificationQuery domainIn(String... domain);
+  ClassificationQuery domainIn(String... domains);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
@@ -109,10 +109,10 @@ public interface ClassificationQuery
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getName() name} equal to any of the passed values.
    *
-   * @param nameIn the values of interest
+   * @param names the values of interest
    * @return the query
    */
-  ClassificationQuery nameIn(String... nameIn);
+  ClassificationQuery nameIn(String... names);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
@@ -123,24 +123,24 @@ public interface ClassificationQuery
    *
    * <p>Not using any wildcard will compute an exact match.
    *
-   * @param nameLike the patterns of interest
+   * @param names the patterns of interest
    * @return the query
    */
-  ClassificationQuery nameLike(String... nameLike);
+  ClassificationQuery nameLike(String... names);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
-   * Classification#getDescription() description} value that matches any of the passed patterns.
+   * Classification#getDescription() description} value that matches the passed pattern.
    *
    * <p>Behind this method the SQL LIKE operator is used. SQL LIKE wildcard characters will be
    * resolved correctly.
    *
    * <p>Not using any wildcard will compute an exact match.
    *
-   * @param descriptionLike the patterns of interest
+   * @param description the pattern of interest
    * @return the query
    */
-  ClassificationQuery descriptionLike(String descriptionLike);
+  ClassificationQuery descriptionLike(String description);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
@@ -155,10 +155,10 @@ public interface ClassificationQuery
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getServiceLevel() serviceLevel} equal to any of the passed values.
    *
-   * @param serviceLevelIn the values of interest
+   * @param serviceLevels the values of interest
    * @return the query
    */
-  ClassificationQuery serviceLevelIn(String... serviceLevelIn);
+  ClassificationQuery serviceLevelIn(String... serviceLevels);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
@@ -169,20 +169,20 @@ public interface ClassificationQuery
    *
    * <p>Not using any wildcard will compute an exact match.
    *
-   * @param serviceLevelLike the patterns of interest
+   * @param serviceLevels the patterns of interest
    * @return the query
    */
-  ClassificationQuery serviceLevelLike(String... serviceLevelLike);
+  ClassificationQuery serviceLevelLike(String... serviceLevels);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
    * Classification#getApplicationEntryPoint() applicationEntryPoint} equal to any of the passed
    * values.
    *
-   * @param applicationEntryPointIn the values of interest
+   * @param applicationEntryPoints the values of interest
    * @return the query
    */
-  ClassificationQuery applicationEntryPointIn(String... applicationEntryPointIn);
+  ClassificationQuery applicationEntryPointIn(String... applicationEntryPoints);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain
@@ -194,10 +194,10 @@ public interface ClassificationQuery
    *
    * <p>Not using any wildcard will compute an exact match.
    *
-   * @param applicationEntryPointLike the patterns of interest
+   * @param applicationEntryPoints the patterns of interest
    * @return the query
    */
-  ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike);
+  ClassificationQuery applicationEntryPointLike(String... applicationEntryPoints);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have the specified {@linkplain
