@@ -73,44 +73,44 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery keyIn(String... key) {
-    this.key = key;
+  public ClassificationQuery keyIn(String... keys) {
+    this.key = keys;
     return this;
   }
 
   @Override
-  public ClassificationQuery idIn(String... id) {
-    this.idIn = id;
+  public ClassificationQuery idIn(String... ids) {
+    this.idIn = ids;
     return this;
   }
 
   @Override
-  public ClassificationQuery parentIdIn(String... parentId) {
-    this.parentId = parentId;
+  public ClassificationQuery parentIdIn(String... parentIds) {
+    this.parentId = parentIds;
     return this;
   }
 
   @Override
-  public ClassificationQuery parentKeyIn(String... parentKey) {
-    this.parentKey = parentKey;
+  public ClassificationQuery parentKeyIn(String... parentKeys) {
+    this.parentKey = parentKeys;
     return this;
   }
 
   @Override
-  public ClassificationQuery categoryIn(String... category) {
-    this.category = category;
+  public ClassificationQuery categoryIn(String... categories) {
+    this.category = categories;
     return this;
   }
 
   @Override
-  public ClassificationQuery typeIn(String... type) {
-    this.type = type;
+  public ClassificationQuery typeIn(String... types) {
+    this.type = types;
     return this;
   }
 
   @Override
-  public ClassificationQuery domainIn(String... domain) {
-    this.domain = domain;
+  public ClassificationQuery domainIn(String... domains) {
+    this.domain = domains;
     return this;
   }
 
@@ -135,20 +135,20 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery nameIn(String... nameIn) {
-    this.nameIn = nameIn;
+  public ClassificationQuery nameIn(String... names) {
+    this.nameIn = names;
     return this;
   }
 
   @Override
-  public ClassificationQuery nameLike(String... nameLike) {
-    this.nameLike = toLowerCopy(nameLike);
+  public ClassificationQuery nameLike(String... names) {
+    this.nameLike = toLowerCopy(names);
     return this;
   }
 
   @Override
-  public ClassificationQuery descriptionLike(String description) {
-    this.descriptionLike = description.toLowerCase();
+  public ClassificationQuery descriptionLike(String descriptions) {
+    this.descriptionLike = descriptions.toLowerCase();
     return this;
   }
 
@@ -159,61 +159,61 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery serviceLevelIn(String... serviceLevelIn) {
-    this.serviceLevelIn = serviceLevelIn;
+  public ClassificationQuery serviceLevelIn(String... serviceLevels) {
+    this.serviceLevelIn = serviceLevels;
     return this;
   }
 
   @Override
-  public ClassificationQuery serviceLevelLike(String... serviceLevelLike) {
-    this.serviceLevelLike = toLowerCopy(serviceLevelLike);
+  public ClassificationQuery serviceLevelLike(String... serviceLevels) {
+    this.serviceLevelLike = toLowerCopy(serviceLevels);
     return this;
   }
 
   @Override
-  public ClassificationQuery applicationEntryPointIn(String... applicationEntryPointIn) {
-    this.applicationEntryPointIn = applicationEntryPointIn;
+  public ClassificationQuery applicationEntryPointIn(String... applicationEntryPoints) {
+    this.applicationEntryPointIn = applicationEntryPoints;
     return this;
   }
 
   @Override
-  public ClassificationQuery applicationEntryPointLike(String... applicationEntryPointLike) {
-    this.applicationEntryPointLike = toLowerCopy(applicationEntryPointLike);
+  public ClassificationQuery applicationEntryPointLike(String... applicationEntryPoints) {
+    this.applicationEntryPointLike = toLowerCopy(applicationEntryPoints);
     return this;
   }
 
   @Override
   public ClassificationQuery customAttributeIn(
-      ClassificationCustomField customField, String... customIn) throws InvalidArgumentException {
-    if (customIn.length == 0) {
+      ClassificationCustomField customField, String... values) throws InvalidArgumentException {
+    if (values.length == 0) {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1In = customIn;
+        this.custom1In = values;
         break;
       case CUSTOM_2:
-        this.custom2In = customIn;
+        this.custom2In = values;
         break;
       case CUSTOM_3:
-        this.custom3In = customIn;
+        this.custom3In = values;
         break;
       case CUSTOM_4:
-        this.custom4In = customIn;
+        this.custom4In = values;
         break;
       case CUSTOM_5:
-        this.custom5In = customIn;
+        this.custom5In = values;
         break;
       case CUSTOM_6:
-        this.custom6In = customIn;
+        this.custom6In = values;
         break;
       case CUSTOM_7:
-        this.custom7In = customIn;
+        this.custom7In = values;
         break;
       case CUSTOM_8:
-        this.custom8In = customIn;
+        this.custom8In = values;
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -224,36 +224,36 @@ public class ClassificationQueryImpl implements ClassificationQuery {
 
   @Override
   public ClassificationQuery customAttributeLike(
-      ClassificationCustomField customField, String... customLike) throws InvalidArgumentException {
-    if (customLike.length == 0) {
+      ClassificationCustomField customField, String... values) throws InvalidArgumentException {
+    if (values.length == 0) {
       throw new InvalidArgumentException(
           "At least one string has to be provided as a search parameter");
     }
 
     switch (customField) {
       case CUSTOM_1:
-        this.custom1Like = toLowerCopy(customLike);
+        this.custom1Like = toLowerCopy(values);
         break;
       case CUSTOM_2:
-        this.custom2Like = toLowerCopy(customLike);
+        this.custom2Like = toLowerCopy(values);
         break;
       case CUSTOM_3:
-        this.custom3Like = toLowerCopy(customLike);
+        this.custom3Like = toLowerCopy(values);
         break;
       case CUSTOM_4:
-        this.custom4Like = toLowerCopy(customLike);
+        this.custom4Like = toLowerCopy(values);
         break;
       case CUSTOM_5:
-        this.custom5Like = toLowerCopy(customLike);
+        this.custom5Like = toLowerCopy(values);
         break;
       case CUSTOM_6:
-        this.custom6Like = toLowerCopy(customLike);
+        this.custom6Like = toLowerCopy(values);
         break;
       case CUSTOM_7:
-        this.custom7Like = toLowerCopy(customLike);
+        this.custom7Like = toLowerCopy(values);
         break;
       case CUSTOM_8:
-        this.custom8Like = toLowerCopy(customLike);
+        this.custom8Like = toLowerCopy(values);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");

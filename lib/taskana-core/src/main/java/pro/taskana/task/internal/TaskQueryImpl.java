@@ -556,14 +556,14 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery noteLike(String... note) {
-    this.noteLike = toLowerCopy(note);
+  public TaskQuery noteLike(String... notes) {
+    this.noteLike = toLowerCopy(notes);
     return this;
   }
 
   @Override
-  public TaskQuery noteNotLike(String... note) {
-    this.noteNotLike = toLowerCopy(note);
+  public TaskQuery noteNotLike(String... notes) {
+    this.noteNotLike = toLowerCopy(notes);
     return this;
   }
 
@@ -573,14 +573,14 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery descriptionLike(String... description) {
-    this.descriptionLike = toLowerCopy(description);
+  public TaskQuery descriptionLike(String... descriptions) {
+    this.descriptionLike = toLowerCopy(descriptions);
     return this;
   }
 
   @Override
-  public TaskQuery descriptionNotLike(String... description) {
-    this.descriptionNotLike = toLowerCopy(description);
+  public TaskQuery descriptionNotLike(String... descriptions) {
+    this.descriptionNotLike = toLowerCopy(descriptions);
     return this;
   }
 
@@ -619,8 +619,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery classificationIdIn(String... classificationId) {
-    this.classificationIdIn = classificationId;
+  public TaskQuery classificationIdIn(String... classificationIds) {
+    this.classificationIdIn = classificationIds;
     return this;
   }
 
@@ -631,8 +631,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery classificationKeyIn(String... classificationKey) {
-    this.classificationKeyIn = classificationKey;
+  public TaskQuery classificationKeyIn(String... classificationKeys) {
+    this.classificationKeyIn = classificationKeys;
     return this;
   }
 
@@ -884,14 +884,14 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery primaryObjectReferenceCompanyLike(String... company) {
-    this.porCompanyLike = toLowerCopy(company);
+  public TaskQuery primaryObjectReferenceCompanyLike(String... companies) {
+    this.porCompanyLike = toLowerCopy(companies);
     return this;
   }
 
   @Override
-  public TaskQuery primaryObjectReferenceCompanyNotLike(String... company) {
-    this.porCompanyNotLike = toLowerCopy(company);
+  public TaskQuery primaryObjectReferenceCompanyNotLike(String... companies) {
+    this.porCompanyNotLike = toLowerCopy(companies);
     return this;
   }
 
@@ -913,8 +913,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery primaryObjectReferenceSystemLike(String... system) {
-    this.porSystemLike = toLowerCopy(system);
+  public TaskQuery primaryObjectReferenceSystemLike(String... systems) {
+    this.porSystemLike = toLowerCopy(systems);
     return this;
   }
 
@@ -942,8 +942,8 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstance) {
-    this.porSystemInstanceLike = toLowerCopy(systemInstance);
+  public TaskQuery primaryObjectReferenceSystemInstanceLike(String... systemInstances) {
+    this.porSystemInstanceLike = toLowerCopy(systemInstances);
     return this;
   }
 
@@ -1029,16 +1029,16 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery attachmentClassificationIdIn(String... attachmentClassificationId) {
+  public TaskQuery attachmentClassificationIdIn(String... attachmentClassificationIds) {
     joinWithAttachments = true;
-    this.attachmentClassificationIdIn = attachmentClassificationId;
+    this.attachmentClassificationIdIn = attachmentClassificationIds;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentClassificationIdNotIn(String... attachmentClassificationId) {
+  public TaskQuery attachmentClassificationIdNotIn(String... attachmentClassificationIds) {
     joinWithAttachments = true;
-    this.attachmentClassificationIdNotIn = attachmentClassificationId;
+    this.attachmentClassificationIdNotIn = attachmentClassificationIds;
     return this;
   }
 
@@ -1066,16 +1066,16 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKey) {
+  public TaskQuery attachmentClassificationKeyLike(String... attachmentClassificationKeys) {
     joinWithAttachments = true;
-    this.attachmentClassificationKeyLike = toLowerCopy(attachmentClassificationKey);
+    this.attachmentClassificationKeyLike = toLowerCopy(attachmentClassificationKeys);
     return this;
   }
 
   @Override
-  public TaskQuery attachmentClassificationKeyNotLike(String... attachmentClassificationKey) {
+  public TaskQuery attachmentClassificationKeyNotLike(String... attachmentClassificationKeys) {
     joinWithAttachments = true;
-    this.attachmentClassificationKeyNotLike = toLowerCopy(attachmentClassificationKey);
+    this.attachmentClassificationKeyNotLike = toLowerCopy(attachmentClassificationKeys);
     return this;
   }
 
@@ -1089,30 +1089,30 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery attachmentClassificationNameIn(String... attachmentClassificationName) {
+  public TaskQuery attachmentClassificationNameIn(String... attachmentClassificationNames) {
     joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameIn = attachmentClassificationName;
+    this.attachmentClassificationNameIn = attachmentClassificationNames;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentClassificationNameNotIn(String... attachmentClassificationName) {
+  public TaskQuery attachmentClassificationNameNotIn(String... attachmentClassificationNames) {
     joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameNotIn = attachmentClassificationName;
+    this.attachmentClassificationNameNotIn = attachmentClassificationNames;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentClassificationNameLike(String... attachmentClassificationName) {
+  public TaskQuery attachmentClassificationNameLike(String... attachmentClassificationNames) {
     joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameLike = toLowerCopy(attachmentClassificationName);
+    this.attachmentClassificationNameLike = toLowerCopy(attachmentClassificationNames);
     return this;
   }
 
   @Override
-  public TaskQuery attachmentClassificationNameNotLike(String... attachmentClassificationName) {
+  public TaskQuery attachmentClassificationNameNotLike(String... attachmentClassificationNames) {
     joinWithAttachmentClassifications = true;
-    this.attachmentClassificationNameNotLike = toLowerCopy(attachmentClassificationName);
+    this.attachmentClassificationNameNotLike = toLowerCopy(attachmentClassificationNames);
     return this;
   }
 
@@ -1126,30 +1126,30 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery attachmentChannelIn(String... attachmentChannel) {
+  public TaskQuery attachmentChannelIn(String... attachmentChannels) {
     joinWithAttachments = true;
-    this.attachmentChannelIn = attachmentChannel;
+    this.attachmentChannelIn = attachmentChannels;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentChannelNotIn(String... attachmentChannel) {
+  public TaskQuery attachmentChannelNotIn(String... attachmentChannels) {
     joinWithAttachments = true;
-    this.attachmentChannelNotIn = attachmentChannel;
+    this.attachmentChannelNotIn = attachmentChannels;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentChannelLike(String... attachmentChannel) {
+  public TaskQuery attachmentChannelLike(String... attachmentChannels) {
     joinWithAttachments = true;
-    this.attachmentChannelLike = toLowerCopy(attachmentChannel);
+    this.attachmentChannelLike = toLowerCopy(attachmentChannels);
     return this;
   }
 
   @Override
-  public TaskQuery attachmentChannelNotLike(String... attachmentChannel) {
+  public TaskQuery attachmentChannelNotLike(String... attachmentChannels) {
     joinWithAttachments = true;
-    this.attachmentChannelNotLike = toLowerCopy(attachmentChannel);
+    this.attachmentChannelNotLike = toLowerCopy(attachmentChannels);
     return this;
   }
 
@@ -1161,30 +1161,30 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery attachmentReferenceValueIn(String... referenceValue) {
+  public TaskQuery attachmentReferenceValueIn(String... referenceValues) {
     joinWithAttachments = true;
-    this.attachmentReferenceIn = referenceValue;
+    this.attachmentReferenceIn = referenceValues;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentReferenceValueNotIn(String... referenceValue) {
+  public TaskQuery attachmentReferenceValueNotIn(String... referenceValues) {
     joinWithAttachments = true;
-    this.attachmentReferenceNotIn = referenceValue;
+    this.attachmentReferenceNotIn = referenceValues;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentReferenceValueLike(String... referenceValue) {
+  public TaskQuery attachmentReferenceValueLike(String... referenceValues) {
     joinWithAttachments = true;
-    this.attachmentReferenceLike = toLowerCopy(referenceValue);
+    this.attachmentReferenceLike = toLowerCopy(referenceValues);
     return this;
   }
 
   @Override
-  public TaskQuery attachmentReferenceValueNotLike(String... referenceValue) {
+  public TaskQuery attachmentReferenceValueNotLike(String... referenceValues) {
     joinWithAttachments = true;
-    this.attachmentReferenceNotLike = toLowerCopy(referenceValue);
+    this.attachmentReferenceNotLike = toLowerCopy(referenceValues);
     return this;
   }
 
@@ -1250,64 +1250,64 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
-  public TaskQuery sorCompanyIn(String... companyIn) {
+  public TaskQuery sorCompanyIn(String... companies) {
     joinWithSecondaryObjectReferences = true;
-    sorCompanyIn = companyIn;
+    sorCompanyIn = companies;
     return this;
   }
 
-  public TaskQuery sorCompanyLike(String... companyLike) {
+  public TaskQuery sorCompanyLike(String... companies) {
     joinWithSecondaryObjectReferences = true;
-    sorCompanyLike = toLowerCopy(companyLike);
+    sorCompanyLike = toLowerCopy(companies);
     return this;
   }
 
-  public TaskQuery sorSystemIn(String... systemIn) {
+  public TaskQuery sorSystemIn(String... systems) {
     joinWithSecondaryObjectReferences = true;
-    sorSystemIn = systemIn;
+    sorSystemIn = systems;
     return this;
   }
 
-  public TaskQuery sorSystemLike(String... systemLike) {
+  public TaskQuery sorSystemLike(String... systems) {
     joinWithSecondaryObjectReferences = true;
-    sorSystemLike = toLowerCopy(systemLike);
+    sorSystemLike = toLowerCopy(systems);
     return this;
   }
 
-  public TaskQuery sorSystemInstanceIn(String... systemInstanceIn) {
+  public TaskQuery sorSystemInstanceIn(String... systemInstances) {
     joinWithSecondaryObjectReferences = true;
-    sorSystemInstanceIn = systemInstanceIn;
+    sorSystemInstanceIn = systemInstances;
     return this;
   }
 
-  public TaskQuery sorSystemInstanceLike(String... systemInstanceLike) {
+  public TaskQuery sorSystemInstanceLike(String... systemInstances) {
     joinWithSecondaryObjectReferences = true;
-    sorSystemInstanceLike = toLowerCopy(systemInstanceLike);
+    sorSystemInstanceLike = toLowerCopy(systemInstances);
     return this;
   }
 
-  public TaskQuery sorTypeIn(String... typeIn) {
+  public TaskQuery sorTypeIn(String... types) {
     joinWithSecondaryObjectReferences = true;
-    sorTypeIn = typeIn;
+    sorTypeIn = types;
     return this;
   }
 
-  public TaskQuery sorTypeLike(String... typeLike) {
+  public TaskQuery sorTypeLike(String... types) {
     joinWithSecondaryObjectReferences = true;
-    sorTypeLike = toLowerCopy(typeLike);
+    sorTypeLike = toLowerCopy(types);
     return this;
   }
 
   @Override
-  public TaskQuery sorValueIn(String... valueIn) {
+  public TaskQuery sorValueIn(String... values) {
     joinWithSecondaryObjectReferences = true;
-    sorValueIn = valueIn;
+    sorValueIn = values;
     return this;
   }
 
-  public TaskQuery sorValueLike(String... valueLike) {
+  public TaskQuery sorValueLike(String... values) {
     joinWithSecondaryObjectReferences = true;
-    sorValueLike = toLowerCopy(valueLike);
+    sorValueLike = toLowerCopy(values);
     return this;
   }
 

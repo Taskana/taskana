@@ -13,19 +13,19 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * Add your ids to your query. The ids are compared to the ids of workbaskets with the IN
    * operator.
    *
-   * @param id the id as Strings
+   * @param ids the id as Strings
    * @return the query
    */
-  WorkbasketQuery idIn(String... id);
+  WorkbasketQuery idIn(String... ids);
 
   /**
    * Add your keys to your query. The keys are compared case-insensitively to the keys of
    * workbaskets with the IN operator.
    *
-   * @param key the keys as Strings
+   * @param keys the keys as Strings
    * @return the query
    */
-  WorkbasketQuery keyIn(String... key);
+  WorkbasketQuery keyIn(String... keys);
 
   /**
    * Add keys to your query. The keys are compared case-insensitively to the keys of workbaskets
@@ -33,19 +33,19 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * specify multiple keys they are connected with an OR operator, this is, the query searches
    * workbaskets whose keys are like key1 or like key2, etc.
    *
-   * @param key the keys as Strings
+   * @param keys the keys as Strings
    * @return the query
    */
-  WorkbasketQuery keyLike(String... key);
+  WorkbasketQuery keyLike(String... keys);
 
   /**
    * Add your names to your query. The names are compared case-insensitively to the names of
    * workbaskets
    *
-   * @param name the names as Strings
+   * @param names the names as Strings
    * @return the query
    */
-  WorkbasketQuery nameIn(String... name);
+  WorkbasketQuery nameIn(String... names);
 
   /**
    * Add names to your query. The names are compared case-insensitively to the names of workbaskets
@@ -53,10 +53,10 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * specify multiple names, they are connected with an OR operator, this is, the query searches
    * workbaskets whose names are like name1 or like name2, etc.
    *
-   * @param name the names as Strings
+   * @param names the names as Strings
    * @return the query
    */
-  WorkbasketQuery nameLike(String... name);
+  WorkbasketQuery nameLike(String... names);
 
   /**
    * Add search strings to your query that are searched case-insensitively in the key and name
@@ -65,26 +65,26 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * whose keys are like string1 or whose names are like string1 or whose keys are like string2 or
    * whose names are like string2, etc...
    *
-   * @param searchString the seach strings
+   * @param searchStrings the search strings
    * @return the query
    */
-  WorkbasketQuery keyOrNameLike(String... searchString);
+  WorkbasketQuery keyOrNameLike(String... searchStrings);
 
   /**
    * Add your domains to your query.
    *
-   * @param domain the domains as Strings
+   * @param domains the domains as Strings
    * @return the query
    */
-  WorkbasketQuery domainIn(String... domain);
+  WorkbasketQuery domainIn(String... domains);
 
   /**
    * Add your types to your query.
    *
-   * @param type the types
+   * @param types the types
    * @return the query
    */
-  WorkbasketQuery typeIn(WorkbasketType... type);
+  WorkbasketQuery typeIn(WorkbasketType... types);
 
   /**
    * Add the time intervals within which the workbasket was created to your query. For each time
@@ -115,10 +115,10 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * of workbaskets using the LIKE operator. You may use a wildcard like '%' to search generically.
    * If you specify multiple arguments they are combined with the OR keyword.
    *
-   * @param description your description
+   * @param descriptions your description
    * @return the query
    */
-  WorkbasketQuery descriptionLike(String... description);
+  WorkbasketQuery descriptionLike(String... descriptions);
 
   /**
    * Add the owners to your query.
@@ -221,10 +221,10 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * operator. You may use a wildcard like % to specify the pattern. If you specify multiple
    * arguments they are combined with the OR keyword.
    *
-   * @param domain the domains of workbaskets as Strings
+   * @param domains the domains of workbaskets as Strings
    * @return the query
    */
-  WorkbasketQuery domainLike(String... domain);
+  WorkbasketQuery domainLike(String... domains);
 
   /**
    * This method sorts the query result according to the value of a custom field.
@@ -296,74 +296,74 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Add the 1st organization level to your query.
    *
-   * @param orgLevel1 the 1st organization level as String
+   * @param orgLevels1 the 1st organization level as String
    * @return the query
    */
-  WorkbasketQuery orgLevel1In(String... orgLevel1);
+  WorkbasketQuery orgLevel1In(String... orgLevels1);
 
   /**
    * Add the 1st organization level for pattern matching to your query. It will be compared in SQL
    * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param orgLevel1 the 1st organization level as Strings
+   * @param orgLevels1 the 1st organization level as Strings
    * @return the query
    */
-  WorkbasketQuery orgLevel1Like(String... orgLevel1);
+  WorkbasketQuery orgLevel1Like(String... orgLevels1);
 
   /**
    * Add the 2nd organization level to your query.
    *
-   * @param orgLevel2 the 2nd organization level as String
+   * @param orgLevels2 the 2nd organization level as String
    * @return the query
    */
-  WorkbasketQuery orgLevel2In(String... orgLevel2);
+  WorkbasketQuery orgLevel2In(String... orgLevels2);
 
   /**
    * Add the 2nd organization level for pattern matching to your query. It will be compared in SQL
    * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param orgLevel2 the 2nd organization level as Strings
+   * @param orgLevels2 the 2nd organization level as Strings
    * @return the query
    */
-  WorkbasketQuery orgLevel2Like(String... orgLevel2);
+  WorkbasketQuery orgLevel2Like(String... orgLevels2);
 
   /**
    * Add the 3rd organization level to your query.
    *
-   * @param orgLevel3 the 3rd organization level as String
+   * @param orgLevels3 the 3rd organization level as String
    * @return the query
    */
-  WorkbasketQuery orgLevel3In(String... orgLevel3);
+  WorkbasketQuery orgLevel3In(String... orgLevels3);
 
   /**
    * Add the 3rd organization level for pattern matching to your query. It will be compared in SQL
    * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param orgLevel3 the 3rd organization level as Strings
+   * @param orgLevels3 the 3rd organization level as Strings
    * @return the query
    */
-  WorkbasketQuery orgLevel3Like(String... orgLevel3);
+  WorkbasketQuery orgLevel3Like(String... orgLevels3);
 
   /**
    * Add the 4th organization level to your query.
    *
-   * @param orgLevel4 the 4th organization level as String
+   * @param orgLevels4 the 4th organization level as String
    * @return the query
    */
-  WorkbasketQuery orgLevel4In(String... orgLevel4);
+  WorkbasketQuery orgLevel4In(String... orgLevels4);
 
   /**
    * Add the 4th organization level for pattern matching to your query. It will be compared in SQL
    * with the LIKE operator. You may use a wildcard like % to specify the pattern. If you specify
    * multiple arguments they are combined with the OR keyword.
    *
-   * @param orgLevel4 the 4th organization level as Strings
+   * @param orgLevels4 the 4th organization level as Strings
    * @return the query
    */
-  WorkbasketQuery orgLevel4Like(String... orgLevel4);
+  WorkbasketQuery orgLevel4Like(String... orgLevels4);
 
   /**
    * Add to your query if the Workbasket shall be marked for deletion.

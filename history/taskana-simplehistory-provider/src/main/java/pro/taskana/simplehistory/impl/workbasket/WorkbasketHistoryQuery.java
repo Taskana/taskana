@@ -13,26 +13,26 @@ public interface WorkbasketHistoryQuery
   /**
    * Add your Id to your query.
    *
-   * @param idIn as String
+   * @param ids as String
    * @return the query
    */
-  WorkbasketHistoryQuery idIn(String... idIn);
+  WorkbasketHistoryQuery idIn(String... ids);
 
   /**
    * Add your workbasketId to your query.
    *
-   * @param workbasketId as String
+   * @param workbasketIds as String
    * @return the query
    */
-  WorkbasketHistoryQuery workbasketIdIn(String... workbasketId);
+  WorkbasketHistoryQuery workbasketIdIn(String... workbasketIds);
 
   /**
    * Add your eventType to your query.
    *
-   * @param eventType as String
+   * @param eventTypes as String
    * @return the query
    */
-  WorkbasketHistoryQuery eventTypeIn(String... eventType);
+  WorkbasketHistoryQuery eventTypeIn(String... eventTypes);
 
   /**
    * Add your created TimeInterval to your query.
@@ -46,74 +46,74 @@ public interface WorkbasketHistoryQuery
   /**
    * Add your userId to your query.
    *
-   * @param userId as String
+   * @param userIds as String
    * @return the query
    */
-  WorkbasketHistoryQuery userIdIn(String... userId);
+  WorkbasketHistoryQuery userIdIn(String... userIds);
 
   /**
    * Add your domain to your query.
    *
-   * @param domain as String
+   * @param domains as String
    * @return the query
    */
-  WorkbasketHistoryQuery domainIn(String... domain);
+  WorkbasketHistoryQuery domainIn(String... domains);
 
   /**
    * Add your workbasketKey to your query.
    *
-   * @param workbasketKey as String
+   * @param workbasketKeys as String
    * @return the query
    */
-  WorkbasketHistoryQuery keyIn(String... workbasketKey);
+  WorkbasketHistoryQuery keyIn(String... workbasketKeys);
 
   /**
-   * Add your workbasketType to your query.
+   * Add your workbasketTypes to your query.
    *
-   * @param workbasketType as String
+   * @param workbasketTypes as String
    * @return the query
    */
-  WorkbasketHistoryQuery typeIn(String... workbasketType);
+  WorkbasketHistoryQuery typeIn(String... workbasketTypes);
 
   /**
    * Add your owner to your query.
    *
-   * @param owner as String
+   * @param owners as String
    * @return the query
    */
-  WorkbasketHistoryQuery ownerIn(String... owner);
+  WorkbasketHistoryQuery ownerIn(String... owners);
 
   /**
    * Add your orgLevel1 to your query.
    *
-   * @param orgLevel1 as String
+   * @param orgLevels1 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel1In(String... orgLevel1);
+  WorkbasketHistoryQuery orgLevel1In(String... orgLevels1);
+
+  /**
+   * Add your orgLevel2 to your query.
+   *
+   * @param orgLevels2 as String
+   * @return the query
+   */
+  WorkbasketHistoryQuery orgLevel2In(String... orgLevels2);
 
   /**
    * Add your orgLevel1 to your query.
    *
-   * @param orgLevel2 as String
+   * @param orgLevels3 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel2In(String... orgLevel2);
+  WorkbasketHistoryQuery orgLevel3In(String... orgLevels3);
 
   /**
    * Add your orgLevel1 to your query.
    *
-   * @param orgLevel3 as String
+   * @param orgLevels4 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel3In(String... orgLevel3);
-
-  /**
-   * Add your orgLevel1 to your query.
-   *
-   * @param orgLevel4 as String
-   * @return the query
-   */
-  WorkbasketHistoryQuery orgLevel4In(String... orgLevel4);
+  WorkbasketHistoryQuery orgLevel4In(String... orgLevels4);
 
   /**
    * Add the values of custom attributes for exact matching to your query.
@@ -141,100 +141,100 @@ public interface WorkbasketHistoryQuery
    * Add your workbasketId to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param workbasketId as String
+   * @param workbasketIds as String
    * @return the query
    */
-  WorkbasketHistoryQuery workbasketIdLike(String... workbasketId);
+  WorkbasketHistoryQuery workbasketIdLike(String... workbasketIds);
 
   /**
    * Add your eventType to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param eventType as String
+   * @param eventTypes as String
    * @return the query
    */
-  WorkbasketHistoryQuery eventTypeLike(String... eventType);
+  WorkbasketHistoryQuery eventTypeLike(String... eventTypes);
 
   /**
    * Add your userId to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param userId as String
+   * @param userIds as String
    * @return the query
    */
-  WorkbasketHistoryQuery userIdLike(String... userId);
+  WorkbasketHistoryQuery userIdLike(String... userIds);
 
   /**
    * Add your domain to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param domain as String
+   * @param domains as String
    * @return the query
    */
-  WorkbasketHistoryQuery domainLike(String... domain);
+  WorkbasketHistoryQuery domainLike(String... domains);
 
   /**
    * Add your workbasketKey to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param workbasketKey as String
+   * @param workbasketKeys as String
    * @return the query
    */
-  WorkbasketHistoryQuery workbasketKeyLike(String... workbasketKey);
+  WorkbasketHistoryQuery workbasketKeyLike(String... workbasketKeys);
 
   /**
    * Add your workbasketType to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param workbasketType as String
+   * @param workbasketTypes as String
    * @return the query
    */
-  WorkbasketHistoryQuery workbasketTypeLike(String... workbasketType);
+  WorkbasketHistoryQuery workbasketTypeLike(String... workbasketTypes);
 
   /**
    * Add your owner to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param owner as String
+   * @param owners as String
    * @return the query
    */
-  WorkbasketHistoryQuery ownerLike(String... owner);
+  WorkbasketHistoryQuery ownerLike(String... owners);
 
   /**
    * Add your orgLevel1 to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param orgLevel1 as String
+   * @param orgLevels1 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel1Like(String... orgLevel1);
+  WorkbasketHistoryQuery orgLevel1Like(String... orgLevels1);
 
   /**
    * Add your orgLevel2 to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param orgLevel2 as String
+   * @param orgLevels2 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel2Like(String... orgLevel2);
+  WorkbasketHistoryQuery orgLevel2Like(String... orgLevels2);
 
   /**
    * Add your orgLevel3 to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param orgLevel3 as String
+   * @param orgLevels3 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel3Like(String... orgLevel3);
+  WorkbasketHistoryQuery orgLevel3Like(String... orgLevels3);
 
   /**
    * Add your orgLevel4 to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param orgLevel4 as String
+   * @param orgLevels4 as String
    * @return the query
    */
-  WorkbasketHistoryQuery orgLevel4Like(String... orgLevel4);
+  WorkbasketHistoryQuery orgLevel4Like(String... orgLevels4);
 
   /**
    * Sort the query result by workbasketId.

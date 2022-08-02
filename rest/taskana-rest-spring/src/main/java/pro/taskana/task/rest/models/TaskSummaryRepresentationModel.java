@@ -112,21 +112,21 @@ public class TaskSummaryRepresentationModel
   protected String custom15;
   /** A custom property with name "16". */
   protected String custom16;
-  /** A custom property with name "1". */
-  protected Integer customInt1;
   /** A custom int property with name "1". */
-  protected Integer customInt2;
+  protected Integer customInt1;
   /** A custom int property with name "2". */
-  protected Integer customInt3;
+  protected Integer customInt2;
   /** A custom int property with name "3". */
-  protected Integer customInt4;
+  protected Integer customInt3;
   /** A custom int property with name "4". */
-  protected Integer customInt5;
+  protected Integer customInt4;
   /** A custom int property with name "5". */
-  protected Integer customInt6;
+  protected Integer customInt5;
   /** A custom int property with name "6". */
-  protected Integer customInt7;
+  protected Integer customInt6;
   /** A custom int property with name "7". */
+  protected Integer customInt7;
+  /** A custom int property with name "8". */
   protected Integer customInt8;
   /** Secondary object references of the task. */
   protected List<ObjectReferenceRepresentationModel> secondaryObjectReferences = new ArrayList<>();

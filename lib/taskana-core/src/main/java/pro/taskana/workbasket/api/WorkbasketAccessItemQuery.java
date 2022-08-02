@@ -18,10 +18,10 @@ public interface WorkbasketAccessItemQuery
   /**
    * Add your workbasket id to your query.
    *
-   * @param workbasketId the workbasket Id
+   * @param workbasketIds the workbasket Id
    * @return the query
    */
-  WorkbasketAccessItemQuery workbasketIdIn(String... workbasketId);
+  WorkbasketAccessItemQuery workbasketIdIn(String... workbasketIds);
 
   /**
    * Add your unique entry workbasket key to your query as filter.
@@ -37,18 +37,18 @@ public interface WorkbasketAccessItemQuery
    * specify multiple keys they are connected with an OR operator, this is, the query searches
    * access items workbaskets whose keys are like key1 or like key2, etc.
    *
-   * @param key the keys as Strings
+   * @param keys the keys as Strings
    * @return the query
    */
-  WorkbasketAccessItemQuery workbasketKeyLike(String... key);
+  WorkbasketAccessItemQuery workbasketKeyLike(String... keys);
 
   /**
    * Add your accessIds to your query.
    *
-   * @param accessId as access Ids
+   * @param accessIds as access Ids
    * @return the query
    */
-  WorkbasketAccessItemQuery accessIdIn(String... accessId);
+  WorkbasketAccessItemQuery accessIdIn(String... accessIds);
 
   /**
    * Add keys to your query. The keys are compared case-insensitively to the keys of access items

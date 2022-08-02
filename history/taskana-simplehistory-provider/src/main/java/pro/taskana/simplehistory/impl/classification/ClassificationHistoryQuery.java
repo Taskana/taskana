@@ -13,18 +13,18 @@ public interface ClassificationHistoryQuery
   /**
    * Add your Id to your query.
    *
-   * @param idIn as String
+   * @param idIns as String
    * @return the query
    */
-  ClassificationHistoryQuery idIn(String... idIn);
+  ClassificationHistoryQuery idIn(String... idIns);
 
   /**
    * Add your eventType to your query.
    *
-   * @param eventType as String
+   * @param eventTypes as String
    * @return the query
    */
-  ClassificationHistoryQuery eventTypeIn(String... eventType);
+  ClassificationHistoryQuery eventTypeIn(String... eventTypes);
 
   /**
    * Add your created TimeInterval to your query.
@@ -38,74 +38,74 @@ public interface ClassificationHistoryQuery
   /**
    * Add your userId to your query.
    *
-   * @param userId as String
+   * @param userIds as String
    * @return the query
    */
-  ClassificationHistoryQuery userIdIn(String... userId);
+  ClassificationHistoryQuery userIdIn(String... userIds);
 
   /**
    * Add your classificationId to your query.
    *
-   * @param classificationId as String
+   * @param classificationIds as String
    * @return the query
    */
-  ClassificationHistoryQuery classificationIdIn(String... classificationId);
+  ClassificationHistoryQuery classificationIdIn(String... classificationIds);
 
   /**
    * Add your applicationEntryPoint to your query.
    *
-   * @param applicationEntryPoint as String
+   * @param applicationEntryPoints as String
    * @return the query
    */
-  ClassificationHistoryQuery applicationEntryPointIn(String... applicationEntryPoint);
+  ClassificationHistoryQuery applicationEntryPointIn(String... applicationEntryPoints);
 
   /**
    * Add your category to your query.
    *
-   * @param category as String
+   * @param categories as String
    * @return the query
    */
-  ClassificationHistoryQuery categoryIn(String... category);
+  ClassificationHistoryQuery categoryIn(String... categories);
 
   /**
    * Add your domain to your query.
    *
-   * @param domain as String
+   * @param domains as String
    * @return the query
    */
-  ClassificationHistoryQuery domainIn(String... domain);
+  ClassificationHistoryQuery domainIn(String... domains);
 
   /**
    * Add your key to your query.
    *
-   * @param key as String
+   * @param keys as String
    * @return the query
    */
-  ClassificationHistoryQuery keyIn(String... key);
+  ClassificationHistoryQuery keyIn(String... keys);
 
   /**
    * Add your name to your query.
    *
-   * @param name as String
+   * @param names as String
    * @return the query
    */
-  ClassificationHistoryQuery nameIn(String... name);
+  ClassificationHistoryQuery nameIn(String... names);
 
   /**
    * Add your parentId to your query.
    *
-   * @param parentId as String
+   * @param parentIds as String
    * @return the query
    */
-  ClassificationHistoryQuery parentIdIn(String... parentId);
+  ClassificationHistoryQuery parentIdIn(String... parentIds);
 
   /**
    * Add your parentKey to your query.
    *
-   * @param parentKey as String
+   * @param parentKeys as String
    * @return the query
    */
-  ClassificationHistoryQuery parentKeyIn(String... parentKey);
+  ClassificationHistoryQuery parentKeyIn(String... parentKeys);
 
   /**
    * Add your priority to your query.
@@ -118,18 +118,18 @@ public interface ClassificationHistoryQuery
   /**
    * Add your serviceLevel to your query.
    *
-   * @param serviceLevelIn as String
+   * @param serviceLevels as String
    * @return the query
    */
-  ClassificationHistoryQuery serviceLevelIn(String... serviceLevelIn);
+  ClassificationHistoryQuery serviceLevelIn(String... serviceLevels);
 
   /**
    * Add your type to your query.
    *
-   * @param type as String
+   * @param types as String
    * @return the query
    */
-  ClassificationHistoryQuery typeIn(String... type);
+  ClassificationHistoryQuery typeIn(String... types);
 
   /**
    * Add the values of custom attributes for exact matching to your query.
@@ -145,109 +145,109 @@ public interface ClassificationHistoryQuery
    * Add your eventType to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param eventType as String
+   * @param eventTypes as String
    * @return the query
    */
-  ClassificationHistoryQuery eventTypeLike(String... eventType);
+  ClassificationHistoryQuery eventTypeLike(String... eventTypes);
 
   /**
    * Add your userId to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param userId as String
+   * @param userIds as String
    * @return the query
    */
-  ClassificationHistoryQuery userIdLike(String... userId);
+  ClassificationHistoryQuery userIdLike(String... userIds);
 
   /**
    * Add your classificationId to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param classificationId as String
+   * @param classificationIds as String
    * @return the query
    */
-  ClassificationHistoryQuery classificationIdLike(String... classificationId);
+  ClassificationHistoryQuery classificationIdLike(String... classificationIds);
 
   /**
    * Add your applicationEntryPoint to your query. It will be compared in SQL with an LIKE. If you
    * use a * wildcard like % then it will be transmitted to the database.
    *
-   * @param applicationEntryPointLike name of the applications entrypoint
+   * @param applicationEntryPoints name of the applications entrypoint
    * @return the query
    */
-  ClassificationHistoryQuery applicationEntryPointLike(String... applicationEntryPointLike);
+  ClassificationHistoryQuery applicationEntryPointLike(String... applicationEntryPoints);
 
   /**
    * Add your category to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param category as String
+   * @param categories as String
    * @return the query
    */
-  ClassificationHistoryQuery categoryLike(String... category);
+  ClassificationHistoryQuery categoryLike(String... categories);
 
   /**
    * Add your domain to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param domain as String
+   * @param domains as String
    * @return the query
    */
-  ClassificationHistoryQuery domainLike(String... domain);
+  ClassificationHistoryQuery domainLike(String... domains);
 
   /**
    * Add your key to your query. It will be compared in SQL with an LIKE. If you use a wildcard like
    * % then it will be transmitted to the database.
    *
-   * @param key as String
+   * @param keys as String
    * @return the query
    */
-  ClassificationHistoryQuery keyLike(String... key);
+  ClassificationHistoryQuery keyLike(String... keys);
 
   /**
    * Add your name to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param name as String
+   * @param names as String
    * @return the query
    */
-  ClassificationHistoryQuery nameLike(String... name);
+  ClassificationHistoryQuery nameLike(String... names);
 
   /**
    * Add your parentId to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param parentId as String
+   * @param parentIds as String
    * @return the query
    */
-  ClassificationHistoryQuery parentIdLike(String... parentId);
+  ClassificationHistoryQuery parentIdLike(String... parentIds);
 
   /**
    * Add your parentKey to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param parentKey as String
+   * @param parentKeys as String
    * @return the query
    */
-  ClassificationHistoryQuery parentKeyLike(String... parentKey);
+  ClassificationHistoryQuery parentKeyLike(String... parentKeys);
 
   /**
    * Add your serviceLevel to your query. It will be compared in SQL with an LIKE. If you use a
    * wildcard like % then it will be transmitted to the database.
    *
-   * @param serviceLevel as String
+   * @param serviceLevels as String
    * @return the query
    */
-  ClassificationHistoryQuery serviceLevelLike(String... serviceLevel);
+  ClassificationHistoryQuery serviceLevelLike(String... serviceLevels);
 
   /**
    * Add your type to your query. It will be compared in SQL with an LIKE. If you use a wildcard
    * like % then it will be transmitted to the database.
    *
-   * @param type as String
+   * @param types as String
    * @return the query
    */
-  ClassificationHistoryQuery typeLike(String... type);
+  ClassificationHistoryQuery typeLike(String... types);
 
   /**
    * Add the values of custom attributes for pattern matching to your query. They will be compared
