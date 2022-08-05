@@ -66,7 +66,7 @@ class GetClassificationAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_getClassificationById_When_AllPropertiesSet() throws Exception {
+  void should_GetClassificationById_When_AllPropertiesSet() throws Exception {
     Classification classification =
         classificationService.getClassification(classificationWithAllProperties.getId());
 
@@ -77,7 +77,7 @@ class GetClassificationAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_getClassificationByKeyAndDomain_When_AllPropertiesSet() throws Exception {
+  void should_GetClassificationByKeyAndDomain_When_AllPropertiesSet() throws Exception {
     Classification classification =
         classificationService.getClassification(
             classificationWithAllProperties.getKey(), classificationWithAllProperties.getDomain());

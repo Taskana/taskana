@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run ArchitectureTest" type="JUnit" factoryName="JUnit" folderName="lib">
-    <module name="taskana-core" />
+    <module name="taskana-core-test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="pro.taskana.*" />
