@@ -77,7 +77,7 @@ class RequestChangesAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ForceRequestChanges_WhenTaskIsInReviewByDifferentUser() throws Exception {
+  void should_ForceRequestChanges_When_TaskIsInReviewByDifferentUser() throws Exception {
     Instant now = Instant.now();
     Task task = createTaskInReviewByUser("user-1-2").buildAndStore(taskService);
 
@@ -90,7 +90,7 @@ class RequestChangesAccTest {
 
   @WithAccessId(user = "user-1-1")
   @TestFactory
-  Stream<DynamicTest> should_ForceRequestChanges_WhenTaskIsNotInEndState() {
+  Stream<DynamicTest> should_ForceRequestChanges_When_TaskIsNotInEndState() {
     List<TaskState> testCases = Arrays.asList(EnumUtil.allValuesExceptFor(TaskState.END_STATES));
     ThrowingConsumer<TaskState> test =
         state -> {
