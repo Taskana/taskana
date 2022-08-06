@@ -22,15 +22,15 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 
 @ExtendWith(JaasExtension.class)
-class CreateHistoryEventOnTaskRequestChangesAccTest extends AbstractAccTest {
+class CreateHistoryEventOnTaskRequestReviewAccTest extends AbstractAccTest {
 
   private final TaskService taskService = taskanaEngine.getTaskService();
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_CreateChangesRequestedHistoryEvent_When_ChangesAreRequested() throws Exception {
-    final String taskId = "TKI:100000000000000000000000000000000066";
+  void should_CreateRequestReviewHistoryEvent_When_ReviewIsRequested() throws Exception {
+    final String taskId = "TKI:200000000000000000000000000000000066";
     final Instant oldModified = taskService.getTask(taskId).getModified();
 
     TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
@@ -41,10 +41,10 @@ class CreateHistoryEventOnTaskRequestChangesAccTest extends AbstractAccTest {
 
     assertThat(events).isEmpty();
 
-    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.IN_REVIEW);
-    Task task = taskService.requestChanges(taskId);
+    assertThat(taskService.getTask(taskId).getState()).isEqualTo(TaskState.CLAIMED);
+    Task task = taskService.requestReview(taskId);
 
-    assertThat(task.getState()).isEqualTo(TaskState.READY);
+    assertThat(task.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
 
     events =
         taskHistoryQueryMapper.queryHistoryEvents(
@@ -52,7 +52,7 @@ class CreateHistoryEventOnTaskRequestChangesAccTest extends AbstractAccTest {
 
     TaskHistoryEvent event = events.get(0);
 
-    assertThat(event.getEventType()).isEqualTo(TaskHistoryEventType.CHANGES_REQUESTED.getName());
+    assertThat(event.getEventType()).isEqualTo(TaskHistoryEventType.REQUESTED_REVIEW.getName());
 
     event = historyService.getTaskHistoryEvent(event.getId());
 
@@ -67,15 +67,14 @@ class CreateHistoryEventOnTaskRequestChangesAccTest extends AbstractAccTest {
             .put("oldValue", oldModified.toString());
     JSONObject expectedState =
         new JSONObject()
-            .put("newValue", "READY")
+            .put("newValue", "READY_FOR_REVIEW")
             .put("fieldName", "state")
-            .put("oldValue", "IN_REVIEW");
+            .put("oldValue", "CLAIMED");
     JSONObject expectedOwner =
         new JSONObject().put("newValue", "").put("fieldName", "owner").put("oldValue", "user-1-1");
 
     JSONArray expectedChanges =
         new JSONArray().put(expectedModified).put(expectedState).put(expectedOwner);
-
     assertThat(changes.similar(expectedChanges)).isTrue();
   }
 }
