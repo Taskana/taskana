@@ -54,14 +54,14 @@ class TerminateTaskAccTest extends AbstractAccTest {
   void should_TerminateTask_When_TaskStateIsClaimed() throws Exception {
     List<TaskSummary> taskSummaries =
         taskService.createTaskQuery().stateIn(TaskState.CLAIMED).list();
-    assertThat(taskSummaries.size()).isEqualTo(20);
+    assertThat(taskSummaries.size()).isEqualTo(21);
 
     long numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(5);
 
     taskService.terminateTask(taskSummaries.get(0).getId());
     long numTasksClaimed = taskService.createTaskQuery().stateIn(TaskState.CLAIMED).count();
-    assertThat(numTasksClaimed).isEqualTo(19);
+    assertThat(numTasksClaimed).isEqualTo(20);
     numTasksTerminated = taskService.createTaskQuery().stateIn(TaskState.TERMINATED).count();
     assertThat(numTasksTerminated).isEqualTo(6);
   }
