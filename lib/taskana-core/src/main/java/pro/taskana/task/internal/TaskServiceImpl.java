@@ -47,6 +47,7 @@ import pro.taskana.spi.history.api.events.task.TaskClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.TaskClaimedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCompletedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskRequestChangesEvent;
 import pro.taskana.spi.history.api.events.task.TaskRequestReviewEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
@@ -180,6 +181,20 @@ public class TaskServiceImpl implements TaskService {
       throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
           InvalidOwnerException {
     return requestReview(taskId, true);
+  }
+
+  @Override
+  public Task requestChanges(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException {
+    return requestChanges(taskId, false);
+  }
+
+  @Override
+  public Task forceRequestChanges(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException {
+    return requestChanges(taskId, true);
   }
 
   @Override
@@ -1240,6 +1255,53 @@ public class TaskServiceImpl implements TaskService {
 
         historyEventManager.createEvent(
             new TaskRequestReviewEvent(
+                IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
+                task,
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                changeDetails));
+      }
+    } finally {
+      taskanaEngine.returnConnection();
+    }
+    return task;
+  }
+
+  private Task requestChanges(String taskId, boolean force)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException {
+    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
+    TaskImpl task;
+    try {
+      taskanaEngine.openConnection();
+      task = (TaskImpl) getTask(taskId);
+
+      TaskImpl oldTask = duplicateTaskExactly(task);
+
+      if (force && task.getState().isEndState()) {
+        throw new InvalidTaskStateException(
+            task.getId(), task.getState(), EnumUtil.allValuesExceptFor(TaskState.END_STATES));
+      }
+      if (!force && task.getState() != TaskState.IN_REVIEW) {
+        throw new InvalidTaskStateException(task.getId(), task.getState(), TaskState.IN_REVIEW);
+      }
+      if (!force && !task.getOwner().equals(userId)) {
+        throw new InvalidOwnerException(userId, task.getId());
+      }
+
+      task.setState(TaskState.READY);
+      task.setOwner(null);
+      task.setModified(Instant.now());
+
+      taskMapper.update(task);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Requested changes for Task '{}' by user '{}'.", taskId, userId);
+      }
+      if (historyEventManager.isEnabled()) {
+        String changeDetails =
+            ObjectAttributeChangeDetector.determineChangesInAttributes(oldTask, task);
+
+        historyEventManager.createEvent(
+            new TaskRequestChangesEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),

@@ -134,6 +134,42 @@ public interface TaskService {
           InvalidOwnerException;
 
   /**
+   * Request changes for an existing {@linkplain Task} that is in {@linkplain TaskState#IN_REVIEW}.
+   * The {@linkplain TaskState} is changed to {@linkplain TaskState#READY} after changes have been
+   * requested.
+   *
+   * @param taskId the {@linkplain Task#getId() id} of the specified {@linkplain Task}
+   * @return the {@linkplain Task} after changes have been requested
+   * @throws InvalidTaskStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is not in {@linkplain TaskState#IN_REVIEW}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
+   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
+   * @throws NotAuthorizedException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+   */
+  Task requestChanges(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException;
+
+  /**
+   * Request changes for an existing {@linkplain Task} even if the current user is not the
+   * {@linkplain Task#getOwner() owner} or the Task is not in {@linkplain TaskState#IN_REVIEW} yet.
+   * The {@linkplain TaskState} is changed to {@linkplain TaskState#READY} after changes have been
+   * requested.
+   *
+   * @param taskId the {@linkplain Task#getId() id} of the specified {@linkplain Task}
+   * @return the {@linkplain Task} after changes have been requested
+   * @throws InvalidTaskStateException cannot be thrown
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
+   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
+   * @throws NotAuthorizedException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+   */
+  Task forceRequestChanges(String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, NotAuthorizedException,
+          InvalidOwnerException;
+
+  /**
    * Complete a claimed {@linkplain Task} as {@linkplain Task#getOwner() owner} or {@linkplain
    * TaskanaRole#ADMIN} and update {@linkplain Task#getState() state} and timestamps.
    *
