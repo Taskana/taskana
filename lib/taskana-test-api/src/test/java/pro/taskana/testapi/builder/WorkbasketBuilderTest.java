@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests.builder;
+package pro.taskana.testapi.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -19,7 +19,6 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
-import pro.taskana.testapi.builder.WorkbasketBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;

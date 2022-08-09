@@ -1,10 +1,10 @@
-package pro.taskana.testapi.tests.builder;
+package pro.taskana.testapi.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 import static pro.taskana.testapi.builder.WorkbasketAccessItemBuilder.newWorkbasketAccessItem;
-import static pro.taskana.testapi.tests.DefaultTestEntities.defaultTestWorkbasket;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
-import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;

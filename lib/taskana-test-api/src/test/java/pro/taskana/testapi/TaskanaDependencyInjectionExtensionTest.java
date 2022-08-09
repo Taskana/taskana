@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests;
+package pro.taskana.testapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,8 +22,6 @@ import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.TaskServiceImpl;
-import pro.taskana.testapi.TaskanaInject;
-import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 
