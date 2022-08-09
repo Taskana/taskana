@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests.builder;
+package pro.taskana.testapi.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -23,7 +23,6 @@ import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
-import pro.taskana.testapi.builder.ClassificationBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 
 @TaskanaIntegrationTest

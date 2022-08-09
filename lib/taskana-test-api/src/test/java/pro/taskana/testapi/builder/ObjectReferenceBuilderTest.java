@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests.builder;
+package pro.taskana.testapi.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.testapi.builder.ObjectReferenceBuilder.newObjectReference;

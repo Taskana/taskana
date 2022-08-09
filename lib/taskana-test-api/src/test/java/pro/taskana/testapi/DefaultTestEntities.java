@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests;
+package pro.taskana.testapi;
 
 import java.util.UUID;
 

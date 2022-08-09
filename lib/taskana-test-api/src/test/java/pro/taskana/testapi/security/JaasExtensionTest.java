@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests.security;
+package pro.taskana.testapi.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicContainer.dynamicContainer;
@@ -25,10 +25,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
-import pro.taskana.testapi.security.JaasExtension;
-import pro.taskana.testapi.security.WithAccessId;
-import pro.taskana.testapi.tests.security.JaasExtensionTestExtensions.ShouldThrowJunitException;
-import pro.taskana.testapi.tests.security.JaasExtensionTestExtensions.ShouldThrowParameterResolutionException;
+import pro.taskana.testapi.security.JaasExtensionTestExtensions.ShouldThrowJunitException;
+import pro.taskana.testapi.security.JaasExtensionTestExtensions.ShouldThrowParameterResolutionException;
 
 @ExtendWith(JaasExtension.class)
 class JaasExtensionTest {

@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests;
+package pro.taskana.testapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,11 +10,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
-import pro.taskana.testapi.CleanTaskanaContext;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
-import pro.taskana.testapi.TaskanaInject;
-import pro.taskana.testapi.TaskanaIntegrationTest;
-import pro.taskana.testapi.WithServiceProvider;
 
 @TaskanaIntegrationTest
 class TaskanaInitializationExtensionTest {

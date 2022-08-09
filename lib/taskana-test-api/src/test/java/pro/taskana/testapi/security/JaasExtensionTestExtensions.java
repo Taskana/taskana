@@ -1,4 +1,4 @@
-package pro.taskana.testapi.tests.security;
+package pro.taskana.testapi.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
