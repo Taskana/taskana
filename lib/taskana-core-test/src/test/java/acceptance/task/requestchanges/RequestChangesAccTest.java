@@ -1,4 +1,4 @@
-package acceptance.task.requestreview;
+package acceptance.task.requestchanges;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
@@ -37,7 +37,7 @@ import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionExcep
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-class RequestReviewAccTest {
+class RequestChangesAccTest {
   @TaskanaInject TaskService taskService;
 
   ClassificationSummary defaultClassificationSummary;
@@ -64,55 +64,41 @@ class RequestReviewAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_RequestReview_When_TaskIsClaimed() throws Exception {
+  void should_RequestChanges_When_TaskIsClaimed() throws Exception {
     Instant now = Instant.now();
-    Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+    Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
 
-    Task result = taskService.requestReview(task.getId());
+    Task result = taskService.requestChanges(task.getId());
 
-    assertThat(result.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(result.getState()).isEqualTo(TaskState.READY);
     assertThat(result.getOwner()).isNull();
     assertThat(result.getModified()).isAfterOrEqualTo(now);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ForceRequestReview_When_TaskIsClaimedByDifferentUser() throws Exception {
+  void should_ForceRequestChanges_WhenTaskIsInReviewByDifferentUser() throws Exception {
     Instant now = Instant.now();
-    Task task = createTaskClaimedByUser("user-1-2").buildAndStore(taskService);
+    Task task = createTaskInReviewByUser("user-1-2").buildAndStore(taskService);
 
-    Task result = taskService.forceRequestReview(task.getId());
+    Task result = taskService.forceRequestChanges(task.getId());
 
-    assertThat(result.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
-    assertThat(result.getOwner()).isNull();
-    assertThat(result.getModified()).isAfterOrEqualTo(now);
-  }
-
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_ForceRequestReview_When_TaskIsInReviewByDifferentUser() throws Exception {
-    Instant now = Instant.now();
-    Task task =
-        createTaskClaimedByUser("user-1-2").state(TaskState.IN_REVIEW).buildAndStore(taskService);
-
-    Task result = taskService.forceRequestReview(task.getId());
-
-    assertThat(result.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(result.getState()).isEqualTo(TaskState.READY);
     assertThat(result.getOwner()).isNull();
     assertThat(result.getModified()).isAfterOrEqualTo(now);
   }
 
   @WithAccessId(user = "user-1-1")
   @TestFactory
-  Stream<DynamicTest> should_ForceRequestReview_When_TaskIsNotInEndState() {
+  Stream<DynamicTest> should_ForceRequestChanges_WhenTaskIsNotInEndState() {
     List<TaskState> testCases = Arrays.asList(EnumUtil.allValuesExceptFor(TaskState.END_STATES));
     ThrowingConsumer<TaskState> test =
         state -> {
           Instant now = Instant.now();
           Task task = createDefaultTask().state(state).buildAndStore(taskService);
-          Task result = taskService.forceRequestReview(task.getId());
+          Task result = taskService.forceRequestChanges(task.getId());
 
-          assertThat(result.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+          assertThat(result.getState()).isEqualTo(TaskState.READY);
           assertThat(result.getOwner()).isNull();
           assertThat(result.getModified()).isAfterOrEqualTo(now);
         };
@@ -121,11 +107,11 @@ class RequestReviewAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ThrowException_When_RequestingReviewAndTaskIsClaimedByDifferentOwner()
+  void should_ThrowException_When_RequestingReviewAndTaskIsInReviewByDifferentOwner()
       throws Exception {
-    Task task = createTaskClaimedByUser("user-1-2").buildAndStore(taskService);
+    Task task = createTaskInReviewByUser("user-1-2").buildAndStore(taskService);
 
-    ThrowingCallable call = () -> taskService.requestReview(task.getId());
+    ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
     InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
@@ -134,16 +120,16 @@ class RequestReviewAccTest {
 
   @WithAccessId(user = "user-1-1")
   @TestFactory
-  Stream<DynamicTest> should_ThrowException_When_RequestingReviewAndTaskIsNotClaimed() {
-    List<TaskState> invalidStates = Arrays.asList(EnumUtil.allValuesExceptFor(TaskState.CLAIMED));
+  Stream<DynamicTest> should_ThrowException_When_RequestingChangesAndTaskIsNotInReview() {
+    List<TaskState> invalidStates = Arrays.asList(EnumUtil.allValuesExceptFor(TaskState.IN_REVIEW));
 
     ThrowingConsumer<TaskState> test =
         state -> {
           Task task = createDefaultTask().state(state).buildAndStore(taskService);
-          ThrowingCallable call = () -> taskService.requestReview(task.getId());
+          ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
           InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
-          assertThat(e.getRequiredTaskStates()).containsExactly(TaskState.CLAIMED);
+          assertThat(e.getRequiredTaskStates()).containsExactly(TaskState.IN_REVIEW);
           assertThat(e.getTaskState()).isEqualTo(state);
           assertThat(e.getTaskId()).isEqualTo(task.getId());
         };
@@ -153,8 +139,8 @@ class RequestReviewAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_ThrowException_When_UserHasNoWorkbasketPermission() throws Exception {
-    Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService, "user-1-1");
-    ThrowingCallable call = () -> taskService.requestReview(task.getId());
+    Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService, "user-1-1");
+    ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
     MismatchedWorkbasketPermissionException e =
         catchThrowableOfType(call, MismatchedWorkbasketPermissionException.class);
@@ -167,13 +153,13 @@ class RequestReviewAccTest {
 
   @WithAccessId(user = "user-1-1")
   @TestFactory
-  Stream<DynamicTest> should_ThrowException_When_ForceRequestReviewAndTaskIsInEndState() {
+  Stream<DynamicTest> should_ThrowException_When_ForceRequestChangesAndTaskIsInEndState() {
     List<TaskState> endStates = Arrays.asList(TaskState.END_STATES);
 
     ThrowingConsumer<TaskState> test =
         state -> {
           Task task = createDefaultTask().state(state).buildAndStore(taskService);
-          ThrowingCallable call = () -> taskService.forceRequestReview(task.getId());
+          ThrowingCallable call = () -> taskService.forceRequestChanges(task.getId());
 
           InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
           assertThat(e.getRequiredTaskStates())
@@ -184,8 +170,8 @@ class RequestReviewAccTest {
     return DynamicTest.stream(endStates.iterator(), TaskState::name, test);
   }
 
-  private TaskBuilder createTaskClaimedByUser(String owner) {
-    return createDefaultTask().owner(owner).state(TaskState.CLAIMED);
+  private TaskBuilder createTaskInReviewByUser(String owner) {
+    return createDefaultTask().owner(owner).state(TaskState.IN_REVIEW);
   }
 
   private TaskBuilder createDefaultTask() {
