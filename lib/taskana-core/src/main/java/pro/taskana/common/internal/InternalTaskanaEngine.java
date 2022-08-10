@@ -7,6 +7,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.routing.internal.TaskRoutingManager;
+import pro.taskana.spi.task.internal.AfterRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 
 /**
@@ -105,4 +106,11 @@ public interface InternalTaskanaEngine {
    * @return the {@linkplain PriorityServiceManager} instance
    */
   PriorityServiceManager getPriorityServiceManager();
+
+  /**
+   * Retrieves the {@linkplain AfterRequestReviewManager}.
+   *
+   * @return the {@linkplain AfterRequestReviewManager} instance
+   */
+  AfterRequestReviewManager getAfterRequestReviewManager();
 }
