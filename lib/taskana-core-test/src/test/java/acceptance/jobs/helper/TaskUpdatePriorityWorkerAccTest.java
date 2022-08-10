@@ -1,10 +1,12 @@
 package acceptance.jobs.helper;
 
+import static acceptance.jobs.helper.TaskUpdatePriorityWorkerAccTest.WithSpi.DummyPriorityServiceProvider.SPI_PRIORITY;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import acceptance.priorityservice.TestPriorityServiceProvider;
+import acceptance.jobs.helper.TaskUpdatePriorityWorkerAccTest.WithSpi.DummyPriorityServiceProvider;
 import java.time.Instant;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.IntPredicate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
@@ -125,7 +127,7 @@ class TaskUpdatePriorityWorkerAccTest {
   @Nested
   @WithServiceProvider(
       serviceProviderInterface = PriorityServiceProvider.class,
-      serviceProviders = TestPriorityServiceProvider.class)
+      serviceProviders = DummyPriorityServiceProvider.class)
   @TestInstance(Lifecycle.PER_CLASS)
   class WithSpi {
 
@@ -140,7 +142,6 @@ class TaskUpdatePriorityWorkerAccTest {
     @Test
     @WithAccessId(user = "admin")
     void should_executeBatch() throws Exception {
-      // given
       Task oldTask =
           TaskBuilder.newTask()
               .classificationSummary(classificationSummary)
@@ -150,14 +151,20 @@ class TaskUpdatePriorityWorkerAccTest {
               .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
               .buildAndStore(taskService);
 
-      // when
-      final List<String> updatedTaskIds = worker.executeBatch(List.of(oldTask.getId()));
+      List<String> updatedTaskIds = worker.executeBatch(List.of(oldTask.getId()));
 
-      // then
-      final Task updatedTask = taskService.getTask(oldTask.getId());
-
+      Task updatedTask = taskService.getTask(oldTask.getId());
       assertThat(updatedTaskIds).containsExactly(oldTask.getId());
-      assertThat(updatedTask.getPriority()).isNotEqualTo(oldTask.getPriority());
+      assertThat(updatedTask.getPriority()).isEqualTo(SPI_PRIORITY);
+    }
+
+    class DummyPriorityServiceProvider implements PriorityServiceProvider {
+      static final int SPI_PRIORITY = 10;
+
+      @Override
+      public OptionalInt calculatePriority(TaskSummary taskSummary) {
+        return OptionalInt.of(SPI_PRIORITY);
+      }
     }
   }
 }

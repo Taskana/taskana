@@ -3,6 +3,7 @@ package pro.taskana.testapi;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.OptionalInt;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -12,6 +13,8 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.testapi.TaskanaInitializationExtensionTest.NestedTestClassWithServiceProvider.DummyPriorityServiceProvider;
 
 @TaskanaIntegrationTest
 class TaskanaInitializationExtensionTest {
@@ -82,11 +85,10 @@ class TaskanaInitializationExtensionTest {
 
   @WithServiceProvider(
       serviceProviderInterface = PriorityServiceProvider.class,
-      serviceProviders = TestPriorityServiceProvider.class)
+      serviceProviders = DummyPriorityServiceProvider.class)
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithServiceProvider {
-
     @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
     @TaskanaInject TaskanaEngine taskanaEngine;
 
@@ -108,6 +110,14 @@ class TaskanaInitializationExtensionTest {
     void should_UseDefaultTaskanaEngine_When_NestedClassDoesNotImplementModifier() {
       assertThat(taskanaEngineConfiguration.getDomains())
           .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+    }
+
+    class DummyPriorityServiceProvider implements PriorityServiceProvider {
+      @Override
+      public OptionalInt calculatePriority(TaskSummary taskSummary) {
+        // implementation not important for the tests
+        return OptionalInt.empty();
+      }
     }
   }
 
