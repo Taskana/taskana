@@ -53,6 +53,7 @@ import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.routing.internal.TaskRoutingManager;
+import pro.taskana.spi.task.internal.AfterRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
@@ -82,6 +83,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final TaskRoutingManager taskRoutingManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
+  private final AfterRequestReviewManager afterRequestReviewManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   private final HistoryEventManager historyEventManager;
@@ -117,6 +119,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
     historyEventManager = new HistoryEventManager(this);
     taskRoutingManager = new TaskRoutingManager(this);
+    afterRequestReviewManager = new AfterRequestReviewManager(this);
   }
 
   public static TaskanaEngine createTaskanaEngine(
@@ -520,6 +523,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public PriorityServiceManager getPriorityServiceManager() {
       return priorityServiceManager;
+    }
+
+    @Override
+    public AfterRequestReviewManager getAfterRequestReviewManager() {
+      return afterRequestReviewManager;
     }
   }
 }
