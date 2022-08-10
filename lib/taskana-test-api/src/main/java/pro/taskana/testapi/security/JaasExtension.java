@@ -166,7 +166,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       DynamicTestInvocationContext invocationContext,
       ExtensionContext extensionContext) {
     ExtensionContext testContext = getParentMethodExtensionContent(extensionContext);
-    // Check if the test factory provided an access Id for this dynamic test.
+    // Check if the test factory provided an accessId for this dynamic test.
     WithAccessId o = getMethodLevelStore(testContext).get(ACCESS_IDS_STORE_KEY, WithAccessId.class);
     if (o != null) {
       performInvocationWithAccessId(invocation, o);
@@ -269,11 +269,11 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     Optional<ExtensionContext> parent = extensionContext.getParent();
     // the class MethodExtensionContext is part of junit-jupiter-engine and has only a
     // package-private visibility thus this workaround is needed.
-    while (!parent
+    while (parent
         .map(Object::getClass)
         .map(Class::getName)
         .filter(s -> s.endsWith("MethodExtensionContext"))
-        .isPresent()) {
+        .isEmpty()) {
       parent = parent.flatMap(ExtensionContext::getParent);
     }
     return parent.orElseThrow(

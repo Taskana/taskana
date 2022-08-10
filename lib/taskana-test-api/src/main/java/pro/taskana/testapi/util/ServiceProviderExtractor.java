@@ -4,6 +4,7 @@ import static org.junit.platform.commons.support.AnnotationSupport.findRepeatabl
 import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,22 @@ public class ServiceProviderExtractor {
 
   private static List<Object> instantiateServiceProviders(List<Class<?>> serviceProviders) {
     return serviceProviders.stream()
-        .map(wrap(Class::getDeclaredConstructor))
-        .map(wrap(Constructor::newInstance))
+        .map(wrap(ServiceProviderExtractor::instantiateClass))
         .collect(Collectors.toList());
+  }
+
+  private static Object instantiateClass(Class<?> clz) throws Exception {
+    // we don't have to consider anonymous classes since they can't be passed as an argument to
+    // the WithServiceProvider annotation.
+    if (clz.isLocalClass() || (clz.isMemberClass() && !Modifier.isStatic(clz.getModifiers()))) {
+      Class<?> motherClass = clz.getEnclosingClass();
+      Object motherInstance = instantiateClass(motherClass);
+      Constructor<?> constructor = clz.getDeclaredConstructor(motherClass);
+      constructor.setAccessible(true);
+      return constructor.newInstance(motherInstance);
+    }
+    Constructor<?> constructor = clz.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    return constructor.newInstance();
   }
 }
