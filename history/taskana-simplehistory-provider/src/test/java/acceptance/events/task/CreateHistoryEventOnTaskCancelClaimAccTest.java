@@ -92,9 +92,9 @@ class CreateHistoryEventOnTaskCancelClaimAccTest extends AbstractAccTest {
                   .put("oldValue", oldModified.toString());
           JSONObject expectedState =
               new JSONObject()
-                  .put("newValue", "READY")
+                  .put("newValue", TaskState.READY.name())
                   .put("fieldName", "state")
-                  .put("oldValue", "CLAIMED");
+                  .put("oldValue", TaskState.CLAIMED.name());
           JSONObject expectedOwner =
               new JSONObject()
                   .put("newValue", "")

@@ -67,9 +67,9 @@ class CreateHistoryEventOnTaskRequestChangesAccTest extends AbstractAccTest {
             .put("oldValue", oldModified.toString());
     JSONObject expectedState =
         new JSONObject()
-            .put("newValue", "READY")
+            .put("newValue", TaskState.READY.name())
             .put("fieldName", "state")
-            .put("oldValue", "IN_REVIEW");
+            .put("oldValue", TaskState.IN_REVIEW.name());
     JSONObject expectedOwner =
         new JSONObject().put("newValue", "").put("fieldName", "owner").put("oldValue", "user-1-1");
 
