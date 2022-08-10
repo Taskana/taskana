@@ -38,6 +38,7 @@ import pro.taskana.testapi.CleanTaskanaContext;
 import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
 import pro.taskana.testapi.TaskanaEngineProxy;
 import pro.taskana.testapi.WithServiceProvider;
+import pro.taskana.testapi.WithServiceProvider.WithServiceProviders;
 import pro.taskana.testapi.util.ServiceProviderExtractor;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
@@ -53,6 +54,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     if (isTopLevelClass(testClass)
         || isAnnotated(testClass, CleanTaskanaContext.class)
         || isAnnotated(testClass, WithServiceProvider.class)
+        || isAnnotated(testClass, WithServiceProviders.class)
         || testInstance instanceof TaskanaEngineConfigurationModifier) {
       Store store = getClassLevelStore(context);
       TaskanaEngineConfiguration taskanaEngineConfiguration =
