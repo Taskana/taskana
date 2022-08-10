@@ -18,6 +18,7 @@ import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.spi.task.api.AfterRequestChangesProvider;
 import pro.taskana.spi.task.api.AfterRequestReviewProvider;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;
+import pro.taskana.spi.task.api.ReviewRequiredProvider;
 import pro.taskana.testapi.WithServiceProvider;
 
 public class ServiceProviderExtractor {
@@ -28,6 +29,7 @@ public class ServiceProviderExtractor {
           PriorityServiceProvider.class,
           TaskRoutingProvider.class,
           CreateTaskPreprocessor.class,
+          ReviewRequiredProvider.class,
           AfterRequestReviewProvider.class,
           AfterRequestChangesProvider.class);
 
