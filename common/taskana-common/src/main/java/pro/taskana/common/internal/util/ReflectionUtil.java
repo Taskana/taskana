@@ -44,4 +44,18 @@ public class ReflectionUtil {
   public static <T> Class<T> wrap(Class<T> c) {
     return c.isPrimitive() ? (Class<T>) PRIMITIVES_TO_WRAPPERS.get(c) : c;
   }
+
+  public static Object getEnclosingInstance(Object instance) {
+    return Arrays.stream(instance.getClass().getDeclaredFields())
+        .filter(Field::isSynthetic)
+        .filter(f -> f.getName().startsWith("this"))
+        .findFirst()
+        .map(
+            CheckedFunction.wrap(
+                field -> {
+                  field.setAccessible(true);
+                  return field.get(instance);
+                }))
+        .orElse(null);
+  }
 }

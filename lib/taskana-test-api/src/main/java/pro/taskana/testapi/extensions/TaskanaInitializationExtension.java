@@ -4,6 +4,7 @@ import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 import static pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore;
 import static pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
@@ -29,6 +30,7 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
+import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
@@ -68,7 +70,8 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
 
       TaskanaEngine taskanaEngine;
       try (MockedStatic<SpiLoader> staticMock = Mockito.mockStatic(SpiLoader.class)) {
-        ServiceProviderExtractor.extractServiceProviders(testClass)
+        ServiceProviderExtractor.extractServiceProviders(
+                testClass, extractEnclosingTestInstances(testInstance))
             .forEach(
                 (spi, serviceProviders) ->
                     staticMock.when(() -> SpiLoader.load(spi)).thenReturn(serviceProviders));
@@ -78,6 +81,15 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));
     }
+  }
+
+  private static Map<Class<?>, Object> extractEnclosingTestInstances(Object instance) {
+    HashMap<Class<?>, Object> instanceByClass = new HashMap<>();
+    while (instance != null) {
+      instanceByClass.put(instance.getClass(), instance);
+      instance = ReflectionUtil.getEnclosingInstance(instance);
+    }
+    return instanceByClass;
   }
 
   private static TaskanaEngineConfiguration createDefaultTaskanaEngineConfiguration(Store store) {

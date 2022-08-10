@@ -1,9 +1,7 @@
 package pro.taskana.testapi.util;
 
 import static org.junit.platform.commons.support.AnnotationSupport.findRepeatableAnnotations;
-import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.platform.commons.JUnitException;
+import org.junit.platform.commons.support.ReflectionSupport;
 
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
@@ -36,7 +35,8 @@ public class ServiceProviderExtractor {
     throw new IllegalStateException("utility class");
   }
 
-  public static Map<Class<?>, List<Object>> extractServiceProviders(Class<?> testClass) {
+  public static Map<Class<?>, List<Object>> extractServiceProviders(
+      Class<?> testClass, Map<Class<?>, Object> enclosingTestInstancesByClass) {
     List<WithServiceProvider> withServiceProviders =
         findRepeatableAnnotations(testClass, WithServiceProvider.class);
 
@@ -44,7 +44,9 @@ public class ServiceProviderExtractor {
         .peek(entry -> validateServiceProviders(entry.getKey(), entry.getValue()))
         .collect(
             Collectors.toMap(
-                Entry::getKey, entry -> instantiateServiceProviders(entry.getValue())));
+                Entry::getKey,
+                entry ->
+                    instantiateServiceProviders(entry.getValue(), enclosingTestInstancesByClass)));
   }
 
   private static void validateServiceProviders(Class<?> spi, List<Class<?>> serviceProviders) {
@@ -69,24 +71,33 @@ public class ServiceProviderExtractor {
                     Collectors.toList())));
   }
 
-  private static List<Object> instantiateServiceProviders(List<Class<?>> serviceProviders) {
+  private static List<Object> instantiateServiceProviders(
+      List<Class<?>> serviceProviders, Map<Class<?>, Object> enclosingTestInstancesByClass) {
     return serviceProviders.stream()
-        .map(wrap(ServiceProviderExtractor::instantiateClass))
+        .map(clz -> instantiateClass(clz, enclosingTestInstancesByClass))
         .collect(Collectors.toList());
   }
 
-  private static Object instantiateClass(Class<?> clz) throws Exception {
+  private static Object instantiateClass(
+      Class<?> clz, Map<Class<?>, Object> enclosingTestInstancesByClass) {
     // we don't have to consider anonymous classes since they can't be passed as an argument to
     // the WithServiceProvider annotation.
     if (clz.isLocalClass() || (clz.isMemberClass() && !Modifier.isStatic(clz.getModifiers()))) {
-      Class<?> motherClass = clz.getEnclosingClass();
-      Object motherInstance = instantiateClass(motherClass);
-      Constructor<?> constructor = clz.getDeclaredConstructor(motherClass);
-      constructor.setAccessible(true);
-      return constructor.newInstance(motherInstance);
+      try {
+        Class<?> motherClass = clz.getEnclosingClass();
+        Object motherInstance =
+            enclosingTestInstancesByClass.getOrDefault(
+                motherClass, instantiateClass(motherClass, enclosingTestInstancesByClass));
+        return ReflectionSupport.newInstance(clz, motherInstance);
+      } catch (Exception e) {
+        //noinspection ConstantConditions
+        if (NoSuchMethodException.class == e.getClass()) {
+          throw new JUnitException(
+              "test-api does not support local class which accesses method variables");
+        }
+        throw e;
+      }
     }
-    Constructor<?> constructor = clz.getDeclaredConstructor();
-    constructor.setAccessible(true);
-    return constructor.newInstance();
+    return ReflectionSupport.newInstance(clz);
   }
 }
