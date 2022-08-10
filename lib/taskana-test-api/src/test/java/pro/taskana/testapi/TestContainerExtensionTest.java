@@ -2,6 +2,7 @@ package pro.taskana.testapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.OptionalInt;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
+import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.testapi.TestContainerExtensionTest.NestedTestClassWithServiceProvider.DummyPriorityServiceProvider;
 
 @TaskanaIntegrationTest
 class TestContainerExtensionTest {
@@ -185,7 +188,7 @@ class TestContainerExtensionTest {
 
   @WithServiceProvider(
       serviceProviderInterface = PriorityServiceProvider.class,
-      serviceProviders = TestPriorityServiceProvider.class)
+      serviceProviders = DummyPriorityServiceProvider.class)
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithServiceProvider {
@@ -208,6 +211,14 @@ class TestContainerExtensionTest {
           TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
 
       assertThat(nestedSchemaName).isNotNull().isEqualTo(topLevelSchemaName);
+    }
+
+    class DummyPriorityServiceProvider implements PriorityServiceProvider {
+      @Override
+      public OptionalInt calculatePriority(TaskSummary taskSummary) {
+        // implementation not important for the tests
+        return OptionalInt.empty();
+      }
     }
   }
 }

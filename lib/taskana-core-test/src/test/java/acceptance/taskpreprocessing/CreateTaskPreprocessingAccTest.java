@@ -1,7 +1,9 @@
 package acceptance.taskpreprocessing;
 
+import static acceptance.taskpreprocessing.CreateTaskPreprocessingAccTest.TestCreateTaskPreprocessorProvider.SPI_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import acceptance.taskpreprocessing.CreateTaskPreprocessingAccTest.TestCreateTaskPreprocessorProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +27,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @TaskanaIntegrationTest
 @WithServiceProvider(
     serviceProviderInterface = CreateTaskPreprocessor.class,
-    serviceProviders = CreateTaskPreprocessingAccTest.TestCreateTaskPreprocessorProvider.class)
+    serviceProviders = TestCreateTaskPreprocessorProvider.class)
 class CreateTaskPreprocessingAccTest {
 
   @TaskanaInject TaskService taskService;
@@ -62,15 +64,16 @@ class CreateTaskPreprocessingAccTest {
 
     Task createdTask = taskService.createTask(newTaskToCreate);
 
-    assertThat(createdTask.getCustomField(TaskCustomField.CUSTOM_1))
-        .isEqualTo("preprocessedCustomField");
+    assertThat(createdTask.getCustomField(TaskCustomField.CUSTOM_1)).isEqualTo(SPI_VALUE);
   }
 
-  public static class TestCreateTaskPreprocessorProvider implements CreateTaskPreprocessor {
+  static class TestCreateTaskPreprocessorProvider implements CreateTaskPreprocessor {
+
+    static final String SPI_VALUE = "preprocessedCustomField";
 
     @Override
     public void processTaskBeforeCreation(Task taskToProcess) {
-      taskToProcess.setCustomField(TaskCustomField.CUSTOM_1, "preprocessedCustomField");
+      taskToProcess.setCustomField(TaskCustomField.CUSTOM_1, SPI_VALUE);
     }
   }
 }

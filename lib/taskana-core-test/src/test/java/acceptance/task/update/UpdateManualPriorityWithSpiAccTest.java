@@ -5,6 +5,7 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
+import acceptance.task.update.UpdateManualPriorityWithSpiAccTest.TestStaticValuePriorityServiceProvider;
 import java.util.List;
 import java.util.OptionalInt;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,8 +36,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @TaskanaIntegrationTest
 @WithServiceProvider(
     serviceProviderInterface = PriorityServiceProvider.class,
-    serviceProviders =
-        UpdateManualPriorityWithSpiAccTest.TestStaticValuePriorityServiceProvider.class)
+    serviceProviders = TestStaticValuePriorityServiceProvider.class)
 class UpdateManualPriorityWithSpiAccTest {
 
   private static final int SPI_PRIORITY = 5;
@@ -46,8 +46,7 @@ class UpdateManualPriorityWithSpiAccTest {
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
 
-  public static class TestStaticValuePriorityServiceProvider implements PriorityServiceProvider {
-
+  static class TestStaticValuePriorityServiceProvider implements PriorityServiceProvider {
     @Override
     public OptionalInt calculatePriority(TaskSummary taskSummary) {
       return OptionalInt.of(UpdateManualPriorityWithSpiAccTest.SPI_PRIORITY);
