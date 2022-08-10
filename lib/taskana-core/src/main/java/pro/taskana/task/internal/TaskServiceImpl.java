@@ -56,6 +56,7 @@ import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
+import pro.taskana.spi.task.internal.ReviewRequiredManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCustomField;
@@ -116,6 +117,7 @@ public class TaskServiceImpl implements TaskService {
   private final HistoryEventManager historyEventManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
+  private final ReviewRequiredManager reviewRequiredManager;
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
 
@@ -136,6 +138,7 @@ public class TaskServiceImpl implements TaskService {
     this.historyEventManager = taskanaEngine.getHistoryEventManager();
     this.createTaskPreprocessorManager = taskanaEngine.getCreateTaskPreprocessorManager();
     this.priorityServiceManager = taskanaEngine.getPriorityServiceManager();
+    this.reviewRequiredManager = taskanaEngine.getReviewRequiredManager();
     this.afterRequestReviewManager = taskanaEngine.getAfterRequestReviewManager();
     this.afterRequestChangesManager = taskanaEngine.getAfterRequestChangesManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
@@ -1448,10 +1451,12 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    TaskImpl task;
+    TaskImpl task = (TaskImpl) this.getTask(taskId);
+    if (reviewRequiredManager.reviewRequired(task)) {
+      return requestReview(taskId);
+    }
     try {
       taskanaEngine.openConnection();
-      task = (TaskImpl) this.getTask(taskId);
 
       if (task.getState() == TaskState.COMPLETED) {
         return task;

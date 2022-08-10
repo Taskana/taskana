@@ -10,6 +10,7 @@ import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
+import pro.taskana.spi.task.internal.ReviewRequiredManager;
 
 /**
  * FOR INTERNAL USE ONLY.
@@ -107,6 +108,13 @@ public interface InternalTaskanaEngine {
    * @return the {@linkplain PriorityServiceManager} instance
    */
   PriorityServiceManager getPriorityServiceManager();
+
+  /**
+   * Retrieves the {@linkplain ReviewRequiredManager}.
+   *
+   * @return the {@linkplain ReviewRequiredManager} instance
+   */
+  ReviewRequiredManager getReviewRequiredManager();
 
   /**
    * Retrieves the {@linkplain AfterRequestReviewManager}.

@@ -56,6 +56,7 @@ import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
+import pro.taskana.spi.task.internal.ReviewRequiredManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
@@ -84,6 +85,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final TaskRoutingManager taskRoutingManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
+  private final ReviewRequiredManager reviewRequiredManager;
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
 
@@ -122,6 +124,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
     historyEventManager = new HistoryEventManager(this);
     taskRoutingManager = new TaskRoutingManager(this);
+    reviewRequiredManager = new ReviewRequiredManager(this);
     afterRequestReviewManager = new AfterRequestReviewManager(this);
     afterRequestChangesManager = new AfterRequestChangesManager(this);
   }
@@ -527,6 +530,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public PriorityServiceManager getPriorityServiceManager() {
       return priorityServiceManager;
+    }
+
+    @Override
+    public ReviewRequiredManager getReviewRequiredManager() {
+      return reviewRequiredManager;
     }
 
     @Override

@@ -88,11 +88,17 @@ public class RequestChangesWithSpiAccTest {
 
   static class ExceptionThrower implements AfterRequestChangesProvider {
 
-    @Override
-    public void initialize(TaskanaEngine taskanaEngine) {}
+    private TaskanaEngine taskanaEngine;
 
     @Override
-    public Task afterRequestChanges(Task task) {
+    public void initialize(TaskanaEngine taskanaEngine) {
+      this.taskanaEngine = taskanaEngine;
+    }
+
+    @Override
+    public Task afterRequestChanges(Task task) throws Exception {
+      task.setDescription("should not matter. Will get rolled back anyway");
+      taskanaEngine.getTaskService().updateTask(task);
       throw new SystemException("I AM THE EXCEPTION THROWER (*_*)");
     }
   }
