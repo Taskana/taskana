@@ -55,8 +55,6 @@ class TaskRoutingAccTest {
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
-
-    TaskRoutingProviderForDomainA.domainAWorkbasketId = domainAWorkbasket.getId();
   }
 
   @WithAccessId(user = "user-1-1")
@@ -83,9 +81,7 @@ class TaskRoutingAccTest {
     assertThat(createdTask.getWorkbasketSummary()).isEqualTo(domainAWorkbasket);
   }
 
-  public static class TaskRoutingProviderForDomainA implements TaskRoutingProvider {
-
-    static String domainAWorkbasketId;
+  class TaskRoutingProviderForDomainA implements TaskRoutingProvider {
 
     @Override
     public void initialize(TaskanaEngine taskanaEngine) {}
@@ -93,7 +89,7 @@ class TaskRoutingAccTest {
     @Override
     public String determineWorkbasketId(Task task) {
       if ("DOMAIN_A".equals(task.getDomain())) {
-        return domainAWorkbasketId;
+        return domainAWorkbasket.getId();
       }
       return null;
     }

@@ -1,5 +1,6 @@
 package pro.taskana.testapi.util;
 
+import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.testapi.util.ServiceProviderExtractor.extractServiceProviders;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.platform.commons.JUnitException;
 
+import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.task.api.models.Task;
@@ -66,16 +68,30 @@ class ServiceProviderExtractorTest {
     }
   }
 
+  @SuppressWarnings("InnerClassMayBeStatic")
+  class NonStaticCreateTaskPreprocessorOutsideOfTestClass implements CreateTaskPreprocessor {
+    @Override
+    public void processTaskBeforeCreation(Task taskToProcess) {
+      // implementation not important for the tests
+    }
+  }
+
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class ServiceProviderInstantiation {
 
+    private final Map<Class<?>, Object> enclosingTestInstancesByClass =
+        Map.ofEntries(
+            entry(ServiceProviderInstantiation.class, this),
+            entry(ServiceProviderExtractorTest.class, ServiceProviderExtractorTest.this));
+
     @Test
     void should_ReturnEmptyMap_When_NoServiceProviderIsDefined() {
-      class ExampleClazzWithNoServiceProviders {}
+      class ExampleTestClassWithNoServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClazzWithNoServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithNoServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).isEmpty();
     }
@@ -85,16 +101,17 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = TopLevelCreateTaskPreprocessor.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(TopLevelCreateTaskPreprocessor.class);
+          .hasExactlyElementsOfTypes(TopLevelCreateTaskPreprocessor.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsOnlyNulls();
     }
 
     @Test
@@ -102,16 +119,17 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = StaticCreateTaskPreprocessor.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(StaticCreateTaskPreprocessor.class);
+          .hasExactlyElementsOfTypes(StaticCreateTaskPreprocessor.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsOnlyNulls();
     }
 
     @Test
@@ -119,16 +137,17 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = PrivateStaticCreateTaskPreprocessor.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(PrivateStaticCreateTaskPreprocessor.class);
+          .hasExactlyElementsOfTypes(PrivateStaticCreateTaskPreprocessor.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsOnlyNulls();
     }
 
     @Test
@@ -143,33 +162,35 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = LocalCreateTaskPreprocessor.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(LocalCreateTaskPreprocessor.class);
+          .hasExactlyElementsOfTypes(LocalCreateTaskPreprocessor.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsExactly(this);
     }
 
     @Test
     void should_InstantiateServiceProvider_When_ServiceProviderIsNonStaticMemberClass() {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
-          serviceProviders = NonStaticCreateTaskPreprocessor.class)
-      class ExampleClassWithServiceProviders {}
+          serviceProviders = NonStaticCreateTaskPreprocessorInsideOfTestClass.class)
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(NonStaticCreateTaskPreprocessor.class);
+          .hasExactlyElementsOfTypes(NonStaticCreateTaskPreprocessorInsideOfTestClass.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsExactly(this);
     }
 
     @Test
@@ -177,20 +198,38 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = PrivateNonStaticCreateTaskPreprocessor.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(PrivateNonStaticCreateTaskPreprocessor.class);
+          .hasExactlyElementsOfTypes(PrivateNonStaticCreateTaskPreprocessor.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsExactly(this);
     }
 
-    class NonStaticCreateTaskPreprocessor implements CreateTaskPreprocessor {
+    @Test
+    void should_InstantiateServiceProvider_When_ItIsNonStaticMemberClassOutsideOfTestClass() {
+      @WithServiceProvider(
+          serviceProviderInterface = CreateTaskPreprocessor.class,
+          serviceProviders = NonStaticCreateTaskPreprocessorOutsideOfTestClass.class)
+      class ExampleTestClassWithServiceProviders {}
 
+      Map<Class<?>, List<Object>> extractServiceProviders =
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
+
+      assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
+      assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
+          .hasExactlyElementsOfTypes(NonStaticCreateTaskPreprocessorOutsideOfTestClass.class)
+          .extracting(ReflectionUtil::getEnclosingInstance)
+          .containsExactly(ServiceProviderExtractorTest.this);
+    }
+
+    class NonStaticCreateTaskPreprocessorInsideOfTestClass implements CreateTaskPreprocessor {
       @Override
       public void processTaskBeforeCreation(Task taskToProcess) {
         // implementation not important for the tests
@@ -210,21 +249,26 @@ class ServiceProviderExtractorTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class ExtractServiceProvidersFromSingleServiceProviderInterface {
 
+    private final Map<Class<?>, Object> enclosingTestInstancesByClass =
+        Map.ofEntries(
+            entry(ExtractServiceProvidersFromSingleServiceProviderInterface.class, this),
+            entry(ServiceProviderExtractorTest.class, ServiceProviderExtractorTest.this));
+
     @Test
     void should_ExtractServiceProvider() {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = DummyTaskPreprocessor1.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
           .asList()
-          .containsExactly(DummyTaskPreprocessor1.class);
+          .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class);
     }
 
     @Test
@@ -232,16 +276,16 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = {DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class})
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
           .asList()
-          .containsExactly(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
+          .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
     }
 
     @Test
@@ -252,16 +296,15 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = DummyTaskPreprocessor2.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
+          .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
     }
 
     @Test
@@ -269,22 +312,26 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = {DummyTaskPreprocessor1.class, DummyTaskPreprocessor1.class})
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(DummyTaskPreprocessor1.class, DummyTaskPreprocessor1.class);
+          .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class, DummyTaskPreprocessor1.class);
     }
   }
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class ExtractMultipleServiceProvidersFromMultipleServiceProviderInterfaces {
+
+    private final Map<Class<?>, Object> enclosingTestInstancesByClass =
+        Map.ofEntries(
+            entry(ExtractMultipleServiceProvidersFromMultipleServiceProviderInterfaces.class, this),
+            entry(ServiceProviderExtractorTest.class, ServiceProviderExtractorTest.this));
 
     @Test
     void should_ExtractServiceProviders() {
@@ -294,21 +341,18 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = PriorityServiceProvider.class,
           serviceProviders = DummyPriorityServiceProvider1.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders)
           .containsOnlyKeys(CreateTaskPreprocessor.class, PriorityServiceProvider.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(DummyTaskPreprocessor1.class);
+          .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class);
       assertThat(extractServiceProviders.get(PriorityServiceProvider.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(DummyPriorityServiceProvider1.class);
+          .hasExactlyElementsOfTypes(DummyPriorityServiceProvider1.class);
     }
 
     @Test
@@ -322,21 +366,18 @@ class ServiceProviderExtractorTest {
             DummyPriorityServiceProvider1.class,
             DummyPriorityServiceProvider2.class
           })
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
       Map<Class<?>, List<Object>> extractServiceProviders =
-          extractServiceProviders(ExampleClassWithServiceProviders.class);
+          extractServiceProviders(
+              ExampleTestClassWithServiceProviders.class, enclosingTestInstancesByClass);
 
       assertThat(extractServiceProviders)
           .containsOnlyKeys(CreateTaskPreprocessor.class, PriorityServiceProvider.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
+          .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
       assertThat(extractServiceProviders.get(PriorityServiceProvider.class))
-          .extracting(Object::getClass)
-          .asList()
-          .containsExactly(
+          .hasExactlyElementsOfTypes(
               DummyPriorityServiceProvider1.class, DummyPriorityServiceProvider2.class);
     }
   }
@@ -350,9 +391,10 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = ErrorHandling.class,
           serviceProviders = DummyTaskPreprocessor1.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
-      ThrowingCallable call = () -> extractServiceProviders(ExampleClassWithServiceProviders.class);
+      ThrowingCallable call =
+          () -> extractServiceProviders(ExampleTestClassWithServiceProviders.class, Map.of());
 
       assertThatThrownBy(call)
           .isInstanceOf(JUnitException.class)
@@ -364,9 +406,10 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = DummyPriorityServiceProvider1.class)
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
-      ThrowingCallable call = () -> extractServiceProviders(ExampleClassWithServiceProviders.class);
+      ThrowingCallable call =
+          () -> extractServiceProviders(ExampleTestClassWithServiceProviders.class, Map.of());
 
       assertThatThrownBy(call)
           .isInstanceOf(JUnitException.class)
@@ -380,15 +423,40 @@ class ServiceProviderExtractorTest {
       @WithServiceProvider(
           serviceProviderInterface = CreateTaskPreprocessor.class,
           serviceProviders = {DummyTaskPreprocessor1.class, DummyPriorityServiceProvider1.class})
-      class ExampleClassWithServiceProviders {}
+      class ExampleTestClassWithServiceProviders {}
 
-      ThrowingCallable call = () -> extractServiceProviders(ExampleClassWithServiceProviders.class);
+      ThrowingCallable call =
+          () -> extractServiceProviders(ExampleTestClassWithServiceProviders.class, Map.of());
 
       assertThatThrownBy(call)
           .isInstanceOf(JUnitException.class)
           .hasMessage(
               "At least one ServiceProvider does not implement the requested SPI '%s'",
               CreateTaskPreprocessor.class);
+    }
+
+    @Test
+    void should_ThrowException_When_LocalServiceProviderUsesAMethodVariable() {
+      String methodVariable = "foobar";
+      class LocalCreateTaskPreprocessor implements CreateTaskPreprocessor {
+        @Override
+        public void processTaskBeforeCreation(Task taskToProcess) {
+          // implementation not important for the tests
+          taskToProcess.setOwner(methodVariable);
+        }
+      }
+
+      @WithServiceProvider(
+          serviceProviderInterface = CreateTaskPreprocessor.class,
+          serviceProviders = LocalCreateTaskPreprocessor.class)
+      class ExampleTestClassWithServiceProviders {}
+
+      ThrowingCallable call =
+          () -> extractServiceProviders(ExampleTestClassWithServiceProviders.class, Map.of());
+
+      assertThatThrownBy(call)
+          .isInstanceOf(JUnitException.class)
+          .hasMessage("test-api does not support local class which accesses method variables");
     }
   }
 }
