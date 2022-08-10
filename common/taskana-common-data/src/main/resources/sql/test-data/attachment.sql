@@ -1,3 +1,5 @@
+-- test-data is used for all tests except for the rest tests
+
 -- ATTACHMENT TABLE          (ID                                        , task_ID                                  , CREATED              , MODIFIED             , classif key, classif Id                                , refCompany, ref sys,   ref inst,ref type, ref val, channel,received, custAtts)
 
 INSERT INTO ATTACHMENT VALUES('TAI:000000000000000000000000000000000000','TKI:000000000000000000000000000000000000', '2018-01-29 15:55:00', '2018-01-30 15:55:00', 'L1050'    , 'CLI:100000000000000000000000000000000003', 'novatec' , 'novasys', 'nvinst', 'typ1', 'val1', 'ch1',  null, null);

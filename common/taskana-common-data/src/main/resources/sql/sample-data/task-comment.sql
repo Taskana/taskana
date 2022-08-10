@@ -1,3 +1,5 @@
+-- sample-data is used for rest tests and for the example application
+
 -- TASK_COMMENT TABLE            ID                                        , TASK_ID                                      ,TEXTFIELD              ,CREATOR              ,CREATED            ,MODIFIED
 
 -- TaskComments for GetTaskCommentAccTest + UpdateTaskCommentAccTest

@@ -1,3 +1,5 @@
+-- test-data is used for all tests except for the rest tests
+
 -- TASK_COMMENT TABLE            ID                                        , TASK_ID                                      ,TEXTFIELD              ,CREATOR              ,CREATED            ,MODIFIED
 
 -- TaskComments for GetTaskCommentAccTest + UpdateTaskCommentAccTest

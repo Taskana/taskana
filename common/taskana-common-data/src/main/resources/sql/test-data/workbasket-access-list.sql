@@ -1,3 +1,5 @@
+-- test-data is used for all tests except for the rest tests
+
 -- KSC authorizations                     (ID                                        , WB_ID                                     , ACCESS_ID                                                                                    , ACCESS_NAME         , READ , OPEN , APPEND, TRANSFER, DISTRIBUTE, C1, .., C12)
 -- PPKs
 INSERT INTO WORKBASKET_ACCESS_LIST VALUES ('WAI:100000000000000000000000000000000001', 'WBI:100000000000000000000000000000000004', 'teamlead-1'                                                                                 , 'Titus Toll'        , true , true , true  , true    , true      ,   true     , true , true , true , true , true , true , true , true , true , true , true);
