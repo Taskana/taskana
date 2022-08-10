@@ -1,3 +1,5 @@
+-- sample-data is used for rest tests and for the example application
+
 -- USER_INFO TABLE          (USER_ID          , FIRST_NAME , LASTNAME      , FULL_NAME         , LONG_NAME                          , E_MAIL                    , PHONE         , MOBILE_PHONE      , ORG_LEVEL_4   , ORG_LEVEL_3   , ORG_LEVEL_2        , ORG_LEVEL_1   , DATA
 INSERT INTO USER_INFO VALUES('teamlead-1'     , 'Titus'    , 'Toll'        , 'Toll, Titus'      , 'Toll, Titus - (teamlead-1)'         , 'titus.toll@web.de'       , '040-2951854' , '015637683197'    , 'Novatec'     , 'BPM'         , 'Human Workflow'   , 'TASKANA'     , 'xy'  );
 INSERT INTO USER_INFO VALUES('user-1-1'       , 'Max'      , 'Mustermann'  , 'Mustermann, Max'  , 'Mustermann, Max - (user-1-1)'       , 'max.mustermann@web.de'   , '040-2951854' , '015637683197'    , 'Novatec'     , 'BPM'         , 'Human Workflow'   , 'TASKANA'     , ''    );

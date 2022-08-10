@@ -1,3 +1,5 @@
+-- sample-data is used for rest tests and for the example application
+
 --                                ID,                                         KEY,               PARENT_ID,                                  PARENT_KEY, CATEGORY,     TYPE,       DOMAIN,     VALID_IN_DOMAIN,  CREATED,           MODIFIED,          NAME,                             DESCRIPTION,                                           PRIORITY, SERVICE_LEVEL, APPLICATION_ENTRY_POINT, CUSTOM_1 - 8
 -- MASTER CLASSIFICATIONS
 INSERT INTO CLASSIFICATION VALUES('CLI:000000000000000000000000000000000001', 'L10000',          '',                                         '',        'EXTERNAL',   'TASK',     '',         FALSE,            RELATIVE_DATE(0) , RELATIVE_DATE(0) , 'OLD-Leistungsfall',               'OLD-Leistungsfall',                                   999,     'P1D',         '',                      'VNR,RVNR,KOLVNR', '', '', '', '', '', '', '');

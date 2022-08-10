@@ -1,3 +1,5 @@
+-- test-data is used for all tests except for the rest tests
+
 -- KSC workbaskets
 -- WORKBASKET TABLE           (ID                                        , KEY          , CREATED              , MODIFIED             , NAME                       , DOMAIN    , TYPE      , DESCRIPTION                    , OWNER        , CUSTOM_1 , CUSTOM_2  , CUSTOM_3 , CUSTOM_4  , ORG_LEVEL_1   , ORG_LEVEL_2, ORG_LEVEL_3, ORG_LEVEL_4, MARKED_FOR_DELETION  );
 INSERT INTO WORKBASKET VALUES ('WBI:100000000000000000000000000000000001', 'GPK_KSC'    , '2018-02-01 12:00:00', '2018-02-01 12:00:00', 'Gruppenpostkorb KSC'      , 'DOMAIN_A', 'GROUP'   , 'Gruppenpostkorb KSC'        , 'teamlead-1' , 'ABCQVW' , ''        , 'xyz4'   , ''        , ''            , ''         , ''         , ''         , false                );
