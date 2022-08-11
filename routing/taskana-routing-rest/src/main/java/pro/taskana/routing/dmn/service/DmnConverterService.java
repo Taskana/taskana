@@ -1,6 +1,7 @@
 package pro.taskana.routing.dmn.service;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.camunda.bpm.dmn.xlsx.AdvancedSpreadsheetAdapter;
-import org.camunda.bpm.dmn.xlsx.XlsxConverter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
@@ -61,18 +61,22 @@ public class DmnConverterService {
 
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
+    StringBuilder serializedRules = new StringBuilder();
+
     try (InputStream inputStream = new BufferedInputStream(excelRoutingFile.getInputStream())) {
 
       XlsxConverter converter = new XlsxConverter();
       converter.setIoDetectionStrategy(new AdvancedSpreadsheetAdapter());
 
-      DmnModelInstance dmnModelInstance = converter.convert(inputStream);
-      validateOutputs(dmnModelInstance);
+      DmnModelInstance dmnModelInstance = converter.convert(inputStream, serializedRules);
+      DmnModelInstance patchedModel =
+          mergeSerializedRulesIntoDmn(dmnModelInstance, serializedRules);
+      validateOutputs(patchedModel);
 
-      InputEntriesSanitizer.sanitizeRegexInsideInputEntries(dmnModelInstance);
+      InputEntriesSanitizer.sanitizeRegexInsideInputEntries(patchedModel);
 
       if (DmnValidatorManager.isDmnUploadProviderEnabled()) {
-        DmnValidatorManager.getInstance(taskanaEngine).validate(dmnModelInstance);
+        DmnValidatorManager.getInstance(taskanaEngine).validate(patchedModel);
       }
 
       if (LOGGER.isDebugEnabled()) {
@@ -80,10 +84,24 @@ public class DmnConverterService {
       }
 
       File uploadDestinationFile = new File(dmnUploadPath);
-      Dmn.writeModelToFile(uploadDestinationFile, dmnModelInstance);
+      Dmn.writeModelToFile(uploadDestinationFile, patchedModel);
 
-      return dmnModelInstance;
+      return patchedModel;
     }
+  }
+
+  private DmnModelInstance mergeSerializedRulesIntoDmn(
+      DmnModelInstance originalInstance, StringBuilder serializedRules) {
+    String dmnString = Dmn.convertToString(originalInstance);
+    StringBuilder finalDmn = new StringBuilder();
+    int splitPosition = dmnString.indexOf("</decisionTable>");
+    finalDmn.append(dmnString.substring(0, splitPosition));
+    finalDmn.append(serializedRules);
+    finalDmn.append(dmnString.substring(splitPosition));
+    DmnModelInstance patchedModel =
+        Dmn.readModelFromStream(new ByteArrayInputStream(finalDmn.toString().getBytes()));
+
+    return patchedModel;
   }
 
   private Set<KeyDomain> getOutputKeyDomains(DmnModelInstance dmnModel) {
