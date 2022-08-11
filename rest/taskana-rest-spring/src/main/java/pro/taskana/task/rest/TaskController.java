@@ -246,6 +246,27 @@ public class TaskController {
   }
 
   /**
+   * This endpoint force requests changes on a Task.
+   *
+   * @param taskId the Id of the Task on which a review should be requested
+   * @return the change requested Task
+   * @throws InvalidTaskStateException if the Task with taskId is in an end state
+   * @throws TaskNotFoundException if the Task with taskId wasn't found
+   * @throws InvalidOwnerException cannot be thrown
+   * @throws NotAuthorizedException if the current user has no READ permissions for the Workbasket
+   *     the Task is in
+   * @title Force request changes on a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_CHANGES_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceRequestChanges(@PathVariable String taskId)
+      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+          NotAuthorizedException {
+    Task task = taskService.forceRequestChanges(taskId);
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
+  }
+
+  /**
    * This endpoint selects the first Task returned by the Task Query and claims it.
    *
    * @param filterParameter the filter parameters
