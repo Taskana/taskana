@@ -16,6 +16,7 @@ import org.junit.platform.commons.JUnitException;
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
+import pro.taskana.spi.task.api.AfterRequestChangesProvider;
 import pro.taskana.spi.task.api.AfterRequestReviewProvider;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.testapi.WithServiceProvider;
@@ -28,7 +29,8 @@ public class ServiceProviderExtractor {
           PriorityServiceProvider.class,
           TaskRoutingProvider.class,
           CreateTaskPreprocessor.class,
-          AfterRequestReviewProvider.class);
+          AfterRequestReviewProvider.class,
+          AfterRequestChangesProvider.class);
 
   private ServiceProviderExtractor() {
     throw new IllegalStateException("utility class");

@@ -1,4 +1,4 @@
-package acceptance.task.requestreview;
+package acceptance.task.requestchanges;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -20,7 +20,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.jobs.PlainJavaTransactionProvider;
-import pro.taskana.spi.task.api.AfterRequestReviewProvider;
+import pro.taskana.spi.task.api.AfterRequestChangesProvider;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
@@ -38,7 +38,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-public class RequestReviewWithSpiAccTest {
+public class RequestChangesWithSpiAccTest {
 
   private static final String NEW_WORKBASKET_KEY = "W1000";
   ClassificationSummary defaultClassificationSummary;
@@ -75,8 +75,8 @@ public class RequestReviewWithSpiAccTest {
     defaultObjectReference = DefaultTestEntities.defaultTestObjectReference().build();
   }
 
-  private TaskBuilder createTaskClaimedByUser(String owner) {
-    return createDefaultTask().owner(owner).state(TaskState.CLAIMED);
+  private TaskBuilder createTaskInReviewByUser(String owner) {
+    return createDefaultTask().owner(owner).state(TaskState.IN_REVIEW);
   }
 
   private TaskBuilder createDefaultTask() {
@@ -86,18 +86,18 @@ public class RequestReviewWithSpiAccTest {
         .primaryObjRef(defaultObjectReference);
   }
 
-  static class ExceptionThrower implements AfterRequestReviewProvider {
+  static class ExceptionThrower implements AfterRequestChangesProvider {
 
     @Override
     public void initialize(TaskanaEngine taskanaEngine) {}
 
     @Override
-    public Task afterRequestReview(Task task) {
+    public Task afterRequestChanges(Task task) {
       throw new SystemException("I AM THE EXCEPTION THROWER (*_*)");
     }
   }
 
-  static class TaskModifierAndTransferrer implements AfterRequestReviewProvider {
+  static class TaskModifierAndTransferrer implements AfterRequestChangesProvider {
     private static final String NEW_CUSTOM_3_VALUE = "bla";
 
     private TaskanaEngine taskanaEngine;
@@ -108,7 +108,7 @@ public class RequestReviewWithSpiAccTest {
     }
 
     @Override
-    public Task afterRequestReview(Task task) throws Exception {
+    public Task afterRequestChanges(Task task) throws Exception {
       task.setCustomField(TaskCustomField.CUSTOM_3, NEW_CUSTOM_3_VALUE);
       task = taskanaEngine.getTaskService().updateTask(task);
       task = taskanaEngine.getTaskService().transfer(task.getId(), NEW_WORKBASKET_KEY, "DOMAIN_A");
@@ -116,7 +116,7 @@ public class RequestReviewWithSpiAccTest {
     }
   }
 
-  static class ClassificationUpdater implements AfterRequestReviewProvider {
+  static class ClassificationUpdater implements AfterRequestChangesProvider {
 
     public static final String SPI_CLASSIFICATION_NAME = "Neuer Classification Name";
 
@@ -128,7 +128,7 @@ public class RequestReviewWithSpiAccTest {
     }
 
     @Override
-    public Task afterRequestReview(Task task) throws Exception {
+    public Task afterRequestChanges(Task task) throws Exception {
       Classification newClassification =
           defaultTestClassification().buildAndStore(taskanaEngine.getClassificationService());
 
@@ -145,7 +145,7 @@ public class RequestReviewWithSpiAccTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
+      serviceProviderInterface = AfterRequestChangesProvider.class,
       serviceProviders = TaskModifierAndTransferrer.class)
   class SpiModifiesTask {
 
@@ -154,9 +154,9 @@ public class RequestReviewWithSpiAccTest {
     @WithAccessId(user = "user-1-1")
     @Test
     void should_ReturnModifiedTask_When_SpiModifiesAndTransfersTask() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+      Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
 
-      Task result = taskService.requestReview(task.getId());
+      Task result = taskService.requestChanges(task.getId());
 
       assertThat(result.getCustomField(TaskCustomField.CUSTOM_3))
           .isEqualTo(TaskModifierAndTransferrer.NEW_CUSTOM_3_VALUE);
@@ -166,9 +166,9 @@ public class RequestReviewWithSpiAccTest {
     @WithAccessId(user = "user-1-1")
     @Test
     void should_ReturnPersistentModifiedTask_When_SpiModifiesAndTransfersTask() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+      Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
 
-      taskService.requestReview(task.getId());
+      taskService.requestChanges(task.getId());
       Task result = taskService.getTask(task.getId());
 
       assertThat(result.getCustomField(TaskCustomField.CUSTOM_3))
@@ -180,7 +180,7 @@ public class RequestReviewWithSpiAccTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
+      serviceProviderInterface = AfterRequestChangesProvider.class,
       serviceProviders = ClassificationUpdater.class)
   class SpiModifiesTaskAndClassification {
 
@@ -189,9 +189,9 @@ public class RequestReviewWithSpiAccTest {
     @WithAccessId(user = "user-1-1", groups = "businessadmin")
     @Test
     void should_ChangeMultipleEntities_When_SpiModifiesMoreThanTheTask() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+      Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
 
-      taskService.requestReview(task.getId());
+      taskService.requestChanges(task.getId());
       Task result = taskService.getTask(task.getId());
 
       assertThat(result.getClassificationSummary().getId())
@@ -204,7 +204,7 @@ public class RequestReviewWithSpiAccTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
+      serviceProviderInterface = AfterRequestChangesProvider.class,
       serviceProviders = {TaskModifierAndTransferrer.class, ClassificationUpdater.class})
   class MultipleSpisAreDefined {
 
@@ -213,9 +213,9 @@ public class RequestReviewWithSpiAccTest {
     @WithAccessId(user = "user-1-1", groups = "businessadmin")
     @Test
     void should_ApplyMultipleChanges_When_MultipleSpisAreChained() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+      Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
 
-      taskService.requestReview(task.getId());
+      taskService.requestChanges(task.getId());
       Task result = taskService.getTask(task.getId());
 
       // changes from TaskModifierAndTransferrer
@@ -233,7 +233,7 @@ public class RequestReviewWithSpiAccTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
+      serviceProviderInterface = AfterRequestChangesProvider.class,
       serviceProviders = ExceptionThrower.class)
   class SpiThrowsException {
     @TaskanaInject TaskService taskService;
@@ -250,12 +250,12 @@ public class RequestReviewWithSpiAccTest {
     @WithAccessId(user = "user-1-1")
     @Test
     void should_RollbackTransaction_When_SpiThrowsAnException() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+      Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
 
       ThrowingCallable call =
           () ->
               transactionProvider.executeInTransaction(
-                  wrap(() -> taskService.requestReview(task.getId())));
+                  wrap(() -> taskService.requestChanges(task.getId())));
 
       assertThatThrownBy(call)
           .isInstanceOf(SystemException.class)
