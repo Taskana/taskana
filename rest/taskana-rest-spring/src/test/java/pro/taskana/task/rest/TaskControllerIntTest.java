@@ -52,12 +52,10 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 class TaskControllerIntTest {
 
   private static final ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>
-      TASK_SUMMARY_PAGE_MODEL_TYPE =
-          new ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>() {};
+      TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
 
   private static final ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>
-      TASK_SUMMARY_COLLECTION_MODEL_TYPE =
-          new ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>() {};
+      TASK_SUMMARY_COLLECTION_MODEL_TYPE = new ParameterizedTypeReference<>() {};
 
   private static final ParameterizedTypeReference<TaskRepresentationModel> TASK_MODEL_TYPE =
       ParameterizedTypeReference.forType(TaskRepresentationModel.class);
@@ -92,7 +90,7 @@ class TaskControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(59);
+    assertThat(response.getBody().getContent()).hasSize(60);
   }
 
   @Test
@@ -524,8 +522,7 @@ class TaskControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?por="
-            + URLEncoder.encode(
-                "{\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\"}", "UTF-8");
+            + URLEncoder.encode("{\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\"}", UTF_8);
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -540,7 +537,7 @@ class TaskControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?sor="
-            + URLEncoder.encode("{\"type\":\"Type2\",\"value\":\"Value2\"}", "UTF-8");
+            + URLEncoder.encode("{\"type\":\"Type2\",\"value\":\"Value2\"}", UTF_8);
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -555,7 +552,7 @@ class TaskControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?sor="
-            + URLEncoder.encode("{\"company\":\"Company3\"}", "UTF-8");
+            + URLEncoder.encode("{\"company\":\"Company3\"}", UTF_8);
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -570,7 +567,7 @@ class TaskControllerIntTest {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?sor="
-            + URLEncoder.encode("{\"type\":\"Type2\",\"value\":\"Quatsch\"}", "UTF-8");
+            + URLEncoder.encode("{\"type\":\"Type2\",\"value\":\"Quatsch\"}", UTF_8);
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
     ResponseEntity<TaskSummaryPagedRepresentationModel> response =
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -750,7 +747,7 @@ class TaskControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(20);
+    assertThat(response.getBody().getContent()).hasSize(21);
   }
 
   @Test
@@ -794,7 +791,7 @@ class TaskControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(90);
+    assertThat(response.getBody().getContent()).hasSize(91);
   }
 
   @Test
@@ -870,7 +867,7 @@ class TaskControllerIntTest {
         TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThat(response.getBody()).isNotNull();
-    assertThat((response.getBody()).getContent()).hasSize(59);
+    assertThat((response.getBody()).getContent()).hasSize(60);
 
     String url2 =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
@@ -945,7 +942,7 @@ class TaskControllerIntTest {
 
     assertThat(response.getBody()).isNotNull();
     assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(83);
+    assertThat(response.getBody().getContent()).hasSize(84);
   }
 
   @Test
@@ -1393,6 +1390,34 @@ class TaskControllerIntTest {
         .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_RequestReviewOnATask() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000035");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> getTaskResponse =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+    assertThat(getTaskResponse.getBody()).isNotNull();
+    TaskRepresentationModel repModel = getTaskResponse.getBody();
+    assertThat(repModel.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(repModel.getOwner()).isEqualTo("user-1-1");
+
+    // request review
+    String url2 =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW, "TKI:000000000000000000000000000000000035");
+    ResponseEntity<TaskRepresentationModel> requestReviewResponse =
+        TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+    assertThat(requestReviewResponse.getBody()).isNotNull();
+    assertThat(requestReviewResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    repModel = requestReviewResponse.getBody();
+    assertThat(repModel.getOwner()).isNull();
+    assertThat(repModel.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
   }
 
   @Test

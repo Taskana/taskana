@@ -81,6 +81,17 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
   }
 
   @Test
+  void requestReviewTaskDocTest() throws Exception {
+    mockMvc
+        .perform(
+            post(
+                    RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW,
+                    "TKI:000000000000000000000000000000000032")
+                .headers(RestHelper.generateHeadersForUser("user-1-2")))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   void selectAndClaimTaskDocTest() throws Exception {
     mockMvc
         .perform(post(RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM + "?custom14=abc"))
