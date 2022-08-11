@@ -159,9 +159,10 @@ public interface TaskService {
    *
    * @param taskId the {@linkplain Task#getId() id} of the specified {@linkplain Task}
    * @return the {@linkplain Task} after changes have been requested
-   * @throws InvalidTaskStateException cannot be thrown
+   * @throws InvalidTaskStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is one of the {@linkplain TaskState#END_STATES}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
-   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
+   * @throws InvalidOwnerException cannot be thrown
    * @throws NotAuthorizedException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
