@@ -47,6 +47,8 @@ public final class RestEndpoints {
   public static final String URL_TASKS_ID_CLAIM_FORCE = API_V1 + "tasks/{taskId}/claim/force";
   public static final String URL_TASKS_ID_SELECT_AND_CLAIM = API_V1 + "tasks/select-and-claim";
   public static final String URL_TASKS_ID_REQUEST_REVIEW = API_V1 + "tasks/{taskId}/request-review";
+  public static final String URL_TASKS_ID_REQUEST_REVIEW_FORCE =
+      API_V1 + "tasks/{taskId}/request-review/force";
   public static final String URL_TASKS_ID_REQUEST_CHANGES =
       API_V1 + "tasks/{taskId}/request-changes";
   public static final String URL_TASKS_ID_REQUEST_CHANGES_FORCE =
