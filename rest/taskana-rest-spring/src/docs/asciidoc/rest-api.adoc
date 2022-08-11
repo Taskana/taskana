@@ -105,6 +105,7 @@ include::{snippets}/TaskControllerRestDocTest/selectAndClaimTaskDocTest/auto-sec
 include::{snippets}/TaskControllerRestDocTest/cancelClaimTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/forceCancelClaimTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/requestReviewTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/requestChangesTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/completeTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/cancelTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/transferTaskDocTest/auto-section.adoc[]
