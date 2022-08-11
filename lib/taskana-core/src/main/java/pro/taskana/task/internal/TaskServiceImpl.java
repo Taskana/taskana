@@ -53,6 +53,7 @@ import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
 import pro.taskana.spi.history.api.events.task.TaskUpdatedEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
+import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.task.api.CallbackState;
@@ -116,6 +117,7 @@ public class TaskServiceImpl implements TaskService {
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
   private final AfterRequestReviewManager afterRequestReviewManager;
+  private final AfterRequestChangesManager afterRequestChangesManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -135,6 +137,7 @@ public class TaskServiceImpl implements TaskService {
     this.createTaskPreprocessorManager = taskanaEngine.getCreateTaskPreprocessorManager();
     this.priorityServiceManager = taskanaEngine.getPriorityServiceManager();
     this.afterRequestReviewManager = taskanaEngine.getAfterRequestReviewManager();
+    this.afterRequestChangesManager = taskanaEngine.getAfterRequestChangesManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService =
         new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, userMapper, this);
@@ -1312,6 +1315,7 @@ public class TaskServiceImpl implements TaskService {
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 changeDetails));
       }
+      task = (TaskImpl) afterRequestChangesManager.afterRequestChanges(task);
     } finally {
       taskanaEngine.returnConnection();
     }
