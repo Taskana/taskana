@@ -1421,6 +1421,35 @@ class TaskControllerIntTest {
   }
 
   @Test
+  void should_ForceRequestReview_When_CurrentUserIsNotTheOwner() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000101");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> getTaskResponse =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+    assertThat(getTaskResponse.getBody()).isNotNull();
+    TaskRepresentationModel repModel = getTaskResponse.getBody();
+    assertThat(repModel.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(repModel.getOwner()).isEqualTo("user-1-2");
+
+    // request review
+    String url2 =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW_FORCE,
+            "TKI:000000000000000000000000000000000101");
+    ResponseEntity<TaskRepresentationModel> requestReviewResponse =
+        TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+    assertThat(requestReviewResponse.getBody()).isNotNull();
+    assertThat(requestReviewResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    repModel = requestReviewResponse.getBody();
+    assertThat(repModel.getOwner()).isNull();
+    assertThat(repModel.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+  }
+
+  @Test
   void should_RequestChangesOnATask() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000136");
