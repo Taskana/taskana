@@ -23,7 +23,8 @@ public interface BeforeRequestReviewProvider {
 
   /**
    * Perform any action before a review has been requested on a {@linkplain Task} through
-   * {@linkplain pro.taskana.task.api.TaskService#requestReview(String)}.
+   * {@linkplain pro.taskana.task.api.TaskService#requestReview(String)} or {@linkplain
+   * pro.taskana.task.api.TaskService#forceRequestReview(String)}.
    *
    * <p>This SPI is executed within the same transaction staple as {@linkplain
    * pro.taskana.task.api.TaskService#requestReview(String)}.
@@ -34,7 +35,8 @@ public interface BeforeRequestReviewProvider {
    * pro.taskana.task.api.TaskService#requestReview(String)}.
    *
    * @param task the {@linkplain Task} before {@linkplain
-   *     pro.taskana.task.api.TaskService#requestReview(String)} has started
+   *     pro.taskana.task.api.TaskService#requestReview(String)} or {@linkplain
+   *     pro.taskana.task.api.TaskService#forceRequestReview(String)} has started
    * @return the modified {@linkplain Task}. <b>IMPORTANT:</b> persistent changes to the {@linkplain
    *     Task} have to be managed by the service provider
    * @throws Exception if the service provider throws any exception

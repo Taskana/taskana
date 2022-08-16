@@ -23,7 +23,8 @@ public interface AfterRequestChangesProvider {
 
   /**
    * Perform any action after changes have been requested on a {@linkplain Task} through {@linkplain
-   * pro.taskana.task.api.TaskService#requestChanges(String)}.
+   * pro.taskana.task.api.TaskService#requestChanges(String)} or {@linkplain
+   * pro.taskana.task.api.TaskService#forceRequestChanges(String)}.
    *
    * <p>This SPI is executed within the same transaction staple as {@linkplain
    * pro.taskana.task.api.TaskService#requestChanges(String)}.
@@ -34,7 +35,8 @@ public interface AfterRequestChangesProvider {
    * pro.taskana.task.api.TaskService#requestChanges(String)}.
    *
    * @param task the {@linkplain Task} after {@linkplain
-   *     pro.taskana.task.api.TaskService#requestChanges(String)} has completed
+   *     pro.taskana.task.api.TaskService#requestChanges(String)} or {@linkplain
+   *     pro.taskana.task.api.TaskService#forceRequestChanges(String)} has completed
    * @return the modified {@linkplain Task}. <b>IMPORTANT:</b> persistent changes to the {@linkplain
    *     Task} have to be managed by the service provider
    * @throws Exception if the service provider throws any exception
