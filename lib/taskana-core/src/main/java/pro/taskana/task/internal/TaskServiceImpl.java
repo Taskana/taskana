@@ -55,6 +55,7 @@ import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
+import pro.taskana.spi.task.internal.BeforeRequestChangesManager;
 import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
@@ -121,6 +122,7 @@ public class TaskServiceImpl implements TaskService {
   private final ReviewRequiredManager reviewRequiredManager;
   private final BeforeRequestReviewManager beforeRequestReviewManager;
   private final AfterRequestReviewManager afterRequestReviewManager;
+  private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
 
   public TaskServiceImpl(
@@ -143,6 +145,7 @@ public class TaskServiceImpl implements TaskService {
     this.reviewRequiredManager = taskanaEngine.getReviewRequiredManager();
     this.beforeRequestReviewManager = taskanaEngine.getBeforeRequestReviewManager();
     this.afterRequestReviewManager = taskanaEngine.getAfterRequestReviewManager();
+    this.beforeRequestChangesManager = taskanaEngine.getBeforeRequestChangesManager();
     this.afterRequestChangesManager = taskanaEngine.getAfterRequestChangesManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService =
@@ -1289,6 +1292,7 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
+      task = (TaskImpl) beforeRequestChangesManager.beforeRequestChanges(task);
 
       TaskImpl oldTask = duplicateTaskExactly(task);
 

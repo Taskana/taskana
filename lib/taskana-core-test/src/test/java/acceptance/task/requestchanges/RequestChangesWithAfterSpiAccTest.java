@@ -38,7 +38,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-public class RequestChangesWithSpiAccTest {
+public class RequestChangesWithAfterSpiAccTest {
 
   private static final String NEW_WORKBASKET_KEY = "W1000";
   ClassificationSummary defaultClassificationSummary;
