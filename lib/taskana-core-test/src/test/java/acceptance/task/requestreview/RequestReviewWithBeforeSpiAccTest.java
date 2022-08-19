@@ -1,5 +1,6 @@
 package acceptance.task.requestreview;
 
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
@@ -20,10 +21,11 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.jobs.PlainJavaTransactionProvider;
-import pro.taskana.spi.task.api.AfterRequestReviewProvider;
+import pro.taskana.spi.task.api.BeforeRequestReviewProvider;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.testapi.DefaultTestEntities;
@@ -38,14 +40,11 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-public class RequestReviewWithSpiAccTest {
+public class RequestReviewWithBeforeSpiAccTest {
 
-  private static final String NEW_WORKBASKET_KEY = "W1000";
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
   ObjectReference defaultObjectReference;
-
-  WorkbasketSummary newWorkbasket;
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
@@ -54,8 +53,6 @@ public class RequestReviewWithSpiAccTest {
     defaultClassificationSummary =
         defaultTestClassification().buildAndStoreAsSummary(classificationService);
     defaultWorkbasketSummary = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
-    newWorkbasket =
-        defaultTestWorkbasket().key(NEW_WORKBASKET_KEY).buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .workbasketId(defaultWorkbasketSummary.getId())
@@ -63,13 +60,6 @@ public class RequestReviewWithSpiAccTest {
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.TRANSFER)
-        .buildAndStore(workbasketService);
-
-    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
-        .workbasketId(newWorkbasket.getId())
-        .accessId("user-1-1")
-        .permission(WorkbasketPermission.READ)
-        .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
     defaultObjectReference = DefaultTestEntities.defaultTestObjectReference().build();
@@ -86,7 +76,7 @@ public class RequestReviewWithSpiAccTest {
         .primaryObjRef(defaultObjectReference);
   }
 
-  static class ExceptionThrower implements AfterRequestReviewProvider {
+  static class ExceptionThrower implements BeforeRequestReviewProvider {
 
     private TaskanaEngine taskanaEngine;
 
@@ -96,14 +86,14 @@ public class RequestReviewWithSpiAccTest {
     }
 
     @Override
-    public Task afterRequestReview(Task task) throws Exception {
+    public Task beforeRequestReview(Task task) throws Exception {
       task.setDescription("should not matter. Will get rolled back anyway");
       taskanaEngine.getTaskService().updateTask(task);
       throw new SystemException("I AM THE EXCEPTION THROWER (*_*)");
     }
   }
 
-  static class TaskModifierAndTransferrer implements AfterRequestReviewProvider {
+  static class TaskModifier implements BeforeRequestReviewProvider {
     private static final String NEW_CUSTOM_3_VALUE = "bla";
 
     private TaskanaEngine taskanaEngine;
@@ -114,15 +104,14 @@ public class RequestReviewWithSpiAccTest {
     }
 
     @Override
-    public Task afterRequestReview(Task task) throws Exception {
+    public Task beforeRequestReview(Task task) throws Exception {
       task.setCustomField(TaskCustomField.CUSTOM_3, NEW_CUSTOM_3_VALUE);
       task = taskanaEngine.getTaskService().updateTask(task);
-      task = taskanaEngine.getTaskService().transfer(task.getId(), NEW_WORKBASKET_KEY, "DOMAIN_A");
       return task;
     }
   }
 
-  static class ClassificationUpdater implements AfterRequestReviewProvider {
+  static class ClassificationUpdater implements BeforeRequestReviewProvider {
 
     public static final String SPI_CLASSIFICATION_NAME = "Neuer Classification Name";
 
@@ -134,7 +123,7 @@ public class RequestReviewWithSpiAccTest {
     }
 
     @Override
-    public Task afterRequestReview(Task task) throws Exception {
+    public Task beforeRequestReview(Task task) throws Exception {
       Classification newClassification =
           defaultTestClassification().buildAndStore(taskanaEngine.getClassificationService());
 
@@ -148,11 +137,27 @@ public class RequestReviewWithSpiAccTest {
     }
   }
 
+  static class SetTaskOwner implements BeforeRequestReviewProvider {
+
+    TaskanaEngine taskanaEngine;
+
+    @Override
+    public void initialize(TaskanaEngine taskanaEngine) {
+      this.taskanaEngine = taskanaEngine;
+    }
+
+    @Override
+    public Task beforeRequestReview(Task task) throws Exception {
+      task.setOwner("new owner");
+      return taskanaEngine.getTaskService().updateTask(task);
+    }
+  }
+
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
-      serviceProviders = TaskModifierAndTransferrer.class)
+      serviceProviderInterface = BeforeRequestReviewProvider.class,
+      serviceProviders = TaskModifier.class)
   class SpiModifiesTask {
 
     @TaskanaInject TaskService taskService;
@@ -165,8 +170,7 @@ public class RequestReviewWithSpiAccTest {
       Task result = taskService.requestReview(task.getId());
 
       assertThat(result.getCustomField(TaskCustomField.CUSTOM_3))
-          .isEqualTo(TaskModifierAndTransferrer.NEW_CUSTOM_3_VALUE);
-      assertThat(result.getWorkbasketSummary()).isEqualTo(newWorkbasket);
+          .isEqualTo(TaskModifier.NEW_CUSTOM_3_VALUE);
     }
 
     @WithAccessId(user = "user-1-1")
@@ -178,15 +182,47 @@ public class RequestReviewWithSpiAccTest {
       Task result = taskService.getTask(task.getId());
 
       assertThat(result.getCustomField(TaskCustomField.CUSTOM_3))
-          .isEqualTo(TaskModifierAndTransferrer.NEW_CUSTOM_3_VALUE);
-      assertThat(result.getWorkbasketSummary()).isEqualTo(newWorkbasket);
+          .isEqualTo(TaskModifier.NEW_CUSTOM_3_VALUE);
     }
   }
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
+      serviceProviderInterface = BeforeRequestReviewProvider.class,
+      serviceProviders = SetTaskOwner.class)
+  class SpiSetsValuesWhichGetOverridenByTaskana {
+
+    @TaskanaInject TaskService taskService;
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_OverrideOwner_When_SpiModifiesOwner() throws Exception {
+      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+
+      taskService.forceRequestReview(task.getId());
+      Task result = taskService.getTask(task.getId());
+
+      assertThat(result.getOwner()).isNull();
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowError_When_SpiModifiesOwner() throws Exception {
+      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+
+      ThrowingCallable call = () -> taskService.requestReview(task.getId());
+
+      InvalidOwnerException ex = catchThrowableOfType(call, InvalidOwnerException.class);
+      assertThat(ex.getTaskId()).isEqualTo(task.getId());
+      assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
+    }
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  @WithServiceProvider(
+      serviceProviderInterface = BeforeRequestReviewProvider.class,
       serviceProviders = ClassificationUpdater.class)
   class SpiModifiesTaskAndClassification {
 
@@ -210,8 +246,8 @@ public class RequestReviewWithSpiAccTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
-      serviceProviders = {TaskModifierAndTransferrer.class, ClassificationUpdater.class})
+      serviceProviderInterface = BeforeRequestReviewProvider.class,
+      serviceProviders = {TaskModifier.class, ClassificationUpdater.class})
   class MultipleSpisAreDefined {
 
     @TaskanaInject TaskService taskService;
@@ -224,10 +260,9 @@ public class RequestReviewWithSpiAccTest {
       taskService.requestReview(task.getId());
       Task result = taskService.getTask(task.getId());
 
-      // changes from TaskModifierAndTransferrer
+      // changes from TaskModifier
       assertThat(result.getCustomField(TaskCustomField.CUSTOM_3))
-          .isEqualTo(TaskModifierAndTransferrer.NEW_CUSTOM_3_VALUE);
-      assertThat(result.getWorkbasketSummary()).isEqualTo(newWorkbasket);
+          .isEqualTo(TaskModifier.NEW_CUSTOM_3_VALUE);
       // changes from ClassificationUpdater
       assertThat(result.getClassificationSummary().getId())
           .isNotEqualTo(task.getClassificationSummary().getId());
@@ -239,7 +274,7 @@ public class RequestReviewWithSpiAccTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   @WithServiceProvider(
-      serviceProviderInterface = AfterRequestReviewProvider.class,
+      serviceProviderInterface = BeforeRequestReviewProvider.class,
       serviceProviders = ExceptionThrower.class)
   class SpiThrowsException {
     @TaskanaInject TaskService taskService;

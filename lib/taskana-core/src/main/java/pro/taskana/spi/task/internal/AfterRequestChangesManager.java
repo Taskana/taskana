@@ -21,7 +21,7 @@ public class AfterRequestChangesManager {
     for (AfterRequestChangesProvider serviceProvider : afterRequestChangesProviders) {
       serviceProvider.initialize(taskanaEngine);
       LOGGER.info(
-          "Registered AfterRequestChanges service provider: {}",
+          "Registered AfterRequestChangesProvider service provider: {}",
           serviceProvider.getClass().getName());
     }
     if (afterRequestChangesProviders.isEmpty()) {
