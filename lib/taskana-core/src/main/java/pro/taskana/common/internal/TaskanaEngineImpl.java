@@ -55,6 +55,7 @@ import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.routing.internal.TaskRoutingManager;
 import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
+import pro.taskana.spi.task.internal.BeforeRequestChangesManager;
 import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
@@ -89,6 +90,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final ReviewRequiredManager reviewRequiredManager;
   private final BeforeRequestReviewManager beforeRequestReviewManager;
   private final AfterRequestReviewManager afterRequestReviewManager;
+  private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
 
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
@@ -129,6 +131,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     reviewRequiredManager = new ReviewRequiredManager(this);
     beforeRequestReviewManager = new BeforeRequestReviewManager(this);
     afterRequestReviewManager = new AfterRequestReviewManager(this);
+    beforeRequestChangesManager = new BeforeRequestChangesManager(this);
     afterRequestChangesManager = new AfterRequestChangesManager(this);
   }
 
@@ -548,6 +551,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public AfterRequestReviewManager getAfterRequestReviewManager() {
       return afterRequestReviewManager;
+    }
+
+    @Override
+    public BeforeRequestChangesManager getBeforeRequestChangesManager() {
+      return beforeRequestChangesManager;
     }
 
     @Override
