@@ -21,7 +21,7 @@ public class AfterRequestReviewManager {
     for (AfterRequestReviewProvider serviceProvider : afterRequestReviewProviders) {
       serviceProvider.initialize(taskanaEngine);
       LOGGER.info(
-          "Registered AfterRequestReview service provider: {}",
+          "Registered AfterRequestReviewProvider service provider: {}",
           serviceProvider.getClass().getName());
     }
     if (afterRequestReviewProviders.isEmpty()) {

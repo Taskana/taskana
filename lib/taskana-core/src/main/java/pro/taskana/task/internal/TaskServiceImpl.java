@@ -55,6 +55,7 @@ import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
 import pro.taskana.spi.task.internal.AfterRequestChangesManager;
 import pro.taskana.spi.task.internal.AfterRequestReviewManager;
+import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
 import pro.taskana.task.api.CallbackState;
@@ -118,6 +119,7 @@ public class TaskServiceImpl implements TaskService {
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
   private final ReviewRequiredManager reviewRequiredManager;
+  private final BeforeRequestReviewManager beforeRequestReviewManager;
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
 
@@ -139,6 +141,7 @@ public class TaskServiceImpl implements TaskService {
     this.createTaskPreprocessorManager = taskanaEngine.getCreateTaskPreprocessorManager();
     this.priorityServiceManager = taskanaEngine.getPriorityServiceManager();
     this.reviewRequiredManager = taskanaEngine.getReviewRequiredManager();
+    this.beforeRequestReviewManager = taskanaEngine.getBeforeRequestReviewManager();
     this.afterRequestReviewManager = taskanaEngine.getAfterRequestReviewManager();
     this.afterRequestChangesManager = taskanaEngine.getAfterRequestChangesManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
@@ -1236,6 +1239,7 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
+      task = (TaskImpl) beforeRequestReviewManager.beforeRequestReview(task);
 
       TaskImpl oldTask = duplicateTaskExactly(task);
 
