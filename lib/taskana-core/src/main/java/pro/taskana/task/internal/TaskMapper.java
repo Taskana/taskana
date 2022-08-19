@@ -130,6 +130,14 @@ public interface TaskMapper {
           + "WHERE ID = #{id}")
   void update(TaskImpl task);
 
+  @Update(
+      "UPDATE TASK SET MODIFIED = #{modified}, STATE = #{state}, OWNER = #{owner} WHERE ID = #{id}")
+  void requestReview(TaskImpl task);
+
+  @Update(
+      "UPDATE TASK SET MODIFIED = #{modified}, STATE = #{state}, OWNER = #{owner} WHERE ID = #{id}")
+  void requestChanges(TaskImpl task);
+
   @Delete("DELETE FROM TASK WHERE ID = #{id}")
   void delete(String id);
 

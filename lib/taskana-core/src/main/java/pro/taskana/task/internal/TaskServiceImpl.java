@@ -532,7 +532,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskUpdatedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                userId,
                 changeDetails));
       }
 
@@ -1222,7 +1222,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskClaimedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                userId,
                 changeDetails));
       }
     } finally {
@@ -1258,7 +1258,7 @@ public class TaskServiceImpl implements TaskService {
       task.setOwner(null);
       task.setModified(Instant.now());
 
-      taskMapper.update(task);
+      taskMapper.requestReview(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Requested review for Task '{}' by user '{}'.", taskId, userId);
       }
@@ -1270,7 +1270,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskRequestReviewEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                userId,
                 changeDetails));
       }
 
@@ -1307,7 +1307,7 @@ public class TaskServiceImpl implements TaskService {
       task.setOwner(null);
       task.setModified(Instant.now());
 
-      taskMapper.update(task);
+      taskMapper.requestChanges(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Requested changes for Task '{}' by user '{}'.", taskId, userId);
       }
@@ -1319,7 +1319,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskRequestChangesEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                userId,
                 changeDetails));
       }
       task = (TaskImpl) afterRequestChangesManager.afterRequestChanges(task);
@@ -1442,7 +1442,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskClaimCancelledEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                userId,
                 changeDetails));
       }
     } finally {
@@ -1455,12 +1455,13 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    TaskImpl task = (TaskImpl) this.getTask(taskId);
-    if (reviewRequiredManager.reviewRequired(task)) {
-      return requestReview(taskId);
-    }
+    TaskImpl task;
     try {
       taskanaEngine.openConnection();
+      task = (TaskImpl) this.getTask(taskId);
+      if (reviewRequiredManager.reviewRequired(task)) {
+        return requestReview(taskId);
+      }
 
       if (task.getState() == TaskState.COMPLETED) {
         return task;
@@ -1485,7 +1486,7 @@ public class TaskServiceImpl implements TaskService {
             new TaskCompletedEvent(
                 IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                 task,
-                taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
+                userId));
       }
     } finally {
       taskanaEngine.returnConnection();
