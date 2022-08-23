@@ -7,12 +7,16 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.rest.ldap.LdapClient;
+import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -22,22 +26,29 @@ import pro.taskana.user.internal.models.UserImpl;
 
 @TaskanaSpringBootTest
 @ExtendWith(JaasExtension.class)
+@TestMethodOrder(OrderAnnotation.class)
 class UserInfoRefreshJobIntTest {
 
   TaskanaEngine taskanaEngine;
   UserService userService;
   LdapClient ldapClient;
+  private final RestHelper restHelper;
 
   @Autowired
   public UserInfoRefreshJobIntTest(
-      TaskanaEngine taskanaEngine, UserService userService, LdapClient ldapClient) {
+      TaskanaEngine taskanaEngine,
+      UserService userService,
+      LdapClient ldapClient,
+      RestHelper restHelper) {
     this.taskanaEngine = taskanaEngine;
     this.userService = userService;
     this.ldapClient = ldapClient;
+    this.restHelper = restHelper;
   }
 
   @Test
   @WithAccessId(user = "businessadmin")
+  @Order(1)
   void should_RefreshUserInfo_When_UserInfoRefreshJobIsExecuted() throws Exception {
 
     try (Connection connection = taskanaEngine.getConfiguration().getDatasource().getConnection()) {
@@ -50,10 +61,35 @@ class UserInfoRefreshJobIntTest {
 
       users = getUsers(connection);
       List<User> ldapusers = ldapClient.searchUsersInUserRole();
-      assertThat(users).hasSize(6).hasSameSizeAs(ldapusers);
       assertThat(users)
-          .usingRecursiveFieldByFieldElementComparatorIgnoringFields("longName", "data")
+          .hasSize(6)
+          .hasSameSizeAs(ldapusers)
+          .usingRecursiveFieldByFieldElementComparatorIgnoringFields(
+              "longName", "data", "orgLevel1")
           .containsExactlyElementsOf(ldapusers);
+    }
+  }
+
+  @Test
+  @WithAccessId(user = "businessadmin")
+  @Order(2)
+  void should_PostprocessUser_When_RefrehUserPostprocessorIsActive() throws Exception {
+
+    try (Connection connection = taskanaEngine.getConfiguration().getDatasource().getConnection()) {
+
+      UserInfoRefreshJob userInfoRefreshJob = new UserInfoRefreshJob(taskanaEngine);
+      userInfoRefreshJob.execute();
+
+      Statement statement = connection.createStatement();
+      ResultSet rs =
+          statement.executeQuery(
+              "SELECT * FROM "
+                  + connection.getSchema()
+                  + ".USER_INFO "
+                  + "WHERE USER_ID='user-2-2'");
+      rs.next();
+      String updatedOrgLevel = rs.getString("ORG_LEVEL_1");
+      assertThat(updatedOrgLevel).isEqualTo("FirstSecond");
     }
   }
 

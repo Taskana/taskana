@@ -2,6 +2,7 @@ package pro.taskana.user.jobs;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.util.ApplicationContextProvider;
+import pro.taskana.spi.user.internal.RefreshUserPostprocessorManager;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
@@ -25,6 +27,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoRefreshJob.class);
   private final SqlConnectionRunner sqlConnectionRunner;
+  private RefreshUserPostprocessorManager refreshUserPostprocessorManager;
 
   public UserInfoRefreshJob(TaskanaEngine taskanaEngine) {
     this(taskanaEngine, null, null);
@@ -38,6 +41,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     runEvery = taskanaEngine.getConfiguration().getUserRefreshJobRunEvery();
     firstRun = taskanaEngine.getConfiguration().getUserRefreshJobFirstRun();
     sqlConnectionRunner = new SqlConnectionRunner(taskanaEngine);
+    refreshUserPostprocessorManager = new RefreshUserPostprocessorManager();
   }
 
   /**
@@ -68,9 +72,13 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     try {
 
       List<User> users = ldapClient.searchUsersInUserRole();
-      addExistingConfigurationDataToUsers(users);
+      List<User> usersAfterProcessing =
+          users.stream()
+              .map(user -> refreshUserPostprocessorManager.processUserAfterRefresh(user))
+              .collect(Collectors.toList());
+      addExistingConfigurationDataToUsers(usersAfterProcessing);
       clearExistingUsers();
-      insertNewUsers(users);
+      insertNewUsers(usersAfterProcessing);
 
       LOGGER.info("Job to refresh all user info has finished.");
 
