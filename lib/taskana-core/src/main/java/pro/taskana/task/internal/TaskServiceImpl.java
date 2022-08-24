@@ -258,7 +258,6 @@ public class TaskServiceImpl implements TaskService {
         String workbasketId = taskanaEngine.getTaskRoutingManager().determineWorkbasketId(task);
         if (workbasketId != null) {
           workbasket = workbasketService.getWorkbasket(workbasketId);
-          task.setWorkbasketSummary(workbasket.asSummary());
         } else {
           throw new InvalidArgumentException("Cannot create a Task outside a Workbasket");
         }
