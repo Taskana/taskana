@@ -5,8 +5,10 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_WHERE_TAG
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_WHERE_TAG;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereIn;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereInInterval;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereLike;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
+import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotInInterval;
 
 import java.util.stream.IntStream;
 
@@ -293,6 +295,20 @@ public class MonitorMapperSqlProvider {
     return sb;
   }
 
+  private static StringBuilder whereCustomIntStatements(
+      String baseCollection, String baseColumn, int customBound, StringBuilder sb) {
+    IntStream.rangeClosed(1, customBound)
+        .forEach(
+            x -> {
+              String column = baseColumn + "_" + x;
+              whereIn(baseCollection + x + "In", column, sb);
+              whereNotIn(baseCollection + x + "NotIn", column, sb);
+              whereInInterval(baseCollection + x + "Within", column, sb);
+              whereNotInInterval(baseCollection + x + "NotWithin", column, sb);
+            });
+    return sb;
+  }
+
   private static StringBuilder taskWhereStatements() {
     StringBuilder sb = new StringBuilder();
     SqlProviderUtil.whereIn("report.workbasketIds", "T.WORKBASKET_ID", sb);
@@ -302,6 +318,7 @@ public class MonitorMapperSqlProvider {
     SqlProviderUtil.whereIn("report.classificationIds", "T.CLASSIFICATION_ID", sb);
     SqlProviderUtil.whereNotIn("report.excludedClassificationIds", "T.CLASSIFICATION_ID", sb);
     whereCustomStatements("report.custom", "T.CUSTOM", 16, sb);
+    whereCustomIntStatements("report.customInt", "T.CUSTOM_INT", 8, sb);
     return sb;
   }
 
