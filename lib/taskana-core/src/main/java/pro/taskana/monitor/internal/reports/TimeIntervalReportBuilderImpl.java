@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -21,6 +22,7 @@ import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverter;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskState;
 
 /**
@@ -95,6 +97,39 @@ abstract class TimeIntervalReportBuilderImpl<
   private String[] custom16In;
   private String[] custom16NotIn;
   private String[] custom16Like;
+  private Integer[] customInt1In;
+  private Integer[] customInt1NotIn;
+  private Integer[] customInt2In;
+  private Integer[] customInt2NotIn;
+  private Integer[] customInt3In;
+  private Integer[] customInt3NotIn;
+  private Integer[] customInt4In;
+  private Integer[] customInt4NotIn;
+  private Integer[] customInt5In;
+  private Integer[] customInt5NotIn;
+  private Integer[] customInt6In;
+  private Integer[] customInt6NotIn;
+  private Integer[] customInt7In;
+  private Integer[] customInt7NotIn;
+  private Integer[] customInt8In;
+  private Integer[] customInt8NotIn;
+
+  private IntInterval[] customInt1Within;
+  private IntInterval[] customInt1NotWithin;
+  private IntInterval[] customInt2Within;
+  private IntInterval[] customInt2NotWithin;
+  private IntInterval[] customInt3Within;
+  private IntInterval[] customInt3NotWithin;
+  private IntInterval[] customInt4Within;
+  private IntInterval[] customInt4NotWithin;
+  private IntInterval[] customInt5Within;
+  private IntInterval[] customInt5NotWithin;
+  private IntInterval[] customInt6Within;
+  private IntInterval[] customInt6NotWithin;
+  private IntInterval[] customInt7Within;
+  private IntInterval[] customInt7NotWithin;
+  private IntInterval[] customInt8Within;
+  private IntInterval[] customInt8NotWithin;
 
   TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     this.taskanaEngine = taskanaEngine;
@@ -286,6 +321,162 @@ abstract class TimeIntervalReportBuilderImpl<
         throw new SystemException("Unknown custom attribute '" + customField + "'");
     }
 
+    return _this();
+  }
+
+  @Override
+  public B customIntAttributeIn(TaskCustomIntField customIntField, Integer... values)
+      throws InvalidArgumentException {
+    if (values.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one Integer has to be provided as a search parameter");
+    }
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1In = values;
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2In = values;
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3In = values;
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4In = values;
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5In = values;
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6In = values;
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7In = values;
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8In = values;
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
+
+    return _this();
+  }
+
+  @Override
+  public B customIntAttributeNotIn(TaskCustomIntField customIntField, Integer... values)
+      throws InvalidArgumentException {
+    if (values.length == 0) {
+      throw new InvalidArgumentException(
+          "At least one Integer has to be provided as a search parameter");
+    }
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1NotIn = values;
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2NotIn = values;
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3NotIn = values;
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4NotIn = values;
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5NotIn = values;
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6NotIn = values;
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7NotIn = values;
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8NotIn = values;
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
+
+    return _this();
+  }
+
+  @Override
+  public B customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values)
+      throws IllegalArgumentException {
+    for (IntInterval i : values) {
+      if (!i.isValid()) {
+        throw new IllegalArgumentException("IntInterval " + i + " is invalid.");
+      }
+    }
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1Within = values;
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2Within = values;
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3Within = values;
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4Within = values;
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5Within = values;
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6Within = values;
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7Within = values;
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8Within = values;
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
+    return _this();
+  }
+
+  @Override
+  public B customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values)
+      throws IllegalArgumentException {
+    for (IntInterval i : values) {
+      if (!i.isValid()) {
+        throw new IllegalArgumentException("IntInterval " + i + " is invalid.");
+      }
+    }
+    switch (customIntField) {
+      case CUSTOM_INT_1:
+        this.customInt1NotWithin = values;
+        break;
+      case CUSTOM_INT_2:
+        this.customInt2NotWithin = values;
+        break;
+      case CUSTOM_INT_3:
+        this.customInt3NotWithin = values;
+        break;
+      case CUSTOM_INT_4:
+        this.customInt4NotWithin = values;
+        break;
+      case CUSTOM_INT_5:
+        this.customInt5NotWithin = values;
+        break;
+      case CUSTOM_INT_6:
+        this.customInt6NotWithin = values;
+        break;
+      case CUSTOM_INT_7:
+        this.customInt7NotWithin = values;
+        break;
+      case CUSTOM_INT_8:
+        this.customInt8NotWithin = values;
+        break;
+      default:
+        throw new SystemException("Unknown custom int attribute '" + customIntField + "'");
+    }
     return _this();
   }
 

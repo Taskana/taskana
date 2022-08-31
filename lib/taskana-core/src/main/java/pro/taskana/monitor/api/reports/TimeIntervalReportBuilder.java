@@ -2,6 +2,7 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.SelectedItem;
@@ -9,6 +10,7 @@ import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 import pro.taskana.task.api.TaskCustomField;
+import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 
@@ -126,6 +128,66 @@ public interface TimeIntervalReportBuilder<
    */
   B customAttributeNotIn(TaskCustomField customField, String... strings)
       throws InvalidArgumentException;
+
+  /**
+   * Adds the values of a certain {@linkplain TaskCustomIntField} for exact matching to the builder.
+   *
+   * <p>The created {@linkplain Report} contains only {@linkplain Task Tasks} with a {@linkplain
+   * Task#getCustomIntField(TaskCustomIntField) custom attribute} value exactly matching one of the
+   * items in the List.
+   *
+   * @param customIntField the specified {@linkplain TaskCustomIntField}
+   * @param values the values the specified {@linkplain Task#getCustomIntField(TaskCustomIntField)
+   *     customIntField } should match
+   * @return the modified {@linkplain TimeIntervalReportBuilder}
+   * @throws InvalidArgumentException if filter values are not given
+   */
+  B customIntAttributeIn(TaskCustomIntField customIntField, Integer... values)
+      throws InvalidArgumentException;
+
+  /**
+   * Excludes the values of a certain {@linkplain TaskCustomIntField} to the builder.
+   *
+   * <p>The created {@linkplain Report} contains only {@linkplain Task Tasks} with a {@linkplain
+   * Task#getCustomIntField(TaskCustomIntField) custom attribute} value not matching one of the
+   * items in the List.
+   *
+   * @param customIntField the specified {@linkplain TaskCustomIntField}
+   * @param values the values the specified {@linkplain Task#getCustomIntField(TaskCustomIntField)
+   *     customIntFields} should not match
+   * @return the modified TimeIntervalReportBuilder
+   * @throws InvalidArgumentException if filter values are not given
+   */
+  B customIntAttributeNotIn(TaskCustomIntField customIntField, Integer... values)
+      throws InvalidArgumentException;
+
+  /**
+   * Adds ranges of {@linkplain TaskCustomIntField} for matching to the TimeIntervalReportBuilder.
+   *
+   * <p>The created {@linkplain Report} contains only {@linkplain Task Tasks} with a {@linkplain
+   * Task#getCustomIntField(TaskCustomIntField) customIntField} value being inside the range of one
+   * of the items in the list.
+   *
+   * @param customIntField the specified {@linkplain TaskCustomIntField}
+   * @param values the values the specified {@linkplain Task#getCustomIntField(TaskCustomIntField)
+   *     customIntField} should match
+   * @return the modified {@linkplain TimeIntervalReportBuilder}
+   */
+  B customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values);
+
+  /**
+   * Exclude ranges of {@linkplain TaskCustomIntField} for matching to the builder.
+   *
+   * <p>The created report contains only {@linkplain Task Tasks} with a {@linkplain
+   * Task#getCustomIntField(TaskCustomIntField) customIntField} value being not inside the range of
+   * one of the items in the list.
+   *
+   * @param customIntField the specified {@linkplain TaskCustomIntField}
+   * @param values the values the specified {@linkplain Task#getCustomIntField(TaskCustomIntField)
+   *     customIntField} should match
+   * @return the modified {@linkplain TimeIntervalReportBuilder}
+   */
+  B customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values);
 
   /**
    * Adds the values of a certain {@linkplain TaskCustomField} for pattern matching to the builder.
