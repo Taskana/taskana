@@ -9,6 +9,6 @@
 
     <resources>
     <!--the name of your driver -->
-      <resource-root path="postgresql-42.3.3.jar"/>
+      <resource-root path="postgresql-42.3.6.jar"/>
     </resources>
 </module>
