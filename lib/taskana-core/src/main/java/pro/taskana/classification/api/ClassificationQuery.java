@@ -90,20 +90,20 @@ public interface ClassificationQuery
    * Classification#getCreated() created} within any of the passed {@linkplain TimeInterval
    * TimeIntervals}.
    *
-   * @param createdIn the {@linkplain TimeInterval TimeIntervals} of interest
+   * @param createdWithin the {@linkplain TimeInterval TimeIntervals} of interest
    * @return the query
    */
-  ClassificationQuery createdWithin(TimeInterval... createdIn);
+  ClassificationQuery createdWithin(TimeInterval... createdWithin);
 
   /**
    * Selects only {@linkplain Classification Classifications} which were {@linkplain
    * Classification#getModified() modified} within any of the passed {@linkplain TimeInterval
    * TimeIntervals}.
    *
-   * @param modifiedIn the {@linkplain TimeInterval TimeIntervals} of interest
+   * @param modifiedWithin the {@linkplain TimeInterval TimeIntervals} of interest
    * @return the query
    */
-  ClassificationQuery modifiedWithin(TimeInterval... modifiedIn);
+  ClassificationQuery modifiedWithin(TimeInterval... modifiedWithin);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain

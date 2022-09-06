@@ -69,10 +69,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * connect them with the OR keyword. If either begin or end of an interval are null, these values
    * will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task is received
+   * @param receivedWithin - the TimeIntervals within which the task is received
    * @return the query
    */
-  TaskQuery receivedWithin(TimeInterval... intervals);
+  TaskQuery receivedWithin(TimeInterval... receivedWithin);
 
   /**
    * Exclude the time intervals within which the task wasn't received from your query. For each time
@@ -81,10 +81,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task wasn't received
+   * @param receivedNotWithin - the TimeIntervals within which the task wasn't received
    * @return the query
    */
-  TaskQuery receivedNotWithin(TimeInterval... intervals);
+  TaskQuery receivedNotWithin(TimeInterval... receivedNotWithin);
 
   /**
    * This method sorts the query result according to the received timestamp.
@@ -105,10 +105,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * will connect them with the OR keyword. If either begin or end of an interval are null, these
    * values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task was created
+   * @param createdWithin - the TimeIntervals within which the task was created
    * @return the query
    */
-  TaskQuery createdWithin(TimeInterval... intervals);
+  TaskQuery createdWithin(TimeInterval... createdWithin);
 
   /**
    * Exclude the time intervals within which the task wasn't created from your query. For each time
@@ -117,10 +117,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task wasn't created
+   * @param createdNotWithin - the TimeIntervals within which the task wasn't created
    * @return the query
    */
-  TaskQuery createdNotWithin(TimeInterval... intervals);
+  TaskQuery createdNotWithin(TimeInterval... createdNotWithin);
 
   /**
    * This method sorts the query result according to the created timestamp.
@@ -141,10 +141,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * will connect them with the OR keyword. If either begin or end of an interval are null, these
    * values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task was claimed
+   * @param claimedWithin - the TimeIntervals within which the task was claimed
    * @return the query
    */
-  TaskQuery claimedWithin(TimeInterval... intervals);
+  TaskQuery claimedWithin(TimeInterval... claimedWithin);
 
   /**
    * Exclude the time intervals within which the task wasn't claimed from your query. For each time
@@ -153,10 +153,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task wasn't claimed
+   * @param claimedNotWithin - the TimeIntervals within which the task wasn't claimed
    * @return the query
    */
-  TaskQuery claimedNotWithin(TimeInterval... intervals);
+  TaskQuery claimedNotWithin(TimeInterval... claimedNotWithin);
 
   /**
    * This method sorts the query result according to the claimed timestamp.
@@ -177,10 +177,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * the query will connect them with the OR keyword. If either begin or end of an interval are
    * null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task was modified
+   * @param modifiedWithin - the TimeIntervals within which the task was modified
    * @return the query
    */
-  TaskQuery modifiedWithin(TimeInterval... intervals);
+  TaskQuery modifiedWithin(TimeInterval... modifiedWithin);
 
   /**
    * Exclude the time intervals within which the task wasn't modified from your query. For each time
@@ -189,10 +189,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task wasn't modified
+   * @param modifiedNotWithin - the TimeIntervals within which the task wasn't modified
    * @return the query
    */
-  TaskQuery modifiedNotWithin(TimeInterval... intervals);
+  TaskQuery modifiedNotWithin(TimeInterval... modifiedNotWithin);
 
   /**
    * This method sorts the query result according to the modified timestamp.
@@ -213,10 +213,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * will connect them with the OR keyword. If either begin or end of an interval are null, these
    * values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task is planned
+   * @param plannedWithin - the TimeIntervals within which the task is planned
    * @return the query
    */
-  TaskQuery plannedWithin(TimeInterval... intervals);
+  TaskQuery plannedWithin(TimeInterval... plannedWithin);
 
   /**
    * Exclude the time intervals within which the task isn't planned from your query. For each time
@@ -225,10 +225,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task isn't planned
+   * @param plannedNotWithin - the TimeIntervals within which the task isn't planned
    * @return the query
    */
-  TaskQuery plannedNotWithin(TimeInterval... intervals);
+  TaskQuery plannedNotWithin(TimeInterval... plannedNotWithin);
 
   /**
    * This method sorts the query result according to the planned timestamp.
@@ -249,10 +249,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * connect them with the OR keyword. If either begin or end of an interval are null, these values
    * will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task is due
+   * @param dueWithin - the TimeIntervals within which the task is due
    * @return the query
    */
-  TaskQuery dueWithin(TimeInterval... intervals);
+  TaskQuery dueWithin(TimeInterval... dueWithin);
 
   /**
    * Exclude the time intervals within which the task isn't due from your query. For each time
@@ -261,10 +261,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * connect them with the OR keyword. If either begin or end of an interval are null, these values
    * will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task isn't due
+   * @param dueNotWithin - the TimeIntervals within which the task isn't due
    * @return the query
    */
-  TaskQuery dueNotWithin(TimeInterval... intervals);
+  TaskQuery dueNotWithin(TimeInterval... dueNotWithin);
 
   /**
    * This method sorts the query result according to the due timestamp.
@@ -285,10 +285,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task was completed
+   * @param completedWithin - the TimeIntervals within which the task was completed
    * @return the query
    */
-  TaskQuery completedWithin(TimeInterval... intervals);
+  TaskQuery completedWithin(TimeInterval... completedWithin);
 
   /**
    * Exclude the time intervals within which the task wasn't completed from your query. For each
@@ -297,10 +297,10 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * query will connect them with the OR keyword. If either begin or end of an interval are null,
    * these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the task wasn't completed
+   * @param completedNotWithin - the TimeIntervals within which the task wasn't completed
    * @return the query
    */
-  TaskQuery completedNotWithin(TimeInterval... intervals);
+  TaskQuery completedNotWithin(TimeInterval... completedNotWithin);
 
   /**
    * This method sorts the query result according to the completed timestamp.
@@ -1435,20 +1435,20 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add your received-dates to your query.
    *
-   * @param receivedIn the {@link TimeInterval} within which the searched-for tasks attachment were
-   *     received the last time.
+   * @param receivedWithin the {@link TimeInterval} within which the searched-for tasks attachment
+   *     were received the last time.
    * @return the query
    */
-  TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn);
+  TaskQuery attachmentReceivedWithin(TimeInterval... receivedWithin);
 
   /**
    * Exclude the received-dates from your query.
    *
-   * @param receivedNotIn the {@link TimeInterval} within which the searched-for tasks attachment
-   *     weren't received the last time.
+   * @param receivedNotWithin the {@link TimeInterval} within which the searched-for tasks
+   *     attachment weren't received the last time.
    * @return the query
    */
-  TaskQuery attachmentNotReceivedWithin(TimeInterval... receivedNotIn);
+  TaskQuery attachmentNotReceivedWithin(TimeInterval... receivedNotWithin);
 
   /**
    * This method sorts the query result according to the attachment received. (Should only be used
@@ -1714,10 +1714,12 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * the upper bound is NULL, then all values greater than the lower bound will be accepted.
    *
    * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
-   * @param values identify the intervals that are used for filtering
+   * @param customIntAttributeWithin identify the {@linkplain IntInterval IntIntervals} that are
+   *     used for filtering
    * @return the query
    */
-  TaskQuery customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values);
+  TaskQuery customIntAttributeWithin(
+      TaskCustomIntField customIntField, IntInterval... customIntAttributeWithin);
 
   /**
    * Exclude the values of specified {@linkplain TaskCustomIntField} inside the given range from
@@ -1726,11 +1728,13 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * excluded.
    *
    * @param customIntField identifies which {@linkplain TaskCustomIntField} is affected
-   * @param values identify the intervals that are used for filtering
+   * @param customIntAttributeNotWithin identify the {@linkplain IntInterval IntIntervals} that are
+   *     used for filtering
    * @return the query
    * @throws InvalidArgumentException if searchArguments are not given
    */
-  TaskQuery customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values)
+  TaskQuery customIntAttributeNotWithin(
+      TaskCustomIntField customIntField, IntInterval... customIntAttributeNotWithin)
       throws InvalidArgumentException;
 
   /**
