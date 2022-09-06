@@ -93,10 +93,11 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the workbasket was created
+   * @param createdWithin - the {@linkplain TimeInterval TimeIntervals} within which the workbasket
+   *     was created
    * @return the query
    */
-  WorkbasketQuery createdWithin(TimeInterval... intervals);
+  WorkbasketQuery createdWithin(TimeInterval... createdWithin);
 
   /**
    * Add the time intervals within which the workbasket was modified to your query. For each time
@@ -105,10 +106,11 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the workbasket was created
+   * @param modifiedWithin - the {@linkplain TimeInterval TimeIntervals} within which the workbasket
+   *     was created
    * @return the query
    */
-  WorkbasketQuery modifiedWithin(TimeInterval... intervals);
+  WorkbasketQuery modifiedWithin(TimeInterval... modifiedWithin);
 
   /**
    * Add your description to your query. It will be compared case-insensitively to the descriptions
