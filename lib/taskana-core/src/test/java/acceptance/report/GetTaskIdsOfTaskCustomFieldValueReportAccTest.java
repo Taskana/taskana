@@ -149,15 +149,17 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
             .stateIn(List.of(TaskState.READY))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).hasSize(8);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000002")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000009")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000024")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000027")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000029")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
+    assertThat(ids)
+        .hasSize(8)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000002",
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000020",
+            "TKI:000000000000000000000000000000000024",
+            "TKI:000000000000000000000000000000000027",
+            "TKI:000000000000000000000000000000000029",
+            "TKI:000000000000000000000000000000000033");
   }
 
   @WithAccessId(user = "monitor")
@@ -176,10 +178,12 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
             .classificationCategoryIn(categories)
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).hasSize(3);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000006")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000009")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000029")).isTrue();
+    assertThat(ids)
+        .hasSize(3)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000006",
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000029");
   }
 
   @WithAccessId(user = "monitor")
@@ -197,10 +201,12 @@ class GetTaskIdsOfTaskCustomFieldValueReportAccTest extends AbstractReportAccTes
             .domainIn(List.of("DOMAIN_A"))
             .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
 
-    assertThat(ids).hasSize(3);
-    assertThat(ids.contains("TKI:000000000000000000000000000000000009")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000020")).isTrue();
-    assertThat(ids.contains("TKI:000000000000000000000000000000000033")).isTrue();
+    assertThat(ids)
+        .hasSize(3)
+        .containsExactlyInAnyOrder(
+            "TKI:000000000000000000000000000000000009",
+            "TKI:000000000000000000000000000000000020",
+            "TKI:000000000000000000000000000000000033");
   }
 
   @WithAccessId(user = "monitor")

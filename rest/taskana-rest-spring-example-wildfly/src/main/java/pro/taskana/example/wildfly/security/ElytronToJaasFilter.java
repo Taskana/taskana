@@ -31,10 +31,10 @@ public class ElytronToJaasFilter extends GenericFilterBean {
     Roles roles = securityIdentity.getRoles();
     Subject subject = obtainSubject();
     if (subject != null) {
-      if (subject.getPrincipals().size() == 0) {
+      if (subject.getPrincipals().isEmpty()) {
         subject.getPrincipals().add(securityIdentity.getPrincipal());
       }
-      if (subject.getPrincipals(GroupPrincipal.class).size() == 0) {
+      if (subject.getPrincipals(GroupPrincipal.class).isEmpty()) {
         roles.forEach(role -> subject.getPrincipals().add(new GroupPrincipal(role)));
       }
       if (logger.isDebugEnabled()) {
