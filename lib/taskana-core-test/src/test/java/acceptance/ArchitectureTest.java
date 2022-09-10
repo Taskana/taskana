@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.toCollection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.base.DescribedPredicate;
-import com.tngtech.archunit.base.Optional;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaField;
@@ -36,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -92,8 +92,7 @@ class ArchitectureTest {
   @BeforeAll
   static void init() {
     // time intensive operation should only be done once
-    importedClasses =
-        new ClassFileImporter().importPackages("pro.taskana", "acceptance", "testapi");
+    importedClasses = new ClassFileImporter().importPackages("pro.taskana", "acceptance");
   }
 
   // endregion
@@ -225,7 +224,6 @@ class ArchitectureTest {
   }
 
   @Test
-  @Disabled("Not working as expected, see https://github.com/TNG/ArchUnit/issues/923")
   void packagesShouldBeFreeOfCyclicDependencies() {
     // Frozen, so it can be improved over time:
     // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
@@ -233,7 +231,6 @@ class ArchitectureTest {
   }
 
   @Test
-  @Disabled("Not working as expected, see https://github.com/TNG/ArchUnit/issues/923")
   void classesShouldBeFreeOfCyclicDependencies() {
     SliceAssignment everySingleClass =
         new SliceAssignment() {
@@ -504,7 +501,7 @@ class ArchitectureTest {
       public void check(JavaClass item, ConditionEvents events) {
         Optional<TestInstance> testInstanceOptional =
             item.tryGetAnnotationOfType(TestInstance.class);
-        if (!testInstanceOptional.isPresent()
+        if (testInstanceOptional.isEmpty()
             || testInstanceOptional.get().value() != Lifecycle.PER_CLASS) {
           events.add(
               SimpleConditionEvent.violated(
@@ -521,7 +518,7 @@ class ArchitectureTest {
     return new DescribedPredicate<>("are nested TaskanaIntegrationTest classes") {
 
       @Override
-      public boolean apply(JavaClass input) {
+      public boolean test(JavaClass input) {
         Optional<JavaClass> enclosingClass = input.getEnclosingClass();
         return input.isAnnotatedWith(Nested.class)
             && enclosingClass.isPresent()
@@ -530,12 +527,11 @@ class ArchitectureTest {
 
       private boolean isTaskanaIntegrationTest(JavaClass input) {
         Optional<JavaClass> enclosingClass = input.getEnclosingClass();
-        if (enclosingClass.isPresent()) {
-          return input.isAnnotatedWith(Nested.class)
-              && isTaskanaIntegrationTest(enclosingClass.get());
-        } else {
-          return input.isAnnotatedWith(TaskanaIntegrationTest.class);
-        }
+        return enclosingClass
+            .map(
+                javaClass ->
+                    input.isAnnotatedWith(Nested.class) && isTaskanaIntegrationTest(javaClass))
+            .orElseGet(() -> input.isAnnotatedWith(TaskanaIntegrationTest.class));
       }
     };
   }
@@ -582,18 +578,10 @@ class ArchitectureTest {
               final Optional<DeleteProvider> deleteProviderAnnotation =
                   method.tryGetAnnotationOfType(DeleteProvider.class);
 
-              if (selectAnnotation.isPresent()) {
-                values.addAll(Arrays.asList(selectAnnotation.get().value()));
-              }
-              if (updateAnnotation.isPresent()) {
-                values.addAll(Arrays.asList(updateAnnotation.get().value()));
-              }
-              if (insertAnnotation.isPresent()) {
-                values.addAll(Arrays.asList(insertAnnotation.get().value()));
-              }
-              if (deleteAnnotation.isPresent()) {
-                values.addAll(Arrays.asList(deleteAnnotation.get().value()));
-              }
+              selectAnnotation.map(Select::value).map(Arrays::asList).ifPresent(values::addAll);
+              updateAnnotation.map(Update::value).map(Arrays::asList).ifPresent(values::addAll);
+              insertAnnotation.map(Insert::value).map(Arrays::asList).ifPresent(values::addAll);
+              deleteAnnotation.map(Delete::value).map(Arrays::asList).ifPresent(values::addAll);
               if (selectProviderAnnotation.isPresent()) {
                 values.add(
                     executeStaticProviderMethod(
@@ -628,7 +616,7 @@ class ArchitectureTest {
           List<String> sqlStrings = getSqlStringsFromMethod.apply(method);
 
           if (sqlStrings.isEmpty()
-              && !method.tryGetAnnotationOfType(SelectProvider.class).isPresent()) {
+              && method.tryGetAnnotationOfType(SelectProvider.class).isEmpty()) {
             String message =
                 String.format(
                     "Method '%s#%s' does not contain any MyBatis SQL annotation",
