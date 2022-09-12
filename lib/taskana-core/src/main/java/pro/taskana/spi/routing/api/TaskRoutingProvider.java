@@ -2,22 +2,52 @@ package pro.taskana.spi.routing.api;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.workbasket.api.models.Workbasket;
 
-/** Interface for TASKANA TaskRoutingProvider SPI. */
+/**
+ * The TaskRoutingProvider allows to determine the {@linkplain Workbasket} for a {@linkplain Task}
+ * that has no {@linkplain Workbasket} on {@linkplain
+ * pro.taskana.task.api.TaskService#createTask(Task) creation}.
+ */
 public interface TaskRoutingProvider {
 
   /**
-   * Initialize TaskRoutingProvider service.
+   * Provide the active {@linkplain TaskanaEngine} which is initialized for this TASKANA
+   * installation.
    *
-   * @param taskanaEngine {@linkplain TaskanaEngine} The Taskana engine needed for initialization.
+   * <p>This method is called during TASKANA startup and allows the service provider to store the
+   * active {@linkplain TaskanaEngine} for later usage.
+   *
+   * @param taskanaEngine the active {@linkplain TaskanaEngine} which is initialized for this
+   *     installation
    */
   void initialize(TaskanaEngine taskanaEngine);
 
   /**
-   * Determines a WorkbasketId for a given task.
+   * Determine the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket} for a given
+   * {@linkplain Task}.This method will be invoked by TASKANA when it is asked to {@linkplain
+   * pro.taskana.task.api.TaskService#createTask(Task) create} a {@linkplain Task} that has no
+   * {@linkplain Workbasket} assigned.
    *
-   * @param task {@linkplain Task} The task for which a workbasket must be determined.
-   * @return the id of the workbasket in which the task is to be created.
+   * <p>If more than one TaskRoutingProvider class is registered, TASKANA calls them all and uses
+   * their results only if they agree on the {@linkplain Workbasket}. This is, if more than one
+   * {@linkplain Workbasket#getId() ids} are returned, TASKANA uses them only if they are identical.
+   * If different ids are returned, the {@linkplain Task} will not be {@linkplain
+   * pro.taskana.task.api.TaskService#createTask(Task) created}.
+   *
+   * <p>If the {@linkplain Workbasket} cannot be computed, the method should return NULL. If every
+   * registered TaskRoutingProvider return NULL, the {@linkplain Task} will not be {@linkplain
+   * pro.taskana.task.api.TaskService#createTask(Task) created}
+   *
+   * <p>The behaviour is undefined if this method tries to apply persistent changes to any entity.
+   *
+   * <p>This SPI is executed with the same {@linkplain
+   * pro.taskana.common.api.security.UserPrincipal} and {@linkplain
+   * pro.taskana.common.api.security.GroupPrincipal} as in {@linkplain
+   * pro.taskana.task.api.TaskService#createTask(Task)}.
+   *
+   * @param task the {@linkplain Task} for which a {@linkplain Workbasket} must be determined
+   * @return the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket}
    */
   String determineWorkbasketId(Task task);
 }
