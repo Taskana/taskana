@@ -86,7 +86,7 @@ export class TypeAheadComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe((accessIds) => {
         this.filteredAccessIds = accessIds;
-        const accessId = accessIds.find((accessId) => accessId.accessId === value);
+        const accessId = accessIds.find((accessId) => accessId.accessId.toLowerCase() === value.toLowerCase());
 
         if (typeof accessId !== 'undefined') {
           this.name = accessId?.name;
