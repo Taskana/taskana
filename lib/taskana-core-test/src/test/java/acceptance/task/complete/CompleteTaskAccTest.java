@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -71,9 +72,20 @@ class CompleteTaskAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_CompleteClaimedTask() throws Exception {
+  void should_CompleteTask_When_TaskIsClaimed() throws Exception {
     Task claimedTask = createTaskClaimedByUser_1_1().buildAndStore(taskService);
     Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    Task completedTask = taskService.completeTask(claimedTask.getId());
+
+    assertTaskIsComplete(before, completedTask);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_CompleteTask_When_TaskIsInReview() throws Exception {
+    final Instant before = Instant.now().minus(Duration.ofSeconds(3L));
+    Task claimedTask = createTaskInReviewByUser_1_1().buildAndStore(taskService);
 
     Task completedTask = taskService.completeTask(claimedTask.getId());
 
@@ -117,11 +129,22 @@ class CompleteTaskAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_ForceCompleteClaimedTask_When_TaskCallerIsNotTheOwner() throws Exception {
+  void should_ForceCompleteTask_When_ClaimedByAnotherUser() throws Exception {
     Task task = createTaskClaimedByUser_1_1().owner("other").buildAndStore(taskService);
     Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     Task completedTask = taskService.forceCompleteTask(task.getId());
+
+    assertTaskIsComplete(before, completedTask);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ForceCompleteTask_When_InReviewByAnotherUser() throws Exception {
+    Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    Task claimedTask = createTaskInReviewByUser_1_1().owner("other").buildAndStore(taskService);
+
+    Task completedTask = taskService.forceCompleteTask(claimedTask.getId());
 
     assertTaskIsComplete(before, completedTask);
   }
@@ -133,6 +156,18 @@ class CompleteTaskAccTest {
     Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     Task completedTask = taskService.forceCompleteTask(task.getId());
+
+    assertTaskIsComplete(before, completedTask);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ForceCompleteTask_When_TaskIsReadyForReview() throws Exception {
+    Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    Task readyForReviewTask =
+        createDefaultTask().state(TaskState.READY_FOR_REVIEW).buildAndStore(taskService);
+
+    Task completedTask = taskService.forceCompleteTask(readyForReviewTask.getId());
 
     assertTaskIsComplete(before, completedTask);
   }
@@ -189,6 +224,16 @@ class CompleteTaskAccTest {
     InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getTaskId()).isEqualTo(task.getId());
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_CompletingTaskInReviewByAnotherUser() throws Exception {
+    Task inReviewTask = createTaskInReviewByUser_1_1().owner("other").buildAndStore(taskService);
+
+    ThrowingCallable call = () -> taskService.completeTask(inReviewTask.getId());
+
+    assertThatThrownBy(call).isInstanceOf(InvalidOwnerException.class);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -632,6 +677,14 @@ class CompleteTaskAccTest {
         .owner("user-1-1")
         .created(Instant.parse("2018-01-29T15:55:00Z"))
         .state(TaskState.CLAIMED)
+        .claimed(Instant.now());
+  }
+
+  private TaskBuilder createTaskInReviewByUser_1_1() {
+    return createDefaultTask()
+        .owner("user-1-1")
+        .created(Instant.parse("2018-01-29T15:55:00Z"))
+        .state(TaskState.IN_REVIEW)
         .claimed(Instant.now());
   }
 
