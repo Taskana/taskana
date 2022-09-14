@@ -1,5 +1,7 @@
 package pro.taskana.task.internal;
 
+import static java.util.Map.entry;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -244,26 +246,35 @@ final class TaskTransferrer {
       List<TaskSummary> taskSummaries,
       WorkbasketSummary destinationWorkbasket,
       boolean setTransferFlag) {
-    if (!taskSummaries.isEmpty()) {
-      TaskImpl updateObject = new TaskImpl();
-      applyTransferValuesForTask(updateObject, destinationWorkbasket, setTransferFlag);
-      taskMapper.updateTransfered(
-          taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toSet()), updateObject);
+    Map<TaskState, List<TaskSummary>> summariesByState = groupTasksByState(taskSummaries);
+    for (Map.Entry<TaskState, List<TaskSummary>> entry : summariesByState.entrySet()) {
+      TaskState goalState = entry.getKey();
+      List<TaskSummary> taskSummariesWithSameGoalState = entry.getValue();
+      if (!taskSummariesWithSameGoalState.isEmpty()) {
+        TaskImpl updateObject = new TaskImpl();
+        updateObject.setState(goalState);
+        applyTransferValuesForTask(updateObject, destinationWorkbasket, setTransferFlag);
+        taskMapper.updateTransfered(
+            taskSummariesWithSameGoalState.stream()
+                .map(TaskSummary::getId)
+                .collect(Collectors.toSet()),
+            updateObject);
 
-      if (historyEventManager.isEnabled()) {
-        taskSummaries.forEach(
-            oldSummary -> {
-              TaskSummaryImpl newSummary = (TaskSummaryImpl) oldSummary.copy();
-              newSummary.setId(oldSummary.getId());
-              newSummary.setExternalId(oldSummary.getExternalId());
-              applyTransferValuesForTask(newSummary, destinationWorkbasket, setTransferFlag);
+        if (historyEventManager.isEnabled()) {
+          taskSummaries.forEach(
+              oldSummary -> {
+                TaskSummaryImpl newSummary = (TaskSummaryImpl) oldSummary.copy();
+                newSummary.setId(oldSummary.getId());
+                newSummary.setExternalId(oldSummary.getExternalId());
+                applyTransferValuesForTask(newSummary, destinationWorkbasket, setTransferFlag);
 
-              createTransferredEvent(
-                  oldSummary,
-                  newSummary,
-                  oldSummary.getWorkbasketSummary().getId(),
-                  newSummary.getWorkbasketSummary().getId());
-            });
+                createTransferredEvent(
+                    oldSummary,
+                    newSummary,
+                    oldSummary.getWorkbasketSummary().getId(),
+                    newSummary.getWorkbasketSummary().getId());
+              });
+        }
       }
     }
   }
@@ -272,7 +283,7 @@ final class TaskTransferrer {
       TaskSummaryImpl task, WorkbasketSummary workbasket, boolean setTransferFlag) {
     task.setRead(false);
     task.setTransferred(setTransferFlag);
-    task.setState(TaskState.READY);
+    task.setState(getStateAfterTransfer(task));
     task.setOwner(null);
     task.setWorkbasketSummary(workbasket);
     task.setDomain(workbasket.getDomain());
@@ -293,5 +304,29 @@ final class TaskTransferrer {
             destinationWorkbasketId,
             taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
             details));
+  }
+
+  private TaskState getStateAfterTransfer(TaskSummary taskSummary) {
+    TaskState stateBeforeTransfer = taskSummary.getState();
+    if (stateBeforeTransfer.equals(TaskState.CLAIMED)) {
+      return TaskState.READY;
+    }
+    if (stateBeforeTransfer.equals(TaskState.IN_REVIEW)) {
+      return TaskState.READY_FOR_REVIEW;
+    } else {
+      return stateBeforeTransfer;
+    }
+  }
+
+  private Map<TaskState, List<TaskSummary>> groupTasksByState(List<TaskSummary> taskSummaries) {
+    Map<TaskState, List<TaskSummary>> result =
+        Map.ofEntries(
+            entry((TaskState.READY), new ArrayList<>()),
+            entry((TaskState.READY_FOR_REVIEW), new ArrayList<>()));
+    for (TaskSummary taskSummary : taskSummaries) {
+      List<TaskSummary> relevantSummaries = result.get(getStateAfterTransfer(taskSummary));
+      relevantSummaries.add(taskSummary);
+    }
+    return result;
   }
 }
