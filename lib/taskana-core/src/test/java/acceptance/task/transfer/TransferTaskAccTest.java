@@ -10,15 +10,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskState;
@@ -49,6 +54,51 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
     assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
+  }
+
+  @WithAccessId(user = "admin")
+  @TestFactory
+  Stream<DynamicTest> should_SetStateCorrectly_When_TransferringSingleTask() {
+    List<Pair<String, TaskState>> testCases =
+        List.of(
+            Pair.of("TKI:100000000000000000000000000000000025", TaskState.READY_FOR_REVIEW),
+            Pair.of("TKI:000000000000000000000000000000000025", TaskState.READY),
+            Pair.of("TKI:200000000000000000000000000000000025", TaskState.READY_FOR_REVIEW),
+            Pair.of("TKI:000000000000000000000000000000000026", TaskState.READY));
+
+    ThrowingConsumer<Pair<String, TaskState>> test =
+        p -> {
+          String taskId = p.getLeft();
+          TaskState expectedState = p.getRight();
+          taskService.transfer(taskId, "WBI:100000000000000000000000000000000006");
+          Task result = taskService.getTask(taskId);
+          assertThat(result.getState()).isEqualTo(expectedState);
+          taskService.transfer(taskId, "WBI:100000000000000000000000000000000007");
+        };
+
+    return DynamicTest.stream(
+        testCases.iterator(), p -> "Expected state: " + p.getRight().name(), test);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_SetStateCorrectly_When_BulkTranferringTasks() throws Exception {
+    String readyForReview = "TKI:100000000000000000000000000000000025";
+    String ready = "TKI:000000000000000000000000000000000025";
+    String inReview = "TKI:200000000000000000000000000000000025";
+    String claimed = "TKI:000000000000000000000000000000000026";
+    List<String> taskIds = List.of(readyForReview, ready, inReview, claimed);
+
+    BulkOperationResults<String, TaskanaException> results =
+        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+
+    assertThat(results.containsErrors()).isFalse();
+    assertThat(taskService.getTask(readyForReview).getState())
+        .isEqualTo(taskService.getTask(inReview).getState())
+        .isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(taskService.getTask(ready).getState())
+        .isEqualTo(taskService.getTask(claimed).getState())
+        .isEqualTo(TaskState.READY);
   }
 
   @WithAccessId(user = "admin")
