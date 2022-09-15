@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocTest;
+import pro.taskana.rest.test.BaseRestDocTest;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.rest.assembler.UserRepresentationModelAssembler;

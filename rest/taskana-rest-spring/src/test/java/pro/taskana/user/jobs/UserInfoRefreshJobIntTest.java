@@ -20,9 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.rest.ldap.LdapClient;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
-import pro.taskana.common.test.security.JaasExtension;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
+import pro.taskana.testapi.security.JaasExtension;
+import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
 

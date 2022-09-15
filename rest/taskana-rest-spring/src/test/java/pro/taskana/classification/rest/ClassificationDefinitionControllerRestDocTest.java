@@ -13,7 +13,7 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;
 import pro.taskana.classification.rest.models.ClassificationCollectionRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocTest;
+import pro.taskana.rest.test.BaseRestDocTest;
 
 class ClassificationDefinitionControllerRestDocTest extends BaseRestDocTest {
 

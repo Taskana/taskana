@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
-import pro.taskana.common.test.BaseRestDocTest;
+import pro.taskana.rest.test.BaseRestDocTest;
 
 class TaskanaEngineControllerRestDocTest extends BaseRestDocTest {
 

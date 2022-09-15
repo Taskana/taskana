@@ -254,6 +254,7 @@ jobs:
           - taskana-spi-routing-dmn-router
           - taskana-routing-rest
           - taskana-rest-spring
+          - taskana-rest-spring-test-lib
           - taskana-rest-spring-example-common
           - taskana-loghistory-provider
           - taskana-simplehistory-provider

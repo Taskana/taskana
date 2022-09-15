@@ -78,6 +78,11 @@
     </dependency>
     <dependency>
       <groupId>pro.taskana</groupId>
+      <artifactId>taskana-rest-spring-test-lib</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
       <artifactId>taskana-routing-rest</artifactId>
       <version>${project.version}</version>
     </dependency>
