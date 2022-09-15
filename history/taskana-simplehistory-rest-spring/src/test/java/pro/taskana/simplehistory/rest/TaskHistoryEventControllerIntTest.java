@@ -3,7 +3,7 @@ package pro.taskana.simplehistory.rest;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -25,8 +25,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import pro.taskana.common.rest.models.PageMetadata;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventPagedRepresentationModel;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 

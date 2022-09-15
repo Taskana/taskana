@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.internal.models.AttachmentSummaryImpl;

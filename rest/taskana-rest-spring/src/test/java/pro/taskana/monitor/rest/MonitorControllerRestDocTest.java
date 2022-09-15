@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocTest;
+import pro.taskana.rest.test.BaseRestDocTest;
 
 class MonitorControllerRestDocTest extends BaseRestDocTest {
 

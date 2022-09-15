@@ -2,7 +2,7 @@ package pro.taskana.user.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.util.Set;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;

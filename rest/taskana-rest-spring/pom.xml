@@ -82,7 +82,7 @@
     <!-- test dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
-      <artifactId>taskana-common-test</artifactId>
+      <artifactId>taskana-rest-spring-test-lib</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
@@ -168,6 +168,12 @@
       <groupId>com.tngtech.archunit</groupId>
       <artifactId>archunit</artifactId>
       <version>${version.archunit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-test-api</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

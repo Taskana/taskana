@@ -2,7 +2,7 @@ package pro.taskana.workbasket.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,8 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemPagedRepresentationModel;
 
 /** Test WorkbasketAccessItemController. */

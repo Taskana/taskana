@@ -6,7 +6,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;
