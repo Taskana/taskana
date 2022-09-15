@@ -42,6 +42,8 @@ import pro.taskana.testapi.TaskanaEngineProxy;
 import pro.taskana.testapi.WithServiceProvider;
 import pro.taskana.testapi.WithServiceProvider.WithServiceProviders;
 import pro.taskana.testapi.util.ServiceProviderExtractor;
+import pro.taskana.user.api.UserService;
+import pro.taskana.user.internal.UserServiceImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 
@@ -112,8 +114,10 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     MonitorService monitorService = taskanaEngine.getMonitorService();
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
     ClassificationService classificationService = taskanaEngine.getClassificationService();
+    ConfigurationService configurationService = taskanaEngine.getConfigurationService();
     JobService jobService = taskanaEngine.getJobService();
     CurrentUserContext currentUserContext = taskanaEngine.getCurrentUserContext();
+    UserService userService = taskanaEngine.getUserService();
     SqlSession sqlSession = taskanaEngineProxy.getSqlSession();
     return Map.ofEntries(
         Map.entry(TaskanaEngineConfiguration.class, taskanaEngine.getConfiguration()),
@@ -128,13 +132,15 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         Map.entry(WorkbasketServiceImpl.class, workbasketService),
         Map.entry(ClassificationService.class, classificationService),
         Map.entry(ClassificationServiceImpl.class, classificationService),
-        Map.entry(ConfigurationService.class, taskanaEngine.getConfigurationService()),
-        Map.entry(ConfigurationServiceImpl.class, taskanaEngine.getConfigurationService()),
+        Map.entry(ConfigurationService.class, configurationService),
+        Map.entry(ConfigurationServiceImpl.class, configurationService),
         Map.entry(JobService.class, jobService),
         Map.entry(JobServiceImpl.class, jobService),
         Map.entry(CurrentUserContext.class, currentUserContext),
         Map.entry(CurrentUserContextImpl.class, currentUserContext),
         Map.entry(WorkingDaysToDaysConverter.class, taskanaEngine.getWorkingDaysToDaysConverter()),
-        Map.entry(ConfigurationMapper.class, sqlSession.getMapper(ConfigurationMapper.class)));
+        Map.entry(ConfigurationMapper.class, sqlSession.getMapper(ConfigurationMapper.class)),
+        Map.entry(UserService.class, userService),
+        Map.entry(UserServiceImpl.class, userService));
   }
 }
