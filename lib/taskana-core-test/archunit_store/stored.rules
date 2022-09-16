@@ -1,0 +1,6 @@
+#
+#Sat Sep 17 00:30:52 CEST 2022
+slices\ matching\ 'pro.taskana.(**)'\ should\ be\ free\ of\ cycles=16c8f573-e4c4-420c-9cd3-9c7a39b3efed
+methods\ that\ are\ annotated\ with\ @Test\ or\ annotated\ with\ @TestFactory\ or\ annotated\ with\ @TestTemplate\ and\ are\ not\ declared\ in\ acceptance.ArchitectureTest\ should\ be\ package\ private\ and\ should\ have\ name\ matching\ '^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$'=30c3b2b0-9c93-4c95-a5fd-2fafcc25752b
+slices\ assigned\ from\ every\ single\ class\ should\ be\ free\ of\ cycles=1bd54c87-b5c1-4a2d-b91d-84c3e4c013f5
+no\ classes\ should\ use\ field\ injection,\ because\ field\ injection\ is\ considered\ harmful;\ use\ constructor\ injection\ or\ setter\ injection\ instead;\ see\ https\://stackoverflow.com/q/39890849\ for\ detailed\ explanations=a46f256c-1dda-42ac-bbe0-366f238b89a2
