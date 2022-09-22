@@ -16,6 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.test.config.DataSourceGenerator;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 
 /** Test taskana configuration without roles. */
 class TaskanaConfigAccTest {
@@ -34,6 +35,12 @@ class TaskanaConfigAccTest {
   void should_ConfigureDomains_For_DefaultPropertiesFile() {
     assertThat(taskanaEngineConfiguration.getDomains())
         .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+  }
+
+  @Test
+  void should_ConfigureMinimalPermissionsToAssignDomains_For_DefaultPropertiesFile() {
+    assertThat(taskanaEngineConfiguration.getMinimalPermissionsToAssignDomains())
+        .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.OPEN);
   }
 
   @Test
