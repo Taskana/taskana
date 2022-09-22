@@ -238,7 +238,7 @@ final class TaskTransferrer {
             .toArray(String[]::new);
 
     List<WorkbasketSummary> sourceWorkbaskets =
-        query.callerHasPermission(WorkbasketPermission.TRANSFER).idIn(workbasketIds).list();
+        query.callerHasPermissions(WorkbasketPermission.TRANSFER).idIn(workbasketIds).list();
     return sourceWorkbaskets.stream().map(WorkbasketSummary::getId).collect(Collectors.toSet());
   }
 

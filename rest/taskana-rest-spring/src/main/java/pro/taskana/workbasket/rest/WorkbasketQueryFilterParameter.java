@@ -65,7 +65,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
 
   /** Filter by the required permission for the Workbasket. */
   @JsonProperty("required-permission")
-  private final WorkbasketPermission requiredPermissions;
+  private final WorkbasketPermission[] requiredPermissions;
 
   @SuppressWarnings("indentation")
   @ConstructorProperties({
@@ -90,7 +90,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
       String[] descriptionLike,
       String[] domain,
       WorkbasketType[] type,
-      WorkbasketPermission requiredPermissions) {
+      WorkbasketPermission[] requiredPermissions) {
     this.name = name;
     this.nameLike = nameLike;
     this.key = key;
@@ -118,7 +118,7 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
         .ifPresent(query::descriptionLike);
     Optional.ofNullable(domain).ifPresent(query::domainIn);
     Optional.ofNullable(type).ifPresent(query::typeIn);
-    Optional.ofNullable(requiredPermissions).ifPresent(query::callerHasPermission);
+    Optional.ofNullable(requiredPermissions).ifPresent(query::callerHasPermissions);
     return null;
   }
 }

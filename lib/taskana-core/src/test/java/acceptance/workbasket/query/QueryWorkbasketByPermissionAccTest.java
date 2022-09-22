@@ -7,6 +7,7 @@ import acceptance.AbstractAccTest;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -21,90 +22,122 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @ExtendWith(JaasExtension.class)
 class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
-  private static SortDirection asc = SortDirection.ASCENDING;
-  private static SortDirection desc = SortDirection.DESCENDING;
+  private static final WorkbasketService WORKBASKET_SERVICE = taskanaEngine.getWorkbasketService();
 
-  QueryWorkbasketByPermissionAccTest() {
-    super();
-  }
+  // region accessIdsHavePermission
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUser() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForUser_When_QueryingForSinglePermission() throws Exception {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1")
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1")
             .list();
+
     assertThat(results).hasSize(1);
     assertThat(results.get(0).getKey()).isEqualTo("USER-1-1");
   }
 
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_GetAllTransferTargetsForUser_When_QueryingForMultiplePermissions() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.APPEND, WorkbasketPermission.DISTRIBUTE), "teamlead-1")
+            .list();
+
+    assertThat(results)
+        .extracting(WorkbasketSummary::getKey)
+        .hasSize(2)
+        .containsExactlyInAnyOrder("GPK_KSC", "TEAMLEAD-1");
+  }
+
   @WithAccessId(user = "unknownuser")
   @Test
-  void testQueryAllTransferTargetsForUserNotAuthorized() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_ThrowNotAuthorizedException_When_QueryingWithUnknownUser() {
 
     ThrowingCallable call =
-        () -> {
-          workbasketService
-              .createWorkbasketQuery()
-              .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1")
-              .list();
-        };
+        () ->
+            WORKBASKET_SERVICE
+                .createWorkbasketQuery()
+                .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1")
+                .list();
+
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUserAndGroup() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSinglePermission()
+      throws Exception {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", GROUP_1_DN)
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1", GROUP_1_DN)
             .list();
+
     assertThat(results).hasSize(6);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUserAndGroupSortedByNameAscending() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForMultiplePermissions()
+      throws Exception {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", GROUP_1_DN)
-            .orderByName(asc)
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.APPEND, WorkbasketPermission.OPEN),
+                "user-1-1",
+                GROUP_1_DN)
             .list();
+
+    assertThat(results).hasSize(4);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSortedByNameAscending()
+      throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1", GROUP_1_DN)
+            .orderByName(SortDirection.ASCENDING)
+            .list();
+
     assertThat(results).hasSize(6);
     assertThat(results.get(0).getKey()).isEqualTo("GPK_KSC_1");
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferTargetsForUserAndGroupSortedByNameDescending() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSortedByNameDescending()
+      throws Exception {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.APPEND, "user-1-1", GROUP_1_DN)
-            .orderByName(desc)
-            .orderByKey(asc)
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1", GROUP_1_DN)
+            .orderByName(SortDirection.DESCENDING)
+            .orderByKey(SortDirection.ASCENDING)
             .list();
+
     assertThat(results).hasSize(6);
     assertThat(results.get(0).getKey()).isEqualTo("USER-2-2");
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllTransferSourcesForUserAndGroup() throws Exception {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferSourcesForUserAndGroup_When_QueryingForSinglePermission()
+      throws Exception {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermission(WorkbasketPermission.DISTRIBUTE, "user-1-1", GROUP_1_DN)
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.DISTRIBUTE), "user-1-1", GROUP_1_DN)
             .list();
 
     assertThat(results)
@@ -112,51 +145,83 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         .containsExactlyInAnyOrder("GPK_KSC_1", "USER-1-1");
   }
 
-  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
-  @Test
-  void testQueryAllTransferTargetsForUserAndGroupFromSubject() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-    List<WorkbasketSummary> results =
-        workbasketService
-            .createWorkbasketQuery()
-            .callerHasPermission(WorkbasketPermission.APPEND)
-            .list();
-    assertThat(results).hasSize(6);
-  }
+  // endregion
+
+  // region callerHasPermission
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testQueryAllAvailableWorkbasketForOpeningForUserAndGroupFromSubject() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForSubjectUser_When_QueryingForSinglePermission() {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .callerHasPermission(WorkbasketPermission.READ)
+            .callerHasPermissions(WorkbasketPermission.READ)
             .list();
+
     assertThat(results).hasSize(1);
   }
 
   @WithAccessId(user = "teamlead-1")
   @Test
-  void testConsiderBusinessAdminPermissionsWhileQueryingWorkbaskets() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForSubjectUser_When_QueryingForMultiplePermission() {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .callerHasPermission(WorkbasketPermission.OPEN)
+            .callerHasPermissions(WorkbasketPermission.READ, WorkbasketPermission.OPEN)
             .list();
+
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(user = "admin")
+  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
-  void testSkipAuthorizationCheckForAdminWhileQueryingWorkbaskets() {
-    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+  void should_GetAllTransferTargetsForSubjectUserAndGroup_When_QueryingForSinglePermission() {
     List<WorkbasketSummary> results =
-        workbasketService
+        WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .callerHasPermission(WorkbasketPermission.OPEN)
+            .callerHasPermissions(WorkbasketPermission.APPEND)
             .list();
+
+    assertThat(results).hasSize(6);
+  }
+
+  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
+  @Test
+  void should_GetAllTransferTargetsForSubjectUserAndGroup_When_QueryingForMultiplePermissions() {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .callerHasPermissions(WorkbasketPermission.APPEND, WorkbasketPermission.OPEN)
+            .list();
+
+    assertThat(results).hasSize(4);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_ConsiderBusinessAdminPermissions_When_QueryingWorkbaskets() {
+    List<WorkbasketSummary> filteredWorkbaskets =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .callerHasPermissions(WorkbasketPermission.OPEN)
+            .list();
+
+    assertThat(filteredWorkbaskets).isEmpty();
+  }
+
+  @WithAccessId(user = "admin")
+  @WithAccessId(user = "taskadmin")
+  @TestTemplate
+  void should_SkipAuthorizationCheckForAdmin_When_QueryingWorkbaskets() {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .callerHasPermissions(WorkbasketPermission.OPEN)
+            .list();
+
     assertThat(results).hasSize(26);
   }
+
+  // endregion
+
 }

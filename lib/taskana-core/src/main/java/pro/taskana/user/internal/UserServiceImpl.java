@@ -1,9 +1,16 @@
 package pro.taskana.user.internal;
 
+import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -13,16 +20,23 @@ import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
+import pro.taskana.workbasket.api.WorkbasketService;
 
 public class UserServiceImpl implements UserService {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-
-  private final InternalTaskanaEngine taskanaEngine;
+  private final InternalTaskanaEngine internalTaskanaEngine;
   private final UserMapper userMapper;
+  private final WorkbasketService workbasketService;
+  private final List<WorkbasketPermission> minimalWorkbasketPermissions;
 
-  public UserServiceImpl(InternalTaskanaEngine taskanaEngine, UserMapper userMapper) {
-    this.taskanaEngine = taskanaEngine;
+  public UserServiceImpl(InternalTaskanaEngine internalTaskanaEngine, UserMapper userMapper) {
+    this.internalTaskanaEngine = internalTaskanaEngine;
     this.userMapper = userMapper;
+    this.workbasketService = internalTaskanaEngine.getEngine().getWorkbasketService();
+    minimalWorkbasketPermissions =
+        internalTaskanaEngine.getEngine().getConfiguration().getMinimalPermissionsToAssignDomains();
   }
 
   @Override
@@ -32,18 +46,22 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getUser(String id) throws UserNotFoundException {
-    User user = taskanaEngine.executeInDatabaseConnection(() -> userMapper.findById(id));
+    UserImpl user =
+        internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.findById(id));
     if (user == null) {
       throw new UserNotFoundException(id);
     }
 
+    user.setDomains(determineDomains(user.getId()));
     return user;
   }
 
   @Override
   public User createUser(User userToCreate)
       throws InvalidArgumentException, NotAuthorizedException, UserAlreadyExistException {
-    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+    internalTaskanaEngine
+        .getEngine()
+        .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     validateAndPopulateFields(userToCreate);
     insertIntoDatabase(userToCreate);
 
@@ -56,10 +74,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User updateUser(User userToUpdate) throws UserNotFoundException, NotAuthorizedException {
-    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+    internalTaskanaEngine
+        .getEngine()
+        .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     getUser(userToUpdate.getId());
 
-    taskanaEngine.executeInDatabaseConnection(() -> userMapper.update((UserImpl) userToUpdate));
+    internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.update(userToUpdate));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method updateUser() updated User '{}'.", userToUpdate);
     }
@@ -69,23 +89,45 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(String id) throws UserNotFoundException, NotAuthorizedException {
-    taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+    internalTaskanaEngine
+        .getEngine()
+        .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     getUser(id);
 
-    taskanaEngine.executeInDatabaseConnection(() -> userMapper.delete(id));
+    internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.delete(id));
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method deleteUser() deleted User with id '{}'.", id);
     }
   }
 
+  private Set<String> determineDomains(String... accessIds) {
+    if (minimalWorkbasketPermissions != null && !minimalWorkbasketPermissions.isEmpty()) {
+      // since WorkbasketService#accessIdsHavePermissions requires some role permissions we have to
+      // execute this query as an admin. Since we're only determining the domains of a given user
+      // (and any user can request information on any other user) this query is "harmless".
+      return new HashSet<>(
+          internalTaskanaEngine
+              .getEngine()
+              .runAsAdmin(
+                  wrap(
+                      () ->
+                          workbasketService
+                              .createWorkbasketQuery()
+                              .accessIdsHavePermissions(minimalWorkbasketPermissions, accessIds)
+                              .listValues(
+                                  WorkbasketQueryColumnName.DOMAIN, SortDirection.ASCENDING))));
+    }
+    return Collections.emptySet();
+  }
+
   private void insertIntoDatabase(User userToCreate) throws UserAlreadyExistException {
     try {
-      taskanaEngine.openConnection();
-      userMapper.insert((UserImpl) userToCreate);
+      internalTaskanaEngine.openConnection();
+      userMapper.insert(userToCreate);
     } catch (PersistenceException e) {
-      throw new UserAlreadyExistException(userToCreate.getId());
+      throw new UserAlreadyExistException(userToCreate.getId(), e);
     } finally {
-      taskanaEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
     }
   }
 

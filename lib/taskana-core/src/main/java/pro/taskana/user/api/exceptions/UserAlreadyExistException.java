@@ -13,10 +13,11 @@ public class UserAlreadyExistException extends TaskanaException {
   public static final String ERROR_KEY = "USER_ALREADY_EXISTS";
   private final String userId;
 
-  public UserAlreadyExistException(String userId) {
+  public UserAlreadyExistException(String userId, Exception cause) {
     super(
         String.format("User with id '%s' already exists.", userId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("userId", userId)));
+        ErrorCode.of(ERROR_KEY, MapCreator.of("userId", userId)),
+        cause);
     this.userId = userId;
   }
 

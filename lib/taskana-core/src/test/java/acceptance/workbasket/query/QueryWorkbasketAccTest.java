@@ -317,8 +317,8 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
             .nameLike("%")
-            .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead-1", GROUP_1_DN, GROUP_2_DN)
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
             .orderByName(DESCENDING)
             .list();
 

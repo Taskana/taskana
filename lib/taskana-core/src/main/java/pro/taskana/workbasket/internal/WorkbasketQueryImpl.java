@@ -30,10 +30,13 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.countQueryWorkbaskets";
   private static final String LINK_TO_VALUEMAPPER =
       "pro.taskana.workbasket.internal.WorkbasketQueryMapper.queryWorkbasketColumnValues";
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private WorkbasketQueryColumnName columnName;
   private String[] accessId;
   private String[] idIn;
-  private WorkbasketPermission permission;
+  private WorkbasketPermission[] permissions;
   private String[] nameIn;
   private String[] nameLike;
   private String[] keyIn;
@@ -64,10 +67,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   private String[] orgLevel4In;
   private String[] orgLevel4Like;
   private boolean markedForDeletion;
-
-  private InternalTaskanaEngine taskanaEngine;
-  private List<String> orderBy;
-  private List<String> orderColumns;
   private boolean joinWithAccessList;
   private boolean checkReadPermission;
   private boolean usedToAugmentTasks;
@@ -165,22 +164,22 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery accessIdsHavePermission(
-      WorkbasketPermission permission, String... accessIds)
+  public WorkbasketQuery accessIdsHavePermissions(
+      List<WorkbasketPermission> permissions, String... accessIds)
       throws InvalidArgumentException, NotAuthorizedException {
     taskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN, TaskanaRole.TASK_ADMIN);
     // Checking pre-conditions
-    if (permission == null) {
-      throw new InvalidArgumentException("Permission can't be null.");
+    if (permissions == null || permissions.isEmpty()) {
+      throw new InvalidArgumentException("Permissions can't be null or empty.");
     }
     if (accessIds == null || accessIds.length == 0) {
       throw new InvalidArgumentException("accessIds can't be NULL or empty.");
     }
 
     // set up permissions and ids
-    this.permission = permission;
+    this.permissions = permissions.toArray(WorkbasketPermission[]::new);
     this.accessId = accessIds;
     lowercaseAccessIds(this.accessId);
 
@@ -188,8 +187,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery callerHasPermission(WorkbasketPermission permission) {
-    this.permission = permission;
+  public WorkbasketQuery callerHasPermissions(WorkbasketPermission... permissions) {
+    this.permissions = permissions;
     return this;
   }
 
@@ -428,8 +427,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     return accessId;
   }
 
-  public WorkbasketPermission getPermission() {
-    return permission;
+  public WorkbasketPermission[] getPermissions() {
+    return permissions;
   }
 
   public String[] getNameIn() {
@@ -625,7 +624,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       } else if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.BUSINESS_ADMIN)
           && !usedToAugmentTasks) {
         checkReadPermission = false;
-        if (accessId == null && permission == null) {
+        if (accessId == null && (permissions == null || permissions.length == 0)) {
           joinWithAccessList = false;
         }
       }
@@ -659,7 +658,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         + ", idIn="
         + Arrays.toString(idIn)
         + ", permission="
-        + permission
+        + Arrays.toString(permissions)
         + ", nameIn="
         + Arrays.toString(nameIn)
         + ", nameLike="
