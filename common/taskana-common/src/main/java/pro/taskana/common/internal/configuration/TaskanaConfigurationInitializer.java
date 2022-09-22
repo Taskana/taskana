@@ -3,8 +3,6 @@ package pro.taskana.common.internal.configuration;
 import static java.util.function.Predicate.not;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
 import java.time.Instant;
@@ -129,21 +127,10 @@ public class TaskanaConfigurationInitializer {
   }
 
   private static void setFieldValue(Object instance, Field field, Object value) {
-    final Optional<Method> hasSetterMethod =
-        Arrays.stream(instance.getClass().getMethods())
-            .filter(m -> m.getParameterCount() == 1)
-            .filter(m -> m.getName().startsWith("set"))
-            .filter(m -> m.getName().toLowerCase().contains(field.getName().toLowerCase()))
-            .findFirst();
-
-    if (hasSetterMethod.isEmpty()) {
-      throw new SystemException("No setter method for " + field.getName());
-    }
-
     try {
-      final Method method = hasSetterMethod.get();
-      method.invoke(instance, value);
-    } catch (IllegalAccessException | InvocationTargetException e) {
+      field.setAccessible(true);
+      field.set(instance, value);
+    } catch (IllegalAccessException | IllegalArgumentException e) {
       throw new SystemException(
           "Property value " + value + " is invalid for field " + field.getName(), e);
     }
@@ -175,11 +162,29 @@ public class TaskanaConfigurationInitializer {
     @Override
     public Optional<List<?>> initialize(
         Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
-      final String typeName =
-          ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getTypeName();
+      if (!List.class.isAssignableFrom(field.getType())) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not a List",
+                field, field.getType()));
+      }
+      Class<?> genericClass =
+          (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 
-      if (typeName.equals("pro.taskana.common.api.CustomHoliday")) {
-        CheckedFunction<String, List<?>, Exception> parseFunction2 =
+      if (genericClass.isEnum()) {
+        Map<String, ?> enumConstants =
+            Arrays.stream(genericClass.getEnumConstants())
+                .collect(Collectors.toMap(e -> e.toString().toLowerCase(), Function.identity()));
+        CheckedFunction<String, List<?>, Exception> parseFunction =
+            s ->
+                splitStringAndTrimElements(s, separator).stream()
+                    .map(String::toLowerCase)
+                    .map(enumConstants::get)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        return parseProperty(properties, taskanaProperty.value(), parseFunction);
+      } else if (CustomHoliday.class.isAssignableFrom(genericClass)) {
+        CheckedFunction<String, List<?>, Exception> parseFunction =
             s ->
                 splitStringAndTrimElements(s, separator).stream()
                     .map(
@@ -193,12 +198,16 @@ public class TaskanaConfigurationInitializer {
                         })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-        return parseProperty(properties, taskanaProperty.value(), parseFunction2);
-
-      } else {
+        return parseProperty(properties, taskanaProperty.value(), parseFunction);
+      } else if (String.class.isAssignableFrom(genericClass)) {
         CheckedFunction<String, List<?>, Exception> parseListFunction =
             p -> splitStringAndTrimElements(p, ",", String::toUpperCase);
         return parseProperty(properties, taskanaProperty.value(), parseListFunction);
+      } else {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is unknown",
+                field, genericClass));
       }
     }
   }

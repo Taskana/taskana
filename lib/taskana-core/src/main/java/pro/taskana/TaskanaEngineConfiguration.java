@@ -33,6 +33,7 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.TaskanaProperty;
 import pro.taskana.common.internal.util.FileLoaderUtil;
+import pro.taskana.workbasket.api.WorkbasketPermission;
 
 /**
  * This central class creates the TaskanaEngine and holds all the information about DB and Security.
@@ -129,6 +130,9 @@ public class TaskanaEngineConfiguration {
   @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
   private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
 
+  @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
+  private List<WorkbasketPermission> minimalPermissionsToAssignDomains;
+
   public TaskanaEngineConfiguration(
       DataSource dataSource, boolean useManagedTransactions, String schemaName) {
     this(dataSource, useManagedTransactions, true, schemaName);
@@ -214,6 +218,8 @@ public class TaskanaEngineConfiguration {
       LOGGER.debug("Configured domains: {}", domains);
       LOGGER.debug("Configured classificationTypes: {}", classificationTypes);
       LOGGER.debug("Configured custom Holidays : {}", customHolidays);
+      LOGGER.debug(
+          "Configured minimalPermissionsToAssignDomains : {}", minimalPermissionsToAssignDomains);
     }
   }
 
@@ -455,6 +461,15 @@ public class TaskanaEngineConfiguration {
 
   public void setUserRefreshJobRunEvery(Duration userRefreshJobRunEvery) {
     this.userRefreshJobRunEvery = userRefreshJobRunEvery;
+  }
+
+  public List<WorkbasketPermission> getMinimalPermissionsToAssignDomains() {
+    return minimalPermissionsToAssignDomains;
+  }
+
+  public void setMinimalPermissionsToAssignDomains(
+      List<WorkbasketPermission> minimalPermissionsToAssignDomains) {
+    this.minimalPermissionsToAssignDomains = minimalPermissionsToAssignDomains;
   }
 
   public Instant getUserRefreshJobFirstRun() {
