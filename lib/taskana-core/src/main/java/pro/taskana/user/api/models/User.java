@@ -1,5 +1,9 @@
 package pro.taskana.user.api.models;
 
+import java.util.Set;
+
+import pro.taskana.TaskanaEngineConfiguration;
+
 /** The User holds some relevant information about the TASKANA users. */
 public interface User {
 
@@ -184,6 +188,16 @@ public interface User {
    * @param data the data of the User
    */
   void setData(String data);
+
+  /**
+   * Returns the domains of the User.
+   *
+   * <p>The domains are derived from the workbasket permissions and the according Taskana property
+   * {@linkplain TaskanaEngineConfiguration#getMinimalPermissionsToAssignDomains()}.
+   *
+   * @return domains
+   */
+  Set<String> getDomains();
 
   /**
    * Duplicates this User.

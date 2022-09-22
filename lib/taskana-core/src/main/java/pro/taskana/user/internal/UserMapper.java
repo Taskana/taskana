@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 
+import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;
 
 public interface UserMapper {
@@ -27,10 +28,10 @@ public interface UserMapper {
   UserImpl findById(@Param("id") String id);
 
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insert")
-  void insert(UserImpl user);
+  void insert(User user);
 
   @UpdateProvider(type = UserMapperSqlProvider.class, method = "update")
-  void update(UserImpl user);
+  void update(User user);
 
   @DeleteProvider(type = UserMapperSqlProvider.class, method = "delete")
   void delete(String id);

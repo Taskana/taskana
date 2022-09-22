@@ -1,5 +1,7 @@
 package pro.taskana.workbasket.api;
 
+import java.util.List;
+
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -143,16 +145,37 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   /**
    * Setting up the permission which should be granted on the result workbaskets and the users which
    * should be checked. READ permission will always be checked by default.<br>
-   * The AccessIds and the given permission will throw a Exception if they would be NULL.
+   * The AccessIds and the given permission will throw an Exception if they would be NULL.
    *
    * @param permission which should be used for results.
-   * @param accessIds Users which sould be checked for given permissions on workbaskets.
+   * @param accessIds Users which should be checked for given permissions on workbaskets.
    * @return the current query object.
    * @throws InvalidArgumentException if permission OR the accessIds are NULL.
    * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
+   * @deprecated Use {@linkplain #accessIdsHavePermissions(List, String...)} instead
    */
-  WorkbasketQuery accessIdsHavePermission(WorkbasketPermission permission, String... accessIds)
+  @Deprecated(forRemoval = true)
+  default WorkbasketQuery accessIdsHavePermission(
+      WorkbasketPermission permission, String... accessIds)
+      throws InvalidArgumentException, NotAuthorizedException {
+    return accessIdsHavePermissions(List.of(permission), accessIds);
+  }
+
+  /**
+   * Setting up the permissions which should be granted on the result workbaskets and the users
+   * which should be checked. READ permission will always be checked by default.<br>
+   * The AccessIds and the given permission will throw an Exception if they would be NULL.
+   *
+   * @param permissions which should be used for results.
+   * @param accessIds Users which should be checked for given permissions on workbaskets.
+   * @return the current query object.
+   * @throws InvalidArgumentException if permissions OR the accessIds are NULL or empty.
+   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
+   *     ADMIN
+   */
+  WorkbasketQuery accessIdsHavePermissions(
+      List<WorkbasketPermission> permissions, String... accessIds)
       throws InvalidArgumentException, NotAuthorizedException;
 
   /**
@@ -161,8 +184,21 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    *
    * @param permission the permission for the query condition.
    * @return the updated query.
+   * @deprecated Use {@linkplain #callerHasPermissions(WorkbasketPermission...)} instead
    */
-  WorkbasketQuery callerHasPermission(WorkbasketPermission permission);
+  @Deprecated(forRemoval = true)
+  default WorkbasketQuery callerHasPermission(WorkbasketPermission permission) {
+    return callerHasPermissions(permission);
+  }
+
+  /**
+   * Add condition to query if the caller (one of the accessIds of the caller) has the given
+   * permissions on the workbasket.
+   *
+   * @param permissions the permissions for the query condition.
+   * @return the updated query.
+   */
+  WorkbasketQuery callerHasPermissions(WorkbasketPermission... permissions);
 
   /**
    * Sort the query result by name.

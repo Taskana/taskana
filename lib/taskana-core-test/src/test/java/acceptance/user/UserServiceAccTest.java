@@ -2,320 +2,483 @@ package acceptance.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
+import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
+import static pro.taskana.testapi.DefaultTestEntities.randomTestUser;
+import static pro.taskana.testapi.builder.UserBuilder.newUser;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.user.api.models.User;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** Acceptance test which tests the functionality of the UserService. */
 @TaskanaIntegrationTest
 class UserServiceAccTest {
 
+  @TaskanaInject WorkbasketService workbasketService;
   @TaskanaInject UserService userService;
+  @TaskanaInject TaskanaEngine taskanaEngine;
 
-  protected User createExampleUser(String id) {
-    User user = userService.newUser();
-    user.setId(id);
-    user.setFirstName("Hans");
-    user.setLastName("Georg");
-    user.setFullName("Georg, Hans");
-    user.setLongName("Georg, Hans - (user-10-20)");
-    user.setEmail("hans.georg@web.com");
-    user.setPhone("1234");
-    user.setMobilePhone("01574275632");
-    user.setOrgLevel4("level4");
-    user.setOrgLevel3("level3");
-    user.setOrgLevel2("level2");
-    user.setOrgLevel1("level1");
-    user.setData("ab");
+  private WorkbasketAccessItem createAccessItem(
+      User user, Workbasket workbasket, WorkbasketPermission... permissions) throws Exception {
+    WorkbasketAccessItemBuilder builder =
+        WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+            .accessId(user.getId())
+            .workbasketId(workbasket.getId());
+    for (WorkbasketPermission permission : permissions) {
+      builder.permission(permission);
+    }
 
-    return user;
+    return builder.buildAndStore(workbasketService, "businessadmin");
   }
 
-  @WithAccessId(user = "admin")
-  @BeforeAll
-  void setup() throws Exception {
-    User testuser1 = userService.newUser();
-    testuser1.setId("testuser1");
-    testuser1.setFirstName("Max");
-    testuser1.setLastName("Mustermann");
-    testuser1.setFullName("Max, Mustermann");
-    testuser1.setLongName("Max, Mustermann - (testuser1)");
-    testuser1.setEmail("max.mustermann@web.com");
-    testuser1.setPhone("040-2951854");
-    testuser1.setMobilePhone("015637683197");
-    testuser1.setOrgLevel4("Novatec");
-    testuser1.setOrgLevel3("BPM");
-    testuser1.setOrgLevel2("Human Workflow");
-    testuser1.setOrgLevel1("TASKANA");
-    testuser1.setData("");
-    userService.createUser(testuser1);
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class GetUser {
 
-    User testuser2 = userService.newUser();
-    testuser2.setId("testuser2");
-    testuser2.setFirstName("Elena");
-    testuser2.setLastName("Eifrig");
-    testuser2.setFullName("Elena, Eifrig");
-    testuser2.setLongName("Elena, Eifrig - (testuser2)");
-    testuser2.setEmail("elena.eifrig@web.com");
-    testuser2.setPhone("040-2951854");
-    testuser2.setMobilePhone("015637683197");
-    testuser2.setOrgLevel4("Novatec");
-    testuser2.setOrgLevel3("BPM");
-    testuser2.setOrgLevel2("Human Workflow");
-    testuser2.setOrgLevel1("TASKANA");
-    testuser2.setData("");
-    userService.createUser(testuser2);
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowUserNotFoundException_When_TryingToGetUserWithNonExistingId() {
+      ThrowingCallable callable = () -> userService.getUser("NOT_EXISTING");
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(UserNotFoundException.class)
+          .extracting(UserNotFoundException.class::cast)
+          .extracting(UserNotFoundException::getUserId)
+          .isEqualTo("NOT_EXISTING");
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnUserWithAllFields_When_TryingToGetUserWithIdExisting() throws Exception {
+      final User userToGet =
+          newUser()
+              .id("max-mustermann")
+              .firstName("Max")
+              .lastName("Mustermann")
+              .fullName("Max Mustermann")
+              .longName("Mustermann, Max")
+              .email("max@mustermann.de")
+              .phone("123456798")
+              .mobilePhone("987654321")
+              .orgLevel1("org1")
+              .orgLevel2("org2")
+              .orgLevel3("org3")
+              .orgLevel4("org4")
+              .data("this is some extra data about max")
+              .buildAndStore(userService, "businessadmin");
+
+      User userInDatabase = userService.getUser(userToGet.getId());
+
+      assertThat(userInDatabase).hasNoNullFieldsOrProperties().isEqualTo(userToGet);
+    }
   }
 
-  @WithAccessId(user = "user-1-2")
-  @Test
-  void should_ReturnUserWithAllFields_When_IdExisting() throws Exception {
-    User userInDatabase = userService.getUser("testuser1");
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class CreateUser {
 
-    User userToCompare = userService.newUser();
-    userToCompare.setId("testuser1");
-    userToCompare.setFirstName("Max");
-    userToCompare.setLastName("Mustermann");
-    userToCompare.setFullName("Max, Mustermann");
-    userToCompare.setLongName("Max, Mustermann - (testuser1)");
-    userToCompare.setEmail("max.mustermann@web.com");
-    userToCompare.setPhone("040-2951854");
-    userToCompare.setMobilePhone("015637683197");
-    userToCompare.setOrgLevel4("Novatec");
-    userToCompare.setOrgLevel3("BPM");
-    userToCompare.setOrgLevel2("Human Workflow");
-    userToCompare.setOrgLevel1("TASKANA");
-    userToCompare.setData("");
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_InsertUserInDatabase_When_CreatingUser() throws Exception {
+      User userToCreate = userService.newUser();
+      userToCreate.setId("anton");
+      userToCreate.setFirstName("Anton");
+      userToCreate.setLastName("Miller");
+      userService.createUser(userToCreate);
 
-    assertThat(userInDatabase).hasNoNullFieldsOrProperties().isEqualTo(userToCompare);
+      User userInDatabase = userService.getUser(userToCreate.getId());
+      assertThat(userToCreate).isNotSameAs(userInDatabase).isEqualTo(userInDatabase);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_SetTheLongAndFullNameAccordingToRules_When_CreatingUserWithThoseFieldsEmpty()
+        throws Exception {
+      User userToCreate = userService.newUser();
+      userToCreate.setId("martina");
+      userToCreate.setFirstName("Martina");
+      userToCreate.setLastName("Schmidt");
+
+      User createdUser = userService.createUser(userToCreate);
+
+      assertThat(createdUser.getLongName()).isEqualTo("Schmidt, Martina - (martina)");
+      assertThat(createdUser.getFullName()).isEqualTo("Schmidt, Martina");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ThrowInvalidArgumentException_When_TryingToCreateUserWithFirstNameNull() {
+      User userToCreate = userService.newUser();
+      userToCreate.setId("user-1");
+      userToCreate.setFirstName(null);
+      userToCreate.setLastName("Schmidt");
+
+      ThrowingCallable callable = () -> userService.createUser(userToCreate);
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(InvalidArgumentException.class)
+          .hasMessage("First and last name of User must be set or empty.");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ThrowInvalidArgumentException_When_TryingToCreateUserWithLastNameNull() {
+      User userToCreate = userService.newUser();
+      userToCreate.setId("user-2");
+      userToCreate.setFirstName("User 1");
+      userToCreate.setLastName(null);
+
+      ThrowingCallable callable = () -> userService.createUser(userToCreate);
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(InvalidArgumentException.class)
+          .hasMessage("First and last name of User must be set or empty.");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @TestFactory
+    Stream<DynamicTest> should_ThrowInvalidArgumentException_When_TryingToCreateUserWithNotSetId() {
+      Iterator<String> iterator = Arrays.asList("", null).iterator();
+
+      ThrowingConsumer<String> test =
+          userId -> {
+            User userToCreate = userService.newUser();
+            userToCreate.setFirstName("firstName");
+            userToCreate.setLastName("lastName");
+            userToCreate.setId(userId);
+
+            ThrowingCallable callable = () -> userService.createUser(userToCreate);
+
+            assertThatThrownBy(callable)
+                .isInstanceOf(InvalidArgumentException.class)
+                .hasMessage("UserId must not be empty when creating User.");
+          };
+
+      return DynamicTest.stream(iterator, c -> "for " + c, test);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ThrowUserAlreadyExistException_When_TryingToCreateUserWithExistingId()
+        throws Exception {
+      User existingUser = randomTestUser().buildAndStore(userService);
+
+      ThrowingCallable callable =
+          () -> {
+            User userToCreate = userService.newUser();
+            userToCreate.setId(existingUser.getId());
+            userToCreate.setFirstName("firstName");
+            userToCreate.setLastName("lastName");
+
+            userService.createUser(userToCreate);
+          };
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(UserAlreadyExistException.class)
+          .extracting(UserAlreadyExistException.class::cast)
+          .extracting(UserAlreadyExistException::getUserId)
+          .isEqualTo(existingUser.getId());
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowNotAuthorizedException_When_TryingToCreateUserWithoutAdminRole() {
+      User userToCreate = userService.newUser();
+      userToCreate.setId("user-3");
+      userToCreate.setFirstName("firstName");
+      userToCreate.setLastName("lastName");
+      ThrowingCallable callable = () -> userService.createUser(userToCreate);
+
+      MismatchedRoleException ex = catchThrowableOfType(callable, MismatchedRoleException.class);
+      assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
+      assertThat(ex.getRoles())
+          .isEqualTo(new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN});
+    }
   }
 
-  @WithAccessId(user = "user-1-2")
-  @Test
-  void should_ThrowUserNotFoundException_When_TryingToGetUserWithNonExistingId() {
-    ThrowingCallable callable = () -> userService.getUser("NOT_EXISTING");
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class UpdateUser {
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(UserNotFoundException.class)
-        .hasFieldOrPropertyWithValue("userId", "NOT_EXISTING")
-        .hasMessage("User with id 'NOT_EXISTING' was not found.");
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_UpdateUserInDatabase_When_IdExisting() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+
+      userToUpdate.setFirstName("Anton");
+      userService.updateUser(userToUpdate);
+
+      User userInDatabase = userService.getUser(userToUpdate.getId());
+      assertThat(userInDatabase).isNotSameAs(userToUpdate).isEqualTo(userToUpdate);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowNotAuthorizedException_When_TryingToUpdateUserWithNoAdminRole()
+        throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService, "businessadmin");
+
+      ThrowingCallable callable =
+          () -> {
+            userToUpdate.setLastName("updated last name");
+            userService.updateUser(userToUpdate);
+          };
+
+      MismatchedRoleException ex = catchThrowableOfType(callable, MismatchedRoleException.class);
+      assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
+      assertThat(ex.getRoles())
+          .isEqualTo(new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN});
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ThrowUserNotFoundException_When_TryingToUpdateUserWithNonExistingId() {
+      User userToUpdate = userService.newUser();
+      userToUpdate.setId("user-4");
+      userToUpdate.setFirstName("firstName");
+      userToUpdate.setLastName("lastName");
+
+      ThrowingCallable callable = () -> userService.updateUser(userToUpdate);
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(UserNotFoundException.class)
+          .extracting(UserNotFoundException.class::cast)
+          .extracting(UserNotFoundException::getUserId)
+          .isEqualTo(userToUpdate.getId());
+    }
   }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_InsertUserInDatabase_When_CreatingUser() throws Exception {
-    User userToCreate = createExampleUser("user-10-20");
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class DeleteUser {
 
-    userService.createUser(userToCreate);
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_DeleteUserFromDatabase_When_IdExisting() throws Exception {
+      User userToDelete = randomTestUser().buildAndStore(userService);
 
-    User userInDatabse = userService.getUser(userToCreate.getId());
+      userService.deleteUser(userToDelete.getId());
 
-    assertThat(userToCreate)
-        .hasNoNullFieldsOrProperties()
-        .isNotSameAs(userInDatabse)
-        .isEqualTo(userInDatabse);
+      // Validate that user is indeed deleted
+      ThrowingCallable callable = () -> userService.getUser(userToDelete.getId());
+      assertThatThrownBy(callable)
+          .isInstanceOf(UserNotFoundException.class)
+          .extracting(UserNotFoundException.class::cast)
+          .extracting(UserNotFoundException::getUserId)
+          .isEqualTo(userToDelete.getId());
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ThrowUserNotFoundException_When_TryingToDeleteUserWithNonExistingId() {
+      ThrowingCallable callable = () -> userService.deleteUser("NOT_EXISTING");
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(UserNotFoundException.class)
+          .extracting(UserNotFoundException.class::cast)
+          .extracting(UserNotFoundException::getUserId)
+          .isEqualTo("NOT_EXISTING");
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowNotAuthorizedException_When_TryingToDeleteUserWithNoAdminRole()
+        throws Exception {
+      User userToDelete = randomTestUser().buildAndStore(userService, "businessadmin");
+
+      ThrowingCallable callable = () -> userService.deleteUser(userToDelete.getId());
+
+      MismatchedRoleException ex = catchThrowableOfType(callable, MismatchedRoleException.class);
+      assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
+      assertThat(ex.getRoles())
+          .isEqualTo(new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN});
+    }
   }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_SetTheLongAndFullNameAccordingToRules_When_CreatingUserWithThoseFieldsEmpty()
-      throws Exception {
-    User userToCreate = createExampleUser("user-10-21");
-    userToCreate.setLongName(null);
-    userToCreate.setFullName(null);
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class DynamicDomainComputation {
 
-    String fullName = userToCreate.getLastName() + ", " + userToCreate.getFirstName();
-    String longName =
-        userToCreate.getLastName()
-            + ", "
-            + userToCreate.getFirstName()
-            + " - ("
-            + userToCreate.getId()
-            + ")";
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnEmptyDomains_When_UserHasInsufficientMinimalPermissionsToAssignDomains()
+        throws Exception {
+      User user = randomTestUser().buildAndStore(userService, "businessadmin");
+      Workbasket workbasket =
+          defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(user, workbasket, WorkbasketPermission.READ);
 
-    User createdUser = userService.createUser(userToCreate);
+      User userInDatabase = userService.getUser(user.getId());
 
-    assertThat(createdUser.getLongName()).isEqualTo(longName);
-    assertThat(createdUser.getFullName()).isEqualTo(fullName);
-  }
+      assertThat(userInDatabase.getDomains()).isEmpty();
+    }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ThrowInvalidArgumentException_When_TryingToCreateUserWithFirstOrLastNameNull()
-      throws Exception {
-    User userToCreate = createExampleUser("user-10-20");
-    userToCreate.setFirstName(null);
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnEmptyDomains_When_UserHasNoPermissions() throws Exception {
+      User user = randomTestUser().buildAndStore(userService, "businessadmin");
+      defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
 
-    ThrowingCallable callable = () -> userService.createUser(userToCreate);
+      User userInDatabase = userService.getUser(user.getId());
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(InvalidArgumentException.class)
-        .hasMessage("First and last name of User must be set or empty.");
-  }
+      assertThat(userInDatabase.getDomains()).isEmpty();
+    }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ThrowInvalidArgumentException_When_TryingToCreateUserWithLastNameNull() {
-    User userToCreate = createExampleUser("user-10-20");
-    userToCreate.setLastName(null);
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnOneDomain_When_UserHasSufficientMinimalPermissionsToAssignDomains()
+        throws Exception {
+      User user = randomTestUser().buildAndStore(userService, "businessadmin");
+      Workbasket workbasket =
+          defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(user, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
 
-    ThrowingCallable callable = () -> userService.createUser(userToCreate);
+      User userInDatabase = userService.getUser(user.getId());
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(InvalidArgumentException.class)
-        .hasMessage("First and last name of User must be set or empty.");
-  }
+      assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
+    }
 
-  @WithAccessId(user = "admin")
-  @TestFactory
-  Stream<DynamicTest> should_ThrowInvalidArgumentException_When_TryingToCreateUserWithNotSetId()
-      throws Exception {
-    Iterator<String> iterator = Arrays.asList("", null).iterator();
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnEmptyDomains_When_UserHasSufficientPermissionsWhichThenGetRevoked()
+        throws Exception {
+      User user = randomTestUser().buildAndStore(userService, "businessadmin");
+      Workbasket workbasket =
+          defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      WorkbasketAccessItem wai =
+          createAccessItem(user, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
 
-    ThrowingConsumer<String> test =
-        userId -> {
-          User userToCreate = createExampleUser("user-10-20");
-          userToCreate.setId(userId);
+      User userInDatabase = userService.getUser(user.getId());
 
-          ThrowingCallable callable = () -> userService.createUser(userToCreate);
+      assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
 
-          assertThatThrownBy(callable)
-              .isInstanceOf(InvalidArgumentException.class)
-              .hasMessage("UserId must not be empty when creating User.");
-        };
+      // then permission gets revoked
 
-    return DynamicTest.stream(iterator, c -> "for " + c, test);
-  }
+      wai.setPermission(WorkbasketPermission.OPEN, false);
+      taskanaEngine.runAsAdmin(wrap(() -> workbasketService.updateWorkbasketAccessItem(wai)));
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ThrowUserAlreadyExistException_When_TryingToCreateUserWithExistingId() {
-    User userToCreate = createExampleUser("testuser1"); // existing userId
+      userInDatabase = userService.getUser(user.getId());
 
-    ThrowingCallable callable = () -> userService.createUser(userToCreate);
+      assertThat(userInDatabase.getDomains()).isEmpty();
+    }
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(UserAlreadyExistException.class)
-        .hasFieldOrPropertyWithValue("userId", "testuser1")
-        .hasMessage("User with id 'testuser1' already exists.");
-  }
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnMultipleDomains_When_UserHasSufficientMinimalPermissionsForMultipleDomains()
+        throws Exception {
+      User user = randomTestUser().buildAndStore(userService, "businessadmin");
+      Workbasket workbasket1 =
+          defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      Workbasket workbasket2 =
+          defaultTestWorkbasket()
+              .domain("DOMAIN_B")
+              .buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(user, workbasket1, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+      createAccessItem(user, workbasket2, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
 
-  @WithAccessId(user = "user-1-2")
-  @Test
-  void should_ThrowNotAuthorizedException_When_TryingToCreateUserWithoutAdminRole() {
-    User userToCreate = createExampleUser("user-10-22");
+      User userInDatabase = userService.getUser(user.getId());
 
-    ThrowingCallable callable = () -> userService.createUser(userToCreate);
+      assertThat(userInDatabase.getDomains())
+          .containsExactlyInAnyOrder(workbasket1.getDomain(), workbasket2.getDomain());
+    }
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(MismatchedRoleException.class)
-        .hasFieldOrPropertyWithValue("currentUserId", "user-1-2")
-        .hasFieldOrPropertyWithValue(
-            "roles", new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN})
-        .hasMessage(
-            "Not authorized. The current user 'user-1-2' is not member of role(s) "
-                + "'[BUSINESS_ADMIN, ADMIN]'.");
-  }
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    class DifferentMinimalPermissionsToAssignDomains implements TaskanaEngineConfigurationModifier {
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_UpdateUserInDatabase_When_IdExisting() throws Exception {
-    User userToUpdate = createExampleUser("testuser1"); // existing userId
+      @TaskanaInject UserService userService;
+      @TaskanaInject WorkbasketService workbasketService;
 
-    userService.updateUser(userToUpdate);
+      @Override
+      public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+        taskanaEngineConfiguration.setMinimalPermissionsToAssignDomains(
+            List.of(WorkbasketPermission.APPEND));
+      }
 
-    User userInDatabase = userService.getUser("testuser1");
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnEmptyDomains_When_UserHasInsufficientMinimalPermissionsToAssignDomains()
+          throws Exception {
+        User user = randomTestUser().buildAndStore(userService, "businessadmin");
+        Workbasket workbasket =
+            defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+        createAccessItem(user, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
 
-    assertThat(userToUpdate).isNotSameAs(userInDatabase).isEqualTo(userInDatabase);
-  }
+        User userInDatabase = userService.getUser(user.getId());
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ThrowUserNotFoundException_When_TryingToUpdateUserWithNonExistingId() {
-    User userToUpdate = createExampleUser("NOT_EXISTING");
+        assertThat(userInDatabase.getDomains()).isEmpty();
+      }
 
-    ThrowingCallable callable = () -> userService.updateUser(userToUpdate);
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnOneDomain_When_UserHasSufficientMinimalPermissionsToAssignDomains()
+          throws Exception {
+        User user = randomTestUser().buildAndStore(userService, "businessadmin");
+        Workbasket workbasket =
+            defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+        createAccessItem(user, workbasket, WorkbasketPermission.APPEND);
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(UserNotFoundException.class)
-        .hasFieldOrPropertyWithValue("userId", "NOT_EXISTING")
-        .hasMessage("User with id 'NOT_EXISTING' was not found.");
-  }
+        User userInDatabase = userService.getUser(user.getId());
 
-  @WithAccessId(user = "user-1-2")
-  @Test
-  void should_ThrowNotAuthorizedException_When_TryingToUpdateUserWithNoAdminRole() {
-    User userToUpdate = createExampleUser("testuser1"); // existing userId
+        assertThat(userInDatabase.getDomains()).isEmpty();
+      }
+    }
 
-    ThrowingCallable callable = () -> userService.updateUser(userToUpdate);
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    class PropertyMinimalPermissionsToAssignDomainsIsNotSet
+        implements TaskanaEngineConfigurationModifier {
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(MismatchedRoleException.class)
-        .hasFieldOrPropertyWithValue("currentUserId", "user-1-2")
-        .hasFieldOrPropertyWithValue(
-            "roles", new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN})
-        .hasMessage(
-            "Not authorized. The current user 'user-1-2' is not member of role(s) "
-                + "'[BUSINESS_ADMIN, ADMIN]'.");
-  }
+      @TaskanaInject UserService userService;
+      @TaskanaInject WorkbasketService workbasketService;
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_DeleteUserFromDatabase_When_IdExisting() throws Exception {
-    String id = "testuser2";
-    userService.getUser(id); // User existing
+      @Override
+      public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+        taskanaEngineConfiguration.setMinimalPermissionsToAssignDomains(null);
+      }
 
-    userService.deleteUser(id);
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnEmptyDomains_When_PropertyIsNotSet() throws Exception {
+        User user = randomTestUser().buildAndStore(userService, "businessadmin");
+        Workbasket workbasket =
+            defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+        createAccessItem(user, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
 
-    ThrowingCallable callable = () -> userService.getUser(id); // User deleted
+        User userInDatabase = userService.getUser(user.getId());
 
-    assertThatThrownBy(callable)
-        .isInstanceOf(UserNotFoundException.class)
-        .hasFieldOrPropertyWithValue("userId", "testuser2")
-        .hasMessage("User with id 'testuser2' was not found.");
-  }
-
-  @WithAccessId(user = "admin")
-  @Test
-  void should_ThrowUserNotFoundException_When_TryingToDeleteUserWithNonExistingId() {
-    ThrowingCallable callable = () -> userService.deleteUser("NOT_EXISTING");
-
-    assertThatThrownBy(callable)
-        .isInstanceOf(UserNotFoundException.class)
-        .hasFieldOrPropertyWithValue("userId", "NOT_EXISTING")
-        .hasMessage("User with id 'NOT_EXISTING' was not found.");
-  }
-
-  @WithAccessId(user = "user-1-2")
-  @Test
-  void should_ThrowNotAuthorizedException_When_TryingToDeleteUserWithNoAdminRole() {
-    ThrowingCallable callable = () -> userService.deleteUser("testuser1");
-
-    assertThatThrownBy(callable)
-        .isInstanceOf(MismatchedRoleException.class)
-        .hasFieldOrPropertyWithValue("currentUserId", "user-1-2")
-        .hasFieldOrPropertyWithValue(
-            "roles", new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN})
-        .hasMessage(
-            "Not authorized. The current user 'user-1-2' is not member of role(s) "
-                + "'[BUSINESS_ADMIN, ADMIN]'.");
+        assertThat(userInDatabase.getDomains()).isEmpty();
+      }
+    }
   }
 }

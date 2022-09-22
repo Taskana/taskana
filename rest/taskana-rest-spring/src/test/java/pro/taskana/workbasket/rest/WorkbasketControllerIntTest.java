@@ -6,8 +6,8 @@ import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Optional;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +51,13 @@ class WorkbasketControllerIntTest {
 
     ResponseEntity<WorkbasketRepresentationModel> response =
         TEMPLATE.exchange(
-            URLDecoder.decode(url, "UTF-8"),
+            URLDecoder.decode(url, StandardCharsets.UTF_8),
             HttpMethod.GET,
             auth,
             ParameterizedTypeReference.forType(WorkbasketRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
-    assertThat(response.getBody().getLink(IanaLinkRelations.SELF))
-        .isEqualTo(Optional.of(Link.of(url)));
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).contains(Link.of(url));
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
   }
 

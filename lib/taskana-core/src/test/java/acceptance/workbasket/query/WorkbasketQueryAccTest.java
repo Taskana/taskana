@@ -20,10 +20,6 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @ExtendWith(JaasExtension.class)
 class WorkbasketQueryAccTest extends AbstractAccTest {
 
-  WorkbasketQueryAccTest() {
-    super();
-  }
-
   @Test
   void testQueryWorkbasketByUnauthenticated() {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
@@ -35,8 +31,8 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
           workbasketService
               .createWorkbasketQuery()
               .nameLike("%")
-              .accessIdsHavePermission(
-                  WorkbasketPermission.TRANSFER, "teamlead-1", GROUP_1_DN, GROUP_2_DN)
+              .accessIdsHavePermissions(
+                  List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -54,8 +50,8 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
           workbasketService
               .createWorkbasketQuery()
               .nameLike("%")
-              .accessIdsHavePermission(
-                  WorkbasketPermission.TRANSFER, "teamlead-1", GROUP_1_DN, GROUP_2_DN)
+              .accessIdsHavePermissions(
+                  List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
               .list();
         };
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
@@ -73,8 +69,8 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
         workbasketService
             .createWorkbasketQuery()
             .nameLike("%")
-            .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead-1", GROUP_1_DN, GROUP_2_DN)
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
             .list();
 
     assertThat(results).hasSize(13);
@@ -92,8 +88,8 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
         workbasketService
             .createWorkbasketQuery()
             .nameLike("%")
-            .accessIdsHavePermission(
-                WorkbasketPermission.TRANSFER, "teamlead-1", GROUP_1_DN, GROUP_2_DN)
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
             .list();
 
     assertThat(results).hasSize(13);

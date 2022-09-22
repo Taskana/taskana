@@ -1,6 +1,8 @@
 package pro.taskana.user.internal.models;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import pro.taskana.user.api.models.User;
 
@@ -18,6 +20,7 @@ public class UserImpl implements User {
   private String orgLevel2;
   private String orgLevel1;
   private String data;
+  private Set<String> domains = new HashSet<>();
 
   public UserImpl() {}
 
@@ -35,6 +38,7 @@ public class UserImpl implements User {
     this.orgLevel2 = copyFrom.orgLevel2;
     this.orgLevel1 = copyFrom.orgLevel1;
     this.data = copyFrom.data;
+    this.domains = copyFrom.domains;
   }
 
   @Override
@@ -168,6 +172,15 @@ public class UserImpl implements User {
   }
 
   @Override
+  public Set<String> getDomains() {
+    return domains;
+  }
+
+  public void setDomains(Set<String> domains) {
+    this.domains = domains;
+  }
+
+  @Override
   public UserImpl copy() {
     return new UserImpl(this);
   }
@@ -187,7 +200,8 @@ public class UserImpl implements User {
         orgLevel3,
         orgLevel2,
         orgLevel1,
-        data);
+        data,
+        domains);
   }
 
   @Override
@@ -214,7 +228,8 @@ public class UserImpl implements User {
         && Objects.equals(orgLevel3, other.orgLevel3)
         && Objects.equals(orgLevel2, other.orgLevel2)
         && Objects.equals(orgLevel1, other.orgLevel1)
-        && Objects.equals(data, other.data);
+        && Objects.equals(data, other.data)
+        && Objects.equals(domains, other.domains);
   }
 
   @Override
@@ -245,6 +260,8 @@ public class UserImpl implements User {
         + orgLevel1
         + ", data="
         + data
+        + ", domains="
+        + domains
         + "]";
   }
 }
