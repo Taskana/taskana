@@ -75,7 +75,7 @@
     <version.camunda.dmn>7.17.0</version.camunda.dmn>
 
     <!-- java ee dependencies -->
-    <version.resteasy>5.0.1.Final</version.resteasy>
+    <version.resteasy>6.2.0.Final</version.resteasy>
     <version.thorntail>2.7.0.Final</version.thorntail>
     <version.javaee-api>8.0.1</version.javaee-api>
     <version.javax.servlet>4.0.1</version.javax.servlet>
