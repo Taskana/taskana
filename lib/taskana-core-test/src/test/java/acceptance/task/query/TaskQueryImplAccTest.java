@@ -7,7 +7,6 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
-import java.security.PrivilegedActionException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -81,15 +80,14 @@ class TaskQueryImplAccTest {
         .workbasketSummary(wb);
   }
 
-  private WorkbasketSummary createWorkbasketWithPermission() throws PrivilegedActionException {
+  private WorkbasketSummary createWorkbasketWithPermission() throws Exception {
     WorkbasketSummary workbasketSummary =
         defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
     persistPermission(workbasketSummary);
     return workbasketSummary;
   }
 
-  private void persistPermission(WorkbasketSummary workbasketSummary)
-      throws PrivilegedActionException {
+  private void persistPermission(WorkbasketSummary workbasketSummary) throws Exception {
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .workbasketId(workbasketSummary.getId())
         .accessId(currentUserContext.getUserid())

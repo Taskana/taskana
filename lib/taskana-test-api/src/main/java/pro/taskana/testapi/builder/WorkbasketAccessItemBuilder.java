@@ -1,12 +1,7 @@
 package pro.taskana.testapi.builder;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import javax.security.auth.Subject;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
@@ -14,7 +9,8 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
-public class WorkbasketAccessItemBuilder {
+public class WorkbasketAccessItemBuilder
+    implements EntityBuilder<WorkbasketAccessItem, WorkbasketService> {
 
   WorkbasketAccessItemImpl testWorkbasketAccessItem = new WorkbasketAccessItemImpl();
 
@@ -48,19 +44,10 @@ public class WorkbasketAccessItemBuilder {
     return this;
   }
 
+  @Override
   public WorkbasketAccessItem buildAndStore(WorkbasketService workbasketService)
       throws InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
           WorkbasketNotFoundException, NotAuthorizedException {
     return workbasketService.createWorkbasketAccessItem(testWorkbasketAccessItem);
-  }
-
-  public WorkbasketAccessItem buildAndStore(WorkbasketService workbasketService, String userId)
-      throws PrivilegedActionException {
-    Subject subject = new Subject();
-    subject.getPrincipals().add(new UserPrincipal(userId));
-    PrivilegedExceptionAction<WorkbasketAccessItem> performBuildAndStore =
-        () -> buildAndStore(workbasketService);
-
-    return Subject.doAs(subject, performBuildAndStore);
   }
 }

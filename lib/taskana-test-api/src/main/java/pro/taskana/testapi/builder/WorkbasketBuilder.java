@@ -1,14 +1,11 @@
 package pro.taskana.testapi.builder;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
-import javax.security.auth.Subject;
 
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.security.UserPrincipal;
+import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -17,7 +14,8 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-public class WorkbasketBuilder {
+public class WorkbasketBuilder
+    implements SummaryEntityBuilder<WorkbasketSummary, Workbasket, WorkbasketService> {
 
   private final WorkbasketTestImpl testWorkbasket = new WorkbasketTestImpl();
 
@@ -108,6 +106,12 @@ public class WorkbasketBuilder {
     return this;
   }
 
+  @Override
+  public WorkbasketSummary entityToSummary(Workbasket workbasket) {
+    return workbasket.asSummary();
+  }
+
+  @Override
   public Workbasket buildAndStore(WorkbasketService workbasketService)
       throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
           NotAuthorizedException, WorkbasketNotFoundException {
@@ -117,26 +121,5 @@ public class WorkbasketBuilder {
     } finally {
       testWorkbasket.setId(null);
     }
-  }
-
-  public Workbasket buildAndStore(WorkbasketService workbasketService, String userId)
-      throws PrivilegedActionException {
-    Subject subject = new Subject();
-    subject.getPrincipals().add(new UserPrincipal(userId));
-    PrivilegedExceptionAction<Workbasket> performBuildAndStore =
-        () -> buildAndStore(workbasketService);
-
-    return Subject.doAs(subject, performBuildAndStore);
-  }
-
-  public WorkbasketSummary buildAndStoreAsSummary(WorkbasketService workbasketService)
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, WorkbasketNotFoundException,
-          DomainNotFoundException, NotAuthorizedException {
-    return buildAndStore(workbasketService).asSummary();
-  }
-
-  public WorkbasketSummary buildAndStoreAsSummary(
-      WorkbasketService workbasketService, String userId) throws PrivilegedActionException {
-    return buildAndStore(workbasketService, userId).asSummary();
   }
 }

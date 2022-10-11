@@ -1,9 +1,6 @@
 package pro.taskana.testapi.builder;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
-import javax.security.auth.Subject;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
@@ -15,9 +12,10 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.security.UserPrincipal;
+import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
 
-public class ClassificationBuilder {
+public class ClassificationBuilder
+    implements SummaryEntityBuilder<ClassificationSummary, Classification, ClassificationService> {
 
   private final ClassificationTestImpl testClassification = new ClassificationTestImpl();
 
@@ -113,6 +111,12 @@ public class ClassificationBuilder {
     return this;
   }
 
+  @Override
+  public ClassificationSummary entityToSummary(Classification classification) {
+    return classification.asSummary();
+  }
+
+  @Override
   public Classification buildAndStore(ClassificationService classificationService)
       throws InvalidArgumentException, ClassificationAlreadyExistException, DomainNotFoundException,
           MalformedServiceLevelException, NotAuthorizedException, ClassificationNotFoundException {
@@ -122,26 +126,5 @@ public class ClassificationBuilder {
     } finally {
       testClassification.setId(null);
     }
-  }
-
-  public Classification buildAndStore(ClassificationService classificationService, String userId)
-      throws PrivilegedActionException {
-    Subject subject = new Subject();
-    subject.getPrincipals().add(new UserPrincipal(userId));
-    PrivilegedExceptionAction<Classification> performBuildAndStore =
-        () -> buildAndStore(classificationService);
-
-    return Subject.doAs(subject, performBuildAndStore);
-  }
-
-  public ClassificationSummary buildAndStoreAsSummary(ClassificationService classificationService)
-      throws InvalidArgumentException, ClassificationAlreadyExistException, DomainNotFoundException,
-          MalformedServiceLevelException, NotAuthorizedException, ClassificationNotFoundException {
-    return buildAndStore(classificationService).asSummary();
-  }
-
-  public ClassificationSummary buildAndStoreAsSummary(
-      ClassificationService classificationService, String userId) throws PrivilegedActionException {
-    return buildAndStore(classificationService, userId).asSummary();
   }
 }
