@@ -1,17 +1,13 @@
 package pro.taskana.testapi.builder;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Map;
-import javax.security.auth.Subject;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;
@@ -25,10 +21,11 @@ import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-public class TaskBuilder {
+public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, TaskService> {
 
   private final TaskTestImpl testTask = new TaskTestImpl();
 
@@ -210,6 +207,12 @@ public class TaskBuilder {
     return this;
   }
 
+  @Override
+  public TaskSummary entityToSummary(Task entity) {
+    return entity.asSummary();
+  }
+
+  @Override
   public Task buildAndStore(TaskService taskService)
       throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
           ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,
@@ -221,26 +224,5 @@ public class TaskBuilder {
       testTask.setId(null);
       testTask.setExternalId(null);
     }
-  }
-
-  public Task buildAndStore(TaskService taskService, String userId)
-      throws PrivilegedActionException {
-    Subject subject = new Subject();
-    subject.getPrincipals().add(new UserPrincipal(userId));
-    PrivilegedExceptionAction<Task> performBuildAndStore = () -> buildAndStore(taskService);
-
-    return Subject.doAs(subject, performBuildAndStore);
-  }
-
-  public TaskSummary buildAndStoreAsSummary(TaskService taskService)
-      throws TaskAlreadyExistException, InvalidArgumentException, TaskNotFoundException,
-          WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          AttachmentPersistenceException, ObjectReferencePersistenceException {
-    return buildAndStore(taskService).asSummary();
-  }
-
-  public TaskSummary buildAndStoreAsSummary(TaskService taskService, String userId)
-      throws PrivilegedActionException {
-    return buildAndStore(taskService, userId).asSummary();
   }
 }

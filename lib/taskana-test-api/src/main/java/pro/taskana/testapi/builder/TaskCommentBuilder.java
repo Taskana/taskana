@@ -1,19 +1,15 @@
 package pro.taskana.testapi.builder;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
-import javax.security.auth.Subject;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
-import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 
-public class TaskCommentBuilder {
+public class TaskCommentBuilder implements EntityBuilder<TaskComment, TaskService> {
 
   private final TaskCommentTestImpl testTaskComment = new TaskCommentTestImpl();
 
@@ -51,6 +47,7 @@ public class TaskCommentBuilder {
     return this;
   }
 
+  @Override
   public TaskComment buildAndStore(TaskService taskService)
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException,
           TaskCommentNotFoundException {
@@ -60,14 +57,5 @@ public class TaskCommentBuilder {
     } finally {
       testTaskComment.setId(null);
     }
-  }
-
-  public TaskComment buildAndStore(TaskService taskService, String userId)
-      throws PrivilegedActionException {
-    Subject subject = new Subject();
-    subject.getPrincipals().add(new UserPrincipal(userId));
-    PrivilegedExceptionAction<TaskComment> performBuildAndStore = () -> buildAndStore(taskService);
-
-    return Subject.doAs(subject, performBuildAndStore);
   }
 }
