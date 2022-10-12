@@ -34,7 +34,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   private final List<String> orderBy;
   private final List<String> orderColumns;
   private WorkbasketQueryColumnName columnName;
-  private String[] accessId;
+  private String[] accessIds;
   private String[] idIn;
   private WorkbasketPermission[] permissions;
   private String[] nameIn;
@@ -180,8 +180,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
     // set up permissions and ids
     this.permissions = permissions.toArray(WorkbasketPermission[]::new);
-    this.accessId = accessIds;
-    lowercaseAccessIds(this.accessId);
+    this.accessIds = accessIds;
+    lowercaseAccessIds(this.accessIds);
 
     return this;
   }
@@ -423,8 +423,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
   }
 
-  public String[] getAccessId() {
-    return accessId;
+  public String[] getAccessIds() {
+    return accessIds;
   }
 
   public WorkbasketPermission[] getPermissions() {
@@ -618,25 +618,25 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       joinWithAccessList = true;
       checkReadPermission = true;
       if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)
-          && accessId == null) {
+          && accessIds == null) {
         checkReadPermission = false;
         joinWithAccessList = false;
       } else if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.BUSINESS_ADMIN)
           && !usedToAugmentTasks) {
         checkReadPermission = false;
-        if (accessId == null && (permissions == null || permissions.length == 0)) {
+        if (accessIds == null && (permissions == null || permissions.length == 0)) {
           joinWithAccessList = false;
         }
       }
-      // might already be set by accessIdsHavePermission
-      if (this.accessId == null) {
+      // might already be set by accessIdsHavePermissions
+      if (this.accessIds == null) {
         String[] accessIds = new String[0];
         List<String> ucAccessIds = taskanaEngine.getEngine().getCurrentUserContext().getAccessIds();
         if (!ucAccessIds.isEmpty()) {
           accessIds = ucAccessIds.toArray(accessIds);
         }
-        this.accessId = accessIds;
-        lowercaseAccessIds(this.accessId);
+        this.accessIds = accessIds;
+        lowercaseAccessIds(this.accessIds);
       }
     }
   }
@@ -654,7 +654,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     return "WorkbasketQueryImpl [columnName="
         + columnName
         + ", accessId="
-        + Arrays.toString(accessId)
+        + Arrays.toString(accessIds)
         + ", idIn="
         + Arrays.toString(idIn)
         + ", permission="

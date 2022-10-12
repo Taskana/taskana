@@ -27,7 +27,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoRefreshJob.class);
   private final SqlConnectionRunner sqlConnectionRunner;
-  private RefreshUserPostprocessorManager refreshUserPostprocessorManager;
+  private final RefreshUserPostprocessorManager refreshUserPostprocessorManager;
 
   public UserInfoRefreshJob(TaskanaEngine taskanaEngine) {
     this(taskanaEngine, null, null);
@@ -77,7 +77,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
               .map(user -> refreshUserPostprocessorManager.processUserAfterRefresh(user))
               .collect(Collectors.toList());
       addExistingConfigurationDataToUsers(usersAfterProcessing);
-      clearExistingUsers();
+      clearExistingUsersAndGroups();
       insertNewUsers(usersAfterProcessing);
 
       LOGGER.info("Job to refresh all user info has finished.");
@@ -87,13 +87,19 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     }
   }
 
-  private void clearExistingUsers() {
+  private void clearExistingUsersAndGroups() {
 
     sqlConnectionRunner.runWithConnection(
         connection -> {
-          String sql = "DELETE FROM USER_INFO";
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Trying to delete all users and groups");
+          }
+          String sql = "DELETE FROM USER_INFO; DELETE FROM GROUP_INFO";
           PreparedStatement statement = connection.prepareStatement(sql);
           statement.execute();
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Successfully deleted all users and groups");
+          }
 
           if (!connection.getAutoCommit()) {
             connection.commit();
@@ -132,7 +138,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
               if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Trying to set userData {} for user {}", userData, user);
               }
-              user.setData(taskanaEngineImpl.getUserService().getUser(user.getId()).getData());
+              user.setData(userData);
               if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Successfully set userData {} for user {}", userData, user);
               }

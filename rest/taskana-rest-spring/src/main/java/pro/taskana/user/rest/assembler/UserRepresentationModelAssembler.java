@@ -19,6 +19,7 @@ public class UserRepresentationModelAssembler
   public UserRepresentationModel toModel(User entity) {
     UserRepresentationModel repModel = new UserRepresentationModel();
     repModel.setUserId(entity.getId());
+    repModel.setGroups(entity.getGroups());
     repModel.setFirstName(entity.getFirstName());
     repModel.setLastName(entity.getLastName());
     repModel.setFullName(entity.getFullName());
@@ -38,6 +39,7 @@ public class UserRepresentationModelAssembler
   public User toEntityModel(UserRepresentationModel repModel) {
     UserImpl user = new UserImpl();
     user.setId(repModel.getUserId());
+    user.setGroups(repModel.getGroups());
     user.setFirstName(repModel.getFirstName());
     user.setLastName(repModel.getLastName());
     user.setFullName(repModel.getFullName());

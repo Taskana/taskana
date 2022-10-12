@@ -74,8 +74,10 @@ public interface UserService {
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
    *     {@linkplain User#getId() id} inside the database
+   * @throws InvalidArgumentException if some fields are not set properly
    */
-  User updateUser(User userToUpdate) throws UserNotFoundException, NotAuthorizedException;
+  User updateUser(User userToUpdate)
+      throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException;
 
   /**
    * Deletes a {@linkplain User}.

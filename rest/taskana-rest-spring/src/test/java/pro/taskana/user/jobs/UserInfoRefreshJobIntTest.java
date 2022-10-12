@@ -1,12 +1,16 @@
 package pro.taskana.user.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -16,13 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.rest.ldap.LdapClient;
-import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
-import pro.taskana.user.internal.models.UserImpl;
 
 @TaskanaSpringBootTest
 @ExtendWith(JaasExtension.class)
@@ -32,18 +34,13 @@ class UserInfoRefreshJobIntTest {
   TaskanaEngine taskanaEngine;
   UserService userService;
   LdapClient ldapClient;
-  private final RestHelper restHelper;
 
   @Autowired
   public UserInfoRefreshJobIntTest(
-      TaskanaEngine taskanaEngine,
-      UserService userService,
-      LdapClient ldapClient,
-      RestHelper restHelper) {
+      TaskanaEngine taskanaEngine, UserService userService, LdapClient ldapClient) {
     this.taskanaEngine = taskanaEngine;
     this.userService = userService;
     this.ldapClient = ldapClient;
-    this.restHelper = restHelper;
   }
 
   @Test
@@ -61,11 +58,18 @@ class UserInfoRefreshJobIntTest {
 
       users = getUsers(connection);
       List<User> ldapusers = ldapClient.searchUsersInUserRole();
+      users.sort(Comparator.comparing(User::getId));
+      ldapusers.sort(Comparator.comparing(User::getId));
+
+      RecursiveComparisonConfiguration comparisonConfiguration =
+          RecursiveComparisonConfiguration.builder()
+              .withIgnoredCollectionOrderInFields("groups")
+              .withIgnoredFields("longName", "data", "orgLevel1", "domains")
+              .build();
       assertThat(users)
           .hasSize(6)
           .hasSameSizeAs(ldapusers)
-          .usingRecursiveFieldByFieldElementComparatorIgnoringFields(
-              "longName", "data", "orgLevel1")
+          .usingRecursiveFieldByFieldElementComparator(comparisonConfiguration)
           .containsExactlyElementsOf(ldapusers);
     }
   }
@@ -73,7 +77,7 @@ class UserInfoRefreshJobIntTest {
   @Test
   @WithAccessId(user = "businessadmin")
   @Order(2)
-  void should_PostprocessUser_When_RefrehUserPostprocessorIsActive() throws Exception {
+  void should_PostprocessUser_When_RefreshUserPostprocessorIsActive() throws Exception {
 
     try (Connection connection = taskanaEngine.getConfiguration().getDatasource().getConnection()) {
 
@@ -95,29 +99,14 @@ class UserInfoRefreshJobIntTest {
 
   private List<User> getUsers(Connection connection) throws Exception {
 
-    List<User> users = new ArrayList<>();
+    List<String> users = new ArrayList<>();
     Statement statement = connection.createStatement();
     ResultSet rs = statement.executeQuery("SELECT * FROM " + connection.getSchema() + ".USER_INFO");
 
     while (rs.next()) {
-      User ldapUser = new UserImpl();
-      ldapUser.setId(rs.getString("USER_ID"));
-      ldapUser.setFirstName(rs.getString("FIRST_NAME"));
-      ldapUser.setLastName(rs.getString("LASTNAME"));
-      ldapUser.setFullName(rs.getString("FULL_NAME"));
-      ldapUser.setLongName(rs.getString("LONG_NAME"));
-      ldapUser.setEmail(rs.getString("E_MAIL"));
-      ldapUser.setPhone(rs.getString("PHONE"));
-      ldapUser.setMobilePhone(rs.getString("MOBILE_PHONE"));
-      ldapUser.setOrgLevel4(rs.getString("ORG_LEVEL_4"));
-      ldapUser.setOrgLevel3(rs.getString("ORG_LEVEL_3"));
-      ldapUser.setOrgLevel2(rs.getString("ORG_LEVEL_2"));
-      ldapUser.setOrgLevel1(rs.getString("ORG_LEVEL_1"));
-      ldapUser.setData(rs.getString("DATA"));
-
-      users.add(ldapUser);
+      users.add(rs.getString("USER_ID"));
     }
 
-    return users;
+    return users.stream().map(wrap(userService::getUser)).collect(Collectors.toList());
   }
 }

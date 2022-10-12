@@ -1,5 +1,7 @@
 package pro.taskana.testapi.builder;
 
+import java.util.Set;
+
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.user.api.UserService;
@@ -19,6 +21,11 @@ public class UserBuilder implements EntityBuilder<User, UserService> {
 
   public UserBuilder id(String id) {
     testUser.setId(id);
+    return this;
+  }
+
+  public UserBuilder groups(Set<String> groups) {
+    testUser.setGroups(groups);
     return this;
   }
 

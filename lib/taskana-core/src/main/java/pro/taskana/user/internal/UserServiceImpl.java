@@ -6,10 +6,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -52,7 +54,13 @@ public class UserServiceImpl implements UserService {
       throw new UserNotFoundException(id);
     }
 
-    user.setDomains(determineDomains(user.getId()));
+    Set<String> groups =
+        internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.findGroupsById(id));
+    if (groups != null) {
+      user.setGroups(groups);
+    }
+
+    user.setDomains(determineDomains(user));
     return user;
   }
 
@@ -62,24 +70,32 @@ public class UserServiceImpl implements UserService {
     internalTaskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
-    validateAndPopulateFields(userToCreate);
+    validateFields(userToCreate);
+    standardCreateActions(userToCreate);
     insertIntoDatabase(userToCreate);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method createUser() created User '{}'.", userToCreate);
     }
-
     return userToCreate;
   }
 
   @Override
-  public User updateUser(User userToUpdate) throws UserNotFoundException, NotAuthorizedException {
+  public User updateUser(User userToUpdate)
+      throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException {
     internalTaskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
-    getUser(userToUpdate.getId());
+    validateFields(userToUpdate);
+    standardUpdateActions(getUser(userToUpdate.getId()), userToUpdate);
 
     internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.update(userToUpdate));
+    internalTaskanaEngine.executeInDatabaseConnection(
+        () -> userMapper.deleteGroups(userToUpdate.getId()));
+    if (userToUpdate.getGroups() != null && !userToUpdate.getGroups().isEmpty()) {
+      internalTaskanaEngine.executeInDatabaseConnection(
+          () -> userMapper.insertGroups(userToUpdate));
+    }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method updateUser() updated User '{}'.", userToUpdate);
     }
@@ -94,13 +110,19 @@ public class UserServiceImpl implements UserService {
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     getUser(id);
 
-    internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.delete(id));
+    internalTaskanaEngine.executeInDatabaseConnection(
+        () -> {
+          userMapper.delete(id);
+          userMapper.deleteGroups(id);
+        });
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method deleteUser() deleted User with id '{}'.", id);
     }
   }
 
-  private Set<String> determineDomains(String... accessIds) {
+  private Set<String> determineDomains(User user) {
+    Set<String> accessIds = new HashSet<>(user.getGroups());
+    accessIds.add(user.getId());
     if (minimalWorkbasketPermissions != null && !minimalWorkbasketPermissions.isEmpty()) {
       // since WorkbasketService#accessIdsHavePermissions requires some role permissions we have to
       // execute this query as an admin. Since we're only determining the domains of a given user
@@ -113,7 +135,8 @@ public class UserServiceImpl implements UserService {
                       () ->
                           workbasketService
                               .createWorkbasketQuery()
-                              .accessIdsHavePermissions(minimalWorkbasketPermissions, accessIds)
+                              .accessIdsHavePermissions(
+                                  minimalWorkbasketPermissions, accessIds.toArray(String[]::new))
                               .listValues(
                                   WorkbasketQueryColumnName.DOMAIN, SortDirection.ASCENDING))));
     }
@@ -124,6 +147,9 @@ public class UserServiceImpl implements UserService {
     try {
       internalTaskanaEngine.openConnection();
       userMapper.insert(userToCreate);
+      if (userToCreate.getGroups() != null && !userToCreate.getGroups().isEmpty()) {
+        userMapper.insertGroups(userToCreate);
+      }
     } catch (PersistenceException e) {
       throw new UserAlreadyExistException(userToCreate.getId(), e);
     } finally {
@@ -131,19 +157,48 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  private void validateAndPopulateFields(User userToCreate) throws InvalidArgumentException {
-    if (userToCreate.getId() == null || userToCreate.getId().isEmpty()) {
-      throw new InvalidArgumentException("UserId must not be empty when creating User.");
+  private void validateFields(User userToValidate) throws InvalidArgumentException {
+    if (userToValidate.getId() == null || userToValidate.getId().isEmpty()) {
+      throw new InvalidArgumentException(
+          "UserId must not be empty when creating or updating User.");
     }
-    if (userToCreate.getFirstName() == null || userToCreate.getLastName() == null) {
+    if (userToValidate.getFirstName() == null || userToValidate.getLastName() == null) {
       throw new InvalidArgumentException("First and last name of User must be set or empty.");
     }
+  }
 
-    if (userToCreate.getFullName() == null || userToCreate.getFullName().isEmpty()) {
-      userToCreate.setFullName(userToCreate.getLastName() + ", " + userToCreate.getFirstName());
+  private void standardCreateActions(User user) {
+    if (user.getFullName() == null || user.getFullName().isEmpty()) {
+      user.setFullName(user.getLastName() + ", " + user.getFirstName());
     }
-    if (userToCreate.getLongName() == null || userToCreate.getLongName().isEmpty()) {
-      userToCreate.setLongName(userToCreate.getFullName() + " - (" + userToCreate.getId() + ")");
+    if (user.getLongName() == null || user.getLongName().isEmpty()) {
+      user.setLongName(user.getFullName() + " - (" + user.getId() + ")");
+    }
+    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+      user.setId(user.getId().toLowerCase());
+      user.setGroups(
+          user.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
+    }
+  }
+
+  private void standardUpdateActions(User oldUser, User newUser) {
+    if (!newUser.getFirstName().equals(oldUser.getFirstName())
+        || !newUser.getLastName().equals(oldUser.getLastName())) {
+      if (newUser.getFullName() == null
+          || newUser.getFullName().isEmpty()
+          || newUser.getFullName().equals(oldUser.getFullName())) {
+        newUser.setFullName(newUser.getLastName() + ", " + newUser.getFirstName());
+      }
+      if (newUser.getLongName() == null
+          || newUser.getLongName().isEmpty()
+          || newUser.getLongName().equals(oldUser.getLongName())) {
+        newUser.setLongName(newUser.getFullName() + " - (" + newUser.getId() + ")");
+      }
+      if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+        newUser.setId(newUser.getId().toLowerCase());
+        newUser.setGroups(
+            newUser.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
+      }
     }
   }
 }

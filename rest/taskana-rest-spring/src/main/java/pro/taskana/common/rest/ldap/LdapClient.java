@@ -4,8 +4,10 @@ import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -536,6 +538,7 @@ public class LdapClient {
   String[] getLookUpUserInfoAttributesToReturn() {
     return new String[] {
       getUserIdAttribute(),
+      getUserMemberOfGroupAttribute(),
       getUserFirstnameAttribute(),
       getUserLastnameAttribute(),
       getUserFullnameAttribute(),
@@ -615,6 +618,19 @@ public class LdapClient {
     }
   }
 
+  private Set<String> getGroupIdsFromContext(final DirContextOperations context) {
+    String[] groupAttributes = context.getStringAttributes(getUserMemberOfGroupAttribute());
+    Set<String> groups = groupAttributes != null ? Set.of(groupAttributes) : Collections.emptySet();
+    if (useLowerCaseForAccessIds) {
+      groups =
+          groups.stream()
+              .filter(Objects::nonNull)
+              .map(String::toLowerCase)
+              .collect(Collectors.toSet());
+    }
+    return groups;
+  }
+
   /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
 
@@ -634,6 +650,7 @@ public class LdapClient {
     public User doMapFromContext(final DirContextOperations context) {
       final User user = new UserImpl();
       user.setId(getUserIdFromContext(context));
+      user.setGroups(getGroupIdsFromContext(context));
       user.setFirstName(context.getStringAttribute(getUserFirstnameAttribute()));
       user.setLastName(context.getStringAttribute(getUserLastnameAttribute()));
       user.setFullName(context.getStringAttribute(getUserFullnameAttribute()));

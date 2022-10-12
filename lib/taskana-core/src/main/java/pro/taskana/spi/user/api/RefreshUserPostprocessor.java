@@ -11,7 +11,7 @@ public interface RefreshUserPostprocessor {
   /**
    * Processes a {@linkplain User} after its refresh.
    *
-   * @param userToProcess {@linkplain User} the User to preprocess
+   * @param userToProcess {@linkplain User} the User to postprocess
    * @return the {@linkplain User} after it has been processed
    */
   User processUserAfterRefresh(User userToProcess);

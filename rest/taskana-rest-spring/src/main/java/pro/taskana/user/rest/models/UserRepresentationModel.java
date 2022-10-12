@@ -1,6 +1,7 @@
 package pro.taskana.user.rest.models;
 
 import java.util.Objects;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -11,6 +12,8 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
 
   /** Unique Id. */
   @NotNull protected String userId;
+  /** The groups of the User. */
+  protected Set<String> groups;
   /** The first name of the User. */
   protected String firstName;
   /** The last name of the User. */
@@ -42,6 +45,14 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
 
   public void setUserId(String id) {
     this.userId = id;
+  }
+
+  public Set<String> getGroups() {
+    return groups;
+  }
+
+  public void setGroups(Set<String> groups) {
+    this.groups = groups;
   }
 
   public String getFirstName() {
@@ -145,6 +156,7 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
     return Objects.hash(
         super.hashCode(),
         userId,
+        groups,
         firstName,
         lastName,
         fullName,
@@ -175,6 +187,7 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
     }
     UserRepresentationModel other = (UserRepresentationModel) obj;
     return userId.equals(other.userId)
+        && Objects.equals(groups, other.groups)
         && Objects.equals(firstName, other.firstName)
         && Objects.equals(lastName, other.lastName)
         && Objects.equals(fullName, other.fullName)

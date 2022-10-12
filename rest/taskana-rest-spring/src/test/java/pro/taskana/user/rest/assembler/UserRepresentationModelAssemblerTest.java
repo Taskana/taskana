@@ -2,6 +2,7 @@ package pro.taskana.user.rest.assembler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,6 +28,7 @@ class UserRepresentationModelAssemblerTest {
   void should_ReturnRepresentationModel_When_ConvertingUserEntityToRepresentationModel() {
     User user = userService.newUser();
     user.setId("user-1-2");
+    user.setGroups(Set.of("group1", "group2"));
     user.setFirstName("Hans");
     user.setLastName("Georg");
     user.setFullName("Hans Georg");
@@ -48,6 +50,7 @@ class UserRepresentationModelAssemblerTest {
   void should_ReturnEntity_When_ConvertingUserRepresentationModelToEntity() {
     UserRepresentationModel repModel = new UserRepresentationModel();
     repModel.setUserId("user-1-2");
+    repModel.setGroups(Set.of("group1", "group2"));
     repModel.setFirstName("Hans");
     repModel.setLastName("Georg");
     repModel.setFullName("Hans Georg");
@@ -69,6 +72,7 @@ class UserRepresentationModelAssemblerTest {
   void should_BeEqual_When_ConvertingEntityToRepModelAndBackToEntity() {
     User user = userService.newUser();
     user.setId("user-1-2");
+    user.setGroups(Set.of("group1", "group2"));
     user.setFirstName("Hans");
     user.setLastName("Georg");
     user.setFullName("Hans Georg");
@@ -93,10 +97,10 @@ class UserRepresentationModelAssemblerTest {
 
   private static void testEquality(User entity, UserRepresentationModel repModel) {
     assertThat(entity).hasNoNullFieldsOrProperties();
-    assertThat(entity).hasNoNullFieldsOrProperties();
     assertThat(repModel).hasNoNullFieldsOrProperties();
 
     assertThat(entity.getId()).isEqualTo(repModel.getUserId());
+    assertThat(entity.getGroups()).isEqualTo(repModel.getGroups());
     assertThat(entity.getFirstName()).isEqualTo(repModel.getFirstName());
     assertThat(entity.getLastName()).isEqualTo(repModel.getLastName());
     assertThat(entity.getFullName()).isEqualTo(repModel.getFullName());

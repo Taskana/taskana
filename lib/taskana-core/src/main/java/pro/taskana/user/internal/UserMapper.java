@@ -1,5 +1,6 @@
 package pro.taskana.user.internal;
 
+import java.util.Set;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Param;
@@ -27,12 +28,21 @@ public interface UserMapper {
   @Result(property = "data", column = "DATA")
   UserImpl findById(@Param("id") String id);
 
+  @SelectProvider(type = UserMapperSqlProvider.class, method = "findGroupsById")
+  Set<String> findGroupsById(String id);
+
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insert")
   void insert(User user);
+
+  @InsertProvider(type = UserMapperSqlProvider.class, method = "insertGroups")
+  void insertGroups(User user);
 
   @UpdateProvider(type = UserMapperSqlProvider.class, method = "update")
   void update(User user);
 
   @DeleteProvider(type = UserMapperSqlProvider.class, method = "delete")
   void delete(String id);
+
+  @DeleteProvider(type = UserMapperSqlProvider.class, method = "deleteGroups")
+  void deleteGroups(String id);
 }

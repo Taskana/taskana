@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
 
+import java.util.Set;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ class UserControllerIntTest {
   void should_CreateValidUser_When_CallingCreateEndpoint() throws Exception {
     UserRepresentationModel newUser = new UserRepresentationModel();
     newUser.setUserId("12345");
+    newUser.setGroups(Set.of("group1", "group2"));
     newUser.setFirstName("Hans");
     newUser.setLastName("Georg");
     newUser.setFullName("Georg, Hans");
@@ -75,8 +77,7 @@ class UserControllerIntTest {
             HttpMethod.GET,
             auth,
             ParameterizedTypeReference.forType(UserRepresentationModel.class));
-    assertThat(responseEntity.getBody()).isNotNull();
-    assertThat(responseEntity.getBody()).isEqualTo(newUser);
+    assertThat(responseEntity.getBody()).isNotNull().isEqualTo(newUser);
   }
 
   @Test
