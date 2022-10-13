@@ -198,8 +198,31 @@ public class TaskController {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     // TODO verify user
-    taskService.claim(taskId);
-    Task updatedTask = taskService.getTask(taskId);
+    Task updatedTask = taskService.claim(taskId);
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint force claims a Task if possible even if it is already claimed by someone else.
+   *
+   * @param taskId the Id of the Task which should be force claimed
+   * @param userName TODO: this is currently not used
+   * @return the force claimed Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the state of the requested Task is not READY.
+   * @throws InvalidOwnerException cannot be thrown.
+   * @throws NotAuthorizedException if the current user has no read permissions for the requested
+   *     Task.
+   * @title Force claim a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceClaimTask(
+      @PathVariable String taskId, @RequestBody(required = false) String userName)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    // TODO verify user
+    Task updatedTask = taskService.forceClaim(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 

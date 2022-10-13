@@ -171,7 +171,7 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
    * @throws InvalidStateException if the {@linkplain Task#getState() state} of the {@linkplain
    *     Task} with taskId isn't {@linkplain TaskState#READY}
-   * @throws InvalidOwnerException if the {@linkplain Task} with taskId is claimed by someone else
+   * @throws InvalidOwnerException cannot be thrown
    * @throws NotAuthorizedException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
@@ -216,8 +216,7 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
    * @throws InvalidStateException if the {@linkplain Task} is already in one of the {@linkplain
    *     TaskState#END_STATES}
-   * @throws InvalidOwnerException if forceCancel is false and the {@linkplain Task} is claimed by
-   *     another user
+   * @throws InvalidOwnerException cannot be thrown
    * @throws NotAuthorizedException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */

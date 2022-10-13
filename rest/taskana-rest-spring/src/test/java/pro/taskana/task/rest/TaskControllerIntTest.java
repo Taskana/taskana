@@ -518,7 +518,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void should_ReturnAllTasks_For_ProvidedPrimaryObjectReference() throws Exception {
+  void should_ReturnAllTasks_For_ProvidedPrimaryObjectReference() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?por="
@@ -533,7 +533,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void should_ReturnAllTasks_For_ProvidedSecondaryObjectReferenceByTypeAndValue() throws Exception {
+  void should_ReturnAllTasks_For_ProvidedSecondaryObjectReferenceByTypeAndValue() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?sor="
@@ -548,7 +548,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void should_ReturnAllTasks_For_ProvidedSecondaryObjectReferenceByCompany() throws Exception {
+  void should_ReturnAllTasks_For_ProvidedSecondaryObjectReferenceByCompany() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?sor="
@@ -563,7 +563,7 @@ class TaskControllerIntTest {
   }
 
   @Test
-  void should_ReturnNoTasks_For_ProvidedNonexistentSecondaryObjectReference() throws Exception {
+  void should_ReturnNoTasks_For_ProvidedNonexistentSecondaryObjectReference() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_TASKS)
             + "?sor="
@@ -725,9 +725,7 @@ class TaskControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpStatusCodeException.class)
@@ -1207,9 +1205,7 @@ class TaskControllerIntTest {
         new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
     assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
   }
@@ -1304,6 +1300,62 @@ class TaskControllerIntTest {
 
     assertThat(responseGet.getBody()).isNotNull();
     assertThat(responseGet.getBody().getState()).isEqualTo(TaskState.CANCELLED);
+  }
+
+  @Test
+  void should_ClaimTask() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000033");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> getTaskResponse =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+    assertThat(getTaskResponse.getBody()).isNotNull();
+    TaskRepresentationModel readyTaskRepresentationModel = getTaskResponse.getBody();
+    assertThat(readyTaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+    assertThat(readyTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
+
+    // claim
+    String url2 =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASKS_ID_CLAIM, "TKI:000000000000000000000000000000000033");
+    ResponseEntity<TaskRepresentationModel> claimResponse =
+        TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+    assertThat(claimResponse.getBody()).isNotNull();
+    assertThat(claimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+    TaskRepresentationModel claimedTaskRepresentationModel = claimResponse.getBody();
+    assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
+    assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+  }
+
+  @Test
+  void should_ForceClaim_When_TaskIsClaimedByDifferentOwner() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000029");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> getTaskResponse =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+    assertThat(getTaskResponse.getBody()).isNotNull();
+    TaskRepresentationModel readyTaskRepresentationModel = getTaskResponse.getBody();
+    assertThat(readyTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(readyTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
+
+    // claim
+    String url2 =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASKS_ID_CLAIM_FORCE, "TKI:000000000000000000000000000000000029");
+    ResponseEntity<TaskRepresentationModel> claimResponse =
+        TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+    assertThat(claimResponse.getBody()).isNotNull();
+    assertThat(claimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+    TaskRepresentationModel claimedTaskRepresentationModel = claimResponse.getBody();
+    assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+    assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
   }
 
   @Test
@@ -1554,9 +1606,7 @@ class TaskControllerIntTest {
         new HttpEntity<>(theTaskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
-        };
+        () -> TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpStatusCodeException.class)
@@ -1570,13 +1620,12 @@ class TaskControllerIntTest {
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-b-1"));
 
     ThrowingCallable httpCall =
-        () -> {
-          TEMPLATE.exchange(
-              url,
-              HttpMethod.GET,
-              auth,
-              ParameterizedTypeReference.forType(TaskRepresentationModel.class));
-        };
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(TaskRepresentationModel.class));
 
     assertThatThrownBy(httpCall)
         .extracting(HttpStatusCodeException.class::cast)
