@@ -405,6 +405,29 @@ public class TaskController {
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
 
+    Task updatedTask = taskService.completeTask(taskId);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint force completes a Task.
+   *
+   * @param taskId Id of the requested Task to force complete.
+   * @return the force completed Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidOwnerException cannot be thrown.
+   * @throws InvalidStateException if Task wasn't claimed previously.
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Force complete a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceCompleteTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
+          NotAuthorizedException {
+
     Task updatedTask = taskService.forceCompleteTask(taskId);
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));

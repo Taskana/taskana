@@ -54,6 +54,7 @@ public final class RestEndpoints {
   public static final String URL_TASKS_ID_REQUEST_CHANGES_FORCE =
       API_V1 + "tasks/{taskId}/request-changes/force";
   public static final String URL_TASKS_ID_COMPLETE = API_V1 + "tasks/{taskId}/complete";
+  public static final String URL_TASKS_ID_COMPLETE_FORCE = API_V1 + "tasks/{taskId}/complete/force";
   public static final String URL_TASKS_ID_CANCEL = API_V1 + "tasks/{taskId}/cancel";
   public static final String URL_TASKS_ID_TRANSFER_WORKBASKET_ID =
       API_V1 + "tasks/{taskId}/transfer/{workbasketId}";

@@ -149,6 +149,16 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
   }
 
   @Test
+  void forceCompleteTaskDocTest() throws Exception {
+    mockMvc
+        .perform(
+            post(
+                RestEndpoints.URL_TASKS_ID_COMPLETE_FORCE,
+                "TKI:000000000000000000000000000000000003"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   void cancelTaskDocTest() throws Exception {
     mockMvc
         .perform(
