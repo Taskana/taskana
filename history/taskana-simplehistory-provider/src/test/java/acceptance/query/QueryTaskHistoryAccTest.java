@@ -76,9 +76,9 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
     List<TaskHistoryEvent> regularResult = getHistoryService().createTaskHistoryQuery().list();
 
     assertThat(offsetAndLimitResult).hasSize(2);
-    assertThat(offsetAndLimitResult.get(0).getUserId())
-        .isNotEqualTo(regularResult.get(0).getUserId())
-        .isEqualTo(regularResult.get(1).getUserId());
+    assertThat(offsetAndLimitResult.get(0))
+        .isNotEqualTo(regularResult.get(0))
+        .isEqualTo(regularResult.get(1));
   }
 
   @Test

@@ -24,10 +24,6 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
 
   private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
-  public QueryClassificationHistoryAccTest() {
-    super();
-  }
-
   @Test
   void should_ConfirmEquality_When_UsingListValuesAscendingAndDescending() {
     List<String> defaultList =
@@ -80,9 +76,9 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
         historyService.createClassificationHistoryQuery().list();
 
     assertThat(offsetAndLimitResult).hasSize(2);
-    assertThat(offsetAndLimitResult.get(0).getUserId())
-        .isNotEqualTo(regularResult.get(0).getUserId())
-        .isEqualTo(regularResult.get(1).getUserId());
+    assertThat(offsetAndLimitResult.get(0))
+        .isNotEqualTo(regularResult.get(0))
+        .isEqualTo(regularResult.get(1));
   }
 
   @Test
