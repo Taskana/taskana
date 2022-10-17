@@ -238,8 +238,9 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
     List<TaskComment> regularResult = taskService.createTaskCommentQuery().list();
 
     assertThat(offsetAndLimitResult).hasSize(2);
-    assertThat(offsetAndLimitResult.get(0).getId()).isNotEqualTo(regularResult.get(0).getId());
-    assertThat(offsetAndLimitResult.get(0).getId()).isEqualTo(regularResult.get(1).getId());
+    assertThat(offsetAndLimitResult.get(0))
+        .isNotEqualTo(regularResult.get(0))
+        .isEqualTo(regularResult.get(1));
   }
 
   @WithAccessId(user = "admin")
