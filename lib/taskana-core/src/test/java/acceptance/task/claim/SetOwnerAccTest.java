@@ -33,20 +33,39 @@ class SetOwnerAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void testSetOwnerAndSubsequentClaimSucceeds() throws Exception {
+  void testSetOwnerOfReadyTaskAndSubsequentClaimSucceeds() throws Exception {
 
     TaskService taskService = taskanaEngine.getTaskService();
     String taskReadyId = "TKI:000000000000000000000000000000000025";
     Task taskReady = taskService.getTask(taskReadyId);
     assertThat(taskReady.getState()).isEqualTo(TaskState.READY);
-    assertThat(taskReady.getOwner()).isNull();
     String anyUserName = "TestUser27";
+    assertThat(taskReady.getOwner()).isNotEqualTo(anyUserName);
     Task modifiedTaskReady = setOwner(taskReadyId, anyUserName);
 
     assertThat(modifiedTaskReady.getState()).isEqualTo(TaskState.READY);
     assertThat(modifiedTaskReady.getOwner()).isEqualTo(anyUserName);
     Task taskClaimed = taskService.claim(taskReadyId);
     assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(taskClaimed.getOwner()).isEqualTo("user-1-2");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void testSetOwnerOfReadyForReviewTaskAndSubsequentClaimSucceeds() throws Exception {
+
+    TaskService taskService = taskanaEngine.getTaskService();
+    String taskReadyForReviewId = "TKI:100000000000000000000000000000000025";
+    Task taskReady = taskService.getTask(taskReadyForReviewId);
+    assertThat(taskReady.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    String anyUserName = "TestUser28";
+    assertThat(taskReady.getOwner()).isNotEqualTo(anyUserName);
+    Task modifiedTaskReady = setOwner(taskReadyForReviewId, anyUserName);
+
+    assertThat(modifiedTaskReady.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(modifiedTaskReady.getOwner()).isEqualTo(anyUserName);
+    Task taskClaimed = taskService.claim(taskReadyForReviewId);
+    assertThat(taskClaimed.getState()).isEqualTo(TaskState.IN_REVIEW);
     assertThat(taskClaimed.getOwner()).isEqualTo("user-1-2");
   }
 
@@ -93,6 +112,18 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorForId(taskReadyId))
         .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void testSetOwnerOfReadyAndReadyForReviewTasks() {
+
+    List<String> taskIds =
+        List.of(
+            "TKI:000000000000000000000000000000000033", "TKI:500000000000000000000000000000000028");
+    BulkOperationResults<String, TaskanaException> results =
+        taskanaEngine.getTaskService().setOwnerOfTasks("someUser", taskIds);
+    assertThat(results.containsErrors()).isFalse();
   }
 
   @WithAccessId(user = "user-b-2")
@@ -177,10 +208,10 @@ class SetOwnerAccTest extends AbstractAccTest {
             c -> c.getClass() == MismatchedWorkbasketPermissionException.class,
             "MismatchedWorkbasketPermissionException");
     assertThat(results.getErrorMap())
-        .hasSize(97)
+        .hasSize(95)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfTypes(InvalidTaskStateException.class, NotAuthorizedException.class)
-        .areExactly(37, invalidTaskStateException)
+        .areExactly(35, invalidTaskStateException)
         .areExactly(60, mismatchedWorkbasketPermissionException);
   }
 
@@ -196,7 +227,7 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThat(allTaskSummaries).hasSize(99);
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap())
-        .hasSize(51)
+        .hasSize(49)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfType(InvalidStateException.class);
   }

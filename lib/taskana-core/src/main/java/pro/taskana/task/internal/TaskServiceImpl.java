@@ -804,7 +804,7 @@ public class TaskServiceImpl implements TaskService {
           getMinimalTaskSummaries(taskIds);
       bulkLog.addAllErrors(existingAndAuthorizedTasks.getRight());
       Pair<List<String>, BulkLog> taskIdsToUpdate =
-          filterOutTasksWhichAreNotReady(existingAndAuthorizedTasks.getLeft());
+          filterOutTasksWhichAreInInvalidState(existingAndAuthorizedTasks.getLeft());
       bulkLog.addAllErrors(taskIdsToUpdate.getRight());
 
       if (!taskIdsToUpdate.getLeft().isEmpty()) {
@@ -1032,17 +1032,20 @@ public class TaskServiceImpl implements TaskService {
         .collect(Collectors.toList());
   }
 
-  private Pair<List<String>, BulkLog> filterOutTasksWhichAreNotReady(
+  private Pair<List<String>, BulkLog> filterOutTasksWhichAreInInvalidState(
       Collection<MinimalTaskSummary> minimalTaskSummaries) {
     List<String> filteredTasks = new ArrayList<>(minimalTaskSummaries.size());
     BulkLog bulkLog = new BulkLog();
 
     for (MinimalTaskSummary taskSummary : minimalTaskSummaries) {
-      if (taskSummary.getTaskState() != TaskState.READY) {
+      if (!taskSummary.getTaskState().in(TaskState.READY, TaskState.READY_FOR_REVIEW)) {
         bulkLog.addError(
             taskSummary.getTaskId(),
             new InvalidTaskStateException(
-                taskSummary.getTaskId(), taskSummary.getTaskState(), TaskState.READY));
+                taskSummary.getTaskId(),
+                taskSummary.getTaskState(),
+                TaskState.READY,
+                TaskState.READY_FOR_REVIEW));
       } else {
         filteredTasks.add(taskSummary.getTaskId());
       }
@@ -2013,11 +2016,11 @@ public class TaskServiceImpl implements TaskService {
       newTaskImpl1.setBusinessProcessId(oldTaskImpl.getBusinessProcessId());
     }
 
-    // owner can only be changed if task is in state ready
+    // owner can only be changed if task is either in state ready or ready_for_review
     boolean isOwnerChanged = !Objects.equals(newTaskImpl1.getOwner(), oldTaskImpl.getOwner());
-    if (isOwnerChanged && oldTaskImpl.getState() != TaskState.READY) {
+    if (isOwnerChanged && !oldTaskImpl.getState().in(TaskState.READY, TaskState.READY_FOR_REVIEW)) {
       throw new InvalidTaskStateException(
-          oldTaskImpl.getId(), oldTaskImpl.getState(), TaskState.READY);
+          oldTaskImpl.getId(), oldTaskImpl.getState(), TaskState.READY, TaskState.READY_FOR_REVIEW);
     }
   }
 
