@@ -113,6 +113,7 @@ include::{snippets}/TaskControllerRestDocTest/forceCompleteTaskDocTest/auto-sect
 include::{snippets}/TaskControllerRestDocTest/cancelTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/terminateTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/transferTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/setTaskReadDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/deleteTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/deleteTasksDocTest/auto-section.adoc[]
 

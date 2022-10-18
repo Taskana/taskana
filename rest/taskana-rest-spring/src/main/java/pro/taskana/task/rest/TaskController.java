@@ -539,7 +539,27 @@ public class TaskController {
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
   }
 
-  // TODO setTaskRead
+  /**
+   * This endpoint sets the 'isRead' property of a Task.
+   *
+   * @param taskId Id of the requested Task to set read or unread.
+   * @param isRead if true, the Task property isRead is set to true, else it's set to false
+   * @return the updated Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Set a Task read or unread
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_SET_READ)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> setTaskRead(
+      @PathVariable String taskId, @PathVariable boolean isRead)
+      throws TaskNotFoundException, NotAuthorizedException {
+
+    Task updatedTask = taskService.setTaskRead(taskId, isRead);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
 
   // endregion
 

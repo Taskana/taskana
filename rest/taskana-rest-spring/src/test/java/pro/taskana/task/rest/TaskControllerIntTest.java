@@ -1743,7 +1743,7 @@ class TaskControllerIntTest {
       TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
       assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
 
-      // cancel the task
+      // terminate the task
       String url2 =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_TERMINATE, "TKI:000000000000000000000000000000000103");
@@ -1902,6 +1902,66 @@ class TaskControllerIntTest {
           .extracting(HttpStatusCodeException.class::cast)
           .extracting(HttpStatusCodeException::getStatusCode)
           .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class SetTasksRead {
+    @Test
+    void should_setTaskRead() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000025");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> getTaskResponse =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(getTaskResponse.getBody()).isNotNull();
+      TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
+      assertThat(claimedTaskRepresentationModel.isRead()).isFalse();
+
+      // set Task read
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_SET_READ,
+              "TKI:000000000000000000000000000000000025",
+              true);
+      ResponseEntity<TaskRepresentationModel> setReadResponse =
+          TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThat(setReadResponse.getBody()).isNotNull();
+      assertThat(setReadResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      TaskRepresentationModel setReadTaskRepresentationModel = setReadResponse.getBody();
+      assertThat(setReadTaskRepresentationModel.isRead()).isTrue();
+    }
+
+    @Test
+    void should_setTaskUnread() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000027");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> getTaskResponse =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(getTaskResponse.getBody()).isNotNull();
+      TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
+      assertThat(claimedTaskRepresentationModel.isRead()).isTrue();
+
+      // set Task read
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_SET_READ,
+              "TKI:000000000000000000000000000000000027",
+              false);
+      ResponseEntity<TaskRepresentationModel> setReadResponse =
+          TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThat(setReadResponse.getBody()).isNotNull();
+      assertThat(setReadResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      TaskRepresentationModel setReadTaskRepresentationModel = setReadResponse.getBody();
+      assertThat(setReadTaskRepresentationModel.isRead()).isFalse();
     }
   }
 }
