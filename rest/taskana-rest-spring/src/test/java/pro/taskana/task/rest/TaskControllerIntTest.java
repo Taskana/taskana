@@ -1728,6 +1728,34 @@ class TaskControllerIntTest {
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
+  class TerminateTasks {
+    @Test
+    void should_TerminateTask_when_CallingCancelEndpoint() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> responseGet =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+
+      assertThat(responseGet.getBody()).isNotNull();
+      TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
+      assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+
+      // cancel the task
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_TERMINATE, "TKI:000000000000000000000000000000000103");
+      responseGet = TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThat(responseGet.getBody()).isNotNull();
+      assertThat(responseGet.getBody().getState()).isEqualTo(TaskState.TERMINATED);
+    }
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
   class ClaimTasks {
 
     @Test

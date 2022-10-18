@@ -430,10 +430,6 @@ public class TaskController {
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
-  // TODO completeTasks
-
-  // TODO forceCompleteTasks
-
   /**
    * This endpoint cancels a Task. Cancellation marks a Task as obsolete. The actual work the Task
    * was referring to is no longer required
@@ -456,7 +452,25 @@ public class TaskController {
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(cancelledTask));
   }
 
-  // TODO terminateTask
+  /**
+   * This endpoint terminates a Task. Termination is an administrative action to complete a Task.
+   *
+   * @param taskId Id of the requested Task to terminate.
+   * @return the terminated Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the task is not in state READY or CLAIMED
+   * @throws NotAuthorizedException if the current user isn't an administrator (admin/businessadmin)
+   * @title Terminate a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_TERMINATE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> terminateTask(@PathVariable String taskId)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException {
+
+    Task terminatedTask = taskService.terminateTask(taskId);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(terminatedTask));
+  }
 
   /**
    * This endpoint transfers a given Task to a given Workbasket, if possible.
@@ -484,8 +498,6 @@ public class TaskController {
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
-
-  // TODO transferTasks
 
   /**
    * This endpoint updates a requested Task.
@@ -527,15 +539,7 @@ public class TaskController {
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
   }
 
-  // TODO updateTasks
-
   // TODO setTaskRead
-
-  // TODO setCallbackStateForTasks
-
-  // TODO setOwnerOfTasks
-
-  // TODO setPlannedPropertyOfTasks
 
   // endregion
 

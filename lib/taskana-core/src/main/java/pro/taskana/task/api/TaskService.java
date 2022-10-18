@@ -388,7 +388,7 @@ public interface TaskService {
    *
    * <p>This is typically done by administration to correct any technical issue.
    *
-   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to cancel
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to terminate
    * @return the updated {@linkplain Task}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidStateException if the {@linkplain Task} isn't in {@linkplain TaskState#READY} or

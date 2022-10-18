@@ -167,6 +167,14 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
   }
 
   @Test
+  void terminateTaskDocTest() throws Exception {
+    mockMvc
+        .perform(
+            post(RestEndpoints.URL_TASKS_ID_TERMINATE, "TKI:000000000000000000000000000000000000"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   void createTaskDocTest() throws Exception {
     final Task task = taskService.newTask("WBI:100000000000000000000000000000000004");
     ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
