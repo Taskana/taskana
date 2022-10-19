@@ -41,6 +41,7 @@ import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel.CustomAttribute;
@@ -668,119 +669,6 @@ class TaskControllerIntTest {
     }
 
     @Test
-    void should_CreateAndDeleteTask() {
-      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
-      HttpEntity<TaskRepresentationModel> auth =
-          new HttpEntity<>(
-              taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
-
-      ResponseEntity<TaskRepresentationModel> responseCreate =
-          TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
-      assertThat(responseCreate.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-      assertThat(responseCreate.getBody()).isNotNull();
-
-      String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
-      assertThat(taskIdOfCreatedTask).startsWith("TKI:");
-
-      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);
-      HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
-
-      ResponseEntity<TaskRepresentationModel> responseDeleted =
-          TEMPLATE.exchange(
-              url2, HttpMethod.DELETE, auth2, ParameterizedTypeReference.forType(Void.class));
-      assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    /**
-     * TSK-926: If Planned and Due Date is provided to create a task and not matching to service
-     * level throw an exception One is calculated by other other date +- service level.
-     */
-    @Test
-    void should_ThrowException_When_CreatingTaskWithPlannedAndDueDateNotMatchingServiceLevel() {
-      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-      Instant plannedTime = Instant.parse("2019-09-13T08:44:17.588Z");
-      taskRepresentationModel.setPlanned(plannedTime);
-      taskRepresentationModel.setDue(plannedTime);
-      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
-      HttpEntity<TaskRepresentationModel> auth =
-          new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));
-
-      ThrowingCallable httpCall =
-          () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
-
-      assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
-    }
-
-    @Test
-    void should_RouteCreatedTask_When_CreatingTaskWithoutWorkbasketInformation() {
-      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-      taskRepresentationModel.setWorkbasketSummary(null);
-
-      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
-      HttpEntity<TaskRepresentationModel> auth =
-          new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));
-      ResponseEntity<TaskRepresentationModel> responseCreate =
-          TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
-
-      assertThat(responseCreate.getBody().getWorkbasketSummary().getWorkbasketId())
-          .isEqualTo(IntegrationTestTaskRouter.DEFAULT_ROUTING_TARGET);
-
-      String url2 =
-          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, responseCreate.getBody().getTaskId());
-      HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
-
-      ResponseEntity<TaskRepresentationModel> responseDeleted =
-          TEMPLATE.exchange(
-              url2, HttpMethod.DELETE, auth2, ParameterizedTypeReference.forType(Void.class));
-      assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    void should_ThrowException_When_CreatingTaskWithInvalidParameter() throws Exception {
-      final String taskToCreateJson =
-          "{\"classificationKey\":\"L11010\","
-              + "\"workbasketSummaryResource\":"
-              + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
-              + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
-              + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
-
-      URL url = new URL(restHelper.toUrl(RestEndpoints.URL_TASKS));
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod("POST");
-      con.setDoOutput(true);
-      con.setRequestProperty("Authorization", RestHelper.encodeUserAndPasswordAsBasicAuth("admin"));
-      con.setRequestProperty("Content-Type", "application/json");
-      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
-      out.write(taskToCreateJson);
-      out.flush();
-      out.close();
-      assertThat(con.getResponseCode()).isEqualTo(400);
-
-      con.disconnect();
-      final String taskToCreateJson2 =
-          "{\"classificationSummaryResource\":"
-              + "{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
-              + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
-              + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
-              + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
-
-      url = new URL(restHelper.toUrl(RestEndpoints.URL_TASKS));
-      con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod("POST");
-      con.setDoOutput(true);
-      con.setRequestProperty("Authorization", RestHelper.encodeUserAndPasswordAsBasicAuth("admin"));
-      con.setRequestProperty("Content-Type", "application/json");
-      out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
-      out.write(taskToCreateJson2);
-      out.flush();
-      out.close();
-      assertThat(con.getResponseCode()).isEqualTo(400);
-
-      con.disconnect();
-    }
-
-    @Test
     void should_ThrowException_When_ProvidingInvalidFilterParams() {
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
@@ -1240,6 +1128,32 @@ class TaskControllerIntTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class CreateTasks {
+
+    @Test
+    void should_CreateAndDeleteTask() {
+      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
+      HttpEntity<TaskRepresentationModel> auth =
+          new HttpEntity<>(
+              taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
+
+      ResponseEntity<TaskRepresentationModel> responseCreate =
+          TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+      assertThat(responseCreate.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+      assertThat(responseCreate.getBody()).isNotNull();
+
+      String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
+      assertThat(taskIdOfCreatedTask).startsWith("TKI:");
+
+      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID_FORCE, taskIdOfCreatedTask);
+      HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskRepresentationModel> responseDeleted =
+          TEMPLATE.exchange(
+              url2, HttpMethod.DELETE, auth2, ParameterizedTypeReference.forType(Void.class));
+      assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
     @Test
     void should_CreateAndDeleteTaskWithSecondaryObjectReferences_When_SpecifyingObjectReferences() {
       TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
@@ -1261,7 +1175,7 @@ class TaskControllerIntTest {
       assertThat(responseCreate.getBody()).isNotNull();
       String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
 
-      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);
+      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID_FORCE, taskIdOfCreatedTask);
       HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
       ResponseEntity<TaskRepresentationModel> responseDeleted =
@@ -1289,7 +1203,7 @@ class TaskControllerIntTest {
           .isEqualTo(7);
 
       String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
-      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);
+      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID_FORCE, taskIdOfCreatedTask);
       HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
       ResponseEntity<TaskRepresentationModel> responseDeleted =
@@ -1316,13 +1230,101 @@ class TaskControllerIntTest {
       assertThat(responseCreate.getBody().getManualPriority()).isEqualTo(-1);
 
       String taskIdOfCreatedTask = responseCreate.getBody().getTaskId();
-      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, taskIdOfCreatedTask);
+      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID_FORCE, taskIdOfCreatedTask);
       HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
 
       ResponseEntity<TaskRepresentationModel> responseDeleted =
           TEMPLATE.exchange(
               url2, HttpMethod.DELETE, auth2, ParameterizedTypeReference.forType(Void.class));
       assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * TSK-926: If Planned and Due Date is provided to create a task and not matching to service
+     * level throw an exception One is calculated by other other date +- service level.
+     */
+    @Test
+    void should_ThrowException_When_CreatingTaskWithPlannedAndDueDateNotMatchingServiceLevel() {
+      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+      Instant plannedTime = Instant.parse("2019-09-13T08:44:17.588Z");
+      taskRepresentationModel.setPlanned(plannedTime);
+      taskRepresentationModel.setDue(plannedTime);
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
+      HttpEntity<TaskRepresentationModel> auth =
+          new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall).isInstanceOf(HttpStatusCodeException.class);
+    }
+
+    @Test
+    void should_RouteCreatedTask_When_CreatingTaskWithoutWorkbasketInformation() {
+      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+      taskRepresentationModel.setWorkbasketSummary(null);
+
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
+      HttpEntity<TaskRepresentationModel> auth =
+          new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-1"));
+      ResponseEntity<TaskRepresentationModel> responseCreate =
+          TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThat(responseCreate.getBody().getWorkbasketSummary().getWorkbasketId())
+          .isEqualTo(IntegrationTestTaskRouter.DEFAULT_ROUTING_TARGET);
+
+      String url2 =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID_FORCE, responseCreate.getBody().getTaskId());
+      HttpEntity<Object> auth2 = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskRepresentationModel> responseDeleted =
+          TEMPLATE.exchange(
+              url2, HttpMethod.DELETE, auth2, ParameterizedTypeReference.forType(Void.class));
+      assertThat(responseDeleted.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    void should_ThrowException_When_CreatingTaskWithInvalidParameter() throws Exception {
+      final String taskToCreateJson =
+          "{\"classificationKey\":\"L11010\","
+              + "\"workbasketSummaryResource\":"
+              + "{\"workbasketId\":\"WBI:100000000000000000000000000000000004\"},"
+              + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
+              + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+
+      URL url = new URL(restHelper.toUrl(RestEndpoints.URL_TASKS));
+      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+      con.setRequestMethod("POST");
+      con.setDoOutput(true);
+      con.setRequestProperty("Authorization", RestHelper.encodeUserAndPasswordAsBasicAuth("admin"));
+      con.setRequestProperty("Content-Type", "application/json");
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
+      out.write(taskToCreateJson);
+      out.flush();
+      out.close();
+      assertThat(con.getResponseCode()).isEqualTo(400);
+
+      con.disconnect();
+      final String taskToCreateJson2 =
+          "{\"classificationSummaryResource\":"
+              + "{\"classificationId\":\"CLI:100000000000000000000000000000000004\"},"
+              + "\"workbasketSummaryResource\":{\"workbasketId\":\"\"},"
+              + "\"primaryObjRef\":{\"company\":\"MyCompany1\",\"system\":\"MySystem1\","
+              + "\"systemInstance\":\"MyInstance1\",\"type\":\"MyType1\",\"value\":\"00000001\"}}";
+
+      url = new URL(restHelper.toUrl(RestEndpoints.URL_TASKS));
+      con = (HttpURLConnection) url.openConnection();
+      con.setRequestMethod("POST");
+      con.setDoOutput(true);
+      con.setRequestProperty("Authorization", RestHelper.encodeUserAndPasswordAsBasicAuth("admin"));
+      con.setRequestProperty("Content-Type", "application/json");
+      out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), UTF_8));
+      out.write(taskToCreateJson2);
+      out.flush();
+      out.close();
+      assertThat(con.getResponseCode()).isEqualTo(400);
+
+      con.disconnect();
     }
   }
 
@@ -1382,6 +1384,65 @@ class TaskControllerIntTest {
   class DeleteTasks {
 
     @Test
+    void should_DeleteTask() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000039");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskRepresentationModel> responseGet =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(responseGet.getBody()).isNotNull();
+      assertThat(responseGet.getBody().getState()).isEqualTo(TaskState.COMPLETED);
+
+      ResponseEntity<TaskRepresentationModel> responseDelete =
+          TEMPLATE.exchange(url, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+      assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+          .isInstanceOf(HttpStatusCodeException.class)
+          .hasMessageContaining(
+              "Task with id 'TKI:000000000000000000000000000000000039' was not found.")
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void should_ForceDeleteTask() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000026");
+      String urlForce =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_FORCE, "TKI:000000000000000000000000000000000026");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskRepresentationModel> responseGet =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(responseGet.getBody()).isNotNull();
+      assertThat(responseGet.getBody().getState()).isEqualTo(TaskState.CLAIMED);
+
+      ResponseEntity<TaskRepresentationModel> responseDelete =
+          TEMPLATE.exchange(urlForce, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+      assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+          .isInstanceOf(HttpStatusCodeException.class)
+          .hasMessageContaining(
+              "Task with id 'TKI:000000000000000000000000000000000026' was not found.")
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     void should_DeleteAllTasks_For_ProvidedParams() {
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
@@ -1414,15 +1475,14 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
       assertThat(responseGet.getBody()).isNotNull();
-      TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
-      assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
-      assertThat(theTaskRepresentationModel.getOwner()).isNull();
+      TaskRepresentationModel taskRepresentationModel = responseGet.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+      assertThat(taskRepresentationModel.getOwner()).isNull();
 
       // set Owner and update Task
-      theTaskRepresentationModel.setOwner("dummyUser");
+      taskRepresentationModel.setOwner("dummyUser");
       HttpEntity<TaskRepresentationModel> auth2 =
-          new HttpEntity<>(
-              theTaskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
+          new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
 
       ResponseEntity<TaskRepresentationModel> responseUpdate =
           TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
@@ -1443,15 +1503,14 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
       assertThat(responseGet.getBody()).isNotNull();
-      TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
-      assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
-      assertThat(theTaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+      TaskRepresentationModel taskRepresentationModel = responseGet.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-1");
 
       // set Owner and update Task
-      theTaskRepresentationModel.setOwner("dummyuser");
+      taskRepresentationModel.setOwner("dummyuser");
       HttpEntity<TaskRepresentationModel> auth2 =
-          new HttpEntity<>(
-              theTaskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
+          new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
 
       ThrowingCallable httpCall =
           () -> TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
@@ -1653,16 +1712,16 @@ class TaskControllerIntTest {
       assertThat(repModel.getState()).isEqualTo(TaskState.CLAIMED);
       assertThat(repModel.getOwner()).isEqualTo("user-1-2");
 
-      // request changes
+      // complete Task
       String url2 =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_COMPLETE, "TKI:000000000000000000000000000000000102");
-      ResponseEntity<TaskRepresentationModel> requestedChangesResponse =
+      ResponseEntity<TaskRepresentationModel> completeResponse =
           TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
-      assertThat(requestedChangesResponse.getBody()).isNotNull();
-      assertThat(requestedChangesResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-      repModel = requestedChangesResponse.getBody();
+      assertThat(completeResponse.getBody()).isNotNull();
+      assertThat(completeResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      repModel = completeResponse.getBody();
       assertThat(repModel.getOwner()).isEqualTo("user-1-2");
       assertThat(repModel.getState()).isEqualTo(TaskState.COMPLETED);
     }
@@ -1681,17 +1740,17 @@ class TaskControllerIntTest {
       assertThat(repModel.getState()).isEqualTo(TaskState.CLAIMED);
       assertThat(repModel.getOwner()).isEqualTo("user-1-1");
 
-      // request changes
+      // force complete task
       String url2 =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_COMPLETE_FORCE,
               "TKI:000000000000000000000000000000000028");
-      ResponseEntity<TaskRepresentationModel> requestedChangesResponse =
+      ResponseEntity<TaskRepresentationModel> forceCompleteResponse =
           TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
-      assertThat(requestedChangesResponse.getBody()).isNotNull();
-      assertThat(requestedChangesResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-      repModel = requestedChangesResponse.getBody();
+      assertThat(forceCompleteResponse.getBody()).isNotNull();
+      assertThat(forceCompleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      repModel = forceCompleteResponse.getBody();
       assertThat(repModel.getOwner()).isEqualTo("user-1-2");
       assertThat(repModel.getState()).isEqualTo(TaskState.COMPLETED);
     }
@@ -1702,7 +1761,7 @@ class TaskControllerIntTest {
   class CancelTasks {
 
     @Test
-    void should_CancelTask_when_CallingCancelEndpoint() {
+    void should_CancelTask() {
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000103");
       HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
@@ -1712,17 +1771,18 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
       assertThat(responseGet.getBody()).isNotNull();
-      TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
-      assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      TaskRepresentationModel taskRepresentationModel = responseGet.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
 
       // cancel the task
       String url2 =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_CANCEL, "TKI:000000000000000000000000000000000103");
-      responseGet = TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+      ResponseEntity<TaskRepresentationModel> cancelResponse =
+          TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
-      assertThat(responseGet.getBody()).isNotNull();
-      assertThat(responseGet.getBody().getState()).isEqualTo(TaskState.CANCELLED);
+      assertThat(cancelResponse.getBody()).isNotNull();
+      assertThat(cancelResponse.getBody().getState()).isEqualTo(TaskState.CANCELLED);
     }
   }
 
@@ -1730,7 +1790,7 @@ class TaskControllerIntTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class TerminateTasks {
     @Test
-    void should_TerminateTask_when_CallingCancelEndpoint() {
+    void should_TerminateTask() {
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
       HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
@@ -1740,17 +1800,18 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
       assertThat(responseGet.getBody()).isNotNull();
-      TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
-      assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      TaskRepresentationModel taskRepresentationModel = responseGet.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
 
       // terminate the task
       String url2 =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_TERMINATE, "TKI:000000000000000000000000000000000103");
-      responseGet = TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+      ResponseEntity<TaskRepresentationModel> terminateResponse =
+          TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
-      assertThat(responseGet.getBody()).isNotNull();
-      assertThat(responseGet.getBody().getState()).isEqualTo(TaskState.TERMINATED);
+      assertThat(terminateResponse.getBody()).isNotNull();
+      assertThat(terminateResponse.getBody().getState()).isEqualTo(TaskState.TERMINATED);
     }
   }
 
@@ -1780,7 +1841,7 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
       assertThat(claimResponse.getBody()).isNotNull();
-      assertThat(claimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      assertThat(claimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
       TaskRepresentationModel claimedTaskRepresentationModel = claimResponse.getBody();
       assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
       assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
@@ -1808,7 +1869,7 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
       assertThat(claimResponse.getBody()).isNotNull();
-      assertThat(claimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      assertThat(claimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
       TaskRepresentationModel claimedTaskRepresentationModel = claimResponse.getBody();
       assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
       assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
@@ -1828,9 +1889,9 @@ class TaskControllerIntTest {
       ResponseEntity<TaskRepresentationModel> getTaskResponse =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
       assertThat(getTaskResponse.getBody()).isNotNull();
-      TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
-      assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
-      assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-2");
 
       // cancel claim
       String url2 =
@@ -1840,7 +1901,7 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
 
       assertThat(cancelClaimResponse.getBody()).isNotNull();
-      assertThat(cancelClaimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      assertThat(cancelClaimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
       TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
       assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isNull();
       assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
@@ -1857,9 +1918,9 @@ class TaskControllerIntTest {
       ResponseEntity<TaskRepresentationModel> getTaskResponse =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
       assertThat(getTaskResponse.getBody()).isNotNull();
-      TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
-      assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
-      assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-2");
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-2");
 
       // force cancel claim
       String url2 =
@@ -1869,7 +1930,7 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
 
       assertThat(cancelClaimResponse.getBody()).isNotNull();
-      assertThat(cancelClaimResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      assertThat(cancelClaimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
       TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
       assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isNull();
       assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
@@ -1887,9 +1948,9 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
 
       assertThat(responseGet.getBody()).isNotNull();
-      TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
-      assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
-      assertThat(theTaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+      TaskRepresentationModel taskRepresentationModel = responseGet.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-1");
 
       // try to cancel claim
       String url2 =
@@ -1918,20 +1979,21 @@ class TaskControllerIntTest {
       ResponseEntity<TaskRepresentationModel> getTaskResponse =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
       assertThat(getTaskResponse.getBody()).isNotNull();
-      TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
-      assertThat(claimedTaskRepresentationModel.isRead()).isFalse();
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.isRead()).isFalse();
 
       // set Task read
+      HttpEntity<Object> httpEntity =
+          new HttpEntity<>(
+              new IsReadRepresentationModel(true), RestHelper.generateHeadersForUser("user-1-2"));
       String url2 =
           restHelper.toUrl(
-              RestEndpoints.URL_TASKS_ID_SET_READ,
-              "TKI:000000000000000000000000000000000025",
-              true);
+              RestEndpoints.URL_TASKS_ID_SET_READ, "TKI:000000000000000000000000000000000025");
       ResponseEntity<TaskRepresentationModel> setReadResponse =
-          TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+          TEMPLATE.exchange(url2, HttpMethod.POST, httpEntity, TASK_MODEL_TYPE);
 
       assertThat(setReadResponse.getBody()).isNotNull();
-      assertThat(setReadResponse.getStatusCode().is2xxSuccessful()).isTrue();
+      assertThat(setReadResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
       TaskRepresentationModel setReadTaskRepresentationModel = setReadResponse.getBody();
       assertThat(setReadTaskRepresentationModel.isRead()).isTrue();
     }
@@ -1946,21 +2008,22 @@ class TaskControllerIntTest {
       ResponseEntity<TaskRepresentationModel> getTaskResponse =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
       assertThat(getTaskResponse.getBody()).isNotNull();
-      TaskRepresentationModel claimedTaskRepresentationModel = getTaskResponse.getBody();
-      assertThat(claimedTaskRepresentationModel.isRead()).isTrue();
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.isRead()).isTrue();
 
-      // set Task read
+      // set Task unread
+      HttpEntity<Object> httpEntity =
+          new HttpEntity<>(
+              new IsReadRepresentationModel(false), RestHelper.generateHeadersForUser("user-1-2"));
       String url2 =
           restHelper.toUrl(
-              RestEndpoints.URL_TASKS_ID_SET_READ,
-              "TKI:000000000000000000000000000000000027",
-              false);
-      ResponseEntity<TaskRepresentationModel> setReadResponse =
-          TEMPLATE.exchange(url2, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+              RestEndpoints.URL_TASKS_ID_SET_READ, "TKI:000000000000000000000000000000000027");
+      ResponseEntity<TaskRepresentationModel> setUnreadResponse =
+          TEMPLATE.exchange(url2, HttpMethod.POST, httpEntity, TASK_MODEL_TYPE);
 
-      assertThat(setReadResponse.getBody()).isNotNull();
-      assertThat(setReadResponse.getStatusCode().is2xxSuccessful()).isTrue();
-      TaskRepresentationModel setReadTaskRepresentationModel = setReadResponse.getBody();
+      assertThat(setUnreadResponse.getBody()).isNotNull();
+      assertThat(setUnreadResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      TaskRepresentationModel setReadTaskRepresentationModel = setUnreadResponse.getBody();
       assertThat(setReadTaskRepresentationModel.isRead()).isFalse();
     }
   }

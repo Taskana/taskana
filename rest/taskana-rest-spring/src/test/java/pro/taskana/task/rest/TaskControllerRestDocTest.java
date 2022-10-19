@@ -19,6 +19,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
+import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 
 @ExtendWith(JaasExtension.class)
@@ -32,6 +33,21 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
     mockMvc
         .perform(get(RestEndpoints.URL_TASKS + "?por-type=VNR&por-value=22334455&sort-by=NAME"))
         .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void deleteTaskDocTest() throws Exception {
+    mockMvc
+        .perform(delete(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000039"))
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
+  }
+
+  @Test
+  void forceDeleteTaskDocTest() throws Exception {
+    mockMvc
+        .perform(
+            delete(RestEndpoints.URL_TASKS_ID_FORCE, "TKI:000000000000000000000000000000000005"))
+        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test
@@ -176,12 +192,13 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
 
   @Test
   void setTaskReadDocTest() throws Exception {
+
+    IsReadRepresentationModel isRead = new IsReadRepresentationModel(true);
+
     mockMvc
         .perform(
-            post(
-                RestEndpoints.URL_TASKS_ID_SET_READ,
-                "TKI:000000000000000000000000000000000025",
-                true))
+            post(RestEndpoints.URL_TASKS_ID_SET_READ, "TKI:000000000000000000000000000000000025")
+                .content(objectMapper.writeValueAsString(isRead)))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
@@ -201,13 +218,6 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
     mockMvc
         .perform(post(RestEndpoints.URL_TASKS).content(objectMapper.writeValueAsString(repModel)))
         .andExpect(MockMvcResultMatchers.status().isCreated());
-  }
-
-  @Test
-  void deleteTaskDocTest() throws Exception {
-    mockMvc
-        .perform(delete(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000001"))
-        .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
   @Test

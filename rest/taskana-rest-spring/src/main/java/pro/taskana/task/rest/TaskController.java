@@ -49,6 +49,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.assembler.TaskSummaryRepresentationModelAssembler;
+import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
@@ -108,7 +109,7 @@ public class TaskController {
 
   // endregion
 
-  // region GET
+  // region READ
 
   /**
    * This endpoint retrieves a list of existing Tasks. Filters can be applied.
@@ -206,7 +207,7 @@ public class TaskController {
    * @param userName TODO: this is currently not used
    * @return the force claimed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException if the state of the requested Task is not READY.
+   * @throws InvalidStateException if the state of Task with taskId is in an END_STATE.
    * @throws InvalidOwnerException cannot be thrown.
    * @throws NotAuthorizedException if the current user has no read permissions for the requested
    *     Task.
@@ -414,7 +415,7 @@ public class TaskController {
    * @return the force completed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidOwnerException cannot be thrown.
-   * @throws InvalidStateException if Task wasn't claimed previously.
+   * @throws InvalidStateException if the state of the Task with taskId is TERMINATED or CANCELED
    * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
    *     the Task is in
    * @title Force complete a Task
@@ -459,7 +460,7 @@ public class TaskController {
    * @return the terminated Task
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidStateException if the task is not in state READY or CLAIMED
-   * @throws NotAuthorizedException if the current user isn't an administrator (admin/businessadmin)
+   * @throws NotAuthorizedException if the current user isn't an administrator (ADMIN/TASKADMIN)
    * @title Terminate a Task
    */
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_TERMINATE)
@@ -553,10 +554,10 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_SET_READ)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> setTaskRead(
-      @PathVariable String taskId, @PathVariable boolean isRead)
+      @PathVariable String taskId, @RequestBody IsReadRepresentationModel isRead)
       throws TaskNotFoundException, NotAuthorizedException {
 
-    Task updatedTask = taskService.setTaskRead(taskId, isRead);
+    Task updatedTask = taskService.setTaskRead(taskId, isRead.getIsRead());
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
@@ -572,13 +573,32 @@ public class TaskController {
    * @param taskId the Id of the Task which should be deleted.
    * @return the deleted Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException TODO: this is never thrown
-   * @throws NotAuthorizedException if the current user is not authorized to delete the requested
-   *     Task.
+   * @throws InvalidStateException If the Task is not in an END_STATE
+   * @throws NotAuthorizedException if the current user isn't an administrator (ADMIN)
    */
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    taskService.deleteTask(taskId);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * This endpoint force deletes a Task even if it's not completed.
+   *
+   * @title Force delete a Task
+   * @param taskId the Id of the Task which should be force deleted.
+   * @return the force deleted Task.
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException If the Task is not TERMINATED or CANCELLED and the Callback state
+   *     of the Task is CALLBACK_PROCESSING_REQUIRED
+   * @throws NotAuthorizedException if the current user isn't an administrator (ADMIN) Task.
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceDeleteTask(@PathVariable String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
     taskService.forceDeleteTask(taskId);
 
