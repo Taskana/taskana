@@ -32,6 +32,7 @@ public class UserRepresentationModelAssembler
     repModel.setOrgLevel2(entity.getOrgLevel2());
     repModel.setOrgLevel1(entity.getOrgLevel1());
     repModel.setData(entity.getData());
+    repModel.setDomains(entity.getDomains());
 
     return repModel;
   }
@@ -52,6 +53,7 @@ public class UserRepresentationModelAssembler
     user.setOrgLevel2(repModel.getOrgLevel2());
     user.setOrgLevel1(repModel.getOrgLevel1());
     user.setData(repModel.getData());
+    user.setDomains(repModel.getDomains());
 
     return user;
   }
