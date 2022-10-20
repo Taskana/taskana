@@ -81,7 +81,7 @@ import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 public class TaskanaEngineImpl implements TaskanaEngine {
 
   // must match the VERSION value in table
-  private static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.0.0";
+  private static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
   private final TaskRoutingManager taskRoutingManager;

@@ -22,6 +22,20 @@ public interface User {
   void setId(String id);
 
   /**
+   * Returns the groups of the User.
+   *
+   * @return userGroups
+   */
+  Set<String> getGroups();
+
+  /**
+   * Sets the groups of the User.
+   *
+   * @param groups the groups of the User
+   */
+  void setGroups(Set<String> groups);
+
+  /**
    * Returns the first name of the User.
    *
    * @return firstName

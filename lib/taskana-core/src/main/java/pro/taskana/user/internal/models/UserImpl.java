@@ -1,6 +1,6 @@
 package pro.taskana.user.internal.models;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -8,6 +8,7 @@ import pro.taskana.user.api.models.User;
 
 public class UserImpl implements User {
   private String id;
+  private Set<String> groups = Collections.emptySet();
   private String firstName;
   private String lastName;
   private String fullName;
@@ -20,12 +21,13 @@ public class UserImpl implements User {
   private String orgLevel2;
   private String orgLevel1;
   private String data;
-  private Set<String> domains = new HashSet<>();
+  private Set<String> domains = Collections.emptySet();
 
   public UserImpl() {}
 
   protected UserImpl(UserImpl copyFrom) {
     this.id = copyFrom.id;
+    this.groups = copyFrom.groups;
     this.firstName = copyFrom.firstName;
     this.lastName = copyFrom.lastName;
     this.fullName = copyFrom.fullName;
@@ -49,6 +51,16 @@ public class UserImpl implements User {
   @Override
   public void setId(String id) {
     this.id = id;
+  }
+
+  @Override
+  public Set<String> getGroups() {
+    return groups;
+  }
+
+  @Override
+  public void setGroups(Set<String> groups) {
+    this.groups = groups;
   }
 
   @Override
@@ -189,6 +201,7 @@ public class UserImpl implements User {
   public int hashCode() {
     return Objects.hash(
         id,
+        groups,
         firstName,
         lastName,
         fullName,
@@ -217,6 +230,7 @@ public class UserImpl implements User {
     }
     UserImpl other = (UserImpl) obj;
     return Objects.equals(id, other.id)
+        && Objects.equals(groups, other.groups)
         && Objects.equals(firstName, other.firstName)
         && Objects.equals(lastName, other.lastName)
         && Objects.equals(fullName, other.fullName)
@@ -236,9 +250,11 @@ public class UserImpl implements User {
   public String toString() {
     return "UserImpl [id="
         + id
+        + ", groups="
+        + groups
         + ", firstName="
         + firstName
-        + ", lastname="
+        + ", lastName="
         + lastName
         + ", fullName="
         + fullName
