@@ -49,6 +49,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.assembler.TaskSummaryRepresentationModelAssembler;
+import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
@@ -72,6 +73,43 @@ public class TaskController {
     this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
     this.taskSummaryRepresentationModelAssembler = taskSummaryRepresentationModelAssembler;
   }
+
+  // region CREATE
+
+  /**
+   * This endpoint creates a persistent Task.
+   *
+   * @param taskRepresentationModel the Task which should be created.
+   * @return the created Task
+   * @throws WorkbasketNotFoundException if the referenced Workbasket does not exist
+   * @throws ClassificationNotFoundException if the referenced Classification does not exist
+   * @throws NotAuthorizedException if the current user is not authorized to append a Task to the
+   *     referenced Workbasket
+   * @throws TaskAlreadyExistException if the requested Task already exists.
+   * @throws InvalidArgumentException if any input is semantically wrong.
+   * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
+   *     without using the task-methods
+   * @throws ObjectReferencePersistenceException if an ObjectReference with ID will be added
+   *     multiple times without using the task-methods
+   * @title Create a new Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> createTask(
+      @RequestBody TaskRepresentationModel taskRepresentationModel)
+      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
+          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
+          ObjectReferencePersistenceException {
+    Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
+    Task createdTask = taskService.createTask(fromResource);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(taskRepresentationModelAssembler.toModel(createdTask));
+  }
+
+  // endregion
+
+  // region READ
 
   /**
    * This endpoint retrieves a list of existing Tasks. Filters can be applied.
@@ -117,50 +155,6 @@ public class TaskController {
   }
 
   /**
-   * This endpoint deletes an aggregation of Tasks and returns the deleted Tasks. Filters can be
-   * applied.
-   *
-   * @title Delete multiple Tasks
-   * @param filterParameter the filter parameters
-   * @param filterCustomFields the filter parameters regarding TaskCustomFields
-   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
-   * @return the deleted task summaries
-   * @throws InvalidArgumentException TODO: this is never thrown
-   * @throws NotAuthorizedException if the current user is not authorized to delete the requested
-   *     Tasks.
-   */
-  @DeleteMapping(path = RestEndpoints.URL_TASKS)
-  @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<TaskSummaryCollectionRepresentationModel> deleteTasks(
-      TaskQueryFilterParameter filterParameter,
-      TaskQueryFilterCustomFields filterCustomFields,
-      TaskQueryFilterCustomIntFields filterCustomIntFields)
-      throws InvalidArgumentException, NotAuthorizedException {
-    TaskQuery query = taskService.createTaskQuery();
-    filterParameter.apply(query);
-    filterCustomFields.apply(query);
-    filterCustomIntFields.apply(query);
-
-    List<TaskSummary> taskSummaries = query.list();
-
-    List<String> taskIdsToDelete =
-        taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
-
-    BulkOperationResults<String, TaskanaException> result =
-        taskService.deleteTasks(taskIdsToDelete);
-
-    Set<String> failedIds = new HashSet<>(result.getFailedIds());
-    List<TaskSummary> successfullyDeletedTaskSummaries =
-        taskSummaries.stream()
-            .filter(not(summary -> failedIds.contains(summary.getId())))
-            .collect(Collectors.toList());
-
-    return ResponseEntity.ok(
-        taskSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
-            successfullyDeletedTaskSummaries));
-  }
-
-  /**
    * This endpoint retrieves a specific Task.
    *
    * @param taskId the Id of the requested Task
@@ -177,6 +171,10 @@ public class TaskController {
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
   }
+
+  // endregion
+
+  // region UPDATE
 
   /**
    * This endpoint claims a Task if possible.
@@ -198,8 +196,108 @@ public class TaskController {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     // TODO verify user
-    taskService.claim(taskId);
-    Task updatedTask = taskService.getTask(taskId);
+    Task updatedTask = taskService.claim(taskId);
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint force claims a Task if possible even if it is already claimed by someone else.
+   *
+   * @param taskId the Id of the Task which should be force claimed
+   * @param userName TODO: this is currently not used
+   * @return the force claimed Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the state of Task with taskId is in an END_STATE.
+   * @throws InvalidOwnerException cannot be thrown.
+   * @throws NotAuthorizedException if the current user has no read permissions for the requested
+   *     Task.
+   * @title Force claim a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceClaimTask(
+      @PathVariable String taskId, @RequestBody(required = false) String userName)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    // TODO verify user
+    Task updatedTask = taskService.forceClaim(taskId);
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint selects the first Task returned by the Task Query and claims it.
+   *
+   * @param filterParameter the filter parameters
+   * @param filterCustomFields the filter parameters regarding TaskCustomFields
+   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
+   * @param sortParameter the sort parameters
+   * @return the claimed Task
+   * @throws InvalidOwnerException if the Task is already claimed by someone else
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Select and claim a Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
+      TaskQueryFilterParameter filterParameter,
+      TaskQueryFilterCustomFields filterCustomFields,
+      TaskQueryFilterCustomIntFields filterCustomIntFields,
+      TaskQuerySortParameter sortParameter)
+      throws InvalidOwnerException, NotAuthorizedException {
+    TaskQuery query = taskService.createTaskQuery();
+
+    filterParameter.apply(query);
+    filterCustomFields.apply(query);
+    filterCustomIntFields.apply(query);
+    sortParameter.apply(query);
+
+    Task selectedAndClaimedTask = taskService.selectAndClaim(query);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(selectedAndClaimedTask));
+  }
+
+  /**
+   * This endpoint cancels the claim of an existing Task if it was claimed by the current user
+   * before.
+   *
+   * @param taskId the Id of the requested Task.
+   * @return the unclaimed Task.
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the Task is already in an end state.
+   * @throws InvalidOwnerException if the Task is claimed by a different user.
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Cancel a claimed Task
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    Task updatedTask = taskService.cancelClaim(taskId);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint force cancels the claim of an existing Task.
+   *
+   * @param taskId the Id of the requested Task.
+   * @return the unclaimed Task.
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the Task is already in an end state.
+   * @throws InvalidOwnerException if the Task is claimed by a different user.
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Force cancel a claimed Task
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
+          NotAuthorizedException {
+    Task updatedTask = taskService.forceCancelClaim(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
@@ -288,83 +386,6 @@ public class TaskController {
   }
 
   /**
-   * This endpoint selects the first Task returned by the Task Query and claims it.
-   *
-   * @param filterParameter the filter parameters
-   * @param filterCustomFields the filter parameters regarding TaskCustomFields
-   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
-   * @param sortParameter the sort parameters
-   * @return the claimed Task
-   * @throws InvalidOwnerException if the Task is already claimed by someone else
-   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
-   *     the Task is in
-   * @title Select and claim a Task
-   */
-  @PostMapping(path = RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM)
-  @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
-      TaskQueryFilterParameter filterParameter,
-      TaskQueryFilterCustomFields filterCustomFields,
-      TaskQueryFilterCustomIntFields filterCustomIntFields,
-      TaskQuerySortParameter sortParameter)
-      throws InvalidOwnerException, NotAuthorizedException {
-    TaskQuery query = taskService.createTaskQuery();
-
-    filterParameter.apply(query);
-    filterCustomFields.apply(query);
-    filterCustomIntFields.apply(query);
-    sortParameter.apply(query);
-
-    Task selectedAndClaimedTask = taskService.selectAndClaim(query);
-
-    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(selectedAndClaimedTask));
-  }
-
-  /**
-   * This endpoint cancels the claim of an existing Task if it was claimed by the current user
-   * before.
-   *
-   * @param taskId the Id of the requested Task.
-   * @return the unclaimed Task.
-   * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException if the Task is already in an end state.
-   * @throws InvalidOwnerException if the Task is claimed by a different user.
-   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
-   *     the Task is in
-   * @title Cancel a claimed Task
-   */
-  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
-  @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
-    Task updatedTask = taskService.cancelClaim(taskId);
-
-    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-  }
-
-  /**
-   * This endpoint force cancels the claim of an existing Task.
-   *
-   * @param taskId the Id of the requested Task.
-   * @return the unclaimed Task.
-   * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException if the Task is already in an end state.
-   * @throws InvalidOwnerException if the Task is claimed by a different user.
-   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
-   *     the Task is in
-   * @title Force cancel a claimed Task
-   */
-  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
-  @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
-          NotAuthorizedException {
-    Task updatedTask = taskService.forceCancelClaim(taskId);
-    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
-  }
-
-  /**
    * This endpoint completes a Task.
    *
    * @param taskId Id of the requested Task to complete.
@@ -382,29 +403,32 @@ public class TaskController {
       throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
           NotAuthorizedException {
 
-    Task updatedTask = taskService.forceCompleteTask(taskId);
+    Task updatedTask = taskService.completeTask(taskId);
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
-   * This endpoint deletes a Task.
+   * This endpoint force completes a Task.
    *
-   * @title Delete a Task
-   * @param taskId the Id of the Task which should be deleted.
-   * @return the deleted Task.
+   * @param taskId Id of the requested Task to force complete.
+   * @return the force completed Task
    * @throws TaskNotFoundException if the requested Task does not exist.
-   * @throws InvalidStateException TODO: this is never thrown
-   * @throws NotAuthorizedException if the current user is not authorized to delete the requested
-   *     Task.
+   * @throws InvalidOwnerException cannot be thrown.
+   * @throws InvalidStateException if the state of the Task with taskId is TERMINATED or CANCELED
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Force complete a Task
    */
-  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID)
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE_FORCE)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
-    taskService.forceDeleteTask(taskId);
+  public ResponseEntity<TaskRepresentationModel> forceCompleteTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidOwnerException, InvalidStateException,
+          NotAuthorizedException {
 
-    return ResponseEntity.noContent().build();
+    Task updatedTask = taskService.forceCompleteTask(taskId);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
   /**
@@ -430,34 +454,23 @@ public class TaskController {
   }
 
   /**
-   * This endpoint creates a persistent Task.
+   * This endpoint terminates a Task. Termination is an administrative action to complete a Task.
    *
-   * @param taskRepresentationModel the Task which should be created.
-   * @return the created Task
-   * @throws WorkbasketNotFoundException if the referenced Workbasket does not exist
-   * @throws ClassificationNotFoundException if the referenced Classification does not exist
-   * @throws NotAuthorizedException if the current user is not authorized to append a Task to the
-   *     referenced Workbasket
-   * @throws TaskAlreadyExistException if the requested Task already exists.
-   * @throws InvalidArgumentException if any input is semantically wrong.
-   * @throws AttachmentPersistenceException if an Attachment with ID will be added multiple times
-   *     without using the task-methods
-   * @throws ObjectReferencePersistenceException if an ObjectReference with ID will be added
-   *     multiple times without using the task-methods
-   * @title Create a new Task
+   * @param taskId Id of the requested Task to terminate.
+   * @return the terminated Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException if the task is not in state READY or CLAIMED
+   * @throws NotAuthorizedException if the current user isn't an administrator (ADMIN/TASKADMIN)
+   * @title Terminate a Task
    */
-  @PostMapping(path = RestEndpoints.URL_TASKS)
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_TERMINATE)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> createTask(
-      @RequestBody TaskRepresentationModel taskRepresentationModel)
-      throws WorkbasketNotFoundException, ClassificationNotFoundException, NotAuthorizedException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException {
-    Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
-    Task createdTask = taskService.createTask(fromResource);
+  public ResponseEntity<TaskRepresentationModel> terminateTask(@PathVariable String taskId)
+      throws TaskNotFoundException, NotAuthorizedException, InvalidStateException {
 
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(taskRepresentationModelAssembler.toModel(createdTask));
+    Task terminatedTask = taskService.terminateTask(taskId);
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(terminatedTask));
   }
 
   /**
@@ -526,6 +539,119 @@ public class TaskController {
     task = taskService.updateTask(task);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
   }
+
+  /**
+   * This endpoint sets the 'isRead' property of a Task.
+   *
+   * @param taskId Id of the requested Task to set read or unread.
+   * @param isRead if true, the Task property isRead is set to true, else it's set to false
+   * @return the updated Task
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws NotAuthorizedException if the current user has no read permission for the Workbasket
+   *     the Task is in
+   * @title Set a Task read or unread
+   */
+  @PostMapping(path = RestEndpoints.URL_TASKS_ID_SET_READ)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> setTaskRead(
+      @PathVariable String taskId, @RequestBody IsReadRepresentationModel isRead)
+      throws TaskNotFoundException, NotAuthorizedException {
+
+    Task updatedTask = taskService.setTaskRead(taskId, isRead.getIsRead());
+
+    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  // endregion
+
+  // region DELETE
+
+  /**
+   * This endpoint deletes a Task.
+   *
+   * @title Delete a Task
+   * @param taskId the Id of the Task which should be deleted.
+   * @return the deleted Task.
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException If the Task is not in an END_STATE
+   * @throws NotAuthorizedException if the current user isn't an administrator (ADMIN)
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    taskService.deleteTask(taskId);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * This endpoint force deletes a Task even if it's not completed.
+   *
+   * @title Force delete a Task
+   * @param taskId the Id of the Task which should be force deleted.
+   * @return the force deleted Task.
+   * @throws TaskNotFoundException if the requested Task does not exist.
+   * @throws InvalidStateException If the Task is not TERMINATED or CANCELLED and the Callback state
+   *     of the Task is CALLBACK_PROCESSING_REQUIRED
+   * @throws NotAuthorizedException if the current user isn't an administrator (ADMIN) Task.
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_FORCE)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskRepresentationModel> forceDeleteTask(@PathVariable String taskId)
+      throws TaskNotFoundException, InvalidStateException, NotAuthorizedException {
+    taskService.forceDeleteTask(taskId);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * This endpoint deletes an aggregation of Tasks and returns the deleted Tasks. Filters can be
+   * applied.
+   *
+   * @title Delete multiple Tasks
+   * @param filterParameter the filter parameters
+   * @param filterCustomFields the filter parameters regarding TaskCustomFields
+   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
+   * @return the deleted task summaries
+   * @throws InvalidArgumentException TODO: this is never thrown
+   * @throws NotAuthorizedException if the current user is not authorized to delete the requested
+   *     Tasks.
+   */
+  @DeleteMapping(path = RestEndpoints.URL_TASKS)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<TaskSummaryCollectionRepresentationModel> deleteTasks(
+      TaskQueryFilterParameter filterParameter,
+      TaskQueryFilterCustomFields filterCustomFields,
+      TaskQueryFilterCustomIntFields filterCustomIntFields)
+      throws InvalidArgumentException, NotAuthorizedException {
+    TaskQuery query = taskService.createTaskQuery();
+    filterParameter.apply(query);
+    filterCustomFields.apply(query);
+    filterCustomIntFields.apply(query);
+
+    List<TaskSummary> taskSummaries = query.list();
+
+    List<String> taskIdsToDelete =
+        taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+
+    BulkOperationResults<String, TaskanaException> result =
+        taskService.deleteTasks(taskIdsToDelete);
+
+    Set<String> failedIds = new HashSet<>(result.getFailedIds());
+    List<TaskSummary> successfullyDeletedTaskSummaries =
+        taskSummaries.stream()
+            .filter(not(summary -> failedIds.contains(summary.getId())))
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(
+        taskSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
+            successfullyDeletedTaskSummaries));
+  }
+
+  // endregion
+
+  // region TaskQuery
 
   public enum TaskQuerySortBy implements QuerySortBy<TaskQuery> {
     CLASSIFICATION_KEY(TaskQuery::orderByClassificationKey),
@@ -608,4 +734,7 @@ public class TaskController {
       return super.getSortBy();
     }
   }
+
+  // endregion
+
 }

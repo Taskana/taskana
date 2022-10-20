@@ -8,8 +8,7 @@ This is the REST documentation for http://taskana.pro)[TASKANA] - the world's fi
 Whenever a parameter is an array type, several values can be passed by declaring that parameter multiple times.
 
 Whenever a parameter is a complex type, the attributes of the value-object can be passed as a json.
-For example, a complex parameter with the name "complex-query-param" and attributes "attribute1" and "attribute2"
-would be specified in the following way: +
+For example, a complex parameter with the name "complex-query-param" and attributes "attribute1" and "attribute2" would be specified in the following way: +
 complex-query-param={"attribute1":"value1","attribute2":"value2"}
 
 === Hypermedia Support
@@ -101,6 +100,7 @@ include::{snippets}/TaskControllerRestDocTest/getSpecificTaskDocTest/auto-sectio
 include::{snippets}/TaskControllerRestDocTest/getAllTasksDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/updateTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/claimTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/forceClaimTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/selectAndClaimTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/cancelClaimTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/forceCancelClaimTaskDocTest/auto-section.adoc[]
@@ -109,9 +109,13 @@ include::{snippets}/TaskControllerRestDocTest/forceRequestReviewTaskDocTest/auto
 include::{snippets}/TaskControllerRestDocTest/requestChangesTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/forceRequestChangesTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/completeTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/forceCompleteTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/cancelTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/terminateTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/transferTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/setTaskReadDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/deleteTaskDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/forceDeleteTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/deleteTasksDocTest/auto-section.adoc[]
 
 == Task Comment Resource

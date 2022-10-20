@@ -169,9 +169,9 @@ public interface TaskService {
    * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to be claimed
    * @return the claimed {@linkplain Task}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
-   * @throws InvalidStateException if the {@linkplain Task#getState() state} of the {@linkplain
-   *     Task} with taskId isn't {@linkplain TaskState#READY}
-   * @throws InvalidOwnerException if the {@linkplain Task} with taskId is claimed by someone else
+   * @throws InvalidStateException if the state of Task with taskId is in {@linkplain
+   *     TaskState#END_STATES}
+   * @throws InvalidOwnerException cannot be thrown
    * @throws NotAuthorizedException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
@@ -216,8 +216,7 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
    * @throws InvalidStateException if the {@linkplain Task} is already in one of the {@linkplain
    *     TaskState#END_STATES}
-   * @throws InvalidOwnerException if forceCancel is false and the {@linkplain Task} is claimed by
-   *     another user
+   * @throws InvalidOwnerException cannot be thrown
    * @throws NotAuthorizedException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
@@ -326,7 +325,9 @@ public interface TaskService {
    * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} which should be
    *     completed
    * @return the updated {@linkplain Task} after completion
-   * @throws InvalidStateException if the {@linkplain Task} with taskId wasn't claimed before
+   * @throws InvalidStateException if the {@linkplain Task#getState() state} of the {@linkplain
+   *     Task} with taskId is with taskId is {@linkplain TaskState#TERMINATED} or {@linkplain
+   *     TaskState#CANCELLED}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException if current user isn't the {@linkplain Task#getOwner() owner} of
    *     the {@linkplain Task} or {@linkplain TaskanaRole#ADMIN}
@@ -389,13 +390,13 @@ public interface TaskService {
    *
    * <p>This is typically done by administration to correct any technical issue.
    *
-   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to cancel
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} to terminate
    * @return the updated {@linkplain Task}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidStateException if the {@linkplain Task} isn't in {@linkplain TaskState#READY} or
    *     {@linkplain TaskState#CLAIMED}
    * @throws NotAuthorizedException if the current user isn't member of {@linkplain
-   *     TaskanaRole#ADMIN} or {@linkplain TaskanaRole#BUSINESS_ADMIN}
+   *     TaskanaRole#ADMIN} or {@linkplain TaskanaRole#TASK_ADMIN}
    */
   Task terminateTask(String taskId)
       throws TaskNotFoundException, InvalidStateException, NotAuthorizedException;
@@ -710,8 +711,9 @@ public interface TaskService {
    * @throws TaskNotFoundException if the given {@linkplain Task#getId() id} doesn't refer to an
    *     existing {@linkplain Task}
    * @throws InvalidStateException if the {@linkplain Task#getState() state} of the referenced
-   *     {@linkplain Task} isn't one of the {@linkplain TaskState#END_STATES} and forceDelete is
-   *     false
+   *     {@linkplain Task} isn't {@linkplain TaskState#TERMINATED} or {@linkplain
+   *     TaskState#CANCELLED} and the Callback State of the Task is {@linkplain
+   *     CallbackState#CALLBACK_PROCESSING_REQUIRED}
    * @throws NotAuthorizedException if the current user isn't member of {@linkplain
    *     TaskanaRole#ADMIN}
    */
