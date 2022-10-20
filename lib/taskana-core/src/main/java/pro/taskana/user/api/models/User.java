@@ -206,8 +206,9 @@ public interface User {
   /**
    * Returns the domains of the User.
    *
-   * <p>The domains are derived from the workbasket permissions and the according Taskana property
-   * {@linkplain TaskanaEngineConfiguration#getMinimalPermissionsToAssignDomains()}.
+   * <p>The domains are derived from the {@linkplain pro.taskana.workbasket.api.WorkbasketPermission
+   * WorkbasketPermissions} and the according TASKANA property {@linkplain
+   * TaskanaEngineConfiguration#getMinimalPermissionsToAssignDomains()}.
    *
    * @return domains
    */
