@@ -310,13 +310,13 @@ class UserServiceAccTest {
     @WithAccessId(user = "businessadmin")
     @Test
     void should_MakeAccessIdsLowerCase_When_ConfigurationPropertyIsSet() throws Exception {
-      User existingUser =
-          randomTestUser()
-              .id("USER-ID-WITH-CAPS")
-              .groups(Set.of("GROUP1-ID-WITH-CAPS", "Group2-Id-With-Caps"))
-              .buildAndStore(userService);
+      User userToCreate = userService.newUser();
+      userToCreate.setId("USER-ID-WITH-CAPS");
+      userToCreate.setFirstName("firstName");
+      userToCreate.setLastName("lastName");
+      userToCreate.setGroups(Set.of("GROUP1-ID-WITH-CAPS", "Group2-Id-With-Caps"));
 
-      User userInDatabase = userService.getUser(existingUser.getId());
+      User userInDatabase = userService.createUser(userToCreate);
 
       assertThat(userInDatabase.getId()).isEqualTo("user-id-with-caps");
       assertThat(userInDatabase.getGroups())
@@ -388,17 +388,36 @@ class UserServiceAccTest {
     @WithAccessId(user = "businessadmin")
     @TestFactory
     Stream<DynamicTest>
+        should_AutomaticallySetTheFullName_When_UpdatingUserWithEmptyOrNullFullName() {
+      Stream<String> fullNames = Stream.of(null, "");
+
+      ThrowingConsumer<String> test =
+          fullName -> {
+            User userToUpdate = randomTestUser().buildAndStore(userService);
+            userToUpdate.setFirstName("Martina");
+            userToUpdate.setLastName("Schmidt");
+            userToUpdate.setFullName(fullName);
+
+            User updatedUser = userService.updateUser(userToUpdate);
+
+            assertThat(updatedUser.getFullName()).isEqualTo("Schmidt, Martina");
+          };
+
+      return DynamicTest.stream(fullNames, l -> "for " + l, test);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @TestFactory
+    Stream<DynamicTest>
         should_AutomaticallySetTheLongName_When_UpdatingUserWithEmptyOrNullLongName() {
-      Stream<String> longNames = Stream.of(null, "", "old longName");
+      Stream<String> longNames = Stream.of(null, "");
 
       ThrowingConsumer<String> test =
           longName -> {
             User userToUpdate = randomTestUser().buildAndStore(userService);
             userToUpdate.setFirstName("Martina");
             userToUpdate.setLastName("Schmidt");
-            if (longName == null || !longName.equals("old longName")) {
-              userToUpdate.setLongName(longName);
-            }
+            userToUpdate.setLongName(longName);
 
             User updatedUser = userService.updateUser(userToUpdate);
 
@@ -410,31 +429,95 @@ class UserServiceAccTest {
     }
 
     @WithAccessId(user = "businessadmin")
-    @TestFactory
-    Stream<DynamicTest>
-        should_AutomaticallySetTheFullName_When_UpdatingUserWithEmptyOrNullOrOldFullName() {
-      Stream<String> fullNames = Stream.of(null, "", "old fullName");
+    @Test
+    void should_AutomaticallySetTheFullAndLongName_When_UpdatingFirstName() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setFirstName("Martina");
 
-      ThrowingConsumer<String> test =
-          fullName -> {
-            User userToUpdate = randomTestUser().buildAndStore(userService);
-            userToUpdate.setFirstName("Martina");
-            userToUpdate.setLastName("Schmidt");
-            if (fullName == null || !fullName.equals("old fullName")) {
-              userToUpdate.setFullName(fullName);
-            }
+      User updatedUser = userService.updateUser(userToUpdate);
 
-            User updatedUser = userService.updateUser(userToUpdate);
-
-            assertThat(updatedUser.getFullName()).isEqualTo("Schmidt, Martina");
-          };
-
-      return DynamicTest.stream(fullNames, l -> "for " + l, test);
+      assertThat(updatedUser.getFullName()).isEqualTo("%s, Martina", updatedUser.getLastName());
+      assertThat(updatedUser.getLongName())
+          .isEqualTo("%s, Martina - (%s)", userToUpdate.getLastName(), userToUpdate.getId());
     }
 
     @WithAccessId(user = "businessadmin")
     @Test
-    void should_KeepLongName_When_UpdatingUserWithLongNameDefined() throws Exception {
+    void should_AutomaticallySetTheFullAndLongName_When_UpdatingLastName() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setLastName("Schmidt");
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getFullName()).isEqualTo("Schmidt, %s", updatedUser.getFirstName());
+      assertThat(updatedUser.getLongName())
+          .isEqualTo("Schmidt, %s - (%s)", userToUpdate.getFirstName(), userToUpdate.getId());
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_KeepFullName_When_UpdatingFirstNameWithFullNameDefined() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setFirstName("Martina");
+      userToUpdate.setFullName("full name");
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getFullName()).isEqualTo("full name");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_KeepFullName_When_UpdatingLastNameWithFullNameDefined() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setLastName("Schmidt");
+      userToUpdate.setFullName("full name");
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getFullName()).isEqualTo("full name");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_KeepFullName_When_UpdatingFirstAndLastNameWithFullNameDefined() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setFirstName("Martina");
+      userToUpdate.setLastName("Schmidt");
+      userToUpdate.setFullName("full name");
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getFullName()).isEqualTo("full name");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_KeepLongName_When_UpdatingFirstNameWithLongNameDefined() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setFirstName("Martina");
+      userToUpdate.setLongName("long name");
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getLongName()).isEqualTo("long name");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_KeepLongName_When_UpdatingLastNameWithLongNameDefined() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setLastName("Schmidt");
+      userToUpdate.setLongName("long name");
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getLongName()).isEqualTo("long name");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_KeepLongName_When_UpdatingFirstAndLastNameWithLongNameDefined() throws Exception {
       User userToUpdate = randomTestUser().buildAndStore(userService);
       userToUpdate.setFirstName("Martina");
       userToUpdate.setLastName("Schmidt");
@@ -447,15 +530,14 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "businessadmin")
     @Test
-    void should_KeepFullName_When_UpdatingUserWithFullNameDefined() throws Exception {
+    void should_MakeGroupIdsLowerCase_When_UpdatingUserWithUpperCaseGroups() throws Exception {
       User userToUpdate = randomTestUser().buildAndStore(userService);
-      userToUpdate.setFirstName("Martina");
-      userToUpdate.setLastName("Schmidt");
-      userToUpdate.setFullName("full name");
+      userToUpdate.setGroups(Set.of("GROUP1-ID-WITH-CAPS", "Group2-Id-With-Caps"));
 
       User updatedUser = userService.updateUser(userToUpdate);
 
-      assertThat(updatedUser.getFullName()).isEqualTo("full name");
+      assertThat(updatedUser.getGroups())
+          .containsExactlyInAnyOrder("group1-id-with-caps", "group2-id-with-caps");
     }
 
     @WithAccessId(user = "businessadmin")
@@ -773,16 +855,33 @@ class UserServiceAccTest {
 
       @WithAccessId(user = "user-1-1")
       @Test
+      void should_ReturnEmptyDomains_When_GroupHasInsufficientMinimalPermissionsToAssignDomains()
+          throws Exception {
+        String groupId = UUID.randomUUID().toString();
+        User user =
+            randomTestUser().groups(Set.of(groupId)).buildAndStore(userService, "businessadmin");
+        Workbasket workbasket =
+            defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+        createAccessItem(groupId, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+
+        User userInDatabase = userService.getUser(user.getId());
+
+        assertThat(userInDatabase.getDomains()).isEmpty();
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
       void should_ReturnOneDomain_When_UserHasSufficientMinimalPermissionsToAssignDomains()
           throws Exception {
         User user = randomTestUser().buildAndStore(userService, "businessadmin");
         Workbasket workbasket =
             defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
-        createAccessItem(user.getId(), workbasket, WorkbasketPermission.APPEND);
+        createAccessItem(
+            user.getId(), workbasket, WorkbasketPermission.READ, WorkbasketPermission.APPEND);
 
         User userInDatabase = userService.getUser(user.getId());
 
-        assertThat(userInDatabase.getDomains()).isEmpty();
+        assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
       }
 
       @WithAccessId(user = "user-1-1")
@@ -794,11 +893,12 @@ class UserServiceAccTest {
             randomTestUser().groups(Set.of(groupId)).buildAndStore(userService, "businessadmin");
         Workbasket workbasket =
             defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
-        createAccessItem(groupId, workbasket, WorkbasketPermission.APPEND);
+        createAccessItem(
+            groupId, workbasket, WorkbasketPermission.READ, WorkbasketPermission.APPEND);
 
         User userInDatabase = userService.getUser(user.getId());
 
-        assertThat(userInDatabase.getDomains()).isEmpty();
+        assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
       }
     }
 

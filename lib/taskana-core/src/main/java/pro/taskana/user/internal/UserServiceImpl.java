@@ -194,11 +194,11 @@ public class UserServiceImpl implements UserService {
           || newUser.getLongName().equals(oldUser.getLongName())) {
         newUser.setLongName(newUser.getFullName() + " - (" + newUser.getId() + ")");
       }
-      if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
-        newUser.setId(newUser.getId().toLowerCase());
-        newUser.setGroups(
-            newUser.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
-      }
+    }
+    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+      newUser.setId(newUser.getId().toLowerCase());
+      newUser.setGroups(
+          newUser.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
     }
   }
 }
