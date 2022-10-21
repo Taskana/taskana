@@ -143,26 +143,6 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   WorkbasketQuery ownerLike(String... owners);
 
   /**
-   * Setting up the permission which should be granted on the result workbaskets and the users which
-   * should be checked. READ permission will always be checked by default.<br>
-   * The AccessIds and the given permission will throw an Exception if they would be NULL.
-   *
-   * @param permission which should be used for results.
-   * @param accessIds Users which should be checked for given permissions on workbaskets.
-   * @return the current query object.
-   * @throws InvalidArgumentException if permission OR the accessIds are NULL.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
-   * @deprecated Use {@linkplain #accessIdsHavePermissions(List, String...)} instead
-   */
-  @Deprecated(forRemoval = true)
-  default WorkbasketQuery accessIdsHavePermission(
-      WorkbasketPermission permission, String... accessIds)
-      throws InvalidArgumentException, NotAuthorizedException {
-    return accessIdsHavePermissions(List.of(permission), accessIds);
-  }
-
-  /**
    * Setting up the permissions which should be granted on the result workbaskets and the users
    * which should be checked. READ permission will always be checked by default.<br>
    * The AccessIds and the given permission will throw an Exception if they would be NULL.
@@ -177,19 +157,6 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
   WorkbasketQuery accessIdsHavePermissions(
       List<WorkbasketPermission> permissions, String... accessIds)
       throws InvalidArgumentException, NotAuthorizedException;
-
-  /**
-   * Add condition to query if the caller (one of the accessIds of the caller) has the given
-   * permission on the workbasket.
-   *
-   * @param permission the permission for the query condition.
-   * @return the updated query.
-   * @deprecated Use {@linkplain #callerHasPermissions(WorkbasketPermission...)} instead
-   */
-  @Deprecated(forRemoval = true)
-  default WorkbasketQuery callerHasPermission(WorkbasketPermission permission) {
-    return callerHasPermissions(permission);
-  }
 
   /**
    * Add condition to query if the caller (one of the accessIds of the caller) has the given

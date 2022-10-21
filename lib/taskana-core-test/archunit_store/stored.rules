@@ -1,6 +1,6 @@
 #
-#Wed Oct 19 12:37:50 CEST 2022
-slices\ matching\ 'pro.taskana.(**)'\ should\ be\ free\ of\ cycles=f5ab0e52-6a11-49c9-b359-8abd1f62775f
-methods\ that\ are\ annotated\ with\ @Test\ or\ annotated\ with\ @TestFactory\ or\ annotated\ with\ @TestTemplate\ and\ are\ not\ declared\ in\ acceptance.ArchitectureTest\ should\ be\ package\ private\ and\ should\ have\ name\ matching\ '^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$'=c090f321-461a-42f5-8bda-450994737ca7
-slices\ assigned\ from\ every\ single\ class\ should\ be\ free\ of\ cycles=da0a823c-abf2-4622-a420-044ce06dc6c0
-no\ classes\ should\ use\ field\ injection,\ because\ field\ injection\ is\ considered\ harmful;\ use\ constructor\ injection\ or\ setter\ injection\ instead;\ see\ https\://stackoverflow.com/q/39890849\ for\ detailed\ explanations=5cb8b13e-0834-4d4a-82b2-98ffbe0a62ab
+#Fri Oct 21 10:36:52 CEST 2022
+slices\ matching\ 'pro.taskana.(**)'\ should\ be\ free\ of\ cycles=3f40a4e0-31e2-4b71-9888-db9743f444f3
+methods\ that\ are\ annotated\ with\ @Test\ or\ annotated\ with\ @TestFactory\ or\ annotated\ with\ @TestTemplate\ and\ are\ not\ declared\ in\ acceptance.ArchitectureTest\ should\ be\ package\ private\ and\ should\ have\ name\ matching\ '^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$'=3b09ec6b-a513-4302-b979-7883f862bcf7
+slices\ assigned\ from\ every\ single\ class\ should\ be\ free\ of\ cycles=9df9dbe0-67fb-4a18-89d7-1e2abd5becb8
+no\ classes\ should\ use\ field\ injection,\ because\ field\ injection\ is\ considered\ harmful;\ use\ constructor\ injection\ or\ setter\ injection\ instead;\ see\ https\://stackoverflow.com/q/39890849\ for\ detailed\ explanations=9564025a-d09c-48b5-8741-75d7ca975299
