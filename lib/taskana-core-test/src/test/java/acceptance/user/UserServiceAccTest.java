@@ -8,10 +8,14 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 import static pro.taskana.testapi.DefaultTestEntities.randomTestUser;
 import static pro.taskana.testapi.builder.UserBuilder.newUser;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.assertj.core.api.Condition;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
@@ -69,18 +73,6 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "user-1-1")
     @Test
-    void should_ThrowUserNotFoundException_When_TryingToGetUserWithNonExistingId() {
-      ThrowingCallable callable = () -> userService.getUser("NOT_EXISTING");
-
-      assertThatThrownBy(callable)
-          .isInstanceOf(UserNotFoundException.class)
-          .extracting(UserNotFoundException.class::cast)
-          .extracting(UserNotFoundException::getUserId)
-          .isEqualTo("NOT_EXISTING");
-    }
-
-    @WithAccessId(user = "user-1-1")
-    @Test
     void should_ReturnUserWithAllFields_When_TryingToGetUserWithIdExisting() throws Exception {
       final User userToGet =
           newUser()
@@ -111,6 +103,166 @@ class UserServiceAccTest {
           .isNotSameAs(userToGet)
           .isEqualTo(userToGet);
     }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnUser_When_TryingToGetUserWithIdExistingInCaps() throws Exception {
+      final User userToGet =
+          randomTestUser().id("testuser").buildAndStore(userService, "businessadmin");
+
+      User userInDatabase = userService.getUser("TESTUSER");
+
+      assertThat(userInDatabase).isNotSameAs(userToGet).isEqualTo(userToGet);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowUserNotFoundException_When_TryingToGetUserWithNonExistingId() {
+      ThrowingCallable callable = () -> userService.getUser("NOT_EXISTING");
+
+      assertThatThrownBy(callable)
+          .isInstanceOf(UserNotFoundException.class)
+          .extracting(UserNotFoundException.class::cast)
+          .extracting(UserNotFoundException::getUserId)
+          .isEqualTo("NOT_EXISTING");
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @TestFactory
+    Stream<DynamicTest>
+        should_ThrowInvalidArgumentException_When_TryingToGetUserWithNullOrEmptyId() {
+      Stream<String> userIds = Stream.of(null, "");
+
+      ThrowingConsumer<String> test =
+          userId -> {
+            ThrowingCallable callable = () -> userService.getUser(userId);
+            assertThatThrownBy(callable)
+                .isInstanceOf(InvalidArgumentException.class)
+                .hasMessage("UserId can't be used as NULL-Parameter.");
+          };
+
+      return DynamicTest.stream(userIds, u -> "for " + u, test);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnAllUsers_When_TryingToGetUsersWithIdsExisting() throws Exception {
+      Set<User> users = new HashSet<>();
+      for (int i = 0; i < 10; i++) {
+        users.add(
+            randomTestUser()
+                .groups(Set.of("test1", "test2"))
+                .buildAndStore(userService, "businessadmin"));
+      }
+      Set<String> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+
+      List<User> returnedUsers = userService.getUsers(userIds);
+
+      assertThat(returnedUsers).containsExactlyInAnyOrderElementsOf(users);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_DetermineDomains_When_WorkbasketPermissionsExistForUsers() throws Exception {
+      Workbasket workbasketDomainA =
+          defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(
+          "group-domaina", workbasketDomainA, WorkbasketPermission.READ, WorkbasketPermission.OPEN);
+      Workbasket workbasketDomainB =
+          defaultTestWorkbasket()
+              .domain("DOMAIN_B")
+              .buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(
+          "group-domainb", workbasketDomainB, WorkbasketPermission.READ, WorkbasketPermission.OPEN);
+      Set<User> users = new HashSet<>();
+      for (int i = 0; i < 6; i++) {
+        users.add(
+            randomTestUser()
+                .groups(Set.of("test1", "test2", "group-domaina"))
+                .buildAndStore(userService, "businessadmin"));
+      }
+      for (int i = 0; i < 4; i++) {
+        users.add(
+            randomTestUser()
+                .groups(Set.of("test1", "test2", "group-domainb"))
+                .buildAndStore(userService, "businessadmin"));
+      }
+      Set<String> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+
+      List<User> returnedUsers = userService.getUsers(userIds);
+
+      assertThat(returnedUsers)
+          .extracting(User::getDomains)
+          .areExactly(
+              6,
+              new Condition<>(
+                  domains -> Set.of(workbasketDomainA.getDomain()).equals(domains), "DOMAIN_A"))
+          .areExactly(
+              4,
+              new Condition<>(
+                  domains -> Set.of(workbasketDomainB.getDomain()).equals(domains), "DOMAIN_B"));
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnAllUsers_When_TryingToGetUsersWithIdsExistingInCaps() throws Exception {
+      Set<User> users = new HashSet<>();
+      for (int i = 0; i < 10; i++) {
+        users.add(
+            randomTestUser()
+                .groups(Set.of("test1", "test2"))
+                .buildAndStore(userService, "businessadmin"));
+      }
+      Set<String> userIds =
+          users.stream().map(User::getId).map(String::toUpperCase).collect(Collectors.toSet());
+
+      List<User> returnedUsers = userService.getUsers(userIds);
+
+      assertThat(returnedUsers).containsExactlyInAnyOrderElementsOf(users);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnAllValidUsers_When_TryingToGetUsersWithExistingAndNonExisting()
+        throws Exception {
+      Set<String> userIds = new HashSet<>();
+      for (int i = 0; i < 10; i++) {
+        userIds.add(randomTestUser().buildAndStore(userService, "businessadmin").getId());
+      }
+      userIds.add("NOT_EXISTING");
+
+      List<User> users = userService.getUsers(userIds);
+      Set<String> returnedUserIds = users.stream().map(User::getId).collect(Collectors.toSet());
+
+      assertThat(returnedUserIds).doesNotContain("NOT_EXISTING").hasSize(10);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnEmptySet_When_TryingToGetUsersWithOnlyNonExistingIds() throws Exception {
+      Set<String> userIds = Set.of("NOT_EXISTING", "NOT_EXISTING2", "", "fdbgdoijvjg43r4", "\\\\");
+
+      List<User> users = userService.getUsers(userIds);
+
+      assertThat(users).isEmpty();
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @TestFactory
+    Stream<DynamicTest>
+        should_ThrowInvalidArgumentException_When_TryingToGetUsersWithNullOrEmptySet() {
+      Stream<Set<String>> userIds = Stream.of(null, Collections.emptySet());
+
+      ThrowingConsumer<Set<String>> test =
+          userId -> {
+            ThrowingCallable callable = () -> userService.getUsers(userId);
+            assertThatThrownBy(callable)
+                .isInstanceOf(InvalidArgumentException.class)
+                .hasMessage("UserIds can't be used as NULL-Parameter.");
+          };
+
+      return DynamicTest.stream(userIds, u -> "for " + u, test);
+    }
   }
 
   @Nested
@@ -132,9 +284,26 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "businessadmin")
     @Test
+    void should_DetermineDomains_When_AnyPermissionsExistBeforeCreation() throws Exception {
+      String userId = "anton2";
+      Workbasket workbasket = defaultTestWorkbasket().buildAndStore(workbasketService);
+      createAccessItem(userId, workbasket, WorkbasketPermission.READ, WorkbasketPermission.OPEN);
+
+      User userToCreate = userService.newUser();
+      userToCreate.setId(userId);
+      userToCreate.setFirstName("Anton");
+      userToCreate.setLastName("Miller");
+
+      User user = userService.createUser(userToCreate);
+
+      assertThat(user.getDomains()).containsExactly(workbasket.getDomain());
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
     void should_InsertUserInDatabase_When_CreatingUserWithGroups() throws Exception {
       User userToCreate = userService.newUser();
-      userToCreate.setId("anton2");
+      userToCreate.setId("anton3");
       userToCreate.setFirstName("Anton");
       userToCreate.setLastName("Miller");
       userToCreate.setGroups(Set.of("groupX", "groupY"));
@@ -338,6 +507,20 @@ class UserServiceAccTest {
 
       User userInDatabase = userService.getUser(userToUpdate.getId());
       assertThat(userInDatabase).isNotSameAs(userToUpdate).isEqualTo(userToUpdate);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_DetermineDomains_When_AnyPermissionsExistBeforeCreation() throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      Workbasket workbasket = defaultTestWorkbasket().buildAndStore(workbasketService);
+      createAccessItem(
+          userToUpdate.getId(), workbasket, WorkbasketPermission.READ, WorkbasketPermission.OPEN);
+
+      userToUpdate.setFirstName("Anton");
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getDomains()).containsExactly(workbasket.getDomain());
     }
 
     @WithAccessId(user = "businessadmin")

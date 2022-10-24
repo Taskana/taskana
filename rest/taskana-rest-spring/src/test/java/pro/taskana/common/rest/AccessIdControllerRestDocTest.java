@@ -26,7 +26,7 @@ class AccessIdControllerRestDocTest extends BaseRestDocTest {
   @Test
   void searchUsersByNameOrAccessIdForRoleTest() throws Exception {
     mockMvc
-        .perform(get(RestEndpoints.URL_USER + "?search-for=user-1&role=user"))
+        .perform(get(RestEndpoints.URL_ACCESS_ID_WITH_NAME + "?search-for=user-1&role=user"))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 }

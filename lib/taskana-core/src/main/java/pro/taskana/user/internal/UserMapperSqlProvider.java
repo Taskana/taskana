@@ -25,6 +25,16 @@ public class UserMapperSqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  public static String findByIds() {
+    return OPENING_SCRIPT_TAG
+        + "SELECT "
+        + USER_INFO_COLUMNS
+        + "FROM USER_INFO "
+        + "WHERE USER_ID IN (<foreach item='id' collection='ids' separator=',' >#{id}</foreach>) "
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
+  }
+
   public static String findGroupsById() {
     return OPENING_SCRIPT_TAG
         + "SELECT GROUP_ID FROM GROUP_INFO WHERE USER_ID = #{id} "

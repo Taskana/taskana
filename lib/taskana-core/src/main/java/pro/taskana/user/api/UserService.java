@@ -1,5 +1,8 @@
 package pro.taskana.user.api;
 
+import java.util.List;
+import java.util.Set;
+
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
@@ -57,8 +60,21 @@ public interface UserService {
    * @return the retrieved {@linkplain User}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
    *     {@linkplain User#getId() id} inside the database
+   * @throws InvalidArgumentException if the userIds parameter is NULL or empty
    */
-  User getUser(String id) throws UserNotFoundException;
+  User getUser(String id) throws UserNotFoundException, InvalidArgumentException;
+
+  /**
+   * Gets multiple {@linkplain User Users}.
+   *
+   * <p>If a {@linkplain User#getId() userId} can't be found in the database it will be ignored. If
+   * none of the given userIds is valid, the returned list will be empty.
+   *
+   * @param ids the {@linkplain User#getId() ids} of the {@linkplain User Users} to be retrieved
+   * @return the retrieved {@linkplain User Users}
+   * @throws InvalidArgumentException if the userIds parameter is NULL or empty
+   */
+  List<User> getUsers(Set<String> ids) throws InvalidArgumentException;
 
   /**
    * Updates an existing {@linkplain User}.
@@ -92,6 +108,8 @@ public interface UserService {
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
    *     {@linkplain User#getId() id} inside the database
+   * @throws InvalidArgumentException if the userIds parameter is NULL or empty
    */
-  void deleteUser(String id) throws UserNotFoundException, NotAuthorizedException;
+  void deleteUser(String id)
+      throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException;
 }

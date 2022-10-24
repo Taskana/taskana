@@ -28,6 +28,13 @@ class UserControllerRestDocTest extends BaseRestDocTest {
   }
 
   @Test
+  void getUsersDocTest() throws Exception {
+    mockMvc
+        .perform(get(RestEndpoints.URL_USERS + "?user-id=teamlead-1&user-id=user-1-1"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   void createUserDocTest() throws Exception {
     User user = userService.newUser();
     user.setId("user-10-2");

@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.test.rest.RestHelper;
 import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.user.rest.models.UserCollectionRepresentationModel;
 import pro.taskana.user.rest.models.UserRepresentationModel;
 
 /** Tests the endpoints of the UserController. */
@@ -31,8 +32,8 @@ class UserControllerIntTest {
   }
 
   @Test
-  void should_ReturnExistingUser_When_CallingGetEndpoint() throws Exception {
-    String url = restHelper.toUrl(RestEndpoints.URL_USERS_ID, "teamlead-1");
+  void should_ReturnExistingUser() throws Exception {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS_ID, "TEAMLEAD-1");
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<UserRepresentationModel> responseEntity =
@@ -42,6 +43,53 @@ class UserControllerIntTest {
             auth,
             ParameterizedTypeReference.forType(UserRepresentationModel.class));
     assertThat(responseEntity.getBody()).isNotNull();
+  }
+
+  @Test
+  void should_ReturnExistingUsers() throws Exception {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS) + "?user-id=user-1-1&user-id=USER-1-2";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<UserCollectionRepresentationModel> responseEntity =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    UserCollectionRepresentationModel response = responseEntity.getBody();
+    assertThat(response).isNotNull();
+    assertThat(response.getContent()).hasSize(2);
+    assertThat(response.getContent())
+        .extracting("firstName")
+        .containsExactlyInAnyOrder("Max", "Elena");
+  }
+
+  @Test
+  void should_ReturnExistingUsers_When_ParameterContainsDuplicateAndInvalidIds() throws Exception {
+    // also testing different query parameter format
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_USERS)
+            + "?user-id=user-1-1"
+            + "&user-id=user-1-1"
+            + "&user-id=user-2-1"
+            + "&user-id=user-2-1"
+            + "&user-id=user-2-1"
+            + "&user-id=NotExistingId"
+            + "&user-id="
+            + "&user-id=AnotherNonExistingId";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<UserCollectionRepresentationModel> responseEntity =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    assertThat(responseEntity.getBody()).isNotNull();
+    assertThat(responseEntity.getBody().getContent()).hasSize(2);
+    assertThat(responseEntity.getBody().getContent())
+        .extracting("firstName")
+        .containsExactlyInAnyOrder("Max", "Simone");
   }
 
   @Test
@@ -110,7 +158,7 @@ class UserControllerIntTest {
 
   @Test
   void should_DeleteExistingUser_When_CallingDeleteEndpoint() {
-    String url = restHelper.toUrl(RestEndpoints.URL_USERS_ID, "user-1-1");
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS_ID, "user-1-3");
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<UserRepresentationModel> responseEntity =
@@ -120,7 +168,7 @@ class UserControllerIntTest {
             auth,
             ParameterizedTypeReference.forType(UserRepresentationModel.class));
     assertThat(responseEntity.getBody()).isNotNull();
-    assertThat(responseEntity.getBody().getUserId()).isEqualTo("user-1-1");
+    assertThat(responseEntity.getBody().getUserId()).isEqualTo("user-1-3");
 
     responseEntity =
         TEMPLATE.exchange(

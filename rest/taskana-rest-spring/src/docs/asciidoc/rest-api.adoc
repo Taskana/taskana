@@ -172,6 +172,7 @@ include::{snippets}/AccessIdControllerRestDocTest/searchUsersByNameOrAccessIdFor
 == User Resource
 
 include::{snippets}/UserControllerRestDocTest/getUserDocTest/auto-section.adoc[]
+include::{snippets}/UserControllerRestDocTest/getUsersDocTest/auto-section.adoc[]
 include::{snippets}/UserControllerRestDocTest/createUserDocTest/auto-section.adoc[]
 include::{snippets}/UserControllerRestDocTest/updateUserDocTest/auto-section.adoc[]
 include::{snippets}/UserControllerRestDocTest/deleteUserDocTest/auto-section.adoc[]

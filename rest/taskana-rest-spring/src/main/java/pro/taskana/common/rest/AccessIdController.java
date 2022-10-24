@@ -51,10 +51,10 @@ public class AccessIdController {
   }
 
   /**
-   * This endpoint searches users for a provided name or Access Id. It will only search and return
-   * users and members of groups which are configured with the requested TASKANA role. This search
-   * will only work if the users in the configured LDAP have an attribute that shows their group
-   * memberships, e.g. "memberOf"
+   * This endpoint searches AccessIds for a provided name or Access Id. It will only search and
+   * return users and members of groups which are configured with the requested TASKANA role. This
+   * search will only work if the users in the configured LDAP have an attribute that shows their
+   * group memberships, e.g. "memberOf"
    *
    * @param nameOrAccessId the name or Access Id which should be searched for.
    * @param role the role for which all users should be searched for
@@ -65,7 +65,7 @@ public class AccessIdController {
    *     or ADMIN
    * @title Search for Access Id (users) in TASKANA user role
    */
-  @GetMapping(path = RestEndpoints.URL_USER)
+  @GetMapping(path = RestEndpoints.URL_ACCESS_ID_WITH_NAME)
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersByNameOrAccessIdForRole(
       @RequestParam("search-for") String nameOrAccessId, @RequestParam("role") String role)
       throws InvalidArgumentException, NotAuthorizedException {
