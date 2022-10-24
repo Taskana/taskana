@@ -1,10 +1,12 @@
 package pro.taskana.user.rest.assembler;
 
-import org.springframework.hateoas.server.RepresentationModelAssembler;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
+import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;
+import pro.taskana.user.rest.models.UserCollectionRepresentationModel;
 import pro.taskana.user.rest.models.UserRepresentationModel;
 
 /**
@@ -13,7 +15,8 @@ import pro.taskana.user.rest.models.UserRepresentationModel;
  */
 @Component
 public class UserRepresentationModelAssembler
-    implements RepresentationModelAssembler<User, UserRepresentationModel> {
+    implements CollectionRepresentationModelAssembler<
+        User, UserRepresentationModel, UserCollectionRepresentationModel> {
 
   @Override
   public UserRepresentationModel toModel(User entity) {
@@ -56,5 +59,11 @@ public class UserRepresentationModelAssembler
     user.setDomains(repModel.getDomains());
 
     return user;
+  }
+
+  @Override
+  public UserCollectionRepresentationModel buildCollectionEntity(
+      List<UserRepresentationModel> content) {
+    return new UserCollectionRepresentationModel(content);
   }
 }

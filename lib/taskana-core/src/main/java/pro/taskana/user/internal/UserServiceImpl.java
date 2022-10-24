@@ -47,21 +47,45 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User getUser(String id) throws UserNotFoundException {
-    UserImpl user =
-        internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.findById(id));
-    if (user == null) {
-      throw new UserNotFoundException(id);
+  public User getUser(String userId) throws UserNotFoundException, InvalidArgumentException {
+    if (userId == null || userId.equals("")) {
+      throw new InvalidArgumentException("UserId can't be used as NULL-Parameter.");
+    }
+    String finalUserId;
+    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+      finalUserId = userId.toLowerCase();
+    } else {
+      finalUserId = userId;
     }
 
-    Set<String> groups =
-        internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.findGroupsById(id));
-    if (groups != null) {
-      user.setGroups(groups);
+    UserImpl user =
+        internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.findById(finalUserId));
+    if (user == null) {
+      throw new UserNotFoundException(userId);
     }
 
     user.setDomains(determineDomains(user));
     return user;
+  }
+
+  @Override
+  public List<User> getUsers(Set<String> userIds) throws InvalidArgumentException {
+    if (userIds == null || userIds.isEmpty()) {
+      throw new InvalidArgumentException("UserIds can't be used as NULL-Parameter.");
+    }
+    Set<String> finalUserIds;
+    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+      finalUserIds = userIds.stream().map(String::toLowerCase).collect(Collectors.toSet());
+    } else {
+      finalUserIds = userIds;
+    }
+
+    List<UserImpl> users =
+        internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.findByIds(finalUserIds));
+
+    users.forEach(user -> user.setDomains(determineDomains(user)));
+
+    return users.stream().map(User.class::cast).collect(Collectors.toList());
   }
 
   @Override
@@ -73,6 +97,7 @@ public class UserServiceImpl implements UserService {
     validateFields(userToCreate);
     standardCreateActions(userToCreate);
     insertIntoDatabase(userToCreate);
+    ((UserImpl) userToCreate).setDomains(determineDomains(userToCreate));
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method createUser() created User '{}'.", userToCreate);
@@ -96,6 +121,8 @@ public class UserServiceImpl implements UserService {
       internalTaskanaEngine.executeInDatabaseConnection(
           () -> userMapper.insertGroups(userToUpdate));
     }
+    ((UserImpl) userToUpdate).setDomains(determineDomains(userToUpdate));
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method updateUser() updated User '{}'.", userToUpdate);
     }
@@ -104,7 +131,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void deleteUser(String id) throws UserNotFoundException, NotAuthorizedException {
+  public void deleteUser(String id)
+      throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException {
     internalTaskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);

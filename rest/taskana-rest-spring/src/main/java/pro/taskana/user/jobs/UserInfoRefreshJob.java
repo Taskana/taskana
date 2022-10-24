@@ -151,6 +151,10 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
                           + "with ID '%s' because it doesn't exist",
                       user.getId()));
             }
+          } catch (InvalidArgumentException e) {
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug("Failed to fetch configuration data because userId was NULL or empty");
+            }
           }
         });
   }
