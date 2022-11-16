@@ -19,7 +19,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.test.config.DataSourceGenerator;
@@ -41,7 +41,7 @@ public abstract class AbstractAccTest {
   protected static TaskanaEngine taskanaEngine;
 
   protected static TaskServiceImpl taskService;
-  protected static WorkingDaysToDaysConverter converter;
+  protected static WorkingTimeCalculator workingTimeCalculator;
 
   @BeforeAll
   protected static void setupTest() throws Exception {
@@ -61,7 +61,7 @@ public abstract class AbstractAccTest {
     }
     taskanaEngine =
         taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
-    converter = taskanaEngine.getWorkingDaysToDaysConverter();
+    workingTimeCalculator = taskanaEngine.getWorkingTimeCalculator();
     taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
 
     sampleDataGenerator.clearDb();
@@ -134,10 +134,10 @@ public abstract class AbstractAccTest {
   }
 
   protected Instant moveForwardToWorkingDay(Instant date) {
-    return converter.addWorkingDaysToInstant(date, Duration.ZERO);
+    return workingTimeCalculator.addWorkingTime(date, Duration.ZERO);
   }
 
   protected Instant moveBackToWorkingDay(Instant date) {
-    return converter.subtractWorkingDaysFromInstant(date, Duration.ZERO);
+    return workingTimeCalculator.subtractWorkingTime(date, Duration.ZERO);
   }
 }

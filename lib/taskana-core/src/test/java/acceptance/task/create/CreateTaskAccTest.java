@@ -529,7 +529,8 @@ class CreateTaskAccTest extends AbstractAccTest {
 
     assertThat(readTask.getPriority()).isEqualTo(99);
 
-    Instant expDue = converter.addWorkingDaysToInstant(readTask.getPlanned(), Duration.ofDays(1));
+    Instant expDue =
+        workingTimeCalculator.addWorkingTime(readTask.getPlanned(), Duration.ofDays(1));
 
     assertThat(readTask.getDue()).isEqualTo(expDue);
   }

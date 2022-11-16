@@ -85,11 +85,12 @@ public interface TaskanaEngine {
 
   /**
    * Returns the {@linkplain WorkingDaysToDaysConverter} of the TaskanaEngine. The {@linkplain
-   * WorkingDaysToDaysConverter} is used to compute holidays.
+   * WorkingTimeCalculator} is used to add or subtract working time from Instants according to a
+   * working time schedule or to calculate the working time between Instants.
    *
-   * @return {@linkplain WorkingDaysToDaysConverter}
+   * @return {@linkplain WorkingTimeCalculator}
    */
-  WorkingDaysToDaysConverter getWorkingDaysToDaysConverter();
+  WorkingTimeCalculator getWorkingTimeCalculator();
 
   /**
    * Checks if the {@linkplain pro.taskana.spi.history.api.TaskanaHistory TaskanaHistory} plugin is

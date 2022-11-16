@@ -2,6 +2,7 @@ package acceptance.priorityservice;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.OptionalInt;
 
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
@@ -11,11 +12,14 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.TaskSummary;
 
 public class TestPriorityServiceProvider implements PriorityServiceProvider {
+
   private static final int MULTIPLIER = 10;
 
   private final WorkingDaysToDaysConverter converter = new WorkingDaysToDaysConverter(true, true);
-  private final WorkingTimeCalculator calculator = new WorkingTimeCalculator(converter);
+  private final WorkingTimeCalculator calculator =
+      new WorkingTimeCalculator(converter, Collections.emptyMap());
 
+  @SuppressWarnings("deprecation")
   @Override
   public OptionalInt calculatePriority(TaskSummary taskSummary) {
 

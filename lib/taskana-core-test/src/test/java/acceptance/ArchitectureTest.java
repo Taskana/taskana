@@ -61,10 +61,13 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.testapi.TaskanaIntegrationTest;
@@ -418,6 +421,26 @@ class ArchitectureTest {
   @Test
   void exceptionsShouldBePublic() {
     classes().that().areAssignableTo(Throwable.class).should().bePublic().check(importedClasses);
+  }
+
+  @Test
+  void classesShouldNotUseWorkingDaysToDaysConverter() {
+    classes()
+        .that()
+        .areNotAssignableFrom(ArchitectureTest.class)
+        .and()
+        .areNotAssignableTo(WorkingTimeCalculator.class)
+        .and()
+        .areNotAssignableTo(TaskanaEngineImpl.class)
+        .and()
+        .haveSimpleNameNotEndingWith("Test")
+        .should()
+        .onlyDependOnClassesThat()
+        .areNotAssignableTo(WorkingDaysToDaysConverter.class)
+        .because(
+            "we want to enforce the usage of the WorkingTimeCalculator"
+                + " instead of the WorkingDaysToDaysConverter")
+        .check(importedClasses);
   }
 
   // endregion

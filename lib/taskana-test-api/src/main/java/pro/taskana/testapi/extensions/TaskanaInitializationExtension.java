@@ -22,7 +22,7 @@ import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.ConfigurationMapper;
 import pro.taskana.common.internal.ConfigurationServiceImpl;
@@ -138,7 +138,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         Map.entry(JobServiceImpl.class, jobService),
         Map.entry(CurrentUserContext.class, currentUserContext),
         Map.entry(CurrentUserContextImpl.class, currentUserContext),
-        Map.entry(WorkingDaysToDaysConverter.class, taskanaEngine.getWorkingDaysToDaysConverter()),
+        Map.entry(WorkingTimeCalculator.class, taskanaEngine.getWorkingTimeCalculator()),
         Map.entry(ConfigurationMapper.class, sqlSession.getMapper(ConfigurationMapper.class)),
         Map.entry(UserService.class, userService),
         Map.entry(UserServiceImpl.class, userService));

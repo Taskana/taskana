@@ -5,7 +5,6 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
@@ -41,7 +38,6 @@ class ServiceLevelOfAllTasksAccTest {
   private static final String SMALL_CLASSIFICATION_SERVICE_LEVEL = "P2D";
   private static final String GREAT_CLASSIFICATION_SERVICE_LEVEL = "P7D";
 
-  @TaskanaInject TaskanaEngine taskanaEngine;
   @TaskanaInject TaskService taskService;
   @TaskanaInject WorkbasketService workbasketService;
   @TaskanaInject ClassificationService classificationService;
@@ -52,7 +48,6 @@ class ServiceLevelOfAllTasksAccTest {
   Attachment attachmentSummaryGreatServiceLevel;
   WorkbasketSummary defaultWorkbasketSummary;
   ObjectReference defaultObjectReference;
-  WorkingDaysToDaysConverter converter;
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
@@ -87,7 +82,6 @@ class ServiceLevelOfAllTasksAccTest {
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
-    converter = taskanaEngine.getWorkingDaysToDaysConverter();
   }
 
   @WithAccessId(user = "user-1-1")
@@ -141,11 +135,8 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId()).list();
-    assertThat(result)
-        .extracting(TaskSummary::getDue)
-        .containsOnly(
-            converter.addWorkingDaysToInstant(
-                planned, Duration.parse(SMALL_CLASSIFICATION_SERVICE_LEVEL)));
+    Instant expectedDue = Instant.parse("2020-05-05T23:00:00.000Z");
+    assertThat(result).extracting(TaskSummary::getDue).containsOnly(expectedDue);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -171,11 +162,8 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId()).list();
-    assertThat(result)
-        .extracting(TaskSummary::getDue)
-        .containsOnly(
-            converter.addWorkingDaysToInstant(
-                planned, Duration.parse(SMALL_CLASSIFICATION_SERVICE_LEVEL)));
+    Instant expectedDue = Instant.parse("2020-05-05T23:00:00.000Z");
+    assertThat(result).extracting(TaskSummary::getDue).containsOnly(expectedDue);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -205,13 +193,11 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId(), task3.getId()).list();
+    Instant expectedDueSmallServiceLevel = Instant.parse("2020-05-05T23:00:00.000Z");
+    Instant expectedDueGreatServiceLevel = Instant.parse("2020-05-12T23:00:00.000Z");
     assertThat(result)
         .extracting(TaskSummary::getDue)
-        .containsOnly(
-            converter.addWorkingDaysToInstant(
-                planned, Duration.parse(SMALL_CLASSIFICATION_SERVICE_LEVEL)),
-            converter.addWorkingDaysToInstant(
-                planned, Duration.parse(GREAT_CLASSIFICATION_SERVICE_LEVEL)));
+        .containsOnly(expectedDueSmallServiceLevel, expectedDueGreatServiceLevel);
   }
 
   private TaskBuilder createDefaultTask() {

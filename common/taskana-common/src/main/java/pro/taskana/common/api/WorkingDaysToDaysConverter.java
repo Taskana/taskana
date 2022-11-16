@@ -86,7 +86,11 @@ public class WorkingDaysToDaysConverter {
 
   public boolean isWorkingDay(Instant referenceDate) {
     LocalDate dateToCheck = LocalDateTime.ofInstant(referenceDate, ZoneOffset.UTC).toLocalDate();
-    return !isWeekend(dateToCheck) && !isHoliday(dateToCheck);
+    return isWorkingDay(dateToCheck);
+  }
+
+  public boolean isWorkingDay(LocalDate referenceDate) {
+    return !isWeekend(referenceDate) && !isHoliday(referenceDate);
   }
 
   public boolean isWeekend(LocalDate dateToCheck) {
@@ -177,6 +181,7 @@ public class WorkingDaysToDaysConverter {
   }
 
   static class EasterCalculator {
+
     LocalDate cachedEasterDay;
 
     /**

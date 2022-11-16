@@ -54,7 +54,7 @@ public class ClassificationReportBuilderImpl
       report.addItems(
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, converter, this.inWorkingDays));
+              this.columnHeaders, workingTimeCalculator, this.inWorkingDays));
       Map<String, String> displayMap =
           classificationService
               .createClassificationQuery()
@@ -94,7 +94,7 @@ public class ClassificationReportBuilderImpl
       report.addItems(
           detailedMonitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, converter, this.inWorkingDays));
+              this.columnHeaders, workingTimeCalculator, this.inWorkingDays));
       Stream<String> attachmentKeys =
           report.getRows().keySet().stream()
               .map(report::getRow)

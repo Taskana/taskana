@@ -8,10 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
+import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TaskanaRole;
@@ -85,13 +89,16 @@ public class TaskanaEngineConfiguration {
   @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
   private boolean corpusChristiEnabled;
 
+  @TaskanaProperty("taskana.workingtime.schedule")
+  private Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule =
+      initDefaultWorkingTimeSchedule();
+
   // Properties for general job execution
   @TaskanaProperty("taskana.jobs.batchSize")
   private int jobBatchSize = 100;
 
   @TaskanaProperty("taskana.jobs.maxRetries")
   private int maxNumberOfJobRetries = 3;
-
   // Properties for the cleanup job
   @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
   private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
@@ -101,11 +108,10 @@ public class TaskanaEngineConfiguration {
 
   @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
   private Duration cleanupJobMinimumAge = Duration.parse("P14D");
-  // TASKANA behavior
 
   @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
   private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
-
+  // TASKANA behavior
   @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
   private boolean validationAllowTimestampServiceLevelMismatch = false;
   // Property to enable/disable the addition of user full/long name through joins
@@ -344,6 +350,14 @@ public class TaskanaEngineConfiguration {
     this.customHolidays.addAll(customHolidays);
   }
 
+  public Map<DayOfWeek, Set<LocalTimeInterval>> getWorkingTimeSchedule() {
+    return workingTimeSchedule;
+  }
+
+  public void setWorkingTimeSchedule(Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
+    this.workingTimeSchedule = workingTimeSchedule;
+  }
+
   public Map<TaskanaRole, Set<String>> getRoleMap() {
     return roleMap;
   }
@@ -509,6 +523,23 @@ public class TaskanaEngineConfiguration {
 
   public Properties readPropertiesFromFile() {
     return loadProperties(this.propertiesFileName);
+  }
+
+  private static Map<DayOfWeek, Set<LocalTimeInterval>> initDefaultWorkingTimeSchedule() {
+    Map<DayOfWeek, Set<LocalTimeInterval>> workingTime = new EnumMap<>(DayOfWeek.class);
+
+    // Default working time schedule is from Monday 00:00 - Friday 24:00, but CET (hence -1 hour)
+    Set<LocalTimeInterval> standardWorkingSlots =
+        Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
+    workingTime.put(
+        DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.of(23, 0), LocalTime.MAX)));
+    workingTime.put(DayOfWeek.MONDAY, standardWorkingSlots);
+    workingTime.put(DayOfWeek.TUESDAY, standardWorkingSlots);
+    workingTime.put(DayOfWeek.WEDNESDAY, standardWorkingSlots);
+    workingTime.put(DayOfWeek.THURSDAY, standardWorkingSlots);
+    workingTime.put(
+        DayOfWeek.FRIDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.of(23, 0))));
+    return workingTime;
   }
 
   private void initSchemaName(String schemaName) {

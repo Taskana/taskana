@@ -35,6 +35,7 @@ import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
@@ -94,7 +95,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final AfterRequestChangesManager afterRequestChangesManager;
 
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
-  private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
+
+  private final WorkingTimeCalculator workingTimeCalculator;
+
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
   protected TaskanaEngineConfiguration taskanaEngineConfiguration;
@@ -110,11 +113,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     this.mode = connectionManagementMode;
     internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
-    workingDaysToDaysConverter =
+    WorkingDaysToDaysConverter workingDaysToDaysConverter =
         new WorkingDaysToDaysConverter(
             taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
             taskanaEngineConfiguration.isCorpusChristiEnabled(),
             taskanaEngineConfiguration.getCustomHolidays());
+    workingTimeCalculator =
+        new WorkingTimeCalculator(
+            workingDaysToDaysConverter, taskanaEngineConfiguration.getWorkingTimeSchedule());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds());
     createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
@@ -213,8 +219,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public WorkingDaysToDaysConverter getWorkingDaysToDaysConverter() {
-    return workingDaysToDaysConverter;
+  public WorkingTimeCalculator getWorkingTimeCalculator() {
+    return workingTimeCalculator;
   }
 
   @Override

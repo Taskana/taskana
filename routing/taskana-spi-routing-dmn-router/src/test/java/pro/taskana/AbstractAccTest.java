@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -16,7 +15,6 @@ public abstract class AbstractAccTest {
 
   protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
-  protected static WorkingDaysToDaysConverter converter;
 
   @BeforeAll
   protected static void setupTest() throws Exception {
@@ -41,7 +39,6 @@ public abstract class AbstractAccTest {
     sampleDataGenerator.generateTestData();
     taskanaEngine =
         taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
-    converter = taskanaEngine.getWorkingDaysToDaysConverter();
   }
 
   protected ObjectReference createObjectReference(

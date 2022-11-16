@@ -4,34 +4,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 import pro.taskana.monitor.internal.preprocessor.WorkingDaysToDaysReportConverter;
 
 /** Test for the DaysToWorkingDaysReportConverter. */
 class WorkingDaysToDaysReportConverterTest {
 
-  private final WorkingDaysToDaysConverter converter;
+  private final WorkingTimeCalculator workingTimeCalculator;
 
   public WorkingDaysToDaysReportConverterTest() {
     CustomHoliday dayOfReformation = CustomHoliday.of(31, 10);
     CustomHoliday allSaintsDays = CustomHoliday.of(1, 11);
-    converter =
-        new WorkingDaysToDaysConverter(true, false, List.of(dayOfReformation, allSaintsDays));
+    workingTimeCalculator =
+        new WorkingTimeCalculator(
+            new WorkingDaysToDaysConverter(true, false, List.of(dayOfReformation, allSaintsDays)),
+            Collections.emptyMap());
   }
 
   @Test
   void should_AssertNotEqual_When_InitializingDifferentDates() throws Exception {
     WorkingDaysToDaysReportConverter instance1 =
         WorkingDaysToDaysReportConverter.initialize(
-            getShortListOfColumnHeaders(), converter, Instant.parse("2018-02-04T00:00:00.000Z"));
+            getShortListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-02-04T00:00:00.000Z"));
     WorkingDaysToDaysReportConverter instance2 =
         WorkingDaysToDaysReportConverter.initialize(
-            getShortListOfColumnHeaders(), converter, Instant.parse("2018-02-05T00:00:00.000Z"));
+            getShortListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-02-05T00:00:00.000Z"));
 
     assertThat(instance1).isNotEqualTo(instance2);
   }
@@ -40,7 +48,9 @@ class WorkingDaysToDaysReportConverterTest {
   void should_ReturnWorkingDays_When_ConvertingDaysToWorkingDays() throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-02-06T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-02-06T00:00:00.000Z"));
 
     int oneBelowLimit = -16;
     int oneAboveLimit = 16;
@@ -69,7 +79,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-02-06T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-02-06T00:00:00.000Z"));
 
     assertThat(instance.convertWorkingDaysToDays(-999)).containsExactlyInAnyOrder(-999);
   }
@@ -79,7 +91,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-02-06T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-02-06T00:00:00.000Z"));
 
     assertThat(instance.convertWorkingDaysToDays(999)).containsExactlyInAnyOrder(999);
   }
@@ -88,7 +102,9 @@ class WorkingDaysToDaysReportConverterTest {
   void should_ReturnAllMatchingDays_When_ConvertingWorkingDaysToDays() throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-02-27T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-02-27T00:00:00.000Z"));
 
     assertThat(instance.convertWorkingDaysToDays(-13)).containsExactlyInAnyOrder(-13);
     assertThat(instance.convertWorkingDaysToDays(-12)).containsExactlyInAnyOrder(-12);
@@ -122,7 +138,9 @@ class WorkingDaysToDaysReportConverterTest {
   void should_ReturnAllMatchingDays_When_ConvertingWorkingDaysToDaysAtWeekend() throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-03-10T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-03-10T00:00:00.000Z"));
 
     assertThat(instance.convertWorkingDaysToDays(-13)).containsExactlyInAnyOrder(-13);
     assertThat(instance.convertWorkingDaysToDays(-12)).containsExactlyInAnyOrder(-12);
@@ -157,7 +175,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-04-01T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-04-01T00:00:00.000Z"));
 
     assertThat(instance.convertWorkingDaysToDays(-13)).containsExactlyInAnyOrder(-13);
     assertThat(instance.convertWorkingDaysToDays(-12)).containsExactlyInAnyOrder(-12);
@@ -192,7 +212,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-03-28T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-03-28T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
@@ -208,7 +230,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-05-16T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-05-16T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
@@ -223,7 +247,9 @@ class WorkingDaysToDaysReportConverterTest {
   void should_ReturnWorkingDays_When_ConvertingDaysToWorkingDaysOnLabourDay() throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-04-26T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-04-26T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
@@ -239,7 +265,9 @@ class WorkingDaysToDaysReportConverterTest {
   void should_ReturnWorkingDays_When_ConvertingDaysToWorkingDaysOnAscensionDay() throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-05-07T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-05-07T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
@@ -256,7 +284,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-10-01T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-10-01T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
@@ -273,7 +303,9 @@ class WorkingDaysToDaysReportConverterTest {
       throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-12-20T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-12-20T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isEqualTo(1);
@@ -296,7 +328,9 @@ class WorkingDaysToDaysReportConverterTest {
   void should_ReturnWorkingDays_When_ConvertingDaysToWorkingDaysOnCustomHoliday() throws Exception {
     WorkingDaysToDaysReportConverter instance =
         WorkingDaysToDaysReportConverter.initialize(
-            getLargeListOfColumnHeaders(), converter, Instant.parse("2018-10-26T00:00:00.000Z"));
+            getLargeListOfColumnHeaders(),
+            workingTimeCalculator,
+            Instant.parse("2018-10-26T00:00:00.000Z"));
 
     assertThat(instance.convertDaysToWorkingDays(0)).isZero();
     assertThat(instance.convertDaysToWorkingDays(1)).isZero();
