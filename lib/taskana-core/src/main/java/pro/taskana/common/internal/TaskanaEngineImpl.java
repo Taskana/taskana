@@ -34,7 +34,7 @@ import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
@@ -47,6 +47,8 @@ import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.persistence.StringTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
+import pro.taskana.common.internal.workingtime.HolidaySchedule;
+import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
@@ -94,7 +96,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
-  private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
+
+  private final WorkingTimeCalculator workingTimeCalculator;
+
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
   protected ConnectionManagementMode mode;
@@ -113,11 +117,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     this.mode = connectionManagementMode;
     internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
-    workingDaysToDaysConverter =
-        new WorkingDaysToDaysConverter(
+    HolidaySchedule holidaySchedule =
+        new HolidaySchedule(
             taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
             taskanaEngineConfiguration.isCorpusChristiEnabled(),
             taskanaEngineConfiguration.getCustomHolidays());
+    workingTimeCalculator =
+        new WorkingTimeCalculatorImpl(
+            holidaySchedule, taskanaEngineConfiguration.getWorkingTimeSchedule());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
     createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
@@ -211,8 +218,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public WorkingDaysToDaysConverter getWorkingDaysToDaysConverter() {
-    return workingDaysToDaysConverter;
+  public WorkingTimeCalculator getWorkingTimeCalculator() {
+    return workingTimeCalculator;
   }
 
   @Override

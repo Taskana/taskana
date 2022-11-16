@@ -4,8 +4,10 @@ import static java.util.function.Predicate.not;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
+import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
@@ -47,6 +50,7 @@ public class TaskanaConfigurationInitializer {
     PROPERTY_INITIALIZER_BY_CLASS.put(Duration.class, new DurationPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Instant.class, new InstantPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(List.class, new ListPropertyParser());
+    PROPERTY_INITIALIZER_BY_CLASS.put(Map.class, new MapPropertyParser());
   }
 
   private TaskanaConfigurationInitializer() {
@@ -159,6 +163,109 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty);
+  }
+
+  static class MapPropertyParser implements PropertyParser<Map<?, ?>> {
+
+    @Override
+    public Optional<Map<?, ?>> initialize(
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
+      if (!Map.class.isAssignableFrom(field.getType())) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not a Map",
+                field, field.getType()));
+      }
+
+      ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+      Type[] actualTypeArguments = genericType.getActualTypeArguments();
+      Class<?> keyClass = (Class<?>) actualTypeArguments[0];
+      Type valueClass = actualTypeArguments[1];
+
+      // Parses property files into a Map using the following layout: <Property>.<Key> = <value>
+      String propertyKey = taskanaProperty.value();
+      Map<?, ?> mapFromProperties =
+          properties.keySet().stream()
+              .filter(it -> it.startsWith(propertyKey))
+              .map(
+                  it -> {
+                    // Keys of the map entry is everything after the propertyKey + "."
+                    String keyAsString = it.substring(propertyKey.length() + 1);
+                    Object key = getStringAsObject(keyAsString, keyClass);
+
+                    // Value of the map entry is the value from the property
+                    String propertyValue = properties.get(it);
+                    Object value = getStringAsObject(propertyValue, separator, valueClass);
+                    return Pair.of(key, value);
+                  })
+              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+
+      if (mapFromProperties.isEmpty()) {
+        return Optional.empty();
+      } else {
+        return Optional.of(mapFromProperties);
+      }
+    }
+
+    private Object getStringAsObject(String string, String separator, Type type) {
+      if (type instanceof ParameterizedType) {
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        Type rawType = parameterizedType.getRawType();
+        if (rawType.equals(Set.class)) {
+          return getStringAsSet(
+              string, separator, (Class<?>) parameterizedType.getActualTypeArguments()[0]);
+        }
+      } else if (type instanceof Class) {
+        return getStringAsObject(string, (Class<?>) type);
+      }
+      throw new SystemException(
+          String.format(
+              "Cannot parse property value '%s': It is not convertible to '%s'",
+              string, type.getTypeName()));
+    }
+
+    private Object getStringAsObject(String string, Class<?> targetClass) {
+      if (targetClass.isEnum()) {
+        Map<String, ?> enumConstantsByLowerCasedName =
+            Arrays.stream(targetClass.getEnumConstants())
+                .collect(Collectors.toMap(e -> e.toString().toLowerCase(), Function.identity()));
+        Object o = enumConstantsByLowerCasedName.get(string.toLowerCase());
+        if (o == null) {
+          throw new SystemException(
+              String.format(
+                  "Invalid property value '%s': Valid values are '%s' or '%s",
+                  string,
+                  enumConstantsByLowerCasedName.keySet(),
+                  Arrays.toString(targetClass.getEnumConstants())));
+        }
+        return o;
+      } else if (targetClass.equals(LocalTimeInterval.class)) {
+        List<String> startAndEnd = splitStringAndTrimElements(string, "-");
+        if (startAndEnd.size() != 2) {
+          throw new SystemException("Cannot convert " + string + " to " + LocalTimeInterval.class);
+        }
+        LocalTime start = LocalTime.parse(startAndEnd.get(0));
+        LocalTime end = LocalTime.parse(startAndEnd.get(1));
+        if (end.equals(LocalTime.MIN)) {
+          end = LocalTime.MAX;
+        }
+        return new LocalTimeInterval(start, end);
+      } else {
+        throw new SystemException(
+            String.format(
+                "Cannot parse property value '%s': It is not convertible to '%s'",
+                string, targetClass.getName()));
+      }
+    }
+
+    private Set<?> getStringAsSet(String string, String separator, Class<?> elementClass) {
+      return splitStringAndTrimElements(string, separator).stream()
+          .map(it -> getStringAsObject(it, elementClass))
+          .collect(Collectors.toSet());
+    }
   }
 
   static class ListPropertyParser implements PropertyParser<List<?>> {

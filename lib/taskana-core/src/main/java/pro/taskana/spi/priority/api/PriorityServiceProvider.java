@@ -2,6 +2,7 @@ package pro.taskana.spi.priority.api;
 
 import java.util.OptionalInt;
 
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 
@@ -10,6 +11,18 @@ import pro.taskana.task.api.models.TaskSummary;
  * custom logic.
  */
 public interface PriorityServiceProvider {
+
+  /**
+   * Provide the active {@linkplain TaskanaEngine} which is initialized for this TASKANA
+   * installation.
+   *
+   * <p>This method is called during TASKANA startup and allows the service provider to store the
+   * active {@linkplain TaskanaEngine} for later usage.
+   *
+   * @param taskanaEngine the active {@linkplain TaskanaEngine} which is initialized for this
+   *     installation
+   */
+  default void initialize(TaskanaEngine taskanaEngine) {}
 
   /**
    * Determine the {@linkplain Task#getPriority() priority} of a certain {@linkplain Task} during

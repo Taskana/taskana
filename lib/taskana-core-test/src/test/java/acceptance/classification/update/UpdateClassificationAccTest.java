@@ -34,7 +34,7 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
@@ -60,7 +60,7 @@ class UpdateClassificationAccTest {
   @TaskanaInject TaskanaEngine taskanaEngine;
   @TaskanaInject TaskService taskService;
   @TaskanaInject WorkbasketService workbasketService;
-  @TaskanaInject WorkingDaysToDaysConverter converter;
+  @TaskanaInject WorkingTimeCalculator workingTimeCalculator;
   @TaskanaInject CurrentUserContext currentUserContext;
 
   @WithAccessId(user = "businessadmin")
@@ -238,7 +238,7 @@ class UpdateClassificationAccTest {
       classificationService.updateClassification(classification);
       runAssociatedJobs();
 
-      validateTaskProperties(before, directLinkedTask, taskService, converter, 15, 1);
+      validateTaskProperties(before, directLinkedTask, taskService, workingTimeCalculator, 15, 1);
     }
 
     @WithAccessId(user = "businessadmin")
@@ -257,7 +257,8 @@ class UpdateClassificationAccTest {
       classificationService.updateClassification(classification);
       runAssociatedJobs();
 
-      validateTaskProperties(before, directLinkedTask, taskService, converter, 13, 1000);
+      validateTaskProperties(
+          before, directLinkedTask, taskService, workingTimeCalculator, 13, 1000);
     }
 
     @WithAccessId(user = "businessadmin")
@@ -278,7 +279,8 @@ class UpdateClassificationAccTest {
       classificationService.updateClassification(classification);
       runAssociatedJobs();
 
-      validateTaskProperties(before, directLinkedTask, taskService, converter, 15, 1000);
+      validateTaskProperties(
+          before, directLinkedTask, taskService, workingTimeCalculator, 15, 1000);
     }
 
     @WithAccessId(user = "businessadmin")
@@ -318,7 +320,7 @@ class UpdateClassificationAccTest {
                 before,
                 indirectLinkedTasks,
                 taskService,
-                converter,
+                workingTimeCalculator,
                 input.getRight().getLeft(),
                 input.getRight().getRight());
           };
@@ -369,7 +371,7 @@ class UpdateClassificationAccTest {
                 before,
                 indirectLinkedTasks,
                 taskService,
-                converter,
+                workingTimeCalculator,
                 input.getRight().getLeft(),
                 input.getRight().getRight());
           };
@@ -422,7 +424,7 @@ class UpdateClassificationAccTest {
                 before,
                 indirectLinkedTasks,
                 taskService,
-                converter,
+                workingTimeCalculator,
                 input.getRight().getLeft(),
                 input.getRight().getRight());
           };
@@ -475,7 +477,7 @@ class UpdateClassificationAccTest {
                 before,
                 indirectLinkedTasks,
                 taskService,
-                converter,
+                workingTimeCalculator,
                 input.getRight().getLeft(),
                 input.getRight().getRight());
           };
@@ -527,7 +529,7 @@ class UpdateClassificationAccTest {
                 before,
                 indirectLinkedTasks,
                 taskService,
-                converter,
+                workingTimeCalculator,
                 input.getRight().getLeft(),
                 input.getRight().getRight());
           };
@@ -579,7 +581,7 @@ class UpdateClassificationAccTest {
                 before,
                 indirectLinkedTasks,
                 taskService,
-                converter,
+                workingTimeCalculator,
                 input.getRight().getLeft(),
                 input.getRight().getRight());
           };
@@ -609,7 +611,7 @@ class UpdateClassificationAccTest {
         Instant before,
         List<String> tasksUpdated,
         TaskService taskService,
-        WorkingDaysToDaysConverter converter,
+        WorkingTimeCalculator workingTimeCalculator,
         int serviceLevel,
         int priority)
         throws Exception {
@@ -617,7 +619,7 @@ class UpdateClassificationAccTest {
         Task task = taskService.getTask(taskId);
 
         Instant expDue =
-            converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(serviceLevel));
+            workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(serviceLevel));
         assertThat(task.getModified())
             .describedAs("Task " + task.getId() + " has not been refreshed.")
             .isAfter(before);

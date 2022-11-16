@@ -22,7 +22,7 @@ import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.ConfigurationMapper;
 import pro.taskana.common.internal.ConfigurationServiceImpl;
@@ -32,6 +32,7 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
 import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.common.internal.util.SpiLoader;
+import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskService;
@@ -106,8 +107,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
       throw new JUnitException("Expected dataSource to be defined in store, but it's not.");
     }
 
-    return new TaskanaConfiguration.Builder(dataSource, false, schemaName)
-        .initTaskanaProperties();
+    return new TaskanaConfiguration.Builder(dataSource, false, schemaName).initTaskanaProperties();
   }
 
   private static Map<Class<?>, Object> generateTaskanaEntityMap(TaskanaEngine taskanaEngine)
@@ -122,6 +122,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     CurrentUserContext currentUserContext = taskanaEngine.getCurrentUserContext();
     UserService userService = taskanaEngine.getUserService();
     SqlSession sqlSession = taskanaEngineProxy.getSqlSession();
+    WorkingTimeCalculator workingTimeCalculator = taskanaEngine.getWorkingTimeCalculator();
     return Map.ofEntries(
         Map.entry(TaskanaConfiguration.class, taskanaEngine.getConfiguration()),
         Map.entry(TaskanaEngineImpl.class, taskanaEngine),
@@ -141,7 +142,8 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         Map.entry(JobServiceImpl.class, jobService),
         Map.entry(CurrentUserContext.class, currentUserContext),
         Map.entry(CurrentUserContextImpl.class, currentUserContext),
-        Map.entry(WorkingDaysToDaysConverter.class, taskanaEngine.getWorkingDaysToDaysConverter()),
+        Map.entry(WorkingTimeCalculator.class, workingTimeCalculator),
+        Map.entry(WorkingTimeCalculatorImpl.class, workingTimeCalculator),
         Map.entry(ConfigurationMapper.class, sqlSession.getMapper(ConfigurationMapper.class)),
         Map.entry(UserService.class, userService),
         Map.entry(UserServiceImpl.class, userService));
