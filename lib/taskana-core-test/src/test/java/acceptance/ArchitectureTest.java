@@ -67,8 +67,11 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.Interval;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.util.MapCreator;
+import pro.taskana.common.internal.workingtime.HolidaySchedule;
+import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 
 /**
@@ -423,6 +426,26 @@ class ArchitectureTest {
   @Test
   void exceptionsShouldBePublic() {
     classes().that().areAssignableTo(Throwable.class).should().bePublic().check(importedClasses);
+  }
+
+  @Test
+  void classesShouldNotUseWorkingDaysToDaysConverter() {
+    classes()
+        .that()
+        .areNotAssignableFrom(ArchitectureTest.class)
+        .and()
+        .areNotAssignableTo(WorkingTimeCalculatorImpl.class)
+        .and()
+        .areNotAssignableTo(TaskanaEngineImpl.class)
+        .and()
+        .haveSimpleNameNotEndingWith("Test")
+        .should()
+        .onlyDependOnClassesThat()
+        .areNotAssignableTo(HolidaySchedule.class)
+        .because(
+            "we want to enforce the usage of the WorkingTimeCalculator"
+                + " instead of the WorkingDaysToDaysConverter")
+        .check(importedClasses);
   }
 
   // endregion

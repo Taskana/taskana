@@ -9,8 +9,10 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -27,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
+import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DB;
@@ -61,6 +64,7 @@ public class TaskanaConfiguration {
   private final boolean deleteHistoryOnTaskDeletionEnabled;
   // region custom configuration
   private final Map<String, String> properties;
+  private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
 
   @TaskanaProperty("taskana.domains")
   private List<String> domains = new ArrayList<>();
@@ -147,6 +151,11 @@ public class TaskanaConfiguration {
     this.deleteHistoryOnTaskDeletionEnabled = builder.deleteHistoryOnTaskDeletionEnabled;
     this.germanPublicHolidaysEnabled = builder.germanPublicHolidaysEnabled;
     this.corpusChristiEnabled = builder.corpusChristiEnabled;
+    this.workingTimeSchedule =
+        builder.workingTimeSchedule.entrySet().stream()
+            .collect(
+                Collectors.toUnmodifiableMap(
+                    Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
     this.jobBatchSize = builder.jobBatchSize;
     this.maxNumberOfJobRetries = builder.maxNumberOfJobRetries;
     this.cleanupJobFirstRun = builder.cleanupJobFirstRun;
@@ -236,6 +245,10 @@ public class TaskanaConfiguration {
 
   public List<CustomHoliday> getCustomHolidays() {
     return customHolidays;
+  }
+
+  public Map<DayOfWeek, Set<LocalTimeInterval>> getWorkingTimeSchedule() {
+    return workingTimeSchedule;
   }
 
   public Map<TaskanaRole, Set<String>> getRoleMap() {
@@ -369,6 +382,10 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
     private boolean corpusChristiEnabled;
+
+    @TaskanaProperty("taskana.workingtime.schedule")
+    private Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule =
+        initDefaultWorkingTimeSchedule();
     // endregion
 
     // region history configuration
@@ -446,6 +463,7 @@ public class TaskanaConfiguration {
       this.deleteHistoryOnTaskDeletionEnabled = tec.isDeleteHistoryOnTaskDeletionEnabled();
       this.germanPublicHolidaysEnabled = tec.isGermanPublicHolidaysEnabled();
       this.corpusChristiEnabled = tec.isCorpusChristiEnabled();
+      this.workingTimeSchedule = tec.getWorkingTimeSchedule();
       this.jobBatchSize = tec.getJobBatchSize();
       this.maxNumberOfJobRetries = tec.getMaxNumberOfJobRetries();
       this.cleanupJobFirstRun = tec.getCleanupJobFirstRun();
@@ -725,6 +743,23 @@ public class TaskanaConfiguration {
           .collect(
               Collectors.toUnmodifiableMap(
                   e -> e.getKey().toString(), e -> e.getValue().toString()));
+    }
+
+    private static Map<DayOfWeek, Set<LocalTimeInterval>> initDefaultWorkingTimeSchedule() {
+      Map<DayOfWeek, Set<LocalTimeInterval>> workingTime = new EnumMap<>(DayOfWeek.class);
+
+      // Default working time schedule is from Monday 00:00 - Friday 24:00, but CET (hence -1 hour)
+      Set<LocalTimeInterval> standardWorkingSlots =
+          Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
+      workingTime.put(
+          DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.of(23, 0), LocalTime.MAX)));
+      workingTime.put(DayOfWeek.MONDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.TUESDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.WEDNESDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.THURSDAY, standardWorkingSlots);
+      workingTime.put(
+          DayOfWeek.FRIDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.of(23, 0))));
+      return workingTime;
     }
   }
 }

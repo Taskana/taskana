@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -48,7 +48,7 @@ abstract class TimeIntervalReportBuilderImpl<
   protected String[] domains;
   protected String[] classificationIds;
   protected String[] excludedClassificationIds;
-  protected WorkingDaysToDaysConverter converter;
+  protected WorkingTimeCalculator workingTimeCalculator;
   private String[] custom1In;
   private String[] custom1NotIn;
   private String[] custom1Like;
@@ -135,7 +135,7 @@ abstract class TimeIntervalReportBuilderImpl<
     this.taskanaEngine = taskanaEngine;
     this.monitorMapper = monitorMapper;
     this.columnHeaders = Collections.emptyList();
-    converter = taskanaEngine.getEngine().getWorkingDaysToDaysConverter();
+    workingTimeCalculator = taskanaEngine.getEngine().getWorkingTimeCalculator();
   }
 
   @Override
@@ -609,7 +609,7 @@ abstract class TimeIntervalReportBuilderImpl<
   private List<SelectedItem> convertWorkingDaysToDays(
       List<SelectedItem> selectedItems, List<H> columnHeaders) throws InvalidArgumentException {
     WorkingDaysToDaysReportConverter instance =
-        WorkingDaysToDaysReportConverter.initialize(columnHeaders, converter);
+        WorkingDaysToDaysReportConverter.initialize(columnHeaders, workingTimeCalculator);
     return selectedItems.stream()
         .map(
             s ->

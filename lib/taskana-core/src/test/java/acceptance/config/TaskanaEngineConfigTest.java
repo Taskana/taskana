@@ -10,7 +10,6 @@ import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
-/** Test of configuration. */
 class TaskanaEngineConfigTest {
 
   @Test
@@ -27,7 +26,7 @@ class TaskanaEngineConfigTest {
   }
 
   @Test
-  void should_SetCorpusChristiEnabled_When_PropertyIsSet() throws Exception {
+  void should_SetCorpusChristiEnabled_When_PropertyIsSet() {
     DataSource ds = DataSourceGenerator.getDataSource();
     TaskanaConfiguration taskEngineConfiguration =
         new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), true)
@@ -38,20 +37,18 @@ class TaskanaEngineConfigTest {
   }
 
   @Test
-  void should_ReturnTheTwoCustomHolidays_When_TwoCustomHolidaysAreConfiguredInThePropertiesFile()
-      throws Exception {
+  void should_ReturnTheTwoCustomHolidays_When_TwoCustomHolidaysAreConfiguredInThePropertiesFile() {
     DataSource ds = DataSourceGenerator.getDataSource();
     TaskanaConfiguration taskEngineConfiguration =
         new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), true)
             .initTaskanaProperties("/custom_holiday_taskana.properties", "|")
             .build();
-    assertThat(taskEngineConfiguration.getCustomHolidays()).contains(CustomHoliday.of(31, 7));
-    assertThat(taskEngineConfiguration.getCustomHolidays()).contains(CustomHoliday.of(16, 12));
+    assertThat(taskEngineConfiguration.getCustomHolidays())
+        .contains(CustomHoliday.of(31, 7), CustomHoliday.of(16, 12));
   }
 
   @Test
-  void should_ReturnEmptyCustomHolidaysList_When_AllCustomHolidaysAreInWrongFormatInPropertiesFile()
-      throws Exception {
+  void should_ReturnEmptyList_When_AllCustomHolidaysAreInWrongFormatInPropertiesFile() {
     DataSource ds = DataSourceGenerator.getDataSource();
     TaskanaConfiguration taskEngineConfiguration =
         new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), true)

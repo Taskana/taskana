@@ -967,11 +967,9 @@ public class TaskServiceImpl implements TaskService {
         taskanaEngine
             .getEngine()
             .runAsAdmin(
-                () -> {
-                  serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
-                      tasks, serviceLevelChanged, priorityChanged);
-                  return null;
-                });
+                () ->
+                    serviceLevelHandler.refreshPriorityAndDueDatesOfTasks(
+                        tasks, serviceLevelChanged, priorityChanged));
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1738,7 +1736,7 @@ public class TaskServiceImpl implements TaskService {
     // This has to be called after the AttachmentHandler because the AttachmentHandler fetches
     // the Classifications of the Attachments.
     // This is necessary to guarantee that the following calculation is correct.
-    serviceLevelHandler.updatePrioPlannedDueOfTask(task, null, false);
+    serviceLevelHandler.updatePrioPlannedDueOfTask(task, null);
   }
 
   private void setDefaultTaskReceivedDateFromAttachments(TaskImpl task) {
@@ -2048,7 +2046,7 @@ public class TaskServiceImpl implements TaskService {
     updateClassificationSummary(newTaskImpl, oldTaskImpl);
 
     TaskImpl newTaskImpl1 =
-        serviceLevelHandler.updatePrioPlannedDueOfTask(newTaskImpl, oldTaskImpl, false);
+        serviceLevelHandler.updatePrioPlannedDueOfTask(newTaskImpl, oldTaskImpl);
 
     // if no business process id is provided, use the id of the old task.
     if (newTaskImpl1.getBusinessProcessId() == null) {

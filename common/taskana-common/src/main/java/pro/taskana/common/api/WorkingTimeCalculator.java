@@ -1,153 +1,101 @@
 package pro.taskana.common.api;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.EnumMap;
-import java.util.Map;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
-public class WorkingTimeCalculator {
+@SuppressWarnings("unused")
+public interface WorkingTimeCalculator {
 
-  public static final Map<DayOfWeek, LocalTimeInterval> WORKING_TIME;
+  /**
+   * Subtracts {@code workingTime} from {@code workStart}. Respects the configured working time
+   * schedule and Holidays.
+   *
+   * <p>The returned Instant denotes the first time in point the work time starts or in short it is
+   * inclusive.
+   *
+   * <p>E.g can be used for planned date calculation.
+   *
+   * @param workStart The Instant {@code workingTime} is subtracted from.
+   * @param workingTime The Duration to subtract from {@code workStart}. May have any resolution
+   *     Duration supports, e.g. minutes or seconds.
+   * @return A new Instant which represents the subtraction of working time.
+   * @throws InvalidArgumentException If {@code workingTime} is negative.
+   */
+  Instant subtractWorkingTime(Instant workStart, Duration workingTime)
+      throws InvalidArgumentException;
 
-  static {
-    WORKING_TIME = new EnumMap<>(DayOfWeek.class);
-    WORKING_TIME.put(
-        DayOfWeek.MONDAY, new LocalTimeInterval(LocalTime.of(6, 0), LocalTime.of(18, 0)));
-    WORKING_TIME.put(
-        DayOfWeek.TUESDAY, new LocalTimeInterval(LocalTime.of(6, 0), LocalTime.of(18, 0)));
-    WORKING_TIME.put(
-        DayOfWeek.WEDNESDAY, new LocalTimeInterval(LocalTime.of(6, 0), LocalTime.of(18, 0)));
-    WORKING_TIME.put(
-        DayOfWeek.THURSDAY, new LocalTimeInterval(LocalTime.of(6, 0), LocalTime.of(18, 0)));
-    WORKING_TIME.put(
-        DayOfWeek.FRIDAY, new LocalTimeInterval(LocalTime.of(6, 0), LocalTime.of(18, 0)));
-    WORKING_TIME.put(DayOfWeek.SATURDAY, null);
-    WORKING_TIME.put(DayOfWeek.SUNDAY, null);
-  }
+  /**
+   * Adds {@code workingTime} from {@code workStart}. Respects the configured working time schedule
+   * and Holidays.
+   *
+   * <p>The returned Instant denotes the first time in point the work time has ended or in short it
+   * is exclusive.
+   *
+   * <p>E.g can be used for due date calculation.
+   *
+   * @param workStart The Instant {@code workingTime} is added to.
+   * @param workingTime The Duration to add to {@code workStart}. May have any resolution Duration
+   *     supports, e.g. minutes or seconds.
+   * @return A new Instant which represents the addition of working time.
+   * @throws InvalidArgumentException If {@code workingTime} is negative.
+   */
+  Instant addWorkingTime(Instant workStart, Duration workingTime) throws InvalidArgumentException;
 
-  private final ZoneId zone;
-  private final WorkingDaysToDaysConverter converter;
+  /**
+   * Calculates the working time between {@code first} and {@code second} according to the
+   * configured working time schedule. The returned Duration is precise to nanoseconds.
+   *
+   * <p>This method does not impose any ordering on {@code first} or {@code second}.
+   *
+   * @param first An Instant denoting the start or end of the considered time frame.
+   * @param second An Instant denoting the start or end of the considered time frame.
+   * @return The Duration representing the working time between {@code first} and {@code to }.
+   * @throws InvalidArgumentException If either {@code first} or {@code second} is {@code null}.
+   */
+  Duration workingTimeBetween(Instant first, Instant second) throws InvalidArgumentException;
 
-  public WorkingTimeCalculator(WorkingDaysToDaysConverter converter) {
-    this.converter = converter;
-    zone = ZoneId.of("UTC");
-  }
-
-  public Duration workingTimeBetweenTwoTimestamps(Instant from, Instant to)
+  /**
+   * Decides whether there is any working time between {@code first} and {@code second}.
+   *
+   * @see #workingTimeBetween(Instant, Instant)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default boolean isWorkingTimeBetween(Instant first, Instant second)
       throws InvalidArgumentException {
-    checkValidInput(from, to);
-    Instant currentTime = from;
-    LocalDate currentDate = LocalDateTime.ofInstant(from, zone).toLocalDate();
-    LocalDate untilDate = LocalDateTime.ofInstant(to, zone).toLocalDate();
-    DayOfWeek weekDay = currentDate.getDayOfWeek();
-
-    if (currentDate.isEqual(untilDate)) {
-      return calculateDurationWithinOneDay(from, to, weekDay, currentDate);
-    }
-
-    Duration duration = Duration.ZERO;
-    duration = duration.plus(calculateDurationOfStartDay(currentTime, weekDay, currentDate));
-    currentTime = currentTime.plus(1, ChronoUnit.DAYS);
-    currentDate = currentDate.plusDays(1);
-    weekDay = weekDay.plus(1);
-
-    while (!currentDate.isEqual(untilDate)) {
-      duration = duration.plus(calculateDurationOfOneWorkDay(weekDay, currentDate));
-      weekDay = weekDay.plus(1);
-      currentDate = currentDate.plusDays(1);
-      currentTime = currentTime.plus(1, ChronoUnit.DAYS);
-    }
-
-    return duration.plus(calculateDurationOnEndDay(to, weekDay, currentDate));
+    return !Duration.ZERO.equals(workingTimeBetween(first, second));
   }
 
-  private Duration calculateDurationWithinOneDay(
-      Instant from, Instant to, DayOfWeek weekday, LocalDate currentDate) {
-    LocalTimeInterval workHours = WORKING_TIME.get(weekday);
-    if (WORKING_TIME.get(weekday) != null && !converter.isHoliday(currentDate)) {
-      LocalTime start = workHours.getBegin();
-      LocalTime end = workHours.getEnd();
-      LocalTime fromTime = from.atZone(zone).toLocalTime();
-      LocalTime toTime = to.atZone(zone).toLocalTime();
+  /**
+   * Decides whether {@code instant} is a working day.
+   *
+   * @param instant The Instant to check. May not be {@code null}.
+   * @return {@code true} if {@code instant} is a working day. {@code false} otherwise.
+   */
+  boolean isWorkingDay(Instant instant);
 
-      if (!fromTime.isBefore(start) && toTime.isBefore(end)) {
-        return Duration.between(from, to);
-      } else if (fromTime.isBefore(start)) {
-        if (toTime.isAfter(end)) {
-          return addWorkingHoursOfOneDay(weekday);
-        } else if (!toTime.isBefore(start)) {
-          return Duration.between(start, toTime);
-        }
-      } else if (fromTime.isBefore(end)) {
-        return Duration.between(fromTime, end);
-      }
-    }
-    return Duration.ZERO;
-  }
+  /**
+   * Decides whether {@code instant} is a weekend day.
+   *
+   * @param instant The Instant to check. May not be {@code null}.
+   * @return {@code true} if {@code instant} is a weekend day. {@code false} otherwise.
+   */
+  boolean isWeekend(Instant instant);
 
-  private Duration calculateDurationOfOneWorkDay(DayOfWeek weekday, LocalDate date) {
-    if (WORKING_TIME.get(weekday) != null && !converter.isHoliday(date)) {
-      return addWorkingHoursOfOneDay(weekday);
-    }
-    return Duration.ZERO;
-  }
+  /**
+   * Decides whether { @code instant} is a holiday.
+   *
+   * @param instant The Instant to check. May not be {@code null}.
+   * @return {@code true} if {@code instant} is a holiday. {@code false} otherwise.
+   */
+  boolean isHoliday(Instant instant);
 
-  private Duration calculateDurationOfStartDay(
-      Instant startDay, DayOfWeek weekday, LocalDate date) {
-    LocalTimeInterval workHours = WORKING_TIME.get(weekday);
-    if (WORKING_TIME.get(weekday) != null && !converter.isHoliday(date)) {
-      LocalTime fromTime = startDay.atZone(zone).toLocalTime();
-      LocalTime end = workHours.getEnd();
-      if (fromTime.isBefore(workHours.getBegin())) {
-        return addWorkingHoursOfOneDay(weekday);
-      } else if (fromTime.isBefore(end)) {
-        return Duration.between(fromTime, end);
-      }
-    }
-    return Duration.ZERO;
-  }
-
-  private Duration calculateDurationOnEndDay(Instant endDate, DayOfWeek weekday, LocalDate date) {
-    LocalTimeInterval workHours = WORKING_TIME.get(weekday);
-    if (WORKING_TIME.get(weekday) != null && !converter.isHoliday(date)) {
-      LocalTime start = workHours.getBegin();
-      LocalTime toTime = endDate.atZone(zone).toLocalTime();
-      if (toTime.isAfter(workHours.getEnd())) {
-        return addWorkingHoursOfOneDay(weekday);
-      } else if (!toTime.isBefore(start)) {
-        return Duration.between(start, toTime);
-      }
-    }
-    return Duration.ZERO;
-  }
-
-  private void checkValidInput(Instant from, Instant to) throws InvalidArgumentException {
-    if (from == null || to == null || from.compareTo(to) > 0) {
-      throw new InvalidArgumentException("Instants are invalid.");
-    }
-
-    for (LocalTimeInterval interval : WORKING_TIME.values()) {
-      if (interval != null && !interval.isValid()) {
-        throw new InvalidArgumentException(
-            "The work period doesn't have two LocalTimes for start and end.");
-      }
-    }
-  }
-
-  private Duration addWorkingHoursOfOneDay(DayOfWeek weekday) {
-    LocalTimeInterval workHours = WORKING_TIME.get(weekday);
-    if (workHours.isValid()) {
-      return Duration.between(workHours.getBegin(), workHours.getEnd());
-    } else {
-      return Duration.ZERO;
-    }
-  }
+  /**
+   * Decides whether {@code instant} is a holiday in Germany.
+   *
+   * @param instant The Instant to check. May not be {@code null}.
+   * @return {@code true} if {@code instant} is a holiday in Germany. {@code false} otherwise.
+   */
+  boolean isGermanHoliday(Instant instant);
 }
