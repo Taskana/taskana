@@ -4,17 +4,22 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.OptionalInt;
 
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.models.TaskSummary;
 
 public class TestPriorityServiceProvider implements PriorityServiceProvider {
+
   private static final int MULTIPLIER = 10;
 
-  private final WorkingDaysToDaysConverter converter = new WorkingDaysToDaysConverter(true, true);
-  private final WorkingTimeCalculator calculator = new WorkingTimeCalculator(converter);
+  private WorkingTimeCalculator calculator;
+
+  @Override
+  public void initialize(TaskanaEngine taskanaEngine) {
+    calculator = taskanaEngine.getWorkingTimeCalculator();
+  }
 
   @Override
   public OptionalInt calculatePriority(TaskSummary taskSummary) {
@@ -22,10 +27,7 @@ public class TestPriorityServiceProvider implements PriorityServiceProvider {
     long priority;
     try {
       priority =
-          calculator
-                  .workingTimeBetweenTwoTimestamps(taskSummary.getCreated(), Instant.now())
-                  .toMinutes()
-              + 1;
+          calculator.workingTimeBetween(taskSummary.getCreated(), Instant.now()).toMinutes() + 1;
     } catch (Exception e) {
       priority = Duration.between(taskSummary.getCreated(), Instant.now()).toMinutes();
     }
