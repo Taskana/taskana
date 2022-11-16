@@ -76,7 +76,8 @@ public class TimestampReportBuilderImpl
 
       report.addItems(
           items,
-          new DaysToWorkingDaysReportPreProcessor<>(columnHeaders, converter, inWorkingDays));
+          new DaysToWorkingDaysReportPreProcessor<>(
+              columnHeaders, workingTimeCalculator, inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();

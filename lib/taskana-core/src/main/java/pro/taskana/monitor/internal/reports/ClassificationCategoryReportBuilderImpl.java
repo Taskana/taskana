@@ -43,7 +43,7 @@ public class ClassificationCategoryReportBuilderImpl
       report.addItems(
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, converter, this.inWorkingDays));
+              this.columnHeaders, workingTimeCalculator, this.inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();
