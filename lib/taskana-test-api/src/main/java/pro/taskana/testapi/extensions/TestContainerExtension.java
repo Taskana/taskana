@@ -3,6 +3,7 @@ package pro.taskana.testapi.extensions;
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 import static pro.taskana.testapi.DockerContainerCreator.createDataSource;
 import static pro.taskana.testapi.DockerContainerCreator.createDockerContainer;
+import static pro.taskana.testapi.OracleSchemaHelper.initOracleSchema;
 import static pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore;
 import static pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass;
 
@@ -50,8 +51,12 @@ public class TestContainerExtension implements InvocationInterceptor {
     Class<?> testClass = extensionContext.getRequiredTestClass();
     if (isTopLevelClass(testClass) || isAnnotated(testClass, CleanTaskanaContext.class)) {
       Store store = getClassLevelStore(extensionContext);
-      store.put(STORE_SCHEMA_NAME, determineSchemaName());
+      String schemaName = determineSchemaName();
+      store.put(STORE_SCHEMA_NAME, schemaName);
       store.put(STORE_DATA_SOURCE, DATA_SOURCE);
+      if (DB.isOracle(EXECUTION_DATABASE.dbProductId)) {
+        initOracleSchema(DATA_SOURCE, schemaName);
+      }
     } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)
         || isAnnotated(testClass, WithServiceProvider.class)) {
       // since the implementation of TaskanaEngineConfigurationModifier implies the generation of a
@@ -73,7 +78,12 @@ public class TestContainerExtension implements InvocationInterceptor {
 
   private static String determineSchemaName() {
     String uniqueId = "A" + UUID.randomUUID().toString().replace("-", "_");
-    return EXECUTION_DATABASE == DB.POSTGRES ? uniqueId.toLowerCase() : uniqueId;
+    if (EXECUTION_DATABASE == DB.ORACLE) {
+      uniqueId = uniqueId.substring(0, 26);
+    } else if (EXECUTION_DATABASE == DB.POSTGRES) {
+      uniqueId = uniqueId.toLowerCase();
+    }
+    return uniqueId;
   }
 
   private static DB retrieveDatabaseFromEnv() {

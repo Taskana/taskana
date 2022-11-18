@@ -28,10 +28,11 @@ public class DbSchemaCreator {
 
   private static final String DB_SCHEMA_H2 = SQL + "/h2/taskana-schema-h2.sql";
   private static final String DB_SCHEMA_DETECTION_H2 = SQL + "/h2/schema-detection-h2.sql";
-
   private static final String DB_SCHEMA_DB2 = SQL + "/db2/taskana-schema-db2.sql";
   private static final String DB_SCHEMA_DETECTION_DB2 = SQL + "/db2/schema-detection-db2.sql";
-
+  private static final String DB_SCHEMA_ORACLE = SQL + "/oracle/taskana-schema-oracle.sql";
+  private static final String DB_SCHEMA_DETECTION_ORACLE =
+      SQL + "/oracle/schema-detection-oracle.sql";
   private static final String DB_SCHEMA_POSTGRES = SQL + "/postgres/taskana-schema-postgres.sql";
   private static final String DB_SCHEMA_DETECTION_POSTGRES =
       SQL + "/postgres/schema-detection-postgres.sql";
@@ -58,12 +59,12 @@ public class DbSchemaCreator {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Using database of type {} with url '{}'",
-            connection.getMetaData().getDatabaseProductName(),
+            DB.getDatabaseProductName(connection),
             connection.getMetaData().getURL());
       }
+      String dbProductId = DB.getDatabaseProductId(connection);
+
       ScriptRunner runner = getScriptRunnerInstance(connection);
-      String dbProductId =
-          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
 
       if (!isSchemaPreexisting(connection, dbProductId)) {
         String scriptPath = selectDbScriptFileName(dbProductId);
@@ -133,6 +134,8 @@ public class DbSchemaCreator {
     switch (DB.getDbForId(dbProductId)) {
       case DB2:
         return DB_SCHEMA_DB2;
+      case ORACLE:
+        return DB_SCHEMA_ORACLE;
       case POSTGRES:
         return DB_SCHEMA_POSTGRES;
       default:
@@ -145,6 +148,8 @@ public class DbSchemaCreator {
     switch (DB.getDbForId(dbProductId)) {
       case DB2:
         return DB_SCHEMA_DETECTION_DB2;
+      case ORACLE:
+        return DB_SCHEMA_DETECTION_ORACLE;
       case POSTGRES:
         return DB_SCHEMA_DETECTION_POSTGRES;
       default:

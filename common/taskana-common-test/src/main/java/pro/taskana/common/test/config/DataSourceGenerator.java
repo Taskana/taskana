@@ -1,5 +1,7 @@
 package pro.taskana.common.test.config;
 
+import static pro.taskana.common.test.OracleSchemaHelper.initOracleSchema;
+
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -30,6 +32,9 @@ public final class DataSourceGenerator {
     if (dockerContainer.isPresent()) {
       dockerContainer.get().start();
       DATA_SOURCE = DockerContainerCreator.createDataSource(dockerContainer.get());
+      if (DB.isOracle(db.dbProductId)) {
+        initOracleSchema(DATA_SOURCE, SCHEMA_NAME);
+      }
     } else {
       DATA_SOURCE = createDataSourceForH2();
     }
@@ -45,22 +50,7 @@ public final class DataSourceGenerator {
     return SCHEMA_NAME;
   }
 
-  private static String determineSchemaName(DB db) {
-    return db == DB.POSTGRES ? "taskana" : "TASKANA";
-  }
-
-  private static DB retrieveDatabaseFromEnv() {
-    String property = System.getenv("DB");
-    DB db;
-    try {
-      db = DB.valueOf(property);
-    } catch (Exception ex) {
-      db = DB.H2;
-    }
-    return db;
-  }
-
-  private static DataSource createDataSourceForH2() {
+  public static DataSource createDataSourceForH2() {
     String jdbcDriver = "org.h2.Driver";
     String jdbcUrl =
         "jdbc:h2:mem:taskana;NON_KEYWORDS=KEY,VALUE;LOCK_MODE=0;"
@@ -79,5 +69,20 @@ public final class DataSourceGenerator {
     ds.forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
 
     return ds;
+  }
+
+  private static String determineSchemaName(DB db) {
+    return db == DB.POSTGRES ? "taskana" : "TASKANA";
+  }
+
+  private static DB retrieveDatabaseFromEnv() {
+    String property = System.getenv("DB");
+    DB db;
+    try {
+      db = DB.valueOf(property);
+    } catch (Exception ex) {
+      db = DB.H2;
+    }
+    return db;
   }
 }

@@ -519,8 +519,7 @@ public class TaskanaEngineConfiguration {
     }
 
     try (Connection connection = dataSource.getConnection()) {
-      String databaseProductId =
-          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
+      String databaseProductId = DB.getDatabaseProductId(connection);
       if (DB.isPostgres(databaseProductId)) {
         this.schemaName = this.schemaName.toLowerCase();
       } else {

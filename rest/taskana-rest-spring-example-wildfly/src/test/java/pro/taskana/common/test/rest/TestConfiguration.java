@@ -1,7 +1,6 @@
 package pro.taskana.common.test.rest;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @SpringBootApplication
@@ -29,11 +29,10 @@ public class TestConfiguration {
       @Value("${taskana.schemaName:TASKANA}") String schemaName, DataSource dataSource) {
     if (LOGGER.isDebugEnabled()) {
       try (Connection connection = dataSource.getConnection()) {
-        DatabaseMetaData metaData = connection.getMetaData();
         LOGGER.debug(
             "Using database of type {} with url '{}'",
-            metaData.getDatabaseProductName(),
-            metaData.getURL());
+            DB.getDatabaseProductName(connection),
+            connection.getMetaData().getURL());
       } catch (SQLException e) {
         LOGGER.error(e.getMessage(), e);
       }

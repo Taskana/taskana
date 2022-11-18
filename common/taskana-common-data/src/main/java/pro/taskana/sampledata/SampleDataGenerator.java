@@ -78,8 +78,7 @@ public class SampleDataGenerator {
 
   private List<String> parseScripts(Stream<String> scripts) {
     try (Connection connection = dataSource.getConnection()) {
-      String dbProductId =
-          DB.getDatabaseProductId(connection.getMetaData().getDatabaseProductName());
+      String dbProductId = DB.getDatabaseProductId(connection);
       return scripts
           .map(script -> SqlReplacer.getScriptAsSql(dbProductId, now, script))
           .collect(Collectors.toList());
@@ -93,7 +92,7 @@ public class SampleDataGenerator {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Generating sample data for database of type '{}' with url '{}' and schema '{}'.",
-            connection.getMetaData().getDatabaseProductName(),
+            DB.getDatabaseProductName(connection),
             connection.getMetaData().getURL(),
             schema);
       }

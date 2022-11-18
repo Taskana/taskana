@@ -1,5 +1,7 @@
 package pro.taskana.sampledata;
 
+import static pro.taskana.common.internal.persistence.StringTypeHandler.EMPTY_PLACEHOLDER;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -64,11 +66,20 @@ final class SqlReplacer {
     return sql.replaceAll("(?i)true", "1").replaceAll("(?i)false", "0");
   }
 
+  private static String replaceEmptyStringWithPlaceholder(String sql) {
+    return sql.replace("''", String.format("'%s'", EMPTY_PLACEHOLDER));
+  }
+
   private static String parseAndReplace(
       BufferedReader bufferedReader, ZonedDateTime now, String dbProductId) {
     String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-    if (DB.isDb2(dbProductId)) {
+    if (DB.isDb2(dbProductId) || DB.isOracle(dbProductId)) {
       sql = replaceBooleanWithInteger(sql);
+    }
+    if (DB.isOracle(dbProductId)) {
+      sql = replaceEmptyStringWithPlaceholder(sql);
+      // Oracle needs to be informed about the timestamp format used in data scripts
+      sql = "ALTER SESSION SET NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF3';\n" + sql;
     }
     return replaceDatePlaceholder(now, sql);
   }

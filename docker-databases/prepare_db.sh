@@ -18,9 +18,9 @@ export TOP_PID=$$
 #H   If no database was provided all databases are stopped.
 #H
 #H database:
-#H   - H2
 #H   - DB2 | DB2_11_5
 #H   - POSTGRES | POSTGRES_10
+#H   - ORACLE | ORACLE_18
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -40,6 +40,9 @@ function mapDBToDockerComposeServiceName() {
     POSTGRES|POSTGRES_10)
       echo "taskana-postgres_10"
       ;;
+    ORACLE|ORACLE_18)
+      echo "taskana-oracle-18"
+      ;;
     *)
       echo "unknown database '$1'" >&2 && kill -s TERM $TOP_PID
   esac
@@ -56,6 +59,9 @@ function main() {
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
   POSTGRES|POSTGRES_10)
+    docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
+    ;;
+  ORACLE|ORACLE_18)
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
   stop)

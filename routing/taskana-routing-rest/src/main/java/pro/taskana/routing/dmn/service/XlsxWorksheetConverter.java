@@ -97,6 +97,27 @@ public class XlsxWorksheetConverter {
     return dmnModel;
   }
 
+  public <E extends NamedElement> E generateNamedElement(
+      DmnModelInstance modelInstance, Class<E> elementClass, String name) {
+    E element = generateElement(modelInstance, elementClass, name);
+    element.setName(name);
+    return element;
+  }
+
+  public <E extends DmnElement> E generateElement(
+      DmnModelInstance modelInstance, Class<E> elementClass, String id) {
+    E element = modelInstance.newInstance(elementClass);
+    element.setId(id);
+    return element;
+  }
+
+  public <E extends DmnElement> E generateElement(
+      DmnModelInstance modelInstance, Class<E> elementClass) {
+    // TODO: use a proper generator for random IDs
+    String generatedId = elementClass.getSimpleName() + (int) (Integer.MAX_VALUE * Math.random());
+    return generateElement(modelInstance, elementClass, generatedId);
+  }
+
   protected void setHitPolicy(DecisionTable decisionTable) {
     HitPolicy hitPolicy = spreadsheetAdapter.determineHitPolicy(worksheetContext);
     if (hitPolicy != null) {
@@ -246,27 +267,6 @@ public class XlsxWorksheetConverter {
     dmnModel.setDefinitions(definitions);
 
     return dmnModel;
-  }
-
-  public <E extends NamedElement> E generateNamedElement(
-      DmnModelInstance modelInstance, Class<E> elementClass, String name) {
-    E element = generateElement(modelInstance, elementClass, name);
-    element.setName(name);
-    return element;
-  }
-
-  public <E extends DmnElement> E generateElement(
-      DmnModelInstance modelInstance, Class<E> elementClass, String id) {
-    E element = modelInstance.newInstance(elementClass);
-    element.setId(id);
-    return element;
-  }
-
-  public <E extends DmnElement> E generateElement(
-      DmnModelInstance modelInstance, Class<E> elementClass) {
-    // TODO: use a proper generator for random IDs
-    String generatedId = elementClass.getSimpleName() + (int) (Integer.MAX_VALUE * Math.random());
-    return generateElement(modelInstance, elementClass, generatedId);
   }
 
   protected Text generateText(DmnModelInstance dmnModel, String content) {

@@ -1,5 +1,6 @@
 package pro.taskana.simplehistory.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayDeque;
@@ -25,8 +26,12 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.OracleSqlSessionFactory;
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
+import pro.taskana.common.internal.persistence.StringTypeHandler;
 import pro.taskana.simplehistory.TaskanaHistoryEngine;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryMapper;
@@ -107,7 +112,23 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
             DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
     Configuration configuration = new Configuration(environment);
 
+    // set databaseId
+    String databaseProductName;
+    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+      databaseProductName = DB.getDatabaseProductName(con);
+      configuration.setDatabaseId(DB.getDatabaseProductId(con));
+
+    } catch (SQLException e) {
+      throw new SystemException("Could not open a connection to set the databaseId", e);
+    }
+
     // register type handlers
+    if (DB.isOracleDb(databaseProductName)) {
+      // Use NULL instead of OTHER when jdbcType is not specified for null values,
+      // otherwise oracle driver will chunck on null values
+      configuration.setJdbcTypeForNull(JdbcType.NULL);
+      configuration.getTypeHandlerRegistry().register(String.class, new StringTypeHandler());
+    }
     configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
     configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP, new InstantTypeHandler());
@@ -121,7 +142,18 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     configuration.addMapper(ClassificationHistoryQueryMapper.class);
     configuration.addMapper(UserMapper.class);
 
-    SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+    SqlSessionFactory localSessionFactory;
+    if (DB.isOracleDb(databaseProductName)) {
+      localSessionFactory =
+          new SqlSessionFactoryBuilder() {
+            @Override
+            public SqlSessionFactory build(Configuration config) {
+              return new OracleSqlSessionFactory(config);
+            }
+          }.build(configuration);
+    } else {
+      localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+    }
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 

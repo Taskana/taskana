@@ -30,9 +30,9 @@ public class TaskCommentQuerySqlProvider {
         + ", u.FULL_NAME"
         + "</if>"
         + "FROM TASK_COMMENT tc "
-        + "LEFT JOIN Task AS t ON tc.TASK_ID = t.ID "
+        + "LEFT JOIN Task t ON tc.TASK_ID = t.ID "
         + "<if test=\"joinWithUserInfo\">"
-        + "LEFT JOIN USER_INFO AS u ON tc.CREATOR = u.USER_ID "
+        + "LEFT JOIN USER_INFO u ON tc.CREATOR = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
         + checkForAuthorization()
@@ -49,7 +49,7 @@ public class TaskCommentQuerySqlProvider {
     return OPENING_SCRIPT_TAG
         + "SELECT COUNT(tc.ID) "
         + "FROM TASK_COMMENT tc "
-        + "LEFT JOIN Task AS t ON tc.TASK_ID = t.ID "
+        + "LEFT JOIN Task t ON tc.TASK_ID = t.ID "
         + OPENING_WHERE_TAG
         + checkForAuthorization()
         + commonTaskCommentWhereStatement()
@@ -62,9 +62,9 @@ public class TaskCommentQuerySqlProvider {
     return OPENING_SCRIPT_TAG
         + "SELECT DISTINCT ${queryColumnName} "
         + "FROM TASK_COMMENT tc "
-        + "LEFT JOIN Task AS t ON tc.TASK_ID = t.ID "
+        + "LEFT JOIN Task t ON tc.TASK_ID = t.ID "
         + "<if test=\"joinWithUserInfo\">"
-        + "LEFT JOIN USER_INFO AS u ON tc.CREATOR = u.USER_ID "
+        + "LEFT JOIN USER_INFO u ON tc.CREATOR = u.USER_ID "
         + "</if>"
         + OPENING_WHERE_TAG
         + checkForAuthorization()
@@ -106,10 +106,18 @@ public class TaskCommentQuerySqlProvider {
     return "<if test='accessIdIn != null'> AND t.WORKBASKET_ID IN ("
         + "SELECT WID "
         + "FROM ("
+        + "<choose>"
+        + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ "
+        + "</when>"
+        + "<otherwise>"
         + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ "
-        + "FROM WORKBASKET_ACCESS_LIST AS s where ACCESS_ID IN "
+        + "</otherwise>"
+        + "</choose>"
+        + "FROM WORKBASKET_ACCESS_LIST s "
+        + "WHERE ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
-        + "GROUP by WORKBASKET_ID) as f "
+        + "GROUP by WORKBASKET_ID) f "
         + "WHERE MAX_READ = 1) "
         + "</if>";
   }

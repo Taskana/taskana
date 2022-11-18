@@ -266,20 +266,30 @@ jobs:
             database: POSTGRES
           - module: taskana-core
             database: DB2
+          - module: taskana-core
+            database: ORACLE
           - module: taskana-core-test
             database: POSTGRES
           - module: taskana-core-test
             database: DB2
+          - module: taskana-core-test
+            database: ORACLE
           - module: taskana-test-api
             database: POSTGRES
           - module: taskana-test-api
             database: DB2
+          - module: taskana-test-api
+            database: ORACLE
           - module: taskana-simplehistory-provider
             database: DB2
           - module: taskana-simplehistory-provider
             database: POSTGRES
+          - module: taskana-simplehistory-provider
+            database: ORACLE
           - module: taskana-rest-spring-example-boot
             database: DB2
+          - module: taskana-rest-spring-example-boot
+            database: ORACLE
           - module: taskana-rest-spring-example-wildfly
             database: POSTGRES
     steps:

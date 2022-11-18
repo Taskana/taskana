@@ -303,7 +303,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             Stream.of(
                 "SQLCODE=-803", // DB2
                 "uc_accessid_wbid", // POSTGRES
-                "UC_ACCESSID_WBID_INDEX_E" // H2
+                "UC_ACCESSID_WBID_INDEX_E", // H2
+                "ORA-00001" // ORACLE
                 );
         if (accessItemExistsIdentifier.anyMatch(e.getMessage()::contains)) {
           throw new WorkbasketAccessItemAlreadyExistException(

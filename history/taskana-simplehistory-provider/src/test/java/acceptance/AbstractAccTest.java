@@ -1,6 +1,9 @@
 package acceptance;
 
+import static pro.taskana.common.test.OracleSchemaHelper.initOracleSchema;
+
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,6 +14,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -83,14 +87,18 @@ public abstract class AbstractAccTest {
 
   protected static void resetDb(String schemaName) throws Exception {
     DataSource dataSource = DataSourceGenerator.getDataSource();
+    String schemaNameTmp =
+        schemaName != null && !schemaName.isEmpty()
+            ? schemaName
+            : DataSourceGenerator.getSchemaName();
+    try (Connection connection = dataSource.getConnection()) {
+      String dbProductId = DB.getDatabaseProductId(connection);
+      if (DB.isOracle(dbProductId)) {
+        initOracleSchema(dataSource, schemaNameTmp);
+      }
+    }
 
-    taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            dataSource,
-            false,
-            schemaName != null && !schemaName.isEmpty()
-                ? schemaName
-                : DataSourceGenerator.getSchemaName());
+    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaNameTmp);
     taskanaEngine =
         taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
     taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
