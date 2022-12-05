@@ -161,17 +161,23 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
                         mapping(TaskHistoryEvent::getTaskId, toList()))));
 
     List<String> taskIdsToDeleteHistoryEventsFor = new ArrayList<>();
+    String createdKey = TaskHistoryEventType.CREATED.getName();
 
     taskHistoryIdsByEventTypeByParentBusinessProcessId.forEach(
         (parentBusinessProcessId, taskHistoryIdsByEventType) -> {
-          if (taskHistoryIdsByEventType.get(TaskHistoryEventType.CREATED.getName()).size()
+          if (!taskHistoryIdsByEventType.containsKey(createdKey)) {
+            LOGGER.error(
+                "Issue during history cleanup tasks with enabled parent business process. "
+                    + "No events for parent business process {} with type {} found."
+                    + "Please clean up those history events manually",
+                parentBusinessProcessId,
+                createdKey);
+          } else if (taskHistoryIdsByEventType.get(createdKey).size()
               == taskHistoryIdsByEventType.entrySet().stream()
-                  .filter(
-                      not(entry -> entry.getKey().equals(TaskHistoryEventType.CREATED.getName())))
+                  .filter(not(entry -> entry.getKey().equals(createdKey)))
                   .mapToInt(stringListEntry -> stringListEntry.getValue().size())
                   .sum()) {
-            taskIdsToDeleteHistoryEventsFor.addAll(
-                taskHistoryIdsByEventType.get(TaskHistoryEventType.CREATED.getName()));
+            taskIdsToDeleteHistoryEventsFor.addAll(taskHistoryIdsByEventType.get(createdKey));
           }
         });
 
