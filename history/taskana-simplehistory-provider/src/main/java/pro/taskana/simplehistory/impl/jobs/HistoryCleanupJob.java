@@ -168,7 +168,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
           if (!taskHistoryIdsByEventType.containsKey(createdKey)) {
             LOGGER.error(
                 "Issue during history cleanup tasks with enabled parent business process. "
-                    + "No events for parent business process {} with type {} found.",
+                    + "No events for parent business process {} with type {} found."
+                    + "Please clean up those history events manually",
                 parentBusinessProcessId,
                 createdKey);
           } else if (taskHistoryIdsByEventType.get(createdKey).size()

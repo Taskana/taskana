@@ -376,7 +376,8 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_NotCleanEvents_When_NoCreatedEvents_For_BusinessParentProcess() throws Exception {
+  void should_NotCleanEvents_When_NoCreatedEventsForParentBusinessProcessIdExist()
+      throws Exception {
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
 
     TaskHistoryEvent toBeIgnored1 =
