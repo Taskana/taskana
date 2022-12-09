@@ -84,7 +84,7 @@
 
     <!-- test dependencies -->
     <version.archunit>1.0.1</version.archunit>
-    <version.equalsverifier>3.12.1</version.equalsverifier>
+    <version.equalsverifier>3.12.2</version.equalsverifier>
     <version.openpojo>0.9.1</version.openpojo>
     <version.jacoco>0.8.8</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>
