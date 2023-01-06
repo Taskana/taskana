@@ -82,7 +82,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -132,7 +132,7 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -179,7 +179,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
