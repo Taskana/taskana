@@ -21,7 +21,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "5.8.1-SNAPSHOT";
+  protected static final String DEPENDENCY_VERSION = "5.9.1-SNAPSHOT";
 
   static {
     Runtime.getRuntime().addShutdownHook(new Thread(AbstractAccTest::stopPostgresDb));
