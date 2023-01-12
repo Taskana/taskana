@@ -1107,13 +1107,24 @@ public class TaskServiceImpl implements TaskService {
                 addErrorToBulkLog(this::checkPreconditionsForCompleteTask, bulkLog));
       } else {
         String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
+        String userLongName;
+        if (taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+          User user = userMapper.findById(userId);
+          if (user != null) {
+            userLongName = user.getLongName();
+          } else {
+            userLongName = null;
+          }
+        } else {
+          userLongName = null;
+        }
         filteredSummaries =
             filteredSummaries.filter(
                 addErrorToBulkLog(
                     summary -> {
                       if (taskIsNotClaimed(summary)) {
                         checkPreconditionsForClaimTask(summary, true);
-                        claimActionsOnTask(summary, userId, now);
+                        claimActionsOnTask(summary, userId, userLongName, now);
                       }
                     },
                     bulkLog));
@@ -1205,6 +1216,13 @@ public class TaskServiceImpl implements TaskService {
       throws TaskNotFoundException, InvalidStateException, InvalidOwnerException,
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
+    String userLongName = null;
+    if (taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+      User user = userMapper.findById(userId);
+      if (user != null) {
+        userLongName = user.getLongName();
+      }
+    }
     TaskImpl task;
     try {
       taskanaEngine.openConnection();
@@ -1214,7 +1232,7 @@ public class TaskServiceImpl implements TaskService {
       Instant now = Instant.now();
 
       checkPreconditionsForClaimTask(task, forceClaim);
-      claimActionsOnTask(task, userId, now);
+      claimActionsOnTask(task, userId, userLongName, now);
       taskMapper.update(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
@@ -1335,8 +1353,10 @@ public class TaskServiceImpl implements TaskService {
     return task;
   }
 
-  private static void claimActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
+  private static void claimActionsOnTask(
+      TaskSummaryImpl task, String userId, String userLongName, Instant now) {
     task.setOwner(userId);
+    task.setOwnerLongName(userLongName);
     task.setModified(now);
     task.setClaimed(now);
     task.setRead(true);

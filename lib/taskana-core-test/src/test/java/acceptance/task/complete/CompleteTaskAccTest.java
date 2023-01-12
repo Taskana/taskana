@@ -19,6 +19,7 @@ import org.junit.jupiter.api.TestTemplate;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.security.CurrentUserContext;
@@ -35,8 +36,10 @@ import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.UserBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
+import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
@@ -47,6 +50,10 @@ class CompleteTaskAccTest {
 
   @TaskanaInject TaskService taskService;
   @TaskanaInject CurrentUserContext currentUserContext;
+
+  @TaskanaInject UserService userService;
+
+  @TaskanaInject TaskanaEngine taskanaEngine;
 
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
@@ -68,6 +75,11 @@ class CompleteTaskAccTest {
         .buildAndStore(workbasketService);
 
     defaultObjectReference = DefaultTestEntities.defaultTestObjectReference().build();
+
+    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(true);
+    UserBuilder user11 = UserBuilder.newUser().id("user-1-1")
+            .longName("Mustermann, Max - (user-1-1)").firstName("Max").lastName("Mustermann");
+    user11.buildAndStore(userService);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -246,6 +258,7 @@ class CompleteTaskAccTest {
 
     assertThat(claimedTask).isNotNull();
     assertThat(claimedTask.getOwner()).isEqualTo("user-1-1");
+    assertThat(claimedTask.getOwnerLongName()).isEqualTo("Mustermann, Max - (user-1-1)");
     assertThat(claimedTask.getState()).isEqualTo(TaskState.CLAIMED);
     assertThat(claimedTask.isRead()).isTrue();
     assertThat(claimedTask.getClaimed())
@@ -266,6 +279,7 @@ class CompleteTaskAccTest {
 
     assertThat(claimedTask).isNotNull();
     assertThat(claimedTask.getOwner()).isEqualTo("user-1-1");
+    assertThat(claimedTask.getOwnerLongName()).isEqualTo("Mustermann, Max - (user-1-1)");
     assertThat(claimedTask.getState()).isEqualTo(TaskState.CLAIMED);
     assertThat(claimedTask.isRead()).isTrue();
     assertThat(claimedTask.getClaimed())
