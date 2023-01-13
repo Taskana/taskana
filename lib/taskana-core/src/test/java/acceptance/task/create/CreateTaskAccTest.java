@@ -108,8 +108,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateSimpleManualTask() throws Exception {
-
+  void should_CreateSimpleManualTask() throws Exception {
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     ObjectReferenceImpl objectReference =
@@ -142,6 +141,27 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask.getPriority()).isEqualTo(2);
     assertThat(createdTask.isRead()).isFalse();
     assertThat(createdTask.isTransferred()).isFalse();
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_CreateTaskWithAdditionalUserInfo() throws Exception {
+    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(true);
+    Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T2100");
+    ObjectReferenceImpl objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    objectReference.setTaskId(newTask.getId());
+    newTask.setPrimaryObjRef(objectReference);
+    newTask.setOwner("user-1-1");
+
+    Task createdTask = taskService.createTask(newTask);
+
+    assertThat(createdTask).isNotNull();
+    assertThat(createdTask.getOwner()).isEqualTo("user-1-1");
+    assertThat(createdTask.getOwnerLongName()).isEqualTo("Mustermann, Max - (user-1-1)");
+
+    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(false);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -237,7 +257,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testIdempotencyOfTaskCreation() throws Exception {
+  void should_ThrowException_When_CreatingTheSameTaskTwice() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setExternalId("MyExternalId");
@@ -278,7 +298,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateSimpleTaskWithCustomAttributes() throws Exception {
+  void should_CreateTask_When_CustomAttributesAreSpecified() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -346,7 +366,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateExternalTaskWithAttachment() throws Exception {
+  void should_CreateTask_When_AttachmentIsSpecified() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010");
@@ -422,7 +442,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateExternalTaskWithMultipleAttachments() throws Exception {
+  void should_CreateTask_When_MultipleAttachmentsAreSpecified() throws Exception {
 
     Instant earlierInstant = Instant.parse("2018-01-12T00:00:00Z");
     Instant laterInstant = Instant.parse("2018-01-15T00:00:00Z");
@@ -477,7 +497,8 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testPrioDurationOfTaskFromAttachmentsAtCreate() throws Exception {
+  void should_SetPriorityAndDurationCorrectly_When_UsingClassificationOfAttachment()
+      throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("L12010"); // prio 8, SL P7D
@@ -536,7 +557,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testThrowsExceptionIfAttachmentIsInvalid() throws Exception {
+  void should_ThrowException_When_AttachmentIsInvalid() throws Exception {
 
     Consumer<Attachment> testCreateTask =
         invalidAttachment -> {
@@ -595,7 +616,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testUseCustomNameIfSetForNewTask() throws Exception {
+  void should_UseCustomName_For_NewTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -612,7 +633,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testUseClassificationMetadataFromCorrectDomainForNewTask() throws Exception {
+  void should_UseClassificationMetadataFromCorrectDomain_For_NewTask() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -629,7 +650,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testGetExceptionIfWorkbasketDoesNotExist() {
+  void should_ThrowExceptionIfWorkbasketDoesNotExist() {
 
     Task newTask = taskService.newTask("UNKNOWN");
     newTask.setClassificationKey("T2100");
@@ -655,7 +676,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testThrowsExceptionIfMandatoryPrimaryObjectReferenceIsNotSetOrIncomplete() {
+  void should_ThrowException_When_MandatoryPrimaryObjectReferenceIsNotSetOrIncomplete() {
 
     Consumer<ObjectReference> testCreateTask =
         (ObjectReference objectReference) -> {
@@ -681,7 +702,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testSetDomainFromWorkbasket() throws Exception {
+  void should_SetDomainFromWorkbasket() throws Exception {
 
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 
@@ -702,7 +723,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreatedTaskObjectEqualsReadTaskObject() throws Exception {
+  void should_ReadSameTaskObjectAsCreated() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -734,7 +755,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateSimpleTaskWithCallbackInfo() throws Exception {
+  void should_CreateSimpleTask_When_CallbackInfoIsSet() throws Exception {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -766,7 +787,7 @@ class CreateTaskAccTest extends AbstractAccTest {
   }
 
   @Test
-  void testCreateTaskWithSecurityButNoUserId() {
+  void should_ThrowException_When_NoUserIdIsSetAndSecurityIsOn() {
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
@@ -790,7 +811,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void testCreateTaskNotAuthorizedOnWorkbasket() {
+  void should_ThrowException_When_UserNotAuthorizedOnWorkbasket() {
 
     Task task = taskService.newTask("TEAMLEAD-2", "DOMAIN_A");
 
@@ -809,7 +830,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testCreateTaskWithWorkbasketMarkedForDeletion() throws Exception {
+  void should_ThrowException_When_WorkbasketMarkedForDeletion() throws Exception {
 
     String wbId = "WBI:100000000000000000000000000000000008";
     Task taskToPreventWorkbasketDeletion = taskService.newTask(wbId);

@@ -1716,6 +1716,13 @@ public class TaskServiceImpl implements TaskService {
     if (task.getDescription() == null && classification != null) {
       task.setDescription(classification.getDescription());
     }
+    if (task.getOwner() != null
+            && taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+      User user = userMapper.findById(task.getOwner());
+      if (user != null) {
+        task.setOwnerLongName(user.getLongName());
+      }
+    }
     setDefaultTaskReceivedDateFromAttachments(task);
 
     attachmentHandler.insertNewAttachmentsOnTaskCreation(task);
