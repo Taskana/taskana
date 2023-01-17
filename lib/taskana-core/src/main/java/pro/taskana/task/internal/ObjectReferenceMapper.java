@@ -20,6 +20,7 @@ public interface ObjectReferenceMapper {
       "<script>SELECT ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
           + "FROM OBJECT_REFERENCE "
           + "WHERE ID = #{id}"
+          + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
@@ -34,6 +35,7 @@ public interface ObjectReferenceMapper {
       "<script>SELECT ID, TASK_ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
           + "FROM OBJECT_REFERENCE "
           + "WHERE TASK_ID = #{taskId}"
+          + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
@@ -58,6 +60,7 @@ public interface ObjectReferenceMapper {
           + "</otherwise>"
           + "</choose>"
           + "</where>"
+          + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
@@ -78,6 +81,7 @@ public interface ObjectReferenceMapper {
           + "AND SYSTEM_INSTANCE = #{objectReference.systemInstance} "
           + "AND TYPE = #{objectReference.type} "
           + "AND VALUE = #{objectReference.value} "
+          + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
