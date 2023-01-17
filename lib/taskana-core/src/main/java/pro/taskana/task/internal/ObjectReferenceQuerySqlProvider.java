@@ -18,6 +18,7 @@ public class ObjectReferenceQuerySqlProvider {
         + OPENING_WHERE_TAG
         + commonObjectReferenceWhereStatement()
         + CLOSING_WHERE_TAG
+        + "ORDER BY COMPANY ASC, SYSTEM ASC, SYSTEM_INSTANCE ASC, TYPE ASC, VALUE ASC"
         + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
   }
