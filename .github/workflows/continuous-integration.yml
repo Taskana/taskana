@@ -57,7 +57,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./mvnw -B dependency:go-offline
-          ./mvnw -B test -Dtest=GibtEsNet -DfailIfNoTests=false
+          ./mvnw -B test -Dtest=GibtEsNet -Dsurefire.failIfNoSpecifiedTests=false
       - name: Upload taskana artifacts
         uses: actions/upload-artifact@v3
         with:
