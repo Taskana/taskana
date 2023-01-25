@@ -114,10 +114,10 @@ class WorkbasketAccessItemControllerIntTest {
         TEMPLATE.exchange(
             url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
     assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody().getContent()).hasSize(0);
+    assertThat(response.getBody().getContent()).isEmpty();
     assertThat(response.getBody().getPageMetadata().getSize()).isEqualTo(9);
-    assertThat(response.getBody().getPageMetadata().getTotalElements()).isEqualTo(0);
-    assertThat(response.getBody().getPageMetadata().getTotalPages()).isEqualTo(0);
+    assertThat(response.getBody().getPageMetadata().getTotalElements()).isZero();
+    assertThat(response.getBody().getPageMetadata().getTotalPages()).isZero();
     assertThat(response.getBody().getPageMetadata().getNumber()).isEqualTo(1);
   }
 
