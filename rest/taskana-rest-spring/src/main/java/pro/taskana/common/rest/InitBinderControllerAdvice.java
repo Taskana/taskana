@@ -22,12 +22,15 @@ public class InitBinderControllerAdvice {
   }
 
   @InitBinder
+  @SuppressWarnings("ConstantConditions")
   public void initBinder(WebDataBinder binder) {
     binder.registerCustomEditor(
         PriorityColumnHeaderRepresentationModel.class,
         new JsonPropertyEditor(objectMapper, PriorityColumnHeaderRepresentationModel.class));
     binder.registerCustomEditor(
         ObjectReference.class, new JsonPropertyEditor(objectMapper, ObjectReferenceImpl.class));
+
+    // @see https://stackoverflow.com/questions/75133732/spring-boot-rest-controller-array-handling
     binder.registerCustomEditor(String[].class, new StringArrayPropertyEditor(null));
   }
 }
