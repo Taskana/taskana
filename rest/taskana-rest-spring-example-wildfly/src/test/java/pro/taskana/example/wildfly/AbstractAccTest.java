@@ -3,8 +3,6 @@ package pro.taskana.example.wildfly;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -24,8 +22,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 public class AbstractAccTest {
 
   protected static final String DEPENDENCY_VERSION = "5.9.1-SNAPSHOT";
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
 
   static {
     Runtime.getRuntime().addShutdownHook(new Thread(AbstractAccTest::stopPostgresDb));
@@ -102,7 +98,6 @@ public class AbstractAccTest {
             "sh", "-c", "docker-compose -f ../../docker-databases/docker-compose.yml down -v");
       }
       Process process = builder.start();
-      LOGGER.info("Stopping POSTGRES...");
       int exitCode = process.waitFor();
       if (exitCode != 0) {
         throw new RuntimeException("could not start postgres db!");
@@ -120,17 +115,16 @@ public class AbstractAccTest {
         builder.command(
             "cmd.exe",
             "/c",
-            "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
-                + "taskana-postgres_10");
+            "docker-compose -f ../../docker-databases/docker-compose.yml up -d",
+            "taskana-postgres_10");
       } else {
         builder.command(
             "sh",
             "-c",
-            "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
-                + "taskana-postgres_10");
+            "docker-compose -f ../../docker-databases/docker-compose.yml up -d",
+            "taskana-postgres_10");
       }
       Process process = builder.start();
-      LOGGER.info("Starting POSTGRES...");
       int exitCode = process.waitFor();
       if (exitCode != 0) {
         throw new RuntimeException("could not start postgres db!");
