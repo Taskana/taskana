@@ -82,7 +82,7 @@ class TaskUpdatePriorityWorkerAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_loadAnyRelevantTaskIds() {
+  void should_LoadAnyRelevantTaskIds() {
     // when
     final List<String> allRelevantTaskIds = worker.getAllRelevantTaskIds();
 
@@ -92,7 +92,7 @@ class TaskUpdatePriorityWorkerAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_loadExistingTaskIds() {
+  void should_LoadExistingTaskIds() {
     // when
     final List<TaskSummary> taskSummariesByIds =
         worker.getTaskSummariesByIds(List.of(task1.getId(), task2.getId()));
@@ -103,7 +103,7 @@ class TaskUpdatePriorityWorkerAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_notLoadAnyIrrelevantTaskIds() {
+  void should_NotLoadAnyIrrelevantTaskIds() {
     // when
     final List<String> allRelevantTaskIds = worker.getAllRelevantTaskIds();
 
@@ -112,7 +112,7 @@ class TaskUpdatePriorityWorkerAccTest {
   }
 
   @Test
-  void should_noticeDifferentPriority_When_PriorityHasChanged() {
+  void should_NoticeDifferentPriority_When_PriorityHasChanged() {
     // given
     TaskImpl task = (TaskImpl) taskService.newTask();
     task.setPriority(232);
@@ -141,7 +141,7 @@ class TaskUpdatePriorityWorkerAccTest {
 
     @Test
     @WithAccessId(user = "admin")
-    void should_executeBatch() throws Exception {
+    void should_ExecuteBatch() throws Exception {
       Task oldTask =
           TaskBuilder.newTask()
               .classificationSummary(classificationSummary)

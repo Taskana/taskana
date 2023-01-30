@@ -64,7 +64,7 @@ class CreateTaskWithSorAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_createObjectReferences_When_CreatingTask() throws Exception {
+  void should_CreateObjectReferences_When_CreatingTask() throws Exception {
     Task task = taskService.newTask(defaultWorkbasketSummary.getId());
     task.setClassificationKey(defaultClassificationSummary.getKey());
     task.setPrimaryObjRef(defaultObjectReference);
@@ -132,7 +132,7 @@ class CreateTaskWithSorAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_copyObjectReferences_When_DuplicatingTask() throws Exception {
+  void should_CopyObjectReferences_When_DuplicatingTask() throws Exception {
     ObjectReference sor1 =
         ObjectReferenceBuilder.newObjectReference()
             .company("FirstCompany")

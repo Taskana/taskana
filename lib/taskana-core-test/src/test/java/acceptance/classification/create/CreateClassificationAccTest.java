@@ -193,7 +193,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_TryingToCreateClassificationWithInvalidType() {
+  void should_ThrowException_When_TryingToCreateClassificationWithInvalidType() {
     Classification classification =
         classificationService.newClassification("KeyErrCreation", "DOMAIN_A", "UNKNOWN_TYPE");
 
@@ -207,7 +207,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_TryingToCreateClassificationWithInvalidCategory() {
+  void should_ThrowException_When_TryingToCreateClassificationWithInvalidCategory() {
     Classification classification =
         classificationService.newClassification("KeyErrCreation", "DOMAIN_A", "TASK");
     classification.setCategory("UNKNOWN_CATEGORY");
@@ -222,7 +222,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_TryingToCreateClassificationWithInvalidParentKey() {
+  void should_ThrowException_When_TryingToCreateClassificationWithInvalidParentKey() {
     Classification classification =
         classificationService.newClassification("KeyErrCreation", MASTER_DOMAIN, "TASK");
     classification.setParentKey("UNKNOWN_KEY");
@@ -234,7 +234,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_TryingToCreateClassificationWithInvalidParentId() {
+  void should_ThrowException_When_TryingToCreateClassificationWithInvalidParentId() {
     Classification classification =
         classificationService.newClassification("KeyErr", MASTER_DOMAIN, "TASK");
     classification.setParentId("UNKNOWN_ID");
@@ -246,7 +246,7 @@ class CreateClassificationAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_ThrowException_TryingToCreateClassificationWithExplicitId() {
+  void should_ThrowException_When_TryingToCreateClassificationWithExplicitId() {
     ClassificationImpl classification =
         (ClassificationImpl)
             classificationService.newClassification("KeyErrCreation", MASTER_DOMAIN, "TASK");

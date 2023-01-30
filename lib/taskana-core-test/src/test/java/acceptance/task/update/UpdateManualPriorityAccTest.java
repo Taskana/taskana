@@ -61,7 +61,7 @@ class UpdateManualPriorityAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_setPriorityToManualPriority_When_PositiveManualPriority() throws Exception {
+  void should_SetPriorityToManualPriority_When_PositiveManualPriority() throws Exception {
     Task task = taskService.newTask(defaultWorkbasketSummary.getId());
     task.setClassificationKey(defaultClassificationSummary.getKey());
     task.setPrimaryObjRef(defaultObjectReference);
@@ -73,7 +73,7 @@ class UpdateManualPriorityAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_setPriorityAccordingToClassification_When_NegativeManualPriority() throws Exception {
+  void should_SetPriorityAccordingToClassification_When_NegativeManualPriority() throws Exception {
     Task task = taskService.newTask(defaultWorkbasketSummary.getId());
     task.setClassificationKey(defaultClassificationSummary.getKey());
     task.setPrimaryObjRef(defaultObjectReference);
