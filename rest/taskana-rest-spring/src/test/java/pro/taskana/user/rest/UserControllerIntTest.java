@@ -2,7 +2,7 @@ package pro.taskana.user.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.util.Set;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -16,8 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.user.rest.models.UserCollectionRepresentationModel;
 import pro.taskana.user.rest.models.UserRepresentationModel;
 

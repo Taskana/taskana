@@ -55,13 +55,19 @@
     <!-- test dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
-      <artifactId>taskana-common-test</artifactId>
+      <artifactId>taskana-rest-spring-test-lib</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>pro.taskana</groupId>
       <artifactId>taskana-common-data</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-common-test</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

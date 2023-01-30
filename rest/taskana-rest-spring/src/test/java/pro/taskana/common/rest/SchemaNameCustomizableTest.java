@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pro.taskana.common.internal.configuration.DB;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 /** Test that the schema name can be customized. */

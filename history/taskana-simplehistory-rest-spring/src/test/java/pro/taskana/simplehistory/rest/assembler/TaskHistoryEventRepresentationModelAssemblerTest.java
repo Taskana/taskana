@@ -6,7 +6,7 @@ import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventRepresentationModel;
 import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;

@@ -69,12 +69,6 @@
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.wildfly.security</groupId>
@@ -98,8 +92,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-log4j2</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -160,23 +154,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>${version.maven.clean}</version>
-        <configuration>
-          <excludeDefaultDirectories>true</excludeDefaultDirectories>
-          <filesets>
-            <fileset>
-              <directory>target</directory>
-              <excludes>
-                <exclude>wildfly-${version.wildfly}</exclude>
-                <exclude>wildfly-${version.wildfly}/**</exclude>
-              </excludes>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${version.maven.dependency}</version>
@@ -212,35 +189,10 @@
                   <groupId>org.postgresql</groupId>
                   <artifactId>postgresql</artifactId>
                   <outputDirectory>
-                    ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/main
+                    ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/postgresql/main
                   </outputDirectory>
                 </artifactItem>
               </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${version.maven.surefire}</version>
-        <executions>
-          <execution>
-            <id>default-test</id>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-          <execution>
-            <id>integration-tests</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <includes>
-                <include>**/*Test.java</include>
-              </includes>
             </configuration>
           </execution>
         </executions>
@@ -251,14 +203,14 @@
         <version>${version.maven.resources}</version>
         <executions>
           <execution>
-            <id>copy-module-xml</id>
+            <id>copy-postgres-module-xml</id>
             <phase>process-test-classes</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
               <outputDirectory>
-                ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/main
+                ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/postgresql/main
               </outputDirectory>
               <resources>
                 <resource>

@@ -1,7 +1,7 @@
 package pro.taskana.example.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,8 +18,8 @@ import pro.taskana.classification.rest.assembler.ClassificationRepresentationMod
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskRepresentationModel;

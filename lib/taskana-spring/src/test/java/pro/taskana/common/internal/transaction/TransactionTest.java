@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -86,6 +86,8 @@ class TransactionTest {
 
   private Connection getConnection() throws Exception {
     return DriverManager.getConnection(
-        "jdbc:h2:mem:task-engine;IGNORECASE=TRUE;LOCK_MODE=0", "SA", UUID.randomUUID().toString());
+        "jdbc:h2:mem:task-engine;NON_KEYWORDS=KEY,VALUE;IGNORECASE=TRUE;LOCK_MODE=0",
+        "SA",
+        UUID.randomUUID().toString());
   }
 }

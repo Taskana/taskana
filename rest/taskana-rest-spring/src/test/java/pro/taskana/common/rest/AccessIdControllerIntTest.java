@@ -2,7 +2,7 @@ package pro.taskana.common.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -21,8 +21,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 
 @TaskanaSpringBootTest
 class AccessIdControllerIntTest {

@@ -11,16 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.BaseRestDocTest;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.security.JaasExtension;
-import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.rest.test.BaseRestDocTest;
+import pro.taskana.rest.test.RestHelper;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
+import pro.taskana.testapi.security.JaasExtension;
+import pro.taskana.testapi.security.WithAccessId;
 
 @ExtendWith(JaasExtension.class)
 class TaskControllerRestDocTest extends BaseRestDocTest {

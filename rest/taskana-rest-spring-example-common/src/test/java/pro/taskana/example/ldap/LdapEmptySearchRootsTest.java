@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 
 /** Test Ldap attachment. */
 @TaskanaSpringBootTest

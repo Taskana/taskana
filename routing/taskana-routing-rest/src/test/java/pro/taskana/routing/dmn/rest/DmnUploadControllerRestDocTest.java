@@ -9,7 +9,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import pro.taskana.common.test.BaseRestDocTest;
+import pro.taskana.rest.test.BaseRestDocTest;
 
 class DmnUploadControllerRestDocTest extends BaseRestDocTest {
 

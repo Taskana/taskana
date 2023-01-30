@@ -1,7 +1,7 @@
 package pro.taskana.common.rest;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
@@ -20,8 +20,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.rest.TaskanaRestExceptionHandler.MalformedQueryParameter;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryPagedRepresentationModel;

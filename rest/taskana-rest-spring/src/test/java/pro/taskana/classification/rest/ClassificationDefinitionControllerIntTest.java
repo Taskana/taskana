@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -42,8 +42,8 @@ import pro.taskana.classification.rest.models.ClassificationCollectionRepresenta
 import pro.taskana.classification.rest.models.ClassificationDefinitionRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 
 /** Test classification definitions. */
 @TaskanaSpringBootTest

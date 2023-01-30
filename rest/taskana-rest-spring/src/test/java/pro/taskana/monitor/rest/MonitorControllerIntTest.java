@@ -2,7 +2,7 @@ package pro.taskana.monitor.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.taskana.common.test.rest.RestHelper.TEMPLATE;
+import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URLEncoder;
@@ -18,11 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import pro.taskana.common.rest.RestEndpoints;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel.RowRepresentationModel;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 
 /** Test MonitorController. */
 @TaskanaSpringBootTest

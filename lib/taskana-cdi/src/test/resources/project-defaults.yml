@@ -5,7 +5,7 @@ swarm:
     data-sources:
       TestDS:
         driver-name: myh2
-        connection-url: jdbc:h2:~/taskana-h2-data/testdb;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0
+        connection-url: jdbc:h2:~/taskana-h2-data/testdb;NON_KEYWORDS=KEY,VALUE;AUTO_SERVER=TRUE;IGNORECASE=TRUE;LOCK_MODE=0
         user-name: SA
         password: SA
     jdbc-drivers:
@@ -13,3 +13,4 @@ swarm:
         driver-class-name: org.h2.Driver
         xa-datasource-name: org.h2.jdbcx.JdbcDataSource
         driver-module-name: com.h2database.h2
+

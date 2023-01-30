@@ -14,8 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
-import pro.taskana.common.test.rest.RestHelper;
-import pro.taskana.common.test.rest.TaskanaSpringBootTest;
+import pro.taskana.rest.test.RestHelper;
+import pro.taskana.rest.test.TaskanaSpringBootTest;
 
 /** Test TaskanaEngineController. */
 @TaskanaSpringBootTest

@@ -1,23 +1,25 @@
 package pro.taskana.example.wildfly.security;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
 
 /**
  * Default basic configuration for taskana web example running on Wildfly / JBoss with Elytron or
  * JAAS Security.
  */
-@EnableWebSecurity
-public class WildflyWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+@Configuration
+public class WildflyWebSecurityConfigurer {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.addFilter(jaasApiIntegrationFilter())
         .addFilterAfter(new ElytronToJaasFilter(), JaasApiIntegrationFilter.class)
         .csrf()
         .disable();
+    return http.build();
   }
 
   protected JaasApiIntegrationFilter jaasApiIntegrationFilter() {
