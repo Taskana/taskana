@@ -11,7 +11,7 @@
   <parent>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-rest-parent</artifactId>
-    <version>5.7.1-SNAPSHOT</version>
+    <version>5.9.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -68,12 +68,6 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
     </dependency>
 
     <dependency>
@@ -195,7 +189,7 @@
                   <groupId>org.postgresql</groupId>
                   <artifactId>postgresql</artifactId>
                   <outputDirectory>
-                    ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/main
+                    ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/postgresql/main
                   </outputDirectory>
                 </artifactItem>
               </artifactItems>
@@ -209,14 +203,14 @@
         <version>${version.maven.resources}</version>
         <executions>
           <execution>
-            <id>copy-module-xml</id>
+            <id>copy-postgres-module-xml</id>
             <phase>process-test-classes</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
               <outputDirectory>
-                ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/main
+                ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/org/postgresql/postgresql/main
               </outputDirectory>
               <resources>
                 <resource>

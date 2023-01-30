@@ -57,7 +57,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./mvnw -B dependency:go-offline
-          ./mvnw -B test -Dtest=GibtEsNet -DfailIfNoTests=false
+          ./mvnw -B test -Dtest=GibtEsNet -Dsurefire.failIfNoSpecifiedTests=false
       - name: Upload taskana artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -68,7 +68,7 @@ jobs:
         run: rm -rf ~/.m2/repository/pro/taskana
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   compile_frontend:
     name: Compile taskana-web
@@ -82,7 +82,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -122,7 +122,7 @@ jobs:
         run: rm -rf ~/.m2/repository/pro/taskana
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   test_frontend:
     runs-on: ubuntu-20.04
@@ -132,7 +132,7 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -164,7 +164,7 @@ jobs:
         run: yarn run test -- --coverageReporters text-summary
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   test_e2e:
     runs-on: ubuntu-20.04
@@ -179,7 +179,7 @@ jobs:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -230,7 +230,7 @@ jobs:
           path: ${{ env.ARTIFACTS_CYPRESS_TESTS_PATH }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   test_backend:
     runs-on: ubuntu-20.04
@@ -317,7 +317,7 @@ jobs:
           if-no-files-found: ignore
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   release_artifacts:
     runs-on: ubuntu-20.04
@@ -386,7 +386,7 @@ jobs:
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   deploy_to_bluemix:
     runs-on: ubuntu-20.04
@@ -440,7 +440,7 @@ jobs:
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3
 
   upload_to_sonar:
     runs-on: ubuntu-20.04
@@ -485,4 +485,4 @@ jobs:
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@0.3

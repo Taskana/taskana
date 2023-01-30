@@ -1,7 +1,7 @@
 package pro.taskana.user.rest;
 
-import static pro.taskana.common.rest.RestEndpoints.URL_USERS_ID;
-
+import java.util.HashSet;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -24,6 +25,7 @@ import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.rest.assembler.UserRepresentationModelAssembler;
+import pro.taskana.user.rest.models.UserCollectionRepresentationModel;
 import pro.taskana.user.rest.models.UserRepresentationModel;
 
 /** Controller for all {@linkplain User} related endpoints. */
@@ -31,12 +33,12 @@ import pro.taskana.user.rest.models.UserRepresentationModel;
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class UserController {
   private final UserService userService;
-  private final UserRepresentationModelAssembler assembler;
+  private final UserRepresentationModelAssembler userAssembler;
 
   @Autowired
-  UserController(UserService userService, UserRepresentationModelAssembler assembler) {
+  UserController(UserService userService, UserRepresentationModelAssembler userAssembler) {
     this.userService = userService;
-    this.assembler = assembler;
+    this.userAssembler = userAssembler;
   }
 
   /**
@@ -46,14 +48,33 @@ public class UserController {
    * @param userId the id of the requested User
    * @return the requested User
    * @throws UserNotFoundException if the id has not been found
+   * @throws InvalidArgumentException if the id is null or empty
    */
-  @GetMapping(URL_USERS_ID)
+  @GetMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> getUser(@PathVariable String userId)
-      throws UserNotFoundException {
+      throws UserNotFoundException, InvalidArgumentException {
     User user = userService.getUser(userId);
 
-    return ResponseEntity.ok(assembler.toModel(user));
+    return ResponseEntity.ok(userAssembler.toModel(user));
+  }
+
+  /**
+   * This endpoint retrieves multiple Users. If a userId can't be found in the database it will be
+   * ignored. If none of the given userIds is valid, the returned list will be empty.
+   *
+   * @title Get multiple Users
+   * @param userIds the ids of the requested Users
+   * @return the requested Users
+   * @throws InvalidArgumentException if the userIds are null or empty
+   */
+  @GetMapping(RestEndpoints.URL_USERS)
+  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  public ResponseEntity<UserCollectionRepresentationModel> getUsers(
+      @RequestParam(name = "user-id") String[] userIds) throws InvalidArgumentException {
+    List<User> users = userService.getUsers(new HashSet<>(List.of(userIds)));
+
+    return ResponseEntity.ok(userAssembler.toTaskanaCollectionModel(users));
   }
 
   /**
@@ -71,10 +92,10 @@ public class UserController {
   public ResponseEntity<UserRepresentationModel> createUser(
       @RequestBody UserRepresentationModel repModel)
       throws InvalidArgumentException, UserAlreadyExistException, NotAuthorizedException {
-    User user = assembler.toEntityModel(repModel);
+    User user = userAssembler.toEntityModel(repModel);
     user = userService.createUser(user);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(user));
+    return ResponseEntity.status(HttpStatus.CREATED).body(userAssembler.toModel(user));
   }
 
   /**
@@ -88,7 +109,7 @@ public class UserController {
    * @throws UserNotFoundException if a User with id is not existing in the database
    * @throws NotAuthorizedException if the current user is no admin or business-admin
    */
-  @PutMapping(URL_USERS_ID)
+  @PutMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> updateUser(
       @PathVariable(value = "userId") String userId, @RequestBody UserRepresentationModel repModel)
@@ -100,10 +121,10 @@ public class UserController {
                   + " with the userId '%s' of the object in the payload.",
               userId, repModel.getUserId()));
     }
-    User user = assembler.toEntityModel(repModel);
+    User user = userAssembler.toEntityModel(repModel);
     user = userService.updateUser(user);
 
-    return ResponseEntity.ok(assembler.toModel(user));
+    return ResponseEntity.ok(userAssembler.toModel(user));
   }
 
   /**
@@ -114,11 +135,12 @@ public class UserController {
    * @return no content
    * @throws UserNotFoundException if the id has not been found
    * @throws NotAuthorizedException if the current user is no admin or business-admin
+   * @throws InvalidArgumentException if the id is null or empty
    */
-  @DeleteMapping(URL_USERS_ID)
+  @DeleteMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> deleteUser(@PathVariable String userId)
-      throws UserNotFoundException, NotAuthorizedException {
+      throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException {
     userService.deleteUser(userId);
 
     return ResponseEntity.noContent().build();

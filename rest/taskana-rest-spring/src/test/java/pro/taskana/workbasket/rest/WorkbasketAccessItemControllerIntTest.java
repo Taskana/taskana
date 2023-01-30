@@ -104,6 +104,24 @@ class WorkbasketAccessItemControllerIntTest {
   }
 
   @Test
+  void should_notSplitQueryParameterByComma_When_accessId_containsTwo() {
+    String parameters =
+        "?sort-by=WORKBASKET_KEY&order=ASCENDING&page=1&page-size=9&access-id=user-1-1,user-1-2";
+    String url = restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + parameters;
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> response =
+        TEMPLATE.exchange(
+            url, HttpMethod.GET, auth, WORKBASKET_ACCESS_ITEM_PAGED_REPRESENTATION_MODEL_TYPE);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getContent()).isEmpty();
+    assertThat(response.getBody().getPageMetadata().getSize()).isEqualTo(9);
+    assertThat(response.getBody().getPageMetadata().getTotalElements()).isZero();
+    assertThat(response.getBody().getPageMetadata().getTotalPages()).isZero();
+    assertThat(response.getBody().getPageMetadata().getNumber()).isEqualTo(1);
+  }
+
+  @Test
   void should_DeleteAllAccessItemForUser_ifValidAccessIdOfUserIsSupplied() {
     String url =
         restHelper.toUrl(RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS) + "?access-id=teamlead-2";

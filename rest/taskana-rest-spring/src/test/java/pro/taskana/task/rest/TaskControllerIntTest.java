@@ -84,6 +84,34 @@ class TaskControllerIntTest {
     sampleDataGenerator.generateSampleData();
   }
 
+  @Test
+  void should_UpdateTaskOwnerOfReadyForReviewTask() {
+    final String url = restHelper.toUrl("/api/v1/tasks/TKI:000000000000000000000000000000000104");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-2"));
+
+    // retrieve task from Rest Api
+    ResponseEntity<TaskRepresentationModel> responseGet =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+
+    assertThat(responseGet.getBody()).isNotNull();
+    TaskRepresentationModel theTaskRepresentationModel = responseGet.getBody();
+    assertThat(theTaskRepresentationModel.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(theTaskRepresentationModel.getOwner()).isNull();
+
+    // set Owner and update Task
+    theTaskRepresentationModel.setOwner("dummyUser");
+    HttpEntity<TaskRepresentationModel> auth2 =
+        new HttpEntity<>(theTaskRepresentationModel, RestHelper.generateHeadersForUser("user-1-2"));
+
+    ResponseEntity<TaskRepresentationModel> responseUpdate =
+        TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_MODEL_TYPE);
+
+    assertThat(responseUpdate.getBody()).isNotNull();
+    TaskRepresentationModel theUpdatedTaskRepresentationModel = responseUpdate.getBody();
+    assertThat(theUpdatedTaskRepresentationModel.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(theUpdatedTaskRepresentationModel.getOwner()).isEqualTo("dummyUser");
+  }
+
   private TaskRepresentationModel getTaskResourceSample() {
     ClassificationSummaryRepresentationModel classificationResource =
         new ClassificationSummaryRepresentationModel();
@@ -130,7 +158,7 @@ class TaskControllerIntTest {
 
       assertThat(response.getBody()).isNotNull();
       assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-      assertThat(response.getBody().getContent()).hasSize(60);
+      assertThat(response.getBody().getContent()).hasSize(61);
     }
 
     @Test
@@ -830,7 +858,7 @@ class TaskControllerIntTest {
 
       assertThat(response.getBody()).isNotNull();
       assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-      assertThat(response.getBody().getContent()).hasSize(21);
+      assertThat(response.getBody().getContent()).hasSize(22);
     }
 
     @Test
@@ -874,7 +902,7 @@ class TaskControllerIntTest {
 
       assertThat(response.getBody()).isNotNull();
       assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-      assertThat(response.getBody().getContent()).hasSize(91);
+      assertThat(response.getBody().getContent()).hasSize(92);
     }
 
     @Test
@@ -950,7 +978,7 @@ class TaskControllerIntTest {
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
 
       assertThat(response.getBody()).isNotNull();
-      assertThat((response.getBody()).getContent()).hasSize(60);
+      assertThat((response.getBody()).getContent()).hasSize(61);
 
       String url2 =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
@@ -960,9 +988,9 @@ class TaskControllerIntTest {
       assertThat(response.getBody()).isNotNull();
       assertThat((response.getBody()).getContent()).hasSize(5);
       assertThat(response.getBody().getRequiredLink(IanaLinkRelations.LAST).getHref())
-          .contains("page=12");
+          .contains("page=13");
       assertThat(response.getBody().getContent().iterator().next().getTaskId())
-          .isEqualTo("TKI:000000000000000000000000000000000073");
+          .isEqualTo("TKI:000000000000000000000000000000000072");
       assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
       assertThat(response.getBody().getRequiredLink(IanaLinkRelations.SELF).getHref())
           .endsWith("/api/v1/tasks?sort-by=DUE&order=DESCENDING&page-size=5&page=5");
@@ -1025,7 +1053,7 @@ class TaskControllerIntTest {
 
       assertThat(response.getBody()).isNotNull();
       assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
-      assertThat(response.getBody().getContent()).hasSize(84);
+      assertThat(response.getBody().getContent()).hasSize(85);
     }
 
     @Test

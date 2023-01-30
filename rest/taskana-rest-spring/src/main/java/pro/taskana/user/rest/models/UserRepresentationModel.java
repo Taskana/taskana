@@ -1,5 +1,6 @@
 package pro.taskana.user.rest.models;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
@@ -11,33 +12,40 @@ import pro.taskana.user.api.models.User;
 public class UserRepresentationModel extends RepresentationModel<UserRepresentationModel> {
 
   /** Unique Id. */
-  @NotNull protected String userId;
+  @NotNull private String userId;
   /** The groups of the User. */
-  protected Set<String> groups;
+  private Set<String> groups;
+  /**
+   * The domains of the User.
+   *
+   * <p>The domains are derived from the WorkbasketPermissions and the according TASKANA property
+   * taskana.user.minimalPermissionsToAssignDomains
+   */
+  private Set<String> domains = Collections.emptySet();
   /** The first name of the User. */
-  protected String firstName;
+  private String firstName;
   /** The last name of the User. */
-  protected String lastName;
+  private String lastName;
   /** The full name of the User. */
-  protected String fullName;
+  private String fullName;
   /** The long name of the User. */
-  protected String longName;
+  private String longName;
   /** The email of the User. */
-  protected String email;
+  private String email;
   /** The phone number of the User. */
-  protected String phone;
+  private String phone;
   /** The mobile phone number of the User. */
-  protected String mobilePhone;
+  private String mobilePhone;
   /** The fourth organisation level of the User. */
-  protected String orgLevel4;
+  private String orgLevel4;
   /** The third organisation level of the User. */
-  protected String orgLevel3;
+  private String orgLevel3;
   /** The second organisation level of the User. */
-  protected String orgLevel2;
+  private String orgLevel2;
   /** The first organisation level of the User. */
-  protected String orgLevel1;
+  private String orgLevel1;
   /** The data of the User. This field is used for additional information about the User. */
-  protected String data;
+  private String data;
 
   public String getUserId() {
     return userId;
@@ -151,12 +159,21 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
     this.data = data;
   }
 
+  public Set<String> getDomains() {
+    return domains;
+  }
+
+  public void setDomains(Set<String> domains) {
+    this.domains = domains;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(
         super.hashCode(),
         userId,
         groups,
+        domains,
         firstName,
         lastName,
         fullName,
@@ -176,18 +193,16 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof UserRepresentationModel)) {
       return false;
     }
     if (!super.equals(obj)) {
       return false;
     }
     UserRepresentationModel other = (UserRepresentationModel) obj;
-    return userId.equals(other.userId)
+    return Objects.equals(userId, other.userId)
         && Objects.equals(groups, other.groups)
+        && Objects.equals(domains, other.domains)
         && Objects.equals(firstName, other.firstName)
         && Objects.equals(lastName, other.lastName)
         && Objects.equals(fullName, other.fullName)

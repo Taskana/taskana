@@ -374,6 +374,59 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(16);
   }
 
+  @Test
+  @WithAccessId(user = "admin")
+  void should_NotCleanEvents_When_NoCreatedEventsForParentBusinessProcessIdExist()
+      throws Exception {
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(14);
+
+    TaskHistoryEvent toBeIgnored1 =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId1",
+            TaskHistoryEventType.CANCELLED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    toBeIgnored1.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    toBeIgnored1.setParentBusinessProcessId("toBeIgnored1");
+
+    TaskHistoryEvent toBeIgnored2 =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId2",
+            TaskHistoryEventType.COMPLETED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    toBeIgnored2.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    toBeIgnored2.setParentBusinessProcessId("toBeIgnored2");
+
+    TaskHistoryEvent toBeIgnored3 =
+        createTaskHistoryEvent(
+            "wbKey1",
+            "taskId3",
+            TaskHistoryEventType.TERMINATED.getName(),
+            "wbKey2",
+            "someUserId",
+            "someDetails");
+    toBeIgnored3.setCreated(Instant.now().minus(20, ChronoUnit.DAYS));
+    toBeIgnored3.setParentBusinessProcessId("toBeIgnored3");
+
+    getHistoryService().create(toBeIgnored1);
+    getHistoryService().create(toBeIgnored2);
+    getHistoryService().create(toBeIgnored3);
+
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
+
+    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+
+    HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
+    job.run();
+
+    assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
+  }
+
   @WithAccessId(user = "admin")
   @Test
   void should_DeleteOldHistoryCleanupJobs_When_InitializingSchedule() throws Exception {

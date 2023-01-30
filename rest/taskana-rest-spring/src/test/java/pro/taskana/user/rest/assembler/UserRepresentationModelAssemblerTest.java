@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
+import pro.taskana.user.internal.models.UserImpl;
 import pro.taskana.user.rest.models.UserRepresentationModel;
 
 /** Test for {@linkplain UserRepresentationModelAssembler}. */
@@ -26,7 +27,7 @@ class UserRepresentationModelAssemblerTest {
 
   @Test
   void should_ReturnRepresentationModel_When_ConvertingUserEntityToRepresentationModel() {
-    User user = userService.newUser();
+    UserImpl user = (UserImpl) userService.newUser();
     user.setId("user-1-2");
     user.setGroups(Set.of("group1", "group2"));
     user.setFirstName("Hans");
@@ -41,6 +42,7 @@ class UserRepresentationModelAssemblerTest {
     user.setOrgLevel2("Human Workflow");
     user.setOrgLevel1("TASKANA");
     user.setData("xy");
+    user.setDomains(Set.of("DOMAIN_A", "DOMAIN_B"));
 
     UserRepresentationModel repModel = assembler.toModel(user);
     testEquality(user, repModel);
@@ -63,6 +65,7 @@ class UserRepresentationModelAssemblerTest {
     repModel.setOrgLevel2("Human Workflow");
     repModel.setOrgLevel1("TASKANA");
     repModel.setData("xy");
+    repModel.setDomains(Set.of("DOMAIN_A", "DOMAIN_B"));
 
     User user = assembler.toEntityModel(repModel);
     testEquality(user, repModel);
@@ -70,7 +73,7 @@ class UserRepresentationModelAssemblerTest {
 
   @Test
   void should_BeEqual_When_ConvertingEntityToRepModelAndBackToEntity() {
-    User user = userService.newUser();
+    UserImpl user = (UserImpl) userService.newUser();
     user.setId("user-1-2");
     user.setGroups(Set.of("group1", "group2"));
     user.setFirstName("Hans");
@@ -85,6 +88,7 @@ class UserRepresentationModelAssemblerTest {
     user.setOrgLevel2("Human Workflow");
     user.setOrgLevel1("TASKANA");
     user.setData("xy");
+    user.setDomains(Set.of("DOMAIN_A", "DOMAIN_B"));
 
     UserRepresentationModel repModel = assembler.toModel(user);
     User userAfterConversion = assembler.toEntityModel(repModel);
@@ -113,5 +117,6 @@ class UserRepresentationModelAssemblerTest {
     assertThat(entity.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
     assertThat(entity.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
     assertThat(entity.getData()).isEqualTo(repModel.getData());
+    assertThat(entity.getDomains()).isEqualTo(repModel.getDomains());
   }
 }
