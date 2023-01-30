@@ -82,7 +82,7 @@ class UpdateManualPriorityWithSpiAccTest {
 
     @WithAccessId(user = "user-1-1")
     @Test
-    void should_setPriorityToManualAndNotUpdateAccordingToSpi_When_ManualPriorityPositive()
+    void should_SetPriorityToManualAndNotUpdateAccordingToSpi_When_ManualPriorityPositive()
         throws Exception {
       Task task = taskService.newTask(defaultWorkbasketSummary.getId());
       task.setClassificationKey(defaultClassificationSummary.getKey());
@@ -97,7 +97,7 @@ class UpdateManualPriorityWithSpiAccTest {
 
     @WithAccessId(user = "user-1-1")
     @Test
-    void should_setPriorityUsingSpi_When_ManualPriorityNegative() throws Exception {
+    void should_SetPriorityUsingSpi_When_ManualPriorityNegative() throws Exception {
       Task task = taskService.newTask(defaultWorkbasketSummary.getId());
       task.setClassificationKey(defaultClassificationSummary.getKey());
       task.setPrimaryObjRef(defaultObjectReference);

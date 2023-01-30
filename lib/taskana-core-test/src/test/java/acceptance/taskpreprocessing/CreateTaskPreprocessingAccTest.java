@@ -57,7 +57,7 @@ class CreateTaskPreprocessingAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_processTaskBeforeCreation_When_CreateTaskPreprocessorEnabled() throws Exception {
+  void should_ProcessTaskBeforeCreation_When_CreateTaskPreprocessorEnabled() throws Exception {
     Task newTaskToCreate = taskService.newTask(workbasketSummary.getId());
     newTaskToCreate.setClassificationKey(classificationSummary.getKey());
     newTaskToCreate.setPrimaryObjRef(DefaultTestEntities.defaultTestObjectReference().build());
