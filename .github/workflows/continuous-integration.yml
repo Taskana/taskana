@@ -349,6 +349,11 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
+      - name: Download taskana artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
+          path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Download taskana-web dist artifact
         uses: actions/download-artifact@v3
         with:

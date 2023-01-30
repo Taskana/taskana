@@ -65,7 +65,7 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
     if (logger.isDebugEnabled()) {
       logger.debug("Attempting to obtainSubject using authentication : " + authentication);
     }
-    if (!authentication.isPresent() || !authentication.get().isAuthenticated()) {
+    if (authentication.isEmpty() || !authentication.get().isAuthenticated()) {
       return Optional.empty();
     }
 
