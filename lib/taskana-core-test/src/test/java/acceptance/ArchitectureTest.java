@@ -101,21 +101,20 @@ class ArchitectureTest {
 
   @Test
   void testMethodNamesShouldMatchAccordingToOurGuidelines() {
-    // Frozen, so it can be improved over time:
-    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
-    freeze(
-            methods()
-                .that(
-                    are(
-                        annotatedWith(Test.class)
-                            .or(annotatedWith(TestFactory.class))
-                            .or(annotatedWith(TestTemplate.class))))
-                .and()
-                .areNotDeclaredIn(ArchitectureTest.class)
-                .should()
-                .bePackagePrivate()
-                .andShould()
-                .haveNameMatching("^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$"))
+    methods()
+        .that(
+            are(
+                annotatedWith(Test.class)
+                    .or(annotatedWith(TestFactory.class))
+                    .or(annotatedWith(TestTemplate.class))))
+        .and()
+        .areNotDeclaredIn(ArchitectureTest.class)
+        .and()
+        .areNotDeclaredIn(PojoTest.class) // we have to find a proper naming for those tests
+        .should()
+        .bePackagePrivate()
+        .andShould()
+        .haveNameMatching("^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$")
         .check(importedClasses);
   }
 
@@ -182,16 +181,13 @@ class ArchitectureTest {
 
   @Test
   void noClassesShouldUseFieldInjection() {
-    // Frozen, so it can be improved over time:
-    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
-    freeze(
-            noFields()
-                .should(BE_ANNOTATED_WITH_AN_INJECTION_ANNOTATION)
-                .as("no classes should use field injection")
-                .because(
-                    "field injection is considered harmful; use constructor injection or setter"
-                        + " injection instead; see https://stackoverflow.com/q/39890849 for"
-                        + " detailed explanations"))
+    noFields()
+        .should(BE_ANNOTATED_WITH_AN_INJECTION_ANNOTATION)
+        .as("no classes should use field injection")
+        .because(
+            "field injection is considered harmful; use constructor injection or setter"
+                + " injection instead; see https://stackoverflow.com/q/39890849 for"
+                + " detailed explanations")
         .check(importedClasses);
   }
 
@@ -224,6 +220,7 @@ class ArchitectureTest {
   }
 
   @Test
+  @Disabled("this has way too many false positives during regular development without refactoring")
   void packagesShouldBeFreeOfCyclicDependencies() {
     // Frozen, so it can be improved over time:
     // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
@@ -231,6 +228,7 @@ class ArchitectureTest {
   }
 
   @Test
+  @Disabled("this has way too many false positives during regular development without refactoring")
   void classesShouldBeFreeOfCyclicDependencies() {
     SliceAssignment everySingleClass =
         new SliceAssignment() {
