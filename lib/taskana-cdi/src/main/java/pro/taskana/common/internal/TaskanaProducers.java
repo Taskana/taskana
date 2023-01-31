@@ -63,7 +63,7 @@ public class TaskanaProducers {
   @ApplicationScoped
   @Produces
   public TaskanaEngine generateTaskEngine() throws SQLException {
-    return taskanaEngineConfiguration.buildTaskanaEngine();
+    return TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
   }
 
   @ApplicationScoped

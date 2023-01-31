@@ -53,7 +53,8 @@ class DmnConverterServiceAccTest {
       sampleDataGenerator.dropDb();
     }
     taskanaEngine =
-        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(
+            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
 
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();

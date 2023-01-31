@@ -212,6 +212,8 @@ class ArchitectureTest {
     classes()
         .that()
         .resideInAPackage("..api..")
+        .and()
+        .areNotAssignableFrom(TaskanaEngine.class)
         .should()
         .onlyDependOnClassesThat(
             resideOutsideOfPackage("..pro.taskana..internal..")
