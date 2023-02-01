@@ -1252,8 +1252,9 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidTaskStateException(
             task.getId(), task.getState(), EnumUtil.allValuesExceptFor(TaskState.END_STATES));
       }
-      if (!force && task.getState() != TaskState.CLAIMED) {
-        throw new InvalidTaskStateException(task.getId(), task.getState(), TaskState.CLAIMED);
+      if (!force && taskIsNotClaimed(task)) {
+        throw new InvalidTaskStateException(task.getId(), task.getState(), TaskState.CLAIMED,
+            TaskState.IN_REVIEW);
       }
       if (!force && !task.getOwner().equals(userId)) {
         throw new InvalidOwnerException(userId, task.getId());

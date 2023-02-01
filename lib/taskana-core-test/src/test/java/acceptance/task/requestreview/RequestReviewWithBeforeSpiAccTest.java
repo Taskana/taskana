@@ -7,6 +7,7 @@ import static pro.taskana.common.internal.util.CheckedSupplier.wrap;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
+import java.time.Instant;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
@@ -66,7 +67,7 @@ public class RequestReviewWithBeforeSpiAccTest {
   }
 
   private TaskBuilder createTaskClaimedByUser(String owner) {
-    return createDefaultTask().owner(owner).state(TaskState.CLAIMED);
+    return createDefaultTask().owner(owner).state(TaskState.CLAIMED).claimed(Instant.now());
   }
 
   private TaskBuilder createDefaultTask() {

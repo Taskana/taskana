@@ -77,6 +77,19 @@ class RequestReviewAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_RequestReview_When_TaskIsInReview() throws Exception {
+    Instant now = Instant.now();
+    Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService);
+
+    Task result = taskService.requestReview(task.getId());
+
+    assertThat(result.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    assertThat(result.getOwner()).isNull();
+    assertThat(result.getModified()).isAfterOrEqualTo(now);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_ForceRequestReview_When_TaskIsClaimedByDifferentUser() throws Exception {
     Instant now = Instant.now();
     Task task = createTaskClaimedByUser("user-1-2").buildAndStore(taskService);
@@ -135,7 +148,8 @@ class RequestReviewAccTest {
   @WithAccessId(user = "user-1-1")
   @TestFactory
   Stream<DynamicTest> should_ThrowException_When_RequestingReviewAndTaskIsNotClaimed() {
-    List<TaskState> invalidStates = Arrays.asList(EnumUtil.allValuesExceptFor(TaskState.CLAIMED));
+    List<TaskState> invalidStates =
+        Arrays.asList(EnumUtil.allValuesExceptFor(TaskState.CLAIMED, TaskState.IN_REVIEW));
 
     ThrowingConsumer<TaskState> test =
         state -> {
@@ -143,7 +157,8 @@ class RequestReviewAccTest {
           ThrowingCallable call = () -> taskService.requestReview(task.getId());
 
           InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
-          assertThat(e.getRequiredTaskStates()).containsExactly(TaskState.CLAIMED);
+          assertThat(e.getRequiredTaskStates())
+              .containsExactlyInAnyOrder(TaskState.CLAIMED, TaskState.IN_REVIEW);
           assertThat(e.getTaskState()).isEqualTo(state);
           assertThat(e.getTaskId()).isEqualTo(task.getId());
         };
@@ -185,7 +200,11 @@ class RequestReviewAccTest {
   }
 
   private TaskBuilder createTaskClaimedByUser(String owner) {
-    return createDefaultTask().owner(owner).state(TaskState.CLAIMED);
+    return createDefaultTask().owner(owner).state(TaskState.CLAIMED).claimed(Instant.now());
+  }
+
+  private TaskBuilder createTaskInReviewByUser(String owner) {
+    return createDefaultTask().owner(owner).state(TaskState.IN_REVIEW).claimed(Instant.now());
   }
 
   private TaskBuilder createDefaultTask() {
