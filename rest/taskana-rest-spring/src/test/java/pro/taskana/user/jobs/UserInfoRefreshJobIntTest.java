@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -71,6 +72,26 @@ class UserInfoRefreshJobIntTest {
           .hasSameSizeAs(ldapusers)
           .usingRecursiveFieldByFieldElementComparator(comparisonConfiguration)
           .containsExactlyElementsOf(ldapusers);
+
+      // validate groups
+      for (int i = 0; i < users.size(); i++) {
+        User user = users.get(i);
+        List<String> groupIds = getGroupInfo(connection, user.getId());
+        groupIds.sort(Comparator.naturalOrder());
+
+        User ldapUser = ldapusers.get(i);
+        List<String> ldapGroups =
+            ldapUser.getGroups().stream()
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toList());
+
+        // we know that our users from ldap have groups defined
+        // so non should be empty
+        assertThat(groupIds)
+            .isNotEmpty()
+            .hasSameSizeAs(ldapGroups)
+            .containsExactlyElementsOf(ldapGroups);
+      }
     }
   }
 
@@ -108,5 +129,18 @@ class UserInfoRefreshJobIntTest {
     }
 
     return users.stream().map(wrap(userService::getUser)).collect(Collectors.toList());
+  }
+
+  private List<String> getGroupInfo(Connection connection, String userId) throws Exception {
+    List<String> groupIds = new ArrayList<>();
+    PreparedStatement ps =
+        connection.prepareStatement(
+            "SELECT group_id FROM " + connection.getSchema() + ".group_info WHERE user_id = ?");
+    ps.setString(1, userId);
+    ResultSet rs = ps.executeQuery();
+    while (rs.next()) {
+      groupIds.add(rs.getString(1));
+    }
+    return groupIds;
   }
 }
