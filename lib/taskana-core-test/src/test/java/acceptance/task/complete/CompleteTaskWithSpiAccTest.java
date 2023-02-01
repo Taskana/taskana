@@ -5,11 +5,15 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -61,6 +65,10 @@ class CompleteTaskWithSpiAccTest {
     return createDefaultTask().owner(user).state(TaskState.CLAIMED).claimed(Instant.now());
   }
 
+  private TaskBuilder createTaskInReviewByUser(String user) {
+    return createDefaultTask().owner(user).state(TaskState.IN_REVIEW).claimed(Instant.now());
+  }
+
   private TaskBuilder createDefaultTask() {
     return TaskBuilder.newTask()
         .classificationSummary(defaultClassificationSummary)
@@ -92,13 +100,19 @@ class CompleteTaskWithSpiAccTest {
     @TaskanaInject TaskService taskService;
 
     @WithAccessId(user = "user-1-1")
-    @Test
-    void should_RequireReview_When_UserTriesToCompleteTask() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
-
-      Task processedTask = taskService.completeTask(task.getId());
-
-      assertThat(processedTask.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+    @TestFactory
+    Stream<DynamicTest> should_RequireReview_When_UserTriesToCompleteTask() throws Exception {
+      List<Task> tasks =
+          List.of(
+              createTaskClaimedByUser("user-1-1").buildAndStore(taskService),
+              createTaskInReviewByUser("user-1-1").buildAndStore(taskService));
+      ThrowingConsumer<Task> test =
+          task -> {
+            Task processedTask = taskService.completeTask(task.getId());
+            assertThat(processedTask.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+          };
+      return DynamicTest.stream(
+          tasks.iterator(), t -> "Try to complete " + t.getState().name() + " Task", test);
     }
   }
 
@@ -112,13 +126,21 @@ class CompleteTaskWithSpiAccTest {
     @TaskanaInject TaskService taskService;
 
     @WithAccessId(user = "user-1-1")
-    @Test
-    void should_CompleteTask_When_UserTriesToCompleteTask() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+    @TestFactory
+    Stream<DynamicTest> should_CompleteTask_When_UserTriesToCompleteTask() throws Exception {
+      List<Task> tasks =
+          List.of(
+              createTaskClaimedByUser("user-1-1").buildAndStore(taskService),
+              createTaskInReviewByUser("user-1-1").buildAndStore(taskService));
+      ThrowingConsumer<Task> test =
+          task -> {
+            Task processedTask = taskService.completeTask(task.getId());
 
-      Task processedTask = taskService.completeTask(task.getId());
+            assertThat(processedTask.getState()).isEqualTo(TaskState.COMPLETED);
+          };
 
-      assertThat(processedTask.getState()).isEqualTo(TaskState.COMPLETED);
+      return DynamicTest.stream(
+          tasks.iterator(), t -> "Try to complete " + t.getState().name() + " Task", test);
     }
   }
 
@@ -132,13 +154,20 @@ class CompleteTaskWithSpiAccTest {
     @TaskanaInject TaskService taskService;
 
     @WithAccessId(user = "user-1-1")
-    @Test
-    void should_RequestReview_When_UserTriesToCompleteTask() throws Exception {
-      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+    @TestFactory
+    Stream<DynamicTest> should_RequestReview_When_UserTriesToCompleteTask() throws Exception {
+      List<Task> tasks =
+          List.of(
+              createTaskClaimedByUser("user-1-1").buildAndStore(taskService),
+              createTaskInReviewByUser("user-1-1").buildAndStore(taskService));
+      ThrowingConsumer<Task> test =
+          task -> {
+            Task processedTask = taskService.completeTask(task.getId());
 
-      Task processedTask = taskService.completeTask(task.getId());
-
-      assertThat(processedTask.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+            assertThat(processedTask.getState()).isEqualTo(TaskState.READY_FOR_REVIEW);
+          };
+      return DynamicTest.stream(
+          tasks.iterator(), t -> "Try to complete " + t.getState().name() + " Task", test);
     }
   }
 }
