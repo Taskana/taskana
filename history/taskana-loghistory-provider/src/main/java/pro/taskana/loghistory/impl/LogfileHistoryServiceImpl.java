@@ -29,10 +29,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
     objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     String historyLoggerName =
-        taskanaEngine
-            .getConfiguration()
-            .readPropertiesFromFile()
-            .getProperty(TASKANA_HISTORY_LOGGER_NAME);
+        taskanaEngine.getConfiguration().getProperties().get(TASKANA_HISTORY_LOGGER_NAME);
 
     if (historyLoggerName != null) {
       historyLogger = LoggerFactory.getLogger(historyLoggerName);

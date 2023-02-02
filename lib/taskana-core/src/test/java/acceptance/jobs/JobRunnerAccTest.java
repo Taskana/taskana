@@ -66,7 +66,7 @@ class JobRunnerAccTest extends AbstractAccTest {
     // runEvery is set to P1D Therefore we need to check which jobs run tomorrow.
     // Just to be sure the jobs are found we will look for any job scheduled in the next 2 days.
     List<ScheduledJob> jobsToRun =
-        getJobMapper().findJobsToRun(Instant.now().plus(2, ChronoUnit.DAYS));
+        getJobMapper(taskanaEngine).findJobsToRun(Instant.now().plus(2, ChronoUnit.DAYS));
 
     assertThat(jobsToRun).hasSize(1).doesNotContain(job);
   }

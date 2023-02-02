@@ -32,6 +32,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.internal.stubbing.answers.CallsRealMethods;
 
+import pro.taskana.TaskanaConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.CollectionUtil;
 import pro.taskana.common.internal.util.Triplet;
@@ -59,9 +61,18 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(true)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+
     List<TaskSummary> tasks =
-        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
+        taskanaEngine
+            .getTaskService()
+            .createTaskQuery()
+            .idIn("TKI:000000000000000000000000000000000000")
+            .list();
 
     assertThat(tasks).hasSize(1);
     String longName = taskanaEngine.getUserService().getUser(tasks.get(0).getOwner()).getLongName();
@@ -70,10 +81,19 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_NotSetOwnerLongNameOfTask_When_PropertyDisabled() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_NotSetOwnerLongNameOfTask_When_PropertyDisabled() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+
     List<TaskSummary> tasks =
-        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000000").list();
+        taskanaEngine
+            .getTaskService()
+            .createTaskQuery()
+            .idIn("TKI:000000000000000000000000000000000000")
+            .list();
 
     assertThat(tasks).hasSize(1);
     assertThat(tasks.get(0)).extracting(TaskSummary::getOwnerLongName).isNull();
@@ -81,10 +101,16 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameIn() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameIn() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+
     String longName = "Eifrig, Elena - (user-1-2)";
-    List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameIn(longName).list();
+    List<TaskSummary> tasks =
+        taskanaEngine.getTaskService().createTaskQuery().ownerLongNameIn(longName).list();
 
     assertThat(tasks)
         .hasSize(25)
@@ -95,10 +121,15 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotIn() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotIn() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     List<TaskSummary> tasks =
-        taskService
+        taskanaEngine
+            .getTaskService()
             .createTaskQuery()
             .idIn(
                 "TKI:000000000000000000000000000000000000",
@@ -114,9 +145,15 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameLike() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
-    List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameLike("%1-2%").list();
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameLike() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+
+    List<TaskSummary> tasks =
+        taskanaEngine.getTaskService().createTaskQuery().ownerLongNameLike("%1-2%").list();
 
     assertThat(tasks)
         .hasSize(25)
@@ -127,9 +164,15 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotLike() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
-    List<TaskSummary> tasks = taskService.createTaskQuery().ownerLongNameNotLike("%1-1%").list();
+  void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotLike() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+
+    List<TaskSummary> tasks =
+        taskanaEngine.getTaskService().createTaskQuery().ownerLongNameNotLike("%1-1%").list();
 
     assertThat(tasks)
         .hasSize(25)
@@ -140,10 +183,20 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_SetOwnerLongNameOfTaskToNull_When_OwnerNotExistingAsUserInDatabase() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+  void should_SetOwnerLongNameOfTaskToNull_When_OwnerNotExistingAsUserInDatabase()
+      throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(true)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+
     List<TaskSummary> tasks =
-        taskService.createTaskQuery().idIn("TKI:000000000000000000000000000000000041").list();
+        taskanaEngine
+            .getTaskService()
+            .createTaskQuery()
+            .idIn("TKI:000000000000000000000000000000000041")
+            .list();
 
     assertThat(tasks).hasSize(1);
     ThrowingCallable call =
@@ -154,10 +207,15 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_OrderByOwnerLongName_When_QueryingTask() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_OrderByOwnerLongName_When_QueryingTask() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     List<TaskSummary> tasks =
-        taskService
+        taskanaEngine
+            .getTaskService()
             .createTaskQuery()
             .stateIn(TaskState.CLAIMED)
             .ownerNotIn("user-b-1")
@@ -166,7 +224,8 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(tasks).extracting(TaskSummary::getOwnerLongName).hasSize(18).isSorted();
 
     tasks =
-        taskService
+        taskanaEngine
+            .getTaskService()
             .createTaskQuery()
             .stateIn(TaskState.CLAIMED)
             .ownerNotIn("user-b-1")
@@ -180,10 +239,15 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void should_ListValues_For_OwnerLongName() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_ListValues_For_OwnerLongName() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     List<String> longNames =
-        taskService
+        taskanaEngine
+            .getTaskService()
             .createTaskQuery()
             .listValues(TaskQueryColumnName.OWNER_LONG_NAME, ASCENDING)
             .stream()
@@ -195,7 +259,8 @@ class QueryTasksAccTest extends AbstractAccTest {
         .containsExactly("Eifrig, Elena - (user-1-2)", "Mustermann, Max - (user-1-1)");
 
     longNames =
-        taskService
+        taskanaEngine
+            .getTaskService()
             .createTaskQuery()
             .listValues(TaskQueryColumnName.OWNER_LONG_NAME, DESCENDING)
             .stream()
@@ -209,11 +274,16 @@ class QueryTasksAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_ListValuesCorrectly_When_FilteringWithOwnerLongName() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_ListValuesCorrectly_When_FilteringWithOwnerLongName() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     String longName = "Eifrig, Elena - (user-1-2)";
     List<String> listedValues =
-        taskService
+        taskanaEngine
+            .getTaskService()
             .createTaskQuery()
             .ownerLongNameIn(longName)
             .orderByTaskId(null)
@@ -221,19 +291,29 @@ class QueryTasksAccTest extends AbstractAccTest {
     assertThat(listedValues).hasSize(25);
 
     List<TaskSummary> query =
-        taskService.createTaskQuery().ownerLongNameIn(longName).orderByTaskId(null).list();
+        taskanaEngine
+            .getTaskService()
+            .createTaskQuery()
+            .ownerLongNameIn(longName)
+            .orderByTaskId(null)
+            .list();
     assertThat(query).hasSize(25).extracting(TaskSummary::getId).isEqualTo(listedValues);
   }
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_CountCorrectly_When_FilteringWithOwnerLongName() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_CountCorrectly_When_FilteringWithOwnerLongName() throws Exception {
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     String longName = "Eifrig, Elena - (user-1-2)";
-    long count = taskService.createTaskQuery().ownerLongNameIn(longName).count();
+    long count = taskanaEngine.getTaskService().createTaskQuery().ownerLongNameIn(longName).count();
     assertThat(count).isEqualTo(25);
 
-    List<TaskSummary> query = taskService.createTaskQuery().ownerLongNameIn(longName).list();
+    List<TaskSummary> query =
+        taskanaEngine.getTaskService().createTaskQuery().ownerLongNameIn(longName).list();
     assertThat(query.size()).isEqualTo(count);
   }
 

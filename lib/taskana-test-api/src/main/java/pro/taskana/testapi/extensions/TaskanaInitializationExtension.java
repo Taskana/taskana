@@ -15,7 +15,7 @@ import org.junit.platform.commons.JUnitException;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.ConfigurationService;
@@ -61,13 +61,13 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         || isAnnotated(testClass, WithServiceProviders.class)
         || testInstance instanceof TaskanaEngineConfigurationModifier) {
       Store store = getClassLevelStore(context);
-      TaskanaEngineConfiguration taskanaEngineConfiguration =
-          createDefaultTaskanaEngineConfiguration(store);
+      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder =
+          createDefaultTaskanaEngineConfigurationBuilder(store);
 
       if (testInstance instanceof TaskanaEngineConfigurationModifier) {
         TaskanaEngineConfigurationModifier modifier =
             (TaskanaEngineConfigurationModifier) testInstance;
-        modifier.modify(taskanaEngineConfiguration);
+        taskanaEngineConfigurationBuilder = modifier.modify(taskanaEngineConfigurationBuilder);
       }
 
       TaskanaEngine taskanaEngine;
@@ -79,7 +79,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
                     staticMock.when(() -> SpiLoader.load(spi)).thenReturn(serviceProviders));
         taskanaEngine =
             TaskanaEngine.buildTaskanaEngine(
-                taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+                taskanaEngineConfigurationBuilder.build(), ConnectionManagementMode.AUTOCOMMIT);
       }
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));
@@ -95,7 +95,8 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     return instanceByClass;
   }
 
-  private static TaskanaEngineConfiguration createDefaultTaskanaEngineConfiguration(Store store) {
+  private static TaskanaConfiguration.Builder createDefaultTaskanaEngineConfigurationBuilder(
+      Store store) {
     String schemaName = store.get(TestContainerExtension.STORE_SCHEMA_NAME, String.class);
     if (schemaName == null) {
       throw new JUnitException("Expected schemaName to be defined in store, but it's not.");
@@ -105,7 +106,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
       throw new JUnitException("Expected dataSource to be defined in store, but it's not.");
     }
 
-    return new TaskanaEngineConfiguration(dataSource, false, schemaName);
+    return new TaskanaConfiguration.Builder(dataSource, false, schemaName);
   }
 
   private static Map<Class<?>, Object> generateTaskanaEntityMap(TaskanaEngine taskanaEngine)
@@ -121,7 +122,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     UserService userService = taskanaEngine.getUserService();
     SqlSession sqlSession = taskanaEngineProxy.getSqlSession();
     return Map.ofEntries(
-        Map.entry(TaskanaEngineConfiguration.class, taskanaEngine.getConfiguration()),
+        Map.entry(TaskanaConfiguration.class, taskanaEngine.getConfiguration()),
         Map.entry(TaskanaEngineImpl.class, taskanaEngine),
         Map.entry(TaskanaEngine.class, taskanaEngine),
         Map.entry(InternalTaskanaEngine.class, taskanaEngineProxy.getEngine()),

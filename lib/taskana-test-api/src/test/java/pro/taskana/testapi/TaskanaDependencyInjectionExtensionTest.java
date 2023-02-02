@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.ConfigurationService;
@@ -30,8 +30,8 @@ import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 @TaskanaIntegrationTest
 class TaskanaDependencyInjectionExtensionTest {
 
-  TaskanaEngineConfiguration taskanaEngineConfigurationNotAnnotated;
-  @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+  TaskanaConfiguration taskanaEngineConfigurationNotAnnotated;
+  @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
   @TaskanaInject TaskanaEngine taskanaEngine;
   @TaskanaInject TaskanaEngine taskanaEngine2;
   @TaskanaInject TaskanaEngineImpl taskanaEngineImpl;
@@ -67,7 +67,7 @@ class TaskanaDependencyInjectionExtensionTest {
 
   @Test
   void should_InjectTaskanaEngineConfiguration_When_FieldIsAnnotatedOrDeclaredAsParameter(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) {
+      TaskanaConfiguration taskanaEngineConfiguration) {
     assertThat(taskanaEngineConfiguration).isSameAs(this.taskanaEngineConfiguration).isNotNull();
   }
 

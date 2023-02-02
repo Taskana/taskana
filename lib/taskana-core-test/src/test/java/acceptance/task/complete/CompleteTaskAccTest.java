@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
@@ -33,6 +34,7 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.testapi.DefaultTestEntities;
+import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
@@ -46,7 +48,7 @@ import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionExcep
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-class CompleteTaskAccTest {
+class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
   @TaskanaInject TaskService taskService;
   @TaskanaInject CurrentUserContext currentUserContext;
@@ -58,6 +60,12 @@ class CompleteTaskAccTest {
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
   ObjectReference defaultObjectReference;
+
+  @Override
+  public TaskanaConfiguration.Builder modify(
+      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+    return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(true);
+  }
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
@@ -76,7 +84,6 @@ class CompleteTaskAccTest {
 
     defaultObjectReference = DefaultTestEntities.defaultTestObjectReference().build();
 
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(true);
     UserBuilder user11 = UserBuilder.newUser().id("user-1-1")
             .longName("Mustermann, Max - (user-1-1)").firstName("Max").lastName("Mustermann");
     user11.buildAndStore(userService);

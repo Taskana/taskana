@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.spi.priority.internal.PriorityServiceManager;
@@ -19,7 +19,7 @@ import pro.taskana.testapi.TaskanaInitializationExtensionTest.NestedTestClassWit
 @TaskanaIntegrationTest
 class TaskanaInitializationExtensionTest {
 
-  @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+  @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
   @Test
   void should_UseDefaultTaskanaEngine_When_TestIsCreated() {
@@ -31,7 +31,7 @@ class TaskanaInitializationExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class ReuseTaskana {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Test
     void should_useTopLevelTaskanaInstance_For_NestedTestClasses() {
@@ -44,11 +44,12 @@ class TaskanaInitializationExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class ModifiedTaskanaEngineConfig implements TaskanaEngineConfigurationModifier {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Override
-    public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-      taskanaEngineConfiguration.setDomains(List.of("A", "B"));
+    public TaskanaConfiguration.Builder modify(
+        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+      return taskanaEngineConfigurationBuilder.domains(List.of("A", "B"));
     }
 
     @Test
@@ -68,7 +69,7 @@ class TaskanaInitializationExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassAnnotatedWithCleanTaskanaContext {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Test
     void should_createNewTaskanaInstance_For_NestedTestClassAnnotatedWithCleanTaskanaContext() {
@@ -89,7 +90,7 @@ class TaskanaInitializationExtensionTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithServiceProvider {
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
     @TaskanaInject TaskanaEngine taskanaEngine;
 
     @Test
@@ -132,7 +133,7 @@ class TaskanaInitializationExtensionTest {
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithMultipleServiceProviders {
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
     @TaskanaInject TaskanaEngine taskanaEngine;
 
     @Test

@@ -8,8 +8,12 @@ import java.time.Instant;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
@@ -18,12 +22,14 @@ import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.testapi.DefaultTestEntities;
+import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
 import pro.taskana.testapi.builder.TaskCommentBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
+import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -180,82 +186,105 @@ class GetTaskCommentAccTest {
     assertThat(e.getTaskCommentId()).isEqualTo(nonExistingId);
   }
 
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_SetCreatorFullNameOfTaskComment_When_PropertyEnabled() throws Exception {
-    TaskComment comment =
-        TaskCommentBuilder.newTaskComment()
-            .taskId(task1.getId())
-            .textField("Text1")
-            .created(Instant.now())
-            .modified(Instant.now())
-            .buildAndStore(taskService);
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class WithAdditionalUserInfoEnabled implements TaskanaEngineConfigurationModifier {
 
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(true);
-    TaskComment taskComment = taskService.getTaskComment(comment.getId());
-    String creatorFullName =
-        taskanaEngine.getUserService().getUser(taskComment.getCreator()).getFullName();
-    assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isEqualTo(creatorFullName);
+    @TaskanaInject TaskService taskService;
+
+    @TaskanaInject UserService userService;
+
+    @Override
+    public TaskanaConfiguration.Builder modify(
+        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+      return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(true);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_SetCreatorFullNameOfTaskComment_When_PropertyEnabled() throws Exception {
+      TaskComment comment =
+          TaskCommentBuilder.newTaskComment()
+              .taskId(task1.getId())
+              .textField("Text1")
+              .created(Instant.now())
+              .modified(Instant.now())
+              .buildAndStore(taskService);
+
+      TaskComment taskComment = taskService.getTaskComment(comment.getId());
+      String creatorFullName = userService.getUser(taskComment.getCreator()).getFullName();
+      assertThat(taskComment)
+          .extracting(TaskComment::getCreatorFullName)
+          .isEqualTo(creatorFullName);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_SetCreatorFullNameOfTaskComments_When_PropertyEnabled() throws Exception {
+      TaskCommentBuilder.newTaskComment()
+          .taskId(task1.getId())
+          .textField("Text1")
+          .created(Instant.now())
+          .modified(Instant.now())
+          .buildAndStore(taskService);
+
+      List<TaskComment> taskComments = taskService.getTaskComments(task1.getId());
+
+      taskComments.forEach(
+          wrap(
+              taskComment -> {
+                String creatorFullName =
+                    userService.getUser(taskComment.getCreator()).getFullName();
+                assertThat(taskComment)
+                    .extracting(TaskComment::getCreatorFullName)
+                    .isEqualTo(creatorFullName);
+              }));
+    }
   }
 
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_NotSetCreatorFullNameOfTaskComment_When_PropertyDisabled() throws Exception {
-    TaskComment comment =
-        TaskCommentBuilder.newTaskComment()
-            .taskId(task1.getId())
-            .textField("Text1")
-            .created(Instant.now())
-            .modified(Instant.now())
-            .buildAndStore(taskService);
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class WithAdditionalUserInfoDisabled implements TaskanaEngineConfigurationModifier {
 
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(false);
-    TaskComment taskComment = taskService.getTaskComment(comment.getId());
+    @TaskanaInject TaskService taskService;
 
-    assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isNull();
-  }
+    @Override
+    public TaskanaConfiguration.Builder modify(
+        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+      return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(false);
+    }
 
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_SetCreatorFullNameOfTaskComments_When_PropertyEnabled() throws Exception {
-    TaskCommentBuilder.newTaskComment()
-        .taskId(task1.getId())
-        .textField("Text1")
-        .created(Instant.now())
-        .modified(Instant.now())
-        .buildAndStore(taskService);
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_NotSetCreatorFullNameOfTaskComment_When_PropertyDisabled() throws Exception {
+      TaskComment comment =
+          TaskCommentBuilder.newTaskComment()
+              .taskId(task1.getId())
+              .textField("Text1")
+              .created(Instant.now())
+              .modified(Instant.now())
+              .buildAndStore(taskService);
 
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(true);
+      TaskComment taskComment = taskService.getTaskComment(comment.getId());
 
-    List<TaskComment> taskComments = taskService.getTaskComments(task1.getId());
+      assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isNull();
+    }
 
-    taskComments.forEach(
-        wrap(
-            taskComment -> {
-              String creatorFullName =
-                  taskanaEngine.getUserService().getUser(taskComment.getCreator()).getFullName();
-              assertThat(taskComment)
-                  .extracting(TaskComment::getCreatorFullName)
-                  .isEqualTo(creatorFullName);
-            }));
-  }
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_NotSetCreatorFullNameOfTaskComments_When_PropertyDisabled() throws Exception {
+      TaskCommentBuilder.newTaskComment()
+          .taskId(task1.getId())
+          .textField("Text1")
+          .created(Instant.now())
+          .modified(Instant.now())
+          .buildAndStore(taskService);
 
-  @WithAccessId(user = "user-1-1")
-  @Test
-  void should_NotSetCreatorFullNameOfTaskComments_When_PropertyDisabled() throws Exception {
-    TaskCommentBuilder.newTaskComment()
-        .taskId(task1.getId())
-        .textField("Text1")
-        .created(Instant.now())
-        .modified(Instant.now())
-        .buildAndStore(taskService);
+      List<TaskComment> taskComments = taskService.getTaskComments(task1.getId());
 
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(false);
-
-    List<TaskComment> taskComments = taskService.getTaskComments(task1.getId());
-
-    taskComments.forEach(
-        taskComment ->
-            assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isNull());
+      taskComments.forEach(
+          taskComment ->
+              assertThat(taskComment).extracting(TaskComment::getCreatorFullName).isNull());
+    }
   }
 }

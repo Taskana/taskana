@@ -8,6 +8,7 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 import static pro.taskana.testapi.DefaultTestEntities.randomTestUser;
 import static pro.taskana.testapi.builder.UserBuilder.newUser;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -1016,8 +1017,9 @@ class UserServiceAccTest {
       @TaskanaInject WorkbasketService workbasketService;
 
       @Override
-      public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        taskanaEngineConfiguration.setMinimalPermissionsToAssignDomains(
+      public TaskanaConfiguration.Builder modify(
+          TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+        return taskanaEngineConfigurationBuilder.minimalPermissionsToAssignDomains(
             List.of(WorkbasketPermission.APPEND));
       }
 
@@ -1094,8 +1096,10 @@ class UserServiceAccTest {
       @TaskanaInject WorkbasketService workbasketService;
 
       @Override
-      public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-        taskanaEngineConfiguration.setMinimalPermissionsToAssignDomains(null);
+      public TaskanaConfiguration.Builder modify(
+          TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+        return taskanaEngineConfigurationBuilder.minimalPermissionsToAssignDomains(
+            new ArrayList<>());
       }
 
       @WithAccessId(user = "user-1-1")
