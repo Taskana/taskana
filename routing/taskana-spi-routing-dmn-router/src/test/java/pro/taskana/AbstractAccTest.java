@@ -14,7 +14,7 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 public abstract class AbstractAccTest {
 
-  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
   protected static WorkingDaysToDaysConverter converter;
 
@@ -32,8 +32,10 @@ public abstract class AbstractAccTest {
       sampleDataGenerator.dropDb();
     }
     dataSource = DataSourceGenerator.getDataSource();
-    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
-    taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
+    taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .germanPublicHolidaysEnabled(true)
+            .build();
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(dataSource, taskanaEngineConfiguration.getSchemaName());
     dbSchemaCreator.run();

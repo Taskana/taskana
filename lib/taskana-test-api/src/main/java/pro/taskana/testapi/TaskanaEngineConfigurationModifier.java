@@ -1,8 +1,9 @@
 package pro.taskana.testapi;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 
 public interface TaskanaEngineConfigurationModifier {
 
-  void modify(TaskanaEngineConfiguration taskanaEngineConfiguration);
+  TaskanaConfiguration.Builder modify(
+      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder);
 }

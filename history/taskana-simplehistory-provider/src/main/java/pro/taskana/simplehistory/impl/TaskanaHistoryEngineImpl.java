@@ -21,7 +21,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
@@ -49,7 +49,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaHistoryEngineImpl.class);
   private static final String DEFAULT = "default";
   private final SqlSessionManager sessionManager;
-  private final TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaEngineConfiguration;
   private final TaskanaEngine taskanaEngine;
   private TransactionFactory transactionFactory;
   private TaskanaHistory taskanaHistoryService;
@@ -58,7 +58,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     this.taskanaEngineConfiguration = taskanaEngine.getConfiguration();
     this.taskanaEngine = taskanaEngine;
 
-    createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
+    createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
   }
 
@@ -102,7 +102,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     }
   }
 
-  public TaskanaEngineConfiguration getConfiguration() {
+  public TaskanaConfiguration getConfiguration() {
     return this.taskanaEngineConfiguration;
   }
 

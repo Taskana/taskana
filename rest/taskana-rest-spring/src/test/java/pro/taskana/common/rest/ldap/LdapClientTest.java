@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -42,7 +42,7 @@ class LdapClientTest {
 
   @Mock LdapTemplate ldapTemplate;
 
-  @Mock TaskanaEngineConfiguration taskanaEngineConfiguration;
+  @Mock TaskanaConfiguration taskanaEngineConfiguration;
 
   @Spy @InjectMocks LdapClient cut;
 

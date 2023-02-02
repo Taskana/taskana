@@ -2,7 +2,7 @@ package pro.taskana.user.api.models;
 
 import java.util.Set;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 
 /** The User holds some relevant information about the TASKANA users. */
 public interface User {
@@ -208,7 +208,7 @@ public interface User {
    *
    * <p>The domains are derived from the {@linkplain pro.taskana.workbasket.api.WorkbasketPermission
    * WorkbasketPermissions} and the according TASKANA property {@linkplain
-   * TaskanaEngineConfiguration#getMinimalPermissionsToAssignDomains()}.
+   * TaskanaConfiguration#getMinimalPermissionsToAssignDomains()}.
    *
    * @return domains
    */

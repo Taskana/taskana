@@ -20,10 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
@@ -146,7 +148,13 @@ class CreateTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_CreateTaskWithAdditionalUserInfo() throws Exception {
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(true);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(true)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskService taskService = taskanaEngine.getTaskService();
+
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T2100");
     ObjectReferenceImpl objectReference =
@@ -160,8 +168,6 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getOwner()).isEqualTo("user-1-1");
     assertThat(createdTask.getOwnerLongName()).isEqualTo("Mustermann, Max - (user-1-1)");
-
-    taskanaEngine.getConfiguration().setAddAdditionalUserInfo(false);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -191,28 +197,28 @@ class CreateTaskAccTest extends AbstractAccTest {
   @Test
   void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
     // Given
-    try {
-      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(true);
-      Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
-      newTask.setClassificationKey("T6310");
-      ObjectReference objectReference =
-          createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
-      newTask.setPrimaryObjRef(objectReference);
-      newTask.setOwner("user-1-1");
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .validationAllowTimestampServiceLevelMismatch(true)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    Task newTask = taskanaEngine.getTaskService().newTask("USER-1-1", "DOMAIN_A");
+    newTask.setClassificationKey("T6310");
+    ObjectReference objectReference =
+        createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567");
+    newTask.setPrimaryObjRef(objectReference);
+    newTask.setOwner("user-1-1");
 
-      // When
-      Instant planned = Instant.parse("2018-01-02T00:00:00Z");
-      newTask.setPlanned(planned);
-      Instant due = Instant.parse("2018-02-15T00:00:00Z");
-      newTask.setDue(due);
-      Task createdTask = taskService.createTask(newTask);
+    // When
+    Instant planned = Instant.parse("2018-01-02T00:00:00Z");
+    newTask.setPlanned(planned);
+    Instant due = Instant.parse("2018-02-15T00:00:00Z");
+    newTask.setDue(due);
+    Task createdTask = taskanaEngine.getTaskService().createTask(newTask);
 
-      // Then
-      assertThat(createdTask.getPlanned()).isEqualTo(planned);
-      assertThat(createdTask.getDue()).isEqualTo(due);
-    } finally {
-      taskanaEngineConfiguration.setValidationAllowTimestampServiceLevelMismatch(false);
-    }
+    // Then
+    assertThat(createdTask.getPlanned()).isEqualTo(planned);
+    assertThat(createdTask.getDue()).isEqualTo(due);
   }
 
   @WithAccessId(user = "user-1-1")

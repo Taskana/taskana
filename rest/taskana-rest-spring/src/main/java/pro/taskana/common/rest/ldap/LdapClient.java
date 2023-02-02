@@ -28,7 +28,7 @@ import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -43,7 +43,7 @@ public class LdapClient {
   private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
   private static final String CN = "cn";
 
-  private final TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaEngineConfiguration;
   private final Environment env;
   private final LdapTemplate ldapTemplate;
   private final boolean useLowerCaseForAccessIds;
@@ -54,13 +54,11 @@ public class LdapClient {
 
   @Autowired
   public LdapClient(
-      Environment env,
-      LdapTemplate ldapTemplate,
-      TaskanaEngineConfiguration taskanaEngineConfiguration) {
+      Environment env, LdapTemplate ldapTemplate, TaskanaConfiguration taskanaEngineConfiguration) {
     this.env = env;
     this.ldapTemplate = ldapTemplate;
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-    this.useLowerCaseForAccessIds = TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds();
+    this.useLowerCaseForAccessIds = TaskanaConfiguration.shouldUseLowerCaseForAccessIds();
   }
 
   /**

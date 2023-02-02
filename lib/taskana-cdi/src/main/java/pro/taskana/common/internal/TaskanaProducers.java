@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.TaskService;
@@ -33,7 +33,7 @@ public class TaskanaProducers {
 
   @Inject private TaskanaEngine taskanaEngine;
 
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private TaskanaConfiguration taskanaEngineConfiguration;
 
   @PostConstruct
   public void init() {
@@ -54,7 +54,7 @@ public class TaskanaProducers {
         }
       }
       this.taskanaEngineConfiguration =
-          new TaskanaEngineConfiguration(dataSource, true, false, "TASKANA");
+          new TaskanaConfiguration.Builder(dataSource, true, "TASKANA", false).build();
     } catch (NamingException | SQLException | IOException e) {
       LOGGER.error("Could not start Taskana: ", e);
     }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -42,7 +42,7 @@ public class TaskHistoryEventController {
 
   @Autowired
   public TaskHistoryEventController(
-      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaEngineConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
       TaskHistoryEventRepresentationModelAssembler assembler)
       throws SQLException {
