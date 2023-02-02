@@ -10,7 +10,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -26,7 +26,7 @@ public class ExampleRestConfiguration {
   @Bean
   @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
   public SampleDataGenerator generateSampleData(
-      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaEngineConfiguration,
       DataSource dataSource,
       @Value("${generateSampleData:true}") boolean generateSampleData)
       throws SQLException {
@@ -43,7 +43,7 @@ public class ExampleRestConfiguration {
 
   @Bean
   @DependsOn("generateSampleData")
-  public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
       throws SQLException {
     return TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
   }

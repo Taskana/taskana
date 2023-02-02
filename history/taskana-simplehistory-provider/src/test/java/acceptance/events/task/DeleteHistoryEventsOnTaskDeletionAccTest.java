@@ -4,32 +4,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.TaskHistoryQueryImpl;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
-import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 
 @ExtendWith(JaasExtension.class)
 class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
-
-  private final TaskService taskService = taskanaEngine.getTaskService();
-  private final SimpleHistoryServiceImpl historyService = getHistoryService();
 
   @Test
   @WithAccessId(user = "admin")
   void should_DeleteHistoryEvents_When_TaskIsDeletedWithHistoryDeletionEnabled() throws Exception {
 
     final String taskid = "TKI:000000000000000000000000000000000036";
-    taskanaEngineConfiguration.setDeleteHistoryOnTaskDeletionEnabled(true);
+    createTaskanaEngineWithNewConfig(true);
 
     TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
@@ -62,7 +59,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     final String taskId_1 = "TKI:000000000000000000000000000000000037";
     final String taskId_2 = "TKI:000000000000000000000000000000000038";
 
-    taskanaEngineConfiguration.setDeleteHistoryOnTaskDeletionEnabled(true);
+    createTaskanaEngineWithNewConfig(true);
 
     TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
@@ -101,7 +98,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
     final String taskId = "TKI:000000000000000000000000000000000039";
 
-    taskanaEngineConfiguration.setDeleteHistoryOnTaskDeletionEnabled(false);
+    createTaskanaEngineWithNewConfig(false);
 
     TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
@@ -133,7 +130,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     final String taskId_1 = "TKI:000000000000000000000000000000000040";
     final String taskId_2 = "TKI:000000000000000000000000000000000068";
 
-    taskanaEngineConfiguration.setDeleteHistoryOnTaskDeletionEnabled(false);
+    createTaskanaEngineWithNewConfig(false);
 
     TaskHistoryQueryMapper taskHistoryQueryMapper = getHistoryQueryMapper();
 
@@ -157,5 +154,15 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
             (TaskHistoryQueryImpl)
                 historyService.createTaskHistoryQuery().taskIdIn(taskId_1, taskId_2));
     assertThat(listEvents).hasSize(2);
+  }
+
+  private void createTaskanaEngineWithNewConfig(boolean deleteHistoryOnTaskDeletionEnabled)
+      throws SQLException {
+
+    TaskanaConfiguration tec =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .deleteHistoryOnTaskDeletionEnabled(deleteHistoryOnTaskDeletionEnabled)
+            .build();
+    initTaskanaEngine(tec);
   }
 }

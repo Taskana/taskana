@@ -13,8 +13,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -31,10 +34,14 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
     // TODO split test class into readOnly & modifying tests to improve performance
     resetDb(true);
 
-    taskanaEngineConfiguration.setPriorityJobActive(true);
-    taskanaEngineConfiguration.setPriorityJobBatchSize(20);
-    taskanaEngineConfiguration.setPriorityJobRunEvery(Duration.ofMinutes(30));
-    taskanaEngineConfiguration.setPriorityJobFirstRun(Instant.parse("2007-12-03T10:15:30.00Z"));
+    taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .priorityJobActive(true)
+            .priorityJobBatchSize(20)
+            .priorityJobRunEvery(Duration.ofMinutes(30))
+            .priorityJobFirstRun(Instant.parse("2007-12-03T10:15:30.00Z"))
+            .build();
+    taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
   }
 
   @Test
@@ -49,10 +56,14 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_catchException_When_executedWithWrongSettings() {
+  void should_catchException_When_executedWithWrongSettings() throws Exception {
     // given
-    taskanaEngineConfiguration.setPriorityJobBatchSize(0);
-    TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .priorityJobBatchSize(0)
+            .build();
+    TaskUpdatePriorityJob job =
+        new TaskUpdatePriorityJob(TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
 
     // then
     assertThatThrownBy(job::execute).isInstanceOf(SystemException.class);
@@ -60,9 +71,13 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_doNothing_When_NotActive() {
+  void should_doNothing_When_NotActive() throws Exception {
     // given
-    taskanaEngineConfiguration.setPriorityJobActive(false);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .priorityJobActive(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
     List<String> priorities =
         taskanaEngine
@@ -85,15 +100,19 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_ScheduleNextJob() throws NoSuchFieldException, IllegalAccessException {
+  void should_ScheduleNextJob() throws Exception {
     // given
     final Instant someTimeInTheFuture = Instant.now().plus(10, ChronoUnit.DAYS);
-
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration).build();
+    TaskanaEngine taskanaEngine =
+        TaskanaEngine.buildTaskanaEngine(
+            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     // when
     TaskUpdatePriorityJob.initializeSchedule(taskanaEngine);
 
     // then
-    assertThat(getJobMapper().findJobsToRun(someTimeInTheFuture))
+    assertThat(getJobMapper(taskanaEngine).findJobsToRun(someTimeInTheFuture))
         .hasSizeGreaterThanOrEqualTo(1)
         .extracting(ScheduledJob::getType)
         .contains(TaskUpdatePriorityJob.class.getName());
@@ -101,12 +120,16 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_readConfigurationForBatchSize() {
+  void should_readConfigurationForBatchSize() throws Exception {
     // given
-    taskanaEngineConfiguration.setPriorityJobBatchSize(20);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .priorityJobBatchSize(20)
+            .build();
 
     // when
-    final TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
+    final TaskUpdatePriorityJob job =
+        new TaskUpdatePriorityJob(TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
 
     // then
     assertThat(job.getBatchSize()).isEqualTo(20);
@@ -114,25 +137,33 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_readConfigurationForIsActive() {
+  void should_readConfigurationForIsActive() throws Exception {
     // given
-    taskanaEngineConfiguration.setPriorityJobActive(false);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .priorityJobActive(false)
+            .build();
 
     // when
-    final TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
+    final TaskUpdatePriorityJob job =
+        new TaskUpdatePriorityJob(TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
 
     // then
     assertThat(job.isJobActive()).isFalse();
   }
 
   @Test
-  void should_containInformation_When_convertedToString() {
+  void should_containInformation_When_convertedToString() throws Exception {
     // given
-    taskanaEngineConfiguration.setPriorityJobBatchSize(543);
-    taskanaEngineConfiguration.setPriorityJobRunEvery(Duration.ofMinutes(30));
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .priorityJobBatchSize(543)
+            .priorityJobRunEvery(Duration.ofMinutes(30))
+            .build();
 
     // when
-    final TaskUpdatePriorityJob job = new TaskUpdatePriorityJob(taskanaEngine);
+    final TaskUpdatePriorityJob job =
+        new TaskUpdatePriorityJob(TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
 
     // then
     assertThat(job).asString().contains("543").contains(Duration.ofMinutes(30).toString());

@@ -3,6 +3,7 @@ package acceptance.jobs;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.internal.util.Pair;
@@ -118,7 +120,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(20);
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    createTaskanaEngineWithNewConfig(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
@@ -211,7 +213,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    createTaskanaEngineWithNewConfig(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
@@ -277,7 +279,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(18);
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    createTaskanaEngineWithNewConfig(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
@@ -366,7 +368,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(20);
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(false);
+    createTaskanaEngineWithNewConfig(false);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
@@ -419,7 +421,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
 
     assertThat(getHistoryService().createTaskHistoryQuery().count()).isEqualTo(17);
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    createTaskanaEngineWithNewConfig(true);
 
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
     job.run();
@@ -461,16 +463,16 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest>
-      should_CleanTaskHistoryEventsWithParentProcessIdEmptyOrNull_When_TaskCompleted() {
+      should_CleanTaskHistoryEventsWithParentProcessIdEmptyOrNull_When_TaskCompleted()
+          throws SQLException {
     Iterator<String> iterator = Arrays.asList("", null).iterator();
     String taskId1 = "taskId1";
     String taskId2 = "taskId2";
     List<TaskHistoryEvent> events =
-        List.of(
+        Stream.of(
                 Pair.of(taskId1, TaskHistoryEventType.CREATED),
                 Pair.of(taskId1, TaskHistoryEventType.COMPLETED),
                 Pair.of(taskId2, TaskHistoryEventType.CREATED))
-            .stream()
             .map(
                 pair ->
                     createTaskHistoryEvent(
@@ -482,7 +484,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
                         "someDetails"))
             .collect(Collectors.toList());
 
-    taskanaEngine.getConfiguration().setTaskCleanupJobAllCompletedSameParentBusiness(true);
+    createTaskanaEngineWithNewConfig(true);
     HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
 
     ThrowingConsumer<String> test =
@@ -502,5 +504,16 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
         };
 
     return DynamicTest.stream(iterator, c -> "for parentBusinessProcessId = '" + c + "'", test);
+  }
+
+  private void createTaskanaEngineWithNewConfig(
+      boolean taskCleanupJobAllCompletedSameParentBusiness) throws SQLException {
+
+    TaskanaConfiguration tec =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .taskCleanupJobAllCompletedSameParentBusiness(
+                taskCleanupJobAllCompletedSameParentBusiness)
+            .build();
+    initTaskanaEngine(tec);
   }
 }

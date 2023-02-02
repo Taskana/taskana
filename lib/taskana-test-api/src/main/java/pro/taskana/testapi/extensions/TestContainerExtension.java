@@ -71,6 +71,24 @@ public class TestContainerExtension implements InvocationInterceptor {
     return invocation.proceed();
   }
 
+  public static DataSource createDataSourceForH2() {
+    PooledDataSource ds =
+        new PooledDataSource(
+            Thread.currentThread().getContextClassLoader(),
+            "org.h2.Driver",
+            "jdbc:h2:mem:"
+                + "taskana"
+                + ";NON_KEYWORDS=KEY,VALUE;LOCK_MODE=0;"
+                + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
+                + "SET COLLATION DEFAULT_de_DE ",
+            "sa",
+            "sa");
+    ds.setPoolTimeToWait(50);
+    ds.forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
+
+    return ds;
+  }
+
   private static void copyValue(String key, Store source, Store destination) {
     Object value = source.get(key);
     destination.put(key, value);
@@ -95,23 +113,5 @@ public class TestContainerExtension implements InvocationInterceptor {
       db = DB.H2;
     }
     return db;
-  }
-
-  private static DataSource createDataSourceForH2() {
-    PooledDataSource ds =
-        new PooledDataSource(
-            Thread.currentThread().getContextClassLoader(),
-            "org.h2.Driver",
-            "jdbc:h2:mem:"
-                + "taskana"
-                + ";NON_KEYWORDS=KEY,VALUE;LOCK_MODE=0;"
-                + "INIT=CREATE SCHEMA IF NOT EXISTS TASKANA\\;"
-                + "SET COLLATION DEFAULT_de_DE ",
-            "sa",
-            "sa");
-    ds.setPoolTimeToWait(50);
-    ds.forceCloseAll(); // otherwise, the MyBatis pool is not initialized correctly
-
-    return ds;
   }
 }

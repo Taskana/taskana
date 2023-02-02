@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 
@@ -22,13 +22,14 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 class TaskanaConfigAccTest {
 
   @TempDir Path tempDir;
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private TaskanaConfiguration taskanaEngineConfiguration;
 
   @BeforeEach
   void setup() {
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName())
+            .build();
   }
 
   @Test
@@ -60,13 +61,14 @@ class TaskanaConfigAccTest {
     String propertiesFileName = createNewConfigFile("dummyTestConfig1.properties", false, true);
     String delimiter = ";";
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(),
-            true,
-            true,
-            propertiesFileName,
-            delimiter,
-            DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(),
+                true,
+                DataSourceGenerator.getSchemaName(),
+                true,
+                propertiesFileName,
+                delimiter)
+            .build();
     assertThat(taskanaEngineConfiguration.getClassificationTypes()).isEmpty();
   }
 
@@ -75,13 +77,14 @@ class TaskanaConfigAccTest {
     String propertiesFileName = createNewConfigFile("dummyTestConfig2.properties", true, false);
     String delimiter = ";";
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(),
-            true,
-            true,
-            propertiesFileName,
-            delimiter,
-            DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(),
+                true,
+                DataSourceGenerator.getSchemaName(),
+                true,
+                propertiesFileName,
+                delimiter)
+            .build();
     assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
         .containsExactly(
             Map.entry("TASK", Collections.emptyList()),
@@ -93,13 +96,14 @@ class TaskanaConfigAccTest {
     String propertiesFileName = createNewConfigFile("dummyTestConfig3.properties", true, true);
     String delimiter = ";";
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(),
-            true,
-            true,
-            propertiesFileName,
-            delimiter,
-            DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(),
+                true,
+                DataSourceGenerator.getSchemaName(),
+                true,
+                propertiesFileName,
+                delimiter)
+            .build();
     assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
         .containsExactly(
             Map.entry("TASK", List.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),

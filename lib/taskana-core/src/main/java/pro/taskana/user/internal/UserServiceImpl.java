@@ -11,7 +11,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
       throw new InvalidArgumentException("UserId can't be used as NULL-Parameter.");
     }
     String finalUserId;
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
       finalUserId = userId.toLowerCase();
     } else {
       finalUserId = userId;
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
       throw new InvalidArgumentException("UserIds can't be used as NULL-Parameter.");
     }
     Set<String> finalUserIds;
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
       finalUserIds = userIds.stream().map(String::toLowerCase).collect(Collectors.toSet());
     } else {
       finalUserIds = userIds;
@@ -202,7 +202,7 @@ public class UserServiceImpl implements UserService {
     if (user.getLongName() == null || user.getLongName().isEmpty()) {
       user.setLongName(user.getFullName() + " - (" + user.getId() + ")");
     }
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
       user.setId(user.getId().toLowerCase());
       user.setGroups(
           user.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
         newUser.setLongName(newUser.getFullName() + " - (" + newUser.getId() + ")");
       }
     }
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
       newUser.setId(newUser.getId().toLowerCase());
       newUser.setGroups(
           newUser.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));

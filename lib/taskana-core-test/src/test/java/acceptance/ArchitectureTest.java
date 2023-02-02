@@ -60,7 +60,7 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -77,7 +77,6 @@ import pro.taskana.testapi.TaskanaIntegrationTest;
 class ArchitectureTest {
 
   // region Test setup
-
   private static final List<String> TASKANA_ROOT_PACKAGES =
       List.of(
           "pro.taskana.classification",
@@ -455,7 +454,7 @@ class ArchitectureTest {
         .resideInAnyPackage(dependentModulesList.toArray(new String[0]))
         .orShould()
         .dependOnClassesThat()
-        .areAssignableTo(TaskanaEngineConfiguration.class)
+        .areAssignableTo(TaskanaConfiguration.class)
         .check(importedClasses);
   }
 

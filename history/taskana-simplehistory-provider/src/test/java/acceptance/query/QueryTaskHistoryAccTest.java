@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.test.security.JaasExtension;
@@ -446,7 +448,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetUserLongNameOfTask_When_PropertyEnabled() throws Exception {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    createTaskanaEngineWithNewConfig(true);
     List<TaskHistoryEvent> taskHistoryEvents =
         getHistoryService()
             .createTaskHistoryQuery()
@@ -464,7 +466,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetTaskOwnerLongNameOfTaskHistoryEvent_When_PropertyEnabled() throws Exception {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    createTaskanaEngineWithNewConfig(true);
     List<TaskHistoryEvent> taskHistoryEvents =
         getHistoryService()
             .createTaskHistoryQuery()
@@ -489,8 +491,8 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_NotSetUserLongNameOfTaskHistoryEvent_When_PropertyDisabled() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_NotSetUserLongNameOfTaskHistoryEvent_When_PropertyDisabled() throws Exception {
+    createTaskanaEngineWithNewConfig(false);
     List<TaskHistoryEvent> taskHistoryEvents =
         getHistoryService()
             .createTaskHistoryQuery()
@@ -503,8 +505,8 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_NotSetTaskOwnerLongNameOfTaskHistoryEvent_When_PropertyDisabled() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+  void should_NotSetTaskOwnerLongNameOfTaskHistoryEvent_When_PropertyDisabled() throws Exception {
+    createTaskanaEngineWithNewConfig(false);
     List<TaskHistoryEvent> taskHistoryEvents =
         getHistoryService()
             .createTaskHistoryQuery()
@@ -519,8 +521,9 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_SetUserLongNameOfTaskHistoryEventToNull_When_NotExistingAsUserInDatabase() {
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+  void should_SetUserLongNameOfTaskHistoryEventToNull_When_NotExistingAsUserInDatabase()
+      throws Exception {
+    createTaskanaEngineWithNewConfig(true);
     List<TaskHistoryEvent> taskHistoryEvents =
         getHistoryService()
             .createTaskHistoryQuery()
@@ -529,5 +532,14 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
 
     assertThat(taskHistoryEvents).hasSize(1);
     assertThat(taskHistoryEvents.get(0)).extracting(TaskHistoryEvent::getUserLongName).isNull();
+  }
+
+  private void createTaskanaEngineWithNewConfig(boolean addAdditionalUserInfo) throws SQLException {
+
+    TaskanaConfiguration tec =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(addAdditionalUserInfo)
+            .build();
+    initTaskanaEngine(tec);
   }
 }

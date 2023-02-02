@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
@@ -19,13 +19,14 @@ import pro.taskana.common.test.config.DataSourceGenerator;
 class TaskanaRoleConfigAccTest {
 
   @TempDir Path tempDir;
-  private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private TaskanaConfiguration taskanaEngineConfiguration;
 
   @BeforeEach
   void setup() {
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName())
+            .build();
   }
 
   @Test
@@ -72,13 +73,14 @@ class TaskanaRoleConfigAccTest {
     String propertiesFileName = createNewConfigFileWithSameDelimiter("dummyTestConfig.properties");
     String delimiter = "|";
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(),
-            true,
-            true,
-            propertiesFileName,
-            delimiter,
-            DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(),
+                true,
+                DataSourceGenerator.getSchemaName(),
+                true,
+                propertiesFileName,
+                delimiter)
+            .build();
 
     Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
@@ -104,13 +106,14 @@ class TaskanaRoleConfigAccTest {
         createNewConfigFileWithDifferentDelimiter("dummyTestConfig.properties", delimiter);
 
     taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(
-            DataSourceGenerator.getDataSource(),
-            true,
-            true,
-            propertiesFileName,
-            delimiter,
-            DataSourceGenerator.getSchemaName());
+        new TaskanaConfiguration.Builder(
+                DataSourceGenerator.getDataSource(),
+                true,
+                DataSourceGenerator.getSchemaName(),
+                true,
+                propertiesFileName,
+                delimiter)
+            .build();
 
     Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());

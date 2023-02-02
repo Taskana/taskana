@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.security.CurrentUserContext;
@@ -25,14 +25,14 @@ import pro.taskana.common.rest.models.VersionRepresentationModel;
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class TaskanaEngineController {
 
-  private final TaskanaEngineConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaEngineConfiguration;
   private final TaskanaEngine taskanaEngine;
   private final CurrentUserContext currentUserContext;
   private final ConfigurationService configurationService;
 
   @Autowired
   TaskanaEngineController(
-      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaEngineConfiguration,
       TaskanaEngine taskanaEngine,
       CurrentUserContext currentUserContext,
       ConfigurationService configurationService) {
@@ -159,7 +159,7 @@ public class TaskanaEngineController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<VersionRepresentationModel> currentVersion() {
     VersionRepresentationModel resource = new VersionRepresentationModel();
-    resource.setVersion(TaskanaEngineConfiguration.class.getPackage().getImplementationVersion());
+    resource.setVersion(TaskanaConfiguration.class.getPackage().getImplementationVersion());
     return ResponseEntity.ok(resource);
   }
 }

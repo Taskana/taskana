@@ -61,7 +61,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
     this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
-    this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo();
+    this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo();
   }
 
   @Override
