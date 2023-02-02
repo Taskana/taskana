@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TimeInterval;
@@ -37,7 +37,7 @@ public abstract class AbstractAccTest {
   public static final String GROUP_2_DN =
       "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
 
-  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaEngineConfiguration;
   protected static TaskanaEngine taskanaEngine;
 
   protected static TaskServiceImpl taskService;
@@ -52,8 +52,11 @@ public abstract class AbstractAccTest {
 
     DataSource dataSource = DataSourceGenerator.getDataSource();
     String schemaName = DataSourceGenerator.getSchemaName();
-    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaName);
-    taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
+
+    taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .germanPublicHolidaysEnabled(true)
+            .build();
     SampleDataGenerator sampleDataGenerator =
         new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
     if (dropTables) {
@@ -69,7 +72,8 @@ public abstract class AbstractAccTest {
     sampleDataGenerator.generateTestData();
   }
 
-  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+  protected JobMapper getJobMapper(TaskanaEngine taskanaEngine)
+      throws NoSuchFieldException, IllegalAccessException {
 
     Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
     sessionManagerField.setAccessible(true);

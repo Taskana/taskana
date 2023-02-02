@@ -25,7 +25,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.internal.ClassificationMapper;
 import pro.taskana.classification.internal.ClassificationQueryMapper;
@@ -98,14 +98,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
-  protected TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected TaskanaConfiguration taskanaEngineConfiguration;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
   protected ConnectionManagementMode mode;
   protected Connection connection;
 
   protected TaskanaEngineImpl(
-      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaEngineConfiguration,
       ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
@@ -117,8 +117,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaEngineConfiguration.isCorpusChristiEnabled(),
             taskanaEngineConfiguration.getCustomHolidays());
     currentUserContext =
-        new CurrentUserContextImpl(TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds());
-    createTransactionFactory(taskanaEngineConfiguration.getUseManagedTransactions());
+        new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
+    createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
 
     initializeDbSchema(taskanaEngineConfiguration);
@@ -137,7 +137,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public static TaskanaEngine createTaskanaEngine(
-      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaEngineConfiguration,
       ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     return new TaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
@@ -204,7 +204,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public TaskanaEngineConfiguration getConfiguration() {
+  public TaskanaConfiguration getConfiguration() {
     return this.taskanaEngineConfiguration;
   }
 
@@ -388,7 +388,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 
-  private void initializeDbSchema(TaskanaEngineConfiguration taskanaEngineConfiguration)
+  private void initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(

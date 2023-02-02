@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.testapi.TestContainerExtensionTest.NestedTestClassWithServiceProvider.DummyPriorityServiceProvider;
@@ -17,7 +17,7 @@ import pro.taskana.testapi.TestContainerExtensionTest.NestedTestClassWithService
 @TaskanaIntegrationTest
 class TestContainerExtensionTest {
 
-  @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+  @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
   @Test
   void should_CreateDataSource_For_TopLevelTestClass() {
@@ -37,7 +37,7 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClass {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Test
     void should_ReuseDataSource_For_NestedTestClass() {
@@ -62,11 +62,12 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithConfigurationModifier implements TaskanaEngineConfigurationModifier {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Override
-    public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-      // do nothing
+    public TaskanaConfiguration.Builder modify(
+        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+      return taskanaEngineConfigurationBuilder;
     }
 
     @Test
@@ -93,7 +94,7 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassAnnotatedWithCleanTaskanaContext {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Test
     void should_ReuseDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
@@ -118,7 +119,7 @@ class TestContainerExtensionTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class NestedNestedTestClassAnnotatedWithCleanTaskanaContext {
 
-      @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+      @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
       @Test
       void should_ReuseDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
@@ -160,11 +161,12 @@ class TestContainerExtensionTest {
   class NestedTestClassAnnotatedWithCleanTaskanaContextAndConfigModifier
       implements TaskanaEngineConfigurationModifier {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Override
-    public void modify(TaskanaEngineConfiguration taskanaEngineConfiguration) {
-      // do nothing
+    public TaskanaConfiguration.Builder modify(
+        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
+      return taskanaEngineConfigurationBuilder;
     }
 
     @Test
@@ -193,7 +195,7 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithServiceProvider {
 
-    @TaskanaInject TaskanaEngineConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
 
     @Test
     void should_ReuseDataSource_For_NestedTestClassWithServiceProvider() {

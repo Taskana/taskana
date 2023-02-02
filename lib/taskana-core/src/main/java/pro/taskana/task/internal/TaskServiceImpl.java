@@ -393,7 +393,7 @@ public class TaskServiceImpl implements TaskService {
 
         if (resultTask.getOwner() != null
             && !resultTask.getOwner().isEmpty()
-            && taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+            && taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
           User owner = userMapper.findById(resultTask.getOwner());
           if (owner != null) {
             resultTask.setOwnerLongName(owner.getLongName());
@@ -1111,7 +1111,7 @@ public class TaskServiceImpl implements TaskService {
       } else {
         String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
         String userLongName;
-        if (taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+        if (taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
           User user = userMapper.findById(userId);
           if (user != null) {
             userLongName = user.getLongName();
@@ -1220,7 +1220,7 @@ public class TaskServiceImpl implements TaskService {
           NotAuthorizedException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     String userLongName = null;
-    if (taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+    if (taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
       User user = userMapper.findById(userId);
       if (user != null) {
         userLongName = user.getLongName();
@@ -1274,8 +1274,8 @@ public class TaskServiceImpl implements TaskService {
             task.getId(), task.getState(), EnumUtil.allValuesExceptFor(TaskState.END_STATES));
       }
       if (!force && taskIsNotClaimed(task)) {
-        throw new InvalidTaskStateException(task.getId(), task.getState(), TaskState.CLAIMED,
-            TaskState.IN_REVIEW);
+        throw new InvalidTaskStateException(
+            task.getId(), task.getState(), TaskState.CLAIMED, TaskState.IN_REVIEW);
       }
       if (!force && !task.getOwner().equals(userId)) {
         throw new InvalidOwnerException(userId, task.getId());
@@ -1717,7 +1717,7 @@ public class TaskServiceImpl implements TaskService {
       task.setDescription(classification.getDescription());
     }
     if (task.getOwner() != null
-            && taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo()) {
+        && taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
       User user = userMapper.findById(task.getOwner());
       if (user != null) {
         task.setOwnerLongName(user.getLongName());

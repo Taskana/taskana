@@ -5,7 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.mockito.Mockito;
 import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEventType;
@@ -37,13 +38,12 @@ class LogfileHistoryServiceImplTest {
 
   @BeforeAll
   public static void setupObjectMapper() {
-    TaskanaEngineConfiguration taskanaEngineConfiguration =
-        Mockito.mock(TaskanaEngineConfiguration.class);
+    TaskanaConfiguration taskanaEngineConfiguration = Mockito.mock(TaskanaConfiguration.class);
     taskanaEngineMock = Mockito.mock(TaskanaEngine.class);
     Mockito.when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-    Properties mockProperties = new Properties();
+    Map<String, String> mockProperties = new HashMap<>();
     mockProperties.put(LogfileHistoryServiceImpl.TASKANA_HISTORY_LOGGER_NAME, "AUDIT");
-    Mockito.when(taskanaEngineConfiguration.readPropertiesFromFile()).thenReturn(mockProperties);
+    Mockito.when(taskanaEngineConfiguration.getProperties()).thenReturn(mockProperties);
   }
 
   @Test

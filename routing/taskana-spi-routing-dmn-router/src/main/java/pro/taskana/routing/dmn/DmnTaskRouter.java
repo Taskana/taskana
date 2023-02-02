@@ -99,8 +99,7 @@ public class DmnTaskRouter implements TaskRoutingProvider {
   }
 
   protected DmnModelInstance readModelFromDmnTable() {
-    String pathToDmn =
-        taskanaEngine.getConfiguration().readPropertiesFromFile().getProperty(DMN_TABLE_PROPERTY);
+    String pathToDmn = taskanaEngine.getConfiguration().getProperties().get(DMN_TABLE_PROPERTY);
     try (InputStream stream = FileLoaderUtil.openFileFromClasspathOrSystem(pathToDmn, getClass())) {
       return Dmn.readModelFromStream(stream);
     } catch (IOException e) {

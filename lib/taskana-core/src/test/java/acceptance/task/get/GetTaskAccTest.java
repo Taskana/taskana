@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.TaskanaConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -95,7 +97,11 @@ class GetTaskAccTest extends AbstractAccTest {
   @Test
   void should_SetTaskOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
 
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(true);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(true)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -107,8 +113,11 @@ class GetTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_NotSetTaskOwnerLongNameOfTask_When_PropertyDisabled() throws Exception {
-
-    taskanaEngineConfiguration.setAddAdditionalUserInfo(false);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .addAdditionalUserInfo(false)
+            .build();
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");

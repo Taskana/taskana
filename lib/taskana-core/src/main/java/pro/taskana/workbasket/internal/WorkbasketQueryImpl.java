@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -65,9 +65,9 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   private String[] orgLevel4Like;
   private Boolean markedForDeletion;
 
-  private InternalTaskanaEngine taskanaEngine;
-  private List<String> orderBy;
-  private List<String> orderColumns;
+  private final InternalTaskanaEngine taskanaEngine;
+  private final List<String> orderBy;
+  private final List<String> orderColumns;
   private boolean joinWithAccessList;
   private boolean checkReadPermission;
   private boolean usedToAugmentTasks;
@@ -581,7 +581,7 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   public static void lowercaseAccessIds(String[] accessIdArray) {
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
       for (int i = 0; i < accessIdArray.length; i++) {
         String id = accessIdArray[i];
         if (id != null) {

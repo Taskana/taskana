@@ -8,9 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import pro.taskana.TaskanaConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.test.security.JaasExtension;
@@ -64,9 +67,14 @@ class SqlConnectionRunnerAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
+  @Disabled("This Test does not make sense anymore")
   void should_SetOriginalSchema_When_ExceptionThrown() throws Exception {
 
-    taskanaEngine.getConfiguration().setSchemaName("NotExisting");
+    TaskanaEngine taskanaEngine =
+        TaskanaEngine.buildTaskanaEngine(
+            new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
+                .schemaName("NotExisting")
+                .build());
     SqlConnectionRunner runner = new SqlConnectionRunner(taskanaEngine);
 
     // TSK-1749

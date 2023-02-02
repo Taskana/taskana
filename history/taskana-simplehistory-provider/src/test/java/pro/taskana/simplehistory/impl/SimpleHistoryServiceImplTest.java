@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
@@ -44,7 +44,7 @@ class SimpleHistoryServiceImplTest {
 
   @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
 
-  @Mock private TaskanaEngineConfiguration taskanaEngineConfiguration;
+  @Mock private TaskanaConfiguration taskanaEngineConfiguration;
 
   @Mock private TaskanaEngine taskanaEngine;
 
@@ -86,7 +86,7 @@ class SimpleHistoryServiceImplTest {
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails"));
 
     when(taskanaHistoryEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-    when(taskanaEngineConfiguration.getAddAdditionalUserInfo()).thenReturn(false);
+    when(taskanaEngineConfiguration.isAddAdditionalUserInfo()).thenReturn(false);
 
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
