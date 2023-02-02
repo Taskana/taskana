@@ -6,7 +6,7 @@ import acceptance.AbstractAccTest;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
@@ -16,8 +16,9 @@ class TaskanaEngineConfigurationTest extends AbstractAccTest {
   @Test
   void testCreateTaskanaEngine() throws Exception {
     DataSource ds = DataSourceGenerator.getDataSource();
-    TaskanaEngineConfiguration taskEngineConfiguration =
-        new TaskanaEngineConfiguration(ds, false, false, DataSourceGenerator.getSchemaName());
+    TaskanaConfiguration taskEngineConfiguration =
+        new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), false)
+            .build();
 
     TaskanaEngine te = TaskanaEngine.buildTaskanaEngine(taskEngineConfiguration);
 

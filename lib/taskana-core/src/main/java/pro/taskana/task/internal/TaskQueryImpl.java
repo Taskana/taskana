@@ -340,7 +340,7 @@ public class TaskQueryImpl implements TaskQuery {
     this.orderBy = new ArrayList<>();
     this.filterByAccessIdIn = true;
     this.withoutAttachment = false;
-    this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().getAddAdditionalUserInfo();
+    this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo();
   }
 
   @Override

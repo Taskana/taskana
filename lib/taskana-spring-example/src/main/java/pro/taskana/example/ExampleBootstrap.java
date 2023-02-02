@@ -5,26 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.DomainNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.InvalidOwnerException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
-import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
-import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /** TODO. */
@@ -37,12 +23,7 @@ public class ExampleBootstrap {
   @Autowired private TaskanaEngine taskanaEngine;
 
   @PostConstruct
-  public void test()
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          NotAuthorizedException, ClassificationAlreadyExistException,
-          MalformedServiceLevelException, TaskAlreadyExistException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, AttachmentPersistenceException, TaskNotFoundException,
-          InvalidOwnerException, InvalidStateException, ObjectReferencePersistenceException {
+  public void test() throws Exception {
     System.out.println("---------------------------> Start App");
 
     Workbasket wb = taskanaEngine.getWorkbasketService().newWorkbasket("workbasket", "DOMAIN_A");

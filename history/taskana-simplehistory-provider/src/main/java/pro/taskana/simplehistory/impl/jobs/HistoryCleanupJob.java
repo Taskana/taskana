@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -56,8 +55,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     super(taskanaEngine, txProvider, scheduledJob, true);
     allCompletedSameParentBusiness =
         taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
-    Properties props = taskanaEngine.getConfiguration().readPropertiesFromFile();
-    initJobParameters(props);
+    initJobParameters(taskanaEngine.getConfiguration().getProperties());
   }
 
   @Override
@@ -218,9 +216,9 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     return deletedTasksCount;
   }
 
-  private void initJobParameters(Properties props) {
+  private void initJobParameters(Map<String, String> props) {
 
-    String jobBatchSizeProperty = props.getProperty(TASKANA_JOB_HISTORY_BATCH_SIZE);
+    String jobBatchSizeProperty = props.get(TASKANA_JOB_HISTORY_BATCH_SIZE);
     if (jobBatchSizeProperty != null && !jobBatchSizeProperty.isEmpty()) {
       try {
         batchSize = Integer.parseInt(jobBatchSizeProperty);
@@ -233,7 +231,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     }
 
     String historyEventCleanupJobMinimumAgeProperty =
-        props.getProperty(TASKANA_JOB_HISTORY_CLEANUP_MINIMUM_AGE);
+        props.get(TASKANA_JOB_HISTORY_CLEANUP_MINIMUM_AGE);
     if (historyEventCleanupJobMinimumAgeProperty != null
         && !historyEventCleanupJobMinimumAgeProperty.isEmpty()) {
       try {

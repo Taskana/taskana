@@ -83,12 +83,12 @@ class PriorityServiceAccTest extends AbstractAccTest {
     classification.setPriority(10);
 
     classificationService.updateClassification(classification);
-    List<ScheduledJob> jobsToRun = getJobMapper().findJobsToRun(Instant.now());
+    List<ScheduledJob> jobsToRun = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
     assertThat(jobsToRun).isEmpty();
 
     classification.setServiceLevel("P4D");
     classificationService.updateClassification(classification);
-    jobsToRun = getJobMapper().findJobsToRun(Instant.now());
+    jobsToRun = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
     assertThat(jobsToRun).isEmpty();
   }
 }

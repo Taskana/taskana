@@ -17,7 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -44,9 +44,10 @@ class DmnConverterServiceAccTest {
 
     DataSource dataSource = DataSourceGenerator.createDataSourceForH2();
     String schemaName = "TASKANA";
-    TaskanaEngineConfiguration taskanaEngineConfiguration =
-        new TaskanaEngineConfiguration(dataSource, false, schemaName);
-    taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);
+    TaskanaConfiguration taskanaEngineConfiguration =
+        new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .germanPublicHolidaysEnabled(true)
+            .build();
     SampleDataGenerator sampleDataGenerator =
         new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
     if (dropTables) {

@@ -86,7 +86,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
     this.taskanaHistoryEngine = taskanaHistoryEngine;
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
-    this.joinWithUserInfo = taskanaHistoryEngine.getConfiguration().getAddAdditionalUserInfo();
+    this.joinWithUserInfo = taskanaHistoryEngine.getConfiguration().isAddAdditionalUserInfo();
   }
 
   public String[] getIdIn() {

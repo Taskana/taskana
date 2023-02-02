@@ -4,12 +4,13 @@ import static pro.taskana.common.test.OracleSchemaHelper.initOracleSchema;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.platform.commons.JUnitException;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.JobMapper;
@@ -25,16 +26,19 @@ import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
+import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
 
-  protected static TaskanaEngineConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaEngineConfiguration;
   protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
   protected static TaskanaEngine taskanaEngine;
-  private static SimpleHistoryServiceImpl historyService;
+  protected static SimpleHistoryServiceImpl historyService;
+
+  protected static TaskService taskService;
 
   /**
    * create taskHistoryEvent object.
@@ -97,19 +101,25 @@ public abstract class AbstractAccTest {
         initOracleSchema(dataSource, schemaNameTmp);
       }
     }
+    TaskanaConfiguration tec =
+        new TaskanaConfiguration.Builder(dataSource, false, schemaNameTmp).build();
+    initTaskanaEngine(tec);
 
-    taskanaEngineConfiguration = new TaskanaEngineConfiguration(dataSource, false, schemaNameTmp);
+    SampleDataGenerator sampleDataGenerator =
+        new SampleDataGenerator(dataSource, tec.getSchemaName());
+    sampleDataGenerator.clearDb();
+    sampleDataGenerator.generateTestData();
+  }
+
+  protected static void initTaskanaEngine(TaskanaConfiguration tec) throws SQLException {
+    taskanaEngineConfiguration = tec;
     taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(
             taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
+    taskService = taskanaEngine.getTaskService();
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngine);
-
-    SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
-    sampleDataGenerator.clearDb();
-    sampleDataGenerator.generateTestData();
   }
 
   protected static SimpleHistoryServiceImpl getHistoryService() {

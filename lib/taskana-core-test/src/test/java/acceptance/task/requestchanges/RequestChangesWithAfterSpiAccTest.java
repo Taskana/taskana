@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -247,7 +247,7 @@ public class RequestChangesWithAfterSpiAccTest {
     PlainJavaTransactionProvider transactionProvider;
 
     @BeforeAll
-    void setup(TaskanaEngineConfiguration taskanaEngineConfiguration) {
+    void setup(TaskanaConfiguration taskanaEngineConfiguration) {
       transactionProvider =
           new PlainJavaTransactionProvider(
               taskanaEngine, taskanaEngineConfiguration.getDatasource());

@@ -3,13 +3,13 @@ package pro.taskana.common.internal;
 import java.sql.SQLException;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 
 /** This class configures the TaskanaEngine for spring. */
 public class SpringTaskanaEngineImpl extends TaskanaEngineImpl implements SpringTaskanaEngine {
 
   public SpringTaskanaEngineImpl(
-      TaskanaEngineConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
+      TaskanaConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
       throws SQLException {
     super(taskanaEngineConfiguration, mode);
     this.transactionFactory = new SpringManagedTransactionFactory();
@@ -17,7 +17,7 @@ public class SpringTaskanaEngineImpl extends TaskanaEngineImpl implements Spring
   }
 
   public static SpringTaskanaEngine createTaskanaEngine(
-      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaEngineConfiguration,
       ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     return new SpringTaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);

@@ -131,7 +131,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
         throw new TaskanaHistoryEventNotFoundException(historyEventId);
       }
 
-      if (taskanaHistoryEngine.getConfiguration().getAddAdditionalUserInfo()) {
+      if (taskanaHistoryEngine.getConfiguration().isAddAdditionalUserInfo()) {
         User user = userMapper.findById(resultEvent.getUserId());
         if (user != null) {
           resultEvent.setUserLongName(user.getLongName());

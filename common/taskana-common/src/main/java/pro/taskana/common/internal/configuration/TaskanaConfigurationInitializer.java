@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -54,7 +53,8 @@ public class TaskanaConfigurationInitializer {
     throw new IllegalStateException("utility class");
   }
 
-  public static void configureAnnotatedFields(Object instance, String separator, Properties props) {
+  public static void configureAnnotatedFields(
+      Object instance, String separator, Map<String, String> props) {
     final List<Field> fields = ReflectionUtil.retrieveAllFields(instance.getClass());
     for (Field field : fields) {
       Optional.ofNullable(field.getAnnotation(TaskanaProperty.class))
@@ -73,7 +73,7 @@ public class TaskanaConfigurationInitializer {
   }
 
   public static Map<String, List<String>> configureClassificationCategoriesForType(
-      Properties props, List<String> classificationTypes) {
+      Map<String, String> props, List<String> classificationTypes) {
     Function<String, List<String>> getClassificationCategoriesForType =
         type ->
             parseProperty(
@@ -87,12 +87,12 @@ public class TaskanaConfigurationInitializer {
   }
 
   public static Map<TaskanaRole, Set<String>> configureRoles(
-      String separator, Properties props, boolean shouldUseLowerCaseForAccessIds) {
+      String separator, Map<String, String> props, boolean shouldUseLowerCaseForAccessIds) {
     Function<TaskanaRole, Set<String>> getAccessIdsForRole =
         role ->
             new HashSet<>(
                 splitStringAndTrimElements(
-                    props.getProperty(role.getPropertyName().toLowerCase(), ""),
+                    props.getOrDefault(role.getPropertyName().toLowerCase(), ""),
                     separator,
                     shouldUseLowerCaseForAccessIds
                         ? String::toLowerCase
@@ -137,8 +137,8 @@ public class TaskanaConfigurationInitializer {
   }
 
   private static <T> Optional<T> parseProperty(
-      Properties props, String key, CheckedFunction<String, T, Exception> function) {
-    String property = props.getProperty(key, "");
+      Map<String, String> props, String key, CheckedFunction<String, T, Exception> function) {
+    String property = props.getOrDefault(key, "");
     if (!property.isEmpty()) {
       try {
         return Optional.ofNullable(function.apply(property));
@@ -155,13 +155,19 @@ public class TaskanaConfigurationInitializer {
 
   interface PropertyParser<T> {
     Optional<T> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty);
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty);
   }
 
   static class ListPropertyParser implements PropertyParser<List<?>> {
     @Override
     public Optional<List<?>> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
       if (!List.class.isAssignableFrom(field.getType())) {
         throw new SystemException(
             String.format(
@@ -215,7 +221,10 @@ public class TaskanaConfigurationInitializer {
   static class InstantPropertyParser implements PropertyParser<Instant> {
     @Override
     public Optional<Instant> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
       return parseProperty(properties, taskanaProperty.value(), Instant::parse);
     }
   }
@@ -223,7 +232,10 @@ public class TaskanaConfigurationInitializer {
   static class DurationPropertyParser implements PropertyParser<Duration> {
     @Override
     public Optional<Duration> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
       return parseProperty(properties, taskanaProperty.value(), Duration::parse);
     }
   }
@@ -231,7 +243,10 @@ public class TaskanaConfigurationInitializer {
   static class StringPropertyParser implements PropertyParser<String> {
     @Override
     public Optional<String> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
       return parseProperty(properties, taskanaProperty.value(), String::new);
     }
   }
@@ -239,7 +254,10 @@ public class TaskanaConfigurationInitializer {
   static class IntegerPropertyParser implements PropertyParser<Integer> {
     @Override
     public Optional<Integer> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
       return parseProperty(properties, taskanaProperty.value(), Integer::parseInt);
     }
   }
@@ -247,7 +265,10 @@ public class TaskanaConfigurationInitializer {
   static class BooleanPropertyParser implements PropertyParser<Boolean> {
     @Override
     public Optional<Boolean> initialize(
-        Properties properties, String separator, Field field, TaskanaProperty taskanaProperty) {
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
       return parseProperty(properties, taskanaProperty.value(), Boolean::parseBoolean);
     }
   }

@@ -15,7 +15,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
@@ -241,7 +241,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   public WorkbasketAccessItem newWorkbasketAccessItem(String workbasketId, String accessId) {
     WorkbasketAccessItemImpl accessItem = new WorkbasketAccessItemImpl();
     accessItem.setWorkbasketId(workbasketId);
-    if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds()) {
+    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
       accessItem.setAccessId(accessId != null ? accessId.toLowerCase() : null);
     } else {
       accessItem.setAccessId(accessId);
@@ -919,7 +919,7 @@ public class WorkbasketServiceImpl implements WorkbasketService {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
-      if (TaskanaEngineConfiguration.shouldUseLowerCaseForAccessIds() && accessId != null) {
+      if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds() && accessId != null) {
         accessId = accessId.toLowerCase();
       }
 

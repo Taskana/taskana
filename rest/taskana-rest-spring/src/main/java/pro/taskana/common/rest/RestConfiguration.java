@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.TaskanaEngine;
@@ -72,15 +72,15 @@ public class RestConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TaskanaEngine.class)
-  public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
       throws SQLException {
     return SpringTaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
   }
 
   @Bean
-  @ConditionalOnMissingBean(TaskanaEngineConfiguration.class)
-  public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) {
-    return new TaskanaEngineConfiguration(dataSource, true, true, schemaName);
+  @ConditionalOnMissingBean(TaskanaConfiguration.class)
+  public TaskanaConfiguration taskanaEngineConfiguration(DataSource dataSource) {
+    return new TaskanaConfiguration.Builder(dataSource, true, schemaName).build();
   }
 
   // Needed for injection into jackson deserializer.

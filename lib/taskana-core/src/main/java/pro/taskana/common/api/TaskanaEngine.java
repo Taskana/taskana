@@ -3,7 +3,7 @@ package pro.taskana.common.api;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
@@ -78,26 +78,25 @@ public interface TaskanaEngine {
   ConfigurationService getConfigurationService();
 
   /**
-   * Returns the {@linkplain TaskanaEngineConfiguration configuration} of the TaskanaEngine.
+   * Returns the {@linkplain TaskanaConfiguration configuration} of the TaskanaEngine.
    *
-   * @return {@linkplain TaskanaEngineConfiguration configuration}
+   * @return {@linkplain TaskanaConfiguration configuration}
    */
-  TaskanaEngineConfiguration getConfiguration();
+  TaskanaConfiguration getConfiguration();
 
   /**
    * This method creates the {@linkplain TaskanaEngine} with {@linkplain
    * ConnectionManagementMode#PARTICIPATE }.
    *
-   * @see TaskanaEngine#buildTaskanaEngine(TaskanaEngineConfiguration, ConnectionManagementMode)
+   * @see TaskanaEngine#buildTaskanaEngine(TaskanaConfiguration, ConnectionManagementMode)
    */
   @SuppressWarnings("checkstyle:JavadocMethod")
-  static TaskanaEngine buildTaskanaEngine(TaskanaEngineConfiguration configuration)
-      throws SQLException {
+  static TaskanaEngine buildTaskanaEngine(TaskanaConfiguration configuration) throws SQLException {
     return buildTaskanaEngine(configuration, ConnectionManagementMode.PARTICIPATE);
   }
 
   /**
-   * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaEngineConfiguration} and
+   * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaConfiguration} and
    * SqlConnectionMode.
    *
    * @param configuration complete taskanaEngineConfig to build the engine
@@ -106,7 +105,7 @@ public interface TaskanaEngine {
    * @throws SQLException when the db schema could not be initialized
    */
   static TaskanaEngine buildTaskanaEngine(
-      TaskanaEngineConfiguration configuration, ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration configuration, ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     return TaskanaEngineImpl.createTaskanaEngine(configuration, connectionManagementMode);
   }

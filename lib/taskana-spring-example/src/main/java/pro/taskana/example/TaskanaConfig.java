@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.SpringTaskanaEngine;
@@ -50,12 +50,12 @@ public class TaskanaConfig {
   }
 
   @Bean
-  public TaskanaEngineConfiguration taskanaEngineConfiguration(DataSource dataSource) {
-    return new TaskanaEngineConfiguration(dataSource, true, false, schemaName);
+  public TaskanaConfiguration taskanaEngineConfiguration(DataSource dataSource) {
+    return new TaskanaConfiguration.Builder(dataSource, true, schemaName, false).build();
   }
 
   @Bean
-  public TaskanaEngine taskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine taskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
       throws SQLException {
     return SpringTaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
   }
