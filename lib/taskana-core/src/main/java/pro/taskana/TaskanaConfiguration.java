@@ -433,22 +433,6 @@ public class TaskanaConfiguration {
         boolean useManagedTransactions,
         String schemaName,
         boolean securityEnabled) {
-      this(
-          dataSource,
-          useManagedTransactions,
-          schemaName,
-          securityEnabled,
-          TASKANA_PROPERTIES,
-          TASKANA_PROPERTY_SEPARATOR);
-    }
-
-    public Builder(
-        DataSource dataSource,
-        boolean useManagedTransactions,
-        String schemaName,
-        boolean securityEnabled,
-        String propertiesFileName,
-        String propertySeparator) {
       this.useManagedTransactions = useManagedTransactions;
       this.securityEnabled = securityEnabled;
 
@@ -459,8 +443,6 @@ public class TaskanaConfiguration {
       }
 
       this.schemaName = initSchemaName(schemaName);
-
-      this.initTaskanaProperties(propertiesFileName, propertySeparator);
     }
 
     @SuppressWarnings("unused")

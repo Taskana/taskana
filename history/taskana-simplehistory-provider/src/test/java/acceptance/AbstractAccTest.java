@@ -102,7 +102,9 @@ public abstract class AbstractAccTest {
       }
     }
     TaskanaConfiguration tec =
-        new TaskanaConfiguration.Builder(dataSource, false, schemaNameTmp).build();
+        new TaskanaConfiguration.Builder(dataSource, false, schemaNameTmp)
+            .initTaskanaProperties()
+            .build();
     initTaskanaEngine(tec);
 
     SampleDataGenerator sampleDataGenerator =

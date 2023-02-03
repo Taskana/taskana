@@ -106,7 +106,8 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
       throw new JUnitException("Expected dataSource to be defined in store, but it's not.");
     }
 
-    return new TaskanaConfiguration.Builder(dataSource, false, schemaName);
+    return new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+        .initTaskanaProperties();
   }
 
   private static Map<Class<?>, Object> generateTaskanaEntityMap(TaskanaEngine taskanaEngine)

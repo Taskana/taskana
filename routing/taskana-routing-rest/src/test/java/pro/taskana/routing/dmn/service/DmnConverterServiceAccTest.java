@@ -46,6 +46,7 @@ class DmnConverterServiceAccTest {
     String schemaName = "TASKANA";
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     SampleDataGenerator sampleDataGenerator =
