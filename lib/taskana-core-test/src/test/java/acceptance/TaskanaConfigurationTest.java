@@ -21,6 +21,7 @@ class TaskanaConfigurationTest {
     TaskanaConfiguration configuration =
         new TaskanaConfiguration.Builder(
                 TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
+            .initTaskanaProperties()
             .build();
 
     Stream<Field> fields =
@@ -47,6 +48,7 @@ class TaskanaConfigurationTest {
     TaskanaConfiguration configuration =
         new TaskanaConfiguration.Builder(
                 TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
+            .initTaskanaProperties()
             .build();
 
     Stream<Field> fields =

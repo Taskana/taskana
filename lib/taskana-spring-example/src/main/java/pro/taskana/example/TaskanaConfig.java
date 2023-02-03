@@ -2,6 +2,7 @@ package pro.taskana.example;
 
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -50,8 +51,23 @@ public class TaskanaConfig {
   }
 
   @Bean
-  public TaskanaConfiguration taskanaEngineConfiguration(DataSource dataSource) {
-    return new TaskanaConfiguration.Builder(dataSource, true, schemaName, false).build();
+  public TaskanaConfiguration taskanaEngineConfiguration(
+      DataSource dataSource,
+      @Qualifier("taskanaPropertiesFileName") String propertiesFileName,
+      @Qualifier("taskanaPropertiesDelimiter") String delimiter) {
+    return new TaskanaConfiguration.Builder(dataSource, true, schemaName, false)
+        .initTaskanaProperties(propertiesFileName, delimiter)
+        .build();
+  }
+
+  @Bean
+  public String taskanaPropertiesFileName() {
+    return "/taskana.properties";
+  }
+
+  @Bean
+  public String taskanaPropertiesDelimiter() {
+    return "|";
   }
 
   @Bean
