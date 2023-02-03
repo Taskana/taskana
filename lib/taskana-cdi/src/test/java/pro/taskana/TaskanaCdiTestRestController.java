@@ -22,6 +22,8 @@ import pro.taskana.workbasket.api.models.Workbasket;
 public class TaskanaCdiTestRestController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaCdiTestRestController.class);
+  private static final String CDIDOMAIN = "CDIDOMAIN";
+  private static final String CLASSIFICATION_TYPE = "T1";
 
   @EJB private TaskanaEjb taskanaEjb;
 
@@ -29,16 +31,17 @@ public class TaskanaCdiTestRestController {
 
   @GET
   public Response startTask() throws Exception {
-    Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("key", "cdiDomain");
+    Workbasket workbasket = taskanaEjb.getWorkbasketService().newWorkbasket("KEY", CDIDOMAIN);
     workbasket.setName("wb");
     workbasket.setType(WorkbasketType.PERSONAL);
-    taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
+    workbasket = taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
     Classification classification =
-        classificationService.newClassification("TEST", "cdiDomain", "t1");
+        classificationService.newClassification("TEST", CDIDOMAIN, CLASSIFICATION_TYPE);
     taskanaEjb.getClassificationService().createClassification(classification);
 
-    Task task = taskanaEjb.getTaskService().newTask(workbasket.getKey());
+    Task task = taskanaEjb.getTaskService().newTask(workbasket.getId());
     task.setClassificationKey(classification.getKey());
+    task.setName("startTask");
     ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");
     objRef.setSystem("aSystem");
@@ -55,7 +58,22 @@ public class TaskanaCdiTestRestController {
 
   @POST
   public Response rollbackTask() throws Exception {
-    taskanaEjb.triggerRollback();
+    Workbasket workbasket =
+        taskanaEjb.getWorkbasketService().newWorkbasket("KEY_ROLLBACK", CDIDOMAIN);
+    workbasket.setName("wb_rollback");
+    workbasket.setType(WorkbasketType.PERSONAL);
+    workbasket = taskanaEjb.getWorkbasketService().createWorkbasket(workbasket);
+    Classification classification =
+        classificationService.newClassification("TEST_ROLLBACK", CDIDOMAIN, CLASSIFICATION_TYPE);
+    taskanaEjb.getClassificationService().createClassification(classification);
+
+    try {
+      taskanaEjb.triggerRollback(workbasket.getId(), classification.getKey());
+    } catch (Exception e) {
+      if (!"java.lang.RuntimeException: Expected Test Exception".equals(e.getMessage())) {
+        throw e;
+      }
+    }
     return Response.status(204).build();
   }
 

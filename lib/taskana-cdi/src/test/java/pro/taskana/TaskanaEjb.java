@@ -4,17 +4,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
-import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
-import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 @Stateless
 public class TaskanaEjb {
@@ -37,11 +30,11 @@ public class TaskanaEjb {
     return workbasketService;
   }
 
-  public void triggerRollback()
-      throws NotAuthorizedException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException {
-    final Task task = taskService.newTask(null);
+  public void triggerRollback(String workbasketId, String classificationKey) throws Exception {
+
+    final Task task = taskService.newTask(workbasketId);
+    task.setClassificationKey(classificationKey);
+    task.setName("triggerRollback");
     ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");
     objRef.setSystem("aSystem");
@@ -52,6 +45,6 @@ public class TaskanaEjb {
 
     taskService.createTask(task);
     System.out.println("---------------->" + task.getId());
-    throw new RuntimeException();
+    throw new RuntimeException("Expected Test Exception");
   }
 }
