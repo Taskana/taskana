@@ -26,6 +26,7 @@ class TaskanaRoleConfigAccTest {
     taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName())
+            .initTaskanaProperties()
             .build();
   }
 
@@ -77,9 +78,8 @@ class TaskanaRoleConfigAccTest {
                 DataSourceGenerator.getDataSource(),
                 true,
                 DataSourceGenerator.getSchemaName(),
-                true,
-                propertiesFileName,
-                delimiter)
+                true)
+            .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
 
     Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
@@ -110,9 +110,8 @@ class TaskanaRoleConfigAccTest {
                 DataSourceGenerator.getDataSource(),
                 true,
                 DataSourceGenerator.getSchemaName(),
-                true,
-                propertiesFileName,
-                delimiter)
+                true)
+            .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
 
     Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();

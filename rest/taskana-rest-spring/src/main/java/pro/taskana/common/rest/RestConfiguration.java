@@ -3,6 +3,7 @@ package pro.taskana.common.rest;
 import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -79,8 +80,23 @@ public class RestConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TaskanaConfiguration.class)
-  public TaskanaConfiguration taskanaEngineConfiguration(DataSource dataSource) {
-    return new TaskanaConfiguration.Builder(dataSource, true, schemaName).build();
+  public TaskanaConfiguration taskanaEngineConfiguration(
+      DataSource dataSource,
+      @Qualifier("taskanaPropertiesFileName") String propertiesFileName,
+      @Qualifier("taskanaPropertiesDelimiter") String delimiter) {
+    return new TaskanaConfiguration.Builder(dataSource, true, schemaName)
+        .initTaskanaProperties(propertiesFileName, delimiter)
+        .build();
+  }
+
+  @Bean
+  public String taskanaPropertiesFileName() {
+    return "/taskana.properties";
+  }
+
+  @Bean
+  public String taskanaPropertiesDelimiter() {
+    return "|";
   }
 
   // Needed for injection into jackson deserializer.

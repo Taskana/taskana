@@ -55,6 +55,7 @@ public abstract class AbstractAccTest {
 
     taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     SampleDataGenerator sampleDataGenerator =

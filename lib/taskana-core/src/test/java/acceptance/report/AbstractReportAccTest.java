@@ -19,6 +19,7 @@ public abstract class AbstractReportAccTest {
     String schemaName = DataSourceGenerator.getSchemaName();
     taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .initTaskanaProperties()
             .germanPublicHolidaysEnabled(false)
             .build();
     taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
