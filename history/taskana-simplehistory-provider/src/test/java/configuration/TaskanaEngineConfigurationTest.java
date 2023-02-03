@@ -18,6 +18,7 @@ class TaskanaEngineConfigurationTest extends AbstractAccTest {
     DataSource ds = DataSourceGenerator.getDataSource();
     TaskanaConfiguration taskEngineConfiguration =
         new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), false)
+            .initTaskanaProperties()
             .build();
 
     TaskanaEngine te = TaskanaEngine.buildTaskanaEngine(taskEngineConfiguration);

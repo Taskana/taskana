@@ -29,6 +29,7 @@ class TaskanaConfigAccTest {
     taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName())
+            .initTaskanaProperties()
             .build();
   }
 
@@ -65,9 +66,8 @@ class TaskanaConfigAccTest {
                 DataSourceGenerator.getDataSource(),
                 true,
                 DataSourceGenerator.getSchemaName(),
-                true,
-                propertiesFileName,
-                delimiter)
+                true)
+            .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
     assertThat(taskanaEngineConfiguration.getClassificationTypes()).isEmpty();
   }
@@ -81,9 +81,8 @@ class TaskanaConfigAccTest {
                 DataSourceGenerator.getDataSource(),
                 true,
                 DataSourceGenerator.getSchemaName(),
-                true,
-                propertiesFileName,
-                delimiter)
+                true)
+            .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
     assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
         .containsExactly(
@@ -100,9 +99,8 @@ class TaskanaConfigAccTest {
                 DataSourceGenerator.getDataSource(),
                 true,
                 DataSourceGenerator.getSchemaName(),
-                true,
-                propertiesFileName,
-                delimiter)
+                true)
+            .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
     assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
         .containsExactly(
