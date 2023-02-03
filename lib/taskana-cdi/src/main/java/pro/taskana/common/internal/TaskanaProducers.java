@@ -54,7 +54,9 @@ public class TaskanaProducers {
         }
       }
       this.taskanaEngineConfiguration =
-          new TaskanaConfiguration.Builder(dataSource, true, "TASKANA", false).build();
+          new TaskanaConfiguration.Builder(dataSource, true, "TASKANA", false)
+              .initTaskanaProperties()
+              .build();
     } catch (NamingException | SQLException | IOException e) {
       LOGGER.error("Could not start Taskana: ", e);
     }

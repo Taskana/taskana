@@ -82,6 +82,7 @@ class TaskanaSecurityConfigAccTest {
                 false,
                 DataSourceGenerator.getSchemaName(),
                 securityEnabled)
+            .initTaskanaProperties()
             .build());
   }
 

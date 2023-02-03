@@ -34,6 +34,7 @@ public abstract class AbstractAccTest {
     dataSource = DataSourceGenerator.getDataSource();
     taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
+            .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     DbSchemaCreator dbSchemaCreator =
