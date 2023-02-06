@@ -60,7 +60,8 @@ public abstract class AbstractAccTest {
       sampleDataGenerator.dropDb();
     }
     taskanaEngine =
-        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(
+            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
     taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
 

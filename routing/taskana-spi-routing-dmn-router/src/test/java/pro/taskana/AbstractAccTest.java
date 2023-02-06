@@ -40,7 +40,8 @@ public abstract class AbstractAccTest {
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
     taskanaEngine =
-        taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(
+            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
   }
 

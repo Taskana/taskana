@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
@@ -47,7 +48,8 @@ public class TaskHistoryEventController {
       throws SQLException {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
-    this.simpleHistoryService.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
+    this.simpleHistoryService.initialize(
+        TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
     this.assembler = assembler;
   }
 

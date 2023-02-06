@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
@@ -75,12 +76,12 @@ class TaskanaSecurityConfigAccTest {
   }
 
   private void createTaskanaEngine(boolean securityEnabled) throws SQLException {
-    new TaskanaEngineConfiguration(
+    TaskanaEngine.buildTaskanaEngine(
+        new TaskanaEngineConfiguration(
             DataSourceGenerator.getDataSource(),
             false,
             securityEnabled,
-            DataSourceGenerator.getSchemaName())
-        .buildTaskanaEngine();
+            DataSourceGenerator.getSchemaName()));
   }
 
   private Boolean retrieveSecurityFlag() throws Exception {

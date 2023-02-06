@@ -2,13 +2,11 @@ package pro.taskana.simplehistory.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import acceptance.AbstractAccTest;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
@@ -53,21 +51,6 @@ class SimpleHistoryServiceImplTest {
   @Mock private SqlSessionManager sqlSessionManagerMock;
 
   @Mock private SqlSession sqlSessionMock;
-
-  @Test
-  void testInitializeSimpleHistoryService() throws SQLException {
-    when(sqlSessionManagerMock.getMapper(TaskHistoryEventMapper.class))
-        .thenReturn(taskHistoryEventMapperMock);
-    when(sqlSessionManagerMock.getMapper(WorkbasketHistoryEventMapper.class))
-        .thenReturn(workbasketHistoryEventMapperMock);
-    when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionManagerMock);
-    doReturn(taskanaHistoryEngineMock).when(cutSpy).getTaskanaEngine(taskanaEngine);
-    doReturn(taskanaEngine).when(taskanaEngineConfiguration).buildTaskanaEngine();
-    cutSpy.initialize(taskanaEngineConfiguration.buildTaskanaEngine());
-
-    verify(sqlSessionManagerMock, times(4)).getMapper(any());
-    verify(taskanaHistoryEngineMock, times(4)).getSqlSession();
-  }
 
   @Test
   void should_VerifyMethodInvocations_When_CreateTaskHistoryEvent() throws Exception {

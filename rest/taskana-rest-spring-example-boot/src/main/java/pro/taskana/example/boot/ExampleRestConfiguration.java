@@ -45,7 +45,7 @@ public class ExampleRestConfiguration {
   @DependsOn("generateSampleData")
   public TaskanaEngine getTaskanaEngine(TaskanaEngineConfiguration taskanaEngineConfiguration)
       throws SQLException {
-    return taskanaEngineConfiguration.buildTaskanaEngine();
+    return TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
   }
 
   // only required to let the adapter example connect to the same database
