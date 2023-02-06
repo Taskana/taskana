@@ -19,7 +19,7 @@ class TaskanaEngineConfigTest {
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(ds, false, DataSourceGenerator.getSchemaName());
 
-    TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
+    TaskanaEngine te = TaskanaEngine.buildTaskanaEngine(taskEngineConfiguration);
 
     assertThat(te).isNotNull();
   }

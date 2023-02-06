@@ -7,6 +7,7 @@ import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
@@ -82,6 +83,33 @@ public interface TaskanaEngine {
    * @return {@linkplain TaskanaEngineConfiguration configuration}
    */
   TaskanaEngineConfiguration getConfiguration();
+
+  /**
+   * This method creates the {@linkplain TaskanaEngine} with {@linkplain
+   * ConnectionManagementMode#PARTICIPATE }.
+   *
+   * @see TaskanaEngine#buildTaskanaEngine(TaskanaEngineConfiguration, ConnectionManagementMode)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  static TaskanaEngine buildTaskanaEngine(TaskanaEngineConfiguration configuration)
+      throws SQLException {
+    return buildTaskanaEngine(configuration, ConnectionManagementMode.PARTICIPATE);
+  }
+
+  /**
+   * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaEngineConfiguration} and
+   * SqlConnectionMode.
+   *
+   * @param configuration complete taskanaEngineConfig to build the engine
+   * @param connectionManagementMode connectionMode for the SqlSession
+   * @return a {@linkplain TaskanaEngineImpl}
+   * @throws SQLException when the db schema could not be initialized
+   */
+  static TaskanaEngine buildTaskanaEngine(
+      TaskanaEngineConfiguration configuration, ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return TaskanaEngineImpl.createTaskanaEngine(configuration, connectionManagementMode);
+  }
 
   /**
    * Returns the {@linkplain WorkingDaysToDaysConverter} of the TaskanaEngine. The {@linkplain
