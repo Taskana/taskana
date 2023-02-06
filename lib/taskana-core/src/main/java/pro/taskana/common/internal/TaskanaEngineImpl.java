@@ -137,11 +137,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public static TaskanaEngine createTaskanaEngine(
-      TaskanaEngineConfiguration taskanaEngineConfiguration) throws SQLException {
-    return createTaskanaEngine(taskanaEngineConfiguration, ConnectionManagementMode.PARTICIPATE);
-  }
-
-  public static TaskanaEngine createTaskanaEngine(
       TaskanaEngineConfiguration taskanaEngineConfiguration,
       ConnectionManagementMode connectionManagementMode)
       throws SQLException {

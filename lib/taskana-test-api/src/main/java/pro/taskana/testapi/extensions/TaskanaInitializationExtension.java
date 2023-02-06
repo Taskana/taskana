@@ -78,7 +78,8 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
                 (spi, serviceProviders) ->
                     staticMock.when(() -> SpiLoader.load(spi)).thenReturn(serviceProviders));
         taskanaEngine =
-            taskanaEngineConfiguration.buildTaskanaEngine(ConnectionManagementMode.AUTOCOMMIT);
+            TaskanaEngine.buildTaskanaEngine(
+                taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
       }
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));

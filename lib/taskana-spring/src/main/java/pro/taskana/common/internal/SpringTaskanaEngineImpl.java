@@ -1,23 +1,25 @@
 package pro.taskana.common.internal;
 
 import java.sql.SQLException;
-import javax.annotation.PostConstruct;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 
-import pro.taskana.SpringTaskanaEngineConfiguration;
+import pro.taskana.TaskanaEngineConfiguration;
 
 /** This class configures the TaskanaEngine for spring. */
-public class SpringTaskanaEngineImpl extends TaskanaEngineImpl {
+public class SpringTaskanaEngineImpl extends TaskanaEngineImpl implements SpringTaskanaEngine {
 
   public SpringTaskanaEngineImpl(
-      SpringTaskanaEngineConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
+      TaskanaEngineConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
       throws SQLException {
     super(taskanaEngineConfiguration, mode);
-  }
-
-  @PostConstruct
-  public void init() {
     this.transactionFactory = new SpringManagedTransactionFactory();
     this.sessionManager = createSqlSessionManager();
+  }
+
+  public static SpringTaskanaEngine createTaskanaEngine(
+      TaskanaEngineConfiguration taskanaEngineConfiguration,
+      ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return new SpringTaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
   }
 }

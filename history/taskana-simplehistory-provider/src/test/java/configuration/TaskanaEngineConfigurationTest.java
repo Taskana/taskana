@@ -19,7 +19,7 @@ class TaskanaEngineConfigurationTest extends AbstractAccTest {
     TaskanaEngineConfiguration taskEngineConfiguration =
         new TaskanaEngineConfiguration(ds, false, false, DataSourceGenerator.getSchemaName());
 
-    TaskanaEngine te = taskEngineConfiguration.buildTaskanaEngine();
+    TaskanaEngine te = TaskanaEngine.buildTaskanaEngine(taskEngineConfiguration);
 
     assertThat(te).isNotNull();
   }

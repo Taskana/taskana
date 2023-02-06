@@ -25,11 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.CustomHoliday;
-import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.TaskanaProperty;
 import pro.taskana.common.internal.util.FileLoaderUtil;
@@ -239,21 +236,6 @@ public class TaskanaEngineConfiguration {
         username,
         password);
     return createDatasource(driverClass, jdbcUrl, username, password);
-  }
-
-  /**
-   * This method creates the TaskanaEngine without an sqlSessionFactory.
-   *
-   * @return the TaskanaEngine
-   * @throws SQLException if a database access error occurs
-   */
-  public TaskanaEngine buildTaskanaEngine() throws SQLException {
-    return TaskanaEngineImpl.createTaskanaEngine(this);
-  }
-
-  public TaskanaEngine buildTaskanaEngine(ConnectionManagementMode connectionManagementMode)
-      throws SQLException {
-    return TaskanaEngineImpl.createTaskanaEngine(this, connectionManagementMode);
   }
 
   /**
