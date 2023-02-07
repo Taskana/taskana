@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -72,7 +72,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       List<TaskHistoryEvent> historyEventCandidatesToClean =
           simpleHistoryService
               .createTaskHistoryQuery()
-              .createdWithin(new TimeInterval(null, createdBefore))
+              .createdWithin(new Interval<>(null, createdBefore))
               .eventTypeIn(
                   TaskHistoryEventType.COMPLETED.getName(),
                   TaskHistoryEventType.CANCELLED.getName(),

@@ -1,9 +1,11 @@
 package pro.taskana.classification.api;
 
+import java.time.Instant;
+
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 /**
@@ -87,23 +89,22 @@ public interface ClassificationQuery
 
   /**
    * Selects only {@linkplain Classification Classifications} which were {@linkplain
-   * Classification#getCreated() created} within any of the passed {@linkplain TimeInterval
-   * TimeIntervals}.
+   * Classification#getCreated() created} within any of the passed {@linkplain Interval Intervals}.
    *
-   * @param createdWithin the {@linkplain TimeInterval TimeIntervals} of interest
+   * @param createdWithin the {@linkplain Interval Intervals} of interest
    * @return the query
    */
-  ClassificationQuery createdWithin(TimeInterval... createdWithin);
+  ClassificationQuery createdWithin(Interval<Instant>... createdWithin);
 
   /**
    * Selects only {@linkplain Classification Classifications} which were {@linkplain
-   * Classification#getModified() modified} within any of the passed {@linkplain TimeInterval
-   * TimeIntervals}.
+   * Classification#getModified() modified} within any of the passed {@linkplain Interval
+   * Intervals}.
    *
-   * @param modifiedWithin the {@linkplain TimeInterval TimeIntervals} of interest
+   * @param modifiedWithin the {@linkplain Interval Intervals} of interest
    * @return the query
    */
-  ClassificationQuery modifiedWithin(TimeInterval... modifiedWithin);
+  ClassificationQuery modifiedWithin(Interval<Instant>... modifiedWithin);
 
   /**
    * Selects only {@linkplain Classification Classifications} which have a {@linkplain

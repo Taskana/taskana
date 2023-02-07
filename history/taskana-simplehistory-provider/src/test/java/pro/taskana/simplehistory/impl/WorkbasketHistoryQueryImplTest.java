@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
@@ -46,7 +46,7 @@ class WorkbasketHistoryQueryImplTest {
             "someUserId",
             "someDetails",
             null));
-    TimeInterval interval = new TimeInterval(Instant.now().minusNanos(1000), Instant.now());
+    Interval<Instant> interval = new Interval<>(Instant.now().minusNanos(1000), Instant.now());
 
     doNothing().when(taskanaHistoryEngineMock).openConnection();
     doNothing().when(taskanaHistoryEngineMock).returnConnection();

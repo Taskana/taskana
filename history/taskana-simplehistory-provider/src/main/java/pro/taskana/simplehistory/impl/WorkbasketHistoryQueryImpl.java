@@ -1,13 +1,14 @@
 package pro.taskana.simplehistory.impl;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
@@ -39,7 +40,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   private String[] idIn;
   private String[] workbasketIdIn;
   private String[] eventTypeIn;
-  private TimeInterval[] createdIn;
+  private Interval<Instant>[] createdIn;
   private String[] userIdIn;
   private String[] domainIn;
   private String[] keyIn;
@@ -88,7 +89,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
     return eventTypeIn;
   }
 
-  public TimeInterval[] getCreatedIn() {
+  public Interval<Instant>[] getCreatedIn() {
     return createdIn;
   }
 
@@ -223,7 +224,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
   }
 
   @Override
-  public WorkbasketHistoryQuery createdWithin(TimeInterval... createdIn) {
+  public WorkbasketHistoryQuery createdWithin(Interval<Instant>... createdIn) {
     this.createdIn = createdIn;
     return this;
   }

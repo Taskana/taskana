@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
@@ -36,7 +36,7 @@ class CreateHistoryEventOnTaskUpdateAccTest extends AbstractAccTest {
         historyService
             .createTaskHistoryQuery()
             .taskIdIn(taskId)
-            .createdWithin(new TimeInterval(before, null))
+            .createdWithin(new Interval<>(before, null))
             .list();
 
     assertThat(events)

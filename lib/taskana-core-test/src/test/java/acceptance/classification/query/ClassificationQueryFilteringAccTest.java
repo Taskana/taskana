@@ -40,7 +40,7 @@ import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
@@ -562,7 +562,7 @@ class ClassificationQueryFilteringAccTest {
         classificationService
             .createClassificationQuery()
             .customAttributeIn(CUSTOM_1, testIdentifier)
-            .createdWithin(new TimeInterval(now, null))
+            .createdWithin(new Interval<>(now, null))
             .list();
 
     ClassificationSummary masterClassificationSummary =
@@ -587,7 +587,7 @@ class ClassificationQueryFilteringAccTest {
         classificationService
             .createClassificationQuery()
             .customAttributeIn(CUSTOM_1, testIdentifier)
-            .modifiedWithin(new TimeInterval(now, null))
+            .modifiedWithin(new Interval<>(now, null))
             .list();
 
     assertThat(classificationSummaryList).containsExactlyInAnyOrder(classification.asSummary());

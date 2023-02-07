@@ -2,7 +2,7 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
@@ -20,7 +20,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
  * <p>Each {@linkplain FoldableRow} represents a {@linkplain TaskTimestamp} and can be expanded to
  * display the four organization levels of the corresponding {@linkplain Workbasket}.
  *
- * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TimeInterval}.
+ * <p>Each {@linkplain ColumnHeader} represents a {@linkplain Interval}.
  */
 public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColumnHeader> {
 

@@ -44,6 +44,7 @@ import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.persistence.ComparableTypeHandler;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.persistence.StringTypeHandler;
@@ -354,6 +355,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
     configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP, new InstantTypeHandler());
+    configuration.getTypeHandlerRegistry().register(Comparable.class, new ComparableTypeHandler());
     // add mappers
     configuration.addMapper(TaskMapper.class);
     configuration.addMapper(MonitorMapper.class);

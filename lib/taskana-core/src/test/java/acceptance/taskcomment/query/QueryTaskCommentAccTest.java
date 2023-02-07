@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaConfiguration;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCommentQuery;
@@ -73,7 +73,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_FilterTaskComments_For_CreatedWithin() {
-    TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
+    Interval<Instant> timeInterval = new Interval<>(Instant.now().minusSeconds(10), Instant.now());
     List<TaskComment> comments =
         taskService.createTaskCommentQuery().createdWithin(timeInterval).list();
     assertThat(comments).isEmpty();
@@ -82,7 +82,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_FilterTaskComments_For_ModifiedWithin() {
-    TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
+    Interval<Instant> timeInterval = new Interval<>(Instant.now().minusSeconds(10), Instant.now());
     List<TaskComment> comments =
         taskService.createTaskCommentQuery().modifiedWithin(timeInterval).list();
     assertThat(comments).isEmpty();
@@ -99,7 +99,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_FilterTaskComments_For_CreatedNotWithin() {
-    TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
+    Interval<Instant> timeInterval = new Interval<>(Instant.now().minusSeconds(10), Instant.now());
     List<TaskComment> comments =
         taskService.createTaskCommentQuery().createdNotWithin(timeInterval).list();
     assertThat(comments).hasSize(13);
@@ -108,7 +108,7 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_FilterTaskComments_For_ModiefiedNotWithin() {
-    TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
+    Interval<Instant> timeInterval = new Interval<>(Instant.now().minusSeconds(10), Instant.now());
     List<TaskComment> comments =
         taskService.createTaskCommentQuery().modifiedNotWithin(timeInterval).list();
     assertThat(comments).hasSize(13);

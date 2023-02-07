@@ -2,7 +2,7 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
@@ -18,7 +18,7 @@ import pro.taskana.task.api.models.Task;
  *
  * <p>Each {@linkplain Row} represents a value of the requested {@linkplain TaskCustomField}.
  *
- * <p>Each {@linkplain ColumnHeader} represents a {@linkplain TimeInterval}.
+ * <p>Each {@linkplain ColumnHeader} represents a {@linkplain Interval}.
  */
 public class TaskCustomFieldValueReport extends Report<MonitorQueryItem, TimeIntervalColumnHeader> {
 

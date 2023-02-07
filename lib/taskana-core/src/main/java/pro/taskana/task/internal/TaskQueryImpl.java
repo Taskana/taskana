@@ -1,5 +1,6 @@
 package pro.taskana.task.internal;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,10 +9,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -74,20 +74,20 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] taskIdNotIn;
   private String[] externalIdIn;
   private String[] externalIdNotIn;
-  private TimeInterval[] receivedWithin;
-  private TimeInterval[] receivedNotWithin;
-  private TimeInterval[] createdWithin;
-  private TimeInterval[] createdNotWithin;
-  private TimeInterval[] claimedWithin;
-  private TimeInterval[] claimedNotWithin;
-  private TimeInterval[] modifiedWithin;
-  private TimeInterval[] modifiedNotWithin;
-  private TimeInterval[] plannedWithin;
-  private TimeInterval[] plannedNotWithin;
-  private TimeInterval[] dueWithin;
-  private TimeInterval[] dueNotWithin;
-  private TimeInterval[] completedWithin;
-  private TimeInterval[] completedNotWithin;
+  private Interval<Instant>[] receivedWithin;
+  private Interval<Instant>[] receivedNotWithin;
+  private Interval<Instant>[] createdWithin;
+  private Interval<Instant>[] createdNotWithin;
+  private Interval<Instant>[] claimedWithin;
+  private Interval<Instant>[] claimedNotWithin;
+  private Interval<Instant>[] modifiedWithin;
+  private Interval<Instant>[] modifiedNotWithin;
+  private Interval<Instant>[] plannedWithin;
+  private Interval<Instant>[] plannedNotWithin;
+  private Interval<Instant>[] dueWithin;
+  private Interval<Instant>[] dueNotWithin;
+  private Interval<Instant>[] completedWithin;
+  private Interval<Instant>[] completedNotWithin;
   private String[] nameIn;
   private String[] nameNotIn;
   private String[] nameLike;
@@ -183,8 +183,8 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] attachmentReferenceNotIn;
   private String[] attachmentReferenceLike;
   private String[] attachmentReferenceNotLike;
-  private TimeInterval[] attachmentReceivedWithin;
-  private TimeInterval[] attachmentReceivedNotWithin;
+  private Interval<Instant>[] attachmentReceivedWithin;
+  private Interval<Instant>[] attachmentReceivedNotWithin;
   private boolean withoutAttachment;
   private ObjectReference[] secondaryObjectReferences;
   private String[] sorCompanyIn;
@@ -295,36 +295,36 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] custom16NotLike;
   private Integer[] customInt1In;
   private Integer[] customInt1NotIn;
-  private IntInterval[] customInt1Within;
-  private IntInterval[] customInt1NotWithin;
+  private Interval<Integer>[] customInt1Within;
+  private Interval<Integer>[] customInt1NotWithin;
   private Integer[] customInt2In;
   private Integer[] customInt2NotIn;
-  private IntInterval[] customInt2Within;
-  private IntInterval[] customInt2NotWithin;
+  private Interval<Integer>[] customInt2Within;
+  private Interval<Integer>[] customInt2NotWithin;
   private Integer[] customInt3In;
   private Integer[] customInt3NotIn;
-  private IntInterval[] customInt3Within;
-  private IntInterval[] customInt3NotWithin;
+  private Interval<Integer>[] customInt3Within;
+  private Interval<Integer>[] customInt3NotWithin;
   private Integer[] customInt4In;
   private Integer[] customInt4NotIn;
-  private IntInterval[] customInt4Within;
-  private IntInterval[] customInt4NotWithin;
+  private Interval<Integer>[] customInt4Within;
+  private Interval<Integer>[] customInt4NotWithin;
   private Integer[] customInt5In;
   private Integer[] customInt5NotIn;
-  private IntInterval[] customInt5Within;
-  private IntInterval[] customInt5NotWithin;
+  private Interval<Integer>[] customInt5Within;
+  private Interval<Integer>[] customInt5NotWithin;
   private Integer[] customInt6In;
   private Integer[] customInt6NotIn;
-  private IntInterval[] customInt6Within;
-  private IntInterval[] customInt6NotWithin;
+  private Interval<Integer>[] customInt6Within;
+  private Interval<Integer>[] customInt6NotWithin;
   private Integer[] customInt7In;
   private Integer[] customInt7NotIn;
-  private IntInterval[] customInt7Within;
-  private IntInterval[] customInt7NotWithin;
+  private Interval<Integer>[] customInt7Within;
+  private Interval<Integer>[] customInt7NotWithin;
   private Integer[] customInt8In;
   private Integer[] customInt8NotIn;
-  private IntInterval[] customInt8Within;
-  private IntInterval[] customInt8NotWithin;
+  private Interval<Integer>[] customInt8Within;
+  private Interval<Integer>[] customInt8NotWithin;
   // endregion
   // region callbackState
   private CallbackState[] callbackStateIn;
@@ -371,15 +371,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery receivedWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery receivedWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.receivedWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery receivedNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery receivedNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.receivedNotWithin = intervals;
     return this;
   }
@@ -390,15 +390,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery createdWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery createdWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.createdWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery createdNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery createdNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.createdNotWithin = intervals;
     return this;
   }
@@ -409,15 +409,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery claimedWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery claimedWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.claimedWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery claimedNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery claimedNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.claimedNotWithin = intervals;
     return this;
   }
@@ -428,15 +428,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery modifiedWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery modifiedWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.modifiedWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery modifiedNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery modifiedNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.modifiedNotWithin = intervals;
     return this;
   }
@@ -447,15 +447,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery plannedWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery plannedWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.plannedWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery plannedNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery plannedNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.plannedNotWithin = intervals;
     return this;
   }
@@ -466,15 +466,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery dueWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery dueWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.dueWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery dueNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery dueNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.dueNotWithin = intervals;
     return this;
   }
@@ -485,15 +485,15 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery completedWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery completedWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.completedWithin = intervals;
     return this;
   }
 
   @Override
-  public TaskQuery completedNotWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public TaskQuery completedNotWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.completedNotWithin = intervals;
     return this;
   }
@@ -1232,16 +1232,16 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery attachmentReceivedWithin(TimeInterval... receivedIn) {
-    validateAllTimeIntervals(receivedIn);
+  public TaskQuery attachmentReceivedWithin(Interval<Instant>... receivedIn) {
+    validateAllIntervals(receivedIn);
     joinWithAttachments = true;
     this.attachmentReceivedWithin = receivedIn;
     return this;
   }
 
   @Override
-  public TaskQuery attachmentNotReceivedWithin(TimeInterval... receivedNotIn) {
-    validateAllTimeIntervals(receivedNotIn);
+  public TaskQuery attachmentNotReceivedWithin(Interval<Instant>... receivedNotIn) {
+    validateAllIntervals(receivedNotIn);
     joinWithAttachments = true;
     this.attachmentReceivedNotWithin = receivedNotIn;
     return this;
@@ -1801,8 +1801,8 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery customIntAttributeWithin(
-      TaskCustomIntField customIntField, IntInterval... values) {
-    validateAllIntIntervals(values);
+      TaskCustomIntField customIntField, Interval<Integer>... values) {
+    validateAllIntervals(values);
     switch (customIntField) {
       case CUSTOM_INT_1:
         this.customInt1Within = values;
@@ -1836,8 +1836,8 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery customIntAttributeNotWithin(
-      TaskCustomIntField customIntField, IntInterval... values) {
-    validateAllIntIntervals(values);
+      TaskCustomIntField customIntField, Interval<Integer>... values) {
+    validateAllIntervals(values);
     switch (customIntField) {
       case CUSTOM_INT_1:
         this.customInt1NotWithin = values;
@@ -2068,18 +2068,10 @@ public class TaskQueryImpl implements TaskQuery {
     return DB.isDb2(getDatabaseId()) ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
   }
 
-  private void validateAllTimeIntervals(TimeInterval[] intervals) {
-    for (TimeInterval ti : intervals) {
+  private void validateAllIntervals(Interval<?>[] intervals) {
+    for (Interval<?> ti : intervals) {
       if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
-      }
-    }
-  }
-
-  private void validateAllIntIntervals(IntInterval[] intervals) {
-    for (IntInterval ti : intervals) {
-      if (!ti.isValid()) {
-        throw new IllegalArgumentException("IntInterval " + ti + " is invalid.");
+        throw new IllegalArgumentException("Interval<?> " + ti + " is invalid.");
       }
     }
   }

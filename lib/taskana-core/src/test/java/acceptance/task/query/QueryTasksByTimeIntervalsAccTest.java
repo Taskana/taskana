@@ -12,7 +12,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
@@ -21,7 +21,7 @@ import pro.taskana.task.api.models.TaskSummary;
 /** Acceptance test for all "query tasks with sorting" scenarios. */
 @ExtendWith(JaasExtension.class)
 class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
-  private static SortDirection asc = SortDirection.ASCENDING;
+  private static final SortDirection ASC = SortDirection.ASCENDING;
 
   QueryTasksByTimeIntervalsAccTest() {
     super();
@@ -35,16 +35,18 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testCreatedWithin2Intervals() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval1 =
-          new TimeInterval(getInstant("2018-01-29T15:55:10"), getInstant("2018-01-29T15:55:17"));
-      TimeInterval interval2 =
-          new TimeInterval(getInstant("2018-01-29T15:55:23"), getInstant("2018-01-29T15:55:25"));
+      Interval<Instant> interval1 =
+          new Interval<Instant>(
+              getInstant("2018-01-29T15:55:10"), getInstant("2018-01-29T15:55:17"));
+      Interval<Instant> interval2 =
+          new Interval<Instant>(
+              getInstant("2018-01-29T15:55:23"), getInstant("2018-01-29T15:55:25"));
 
       List<TaskSummary> results =
           taskService
               .createTaskQuery()
               .createdWithin(interval1, interval2)
-              .orderByCreated(asc)
+              .orderByCreated(ASC)
               .list();
 
       assertThat(results).hasSize(62);
@@ -65,10 +67,10 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testCreatedBefore() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval1 = new TimeInterval(null, getInstant("2018-01-29T15:55:17"));
+      Interval<Instant> interval1 = new Interval<Instant>(null, getInstant("2018-01-29T15:55:17"));
 
       List<TaskSummary> results =
-          taskService.createTaskQuery().createdWithin(interval1).orderByCreated(asc).list();
+          taskService.createTaskQuery().createdWithin(interval1).orderByCreated(ASC).list();
 
       assertThat(results).hasSize(40);
       TaskSummary previousSummary = null;
@@ -88,10 +90,10 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testCreatedAfter() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval1 = new TimeInterval(getInstant("2018-01-29T15:55:17"), null);
+      Interval<Instant> interval1 = new Interval<Instant>(getInstant("2018-01-29T15:55:17"), null);
 
       List<TaskSummary> results =
-          taskService.createTaskQuery().createdWithin(interval1).orderByCreated(asc).list();
+          taskService.createTaskQuery().createdWithin(interval1).orderByCreated(ASC).list();
 
       assertThat(results).hasSize(61);
       TaskSummary previousSummary = null;
@@ -111,16 +113,18 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testClaimedWithin2Intervals() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval1 =
-          new TimeInterval(getInstant("2018-01-30T15:55:00"), getInstant("2018-01-30T15:55:10"));
-      TimeInterval interval2 =
-          new TimeInterval(getInstant("2018-01-30T15:55:23"), getInstant("2018-01-30T15:55:25"));
+      Interval<Instant> interval1 =
+          new Interval<Instant>(
+              getInstant("2018-01-30T15:55:00"), getInstant("2018-01-30T15:55:10"));
+      Interval<Instant> interval2 =
+          new Interval<Instant>(
+              getInstant("2018-01-30T15:55:23"), getInstant("2018-01-30T15:55:25"));
 
       List<TaskSummary> results =
           taskService
               .createTaskQuery()
               .claimedWithin(interval1, interval2)
-              .orderByCreated(asc)
+              .orderByCreated(ASC)
               .list();
 
       assertThat(results).hasSize(45);
@@ -141,10 +145,11 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testCompletedWithin() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval =
-          new TimeInterval(getInstant("2018-01-30T16:55:23"), getInstant("2018-01-30T16:55:25"));
+      Interval<Instant> interval =
+          new Interval<Instant>(
+              getInstant("2018-01-30T16:55:23"), getInstant("2018-01-30T16:55:25"));
       List<TaskSummary> results =
-          taskService.createTaskQuery().completedWithin(interval).orderByCompleted(asc).list();
+          taskService.createTaskQuery().completedWithin(interval).orderByCompleted(ASC).list();
 
       assertThat(results).hasSize(18);
       TaskSummary previousSummary = null;
@@ -164,10 +169,11 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testModifiedWithin() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval =
-          new TimeInterval(getInstant("2018-01-30T15:55:00"), getInstant("2018-01-30T15:55:22"));
+      Interval<Instant> interval =
+          new Interval<Instant>(
+              getInstant("2018-01-30T15:55:00"), getInstant("2018-01-30T15:55:22"));
       List<TaskSummary> results =
-          taskService.createTaskQuery().modifiedWithin(interval).orderByModified(asc).list();
+          taskService.createTaskQuery().modifiedWithin(interval).orderByModified(ASC).list();
 
       assertThat(results).hasSize(7);
       TaskSummary previousSummary = null;
@@ -187,10 +193,11 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testPlannedWithin() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval =
-          new TimeInterval(getInstant("2018-01-29T15:55:00"), getInstant("2018-01-30T15:55:22"));
+      Interval<Instant> interval =
+          new Interval<Instant>(
+              getInstant("2018-01-29T15:55:00"), getInstant("2018-01-30T15:55:22"));
       List<TaskSummary> results =
-          taskService.createTaskQuery().plannedWithin(interval).orderByPlanned(asc).list();
+          taskService.createTaskQuery().plannedWithin(interval).orderByPlanned(ASC).list();
 
       assertThat(results).hasSize(94);
       TaskSummary previousSummary = null;
@@ -210,10 +217,11 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
     void testDueWithin() {
       TaskService taskService = taskanaEngine.getTaskService();
 
-      TimeInterval interval =
-          new TimeInterval(getInstant("2018-01-29T15:55:00"), getInstant("2018-01-30T15:55:22"));
+      Interval<Instant> interval =
+          new Interval<Instant>(
+              getInstant("2018-01-29T15:55:00"), getInstant("2018-01-30T15:55:22"));
       List<TaskSummary> results =
-          taskService.createTaskQuery().dueWithin(interval).orderByPlanned(asc).list();
+          taskService.createTaskQuery().dueWithin(interval).orderByPlanned(ASC).list();
 
       assertThat(results).hasSize(94);
       TaskSummary previousSummary = null;
@@ -238,13 +246,13 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             taskanaEngine
                 .getTaskService()
                 .createTaskQuery()
-                .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")))
+                .receivedWithin(new Interval<>(null, Instant.parse("2018-01-29T15:55:20Z")))
                 .list();
         long resultCount =
             taskanaEngine
                 .getTaskService()
                 .createTaskQuery()
-                .receivedWithin(new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")))
+                .receivedWithin(new Interval<>(null, Instant.parse("2018-01-29T15:55:20Z")))
                 .count();
         assertThat(results).hasSize(22);
         assertThat(resultCount).isEqualTo(22);
@@ -257,13 +265,13 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
             taskanaEngine
                 .getTaskService()
                 .createTaskQuery()
-                .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
+                .receivedWithin(new Interval<>(Instant.parse("2018-01-29T15:55:20Z"), null))
                 .list();
         long resultCount =
             taskanaEngine
                 .getTaskService()
                 .createTaskQuery()
-                .receivedWithin(new TimeInterval(Instant.parse("2018-01-29T15:55:20Z"), null))
+                .receivedWithin(new Interval<>(Instant.parse("2018-01-29T15:55:20Z"), null))
                 .count();
         assertThat(results).hasSize(50);
         assertThat(resultCount).isEqualTo(50);
@@ -277,8 +285,8 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
                 .getTaskService()
                 .createTaskQuery()
                 .receivedWithin(
-                    new TimeInterval(null, Instant.parse("2018-01-29T15:55:20Z")),
-                    new TimeInterval(Instant.parse("2018-01-29T15:55:22Z"), null))
+                    new Interval<>(null, Instant.parse("2018-01-29T15:55:20Z")),
+                    new Interval<>(Instant.parse("2018-01-29T15:55:22Z"), null))
                 .count();
 
         long resultCount2 =
@@ -286,10 +294,10 @@ class QueryTasksByTimeIntervalsAccTest extends AbstractAccTest {
                 .getTaskService()
                 .createTaskQuery()
                 .receivedWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2018-01-29T15:55:25Z"),
                         Instant.parse("2018-01-29T15:55:30Z")),
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2018-01-29T15:55:18Z"),
                         Instant.parse("2018-01-29T15:55:21Z")))
                 .count();

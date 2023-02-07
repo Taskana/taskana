@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryColumnName;
@@ -145,8 +145,8 @@ class QueryClassificationHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(6);
 
-    TimeInterval timeInterval =
-        new TimeInterval(Instant.parse("2018-01-28T14:55:00Z"), Instant.now());
+    Interval<Instant> timeInterval =
+        new Interval<>(Instant.parse("2018-01-28T14:55:00Z"), Instant.now());
     returnValues =
         historyService.createClassificationHistoryQuery().createdWithin(timeInterval).list();
     assertThat(returnValues).hasSize(11);

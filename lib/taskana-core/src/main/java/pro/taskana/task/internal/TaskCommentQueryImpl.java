@@ -1,5 +1,6 @@
 package pro.taskana.task.internal;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,8 +8,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.TaskCommentQuery;
@@ -48,10 +49,10 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
   private String[] creatorNotLike;
   private String[] textFieldLike;
   private String[] textFieldNotLike;
-  private TimeInterval[] modifiedIn;
-  private TimeInterval[] modifiedNotIn;
-  private TimeInterval[] createdIn;
-  private TimeInterval[] createdNotIn;
+  private Interval<Instant>[] modifiedIn;
+  private Interval<Instant>[] modifiedNotIn;
+  private Interval<Instant>[] createdIn;
+  private Interval<Instant>[] createdNotIn;
 
   private String[] accessIdIn;
   private boolean joinWithUserInfo;
@@ -131,27 +132,27 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
   }
 
   @Override
-  public TaskCommentQuery createdWithin(TimeInterval... intervals) {
+  public TaskCommentQuery createdWithin(Interval<Instant>... intervals) {
     validateAllIntervals(intervals);
     this.createdIn = intervals;
     return this;
   }
 
   @Override
-  public TaskCommentQuery createdNotWithin(TimeInterval... intervals) {
+  public TaskCommentQuery createdNotWithin(Interval<Instant>... intervals) {
     this.createdNotIn = intervals;
     return this;
   }
 
   @Override
-  public TaskCommentQuery modifiedWithin(TimeInterval... intervals) {
+  public TaskCommentQuery modifiedWithin(Interval<Instant>... intervals) {
     validateAllIntervals(intervals);
     this.modifiedIn = intervals;
     return this;
   }
 
   @Override
-  public TaskCommentQuery modifiedNotWithin(TimeInterval... intervals) {
+  public TaskCommentQuery modifiedNotWithin(Interval<Instant>... intervals) {
     this.modifiedNotIn = intervals;
     return this;
   }
@@ -254,19 +255,19 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
     return textFieldNotLike;
   }
 
-  public TimeInterval[] getModifiedIn() {
+  public Interval<Instant>[] getModifiedIn() {
     return modifiedIn;
   }
 
-  public TimeInterval[] getModifiedNotIn() {
+  public Interval<Instant>[] getModifiedNotIn() {
     return modifiedNotIn;
   }
 
-  public TimeInterval[] getCreatedIn() {
+  public Interval<Instant>[] getCreatedIn() {
     return createdIn;
   }
 
-  public TimeInterval[] getCreatedNotIn() {
+  public Interval<Instant>[] getCreatedNotIn() {
     return createdNotIn;
   }
 
@@ -341,10 +342,10 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
     }
   }
 
-  private void validateAllIntervals(TimeInterval[] intervals) {
-    for (TimeInterval ti : intervals) {
+  private void validateAllIntervals(Interval<Instant>[] intervals) {
+    for (Interval<Instant> ti : intervals) {
       if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+        throw new IllegalArgumentException("Interval<Instant> " + ti + " is invalid.");
       }
     }
   }

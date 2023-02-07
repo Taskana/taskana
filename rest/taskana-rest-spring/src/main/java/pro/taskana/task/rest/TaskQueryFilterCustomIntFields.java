@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.internal.util.Triplet;
@@ -529,20 +529,20 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
               Optional.ofNullable(triplet.getMiddle().getSecond())
                   .ifPresent(wrap(l -> query.customIntAttributeNotIn(customField, l)));
               Optional.ofNullable(triplet.getMiddle().getThird())
-                  .map(this::extractIntIntervals)
+                  .map(this::extractIntervals)
                   .ifPresent(wrap(l -> query.customIntAttributeWithin(customField, l)));
               Optional.ofNullable(triplet.getMiddle().getFourth())
-                  .map(this::extractIntIntervals)
+                  .map(this::extractIntervals)
                   .ifPresent(wrap(l -> query.customIntAttributeNotWithin(customField, l)));
               Integer from = triplet.getRight().getFirst();
               Integer to = triplet.getRight().getThird();
               if (from != null || to != null) {
-                query.customIntAttributeWithin(customField, new IntInterval(from, to));
+                query.customIntAttributeWithin(customField, new Interval<Integer>(from, to));
               }
               Integer fromNot = triplet.getRight().getSecond();
               Integer toNot = triplet.getRight().getFourth();
               if (fromNot != null || toNot != null) {
-                query.customIntAttributeWithin(customField, new IntInterval(fromNot, toNot));
+                query.customIntAttributeWithin(customField, new Interval<Integer>(fromNot, toNot));
               }
             });
     return null;

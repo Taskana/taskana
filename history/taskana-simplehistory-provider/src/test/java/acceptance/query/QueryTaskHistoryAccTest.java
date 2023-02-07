@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
@@ -183,7 +183,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(13);
 
-    TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
+    Interval<Instant> timeInterval = new Interval<>(Instant.now().minusSeconds(10), Instant.now());
     returnValues = getHistoryService().createTaskHistoryQuery().createdWithin(timeInterval).list();
     assertThat(returnValues).isEmpty();
 

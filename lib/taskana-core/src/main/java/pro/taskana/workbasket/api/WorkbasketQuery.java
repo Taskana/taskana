@@ -1,9 +1,10 @@
 package pro.taskana.workbasket.api;
 
+import java.time.Instant;
 import java.util.List;
 
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -95,11 +96,11 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param createdWithin - the {@linkplain TimeInterval TimeIntervals} within which the workbasket
-   *     was created
+   * @param createdWithin - the {@linkplain Interval Intervals} within which the workbasket was
+   *     created
    * @return the query
    */
-  WorkbasketQuery createdWithin(TimeInterval... createdWithin);
+  WorkbasketQuery createdWithin(Interval<Instant>... createdWithin);
 
   /**
    * Add the time intervals within which the workbasket was modified to your query. For each time
@@ -108,11 +109,11 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param modifiedWithin - the {@linkplain TimeInterval TimeIntervals} within which the workbasket
-   *     was created
+   * @param modifiedWithin - the {@linkplain Interval Intervals} within which the workbasket was
+   *     created
    * @return the query
    */
-  WorkbasketQuery modifiedWithin(TimeInterval... modifiedWithin);
+  WorkbasketQuery modifiedWithin(Interval<Instant>... modifiedWithin);
 
   /**
    * Add your description to your query. It will be compared case-insensitively to the descriptions

@@ -1,7 +1,9 @@
 package pro.taskana.task.api;
 
+import java.time.Instant;
+
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
 
@@ -114,10 +116,10 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the {@linkplain TaskComment} was created
+   * @param intervals - the Intervals within which the {@linkplain TaskComment} was created
    * @return the query
    */
-  TaskCommentQuery createdWithin(TimeInterval... intervals);
+  TaskCommentQuery createdWithin(Interval<Instant>... intervals);
 
   /**
    * Add the time intervals within which the {@linkplain TaskComment} was not created to your query.
@@ -126,10 +128,10 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * is specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the {@linkplain TaskComment} was created
+   * @param intervals - the Intervals within which the {@linkplain TaskComment} was created
    * @return the query
    */
-  TaskCommentQuery createdNotWithin(TimeInterval... intervals);
+  TaskCommentQuery createdNotWithin(Interval<Instant>... intervals);
 
   /**
    * Add the time intervals within which the {@linkplain TaskComment} was modified to your query.
@@ -138,10 +140,10 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * is specified, the query will connect them with the OR keyword. If either begin or end of an
    * interval are null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the {@linkplain TaskComment} was modified
+   * @param intervals - the Intervals within which the {@linkplain TaskComment} was modified
    * @return the query
    */
-  TaskCommentQuery modifiedWithin(TimeInterval... intervals);
+  TaskCommentQuery modifiedWithin(Interval<Instant>... intervals);
 
   /**
    * Add the time intervals within which the {@linkplain TaskComment} was not modified to your
@@ -150,10 +152,10 @@ public interface TaskCommentQuery extends BaseQuery<TaskComment, TaskCommentQuer
    * one interval is specified, the query will connect them with the OR keyword. If either begin or
    * end of an interval are null, these values will not be specified in the query.
    *
-   * @param intervals - the TimeIntervals within which the {@linkplain TaskComment} was modified
+   * @param intervals - the Intervals within which the {@linkplain TaskComment} was modified
    * @return the query
    */
-  TaskCommentQuery modifiedNotWithin(TimeInterval... intervals);
+  TaskCommentQuery modifiedNotWithin(Interval<Instant>... intervals);
 
   /**
    * This method sorts the query result according to the created timestamp.

@@ -24,8 +24,8 @@ import pro.taskana.classification.api.exceptions.MalformedServiceLevelException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationImpl;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
@@ -99,7 +99,7 @@ class CreateClassificationAccTest {
         classificationService
             .createClassificationQuery()
             .keyIn("Key2")
-            .modifiedWithin(new TimeInterval(before, null))
+            .modifiedWithin(new Interval<>(before, null))
             .list();
 
     assertThat(classifications).containsExactly(classification.asSummary());

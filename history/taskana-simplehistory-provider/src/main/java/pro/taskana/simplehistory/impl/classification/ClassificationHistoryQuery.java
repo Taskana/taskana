@@ -1,8 +1,10 @@
 package pro.taskana.simplehistory.impl.classification;
 
+import java.time.Instant;
+
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 
@@ -27,13 +29,13 @@ public interface ClassificationHistoryQuery
   ClassificationHistoryQuery eventTypeIn(String... eventTypes);
 
   /**
-   * Add your created TimeInterval to your query.
+   * Add your created Interval to your query.
    *
-   * @param createdWithin the {@link TimeInterval} within which the searched-for classifications
-   *     were created. Both borders in each {@link TimeInterval} are inclusive.
+   * @param createdWithin the {@link Interval} within which the searched-for classifications were
+   *     created. Both borders in each {@link Interval} are inclusive.
    * @return the query
    */
-  ClassificationHistoryQuery createdWithin(TimeInterval... createdWithin);
+  ClassificationHistoryQuery createdWithin(Interval<Instant>... createdWithin);
 
   /**
    * Add your userId to your query.

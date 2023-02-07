@@ -24,9 +24,8 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.KeyDomain;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.api.CallbackState;
@@ -377,7 +376,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .receivedWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -393,7 +392,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .receivedNotWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -432,7 +431,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .createdWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -448,7 +447,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .createdNotWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -487,7 +486,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .claimedWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -503,7 +502,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .claimedNotWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -542,7 +541,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .modifiedWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -558,7 +557,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .modifiedNotWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -597,7 +596,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .plannedWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -613,7 +612,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .plannedNotWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -652,7 +651,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .dueWithin(
-                    new TimeInterval(
+                    new Interval<Instant>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -669,7 +668,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .dueNotWithin(
-                    new TimeInterval(
+                    new Interval<Instant>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -708,7 +707,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .completedWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -724,7 +723,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .completedNotWithin(
-                    new TimeInterval(
+                    new Interval<>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -2662,7 +2661,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .attachmentReceivedWithin(
-                    new TimeInterval(
+                    new Interval<Instant>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -2678,7 +2677,7 @@ class TaskQueryImplAccTest {
                 .createTaskQuery()
                 .workbasketIdIn(wb.getId())
                 .attachmentNotReceivedWithin(
-                    new TimeInterval(
+                    new Interval<Instant>(
                         Instant.parse("2020-01-01T00:00:00Z"),
                         Instant.parse("2020-01-05T00:00:00Z")))
                 .list();
@@ -2769,12 +2768,12 @@ class TaskQueryImplAccTest {
                     "AttachmentReceivedWithin",
                     query ->
                         query.attachmentReceivedWithin(
-                            new TimeInterval(Instant.now(), Instant.now()))),
+                            new Interval<>(Instant.now(), Instant.now()))),
                 Pair.of(
                     "AttachmentReceivedNotWithin",
                     query ->
                         query.attachmentNotReceivedWithin(
-                            new TimeInterval(Instant.now(), Instant.now()))),
+                            new Interval<>(Instant.now(), Instant.now()))),
                 Pair.of(
                     "AttachmentReferenceValueIn",
                     query -> query.attachmentReferenceValueIn("not important")),
@@ -3389,35 +3388,30 @@ class TaskQueryImplAccTest {
       @WithAccessId(user = "user-1-1")
       @TestFactory
       Stream<DynamicTest> should_ThrowException_When_QueryingForCustomIntWithinInvalidInterval() {
-        List<Pair<TaskCustomIntField, IntInterval[]>> testCases =
+        List<Pair<TaskCustomIntField, Interval<Integer>[]>> testCases =
             List.of(
-                Pair.of(TaskCustomIntField.CUSTOM_INT_1, new IntInterval[] {new IntInterval(4, 1)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_1, new Interval[] {new Interval(4, 1)}),
                 // Only first interval invalid
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_2,
-                    new IntInterval[] {new IntInterval(null, null), new IntInterval(0, null)}),
+                    new Interval[] {new Interval(null, null), new Interval(0, null)}),
                 // Only second interval invalid
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_3,
-                    new IntInterval[] {new IntInterval(-1, 5), new IntInterval(null, null)}),
+                    new Interval[] {new Interval(-1, 5), new Interval(null, null)}),
                 // Both intervals invalid
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_4,
-                    new IntInterval[] {new IntInterval(0, -5), new IntInterval(-2, -10)}),
+                    new Interval[] {new Interval(0, -5), new Interval(-2, -10)}),
                 // One interval invalid
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_5,
-                    new IntInterval[] {new IntInterval(null, null)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_6, new IntInterval[] {new IntInterval(0, -5)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_5, new Interval[] {new Interval(null, null)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_6, new Interval[] {new Interval(0, -5)}),
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_7,
-                    new IntInterval[] {new IntInterval(null, null), new IntInterval(null, null)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_8,
-                    new IntInterval[] {new IntInterval(123, 122)}));
+                    new Interval[] {new Interval(null, null), new Interval(null, null)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_8, new Interval[] {new Interval(123, 122)}));
 
-        ThrowingConsumer<Pair<TaskCustomIntField, IntInterval[]>> test =
+        ThrowingConsumer<Pair<TaskCustomIntField, Interval<Integer>[]>> test =
             p -> {
               ThrowingCallable result =
                   () ->
@@ -3428,7 +3422,7 @@ class TaskQueryImplAccTest {
                           .list();
               assertThatThrownBy(result)
                   .isInstanceOf(IllegalArgumentException.class)
-                  .hasMessageContaining("IntInterval");
+                  .hasMessageContaining("Interval<?>");
             };
 
         return DynamicTest.stream(testCases.iterator(), p -> p.getLeft().name(), test);
@@ -3493,29 +3487,27 @@ class TaskQueryImplAccTest {
       @WithAccessId(user = "user-1-1")
       @TestFactory
       Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntWithin() {
-        List<Pair<TaskCustomIntField, IntInterval[]>> testCases =
+        List<Pair<TaskCustomIntField, Interval<Integer>[]>> testCases =
             List.of(
-                Pair.of(TaskCustomIntField.CUSTOM_INT_1, new IntInterval[] {new IntInterval(1, 1)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_2, new IntInterval[] {new IntInterval(0, null)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_1, new Interval[] {new Interval(1, 1)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_2, new Interval[] {new Interval(0, null)}),
                 // The value lies within both specified intervals
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_3,
-                    new IntInterval[] {new IntInterval(-1, 5), new IntInterval(0, null)}),
+                    new Interval[] {new Interval(-1, 5), new Interval(0, null)}),
                 // The value lies only within the second interval
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_4,
-                    new IntInterval[] {new IntInterval(0, 1), new IntInterval(-2, 22)}),
+                    new Interval[] {new Interval(0, 1), new Interval(-2, 22)}),
                 // The value lies only within the first interval
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_5,
-                    new IntInterval[] {new IntInterval(3, 9), new IntInterval(-1000, -50)}),
-                Pair.of(TaskCustomIntField.CUSTOM_INT_6, new IntInterval[] {new IntInterval(4, 9)}),
-                Pair.of(TaskCustomIntField.CUSTOM_INT_7, new IntInterval[] {new IntInterval(4, 9)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_8, new IntInterval[] {new IntInterval(1, null)}));
+                    new Interval[] {new Interval(3, 9), new Interval(-1000, -50)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_6, new Interval[] {new Interval(4, 9)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_7, new Interval[] {new Interval(4, 9)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_8, new Interval[] {new Interval(1, null)}));
 
-        ThrowingConsumer<Pair<TaskCustomIntField, IntInterval[]>> test =
+        ThrowingConsumer<Pair<TaskCustomIntField, Interval<Integer>[]>> test =
             p -> {
               List<TaskSummary> result =
                   taskService
@@ -3532,32 +3524,28 @@ class TaskQueryImplAccTest {
       @WithAccessId(user = "user-1-1")
       @TestFactory
       Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntNotWithin() {
-        List<Pair<TaskCustomIntField, IntInterval[]>> testCases =
+        List<Pair<TaskCustomIntField, Interval<Integer>[]>> testCases =
             List.of(
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_1,
-                    new IntInterval[] {new IntInterval(1, 1), new IntInterval(0, 10)}),
+                    new Interval[] {new Interval(1, 1), new Interval(0, 10)}),
                 // Test specifying same interval multiple times
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_2,
-                    new IntInterval[] {new IntInterval(0, null), new IntInterval(0, null)}),
+                    new Interval[] {new Interval(0, null), new Interval(0, null)}),
                 // Test single interval
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_3, new IntInterval[] {new IntInterval(-1, 5)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_3, new Interval[] {new Interval(-1, 5)}),
                 Pair.of(
                     TaskCustomIntField.CUSTOM_INT_4,
-                    new IntInterval[] {
-                      new IntInterval(-3, 9),
+                    new Interval[] {
+                      new Interval(-3, 9),
                     }),
-                Pair.of(TaskCustomIntField.CUSTOM_INT_5, new IntInterval[] {new IntInterval(3, 9)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_6, new IntInterval[] {new IntInterval(0, null)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_7, new IntInterval[] {new IntInterval(7, null)}),
-                Pair.of(
-                    TaskCustomIntField.CUSTOM_INT_8, new IntInterval[] {new IntInterval(0, 124)}));
+                Pair.of(TaskCustomIntField.CUSTOM_INT_5, new Interval[] {new Interval(3, 9)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_6, new Interval[] {new Interval(0, null)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_7, new Interval[] {new Interval(7, null)}),
+                Pair.of(TaskCustomIntField.CUSTOM_INT_8, new Interval[] {new Interval(0, 124)}));
 
-        ThrowingConsumer<Pair<TaskCustomIntField, IntInterval[]>> test =
+        ThrowingConsumer<Pair<TaskCustomIntField, Interval<Integer>[]>> test =
             p -> {
               List<TaskSummary> result =
                   taskService

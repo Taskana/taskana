@@ -2,7 +2,7 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.SelectedItem;
@@ -173,7 +173,7 @@ public interface TimeIntervalReportBuilder<
    *     customIntField} should match
    * @return the modified {@linkplain TimeIntervalReportBuilder}
    */
-  B customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values);
+  B customIntAttributeWithin(TaskCustomIntField customIntField, Interval<Integer>... values);
 
   /**
    * Exclude ranges of {@linkplain TaskCustomIntField} for matching to the builder.
@@ -187,7 +187,7 @@ public interface TimeIntervalReportBuilder<
    *     customIntField} should match
    * @return the modified {@linkplain TimeIntervalReportBuilder}
    */
-  B customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values);
+  B customIntAttributeNotWithin(TaskCustomIntField customIntField, Interval<Integer>... values);
 
   /**
    * Adds the values of a certain {@linkplain TaskCustomField} for pattern matching to the builder.

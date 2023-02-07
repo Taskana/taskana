@@ -1,5 +1,6 @@
 package pro.taskana.classification.internal;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +11,7 @@ import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationQueryColumnName;
 import pro.taskana.classification.api.models.ClassificationSummary;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
@@ -39,8 +40,8 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   private String[] type;
   private String[] domain;
   private Boolean validInDomain;
-  private TimeInterval[] createdIn;
-  private TimeInterval[] modifiedIn;
+  private Interval<Instant>[] createdIn;
+  private Interval<Instant>[] modifiedIn;
   private String[] nameIn;
   private String[] nameLike;
   private String descriptionLike;
@@ -121,15 +122,15 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   }
 
   @Override
-  public ClassificationQuery createdWithin(TimeInterval... createdIn) {
-    validateAllTimeIntervals(createdIn);
+  public ClassificationQuery createdWithin(Interval<Instant>... createdIn) {
+    validateAllIntervals(createdIn);
     this.createdIn = createdIn;
     return this;
   }
 
   @Override
-  public ClassificationQuery modifiedWithin(TimeInterval... modifiedIn) {
-    validateAllTimeIntervals(modifiedIn);
+  public ClassificationQuery modifiedWithin(Interval<Instant>... modifiedIn) {
+    validateAllIntervals(modifiedIn);
     this.modifiedIn = modifiedIn;
     return this;
   }
@@ -437,11 +438,11 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     return validInDomain;
   }
 
-  public TimeInterval[] getCreatedIn() {
+  public Interval<Instant>[] getCreatedIn() {
     return createdIn;
   }
 
-  public TimeInterval[] getModifiedIn() {
+  public Interval<Instant>[] getModifiedIn() {
     return modifiedIn;
   }
 
@@ -529,10 +530,10 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     return orderColumns;
   }
 
-  private void validateAllTimeIntervals(TimeInterval[] createdIn) {
-    for (TimeInterval ti : createdIn) {
+  private void validateAllIntervals(Interval<Instant>[] createdIn) {
+    for (Interval<Instant> ti : createdIn) {
       if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+        throw new IllegalArgumentException("Interval<Instant> " + ti + " is invalid.");
       }
     }
   }

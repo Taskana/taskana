@@ -16,9 +16,9 @@ import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.BeforeAll;
 
 import pro.taskana.TaskanaConfiguration;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.TaskanaEngineImpl;
@@ -125,14 +125,14 @@ public abstract class AbstractAccTest {
     return attachment;
   }
 
-  protected TimeInterval toDaysInterval() {
+  protected Interval<Instant> toDaysInterval() {
     Instant begin =
         ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MIN, ZoneId.of("UTC"))
             .toInstant();
     Instant end =
         ZonedDateTime.of(LocalDate.now(ZoneId.of("UTC")), LocalTime.MAX, ZoneId.of("UTC"))
             .toInstant();
-    return new TimeInterval(begin, end);
+    return new Interval<>(begin, end);
   }
 
   protected Instant getInstant(String datetime) {

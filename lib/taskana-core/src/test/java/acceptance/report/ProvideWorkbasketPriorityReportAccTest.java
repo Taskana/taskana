@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
@@ -401,18 +401,18 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @TestFactory
   Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntWithin() {
-    List<Pair<TaskCustomIntField, IntInterval>> testCases =
+    List<Pair<TaskCustomIntField, Interval<Integer>>> testCases =
         List.of(
-            Pair.of(TaskCustomIntField.CUSTOM_INT_1, new IntInterval(1, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_2, new IntInterval(2, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_3, new IntInterval(3, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_4, new IntInterval(4, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_5, new IntInterval(5, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_6, new IntInterval(6, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_7, new IntInterval(7, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_8, new IntInterval(8, null)));
+            Pair.of(TaskCustomIntField.CUSTOM_INT_1, new Interval<Integer>(1, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_2, new Interval<Integer>(2, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_3, new Interval<Integer>(3, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_4, new Interval<Integer>(4, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_5, new Interval<Integer>(5, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_6, new Interval<Integer>(6, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_7, new Interval<Integer>(7, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_8, new Interval<Integer>(8, null)));
 
-    ThrowingConsumer<Pair<TaskCustomIntField, IntInterval>> test =
+    ThrowingConsumer<Pair<TaskCustomIntField, Interval<Integer>>> test =
         p -> {
           WorkbasketPriorityReport report =
               MONITOR_SERVICE
@@ -432,18 +432,18 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @TestFactory
   Stream<DynamicTest> should_ApplyFilter_When_QueryingForCustomIntNotWithin() {
-    List<Pair<TaskCustomIntField, IntInterval>> testCases =
+    List<Pair<TaskCustomIntField, Interval<Integer>>> testCases =
         List.of(
-            Pair.of(TaskCustomIntField.CUSTOM_INT_1, new IntInterval(3, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_2, new IntInterval(4, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_3, new IntInterval(5, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_4, new IntInterval(6, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_5, new IntInterval(7, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_6, new IntInterval(8, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_7, new IntInterval(9, null)),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_8, new IntInterval(10, null)));
+            Pair.of(TaskCustomIntField.CUSTOM_INT_1, new Interval<Integer>(3, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_2, new Interval<Integer>(4, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_3, new Interval<Integer>(5, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_4, new Interval<Integer>(6, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_5, new Interval<Integer>(7, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_6, new Interval<Integer>(8, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_7, new Interval<Integer>(9, null)),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_8, new Interval<Integer>(10, null)));
 
-    ThrowingConsumer<Pair<TaskCustomIntField, IntInterval>> test =
+    ThrowingConsumer<Pair<TaskCustomIntField, Interval<Integer>>> test =
         p -> {
           WorkbasketPriorityReport report =
               MONITOR_SERVICE
@@ -463,32 +463,30 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
   @WithAccessId(user = "monitor")
   @TestFactory
   Stream<DynamicTest> should_ThrowException_When_FilteringByCustomIntWithinWithInvalidIntervals() {
-    List<Pair<TaskCustomIntField, IntInterval[]>> testCases =
+    List<Pair<TaskCustomIntField, Interval<Integer>[]>> testCases =
         List.of(
-            Pair.of(TaskCustomIntField.CUSTOM_INT_1, new IntInterval[] {new IntInterval(4, 1)}),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_1, new Interval[] {new Interval(4, 1)}),
             // Only first interval invalid
             Pair.of(
                 TaskCustomIntField.CUSTOM_INT_2,
-                new IntInterval[] {new IntInterval(null, null), new IntInterval(0, null)}),
+                new Interval[] {new Interval(null, null), new Interval(0, null)}),
             // Only second interval invalid
             Pair.of(
                 TaskCustomIntField.CUSTOM_INT_3,
-                new IntInterval[] {new IntInterval(-1, 5), new IntInterval(null, null)}),
+                new Interval[] {new Interval(-1, 5), new Interval(null, null)}),
             // Both intervals invalid
             Pair.of(
                 TaskCustomIntField.CUSTOM_INT_4,
-                new IntInterval[] {new IntInterval(0, -5), new IntInterval(-2, -10)}),
+                new Interval[] {new Interval(0, -5), new Interval(-2, -10)}),
             // One interval invalid
-            Pair.of(
-                TaskCustomIntField.CUSTOM_INT_5, new IntInterval[] {new IntInterval(null, null)}),
-            Pair.of(TaskCustomIntField.CUSTOM_INT_6, new IntInterval[] {new IntInterval(0, -5)}),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_5, new Interval[] {new Interval(null, null)}),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_6, new Interval[] {new Interval(0, -5)}),
             Pair.of(
                 TaskCustomIntField.CUSTOM_INT_7,
-                new IntInterval[] {new IntInterval(null, null), new IntInterval(null, null)}),
-            Pair.of(
-                TaskCustomIntField.CUSTOM_INT_8, new IntInterval[] {new IntInterval(123, 122)}));
+                new Interval[] {new Interval(null, null), new Interval(null, null)}),
+            Pair.of(TaskCustomIntField.CUSTOM_INT_8, new Interval[] {new Interval(123, 122)}));
 
-    ThrowingConsumer<Pair<TaskCustomIntField, IntInterval[]>> test =
+    ThrowingConsumer<Pair<TaskCustomIntField, Interval<Integer>[]>> test =
         p -> {
           ThrowingCallable result =
               () ->
@@ -500,7 +498,7 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
                       .buildReport();
           assertThatThrownBy(result)
               .isInstanceOf(IllegalArgumentException.class)
-              .hasMessageContaining("IntInterval");
+              .hasMessageContaining("Interval<Integer>");
         };
 
     return DynamicTest.stream(testCases.iterator(), p -> p.getLeft().name(), test);

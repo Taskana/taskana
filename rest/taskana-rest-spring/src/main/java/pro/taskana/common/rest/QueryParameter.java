@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import pro.taskana.common.api.IntInterval;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 
 public interface QueryParameter<E, R> {
 
@@ -16,28 +15,28 @@ public interface QueryParameter<E, R> {
     return Arrays.stream(list).map(item -> "%" + item + "%").toArray(String[]::new);
   }
 
-  default TimeInterval[] extractTimeIntervals(Instant[] instants) {
-    List<TimeInterval> timeIntervalsList = new ArrayList<>();
+  default Interval<Instant>[] extractTimeIntervals(Instant[] instants) {
+    List<Interval<Instant>> timeIntervalsList = new ArrayList<>();
     for (int i = 0; i < instants.length - 1; i += 2) {
       Instant left = instants[i];
       Instant right = instants[i + 1];
       if (left != null || right != null) {
-        timeIntervalsList.add(new TimeInterval(left, right));
+        timeIntervalsList.add(new Interval<>(left, right));
       }
     }
 
-    return timeIntervalsList.toArray(new TimeInterval[0]);
+    return timeIntervalsList.toArray(new Interval[0]);
   }
 
-  default IntInterval[] extractIntIntervals(Integer[] boundaries) {
-    List<IntInterval> intervalsList = new ArrayList<>();
+  default Interval<Integer>[] extractIntervals(Integer[] boundaries) {
+    List<Interval<Integer>> intervalsList = new ArrayList<>();
     for (int i = 0; i < boundaries.length - 1; i += 2) {
       Integer left = boundaries[i];
       Integer right = boundaries[i + 1];
       if (left != null || right != null) {
-        intervalsList.add(new IntInterval(left, right));
+        intervalsList.add(new Interval<>(left, right));
       }
     }
-    return intervalsList.toArray(new IntInterval[0]);
+    return intervalsList.toArray(new Interval[0]);
   }
 }

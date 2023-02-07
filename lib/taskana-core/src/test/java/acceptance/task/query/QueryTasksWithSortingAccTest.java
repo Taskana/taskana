@@ -26,8 +26,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BaseQuery.SortDirection;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.KeyDomain;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
@@ -133,7 +133,7 @@ class QueryTasksWithSortingAccTest extends AbstractAccTest {
         List<TaskSummary> results =
             taskService
                 .createTaskQuery()
-                .receivedWithin(new TimeInterval(Instant.EPOCH, null))
+                .receivedWithin(new Interval<>(Instant.EPOCH, null))
                 .orderByReceived(SortDirection.ASCENDING)
                 .list();
 

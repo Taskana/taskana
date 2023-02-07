@@ -1,5 +1,6 @@
 package pro.taskana.workbasket.internal;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,8 +8,8 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 
 import pro.taskana.TaskanaConfiguration;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -42,8 +43,8 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   private String[] domainIn;
   private String[] domainLike;
   private WorkbasketType[] type;
-  private TimeInterval[] createdIn;
-  private TimeInterval[] modifiedIn;
+  private Interval<Instant>[] createdIn;
+  private Interval<Instant>[] modifiedIn;
   private String[] descriptionLike;
   private String[] ownerIn;
   private String[] ownerLike;
@@ -133,15 +134,15 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   }
 
   @Override
-  public WorkbasketQuery createdWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public WorkbasketQuery createdWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.createdIn = intervals;
     return this;
   }
 
   @Override
-  public WorkbasketQuery modifiedWithin(TimeInterval... intervals) {
-    validateAllTimeIntervals(intervals);
+  public WorkbasketQuery modifiedWithin(Interval<Instant>... intervals) {
+    validateAllIntervals(intervals);
     this.modifiedIn = intervals;
     return this;
   }
@@ -456,11 +457,11 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     return type;
   }
 
-  public TimeInterval[] getCreatedIn() {
+  public Interval<Instant>[] getCreatedIn() {
     return createdIn;
   }
 
-  public TimeInterval[] getModifiedIn() {
+  public Interval<Instant>[] getModifiedIn() {
     return modifiedIn;
   }
 
@@ -591,10 +592,10 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     }
   }
 
-  private void validateAllTimeIntervals(TimeInterval[] intervals) {
-    for (TimeInterval ti : intervals) {
+  private void validateAllIntervals(Interval<Instant>[] intervals) {
+    for (Interval<Instant> ti : intervals) {
       if (!ti.isValid()) {
-        throw new IllegalArgumentException("TimeInterval " + ti + " is invalid.");
+        throw new IllegalArgumentException("Interval<Instant> " + ti + " is invalid.");
       }
     }
   }

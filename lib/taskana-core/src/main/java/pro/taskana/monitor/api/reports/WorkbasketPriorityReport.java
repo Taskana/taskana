@@ -2,7 +2,7 @@ package pro.taskana.monitor.api.reports;
 
 import java.util.List;
 
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
@@ -195,7 +195,7 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
      * @return the modified {@linkplain Builder}
      * @throws InvalidArgumentException if filter values are not given
      */
-    Builder customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values)
+    Builder customIntAttributeWithin(TaskCustomIntField customIntField, Interval<Integer>... values)
         throws InvalidArgumentException;
 
     /**
@@ -211,7 +211,8 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
      * @return the modified {@linkplain Builder}
      * @throws InvalidArgumentException if filter values are not given
      */
-    Builder customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values)
+    Builder customIntAttributeNotWithin(
+        TaskCustomIntField customIntField, Interval<Integer>... values)
         throws InvalidArgumentException;
 
     /**

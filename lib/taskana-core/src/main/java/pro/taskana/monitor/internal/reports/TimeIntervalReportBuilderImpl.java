@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -114,22 +114,22 @@ abstract class TimeIntervalReportBuilderImpl<
   private Integer[] customInt8In;
   private Integer[] customInt8NotIn;
 
-  private IntInterval[] customInt1Within;
-  private IntInterval[] customInt1NotWithin;
-  private IntInterval[] customInt2Within;
-  private IntInterval[] customInt2NotWithin;
-  private IntInterval[] customInt3Within;
-  private IntInterval[] customInt3NotWithin;
-  private IntInterval[] customInt4Within;
-  private IntInterval[] customInt4NotWithin;
-  private IntInterval[] customInt5Within;
-  private IntInterval[] customInt5NotWithin;
-  private IntInterval[] customInt6Within;
-  private IntInterval[] customInt6NotWithin;
-  private IntInterval[] customInt7Within;
-  private IntInterval[] customInt7NotWithin;
-  private IntInterval[] customInt8Within;
-  private IntInterval[] customInt8NotWithin;
+  private Interval<Integer>[] customInt1Within;
+  private Interval<Integer>[] customInt1NotWithin;
+  private Interval<Integer>[] customInt2Within;
+  private Interval<Integer>[] customInt2NotWithin;
+  private Interval<Integer>[] customInt3Within;
+  private Interval<Integer>[] customInt3NotWithin;
+  private Interval<Integer>[] customInt4Within;
+  private Interval<Integer>[] customInt4NotWithin;
+  private Interval<Integer>[] customInt5Within;
+  private Interval<Integer>[] customInt5NotWithin;
+  private Interval<Integer>[] customInt6Within;
+  private Interval<Integer>[] customInt6NotWithin;
+  private Interval<Integer>[] customInt7Within;
+  private Interval<Integer>[] customInt7NotWithin;
+  private Interval<Integer>[] customInt8Within;
+  private Interval<Integer>[] customInt8NotWithin;
 
   TimeIntervalReportBuilderImpl(InternalTaskanaEngine taskanaEngine, MonitorMapper monitorMapper) {
     this.taskanaEngine = taskanaEngine;
@@ -403,11 +403,11 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public B customIntAttributeWithin(TaskCustomIntField customIntField, IntInterval... values)
+  public B customIntAttributeWithin(TaskCustomIntField customIntField, Interval<Integer>... values)
       throws IllegalArgumentException {
-    for (IntInterval i : values) {
+    for (Interval<Integer> i : values) {
       if (!i.isValid()) {
-        throw new IllegalArgumentException("IntInterval " + i + " is invalid.");
+        throw new IllegalArgumentException("Interval<Integer> " + i + " is invalid.");
       }
     }
     switch (customIntField) {
@@ -442,11 +442,12 @@ abstract class TimeIntervalReportBuilderImpl<
   }
 
   @Override
-  public B customIntAttributeNotWithin(TaskCustomIntField customIntField, IntInterval... values)
+  public B customIntAttributeNotWithin(
+      TaskCustomIntField customIntField, Interval<Integer>... values)
       throws IllegalArgumentException {
-    for (IntInterval i : values) {
+    for (Interval<Integer> i : values) {
       if (!i.isValid()) {
-        throw new IllegalArgumentException("IntInterval " + i + " is invalid.");
+        throw new IllegalArgumentException("Interval<Integer> " + i + " is invalid.");
       }
     }
     switch (customIntField) {

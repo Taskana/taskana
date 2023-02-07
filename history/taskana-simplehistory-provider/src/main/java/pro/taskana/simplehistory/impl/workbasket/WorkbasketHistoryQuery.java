@@ -1,7 +1,9 @@
 package pro.taskana.simplehistory.impl.workbasket;
 
+import java.time.Instant;
+
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
@@ -35,13 +37,13 @@ public interface WorkbasketHistoryQuery
   WorkbasketHistoryQuery eventTypeIn(String... eventTypes);
 
   /**
-   * Add your created TimeInterval to your query.
+   * Add your created Interval to your query.
    *
-   * @param createdWithin the {@link TimeInterval} within which the searched-for classifications
-   *     were created.
+   * @param createdWithin the {@link Interval} within which the searched-for classifications were
+   *     created.
    * @return the query
    */
-  WorkbasketHistoryQuery createdWithin(TimeInterval... createdWithin);
+  WorkbasketHistoryQuery createdWithin(Interval<Instant>... createdWithin);
 
   /**
    * Add your userId to your query.

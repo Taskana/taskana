@@ -1,6 +1,7 @@
 package pro.taskana.simplehistory.impl;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.RowBounds;
@@ -8,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationCustomField;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
@@ -39,7 +40,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
   private ClassificationHistoryQueryColumnName columnName;
   private String[] idIn;
   private String[] eventTypeIn;
-  private TimeInterval[] createdIn;
+  private Interval<Instant>[] createdIn;
   private String[] userIdIn;
   private String[] classificationIdIn;
   private String[] applicationEntryPointIn;
@@ -98,7 +99,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
   }
 
   @Override
-  public ClassificationHistoryQuery createdWithin(TimeInterval... createdWithin) {
+  public ClassificationHistoryQuery createdWithin(Interval<Instant>... createdWithin) {
     this.createdIn = createdWithin;
     return this;
   }
@@ -507,7 +508,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
     return eventTypeIn;
   }
 
-  public TimeInterval[] getCreatedIn() {
+  public Interval<Instant>[] getCreatedIn() {
     return createdIn;
   }
 

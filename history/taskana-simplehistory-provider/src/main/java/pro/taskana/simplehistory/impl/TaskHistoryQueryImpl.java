@@ -1,13 +1,14 @@
 package pro.taskana.simplehistory.impl;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryColumnName;
@@ -42,7 +43,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private String[] parentBusinessProcessIdIn;
   private String[] taskIdIn;
   private String[] eventTypeIn;
-  private TimeInterval[] createdIn;
+  private Interval<Instant>[] createdIn;
   private String[] userIdIn;
   private String[] domainIn;
   private String[] workbasketKeyIn;
@@ -109,7 +110,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
     return eventTypeIn;
   }
 
-  public TimeInterval[] getCreatedIn() {
+  public Interval<Instant>[] getCreatedIn() {
     return createdIn;
   }
 
@@ -296,7 +297,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   }
 
   @Override
-  public TaskHistoryQuery createdWithin(TimeInterval... createdIn) {
+  public TaskHistoryQuery createdWithin(Interval<Instant>... createdIn) {
     this.createdIn = createdIn;
     return this;
   }

@@ -29,6 +29,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.OracleSqlSessionFactory;
 import pro.taskana.common.internal.configuration.DB;
+import pro.taskana.common.internal.persistence.ComparableTypeHandler;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.persistence.StringTypeHandler;
@@ -132,6 +133,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
     configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP, new InstantTypeHandler());
+    configuration.getTypeHandlerRegistry().register(Comparable.class, new ComparableTypeHandler());
 
     // add mappers
     configuration.addMapper(TaskHistoryEventMapper.class);

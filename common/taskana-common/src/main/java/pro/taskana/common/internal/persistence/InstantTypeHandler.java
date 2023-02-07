@@ -14,32 +14,27 @@ import org.apache.ibatis.type.JdbcType;
 /** Instruct jdbc driver to interpret timestamps as being in utc timezone. */
 public class InstantTypeHandler extends BaseTypeHandler<Instant> {
 
+  static final TimeZone TIME_ZONE_UTC = TimeZone.getTimeZone("UTC");
+
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, Instant parameter, JdbcType jdbcType)
       throws SQLException {
-    ps.setTimestamp(
-        i, Timestamp.from(parameter), Calendar.getInstance(TimeZone.getTimeZone("UTC")));
+    ps.setTimestamp(i, Timestamp.from(parameter), Calendar.getInstance(TIME_ZONE_UTC));
   }
 
   @Override
   public Instant getNullableResult(ResultSet rs, String columnName) throws SQLException {
-    Timestamp timestamp =
-        rs.getTimestamp(columnName, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
-    return getInstant(timestamp);
+    return getInstant(rs.getTimestamp(columnName, Calendar.getInstance(TIME_ZONE_UTC)));
   }
 
   @Override
   public Instant getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-    Timestamp timestamp =
-        rs.getTimestamp(columnIndex, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
-    return getInstant(timestamp);
+    return getInstant(rs.getTimestamp(columnIndex, Calendar.getInstance(TIME_ZONE_UTC)));
   }
 
   @Override
   public Instant getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-    Timestamp timestamp =
-        cs.getTimestamp(columnIndex, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
-    return getInstant(timestamp);
+    return getInstant(cs.getTimestamp(columnIndex, Calendar.getInstance(TIME_ZONE_UTC)));
   }
 
   private static Instant getInstant(Timestamp timestamp) {

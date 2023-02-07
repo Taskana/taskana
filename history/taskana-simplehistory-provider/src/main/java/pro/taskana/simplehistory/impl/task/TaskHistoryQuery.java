@@ -1,7 +1,9 @@
 package pro.taskana.simplehistory.impl.task;
 
+import java.time.Instant;
+
 import pro.taskana.common.api.BaseQuery;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
@@ -49,13 +51,13 @@ public interface TaskHistoryQuery extends BaseQuery<TaskHistoryEvent, TaskHistor
   TaskHistoryQuery eventTypeIn(String... eventTypes);
 
   /**
-   * Add your created TimeInterval to your query.
+   * Add your created Interval to your query.
    *
-   * @param createdWithin the {@link TimeInterval} within which the searched-for classifications
-   *     were created.
+   * @param createdWithin the {@link Interval} within which the searched-for classifications were
+   *     created.
    * @return the query
    */
-  TaskHistoryQuery createdWithin(TimeInterval... createdWithin);
+  TaskHistoryQuery createdWithin(Interval<Instant>... createdWithin);
 
   /**
    * Add your userId to your query.

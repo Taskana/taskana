@@ -11,7 +11,7 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.Interval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQuery;
@@ -147,7 +147,7 @@ class QueryWorkbasketHistoryAccTest extends AbstractAccTest {
             .list();
     assertThat(returnValues).hasSize(6);
 
-    TimeInterval timeInterval = new TimeInterval(Instant.now().minusSeconds(10), Instant.now());
+    Interval<Instant> timeInterval = new Interval<>(Instant.now().minusSeconds(10), Instant.now());
     returnValues = historyService.createWorkbasketHistoryQuery().createdWithin(timeInterval).list();
     assertThat(returnValues).isEmpty();
 
