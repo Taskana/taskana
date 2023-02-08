@@ -9,13 +9,13 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 @ExtendWith(JaasExtension.class)
 class ClaimTaskAccTest extends AbstractAccTest {
@@ -129,14 +129,14 @@ class ClaimTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowNotAuthorizedException_When_UserHasNoReadPermissionAndTaskIsReady() {
     assertThatThrownBy(() -> taskService.claim("TKI:000000000000000000000000000000000000"))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-taskrouter")
   @Test
   void should_ThrowNotAuthorizedException_When_UserHasNoReadPermissionAndTaskIsReadyForReview() {
     assertThatThrownBy(() -> taskService.claim("TKI:500000000000000000000000000000000028"))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-1-2")

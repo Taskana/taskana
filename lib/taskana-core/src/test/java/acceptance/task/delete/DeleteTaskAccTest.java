@@ -12,11 +12,10 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
-import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
@@ -32,7 +31,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000037");
 
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "user-taskrouter")
@@ -40,7 +39,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   void should_ThrowNotAuthorizedException_When_UserIsMemberOfTaskRouterRole() {
     ThrowingCallable call =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000037");
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -121,7 +120,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000010");
 
     ThrowingCallable call = () -> taskService.deleteTasks(taskIds);
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -142,7 +141,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_UserIsNotInAdminRole() {
     ThrowingCallable deleteTaskCall =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000041");
-    assertThatThrownBy(deleteTaskCall).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(deleteTaskCall).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -151,7 +150,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000029");
 
     ThrowingCallable call = () -> taskService.deleteTask(task.getId());
-    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(call).isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -162,7 +161,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     ThrowingCallable call = () -> taskService.deleteTask(task.getId());
     assertThatThrownBy(call)
         .describedAs("Should not be possible to delete claimed task without force flag")
-        .isInstanceOf(InvalidStateException.class);
+        .isInstanceOf(InvalidTaskStateException.class);
 
     taskService.forceDeleteTask(task.getId());
 

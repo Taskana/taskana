@@ -37,7 +37,7 @@ import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.rest.RestEndpoints;
 
 /** Controller for Importing / Exporting classifications. */
@@ -94,7 +94,7 @@ public class ClassificationDefinitionController {
    * @param file the file containing the Classifications which should be imported.
    * @return nothing
    * @throws InvalidArgumentException if any Classification within the import file is invalid
-   * @throws NotAuthorizedException if the current user is not authorized to import Classifications
+   * @throws MismatchedRoleException if the current user is not authorized to import Classifications
    * @throws ConcurrencyException TODO: this makes no sense
    * @throws ClassificationNotFoundException TODO: this makes no sense
    * @throws ClassificationAlreadyExistException TODO: this makes no sense
@@ -106,9 +106,9 @@ public class ClassificationDefinitionController {
   @PostMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importClassifications(@RequestParam("file") MultipartFile file)
-      throws InvalidArgumentException, NotAuthorizedException, ConcurrencyException,
-          ClassificationNotFoundException, ClassificationAlreadyExistException,
-          DomainNotFoundException, IOException, MalformedServiceLevelException {
+      throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException,
+          ClassificationAlreadyExistException, DomainNotFoundException, IOException,
+          MalformedServiceLevelException, MismatchedRoleException {
     Map<String, String> systemIds = getSystemIds();
     ClassificationDefinitionCollectionRepresentationModel collection =
         extractClassificationResourcesFromFile(file);
@@ -185,9 +185,9 @@ public class ClassificationDefinitionController {
   private void insertOrUpdateClassificationsWithoutParent(
       Collection<ClassificationDefinitionRepresentationModel> definitionList,
       Map<String, String> systemIds)
-      throws ClassificationNotFoundException, NotAuthorizedException, InvalidArgumentException,
+      throws ClassificationNotFoundException, InvalidArgumentException,
           ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException,
-          MalformedServiceLevelException {
+          MalformedServiceLevelException, MismatchedRoleException {
     for (ClassificationDefinitionRepresentationModel definition : definitionList) {
       ClassificationRepresentationModel classificationRepModel = definition.getClassification();
       classificationRepModel.setParentKey(null);
@@ -207,8 +207,8 @@ public class ClassificationDefinitionController {
   }
 
   private void updateParentChildrenRelations(Map<Classification, String> childrenInFile)
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException, MalformedServiceLevelException {
+      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException {
     for (Map.Entry<Classification, String> entry : childrenInFile.entrySet()) {
       Classification childRes = entry.getKey();
       String parentKey = entry.getValue();
@@ -230,8 +230,8 @@ public class ClassificationDefinitionController {
   }
 
   private void updateExistingClassification(Classification newClassification, String systemId)
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException, MalformedServiceLevelException {
+      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException {
     Classification currentClassification = classificationService.getClassification(systemId);
     if (newClassification.getType() != null
         && !newClassification.getType().equals(currentClassification.getType())) {

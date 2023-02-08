@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
@@ -34,7 +34,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @Test
   void should_ThrowException_When_UserIsNotAuthorized() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "unknown")
@@ -44,7 +44,7 @@ class ProvideTaskStatusReportAccTest extends AbstractReportAccTest {
   @TestTemplate
   void should_ThrowException_When_UserIsNotAdminOrMonitor() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createTaskStatusReportBuilder().buildReport())
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "admin")

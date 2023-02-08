@@ -8,15 +8,15 @@ import javax.enterprise.event.Observes;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Example Bootstrap Application. */
@@ -27,10 +27,10 @@ public class ExampleBootstrap {
 
   @PostConstruct
   public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
-      throws TaskNotFoundException, NotAuthorizedException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, InvalidStateException, InvalidOwnerException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException {
+      throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
+          InvalidOwnerException, TaskAlreadyExistException, InvalidArgumentException,
+          AttachmentPersistenceException, ObjectReferencePersistenceException,
+          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
     System.out.println("---------------------------> Start App");
     ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");

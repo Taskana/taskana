@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -169,13 +169,13 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   void should_ThrowException_When_TryingToGetByIdWithoutPermissions() {
     ThrowingCallable call =
         () -> WORKBASKET_SERVICE.getWorkbasket("WBI:100000000000000000000000000000000001");
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @Test
   void should_ThrowException_When_TryingToGetByKeyAndDomainWithoutPermissions() {
     assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("GPK_KSC", "DOMAIN_A"))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-1-1")

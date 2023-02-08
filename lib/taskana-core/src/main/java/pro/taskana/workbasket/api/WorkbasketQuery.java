@@ -3,9 +3,10 @@ package pro.taskana.workbasket.api;
 import java.util.List;
 
 import pro.taskana.common.api.BaseQuery;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 /** WorkitemQuery for generating dynamic sql. */
@@ -151,12 +152,12 @@ public interface WorkbasketQuery extends BaseQuery<WorkbasketSummary, Workbasket
    * @param accessIds Users which should be checked for given permissions on workbaskets.
    * @return the current query object.
    * @throws InvalidArgumentException if permissions OR the accessIds are NULL or empty.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
-   *     ADMIN
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    */
   WorkbasketQuery accessIdsHavePermissions(
       List<WorkbasketPermission> permissions, String... accessIds)
-      throws InvalidArgumentException, NotAuthorizedException;
+      throws InvalidArgumentException, MismatchedRoleException;
 
   /**
    * Add condition to query if the caller (one of the accessIds of the caller) has the given

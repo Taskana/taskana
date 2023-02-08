@@ -2,11 +2,11 @@ package pro.taskana.classification.api.exceptions;
 
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.ErrorCode;
-import pro.taskana.common.api.exceptions.NotFoundException;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;
 
 /** Thrown if a specific {@linkplain Classification} is not in the database. */
-public class ClassificationNotFoundException extends NotFoundException {
+public class ClassificationNotFoundException extends TaskanaException {
 
   public static final String ERROR_KEY_ID = "CLASSIFICATION_WITH_ID_NOT_FOUND";
   public static final String ERROR_KEY_KEY_DOMAIN = "CLASSIFICATION_WITH_KEY_NOT_FOUND";

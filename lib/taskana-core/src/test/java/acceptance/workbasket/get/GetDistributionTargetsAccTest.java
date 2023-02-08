@@ -10,10 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -115,7 +116,7 @@ class GetDistributionTargetsAccTest extends AbstractAccTest {
           workbasketService.setDistributionTargets(
               existingWb, List.of("WBI:100000000000000000000000000000000002"));
         };
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -129,7 +130,8 @@ class GetDistributionTargetsAccTest extends AbstractAccTest {
         () -> {
           workbasketService.getDistributionTargets(existingWb);
         };
-    assertThatThrownBy(getDistributionTargetsCall).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(getDistributionTargetsCall)
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -167,7 +169,7 @@ class GetDistributionTargetsAccTest extends AbstractAccTest {
 
     ThrowingCallable call =
         () -> workbasketService.getDistributionSources("WBI:100000000000000000000000000000000004");
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-2-2")

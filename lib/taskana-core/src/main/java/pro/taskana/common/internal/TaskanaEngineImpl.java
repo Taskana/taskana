@@ -38,7 +38,6 @@ import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
@@ -283,7 +282,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+  public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
     if (!isUserInRole(roles)) {
       if (LOGGER.isDebugEnabled()) {
         String rolesAsString = Arrays.toString(roles);

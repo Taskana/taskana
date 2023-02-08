@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.routing.dmn.service.DmnConverterService;
 
 /** Controller for all DMN upload related endpoints. */
@@ -30,14 +30,14 @@ public class DmnUploadController {
    *
    * @param excelRoutingFile the excel file containing the routing rules
    * @return the result of the upload
-   * @throws NotAuthorizedException if the current user is not authorized to upload/convert an excel
-   *     file
+   * @throws MismatchedRoleException if the current user is not authorized to upload/convert an
+   *     excel file
    * @throws IOException if there is an I/O problem with the provided excel file
    */
   @PutMapping(RoutingRestEndpoints.URL_ROUTING_RULES_DEFAULT)
   public ResponseEntity<RoutingUploadResultRepresentationModel> convertAndUpload(
       @RequestParam("excelRoutingFile") MultipartFile excelRoutingFile)
-      throws IOException, NotAuthorizedException {
+      throws IOException, MismatchedRoleException {
 
     DmnModelInstance dmnModelInstance = dmnConverterService.convertExcelToDmn(excelRoutingFile);
 

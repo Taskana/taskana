@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TaskStatusColumnHeader;
 import pro.taskana.monitor.api.reports.item.TaskQueryItem;
@@ -34,7 +34,7 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
   public interface Builder extends Report.Builder<TaskQueryItem, TaskStatusColumnHeader> {
 
     @Override
-    TaskStatusReport buildReport() throws NotAuthorizedException;
+    TaskStatusReport buildReport() throws MismatchedRoleException;
 
     /**
      * Adds a list of states to the builder. The created report contains only tasks with a state in
