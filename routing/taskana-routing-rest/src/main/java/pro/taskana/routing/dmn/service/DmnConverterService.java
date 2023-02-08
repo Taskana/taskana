@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.routing.dmn.service.util.InputEntriesSanitizer;
 import pro.taskana.routing.dmn.spi.internal.DmnValidatorManager;
@@ -57,7 +57,7 @@ public class DmnConverterService {
   }
 
   public DmnModelInstance convertExcelToDmn(MultipartFile excelRoutingFile)
-      throws IOException, NotAuthorizedException {
+      throws IOException, MismatchedRoleException {
 
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
@@ -95,7 +95,7 @@ public class DmnConverterService {
     String dmnString = Dmn.convertToString(originalInstance);
     StringBuilder finalDmn = new StringBuilder();
     int splitPosition = dmnString.indexOf("</decisionTable>");
-    finalDmn.append(dmnString.substring(0, splitPosition));
+    finalDmn.append(dmnString, 0, splitPosition);
     finalDmn.append(serializedRules);
     finalDmn.append(dmnString.substring(splitPosition));
     DmnModelInstance patchedModel =

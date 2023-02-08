@@ -22,13 +22,13 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -343,7 +343,8 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).hasSize(3).containsAnyElementsOf(taskIds);
-    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(NotAuthorizedException.class);
+    assertThat(results.getErrorMap().values())
+        .hasOnlyElementsOfType(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "admin")

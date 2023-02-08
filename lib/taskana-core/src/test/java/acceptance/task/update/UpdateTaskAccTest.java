@@ -28,7 +28,6 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskCustomField;
@@ -38,6 +37,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 /** Acceptance test for all "update task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -179,7 +179,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     task.setWorkbasketKey("USER-1-2");
 
     assertThatThrownBy(() -> taskService.updateTask(task))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-1-1")

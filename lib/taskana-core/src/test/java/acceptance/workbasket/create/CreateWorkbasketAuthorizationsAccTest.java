@@ -6,7 +6,7 @@ import acceptance.AbstractAccTest;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -29,6 +29,6 @@ class CreateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
     accessItem.setPermission(WorkbasketPermission.CUSTOM_11, true);
     accessItem.setPermission(WorkbasketPermission.READ, true);
     assertThatThrownBy(() -> workbasketService.createWorkbasketAccessItem(accessItem))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedRoleException.class);
   }
 }

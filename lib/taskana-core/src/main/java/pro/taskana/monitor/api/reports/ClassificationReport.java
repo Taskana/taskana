@@ -3,9 +3,10 @@ package pro.taskana.monitor.api.reports;
 import java.util.List;
 
 import pro.taskana.classification.api.models.Classification;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -35,11 +36,11 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
     @Override
-    ClassificationReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+    ClassificationReport buildReport() throws InvalidArgumentException, MismatchedRoleException;
 
     @Override
     ClassificationReport buildReport(TaskTimestamp timestamp)
-        throws NotAuthorizedException, InvalidArgumentException;
+        throws InvalidArgumentException, MismatchedRoleException;
 
     /**
      * Returns a {@linkplain DetailedClassificationReport} containing all tasks after applying the
@@ -49,13 +50,14 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
      *
      * @return the DetailedClassificationReport
      * @throws InvalidArgumentException if the column headers are not initialized
-     * @throws NotAuthorizedException if the user has no rights to access the monitor
+     * @throws MismatchedRoleException if the current user is not member of {@linkplain
+     *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
      */
     DetailedClassificationReport buildDetailedReport()
-        throws InvalidArgumentException, NotAuthorizedException;
+        throws InvalidArgumentException, MismatchedRoleException;
 
     DetailedClassificationReport buildDetailedReport(TaskTimestamp timestamp)
-        throws InvalidArgumentException, NotAuthorizedException;
+        throws InvalidArgumentException, MismatchedRoleException;
   }
 
   /**

@@ -22,7 +22,6 @@ import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidCallbackStateException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
@@ -72,7 +71,7 @@ class CallbackStateAccTest extends AbstractAccTest {
       CallbackState.NONE, CallbackState.CLAIMED, CallbackState.CALLBACK_PROCESSING_COMPLETED
     };
     assertThatThrownBy(call)
-        .isInstanceOf(InvalidStateException.class)
+        .isInstanceOf(InvalidCallbackStateException.class)
         .hasMessage(
             "Expected callback state of Task with id '%s' to be: '%s', but found '%s'",
             createdTask.getId(),
@@ -85,7 +84,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
     call = () -> taskService.forceDeleteTask(createdTask2.getId());
     assertThatThrownBy(call)
-        .isInstanceOf(InvalidStateException.class)
+        .isInstanceOf(InvalidCallbackStateException.class)
         .hasMessage(
             "Expected callback state of Task with id '%s' to be: '%s', but found '%s'",
             createdTask2.getId(),
@@ -96,7 +95,7 @@ class CallbackStateAccTest extends AbstractAccTest {
 
     call = () -> taskService.forceDeleteTask(createdTask3.getId());
     assertThatThrownBy(call)
-        .isInstanceOf(InvalidStateException.class)
+        .isInstanceOf(InvalidCallbackStateException.class)
         .hasMessage(
             "Expected callback state of Task with id '%s' to be: '%s', but found '%s'",
             createdTask3.getId(),

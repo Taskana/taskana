@@ -5,7 +5,7 @@ import java.util.List;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
@@ -27,13 +27,13 @@ public class ClassificationCategoryReportBuilderImpl
 
   @Override
   public ClassificationCategoryReport buildReport()
-      throws NotAuthorizedException, InvalidArgumentException {
+      throws InvalidArgumentException, MismatchedRoleException {
     return buildReport(TaskTimestamp.DUE);
   }
 
   @Override
   public ClassificationCategoryReport buildReport(TaskTimestamp timestamp)
-      throws InvalidArgumentException, NotAuthorizedException {
+      throws InvalidArgumentException, MismatchedRoleException {
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();

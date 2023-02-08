@@ -12,12 +12,13 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -60,7 +61,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
           Workbasket wb = workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A");
           workbasketService.deleteWorkbasket(wb.getId());
         };
-    assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(TaskanaException.class);
 
     deleteWorkbasketCall =
         () -> {
@@ -68,13 +69,13 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
               workbasketService.getWorkbasket("WBI:100000000000000000000000000000000005");
           workbasketService.deleteWorkbasket(wb.getId());
         };
-    assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(deleteWorkbasketCall).isInstanceOf(TaskanaException.class);
   }
 
   @Test
   void should_ThrowNotAuthorizedException_When_UnauthorizedTryingToGetWorkbaskets() {
     assertThatThrownBy(() -> workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A"))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "businessadmin")

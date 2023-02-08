@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.IdGenerator;
@@ -19,6 +18,7 @@ import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.UserMapper;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 class TaskCommentServiceImpl {
 
@@ -49,8 +49,9 @@ class TaskCommentServiceImpl {
   }
 
   TaskComment updateTaskComment(TaskComment taskCommentToUpdate)
-      throws NotAuthorizedException, ConcurrencyException, TaskCommentNotFoundException,
-          TaskNotFoundException, InvalidArgumentException {
+      throws ConcurrencyException, TaskCommentNotFoundException, TaskNotFoundException,
+          InvalidArgumentException, MismatchedTaskCommentCreatorException,
+          MismatchedWorkbasketPermissionException {
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
@@ -91,7 +92,8 @@ class TaskCommentServiceImpl {
   }
 
   TaskComment createTaskComment(TaskComment taskCommentToCreate)
-      throws NotAuthorizedException, TaskNotFoundException, InvalidArgumentException {
+      throws TaskNotFoundException, InvalidArgumentException,
+          MismatchedWorkbasketPermissionException {
 
     TaskCommentImpl taskCommentImplToCreate = (TaskCommentImpl) taskCommentToCreate;
 
@@ -115,8 +117,8 @@ class TaskCommentServiceImpl {
   }
 
   void deleteTaskComment(String taskCommentId)
-      throws NotAuthorizedException, TaskCommentNotFoundException, TaskNotFoundException,
-          InvalidArgumentException {
+      throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
+          MismatchedTaskCommentCreatorException, MismatchedWorkbasketPermissionException {
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
@@ -146,7 +148,7 @@ class TaskCommentServiceImpl {
   }
 
   List<TaskComment> getTaskComments(String taskId)
-      throws NotAuthorizedException, TaskNotFoundException {
+      throws TaskNotFoundException, MismatchedWorkbasketPermissionException {
 
     try {
 
@@ -168,8 +170,8 @@ class TaskCommentServiceImpl {
   }
 
   TaskComment getTaskComment(String taskCommentId)
-      throws TaskCommentNotFoundException, NotAuthorizedException, TaskNotFoundException,
-          InvalidArgumentException {
+      throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
+          MismatchedWorkbasketPermissionException {
 
     TaskCommentImpl result;
 

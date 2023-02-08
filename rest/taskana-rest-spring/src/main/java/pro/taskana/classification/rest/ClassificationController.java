@@ -36,7 +36,7 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
@@ -118,7 +118,7 @@ public class ClassificationController {
    * @title Create a new Classification
    * @param repModel the Classification which should be created.
    * @return The inserted Classification
-   * @throws NotAuthorizedException if the current user is not allowed to create a Classification.
+   * @throws MismatchedRoleException if the current user is not allowed to create a Classification.
    * @throws ClassificationAlreadyExistException if the new Classification already exists. This
    *     means that a Classification with the requested key and domain already exist.
    * @throws DomainNotFoundException if the domain within the new Classification does not exist.
@@ -131,8 +131,8 @@ public class ClassificationController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> createClassification(
       @RequestBody ClassificationRepresentationModel repModel)
-      throws NotAuthorizedException, ClassificationAlreadyExistException, DomainNotFoundException,
-          InvalidArgumentException, MalformedServiceLevelException {
+      throws ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException {
     Classification classification = modelAssembler.toEntityModel(repModel);
     classification = classificationService.createClassification(classification);
 
@@ -146,7 +146,8 @@ public class ClassificationController {
    * @param classificationId the Id of the Classification which should be updated.
    * @param resource the new Classification for the requested id.
    * @return the updated Classification
-   * @throws NotAuthorizedException if the current user is not authorized to update a Classification
+   * @throws MismatchedRoleException if the current user is not authorized to update a
+   *     Classification
    * @throws ClassificationNotFoundException if the requested Classification is not found
    * @throws ConcurrencyException if the requested Classification Id has been modified in the
    *     meantime by a different process.
@@ -159,8 +160,8 @@ public class ClassificationController {
   public ResponseEntity<ClassificationRepresentationModel> updateClassification(
       @PathVariable(value = "classificationId") String classificationId,
       @RequestBody ClassificationRepresentationModel resource)
-      throws NotAuthorizedException, ClassificationNotFoundException, ConcurrencyException,
-          InvalidArgumentException, MalformedServiceLevelException {
+      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException {
     if (!classificationId.equals(resource.getClassificationId())) {
       throw new InvalidArgumentException(
           String.format(
@@ -183,13 +184,14 @@ public class ClassificationController {
    * @throws ClassificationNotFoundException if the requested Classification could not be found
    * @throws ClassificationInUseException if there are tasks existing referring to the requested
    *     Classification
-   * @throws NotAuthorizedException if the user is not authorized to delete a Classification
+   * @throws MismatchedRoleException if the user is not authorized to delete a Classification
    */
   @DeleteMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> deleteClassification(
       @PathVariable String classificationId)
-      throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
+      throws ClassificationNotFoundException, ClassificationInUseException,
+          MismatchedRoleException {
     classificationService.deleteClassification(classificationId);
     return ResponseEntity.noContent().build();
   }

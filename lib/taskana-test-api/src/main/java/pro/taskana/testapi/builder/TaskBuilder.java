@@ -7,7 +7,6 @@ import java.util.Map;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;
@@ -22,6 +21,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -215,8 +215,9 @@ public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, Task
   @Override
   public Task buildAndStore(TaskService taskService)
       throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, NotAuthorizedException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, TaskNotFoundException {
+          ClassificationNotFoundException, AttachmentPersistenceException,
+          ObjectReferencePersistenceException, TaskNotFoundException,
+          MismatchedWorkbasketPermissionException {
     try {
       Task task = taskService.createTask(testTask);
       return taskService.getTask(task.getId());

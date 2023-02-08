@@ -9,7 +9,7 @@ import pro.taskana.common.internal.util.MapCreator;
  * This exception is thrown when the current user is not in a certain {@linkplain TaskanaRole role}
  * it is supposed to be.
  */
-public class MismatchedRoleException extends NotAuthorizedException {
+public class MismatchedRoleException extends TaskanaException {
 
   public static final String ERROR_KEY = "ROLE_MISMATCHED";
   private final String currentUserId;

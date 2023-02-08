@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
@@ -142,6 +142,6 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setName("new name");
 
     assertThatThrownBy(() -> workbasketService.updateWorkbasket(workbasket))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedRoleException.class);
   }
 }

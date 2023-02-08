@@ -21,13 +21,11 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
@@ -154,7 +152,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable call =
         () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-1-1", groups = "cn=routers,cn=groups,OU=Test,O=TASKANA")
@@ -165,7 +163,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     assertThatThrownBy(
             () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005"))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
@@ -196,7 +194,7 @@ class TransferTaskAccTest extends AbstractAccTest {
                 "TKI:200000000000000000000000000000000007",
                 "WBI:100000000000000000000000000000000001");
     assertThatThrownBy(call)
-        .isInstanceOf(NotAuthorizedException.class)
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class)
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
@@ -212,7 +210,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
     assertThatThrownBy(call)
-        .isInstanceOf(NotAuthorizedException.class)
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class)
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
@@ -227,7 +225,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable call =
         () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
-    assertThatThrownBy(call).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(call).isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
@@ -333,7 +331,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> taskService.transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
     assertThatThrownBy(call)
-        .isInstanceOf(NotAuthorizedException.class)
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class)
         .hasMessageContaining("APPEND");
   }
 

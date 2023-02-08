@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
@@ -106,7 +106,7 @@ public class WorkbasketAccessItemRepresentationModelAssembler
   public WorkbasketAccessItemCollectionRepresentationModel
       toTaskanaCollectionModelForSingleWorkbasket(
           String workbasketId, List<WorkbasketAccessItem> workbasketAccessItems)
-          throws NotAuthorizedException, WorkbasketNotFoundException {
+          throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException {
     WorkbasketAccessItemCollectionRepresentationModel pageModel =
         toTaskanaCollectionModel(workbasketAccessItems);
     pageModel.add(
