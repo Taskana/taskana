@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.reports.TaskStatusReport;
 import pro.taskana.monitor.api.reports.TaskStatusReport.Builder;
@@ -35,7 +35,7 @@ public class TaskStatusReportBuilderImpl implements TaskStatusReport.Builder {
   }
 
   @Override
-  public TaskStatusReport buildReport() throws NotAuthorizedException {
+  public TaskStatusReport buildReport() throws MismatchedRoleException {
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();

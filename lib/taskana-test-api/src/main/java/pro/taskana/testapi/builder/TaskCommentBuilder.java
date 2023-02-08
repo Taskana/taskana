@@ -3,11 +3,11 @@ package pro.taskana.testapi.builder;
 import java.time.Instant;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 public class TaskCommentBuilder implements EntityBuilder<TaskComment, TaskService> {
 
@@ -49,8 +49,8 @@ public class TaskCommentBuilder implements EntityBuilder<TaskComment, TaskServic
 
   @Override
   public TaskComment buildAndStore(TaskService taskService)
-      throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedException,
-          TaskCommentNotFoundException {
+      throws InvalidArgumentException, TaskNotFoundException, TaskCommentNotFoundException,
+          MismatchedWorkbasketPermissionException {
     try {
       TaskComment t = taskService.createTaskComment(testTaskComment);
       return taskService.getTaskComment(t.getId());

@@ -30,7 +30,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.LogSanitizer;
@@ -108,7 +108,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public void deleteClassification(String classificationId)
-      throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
+      throws ClassificationInUseException, ClassificationNotFoundException,
+          MismatchedRoleException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
@@ -163,7 +164,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public void deleteClassification(String classificationKey, String domain)
-      throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException {
+      throws ClassificationInUseException, ClassificationNotFoundException,
+          MismatchedRoleException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     try {
       taskanaEngine.openConnection();
@@ -180,8 +182,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public Classification createClassification(Classification classification)
-      throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
-          InvalidArgumentException, MalformedServiceLevelException {
+      throws ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     if (!taskanaEngine.domainExists(classification.getDomain())
         && !MASTER_DOMAIN.equals(classification.getDomain())) {
@@ -234,8 +236,8 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public Classification updateClassification(Classification classification)
-      throws NotAuthorizedException, ConcurrencyException, ClassificationNotFoundException,
-          InvalidArgumentException, MalformedServiceLevelException {
+      throws ConcurrencyException, ClassificationNotFoundException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     ClassificationImpl classificationImpl;
     try {

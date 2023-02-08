@@ -14,13 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
@@ -78,9 +76,9 @@ class SetOwnerAccTest extends AbstractAccTest {
     String anyUserName = "TestUser3";
 
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
     assertThatThrownBy(() -> setOwner(taskReadyId, anyUserName))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -94,7 +92,7 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
     assertThat(taskClaimed.getOwner()).isEqualTo("user-1-1");
     assertThatThrownBy(() -> setOwner(taskClaimedId, anyUserName))
-        .isInstanceOf(InvalidStateException.class);
+        .isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -210,7 +208,8 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.getErrorMap())
         .hasSize(95)
         .extractingFromEntries(Entry::getValue)
-        .hasOnlyElementsOfTypes(InvalidTaskStateException.class, NotAuthorizedException.class)
+        .hasOnlyElementsOfTypes(
+            InvalidTaskStateException.class, MismatchedWorkbasketPermissionException.class)
         .areExactly(35, invalidTaskStateException)
         .areExactly(60, mismatchedWorkbasketPermissionException);
   }
@@ -229,7 +228,7 @@ class SetOwnerAccTest extends AbstractAccTest {
     assertThat(results.getErrorMap())
         .hasSize(49)
         .extractingFromEntries(Entry::getValue)
-        .hasOnlyElementsOfType(InvalidStateException.class);
+        .hasOnlyElementsOfType(InvalidTaskStateException.class);
   }
 
   private Task setOwner(String taskReadyId, String anyUserName) throws Exception {

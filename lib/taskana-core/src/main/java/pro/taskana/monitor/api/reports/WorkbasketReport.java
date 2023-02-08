@@ -4,7 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
@@ -32,11 +32,11 @@ public class WorkbasketReport extends Report<MonitorQueryItem, TimeIntervalColum
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
     @Override
-    WorkbasketReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+    WorkbasketReport buildReport() throws InvalidArgumentException, MismatchedRoleException;
 
     @Override
     WorkbasketReport buildReport(TaskTimestamp timestamp)
-        throws NotAuthorizedException, InvalidArgumentException;
+        throws InvalidArgumentException, MismatchedRoleException;
 
     /**
      * Adds a list of {@linkplain CombinedClassificationFilter} to the builder. The created report

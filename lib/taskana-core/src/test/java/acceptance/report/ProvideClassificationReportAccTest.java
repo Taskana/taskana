@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
@@ -36,7 +36,7 @@ class ProvideClassificationReportAccTest extends AbstractReportAccTest {
   @Test
   void testRoleCheck() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createClassificationReportBuilder().buildReport())
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "monitor")

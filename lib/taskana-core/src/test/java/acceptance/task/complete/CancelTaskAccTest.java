@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 /** Acceptance tests for all "cancel task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -85,7 +85,7 @@ class CancelTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_UserNotAuthorized() {
     assertThatThrownBy(() -> taskService.cancelTask("TKI:000000000000000000000000000000000001"))
-        .isInstanceOf(NotAuthorizedException.class);
+        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -97,7 +97,7 @@ class CancelTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable taskanaCall = () -> taskService.cancelTask(taskSummaries.get(0).getId());
 
-    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -108,7 +108,7 @@ class CancelTaskAccTest extends AbstractAccTest {
     assertThat(taskSummaries).hasSize(5);
     ThrowingCallable taskanaCall = () -> taskService.cancelTask(taskSummaries.get(0).getId());
 
-    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -118,6 +118,6 @@ class CancelTaskAccTest extends AbstractAccTest {
         taskService.createTaskQuery().stateIn(TaskState.CANCELLED).list();
     assertThat(taskSummaries).hasSize(5);
     ThrowingCallable taskanaCall = () -> taskService.cancelTask(taskSummaries.get(0).getId());
-    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidTaskStateException.class);
   }
 }

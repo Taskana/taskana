@@ -4,7 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -45,7 +45,7 @@ public class TimestampReport extends Report<TimestampQueryItem, TimeIntervalColu
           TimestampReport.Builder, TimestampQueryItem, TimeIntervalColumnHeader> {
 
     @Override
-    TimestampReport buildReport() throws NotAuthorizedException, InvalidArgumentException;
+    TimestampReport buildReport() throws InvalidArgumentException, MismatchedRoleException;
 
     Builder withTimestamps(List<TaskTimestamp> taskTimestamps);
   }

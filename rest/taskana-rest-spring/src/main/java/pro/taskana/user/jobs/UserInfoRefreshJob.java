@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
@@ -120,7 +120,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
               LOGGER.debug("Successfully inserted user {}", user);
             }
           } catch (InvalidArgumentException
-              | NotAuthorizedException
+              | MismatchedRoleException
               | UserAlreadyExistException e) {
             throw new SystemException("Caught Exception while trying to insert new User", e);
           }

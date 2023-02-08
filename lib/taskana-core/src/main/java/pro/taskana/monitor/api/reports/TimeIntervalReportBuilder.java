@@ -3,8 +3,9 @@ package pro.taskana.monitor.api.reports;
 import java.util.List;
 
 import pro.taskana.common.api.IntInterval;
+import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -215,30 +216,33 @@ public interface TimeIntervalReportBuilder<
    * @param timestamp the {@linkplain TaskTimestamp} of interest
    * @return the list of all taskIds
    * @throws InvalidArgumentException if the column headers are not initialized
-   * @throws NotAuthorizedException if the user has no rights to access the monitor
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
    */
   List<String> listTaskIdsForSelectedItems(
       List<SelectedItem> selectedItems, TaskTimestamp timestamp)
-      throws NotAuthorizedException, InvalidArgumentException;
+      throws InvalidArgumentException, MismatchedRoleException;
 
   /**
    * Returns a list of all values of an entered custom field that are in the {@linkplain Report}.
    *
    * @param taskCustomField the {@linkplain TaskCustomField} whose values should appear in the list
    * @return the list of all custom attribute values
-   * @throws NotAuthorizedException if the user has no rights to access the monitor
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
    */
   List<String> listCustomAttributeValuesForCustomAttributeName(TaskCustomField taskCustomField)
-      throws NotAuthorizedException;
+      throws MismatchedRoleException;
 
   /**
    * Builds the {@linkplain Report} for the specified {@linkplain TaskTimestamp}.
    *
    * @param timestamp The {@linkplain TaskTimestamp} of interest
    * @return The build {@linkplain Report}
-   * @throws NotAuthorizedException if the user has no rights to access the monitor
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
    * @throws InvalidArgumentException if an error occurs
    */
   Report<I, H> buildReport(TaskTimestamp timestamp)
-      throws NotAuthorizedException, InvalidArgumentException;
+      throws InvalidArgumentException, MismatchedRoleException;
 }

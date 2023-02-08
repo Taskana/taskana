@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.monitor.api.MonitorService;
@@ -45,7 +45,7 @@ class GetTaskIdsOfClassificationReportAccTest extends AbstractReportAccTest {
             MONITOR_SERVICE
                 .createClassificationReportBuilder()
                 .listTaskIdsForSelectedItems(selectedItems, TaskTimestamp.DUE);
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "monitor")

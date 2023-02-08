@@ -18,7 +18,7 @@ import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobServiceImpl;
@@ -146,7 +146,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteTasks(List<TaskSummary> tasksToBeDeleted)
-      throws InvalidArgumentException, NotAuthorizedException {
+      throws InvalidArgumentException, MismatchedRoleException {
 
     List<String> tasksIdsToBeDeleted =
         tasksToBeDeleted.stream().map(TaskSummary::getId).collect(Collectors.toList());
