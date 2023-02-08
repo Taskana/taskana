@@ -7,7 +7,7 @@ import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;
@@ -125,7 +125,7 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
   }
 
   @Override
-  public WorkbasketPriorityReport buildReport() throws NotAuthorizedException {
+  public WorkbasketPriorityReport buildReport() throws MismatchedRoleException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
 
     WorkbasketPriorityReport report = new WorkbasketPriorityReport(columnHeaders);

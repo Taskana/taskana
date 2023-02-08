@@ -26,7 +26,7 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
@@ -35,6 +35,7 @@ import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -123,14 +124,14 @@ public class WorkbasketController {
    * @param workbasketId the Id of the requested Workbasket
    * @return the requested Workbasket
    * @throws WorkbasketNotFoundException if the requested Workbasket is not found
-   * @throws NotAuthorizedException if the current user has no permissions to access the requested
-   *     Workbasket
+   * @throws MismatchedWorkbasketPermissionException if the current user has no permissions to
+   *     access the requested Workbasket
    */
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> getWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException {
     Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
 
     return ResponseEntity.ok(workbasketRepresentationModelAssembler.toModel(workbasket));
@@ -151,17 +152,19 @@ public class WorkbasketController {
    * @title Delete a Workbasket
    * @param workbasketId the Id of the Workbasket which should be deleted
    * @return the deleted Workbasket
-   * @throws NotAuthorizedException if the current user is not authorized to delete this Workbasket.
+   * @throws MismatchedWorkbasketPermissionException if the current user is not authorized to delete
+   *     this Workbasket.
    * @throws InvalidArgumentException if the requested Workbasket Id is null or empty
    * @throws WorkbasketNotFoundException if the requested Workbasket is not found
    * @throws WorkbasketInUseException if the Workbasket contains tasks.
+   * @throws MismatchedRoleException if the current user has not correct permissions
    */
   @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
   public ResponseEntity<WorkbasketRepresentationModel> deleteWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketInUseException {
+      throws InvalidArgumentException, WorkbasketNotFoundException, WorkbasketInUseException,
+          MismatchedRoleException, MismatchedWorkbasketPermissionException {
 
     boolean workbasketDeleted = workbasketService.deleteWorkbasket(workbasketId);
 
@@ -186,7 +189,7 @@ public class WorkbasketController {
    * @param workbasketRepresentationModel the Workbasket which should be created.
    * @return the created Workbasket
    * @throws InvalidArgumentException if some required properties of the Workbasket are not set.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
+   * @throws MismatchedRoleException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketAlreadyExistException if the Workbasket exists already
    * @throws DomainNotFoundException if the domain does not exist in the configuration.
@@ -195,7 +198,7 @@ public class WorkbasketController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> createWorkbasket(
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException, MismatchedRoleException, WorkbasketAlreadyExistException,
           DomainNotFoundException {
     Workbasket workbasket =
         workbasketRepresentationModelAssembler.toEntityModel(workbasketRepresentationModel);
@@ -215,17 +218,18 @@ public class WorkbasketController {
    * @throws InvalidArgumentException if the requested Id and the Id within the new Workbasket do
    *     not match.
    * @throws WorkbasketNotFoundException if the requested workbasket does not
-   * @throws NotAuthorizedException if the current user is not authorized to update the Workbasket
+   * @throws MismatchedRoleException if the current user is not authorized to update the Workbasket
    * @throws ConcurrencyException if an attempt is made to update the Workbasket and another user
    *     updated it already
+   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
    */
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> updateWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
-      throws WorkbasketNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException {
+      throws WorkbasketNotFoundException, MismatchedRoleException, ConcurrencyException,
+          InvalidArgumentException, MismatchedWorkbasketPermissionException {
     if (!workbasketId.equals(workbasketRepresentationModel.getWorkbasketId())) {
       throw new InvalidArgumentException(
           "Target-WB-ID('"
@@ -247,9 +251,10 @@ public class WorkbasketController {
    * @title Get all Workbasket Access Items
    * @param workbasketId the Id of the requested Workbasket.
    * @return the access items for the requested Workbasket.
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
+   * @throws MismatchedRoleException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
+   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
    */
   @GetMapping(
       path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS,
@@ -257,7 +262,8 @@ public class WorkbasketController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> getWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+      throws WorkbasketNotFoundException, MismatchedRoleException,
+          MismatchedWorkbasketPermissionException {
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
 
@@ -274,20 +280,22 @@ public class WorkbasketController {
    * @param workbasketId the Id of the Workbasket whose Workbasket Access Items will be replaced
    * @param workbasketAccessItemRepModels the new Workbasket Access Items.
    * @return the new Workbasket Access Items for the requested Workbasket
-   * @throws NotAuthorizedException if the current user is not member of role BUSINESS_ADMIN or
+   * @throws MismatchedRoleException if the current user is not member of role BUSINESS_ADMIN or
    *     ADMIN
    * @throws InvalidArgumentException if the new Workbasket Access Items are not provided.
    * @throws WorkbasketNotFoundException TODO: this is never thrown.
    * @throws WorkbasketAccessItemAlreadyExistException if a duplicate Workbasket Access Item exists
    *     in the provided list.
+   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
    */
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> setWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketAccessItemCollectionRepresentationModel workbasketAccessItemRepModels)
-      throws NotAuthorizedException, InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException {
+      throws InvalidArgumentException, WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException, MismatchedRoleException,
+          MismatchedWorkbasketPermissionException {
     if (workbasketAccessItemRepModels == null) {
       throw new InvalidArgumentException("Can't create something with NULL body-value.");
     }
@@ -312,8 +320,8 @@ public class WorkbasketController {
    * @param workbasketId the Id of the Workbasket whose Distribution Targets will be retrieved
    * @return the Distribution Targets for the requested Workbasket
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
-   * @throws NotAuthorizedException if the current user has no read permission for the specified
-   *     Workbasket
+   * @throws MismatchedWorkbasketPermissionException if the current user has no read permission for
+   *     the specified Workbasket
    */
   @GetMapping(
       path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION,
@@ -321,7 +329,7 @@ public class WorkbasketController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<DistributionTargetsCollectionRepresentationModel> getDistributionTargets(
       @PathVariable(value = "workbasketId") String workbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException {
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
     DistributionTargetsCollectionRepresentationModel distributionTargetRepModels =
@@ -338,8 +346,9 @@ public class WorkbasketController {
    * @param targetWorkbasketIds the destination Workbaskets.
    * @return the new Distribution Targets for the requested Workbasket.
    * @throws WorkbasketNotFoundException if any Workbasket was not found (either source or target)
-   * @throws NotAuthorizedException if the current user doesn't have READ permission for the source
-   *     Workbasket
+   * @throws MismatchedWorkbasketPermissionException if the current user doesn't have READ
+   *     permission for the source Workbasket
+   * @throws MismatchedRoleException if the current user has not correct permissions
    */
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION)
   @Transactional(rollbackFor = Exception.class)
@@ -347,7 +356,8 @@ public class WorkbasketController {
       setDistributionTargetsForWorkbasketId(
           @PathVariable(value = "workbasketId") String sourceWorkbasketId,
           @RequestBody List<String> targetWorkbasketIds)
-          throws WorkbasketNotFoundException, NotAuthorizedException {
+          throws WorkbasketNotFoundException, MismatchedRoleException,
+              MismatchedWorkbasketPermissionException {
     workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
 
     List<WorkbasketSummary> distributionTargets =
@@ -365,13 +375,15 @@ public class WorkbasketController {
    * @param targetWorkbasketId the Id of the requested Workbasket.
    * @return no content
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist.
-   * @throws NotAuthorizedException if the requested user ist not ADMIN or BUSINESS_ADMIN.
+   * @throws MismatchedRoleException if the requested user ist not ADMIN or BUSINESS_ADMIN.
+   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
    */
   @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> removeDistributionTargetForWorkbasketId(
       @PathVariable(value = "workbasketId") String targetWorkbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException {
+      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException,
+          MismatchedRoleException {
     List<WorkbasketSummary> sourceWorkbaskets =
         workbasketService.getDistributionSources(targetWorkbasketId);
     for (WorkbasketSummary source : sourceWorkbaskets) {

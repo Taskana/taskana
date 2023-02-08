@@ -1,7 +1,7 @@
 package pro.taskana.task.api.exceptions;
 
 import pro.taskana.common.api.exceptions.ErrorCode;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.TaskComment;
 
@@ -9,7 +9,7 @@ import pro.taskana.task.api.models.TaskComment;
  * This exception is thrown when the current user is not the creator of the {@linkplain TaskComment}
  * it tries to modify.
  */
-public class MismatchedTaskCommentCreatorException extends NotAuthorizedException {
+public class MismatchedTaskCommentCreatorException extends TaskanaException {
 
   public static final String ERROR_KEY = "TASK_COMMENT_CREATOR_MISMATCHED";
   private final String currentUserId;

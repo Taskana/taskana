@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCommentQueryColumnName;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
@@ -307,7 +307,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
               taskId -> {
                 try {
                   taskService.getTask(taskId);
-                } catch (NotAuthorizedException e) {
+                } catch (MismatchedWorkbasketPermissionException e) {
                   throw new NotAuthorizedToQueryWorkbasketException(
                       e.getMessage(), e.getErrorCode(), e);
                 } catch (TaskNotFoundException e) {

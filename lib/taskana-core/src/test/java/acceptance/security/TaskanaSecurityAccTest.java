@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 
@@ -27,7 +27,7 @@ class TaskanaSecurityAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     ThrowingCallable call = () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -50,7 +50,7 @@ class TaskanaSecurityAccTest extends AbstractAccTest {
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.BUSINESS_ADMIN)).isFalse();
     assertThat(taskanaEngine.isUserInRole(TaskanaRole.ADMIN)).isFalse();
     ThrowingCallable call = () -> taskanaEngine.checkRoleMembership(TaskanaRole.BUSINESS_ADMIN);
-    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "user-1-1", groups = "businessadmin")
