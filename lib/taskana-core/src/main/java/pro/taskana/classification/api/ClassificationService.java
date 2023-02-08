@@ -9,7 +9,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.task.api.models.Task;
 
 /**
@@ -59,7 +59,7 @@ public interface ClassificationService {
    *     id}.
    * @throws ClassificationAlreadyExistException if the {@linkplain Classification} already exists
    *     in the given {@linkplain Classification#getDomain() domain}.
-   * @throws NotAuthorizedException if the current user is not member of {@linkplain
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    * @throws DomainNotFoundException if the {@linkplain Classification#getDomain() domain} does not
    *     exist in the configuration
@@ -68,8 +68,8 @@ public interface ClassificationService {
    * @throws InvalidArgumentException if the {@linkplain Classification} contains invalid properties
    */
   Classification createClassification(Classification classification)
-      throws ClassificationAlreadyExistException, NotAuthorizedException, DomainNotFoundException,
-          InvalidArgumentException, MalformedServiceLevelException;
+      throws ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException;
 
   // READ
 
@@ -114,7 +114,7 @@ public interface ClassificationService {
    * @return the updated {@linkplain Classification}.
    * @throws ClassificationNotFoundException if the specified {@linkplain Classification} or its
    *     parent does not exist
-   * @throws NotAuthorizedException if the caller is neither member of{@linkplain
+   * @throws MismatchedRoleException if the caller is neither member of{@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} nor {@linkplain TaskanaRole#ADMIN}
    * @throws ConcurrencyException if the {@linkplain Classification} was modified in the meantime
    *     and is not the most up to date anymore; that's the case if the given {@linkplain
@@ -124,8 +124,8 @@ public interface ClassificationService {
    * @throws InvalidArgumentException if the {@linkplain Classification} contains invalid properties
    */
   Classification updateClassification(Classification classification)
-      throws ClassificationNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException, MalformedServiceLevelException;
+      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
+          MalformedServiceLevelException, MismatchedRoleException;
 
   // DELETE
 
@@ -139,11 +139,11 @@ public interface ClassificationService {
    *     {@linkplain Classification}
    * @throws ClassificationNotFoundException if no {@linkplain Classification} with the specified
    *     {@linkplain Classification#getId() id} was found
-   * @throws NotAuthorizedException if the current user is not member of {@linkplain
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    */
   void deleteClassification(String id)
-      throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
+      throws ClassificationInUseException, ClassificationNotFoundException, MismatchedRoleException;
 
   /**
    * Deletes the {@linkplain Classification} identified by the provided {@linkplain
@@ -161,11 +161,11 @@ public interface ClassificationService {
    * @throws ClassificationNotFoundException if no {@linkplain Classification} with the specified
    *     {@linkplain Classification#getKey() key} and {@linkplain Classification#getDomain() domain}
    *     was found
-   * @throws NotAuthorizedException if the current user is not member of {@linkplain
+   * @throws MismatchedRoleException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    */
   void deleteClassification(String classificationKey, String domain)
-      throws ClassificationInUseException, ClassificationNotFoundException, NotAuthorizedException;
+      throws ClassificationInUseException, ClassificationNotFoundException, MismatchedRoleException;
 
   // endregion
 

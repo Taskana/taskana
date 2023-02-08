@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskState;
-import pro.taskana.task.api.exceptions.InvalidStateException;
+import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.models.TaskSummary;
 
 /** Acceptance tests for "terminate task" scenarios. */
@@ -74,7 +74,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(taskSummaries).hasSize(10);
     ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
 
-    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -84,7 +84,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     ThrowingCallable taskanaCall =
         () -> taskService.terminateTask("TKI:000000000000000000000000000000000000");
 
-    assertThatThrownBy(taskanaCall).isInstanceOf(NotAuthorizedException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(MismatchedRoleException.class);
   }
 
   @WithAccessId(user = "taskadmin")
@@ -95,7 +95,7 @@ class TerminateTaskAccTest extends AbstractAccTest {
     assertThat(taskSummaries).hasSize(5);
     ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
 
-    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidTaskStateException.class);
   }
 
   @WithAccessId(user = "taskadmin")
@@ -105,6 +105,6 @@ class TerminateTaskAccTest extends AbstractAccTest {
         taskService.createTaskQuery().stateIn(TaskState.CANCELLED).list();
     assertThat(taskSummaries).hasSize(5);
     ThrowingCallable taskanaCall = () -> taskService.terminateTask(taskSummaries.get(0).getId());
-    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidStateException.class);
+    assertThatThrownBy(taskanaCall).isInstanceOf(InvalidTaskStateException.class);
   }
 }

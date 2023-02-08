@@ -8,10 +8,11 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -86,7 +87,8 @@ public class WorkbasketRepresentationModelAssembler
 
   private WorkbasketRepresentationModel addLinks(
       WorkbasketRepresentationModel resource, Workbasket wb)
-      throws NotAuthorizedException, WorkbasketNotFoundException {
+      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException,
+          MismatchedRoleException {
     resource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());
     resource.add(

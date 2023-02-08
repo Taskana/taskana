@@ -28,7 +28,6 @@ import pro.taskana.common.internal.util.EnumUtil;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
-import pro.taskana.task.api.exceptions.InvalidStateException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
@@ -465,7 +464,8 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(task.getId());
-    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
+    assertThat(results.getErrorMap().values())
+        .hasOnlyElementsOfType(InvalidTaskStateException.class);
     assertThat(results.getErrorForId(task.getId()))
         .hasMessage(
             "Task with id '%s' is in state: '%s', but must be in one of these states: '[%s, %s]'",
@@ -485,7 +485,8 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(task1.getId(), task2.getId());
-    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
+    assertThat(results.getErrorMap().values())
+        .hasOnlyElementsOfType(InvalidTaskStateException.class);
     assertThat(results.getErrorForId(task1.getId()))
         .hasMessage(
             "Task with id '%s' is in state: '%s', but must be in one of these states: '%s'",
@@ -596,7 +597,8 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).containsExactlyInAnyOrder(task1.getId(), task2.getId());
-    assertThat(results.getErrorMap().values()).hasOnlyElementsOfType(InvalidStateException.class);
+    assertThat(results.getErrorMap().values())
+        .hasOnlyElementsOfType(InvalidTaskStateException.class);
     assertThat(results.getErrorForId(task1.getId()))
         .hasMessage(
             "Task with id '%s' is in state: '%s', but must be in one of these states: '%s'",

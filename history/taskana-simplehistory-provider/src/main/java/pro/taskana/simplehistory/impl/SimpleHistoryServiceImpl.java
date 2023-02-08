@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
@@ -103,7 +103,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
   @Override
   public void deleteHistoryEventsByTaskIds(List<String> taskIds)
-      throws InvalidArgumentException, NotAuthorizedException {
+      throws InvalidArgumentException, MismatchedRoleException {
     taskanaHistoryEngine.checkRoleMembership(TaskanaRole.ADMIN);
 
     if (taskIds == null) {

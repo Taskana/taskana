@@ -3,7 +3,7 @@ package pro.taskana.workbasket.api.exceptions;
 import java.util.Arrays;
 
 import pro.taskana.common.api.exceptions.ErrorCode;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -12,7 +12,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
  * This exception is thrown when the current user does not have a certain {@linkplain
  * WorkbasketPermission permission} on a {@linkplain Workbasket}.
  */
-public class MismatchedWorkbasketPermissionException extends NotAuthorizedException {
+public class MismatchedWorkbasketPermissionException extends TaskanaException {
 
   public static final String ERROR_KEY_KEY_DOMAIN = "WORKBASKET_WITH_KEY_MISMATCHED_PERMISSION";
   public static final String ERROR_KEY_ID = "WORKBASKET_WITH_ID_MISMATCHED_PERMISSION";

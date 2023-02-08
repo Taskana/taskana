@@ -13,7 +13,6 @@ import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -30,6 +29,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
@@ -2197,12 +2197,13 @@ public class TaskQueryImpl implements TaskQuery {
           checkOpenAndReadPermissionByKeyDomain(keyDomain);
         }
       }
-    } catch (NotAuthorizedException e) {
+    } catch (MismatchedWorkbasketPermissionException e) {
       throw new NotAuthorizedToQueryWorkbasketException(e.getMessage(), e.getErrorCode(), e);
     }
   }
 
-  private void checkOpenAndReadPermissionById(String workbasketId) throws NotAuthorizedException {
+  private void checkOpenAndReadPermissionById(String workbasketId)
+      throws MismatchedWorkbasketPermissionException {
     try {
       taskanaEngine
           .getEngine()
@@ -2215,7 +2216,7 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   private void checkOpenAndReadPermissionByKeyDomain(KeyDomain keyDomain)
-      throws NotAuthorizedException {
+      throws MismatchedWorkbasketPermissionException {
     try {
       taskanaEngine
           .getEngine()

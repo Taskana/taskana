@@ -25,7 +25,6 @@ import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.OracleSqlSessionFactory;
 import pro.taskana.common.internal.configuration.DB;
@@ -90,7 +89,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
         .anyMatch(rolesMembers::contains);
   }
 
-  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
+  public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
     if (!isUserInRole(roles)) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(

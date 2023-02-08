@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
@@ -29,12 +29,14 @@ import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.util.QueryParamsValidator;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.rest.assembler.TaskCommentRepresentationModelAssembler;
 import pro.taskana.task.rest.models.TaskCommentCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
+import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
 /** Controller for all {@link TaskComment} related endpoints. */
 @RestController
@@ -58,7 +60,8 @@ public class TaskCommentController {
    * @title Get a single Task Comment
    * @param taskCommentId the Id of the Task Comment
    * @return the Task Comment
-   * @throws NotAuthorizedException if the user is not authorized for the requested Task Comment
+   * @throws MismatchedWorkbasketPermissionException if the user is not authorized for the requested
+   *     Task Comment
    * @throws TaskNotFoundException TODO: this is never thrown
    * @throws TaskCommentNotFoundException if the requested Task Comment is not found
    * @throws InvalidArgumentException if the requested Id is null or empty
@@ -67,8 +70,8 @@ public class TaskCommentController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
       @PathVariable String taskCommentId)
-      throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException {
+      throws TaskNotFoundException, TaskCommentNotFoundException, InvalidArgumentException,
+          MismatchedWorkbasketPermissionException {
     TaskComment taskComment = taskService.getTaskComment(taskCommentId);
 
     TaskCommentRepresentationModel taskCommentRepresentationModel =
@@ -123,18 +126,21 @@ public class TaskCommentController {
    * @title Delete a Task Comment
    * @param taskCommentId the Id of the Task Comment which should be deleted
    * @return no content, if everything went well.
-   * @throws NotAuthorizedException if the current user is not authorized to delete a Task Comment
+   * @throws MismatchedRoleException if the current user is not authorized to delete a Task Comment
    * @throws TaskNotFoundException If the given Task Id in the Task Comment does not refer to an
    *     existing task.
    * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
    * @throws InvalidArgumentException if the requested Task Comment Id is null or empty
+   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
+   * @throws MismatchedTaskCommentCreatorException if the current user has not correct permissions
    */
   @DeleteMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
       @PathVariable String taskCommentId)
-      throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException {
+      throws TaskNotFoundException, TaskCommentNotFoundException, InvalidArgumentException,
+          MismatchedTaskCommentCreatorException, MismatchedRoleException,
+          MismatchedWorkbasketPermissionException {
     taskService.deleteTaskComment(taskCommentId);
 
     return ResponseEntity.noContent().build();
@@ -147,20 +153,23 @@ public class TaskCommentController {
    * @param taskCommentId the Task Comment which should be updated.
    * @param taskCommentRepresentationModel the new comment for the requested id.
    * @return the updated Task Comment
-   * @throws NotAuthorizedException if the current user does not have access to the Task Comment
+   * @throws MismatchedRoleException if the current user does not have access to the Task Comment
    * @throws TaskNotFoundException if the referenced Task within the Task Comment does not exist
    * @throws TaskCommentNotFoundException if the requested Task Comment does not exist
    * @throws InvalidArgumentException if the Id in the path and in the request body does not match
    * @throws ConcurrencyException if the requested Task Comment has been updated in the meantime by
    *     a different process.
+   * @throws MismatchedTaskCommentCreatorException if the current user has not correct permissions
+   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
    */
   @PutMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
       @PathVariable String taskCommentId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
-      throws NotAuthorizedException, TaskNotFoundException, TaskCommentNotFoundException,
-          InvalidArgumentException, ConcurrencyException {
+      throws TaskNotFoundException, TaskCommentNotFoundException, InvalidArgumentException,
+          ConcurrencyException, MismatchedTaskCommentCreatorException, MismatchedRoleException,
+          MismatchedWorkbasketPermissionException {
     if (!taskCommentId.equals(taskCommentRepresentationModel.getTaskCommentId())) {
       throw new InvalidArgumentException(
           String.format(
@@ -184,7 +193,8 @@ public class TaskCommentController {
    * @param taskId the Id of the Task where a Task Comment should be created.
    * @param taskCommentRepresentationModel the Task Comment to create.
    * @return the created Task Comment
-   * @throws NotAuthorizedException if the current user is not authorized to create a Task Comment
+   * @throws MismatchedWorkbasketPermissionException if the current user is not authorized to create
+   *     a Task Comment
    * @throws InvalidArgumentException if the Task Comment Id is null or empty
    * @throws TaskNotFoundException if the requested task does not exist
    */
@@ -193,7 +203,8 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentRepresentationModel> createTaskComment(
       @PathVariable String taskId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
-      throws NotAuthorizedException, InvalidArgumentException, TaskNotFoundException {
+      throws InvalidArgumentException, TaskNotFoundException,
+          MismatchedWorkbasketPermissionException {
     taskCommentRepresentationModel.setTaskId(taskId);
 
     TaskComment taskCommentFromResource =

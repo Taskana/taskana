@@ -4,7 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.api.reports.item.PriorityQueryItem;
@@ -33,7 +33,7 @@ public class WorkbasketPriorityReport extends Report<PriorityQueryItem, Priority
   public interface Builder extends Report.Builder<PriorityQueryItem, PriorityColumnHeader> {
 
     @Override
-    WorkbasketPriorityReport buildReport() throws NotAuthorizedException;
+    WorkbasketPriorityReport buildReport() throws MismatchedRoleException;
 
     /**
      * Adds {@linkplain WorkbasketType WorkbasketTypes} to the builder. The created report will only
