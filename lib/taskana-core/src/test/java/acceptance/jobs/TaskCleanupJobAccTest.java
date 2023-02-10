@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -223,12 +224,16 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
             .cleanupJobRunEvery(runEvery)
             .cleanupJobFirstRun(firstRun)
+            .jobSchedulerEnabled(true)
+            .jobSchedulerInitialStartDelay(0)
+            .jobSchedulerPeriod(1)
+            .jobSchedulerPeriodTimeUnit(TimeUnit.SECONDS)
+            .jobSchedulerEnableTaskCleanupJob(true)
             .build();
 
     TaskanaEngine taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(
             taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
-    TaskCleanupJob.initializeSchedule(taskanaEngine);
 
     List<ScheduledJob> nextJobs =
         getJobMapper(taskanaEngine).findJobsToRun(Instant.now().plus(runEvery));

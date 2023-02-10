@@ -4,13 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.lang.reflect.Field;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.TaskanaConfiguration.Builder;
 import pro.taskana.common.api.CustomHoliday;
+import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.testapi.extensions.TestContainerExtension;
@@ -101,8 +105,14 @@ class TaskanaConfigurationTest {
     Duration expectedUserRefreshJobRunEvery = Duration.ofDays(5);
     List<WorkbasketPermission> expectedMinimalPermissionsToAssignDomains =
         List.of(WorkbasketPermission.CUSTOM_2);
+    long expectedJobSchedulerInitialStartDelay = 15;
+    long expectedJobSchedulerPeriod = 10;
+    TimeUnit expectedJobSchedulerPeriodTimeUnit = TimeUnit.DAYS;
+    List<String> expectedJobSchedulerCustomJobs = List.of("Job_A", "Job_B");
 
     // when
+    Map<DayOfWeek, Set<LocalTimeInterval>> expectedWorkingTimeSchedule =
+        Map.of(DayOfWeek.MONDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.NOON)));
     TaskanaConfiguration configuration =
         new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
             .domains(expectedDomains)
@@ -127,6 +137,17 @@ class TaskanaConfigurationTest {
             .userRefreshJobRunEvery(expectedUserRefreshJobRunEvery)
             .addAdditionalUserInfo(true)
             .minimalPermissionsToAssignDomains(expectedMinimalPermissionsToAssignDomains)
+            .jobSchedulerEnabled(false)
+            .jobSchedulerInitialStartDelay(expectedJobSchedulerInitialStartDelay)
+            .jobSchedulerPeriod(expectedJobSchedulerPeriod)
+            .jobSchedulerPeriodTimeUnit(expectedJobSchedulerPeriodTimeUnit)
+            .jobSchedulerEnableTaskCleanupJob(false)
+            .jobSchedulerEnableTaskUpdatePriorityJob(false)
+            .jobSchedulerEnableWorkbasketCleanupJob(false)
+            .jobSchedulerEnableUserInfoRefreshJob(false)
+            .jobSchedulerEnableHistorieCleanupJob(false)
+            .jobSchedulerCustomJobs(expectedJobSchedulerCustomJobs)
+            .workingTimeSchedule(expectedWorkingTimeSchedule)
             .build();
 
     // then
@@ -155,6 +176,19 @@ class TaskanaConfigurationTest {
     assertThat(configuration.isAddAdditionalUserInfo()).isTrue();
     assertThat(configuration.getMinimalPermissionsToAssignDomains())
         .isEqualTo(expectedMinimalPermissionsToAssignDomains);
+    assertThat(configuration.isJobSchedulerEnabled()).isFalse();
+    assertThat(configuration.getJobSchedulerInitialStartDelay())
+        .isEqualTo(expectedJobSchedulerInitialStartDelay);
+    assertThat(configuration.getJobSchedulerPeriod()).isEqualTo(expectedJobSchedulerPeriod);
+    assertThat(configuration.getJobSchedulerPeriodTimeUnit())
+        .isEqualTo(expectedJobSchedulerPeriodTimeUnit);
+    assertThat(configuration.isJobSchedulerEnableTaskCleanupJob()).isFalse();
+    assertThat(configuration.isJobSchedulerEnableTaskUpdatePriorityJob()).isFalse();
+    assertThat(configuration.isJobSchedulerEnableWorkbasketCleanupJob()).isFalse();
+    assertThat(configuration.isJobSchedulerEnableUserInfoRefreshJob()).isFalse();
+    assertThat(configuration.isJobSchedulerEnableHistorieCleanupJob()).isFalse();
+    assertThat(configuration.getJobSchedulerCustomJobs()).isEqualTo(expectedJobSchedulerCustomJobs);
+    assertThat(configuration.getWorkingTimeSchedule()).isEqualTo(expectedWorkingTimeSchedule);
   }
 
   @Test
@@ -184,6 +218,19 @@ class TaskanaConfigurationTest {
             .userRefreshJobRunEvery(Duration.ofDays(5))
             .addAdditionalUserInfo(true)
             .minimalPermissionsToAssignDomains(List.of(WorkbasketPermission.CUSTOM_2))
+            .jobSchedulerEnabled(false)
+            .jobSchedulerInitialStartDelay(10)
+            .jobSchedulerPeriod(15)
+            .jobSchedulerPeriodTimeUnit(TimeUnit.DAYS)
+            .jobSchedulerEnableTaskCleanupJob(false)
+            .jobSchedulerEnableTaskUpdatePriorityJob(false)
+            .jobSchedulerEnableWorkbasketCleanupJob(false)
+            .jobSchedulerEnableUserInfoRefreshJob(false)
+            .jobSchedulerEnableHistorieCleanupJob(false)
+            .jobSchedulerCustomJobs(List.of("Job_A", "Job_B"))
+            .workingTimeSchedule(
+                Map.of(
+                    DayOfWeek.MONDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.NOON))))
             .build();
 
     TaskanaConfiguration copyConfiguration = new Builder(configuration).build();

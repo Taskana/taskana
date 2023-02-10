@@ -52,9 +52,10 @@ public class DbSchemaCreator {
   /**
    * Run all db scripts.
    *
+   * @return true when schema was created, false when no schema created because already existing
    * @throws SQLException will be thrown if there will be some incorrect SQL statements invoked.
    */
-  public void run() throws SQLException {
+  public boolean run() throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
@@ -72,6 +73,7 @@ public class DbSchemaCreator {
         BufferedReader reader =
             new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
         runner.runScript(getSqlSchemaNameParsed(reader));
+        return true;
       }
     }
     if (LOGGER.isDebugEnabled()) {
@@ -80,6 +82,7 @@ public class DbSchemaCreator {
     if (!errorWriter.toString().trim().isEmpty()) {
       LOGGER.error(errorWriter.toString());
     }
+    return false;
   }
 
   public boolean isValidSchemaVersion(String expectedMinVersion) {

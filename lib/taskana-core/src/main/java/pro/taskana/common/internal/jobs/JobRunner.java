@@ -42,8 +42,11 @@ public class JobRunner {
 
   private void runJobTransactionally(ScheduledJob scheduledJob) {
     TaskanaTransactionProvider.executeInTransactionIfPossible(
-        txProvider, () -> taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob)));
-    jobService.deleteJob(scheduledJob);
+        txProvider,
+        () -> {
+          taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob));
+          jobService.deleteJob(scheduledJob);
+        });
   }
 
   private void runScheduledJob(ScheduledJob scheduledJob) {

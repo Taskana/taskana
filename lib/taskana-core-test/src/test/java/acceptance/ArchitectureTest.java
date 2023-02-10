@@ -68,6 +68,7 @@ import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.Interval;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.common.internal.workingtime.HolidaySchedule;
@@ -329,6 +330,8 @@ class ArchitectureTest {
                 .areNotAssignableTo(TaskanaEngine.class)
                 .and()
                 .areNotAssignableTo(InternalTaskanaEngine.class)
+                .and()
+                .areNotAssignableTo(JobScheduler.class)
                 .should()
                 .onlyDependOnClassesThat()
                 .resideOutsideOfPackage(rootPackage + "..")
