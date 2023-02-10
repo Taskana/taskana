@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -125,6 +126,26 @@ public class TaskanaConfiguration {
   private List<WorkbasketPermission> minimalPermissionsToAssignDomains = new ArrayList<>();
   // endregion
 
+  private final boolean jobSchedulerEnabled;
+
+  private final long jobSchedulerInitialStartDelay;
+
+  private final long jobSchedulerPeriod;
+
+  private final TimeUnit jobSchedulerPeriodTimeUnit;
+
+  private final boolean jobSchedulerEnableTaskCleanupJob;
+
+  private final boolean jobSchedulerEnableTaskUpdatePriorityJob;
+
+  private final boolean jobSchedulerEnableWorkbasketCleanupJob;
+
+  private final boolean jobSchedulerEnableUserInfoRefreshJob;
+
+  private final boolean jobSchedulerEnableHistorieCleanupJob;
+
+  private final List<String> jobSchedulerCustomJobs;
+
   protected TaskanaConfiguration(Builder builder) {
     this.dataSource = builder.dataSource;
     this.schemaName = builder.schemaName;
@@ -164,6 +185,17 @@ public class TaskanaConfiguration {
     this.userRefreshJobFirstRun = builder.userRefreshJobFirstRun;
     this.minimalPermissionsToAssignDomains =
         Collections.unmodifiableList(builder.minimalPermissionsToAssignDomains);
+    this.jobSchedulerEnabled = builder.jobSchedulerEnabled;
+    this.jobSchedulerInitialStartDelay = builder.jobSchedulerInitialStartDelay;
+    this.jobSchedulerPeriod = builder.jobSchedulerPeriod;
+    this.jobSchedulerPeriodTimeUnit =
+        determineTimeUnitFromString(builder.jobSchedulerPeriodTimeUnit);
+    this.jobSchedulerEnableTaskCleanupJob = builder.jobSchedulerEnableTaskCleanupJob;
+    this.jobSchedulerEnableTaskUpdatePriorityJob = builder.jobSchedulerEnableTaskUpdatePriorityJob;
+    this.jobSchedulerEnableWorkbasketCleanupJob = builder.jobSchedulerEnableWorkbasketCleanupJob;
+    this.jobSchedulerEnableUserInfoRefreshJob = builder.jobSchedulerEnableUserInfoRefreshJob;
+    this.jobSchedulerEnableHistorieCleanupJob = builder.jobSchedulerEnableHistorieCleanupJob;
+    this.jobSchedulerCustomJobs = Collections.unmodifiableList(builder.jobSchedulerCustomJobs);
 
     if (LOGGER.isDebugEnabled()) {
       // TODO remove the reflection magic when introducing lombok toString magic :-)
@@ -319,6 +351,46 @@ public class TaskanaConfiguration {
     return schemaName;
   }
 
+  public boolean isJobSchedulerEnabled() {
+    return jobSchedulerEnabled;
+  }
+
+  public long getJobSchedulerInitialStartDelay() {
+    return jobSchedulerInitialStartDelay;
+  }
+
+  public long getJobSchedulerPeriod() {
+    return jobSchedulerPeriod;
+  }
+
+  public TimeUnit getJobSchedulerPeriodTimeUnit() {
+    return jobSchedulerPeriodTimeUnit;
+  }
+
+  public boolean isJobSchedulerEnableTaskCleanupJob() {
+    return jobSchedulerEnableTaskCleanupJob;
+  }
+
+  public boolean isJobSchedulerEnableTaskUpdatePriorityJob() {
+    return jobSchedulerEnableTaskUpdatePriorityJob;
+  }
+
+  public boolean isJobSchedulerEnableWorkbasketCleanupJob() {
+    return jobSchedulerEnableWorkbasketCleanupJob;
+  }
+
+  public boolean isJobSchedulerEnableUserInfoRefreshJob() {
+    return jobSchedulerEnableUserInfoRefreshJob;
+  }
+
+  public boolean isJobSchedulerEnableHistorieCleanupJob() {
+    return jobSchedulerEnableHistorieCleanupJob;
+  }
+
+  public List<String> getJobSchedulerCustomJobs() {
+    return jobSchedulerCustomJobs;
+  }
+
   /**
    * Helper method to determine whether all access ids (user Id and group ids) should be used in
    * lower case.
@@ -327,6 +399,21 @@ public class TaskanaConfiguration {
    */
   public static boolean shouldUseLowerCaseForAccessIds() {
     return true;
+  }
+
+  private TimeUnit determineTimeUnitFromString(String timeUnit) {
+    switch (timeUnit) {
+      case "MILLISECONDS":
+        return TimeUnit.MILLISECONDS;
+      case "SECONDS":
+        return TimeUnit.SECONDS;
+      case "MINUTES":
+        return TimeUnit.MINUTES;
+      case "DAYS":
+        return TimeUnit.DAYS;
+      default:
+        return TimeUnit.HOURS;
+    }
   }
 
   public static class Builder {
@@ -432,6 +519,36 @@ public class TaskanaConfiguration {
     private Map<String, String> properties = Collections.emptyMap();
     // endregion
 
+    @TaskanaProperty("taskana.jobscheduler.enabled")
+    private boolean jobSchedulerEnabled = true;
+
+    @TaskanaProperty("taskana.jobscheduler.initialstartdelay")
+    private long jobSchedulerInitialStartDelay = 100;
+
+    @TaskanaProperty("taskana.jobscheduler.period")
+    private long jobSchedulerPeriod = 12;
+
+    @TaskanaProperty("taskana.jobscheduler.periodtimeunit")
+    private String jobSchedulerPeriodTimeUnit = "HOURS";
+
+    @TaskanaProperty("taskana.jobscheduler.enableTaskCleanupJob")
+    private boolean jobSchedulerEnableTaskCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableTaskUpdatePriorityJob")
+    private boolean jobSchedulerEnableTaskUpdatePriorityJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableWorkbasketCleanupJob")
+    private boolean jobSchedulerEnableWorkbasketCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableUserInfoRefreshJob")
+    private boolean jobSchedulerEnableUserInfoRefreshJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableHistorieCleanupJob")
+    private boolean jobSchedulerEnableHistorieCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.customJobs")
+    private List<String> jobSchedulerCustomJobs = new ArrayList<>();
+
     public Builder(TaskanaConfiguration tec) {
       this.dataSource = tec.getDatasource();
       this.schemaName = tec.getSchemaName();
@@ -462,6 +579,17 @@ public class TaskanaConfiguration {
       this.userRefreshJobRunEvery = tec.getUserRefreshJobRunEvery();
       this.userRefreshJobFirstRun = tec.getUserRefreshJobFirstRun();
       this.minimalPermissionsToAssignDomains = tec.getMinimalPermissionsToAssignDomains();
+      this.jobSchedulerEnabled = tec.isJobSchedulerEnabled();
+      this.jobSchedulerInitialStartDelay = tec.getJobSchedulerInitialStartDelay();
+      this.jobSchedulerPeriod = tec.getJobSchedulerPeriod();
+      this.jobSchedulerPeriodTimeUnit = tec.getJobSchedulerPeriodTimeUnit().name();
+      this.jobSchedulerEnableTaskCleanupJob = tec.isJobSchedulerEnableTaskCleanupJob();
+      this.jobSchedulerEnableTaskUpdatePriorityJob =
+          tec.isJobSchedulerEnableTaskUpdatePriorityJob();
+      this.jobSchedulerEnableWorkbasketCleanupJob = tec.isJobSchedulerEnableWorkbasketCleanupJob();
+      this.jobSchedulerEnableUserInfoRefreshJob = tec.isJobSchedulerEnableUserInfoRefreshJob();
+      this.jobSchedulerEnableHistorieCleanupJob = tec.isJobSchedulerEnableHistorieCleanupJob();
+      this.jobSchedulerCustomJobs = tec.getJobSchedulerCustomJobs();
     }
 
     public Builder(DataSource dataSource, boolean useManagedTransactions, String schemaName) {
@@ -628,6 +756,64 @@ public class TaskanaConfiguration {
     public Builder minimalPermissionsToAssignDomains(
         List<WorkbasketPermission> minimalPermissionsToAssignDomains) {
       this.minimalPermissionsToAssignDomains = minimalPermissionsToAssignDomains;
+      return this;
+    }
+
+    public Builder jobSchedulerEnabled(boolean jobSchedulerEnabled) {
+      this.jobSchedulerEnabled = jobSchedulerEnabled;
+      return this;
+    }
+
+    public Builder jobSchedulerInitialStartDelay(
+        long jobSchedulerInitialStartDelay) {
+      this.jobSchedulerInitialStartDelay = jobSchedulerInitialStartDelay;
+      return this;
+    }
+
+    public Builder jobSchedulerPeriod(long jobSchedulerPeriod) {
+      this.jobSchedulerPeriod = jobSchedulerPeriod;
+      return this;
+    }
+
+    public Builder jobSchedulerPeriodTimeUnit(
+        String jobSchedulerPeriodTimeUnit) {
+      this.jobSchedulerPeriodTimeUnit = jobSchedulerPeriodTimeUnit;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableTaskCleanupJob(
+        boolean jobSchedulerEnableTaskCleanupJob) {
+      this.jobSchedulerEnableTaskCleanupJob = jobSchedulerEnableTaskCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableTaskUpdatePriorityJob(
+        boolean jobSchedulerEnableTaskUpdatePriorityJob) {
+      this.jobSchedulerEnableTaskUpdatePriorityJob = jobSchedulerEnableTaskUpdatePriorityJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableWorkbasketCleanupJob(
+        boolean jobSchedulerEnableWorkbasketCleanupJob) {
+      this.jobSchedulerEnableWorkbasketCleanupJob = jobSchedulerEnableWorkbasketCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableUserInfoRefreshJob(
+        boolean jobSchedulerEnableUserInfoRefreshJob) {
+      this.jobSchedulerEnableUserInfoRefreshJob = jobSchedulerEnableUserInfoRefreshJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableHistorieCleanupJob(
+        boolean jobSchedulerEnableHistorieCleanupJob) {
+      this.jobSchedulerEnableHistorieCleanupJob = jobSchedulerEnableHistorieCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerCustomJobs(
+        List<String> jobSchedulerCustomJobs) {
+      this.jobSchedulerCustomJobs = jobSchedulerCustomJobs;
       return this;
     }
 

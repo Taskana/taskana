@@ -42,6 +42,7 @@ public class TaskanaConfigurationInitializer {
 
   static {
     PROPERTY_INITIALIZER_BY_CLASS.put(Integer.class, new IntegerPropertyParser());
+    PROPERTY_INITIALIZER_BY_CLASS.put(Long.class, new LongPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Boolean.class, new BooleanPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(String.class, new StringPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Duration.class, new DurationPropertyParser());
@@ -259,6 +260,17 @@ public class TaskanaConfigurationInitializer {
         Field field,
         TaskanaProperty taskanaProperty) {
       return parseProperty(properties, taskanaProperty.value(), Integer::parseInt);
+    }
+  }
+
+  static class LongPropertyParser implements PropertyParser<Long> {
+    @Override
+    public Optional<Long> initialize(
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
+      return parseProperty(properties, taskanaProperty.value(), Long::parseLong);
     }
   }
 
