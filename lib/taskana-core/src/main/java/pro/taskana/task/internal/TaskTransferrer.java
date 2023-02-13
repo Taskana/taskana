@@ -206,7 +206,7 @@ final class TaskTransferrer {
       Set<String> sourceWorkbasketIds, String taskId, TaskSummary taskSummary) {
     TaskanaException error = null;
     if (taskId == null || taskId.isEmpty()) {
-      error = new InvalidArgumentException("TaskId should not be null or empty");
+      error = new TaskNotFoundException(null);
     } else if (taskSummary == null) {
       error = new TaskNotFoundException(taskId);
     } else if (taskSummary.getState().isEndState()) {
