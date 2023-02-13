@@ -137,7 +137,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
       BeanInstantiationException ex, WebRequest req) {
     if (ex.getCause() instanceof InvalidArgumentException) {
       InvalidArgumentException cause = (InvalidArgumentException) ex.getCause();
-      return handleTaskanaException(cause, req);
+      return handleTaskanaRuntimeException(cause, req);
     }
     return buildResponse(null, ex, req, HttpStatus.INTERNAL_SERVER_ERROR);
   }

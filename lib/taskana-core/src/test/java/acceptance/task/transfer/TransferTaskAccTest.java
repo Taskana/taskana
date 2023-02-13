@@ -294,8 +294,8 @@ class TransferTaskAccTest extends AbstractAccTest {
         .isEqualTo(TaskNotFoundException.class);
     assertThat(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass())
         .isEqualTo(InvalidTaskStateException.class);
-    assertThat(results.getErrorForId("").getClass()).isEqualTo(InvalidArgumentException.class);
-    assertThat(results.getErrorForId(null).getClass()).isEqualTo(InvalidArgumentException.class);
+    assertThat(results.getErrorForId("").getClass()).isEqualTo(TaskNotFoundException.class);
+    assertThat(results.getErrorForId(null).getClass()).isEqualTo(TaskNotFoundException.class);
 
     // verify valid requests
     Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000006");
