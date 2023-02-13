@@ -5,7 +5,6 @@ import static java.util.function.Predicate.not;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1580,8 +1579,7 @@ public class TaskServiceImpl implements TaskService {
       Iterator<String> taskIdIterator) {
     String currentTaskId = taskIdIterator.next();
     if (currentTaskId == null || currentTaskId.equals("")) {
-      bulkLog.addError(
-          "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+      bulkLog.addError("", new TaskNotFoundException(null));
       taskIdIterator.remove();
     } else {
       MinimalTaskSummary foundSummary =
@@ -1620,8 +1618,7 @@ public class TaskServiceImpl implements TaskService {
       CallbackState desiredCallbackState) {
     String currentExternalId = externalIdIterator.next();
     if (currentExternalId == null || currentExternalId.equals("")) {
-      bulkLog.addError(
-          "", new InvalidArgumentException("IDs with EMPTY or NULL value are not allowed."));
+      bulkLog.addError("", new TaskNotFoundException(null));
       externalIdIterator.remove();
     } else {
       Optional<MinimalTaskSummary> foundSummary =
@@ -1681,15 +1678,12 @@ public class TaskServiceImpl implements TaskService {
         break;
       default:
         return Optional.of(
-            new InvalidArgumentException(
-                String.format(
-                    "desired callbackState has to be in '%s'",
-                    Arrays.toString(
-                        new CallbackState[] {
-                          CallbackState.CALLBACK_PROCESSING_COMPLETED,
-                          CallbackState.CLAIMED,
-                          CallbackState.CALLBACK_PROCESSING_REQUIRED
-                        }))));
+            new InvalidCallbackStateException(
+                foundSummary.getTaskId(),
+                currentTaskCallbackState,
+                CallbackState.CALLBACK_PROCESSING_COMPLETED,
+                CallbackState.CLAIMED,
+                CallbackState.CALLBACK_PROCESSING_REQUIRED));
     }
     return Optional.empty();
   }
