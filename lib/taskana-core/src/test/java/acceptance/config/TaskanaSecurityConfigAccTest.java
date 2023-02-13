@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -111,10 +112,19 @@ class TaskanaSecurityConfigAccTest {
 
     try (Connection connection = DataSourceGenerator.getDataSource().getConnection()) {
 
-      String sql =
+      String dbProductId = DB.getDatabaseProductId(connection);
+
+      String sql;
+      final String securityFlagAsString;
+      if (DB.isOracle(dbProductId)) {
+        securityFlagAsString = securityFlag ? "1" : "0";
+      } else {
+        securityFlagAsString = String.valueOf(securityFlag);
+      }
+      sql =
           String.format(
-              "UPDATE %s.CONFIGURATION SET ENFORCE_SECURITY = %b WHERE NAME = 'MASTER'",
-              DataSourceGenerator.getSchemaName(), securityFlag);
+              "UPDATE %s.CONFIGURATION SET ENFORCE_SECURITY = %s WHERE NAME = 'MASTER'",
+              DataSourceGenerator.getSchemaName(), securityFlagAsString);
 
       Statement statement = connection.createStatement();
       statement.execute(sql);

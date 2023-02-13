@@ -46,6 +46,7 @@ import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
+import pro.taskana.common.internal.persistence.StringTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
@@ -335,10 +336,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
+    String databaseProductName;
     try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
-      String databaseProductName = con.getMetaData().getDatabaseProductName();
-      String databaseProductId = DB.getDatabaseProductId(databaseProductName);
-      configuration.setDatabaseId(databaseProductId);
+      databaseProductName = DB.getDatabaseProductName(con);
+      configuration.setDatabaseId(DB.getDatabaseProductId(con));
 
     } catch (SQLException e) {
       throw new SystemException(
@@ -348,6 +349,13 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     // register type handlers
+    if (DB.isOracleDb(databaseProductName)) {
+      // Use NULL instead of OTHER when jdbcType is not specified for null values,
+      // otherwise oracle driver will chunck on null values
+      configuration.setJdbcTypeForNull(JdbcType.NULL);
+      configuration.getTypeHandlerRegistry().register(String.class, new StringTypeHandler());
+    }
+
     configuration.getTypeHandlerRegistry().register(new MapTypeHandler());
     configuration.getTypeHandlerRegistry().register(Instant.class, new InstantTypeHandler());
     configuration.getTypeHandlerRegistry().register(JdbcType.TIMESTAMP, new InstantTypeHandler());
@@ -368,7 +376,20 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(JobMapper.class);
     configuration.addMapper(UserMapper.class);
     configuration.addMapper(ConfigurationMapper.class);
-    SqlSessionFactory localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+
+    SqlSessionFactory localSessionFactory;
+    if (DB.isOracleDb(databaseProductName)) {
+      localSessionFactory =
+          new SqlSessionFactoryBuilder() {
+            @Override
+            public SqlSessionFactory build(Configuration config) {
+              return new OracleSqlSessionFactory(config);
+            }
+          }.build(configuration);
+    } else {
+      localSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+    }
+
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 

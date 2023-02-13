@@ -42,8 +42,8 @@ class DmnConverterServiceAccTest {
 
   protected static void resetDb(boolean dropTables) throws Exception {
 
-    DataSource dataSource = DataSourceGenerator.getDataSource();
-    String schemaName = DataSourceGenerator.getSchemaName();
+    DataSource dataSource = DataSourceGenerator.createDataSourceForH2();
+    String schemaName = "TASKANA";
     TaskanaEngineConfiguration taskanaEngineConfiguration =
         new TaskanaEngineConfiguration(dataSource, false, schemaName);
     taskanaEngineConfiguration.setGermanPublicHolidaysEnabled(true);

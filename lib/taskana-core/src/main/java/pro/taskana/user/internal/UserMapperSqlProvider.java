@@ -48,11 +48,20 @@ public class UserMapperSqlProvider {
 
   public static String insertGroups() {
     return OPENING_SCRIPT_TAG
-        + "INSERT INTO GROUP_INFO "
-        + "(USER_ID, GROUP_ID) VALUES "
+        + "INSERT INTO GROUP_INFO (USER_ID, GROUP_ID) VALUES "
         + "<foreach item='group' collection='groups' open='(' separator='),(' close=')'>"
         + "#{id}, #{group}"
         + "</foreach> "
+        + CLOSING_SCRIPT_TAG;
+  }
+
+  public static String insertGroupsOracle() {
+    return OPENING_SCRIPT_TAG
+        + "INSERT ALL "
+        + "<foreach item='group' collection='groups' separator='\n'>"
+        + "INTO GROUP_INFO (USER_ID, GROUP_ID) VALUES ( #{id}, #{group} )"
+        + "</foreach> "
+        + "SELECT 1 FROM DUAL"
         + CLOSING_SCRIPT_TAG;
   }
 

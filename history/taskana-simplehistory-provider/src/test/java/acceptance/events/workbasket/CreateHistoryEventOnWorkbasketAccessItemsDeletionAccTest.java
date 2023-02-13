@@ -1,6 +1,7 @@
 package acceptance.events.workbasket;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.common.api.BaseQuery.SortDirection.ASCENDING;
 
 import acceptance.AbstractAccTest;
 import java.util.List;
@@ -45,7 +46,12 @@ class CreateHistoryEventOnWorkbasketAccessItemsDeletionAccTest extends AbstractA
 
     workbasketService.deleteWorkbasketAccessItemsForAccessId(accessId);
 
-    events = historyService.createWorkbasketHistoryQuery().workbasketIdIn(workbasketIds).list();
+    events =
+        historyService
+            .createWorkbasketHistoryQuery()
+            .workbasketIdIn(workbasketIds)
+            .orderByWorkbasketId(ASCENDING)
+            .list();
 
     assertThat(events).hasSize(4);
 

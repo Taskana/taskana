@@ -41,6 +41,8 @@ public class TaskQueryImpl implements TaskQuery {
       "pro.taskana.task.internal.TaskQueryMapper.queryTaskSummaries";
   private static final String LINK_TO_MAPPER_DB2 =
       "pro.taskana.task.internal.TaskQueryMapper.queryTaskSummariesDb2";
+  private static final String LINK_TO_MAPPER_ORACLE =
+      "pro.taskana.task.internal.TaskQueryMapper.queryTaskSummariesOracle";
   private static final String LINK_TO_COUNTER =
       "pro.taskana.task.internal.TaskQueryMapper.countQueryTasks";
   private static final String LINK_TO_COUNTER_DB2 =
@@ -2021,6 +2023,8 @@ public class TaskQueryImpl implements TaskQuery {
   private String getLinkToMapperScript() {
     if (DB.isDb2(getDatabaseId()) && !selectAndClaim) {
       return LINK_TO_MAPPER_DB2;
+    } else if (selectAndClaim && DB.isOracle(getDatabaseId())) {
+      return LINK_TO_MAPPER_ORACLE;
     } else {
       return LINK_TO_MAPPER;
     }

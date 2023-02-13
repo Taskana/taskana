@@ -58,6 +58,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import pro.taskana.TaskanaEngineConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
@@ -563,36 +564,44 @@ class ArchitectureTest {
         wrap(
             (method) -> {
               List<String> values = new ArrayList<>();
-              final Optional<Select> selectAnnotation = method.tryGetAnnotationOfType(Select.class);
-              final Optional<Update> updateAnnotation = method.tryGetAnnotationOfType(Update.class);
-              final Optional<Insert> insertAnnotation = method.tryGetAnnotationOfType(Insert.class);
-              final Optional<Delete> deleteAnnotation = method.tryGetAnnotationOfType(Delete.class);
-              final Optional<SelectProvider> selectProviderAnnotation =
-                  method.tryGetAnnotationOfType(SelectProvider.class);
-              final Optional<UpdateProvider> updateProviderAnnotation =
-                  method.tryGetAnnotationOfType(UpdateProvider.class);
-              final Optional<InsertProvider> insertProviderAnnotation =
-                  method.tryGetAnnotationOfType(InsertProvider.class);
-              final Optional<DeleteProvider> deleteProviderAnnotation =
-                  method.tryGetAnnotationOfType(DeleteProvider.class);
 
-              selectAnnotation.map(Select::value).map(Arrays::asList).ifPresent(values::addAll);
-              updateAnnotation.map(Update::value).map(Arrays::asList).ifPresent(values::addAll);
-              insertAnnotation.map(Insert::value).map(Arrays::asList).ifPresent(values::addAll);
-              deleteAnnotation.map(Delete::value).map(Arrays::asList).ifPresent(values::addAll);
+              final List<Select> select =
+                  AnnotationSupport.findRepeatableAnnotations(method.reflect(), Select.class);
+              final List<Update> update =
+                  AnnotationSupport.findRepeatableAnnotations(method.reflect(), Update.class);
+              final List<Insert> insert =
+                  AnnotationSupport.findRepeatableAnnotations(method.reflect(), Insert.class);
+              final List<Delete> delete =
+                  AnnotationSupport.findRepeatableAnnotations(method.reflect(), Delete.class);
+              select.stream().map(Select::value).map(Arrays::asList).forEach(values::addAll);
+              update.stream().map(Update::value).map(Arrays::asList).forEach(values::addAll);
+              insert.stream().map(Insert::value).map(Arrays::asList).forEach(values::addAll);
+              delete.stream().map(Delete::value).map(Arrays::asList).forEach(values::addAll);
 
-              selectProviderAnnotation
+              final List<SelectProvider> selectProviders =
+                  AnnotationSupport.findRepeatableAnnotations(
+                      method.reflect(), SelectProvider.class);
+              final List<UpdateProvider> updateProviders =
+                  AnnotationSupport.findRepeatableAnnotations(
+                      method.reflect(), UpdateProvider.class);
+              final List<InsertProvider> insertProviders =
+                  AnnotationSupport.findRepeatableAnnotations(
+                      method.reflect(), InsertProvider.class);
+              final List<DeleteProvider> deleteProviders =
+                  AnnotationSupport.findRepeatableAnnotations(
+                      method.reflect(), DeleteProvider.class);
+              selectProviders.stream()
                   .map(wrap(a -> executeStaticProviderMethod(a.type(), a.method())))
-                  .ifPresent(values::add);
-              updateProviderAnnotation
+                  .forEach(values::add);
+              updateProviders.stream()
                   .map(wrap(a -> executeStaticProviderMethod(a.type(), a.method())))
-                  .ifPresent(values::add);
-              insertProviderAnnotation
+                  .forEach(values::add);
+              insertProviders.stream()
                   .map(wrap(a -> executeStaticProviderMethod(a.type(), a.method())))
-                  .ifPresent(values::add);
-              deleteProviderAnnotation
+                  .forEach(values::add);
+              deleteProviders.stream()
                   .map(wrap(a -> executeStaticProviderMethod(a.type(), a.method())))
-                  .ifPresent(values::add);
+                  .forEach(values::add);
               return values;
             });
 
@@ -602,11 +611,12 @@ class ArchitectureTest {
         for (JavaMethod method : javaClass.getAllMethods()) {
           List<String> sqlStrings = getSqlStringsFromMethod.apply(method);
 
-          if (sqlStrings.isEmpty()
-              && method.tryGetAnnotationOfType(SelectProvider.class).isEmpty()) {
+          if (sqlStrings.isEmpty()) {
             String message =
                 String.format(
-                    "Method '%s#%s' does not contain any MyBatis SQL annotation",
+                    "Could not extract SQL Statement from '%s#%s'. "
+                        + "Maybe an unsupported MyBatis SQL annotation is used "
+                        + "or no annotation is present?",
                     javaClass.getName(), method.getName());
             events.add(SimpleConditionEvent.violated(javaClass, message));
           }

@@ -25,13 +25,18 @@ public class MonitorMapperSqlProvider {
         + "SELECT T.WORKBASKET_KEY, (DAYS(T.${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP))) "
         + "as AGE_IN_DAYS "
         + "</if> "
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "SELECT T.WORKBASKET_KEY, (TRUNC(T.${timestamp}) - TRUNC(CAST(#{now} as TIMESTAMP)))"
+        + " as AGE_IN_DAYS "
+        + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "SELECT T.WORKBASKET_KEY, DATEDIFF('DAY', #{now}, T.${timestamp}) as AGE_IN_DAYS "
         + "</if> "
         + "<if test=\"_databaseId == 'postgres'\">"
         + "SELECT T.WORKBASKET_KEY, DATE_PART('DAY', T.${timestamp} - #{now}) as AGE_IN_DAYS "
         + "</if> "
-        + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
+        + "FROM TASK T "
+        + "LEFT JOIN ATTACHMENT A ON T.ID = A.TASK_ID "
         + OPENING_WHERE_TAG
         + taskWhereStatements()
         + "<if test=\"report.combinedClassificationFilter != null\">"
@@ -45,7 +50,7 @@ public class MonitorMapperSqlProvider {
         + "</if>"
         + "AND T.${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
-        + ") AS B "
+        + ") B "
         + "GROUP BY B.WORKBASKET_KEY, B.AGE_IN_DAYS"
         + CLOSING_SCRIPT_TAG;
   }
@@ -59,6 +64,9 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"_databaseId == 'db2'\">"
         + "(DAYS(${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
         + "</if> "
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "(TRUNC(${timestamp}) - TRUNC(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
+        + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "DATEDIFF('DAY', #{now}, ${timestamp}) as AGE_IN_DAYS "
         + "</if> "
@@ -70,7 +78,7 @@ public class MonitorMapperSqlProvider {
         + taskWhereStatements()
         + "AND ${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
-        + ") AS B "
+        + ") B "
         + "GROUP BY B.CLASSIFICATION_CATEGORY, B.AGE_IN_DAYS "
         + CLOSING_SCRIPT_TAG;
   }
@@ -84,6 +92,9 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"_databaseId == 'db2'\">"
         + "(DAYS(${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
         + "</if> "
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "(TRUNC(T.${timestamp}) - TRUNC(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
+        + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "DATEDIFF('DAY', #{now}, ${timestamp}) as AGE_IN_DAYS "
         + "</if> "
@@ -95,7 +106,7 @@ public class MonitorMapperSqlProvider {
         + taskWhereStatements()
         + "AND ${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
-        + ") AS B "
+        + ") B "
         + "GROUP BY B.CLASSIFICATION_KEY, B.AGE_IN_DAYS "
         + CLOSING_SCRIPT_TAG;
   }
@@ -110,18 +121,22 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"_databaseId == 'db2'\">"
         + "(DAYS(T.${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
         + "</if> "
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "(TRUNC(T.${timestamp}) - TRUNC(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
+        + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "DATEDIFF('DAY', #{now}, T.${timestamp}) as AGE_IN_DAYS "
         + "</if> "
         + "<if test=\"_databaseId == 'postgres'\">"
         + "DATE_PART('DAY', T.${timestamp} - #{now}) as AGE_IN_DAYS "
         + "</if> "
-        + "FROM TASK AS T LEFT JOIN ATTACHMENT AS A ON T.ID = A.TASK_ID "
+        + "FROM TASK T "
+        + "LEFT JOIN ATTACHMENT A ON T.ID = A.TASK_ID "
         + OPENING_WHERE_TAG
         + taskWhereStatements()
         + "AND T.${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
-        + ") AS B "
+        + ") B "
         + "GROUP BY B.TASK_CLASSIFICATION_KEY, B.ATTACHMENT_CLASSIFICATION_KEY, B.AGE_IN_DAYS "
         + CLOSING_SCRIPT_TAG;
   }
@@ -134,6 +149,9 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"_databaseId == 'db2'\">"
         + "(DAYS(${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
         + "</if> "
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "(TRUNC(T.${timestamp}) - TRUNC(CAST(#{now} as TIMESTAMP))) as AGE_IN_DAYS "
+        + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "DATEDIFF('DAY', #{now}, ${timestamp}) as AGE_IN_DAYS "
         + "</if> "
@@ -145,7 +163,7 @@ public class MonitorMapperSqlProvider {
         + taskWhereStatements()
         + "AND ${timestamp} IS NOT NULL "
         + CLOSING_WHERE_TAG
-        + ") AS B "
+        + ") B "
         + "GROUP BY B.CUSTOM_FIELD, B.AGE_IN_DAYS "
         + CLOSING_SCRIPT_TAG;
   }
@@ -176,10 +194,17 @@ public class MonitorMapperSqlProvider {
         + "</if>"
         + "</if>"
         + "<if test=\"_databaseId == 'db2'\">"
-        + "#{selectedItem.upperAgeLimit} >= (DAYS(${timestamp})"
-        + " - DAYS(CAST(#{now} as TIMESTAMP))) AND "
-        + "#{selectedItem.lowerAgeLimit} &lt;= (DAYS(${timestamp})"
-        + " - DAYS(CAST(#{now} as TIMESTAMP))) "
+        + "#{selectedItem.upperAgeLimit} >= (DAYS(${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP)))"
+        + " AND "
+        + "#{selectedItem.lowerAgeLimit} &lt;= (DAYS(${timestamp}) - DAYS(CAST(#{now} as TIMESTAMP"
+        + "))) "
+        + "</if> "
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "#{selectedItem.upperAgeLimit} >= (TRUNC(${timestamp}) - "
+        + "TRUNC(CAST(#{now} as TIMESTAMP))) "
+        + "AND "
+        + "#{selectedItem.lowerAgeLimit} &lt;= (TRUNC(${timestamp}) - "
+        + "TRUNC(CAST(#{now} as TIMESTAMP))) "
         + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "#{selectedItem.upperAgeLimit} >= DATEDIFF('DAY', #{now}, ${timestamp}) AND "
@@ -199,7 +224,7 @@ public class MonitorMapperSqlProvider {
   public static String getTasksCountByState() {
     return OPENING_SCRIPT_TAG
         + "SELECT WORKBASKET_KEY, STATE, COUNT(STATE) as COUNT "
-        + "FROM TASK AS T"
+        + "FROM TASK T"
         + OPENING_WHERE_TAG
         + whereIn("domains", "DOMAIN")
         + whereIn("states", "STATE")
@@ -227,6 +252,9 @@ public class MonitorMapperSqlProvider {
         + "<if test=\"_databaseId == 'db2'\">"
         + "(DAYS(T.${status}) - DAYS(CAST(#{now} as TIMESTAMP)))"
         + "</if>"
+        + "<if test=\"_databaseId == 'oracle'\">"
+        + "(TRUNC(T.${status}) - TRUNC(CAST(#{now} as TIMESTAMP))) "
+        + "</if> "
         + "<if test=\"_databaseId == 'h2'\">"
         + "DATEDIFF('DAY', #{now}, T.${status})"
         + "</if>"
@@ -234,14 +262,15 @@ public class MonitorMapperSqlProvider {
         + "DATE_PART('DAY', T.${status} - #{now})"
         + "</if>"
         + " as AGE_IN_DAYS "
-        + "FROM TASK AS T INNER JOIN WORKBASKET AS W ON T.WORKBASKET_KEY=W.KEY "
+        + "FROM TASK T "
+        + "INNER JOIN WORKBASKET W ON T.WORKBASKET_KEY=W.KEY "
         + OPENING_WHERE_TAG
         + "<if test=\"status.name() == 'COMPLETED'\">"
         + "T.COMPLETED IS NOT NULL "
         + "</if>"
         + taskWhereStatements()
         + CLOSING_WHERE_TAG
-        + ") AS A "
+        + ") A "
         + "GROUP BY A.AGE_IN_DAYS, A.ORG_LEVEL_1, A.ORG_LEVEL_2, A.ORG_LEVEL_3, A.ORG_LEVEL_4 "
         + CLOSING_SCRIPT_TAG;
   }
@@ -272,8 +301,8 @@ public class MonitorMapperSqlProvider {
   public static String getTaskCountByPriority() {
     return OPENING_SCRIPT_TAG
         + "SELECT T.WORKBASKET_KEY, T.PRIORITY, COUNT(T.PRIORITY) as COUNT "
-        + "FROM TASK as T "
-        + "INNER JOIN WORKBASKET as W ON W.ID = T.WORKBASKET_ID "
+        + "FROM TASK T "
+        + "INNER JOIN WORKBASKET W ON W.ID = T.WORKBASKET_ID "
         + OPENING_WHERE_TAG
         + taskWhereStatements()
         + workbasketWhereStatements()

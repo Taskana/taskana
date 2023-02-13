@@ -1,5 +1,8 @@
 package pro.taskana.common.internal;
 
+import static pro.taskana.common.internal.util.SqlProviderUtil.CLOSING_SCRIPT_TAG;
+import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TAG;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +21,11 @@ import pro.taskana.common.internal.persistence.MapTypeHandler;
 public interface JobMapper {
 
   @Insert(
-      "<script>"
+      OPENING_SCRIPT_TAG
           + "INSERT INTO SCHEDULED_JOB (JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS) "
           + "VALUES ("
           + "<choose>"
-          + "<when test=\"_databaseId == 'db2'\">"
+          + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
           + "SCHEDULED_JOB_SEQ.NEXTVAL"
           + "</when>"
           + "<otherwise>"
@@ -30,18 +33,19 @@ public interface JobMapper {
           + "</otherwise>"
           + "</choose>"
           + ", #{job.priority}, #{job.created}, #{job.due}, #{job.state}, #{job.lockedBy}, #{job.lockExpires}, #{job.type}, #{job.retryCount}, #{job.arguments,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler} )"
-          + "</script>")
+          + CLOSING_SCRIPT_TAG)
   @Result(property = "jobId", column = "JOB_ID")
   Integer insertJob(@Param("job") ScheduledJob job);
 
   @Select(
-      "<script> SELECT JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS "
+      OPENING_SCRIPT_TAG
+          + "SELECT JOB_ID, PRIORITY, CREATED, DUE, STATE, LOCKED_BY, LOCK_EXPIRES, TYPE, RETRY_COUNT, ARGUMENTS "
           + "FROM SCHEDULED_JOB "
           + "WHERE STATE IN ( 'READY') AND (DUE is null OR DUE &lt; #{now}) AND (LOCK_EXPIRES is null OR LOCK_EXPIRES &lt; #{now}) AND RETRY_COUNT > 0 "
           + "ORDER BY PRIORITY DESC "
-          + "FOR UPDATE "
+          + "FOR UPDATE"
           + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if> "
-          + "</script>")
+          + CLOSING_SCRIPT_TAG)
   @Result(property = "jobId", column = "JOB_ID")
   @Result(property = "priority", column = "PRIORITY")
   @Result(property = "created", column = "CREATED")

@@ -133,6 +133,23 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.db2</groupId>
+      <artifactId>jcc</artifactId>
+      <version>${version.db2}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>${version.oracle}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>capital.scalable</groupId>
       <artifactId>spring-auto-restdocs-core</artifactId>
       <version>${version.auto-restdocs}</version>

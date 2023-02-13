@@ -124,6 +124,18 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
+      <artifactId>oracle-xe</artifactId>
+      <version>${version.testcontainers}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
       <version>${version.testcontainers}</version>
       <exclusions>

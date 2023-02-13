@@ -56,8 +56,8 @@ public class WorkbasketAccessSqlProvider {
         + "SELECT "
         + "WBA.ID, WB.KEY, "
         + commonSelectStatements()
-        + "FROM WORKBASKET_ACCESS_LIST AS WBA "
-        + "LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID "
+        + "FROM WORKBASKET_ACCESS_LIST WBA "
+        + "LEFT JOIN WORKBASKET WB ON WORKBASKET_ID = WB.ID "
         + "WHERE WORKBASKET_ID = #{id} "
         + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
@@ -68,8 +68,8 @@ public class WorkbasketAccessSqlProvider {
         + "SELECT "
         + "WBA.ID, WB.KEY, "
         + commonSelectStatements()
-        + "FROM WORKBASKET_ACCESS_LIST AS WBA "
-        + "LEFT JOIN WORKBASKET AS WB ON WORKBASKET_ID = WB.ID "
+        + "FROM WORKBASKET_ACCESS_LIST WBA "
+        + "LEFT JOIN WORKBASKET WB ON WORKBASKET_ID = WB.ID "
         + "WHERE ACCESS_ID = #{id} "
         + DB2_WITH_UR
         + CLOSING_SCRIPT_TAG;
@@ -104,7 +104,7 @@ public class WorkbasketAccessSqlProvider {
   public static String findByWorkbasketAndAccessId() {
     return OPENING_SCRIPT_TAG
         + "<choose>"
-        + "<when test=\"_databaseId == 'db2'\">"
+        + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
         + "SELECT "
         + getMaximumPermissionStatement(false)
         + "</when>"
@@ -123,7 +123,7 @@ public class WorkbasketAccessSqlProvider {
   public static String findByWorkbasketKeyDomainAndAccessId() {
     return OPENING_SCRIPT_TAG
         + "<choose>"
-        + "<when test=\"_databaseId == 'db2'\">"
+        + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
         + "SELECT "
         + getMaximumPermissionStatement(false)
         + "</when>"
@@ -156,12 +156,12 @@ public class WorkbasketAccessSqlProvider {
         .collect(Collectors.joining(", ", "", " "));
   }
 
-  private static String getMaximumPermissionStatement(boolean isNotDb2) {
+  private static String getMaximumPermissionStatement(boolean isNotDb2AndNotOracle) {
     return PERMISSIONS.stream()
         .map(
             perm -> {
               String temp = "MAX(" + perm.getLeft();
-              if (isNotDb2) {
+              if (isNotDb2AndNotOracle) {
                 temp += "::int";
               }
               temp += ") AS " + perm.getLeft();

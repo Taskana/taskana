@@ -54,6 +54,10 @@ public interface UserMapper {
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insert")
   void insert(User user);
 
+  @InsertProvider(
+      type = UserMapperSqlProvider.class,
+      method = "insertGroupsOracle",
+      databaseId = "oracle")
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insertGroups")
   void insertGroups(User user);
 
