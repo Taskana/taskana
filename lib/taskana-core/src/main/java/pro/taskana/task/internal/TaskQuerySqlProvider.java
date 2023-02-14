@@ -444,6 +444,7 @@ public class TaskQuerySqlProvider {
     commonWhereClauses("businessProcessId", "t.BUSINESS_PROCESS_ID", sb);
     commonWhereClauses("classificationCategory", "CLASSIFICATION_CATEGORY", sb);
     commonWhereClauses("classificationKey", "t.CLASSIFICATION_KEY", sb);
+    commonWhereClauses("classificationParentKey", "c.PARENT_KEY", sb);
     commonWhereClauses("classificationName", "c.NAME", sb);
     commonWhereClauses("creator", "t.CREATOR", sb);
     commonWhereClauses("name", "t.NAME", sb);
