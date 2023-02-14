@@ -586,6 +586,45 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByClassificationKey(SortDirection sortDirection);
 
   // endregion
+  // region classificationParentKey
+
+  /**
+   * Add these keys of the parent Classification to your query.
+   *
+   * @param classificationParentKeys the classification parent keys
+   * @return the query
+   */
+  TaskQuery classificationParentKeyIn(String... classificationParentKeys);
+
+  /**
+   * Exclude these keys of the parent Classification from your query.
+   *
+   * @param classificationParentKeys the keys of the parent Classifications
+   * @return the query
+   */
+  TaskQuery classificationParentKeyNotIn(String... classificationParentKeys);
+
+  /**
+   * Add these keys of the parent Classification for pattern matching to your query. It will be
+   * compared in SQL with the LIKE operator. You may use a wildcard like % to specify the pattern.
+   * If you specify multiple arguments they are combined with the OR keyword.
+   *
+   * @param classificationParentKeys the keys of the parent Classification
+   * @return the query
+   */
+  TaskQuery classificationParentKeyLike(String... classificationParentKeys);
+
+  /**
+   * Exclude these keys of the parent Classification for pattern matching from your query. It will
+   * be compared in SQL with the LIKE operator. You may use a wildcard like % to specify the
+   * pattern. If you specify multiple arguments they are combined with the OR keyword.
+   *
+   * @param classificationParentKeys the keys of the parent Classification
+   * @return the query
+   */
+  TaskQuery classificationParentKeyNotLike(String... classificationParentKeys);
+
+  // endregion
   // region classificationCategory
 
   /**

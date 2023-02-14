@@ -110,6 +110,10 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] classificationKeyNotIn;
   private String[] classificationKeyLike;
   private String[] classificationKeyNotLike;
+  private String[] classificationParentKeyIn;
+  private String[] classificationParentKeyNotIn;
+  private String[] classificationParentKeyLike;
+  private String[] classificationParentKeyNotLike;
   private String[] classificationCategoryIn;
   private String[] classificationCategoryNotIn;
   private String[] classificationCategoryLike;
@@ -664,8 +668,38 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery classificationParentKeyIn(String... classificationParentKeys) {
+    this.classificationParentKeyIn = classificationParentKeys;
+    this.joinWithClassifications = true;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationParentKeyNotIn(String... classificationParentKeys) {
+    this.classificationParentKeyNotIn = classificationParentKeys;
+    this.joinWithClassifications = true;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationParentKeyLike(String... classificationParentKeys) {
+    this.classificationParentKeyLike = toLowerCopy(classificationParentKeys);
+    this.joinWithClassifications = true;
+    return this;
+  }
+
+  @Override
+  public TaskQuery classificationParentKeyNotLike(String... classificationParentKeys) {
+    this.classificationParentKeyNotLike = toLowerCopy(classificationParentKeys);
+    this.joinWithClassifications = true;
+    return this;
+  }
+
+
+  @Override
   public TaskQuery classificationCategoryIn(String... classificationCategories) {
     this.classificationCategoryIn = classificationCategories;
+    this.joinWithClassifications = true;
     return this;
   }
 
@@ -2310,6 +2344,14 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(classificationKeyLike)
         + ", classificationKeyNotLike="
         + Arrays.toString(classificationKeyNotLike)
+        + ", classificationParentKeyIn="
+        + Arrays.toString(classificationParentKeyIn)
+        + ", classificationParentKeyNotIn="
+        + Arrays.toString(classificationParentKeyNotIn)
+        + ", classificationParentKeyLike="
+        + Arrays.toString(classificationParentKeyLike)
+        + ", classificationParentKeyNotLike="
+        + Arrays.toString(classificationParentKeyNotLike)
         + ", classificationCategoryIn="
         + Arrays.toString(classificationCategoryIn)
         + ", classificationCategoryNotIn="

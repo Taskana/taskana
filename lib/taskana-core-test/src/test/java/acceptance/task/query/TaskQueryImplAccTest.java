@@ -1160,6 +1160,98 @@ class TaskQueryImplAccTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
+    class ClassificationParentKey {
+
+      WorkbasketSummary wb;
+      TaskSummary taskSummary1;
+      TaskSummary taskSummary2;
+      TaskSummary taskSummary3;
+
+      @WithAccessId(user = "user-1-1")
+      @BeforeAll
+      void setup() throws Exception {
+        wb = createWorkbasketWithPermission();
+        defaultTestClassification()
+            .key("L21111")
+            .buildAndStore(classificationService, "businessadmin");
+        ClassificationSummary class1 =
+            defaultTestClassification()
+                .key("L2050")
+                .parentKey("L21111")
+                .buildAndStore(classificationService, "businessadmin");
+        taskSummary1 =
+            taskInWorkbasket(wb).classificationSummary(class1).buildAndStoreAsSummary(taskService);
+        ClassificationSummary class2 =
+            defaultTestClassification()
+                .key("L20501")
+                .parentKey("L2050")
+                .buildAndStore(classificationService, "businessadmin");
+        taskSummary2 =
+            taskInWorkbasket(wb).classificationSummary(class2).buildAndStoreAsSummary(taskService);
+        ClassificationSummary class3 =
+            defaultTestClassification()
+                .key("L2111")
+                .parentKey("L20501")
+                .buildAndStore(classificationService, "businessadmin");
+        taskSummary3 =
+            taskInWorkbasket(wb).classificationSummary(class3).buildAndStoreAsSummary(taskService);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForParentKeyIn() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .classificationParentKeyIn("L2050")
+                .list();
+
+        assertThat(list).containsExactly(taskSummary2);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForKeyParentNotIn() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .classificationParentKeyNotIn("L2050")
+                .list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary1, taskSummary3);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForParentKeyLike() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .classificationParentKeyLike("L2050%")
+                .list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary2, taskSummary3);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForKeyParentNotLike() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .classificationParentKeyNotLike("L2050%")
+                .list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary1);
+      }
+    }
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
     class ClassificationCategory {
 
       WorkbasketSummary wb;

@@ -587,6 +587,76 @@ class TaskControllerIntTest {
     }
 
     @Test
+    void should_ReturnAllTasks_For_SpecifiedWorkbasketIdAndClassificationParentKeyIn() {
+      String parentKey = "L11010";
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                     + "&classification-parent-key=%s",
+                  parentKey);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(1);
+    }
+
+    @Test
+    void should_ReturnAllTasks_For_SpecifiedWorkbasketIdAndClassificationParentKeyNotIn() {
+      String parentKey = "L11010";
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+              "?workbasket-id=WBI:100000000000000000000000000000000006"
+                  + "&classification-parent-key-not=%s",
+              parentKey);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(2);
+    }
+
+    @Test
+    void should_ReturnAllTasks_For_SpecifiedWorkbasketIdAndClassificationParentKeyLike() {
+      String parentKey = "L%";
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?classification-parent-key-like=%s",
+              parentKey);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(3);
+    }
+
+    @Test
+    void should_ReturnAllTasks_For_SpecifiedWorkbasketIdAndClassificationParentKeyNotLike() {
+      String parentKey = "L%";
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+              "?classification-parent-key-not-like=%s",
+              parentKey);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(89);
+    }
+
+    @Test
     void should_ReturnAllTasks_For_ProvidedPrimaryObjectReference() {
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
