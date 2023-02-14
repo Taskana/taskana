@@ -51,6 +51,8 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
+      - name: Change versions to match tag
+        run: ci/change_version.sh -m .
       - name: Compile & build
         run: ./mvnw -B install -DskipTests -Dasciidoctor.skip -Djacoco.skip
       - name: Populate cache
@@ -205,6 +207,8 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
+      - name: Change versions to match tag
+        run: ci/change_version.sh -m .
         # Theoretically this step below not necessary because we reuse the cache from the 'compile_frontend' job.
         # Sometimes the cache is not created, therefore this is a fallback.
       - name: Populate cache
@@ -311,6 +315,10 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
+      - name: Change versions to match tag
+        run: |
+          ci/change_version.sh -m .
+          ci/update_taskana_dependency_for_wildfly.sh
       - name: Generate JavaDoc for Rest Documentation
         if: matrix.module == 'taskana-simplehistory-rest-spring'
         run: ./mvnw -B validate -pl :taskana-rest-spring
@@ -394,7 +402,7 @@ jobs:
       - name: Update version to next snapshot and push back
         run: |
           ci/change_version.sh -i -m .
-          ci/update_taskana_dependency_for_wildfly.sh
+          ci/update_taskana_dependency_for_wildfly.sh -i
           ci/commitPoms.sh rest/taskana-rest-spring-example-wildfly/src/test/java/pro/taskana/example/wildfly/AbstractAccTest.java
         env:
           GH_EMAIL: ${{ secrets.GH_EMAIL }}

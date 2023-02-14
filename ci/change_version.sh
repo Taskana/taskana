@@ -6,7 +6,7 @@ set -e #fail fast
 #H
 #H prints this help and exits
 #H
-#H %FILE% <-m modules...> [-i]
+#H %FILE% <m modules...> [-i]
 #H
 #H   if a release version exists (extracted from GITHUB_REF)
 #H   the maven versions of all modules will be changed to the given release version.

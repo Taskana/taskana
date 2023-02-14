@@ -6,11 +6,13 @@ set -e #fail fast
 #H
 #H prints this help and exits
 #H
-#H %FILE%
+#H %FILE% [-i]
 #H
 #H   if a release version exists (extracted from GITHUB_REF environment variable)
-#H   the taskana dependency in our wildfly example project will be incremented to the new version snapshot.
+#H   the taskana dependency in our wildfly example project will be incremented to the new version.
 #H
+#H i:
+#H   increments version to next snapshot
 # Arguments:
 #   $1: exit code
 function helpAndExit() {
@@ -36,12 +38,24 @@ function main() {
   [[ "$1" == '-h' || "$1" == '--help' ]] && helpAndExit 0
   if [[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     REL=$(dirname "$0")
+    while [[ $# -gt 0 ]]; do
+      case $1 in
+      -i)
+        INCREMENT="true"
+        shift # passed argument
+        ;;
+      *) # unknown option
+        echo "unknown parameter $1" >&2
+        exit 1
+        ;;
+      esac
+    done
     FILES=(
-      "$REL/../rest/taskana-rest-spring-example-wildfly/pom.xml"
       "$REL/../rest/taskana-rest-spring-example-wildfly/src/test/java/pro/taskana/example/wildfly/AbstractAccTest.java"
     )
+    version=$([[ -n "$INCREMENT" ]] && echo "$(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT" || echo "${GITHUB_REF##refs/tags/v}")
     for file in "${FILES[@]}"; do
-      sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+-SNAPSHOT/$(increment_version "${GITHUB_REF##refs/tags/v}")-SNAPSHOT/g" "$file"
+      sed -i "s/\"[0-9]\+\.[0-9]\+\.[0-9]\+\(-SNAPSHOT\)\?\"/\"${version}\"/g" "$file"
     done
   else
     echo "skipped version change for wildfly because this is not a release build"
