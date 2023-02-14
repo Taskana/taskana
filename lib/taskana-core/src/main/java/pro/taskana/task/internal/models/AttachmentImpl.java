@@ -2,17 +2,20 @@ package pro.taskana.task.internal.models;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 
 /** Attachment entity. */
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment {
 
   private Map<String, String> customAttributes = new HashMap<>();
-
-  public AttachmentImpl() {}
 
   private AttachmentImpl(AttachmentImpl copyFrom) {
     super(copyFrom);
@@ -57,56 +60,5 @@ public class AttachmentImpl extends AttachmentSummaryImpl implements Attachment 
   @Override
   public AttachmentImpl copy() {
     return new AttachmentImpl(this);
-  }
-
-  @Override
-  protected boolean canEqual(Object other) {
-    return (!(other instanceof AttachmentImpl));
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), customAttributes);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof AttachmentImpl)) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    AttachmentImpl other = (AttachmentImpl) obj;
-    if (other.canEqual(this)) {
-      return false;
-    }
-    return Objects.equals(customAttributes, other.customAttributes);
-  }
-
-  @Override
-  public String toString() {
-    return "AttachmentImpl [id="
-        + id
-        + ", taskId="
-        + taskId
-        + ", created="
-        + created
-        + ", modified="
-        + modified
-        + ", classificationSummary="
-        + classificationSummary
-        + ", objectReference="
-        + objectReference
-        + ", channel="
-        + channel
-        + ", received="
-        + received
-        + ", customAttributes="
-        + customAttributes
-        + "]";
   }
 }

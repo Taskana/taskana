@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.security.auth.Subject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -24,8 +25,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
@@ -82,11 +81,11 @@ import pro.taskana.workbasket.internal.WorkbasketQueryMapper;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 
 /** This is the implementation of TaskanaEngine. */
+@Slf4j
 public class TaskanaEngineImpl implements TaskanaEngine {
 
   // must match the VERSION value in table
   public static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
   protected final TaskanaConfiguration taskanaEngineConfiguration;
   private final TaskRoutingManager taskRoutingManager;
@@ -111,7 +110,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       ConnectionManagementMode connectionManagementMode,
       boolean initSpis)
       throws SQLException {
-    LOGGER.info(
+    log.info(
         "initializing TASKANA with this configuration: {} and this mode: {}",
         taskanaEngineConfiguration,
         connectionManagementMode);
@@ -237,7 +236,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public JobService getJobService() {
-    return new JobServiceImpl(internalTaskanaEngineImpl, sessionManager.getMapper(JobMapper.class));
+    return new JobServiceImpl(sessionManager.getMapper(JobMapper.class), internalTaskanaEngineImpl);
   }
 
   @Override
@@ -326,9 +325,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   @Override
   public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
     if (!isUserInRole(roles)) {
-      if (LOGGER.isDebugEnabled()) {
+      if (log.isDebugEnabled()) {
         String rolesAsString = Arrays.toString(roles);
-        LOGGER.debug(
+        log.debug(
             "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
             currentUserContext.getAccessIds(),
             rolesAsString);
@@ -368,12 +367,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
         new Environment(
-            "default", this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+            "default", this.transactionFactory, taskanaEngineConfiguration.getDataSource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     String databaseProductName;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaEngineConfiguration.getDataSource().getConnection()) {
       databaseProductName = DB.getDatabaseProductName(con);
       configuration.setDatabaseId(DB.getDatabaseProductId(con));
 
@@ -433,7 +432,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
+            taskanaEngineConfiguration.getDataSource(), taskanaEngineConfiguration.getSchemaName());
     boolean schemaCreated = dbSchemaCreator.run();
 
     if (!schemaCreated) {

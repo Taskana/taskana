@@ -3,10 +3,10 @@ package pro.taskana.task.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
@@ -35,6 +35,8 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
 /** TaskQuery for generating dynamic sql. */
+@Slf4j
+@ToString
 public class TaskQueryImpl implements TaskQuery {
 
   private static final String LINK_TO_MAPPER =
@@ -49,7 +51,6 @@ public class TaskQueryImpl implements TaskQuery {
       "pro.taskana.task.internal.TaskQueryMapper.countQueryTasksDb2";
   private static final String LINK_TO_VALUE_MAPPER =
       "pro.taskana.task.internal.TaskQueryMapper.queryTaskColumnValues";
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
   private final List<String> orderBy;
@@ -2165,8 +2166,8 @@ public class TaskQueryImpl implements TaskQuery {
 
   private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
     if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
+      if (log.isDebugEnabled()) {
+        log.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
       }
       return;
     }
@@ -2196,8 +2197,7 @@ public class TaskQueryImpl implements TaskQuery {
           .getWorkbasketService()
           .checkAuthorization(workbasketId, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
     } catch (WorkbasketNotFoundException e) {
-      LOGGER.warn(
-          String.format("The workbasket with the ID ' %s ' does not exist.", workbasketId), e);
+      log.warn(String.format("The workbasket with the ID ' %s ' does not exist.", workbasketId), e);
     }
   }
 
@@ -2213,7 +2213,7 @@ public class TaskQueryImpl implements TaskQuery {
               WorkbasketPermission.OPEN,
               WorkbasketPermission.READ);
     } catch (WorkbasketNotFoundException e) {
-      LOGGER.warn(
+      log.warn(
           String.format(
               "The workbasket with the KEY ' %s ' and DOMAIN ' %s ' does not exist.",
               keyDomain.getKey(), keyDomain.getDomain()),
@@ -2227,500 +2227,5 @@ public class TaskQueryImpl implements TaskQuery {
     }
     orderBy.add(columnName + " " + sortDirection);
     return this;
-  }
-
-  @Override
-  public String toString() {
-    return "TaskQueryImpl [taskanaEngine="
-        + taskanaEngine
-        + ", taskService="
-        + taskService
-        + ", orderBy="
-        + orderBy
-        + ", columnName="
-        + columnName
-        + ", accessIdIn="
-        + Arrays.toString(accessIdIn)
-        + ", filterByAccessIdIn="
-        + filterByAccessIdIn
-        + ", selectAndClaim="
-        + selectAndClaim
-        + ", useDistinctKeyword="
-        + useDistinctKeyword
-        + ", joinWithAttachments="
-        + joinWithAttachments
-        + ", joinWithClassifications="
-        + joinWithClassifications
-        + ", joinWithAttachmentClassifications="
-        + joinWithAttachmentClassifications
-        + ", joinWithWorkbaskets="
-        + joinWithWorkbaskets
-        + ", joinWithSecondaryObjectReferences="
-        + joinWithSecondaryObjectReferences
-        + ", addAttachmentColumnsToSelectClauseForOrdering="
-        + addAttachmentColumnsToSelectClauseForOrdering
-        + ", addClassificationNameToSelectClauseForOrdering="
-        + addClassificationNameToSelectClauseForOrdering
-        + ", addAttachmentClassificationNameToSelectClauseForOrdering="
-        + addAttachmentClassificationNameToSelectClauseForOrdering
-        + ", addWorkbasketNameToSelectClauseForOrdering="
-        + addWorkbasketNameToSelectClauseForOrdering
-        + ", taskId="
-        + Arrays.toString(taskId)
-        + ", taskIdNotIn="
-        + Arrays.toString(taskIdNotIn)
-        + ", externalIdIn="
-        + Arrays.toString(externalIdIn)
-        + ", externalIdNotIn="
-        + Arrays.toString(externalIdNotIn)
-        + ", receivedWithin="
-        + Arrays.toString(receivedWithin)
-        + ", receivedNotWithin="
-        + Arrays.toString(receivedNotWithin)
-        + ", createdWithin="
-        + Arrays.toString(createdWithin)
-        + ", createdNotWithin="
-        + Arrays.toString(createdNotWithin)
-        + ", claimedWithin="
-        + Arrays.toString(claimedWithin)
-        + ", claimedNotWithin="
-        + Arrays.toString(claimedNotWithin)
-        + ", modifiedWithin="
-        + Arrays.toString(modifiedWithin)
-        + ", modifiedNotWithin="
-        + Arrays.toString(modifiedNotWithin)
-        + ", plannedWithin="
-        + Arrays.toString(plannedWithin)
-        + ", plannedNotWithin="
-        + Arrays.toString(plannedNotWithin)
-        + ", dueWithin="
-        + Arrays.toString(dueWithin)
-        + ", dueNotWithin="
-        + Arrays.toString(dueNotWithin)
-        + ", completedWithin="
-        + Arrays.toString(completedWithin)
-        + ", completedNotWithin="
-        + Arrays.toString(completedNotWithin)
-        + ", nameIn="
-        + Arrays.toString(nameIn)
-        + ", nameNotIn="
-        + Arrays.toString(nameNotIn)
-        + ", nameLike="
-        + Arrays.toString(nameLike)
-        + ", nameNotLike="
-        + Arrays.toString(nameNotLike)
-        + ", creatorIn="
-        + Arrays.toString(creatorIn)
-        + ", creatorNotIn="
-        + Arrays.toString(creatorNotIn)
-        + ", creatorLike="
-        + Arrays.toString(creatorLike)
-        + ", creatorNotLike="
-        + Arrays.toString(creatorNotLike)
-        + ", noteLike="
-        + Arrays.toString(noteLike)
-        + ", noteNotLike="
-        + Arrays.toString(noteNotLike)
-        + ", descriptionLike="
-        + Arrays.toString(descriptionLike)
-        + ", descriptionNotLike="
-        + Arrays.toString(descriptionNotLike)
-        + ", priority="
-        + Arrays.toString(priority)
-        + ", priorityNotIn="
-        + Arrays.toString(priorityNotIn)
-        + ", stateIn="
-        + Arrays.toString(stateIn)
-        + ", stateNotIn="
-        + Arrays.toString(stateNotIn)
-        + ", classificationIdIn="
-        + Arrays.toString(classificationIdIn)
-        + ", classificationIdNotIn="
-        + Arrays.toString(classificationIdNotIn)
-        + ", classificationKeyIn="
-        + Arrays.toString(classificationKeyIn)
-        + ", classificationKeyNotIn="
-        + Arrays.toString(classificationKeyNotIn)
-        + ", classificationKeyLike="
-        + Arrays.toString(classificationKeyLike)
-        + ", classificationKeyNotLike="
-        + Arrays.toString(classificationKeyNotLike)
-        + ", classificationParentKeyIn="
-        + Arrays.toString(classificationParentKeyIn)
-        + ", classificationParentKeyNotIn="
-        + Arrays.toString(classificationParentKeyNotIn)
-        + ", classificationParentKeyLike="
-        + Arrays.toString(classificationParentKeyLike)
-        + ", classificationParentKeyNotLike="
-        + Arrays.toString(classificationParentKeyNotLike)
-        + ", classificationCategoryIn="
-        + Arrays.toString(classificationCategoryIn)
-        + ", classificationCategoryNotIn="
-        + Arrays.toString(classificationCategoryNotIn)
-        + ", classificationCategoryLike="
-        + Arrays.toString(classificationCategoryLike)
-        + ", classificationCategoryNotLike="
-        + Arrays.toString(classificationCategoryNotLike)
-        + ", classificationNameIn="
-        + Arrays.toString(classificationNameIn)
-        + ", classificationNameNotIn="
-        + Arrays.toString(classificationNameNotIn)
-        + ", classificationNameLike="
-        + Arrays.toString(classificationNameLike)
-        + ", classificationNameNotLike="
-        + Arrays.toString(classificationNameNotLike)
-        + ", workbasketIdIn="
-        + Arrays.toString(workbasketIdIn)
-        + ", workbasketIdNotIn="
-        + Arrays.toString(workbasketIdNotIn)
-        + ", workbasketKeyDomainIn="
-        + Arrays.toString(workbasketKeyDomainIn)
-        + ", workbasketKeyDomainNotIn="
-        + Arrays.toString(workbasketKeyDomainNotIn)
-        + ", businessProcessIdIn="
-        + Arrays.toString(businessProcessIdIn)
-        + ", businessProcessIdNotIn="
-        + Arrays.toString(businessProcessIdNotIn)
-        + ", businessProcessIdLike="
-        + Arrays.toString(businessProcessIdLike)
-        + ", businessProcessIdNotLike="
-        + Arrays.toString(businessProcessIdNotLike)
-        + ", parentBusinessProcessIdIn="
-        + Arrays.toString(parentBusinessProcessIdIn)
-        + ", parentBusinessProcessIdNotIn="
-        + Arrays.toString(parentBusinessProcessIdNotIn)
-        + ", parentBusinessProcessIdLike="
-        + Arrays.toString(parentBusinessProcessIdLike)
-        + ", parentBusinessProcessIdNotLike="
-        + Arrays.toString(parentBusinessProcessIdNotLike)
-        + ", ownerIn="
-        + Arrays.toString(ownerIn)
-        + ", ownerNotIn="
-        + Arrays.toString(ownerNotIn)
-        + ", ownerLike="
-        + Arrays.toString(ownerLike)
-        + ", ownerNotLike="
-        + Arrays.toString(ownerNotLike)
-        + ", ownerLongNameIn="
-        + Arrays.toString(ownerLongNameIn)
-        + ", ownerLongNameNotIn="
-        + Arrays.toString(ownerLongNameNotIn)
-        + ", ownerLongNameLike="
-        + Arrays.toString(ownerLongNameLike)
-        + ", ownerLongNameNotLike="
-        + Arrays.toString(ownerLongNameNotLike)
-        + ", objectReferences="
-        + Arrays.toString(objectReferences)
-        + ", porCompanyIn="
-        + Arrays.toString(porCompanyIn)
-        + ", porCompanyNotIn="
-        + Arrays.toString(porCompanyNotIn)
-        + ", porCompanyLike="
-        + Arrays.toString(porCompanyLike)
-        + ", porCompanyNotLike="
-        + Arrays.toString(porCompanyNotLike)
-        + ", porSystemIn="
-        + Arrays.toString(porSystemIn)
-        + ", porSystemNotIn="
-        + Arrays.toString(porSystemNotIn)
-        + ", porSystemLike="
-        + Arrays.toString(porSystemLike)
-        + ", porSystemNotLike="
-        + Arrays.toString(porSystemNotLike)
-        + ", porSystemInstanceIn="
-        + Arrays.toString(porSystemInstanceIn)
-        + ", porSystemInstanceNotIn="
-        + Arrays.toString(porSystemInstanceNotIn)
-        + ", porSystemInstanceLike="
-        + Arrays.toString(porSystemInstanceLike)
-        + ", porSystemInstanceNotLike="
-        + Arrays.toString(porSystemInstanceNotLike)
-        + ", porTypeIn="
-        + Arrays.toString(porTypeIn)
-        + ", porTypeNotIn="
-        + Arrays.toString(porTypeNotIn)
-        + ", porTypeLike="
-        + Arrays.toString(porTypeLike)
-        + ", porTypeNotLike="
-        + Arrays.toString(porTypeNotLike)
-        + ", porValueIn="
-        + Arrays.toString(porValueIn)
-        + ", porValueNotIn="
-        + Arrays.toString(porValueNotIn)
-        + ", porValueLike="
-        + Arrays.toString(porValueLike)
-        + ", porValueNotLike="
-        + Arrays.toString(porValueNotLike)
-        + ", isRead="
-        + isRead
-        + ", isTransferred="
-        + isTransferred
-        + ", attachmentClassificationIdIn="
-        + Arrays.toString(attachmentClassificationIdIn)
-        + ", attachmentClassificationIdNotIn="
-        + Arrays.toString(attachmentClassificationIdNotIn)
-        + ", attachmentClassificationNameIn="
-        + Arrays.toString(attachmentClassificationNameIn)
-        + ", attachmentClassificationNameNotIn="
-        + Arrays.toString(attachmentClassificationNameNotIn)
-        + ", attachmentClassificationKeyIn="
-        + Arrays.toString(attachmentClassificationKeyIn)
-        + ", attachmentClassificationKeyNotIn="
-        + Arrays.toString(attachmentClassificationKeyNotIn)
-        + ", attachmentClassificationKeyLike="
-        + Arrays.toString(attachmentClassificationKeyLike)
-        + ", attachmentClassificationKeyNotLike="
-        + Arrays.toString(attachmentClassificationKeyNotLike)
-        + ", attachmentClassificationNameLike="
-        + Arrays.toString(attachmentClassificationNameLike)
-        + ", attachmentClassificationNameNotLike="
-        + Arrays.toString(attachmentClassificationNameNotLike)
-        + ", attachmentChannelIn="
-        + Arrays.toString(attachmentChannelIn)
-        + ", attachmentChannelNotIn="
-        + Arrays.toString(attachmentChannelNotIn)
-        + ", attachmentChannelLike="
-        + Arrays.toString(attachmentChannelLike)
-        + ", attachmentChannelNotLike="
-        + Arrays.toString(attachmentChannelNotLike)
-        + ", attachmentReferenceIn="
-        + Arrays.toString(attachmentReferenceIn)
-        + ", attachmentReferenceNotIn="
-        + Arrays.toString(attachmentReferenceNotIn)
-        + ", attachmentReferenceLike="
-        + Arrays.toString(attachmentReferenceLike)
-        + ", attachmentReferenceNotLike="
-        + Arrays.toString(attachmentReferenceNotLike)
-        + ", attachmentReceivedWithin="
-        + Arrays.toString(attachmentReceivedWithin)
-        + ", attachmentReceivedNotWithin="
-        + Arrays.toString(attachmentReceivedNotWithin)
-        + ", withoutAttachment="
-        + withoutAttachment
-        + ", secondaryObjectReferences="
-        + Arrays.toString(secondaryObjectReferences)
-        + ", sorCompanyIn="
-        + Arrays.toString(sorCompanyIn)
-        + ", sorCompanyLike="
-        + Arrays.toString(sorCompanyLike)
-        + ", sorSystemIn="
-        + Arrays.toString(sorSystemIn)
-        + ", sorSystemNotIn="
-        + Arrays.toString(sorSystemLike)
-        + ", sorSystemNotLike="
-        + Arrays.toString(sorSystemInstanceIn)
-        + ", sorSystemInstanceLike="
-        + Arrays.toString(sorSystemInstanceLike)
-        + ", sorTypeIn="
-        + Arrays.toString(sorTypeIn)
-        + ", sorTypeLike="
-        + Arrays.toString(sorTypeLike)
-        + ", sorValueIn="
-        + Arrays.toString(sorValueIn)
-        + ", sorValueLike="
-        + Arrays.toString(sorValueLike)
-        + ", custom1In="
-        + Arrays.toString(custom1In)
-        + ", custom1NotIn="
-        + Arrays.toString(custom1NotIn)
-        + ", custom1Like="
-        + Arrays.toString(custom1Like)
-        + ", custom1NotLike="
-        + Arrays.toString(custom1NotLike)
-        + ", custom2In="
-        + Arrays.toString(custom2In)
-        + ", custom2NotIn="
-        + Arrays.toString(custom2NotIn)
-        + ", custom2Like="
-        + Arrays.toString(custom2Like)
-        + ", custom2NotLike="
-        + Arrays.toString(custom2NotLike)
-        + ", custom3In="
-        + Arrays.toString(custom3In)
-        + ", custom3NotIn="
-        + Arrays.toString(custom3NotIn)
-        + ", custom3Like="
-        + Arrays.toString(custom3Like)
-        + ", custom3NotLike="
-        + Arrays.toString(custom3NotLike)
-        + ", custom4In="
-        + Arrays.toString(custom4In)
-        + ", custom4NotIn="
-        + Arrays.toString(custom4NotIn)
-        + ", custom4Like="
-        + Arrays.toString(custom4Like)
-        + ", custom4NotLike="
-        + Arrays.toString(custom4NotLike)
-        + ", custom5In="
-        + Arrays.toString(custom5In)
-        + ", custom5NotIn="
-        + Arrays.toString(custom5NotIn)
-        + ", custom5Like="
-        + Arrays.toString(custom5Like)
-        + ", custom5NotLike="
-        + Arrays.toString(custom5NotLike)
-        + ", custom6In="
-        + Arrays.toString(custom6In)
-        + ", custom6NotIn="
-        + Arrays.toString(custom6NotIn)
-        + ", custom6Like="
-        + Arrays.toString(custom6Like)
-        + ", custom6NotLike="
-        + Arrays.toString(custom6NotLike)
-        + ", custom7In="
-        + Arrays.toString(custom7In)
-        + ", custom7NotIn="
-        + Arrays.toString(custom7NotIn)
-        + ", custom7Like="
-        + Arrays.toString(custom7Like)
-        + ", custom7NotLike="
-        + Arrays.toString(custom7NotLike)
-        + ", custom8In="
-        + Arrays.toString(custom8In)
-        + ", custom8NotIn="
-        + Arrays.toString(custom8NotIn)
-        + ", custom8Like="
-        + Arrays.toString(custom8Like)
-        + ", custom8NotLike="
-        + Arrays.toString(custom8NotLike)
-        + ", custom9In="
-        + Arrays.toString(custom9In)
-        + ", custom9NotIn="
-        + Arrays.toString(custom9NotIn)
-        + ", custom9Like="
-        + Arrays.toString(custom9Like)
-        + ", custom9NotLike="
-        + Arrays.toString(custom9NotLike)
-        + ", custom10In="
-        + Arrays.toString(custom10In)
-        + ", custom10NotIn="
-        + Arrays.toString(custom10NotIn)
-        + ", custom10Like="
-        + Arrays.toString(custom10Like)
-        + ", custom10NotLike="
-        + Arrays.toString(custom10NotLike)
-        + ", custom11In="
-        + Arrays.toString(custom11In)
-        + ", custom11NotIn="
-        + Arrays.toString(custom11NotIn)
-        + ", custom11Like="
-        + Arrays.toString(custom11Like)
-        + ", custom11NotLike="
-        + Arrays.toString(custom11NotLike)
-        + ", custom12In="
-        + Arrays.toString(custom12In)
-        + ", custom12NotIn="
-        + Arrays.toString(custom12NotIn)
-        + ", custom12Like="
-        + Arrays.toString(custom12Like)
-        + ", custom12NotLike="
-        + Arrays.toString(custom12NotLike)
-        + ", custom13In="
-        + Arrays.toString(custom13In)
-        + ", custom13NotIn="
-        + Arrays.toString(custom13NotIn)
-        + ", custom13Like="
-        + Arrays.toString(custom13Like)
-        + ", custom13NotLike="
-        + Arrays.toString(custom13NotLike)
-        + ", custom14In="
-        + Arrays.toString(custom14In)
-        + ", custom14NotIn="
-        + Arrays.toString(custom14NotIn)
-        + ", custom14Like="
-        + Arrays.toString(custom14Like)
-        + ", custom14NotLike="
-        + Arrays.toString(custom14NotLike)
-        + ", custom15In="
-        + Arrays.toString(custom15In)
-        + ", custom15NotIn="
-        + Arrays.toString(custom15NotIn)
-        + ", custom15Like="
-        + Arrays.toString(custom15Like)
-        + ", custom15NotLike="
-        + Arrays.toString(custom15NotLike)
-        + ", custom16In="
-        + Arrays.toString(custom16In)
-        + ", custom16NotIn="
-        + Arrays.toString(custom16NotIn)
-        + ", custom16Like="
-        + Arrays.toString(custom16Like)
-        + ", custom16NotLike="
-        + Arrays.toString(custom16NotLike)
-        + ", customInt1In="
-        + Arrays.toString(customInt1In)
-        + ", customInt1NotIn="
-        + Arrays.toString(customInt1NotIn)
-        + ", customInt1Within="
-        + Arrays.toString(customInt1Within)
-        + ", customInt1NotWithin="
-        + Arrays.toString(customInt1NotWithin)
-        + ", customInt2In="
-        + Arrays.toString(customInt2In)
-        + ", customInt2NotIn="
-        + Arrays.toString(customInt2NotIn)
-        + ", customInt2Within="
-        + Arrays.toString(customInt2Within)
-        + ", customInt2NotWithin="
-        + Arrays.toString(customInt2NotWithin)
-        + ", customInt3In="
-        + Arrays.toString(customInt3In)
-        + ", customInt3NotIn="
-        + Arrays.toString(customInt3NotIn)
-        + ", customInt3Within="
-        + Arrays.toString(customInt3Within)
-        + ", customInt3NotWithin="
-        + Arrays.toString(customInt3NotWithin)
-        + ", customInt4In="
-        + Arrays.toString(customInt4In)
-        + ", customInt4NotIn="
-        + Arrays.toString(customInt4NotIn)
-        + ", customInt4Within="
-        + Arrays.toString(customInt4Within)
-        + ", customInt4NotWithin="
-        + Arrays.toString(customInt4NotWithin)
-        + ", customInt5In="
-        + Arrays.toString(customInt5In)
-        + ", customInt5NotIn="
-        + Arrays.toString(customInt5NotIn)
-        + ", customInt5Within="
-        + Arrays.toString(customInt5Within)
-        + ", customInt5NotWithin="
-        + Arrays.toString(customInt5NotWithin)
-        + ", customInt6In="
-        + Arrays.toString(customInt6In)
-        + ", customInt6NotIn="
-        + Arrays.toString(customInt6NotIn)
-        + ", customInt6Within="
-        + Arrays.toString(customInt6Within)
-        + ", customInt6NotWithin="
-        + Arrays.toString(customInt6NotWithin)
-        + ", customInt7In="
-        + Arrays.toString(customInt7In)
-        + ", customInt7NotIn="
-        + Arrays.toString(customInt7NotIn)
-        + ", customInt7Within="
-        + Arrays.toString(customInt7Within)
-        + ", customInt7NotWithin="
-        + Arrays.toString(customInt7NotWithin)
-        + ", customInt8In="
-        + Arrays.toString(customInt8In)
-        + ", customInt8NotIn="
-        + Arrays.toString(customInt8NotIn)
-        + ", customInt8Within="
-        + Arrays.toString(customInt8Within)
-        + ", customInt8NotWithin="
-        + Arrays.toString(customInt8NotWithin)
-        + ", callbackStateIn="
-        + Arrays.toString(callbackStateIn)
-        + ", callbackStateNotIn="
-        + Arrays.toString(callbackStateNotIn)
-        + ", wildcardSearchFieldIn="
-        + Arrays.toString(wildcardSearchFieldIn)
-        + ", wildcardSearchValueLike="
-        + wildcardSearchValueLike
-        + ", joinWithUserInfo="
-        + joinWithUserInfo
-        + "]";
   }
 }

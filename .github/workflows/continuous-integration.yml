@@ -100,6 +100,8 @@ jobs:
           path: ~/.m2
           key: ${{ runner.OS }}-${{ env.CACHE_MAVEN_FOR_WEB_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.OS }}-${{ env.CACHE_MAVEN_FOR_WEB_NAME }}
+      - name: compile aspect
+        run: ./mvnw -B install -pl :taskana-aspect-logging -am
       - name: Populate maven cache
         run: ./mvnw -B dependency:go-offline -pl :taskana-web -am
         if: steps.maven-cache.outputs.cache-hit != 'true'
@@ -243,10 +245,10 @@ jobs:
     strategy:
       matrix:
         module:
+          - taskana-aspect-logging
           - taskana-common
           - taskana-common-security
           - taskana-common-data
-          - taskana-common-logging
           - taskana-common-test
           - taskana-core
           - taskana-core-test
@@ -388,7 +390,7 @@ jobs:
           ./mvnw -B deploy -P $([[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot") \
           --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Djacoco.skip \
           -pl :taskana-parent,\
-          :taskana-common-parent,:taskana-common-logging,:taskana-common,:taskana-common-security,\
+          :taskana-aspect-parent,:taskana-aspect-logging,:taskana-common-parent,:taskana-common,:taskana-common-security,\
           :taskana-common-data,:taskana-common-test,\
           :taskana-lib-parent,:taskana-core,:taskana-cdi,:taskana-spring,\
           :taskana-rest-parent,:taskana-web,:taskana-rest-spring,\

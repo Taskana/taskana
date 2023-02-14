@@ -12,18 +12,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.jdbc.SqlRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.internal.util.ComparableVersion;
 
 /** This class create the schema for taskana. */
+@Slf4j
 public class DbSchemaCreator {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
   private static final String SQL = "/sql";
 
   private static final String DB_SCHEMA_H2 = SQL + "/h2/taskana-schema-h2.sql";
@@ -57,8 +56,8 @@ public class DbSchemaCreator {
    */
   public boolean run() throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "Using database of type {} with url '{}'",
             DB.getDatabaseProductName(connection),
             connection.getMetaData().getURL());
@@ -76,11 +75,11 @@ public class DbSchemaCreator {
         return true;
       }
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(outWriter.toString());
+    if (log.isDebugEnabled()) {
+      log.debug(outWriter.toString());
     }
     if (!errorWriter.toString().trim().isEmpty()) {
-      LOGGER.error(errorWriter.toString());
+      log.error(errorWriter.toString());
     }
     return false;
   }
@@ -89,8 +88,8 @@ public class DbSchemaCreator {
     try (Connection connection = dataSource.getConnection()) {
       connection.setSchema(this.schemaName);
       SqlRunner runner = new SqlRunner(connection);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("{}", connection.getMetaData());
+      if (log.isDebugEnabled()) {
+        log.debug("{}", connection.getMetaData());
       }
 
       String query =
@@ -103,20 +102,20 @@ public class DbSchemaCreator {
       ComparableVersion minVersion = ComparableVersion.of(expectedMinVersion);
 
       if (actualVersion.compareTo(minVersion) < 0) {
-        LOGGER.error(
+        log.error(
             "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
                 + "has not the expected min value {}",
             expectedMinVersion);
         return false;
       } else {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Schema version is valid.");
+        if (log.isDebugEnabled()) {
+          log.debug("Schema version is valid.");
         }
         return true;
       }
 
     } catch (RuntimeSqlException | SQLException e) {
-      LOGGER.error(
+      log.error(
           "Schema version not valid. The VERSION property in table TASKANA_SCHEMA_VERSION "
               + "has not the expected min value {}",
           expectedMinVersion);
@@ -178,16 +177,16 @@ public class DbSchemaCreator {
         BufferedReader reader = new BufferedReader(inputReader)) {
       runner.runScript(getSqlSchemaNameParsed(reader));
     } catch (RuntimeSqlException | IOException e) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Schema does not exist.");
+      if (log.isDebugEnabled()) {
+        log.debug("Schema does not exist.");
         if (!errorWriter.toString().trim().isEmpty()) {
-          LOGGER.debug(errorWriter.toString());
+          log.debug(errorWriter.toString());
         }
       }
       return false;
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Schema does exist.");
+    if (log.isDebugEnabled()) {
+      log.debug("Schema does exist.");
     }
     return true;
   }
@@ -204,7 +203,7 @@ public class DbSchemaCreator {
         }
       }
     } catch (IOException e) {
-      LOGGER.error("SchemaName sql parsing failed for schemaName {}", schemaName, e);
+      log.error("SchemaName sql parsing failed for schemaName {}", schemaName, e);
     }
     return new StringReader(content.toString());
   }

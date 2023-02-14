@@ -19,8 +19,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaRole;
@@ -30,10 +29,9 @@ import pro.taskana.common.internal.util.CheckedFunction;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.internal.util.ReflectionUtil;
 
+@Slf4j
 public class TaskanaConfigurationInitializer {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(TaskanaConfigurationInitializer.class);
   private static final String TASKANA_CUSTOM_HOLIDAY_DAY_MONTH_SEPARATOR = ".";
   private static final String TASKANA_CLASSIFICATION_CATEGORIES_PROPERTY =
       "taskana.classification.categories";
@@ -199,7 +197,7 @@ public class TaskanaConfigurationInitializer {
                           try {
                             return createCustomHolidayFromPropsEntry(str);
                           } catch (WrongCustomHolidayFormatException e) {
-                            LOGGER.warn(e.getMessage());
+                            log.warn(e.getMessage());
                             return null;
                           }
                         })

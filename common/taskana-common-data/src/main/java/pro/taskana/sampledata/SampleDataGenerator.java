@@ -16,17 +16,15 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.apache.ibatis.jdbc.ScriptRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.internal.configuration.DB;
 
 /** This class generates sample data for manual testing purposes. */
+@Slf4j
 public class SampleDataGenerator {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataGenerator.class);
 
   private static final String CACHED_TEST = "TEST";
   private static final String CACHED_SAMPLE = "SAMPLE";
@@ -89,8 +87,8 @@ public class SampleDataGenerator {
 
   private void runScripts(Consumer<ScriptRunner> consumer) {
     try (Connection connection = dataSource.getConnection()) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "Generating sample data for database of type '{}' with url '{}' and schema '{}'.",
             DB.getDatabaseProductName(connection),
             connection.getMetaData().getURL(),
@@ -103,13 +101,13 @@ public class SampleDataGenerator {
       ScriptRunner runner = getScriptRunner(connection, outWriter, errorWriter);
       consumer.accept(runner);
 
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace(outWriter.toString());
+      if (log.isTraceEnabled()) {
+        log.trace(outWriter.toString());
       }
-      if (LOGGER.isErrorEnabled()) {
+      if (log.isErrorEnabled()) {
         String trimmedErrorString = errorWriter.toString().trim();
         if (!trimmedErrorString.isEmpty()) {
-          LOGGER.error(trimmedErrorString);
+          log.error(trimmedErrorString);
         }
       }
     } catch (SQLException e) {

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -24,10 +24,9 @@ import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
  * timeIntervalColumnHeaders. This table is valid for a whole day until the converter is initialized
  * with bigger limits.
  */
+@Slf4j
+@ToString
 public class WorkingDaysToDaysReportConverter {
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(WorkingDaysToDaysReportConverter.class);
 
   private final WorkingDaysToDaysConverter daysToWorkingDaysConverter;
   private final Map<Integer, Integer> cacheDaysToWorkingDays;
@@ -63,8 +62,8 @@ public class WorkingDaysToDaysReportConverter {
       WorkingDaysToDaysConverter converter,
       Instant referenceDate)
       throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Initialize WorkingDaysToDaysConverter with columnHeaders: {}", columnHeaders);
+    if (log.isDebugEnabled()) {
+      log.debug("Initialize WorkingDaysToDaysConverter with columnHeaders: {}", columnHeaders);
     }
 
     if (converter == null) {
@@ -135,14 +134,5 @@ public class WorkingDaysToDaysReportConverter {
       }
       daysToWorkingDaysMap.put(amountOfDays, amountOfWorkdays);
     }
-  }
-
-  @Override
-  public String toString() {
-    return "DaysToWorkingDaysReportConverter [cacheDaysToWorkingDays="
-        + cacheDaysToWorkingDays
-        + ", daysToWorkingDaysConverter="
-        + daysToWorkingDaysConverter
-        + "]";
   }
 }

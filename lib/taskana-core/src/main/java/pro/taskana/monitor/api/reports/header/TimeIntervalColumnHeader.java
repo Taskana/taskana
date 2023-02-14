@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 
@@ -16,6 +18,8 @@ import pro.taskana.monitor.api.reports.item.AgeQueryItem;
  * be equal. The outer cluster of a report should have open ends. These open ends are represented
  * with Integer.MIN_VALUE and Integer.MAX_VALUE.
  */
+@Getter
+@AllArgsConstructor
 public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
 
   private final int lowerAgeLimit;
@@ -23,11 +27,6 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
 
   public TimeIntervalColumnHeader(int ageInDays) {
     this(ageInDays, ageInDays);
-  }
-
-  public TimeIntervalColumnHeader(int lowerAgeLimit, int upperAgeLimit) {
-    this.lowerAgeLimit = lowerAgeLimit;
-    this.upperAgeLimit = upperAgeLimit;
   }
 
   public static int getSmallestUpperLimit(List<? extends TimeIntervalColumnHeader> columnHeaders) {
@@ -42,14 +41,6 @@ public class TimeIntervalColumnHeader implements ColumnHeader<AgeQueryItem> {
         .mapToInt(TimeIntervalColumnHeader::getLowerAgeLimit)
         .max()
         .orElse(0);
-  }
-
-  public int getLowerAgeLimit() {
-    return lowerAgeLimit;
-  }
-
-  public int getUpperAgeLimit() {
-    return upperAgeLimit;
   }
 
   @Override

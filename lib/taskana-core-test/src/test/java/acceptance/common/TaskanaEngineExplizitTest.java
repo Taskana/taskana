@@ -33,7 +33,7 @@ class TaskanaEngineExplizitTest {
 
     DbSchemaCreator dsc =
         new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
+            taskanaEngineConfiguration.getDataSource(), taskanaEngineConfiguration.getSchemaName());
     assertThat(dsc.isValidSchemaVersion(TaskanaEngineImpl.MINIMAL_TASKANA_SCHEMA_VERSION)).isTrue();
   }
 }

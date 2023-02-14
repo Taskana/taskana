@@ -111,8 +111,6 @@ class ArchitectureTest {
                     .or(annotatedWith(TestTemplate.class))))
         .and()
         .areNotDeclaredIn(ArchitectureTest.class)
-        .and()
-        .areNotDeclaredIn(PojoTest.class) // we have to find a proper naming for those tests
         .should()
         .bePackagePrivate()
         .andShould()

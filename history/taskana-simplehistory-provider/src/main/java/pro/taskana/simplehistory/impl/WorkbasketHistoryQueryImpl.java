@@ -3,9 +3,9 @@ package pro.taskana.simplehistory.impl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -15,6 +15,8 @@ import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryColumnNam
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 
+@Slf4j
+@Getter
 public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
   private static final String LINK_TO_MAPPER =
@@ -24,7 +26,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
           + "WorkbasketHistoryQueryMapper.queryHistoryColumnValues";
   private static final String LINK_TO_COUNTER =
       "pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryQueryMapper.countHistoryEvents";
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketHistoryQueryImpl.class);
 
   private static final String SQL_EXCEPTION_MESSAGE =
       "Method openConnection() could not open a connection to the database.";
@@ -74,134 +75,6 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
     this.taskanaHistoryEngine = internalTaskanaHistoryEngine;
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
-  }
-
-  public String[] getIdIn() {
-    return idIn;
-  }
-
-  public String[] getWorkbasketIdIn() {
-    return workbasketIdIn;
-  }
-
-  public String[] getEventTypeIn() {
-    return eventTypeIn;
-  }
-
-  public TimeInterval[] getCreatedIn() {
-    return createdIn;
-  }
-
-  public String[] getUserIdIn() {
-    return userIdIn;
-  }
-
-  public String[] getDomainIn() {
-    return domainIn;
-  }
-
-  public String[] getKeyIn() {
-    return keyIn;
-  }
-
-  public String[] getTypeIn() {
-    return typeIn;
-  }
-
-  public String[] getOwnerIn() {
-    return ownerIn;
-  }
-
-  public String[] getCustom1In() {
-    return custom1In;
-  }
-
-  public String[] getCustom2In() {
-    return custom2In;
-  }
-
-  public String[] getCustom3In() {
-    return custom3In;
-  }
-
-  public String[] getCustom4In() {
-    return custom4In;
-  }
-
-  public String[] getOrgLevel1In() {
-    return orgLevel1In;
-  }
-
-  public String[] getOrgLevel2In() {
-    return orgLevel2In;
-  }
-
-  public String[] getOrgLevel3In() {
-    return orgLevel3In;
-  }
-
-  public String[] getOrgLevel4In() {
-    return orgLevel4In;
-  }
-
-  public String[] getWorkbasketIdLike() {
-    return workbasketIdLike;
-  }
-
-  public String[] getEventTypeLike() {
-    return eventTypeLike;
-  }
-
-  public String[] getUserIdLike() {
-    return userIdLike;
-  }
-
-  public String[] getDomainLike() {
-    return domainLike;
-  }
-
-  public String[] getKeyLike() {
-    return keyLike;
-  }
-
-  public String[] getTypeLike() {
-    return typeLike;
-  }
-
-  public String[] getOwnerLike() {
-    return ownerLike;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
-  public String[] getOrgLevel1Like() {
-    return orgLevel1Like;
-  }
-
-  public String[] getOrgLevel2Like() {
-    return orgLevel2Like;
-  }
-
-  public String[] getOrgLevel3Like() {
-    return orgLevel3Like;
-  }
-
-  public String[] getOrgLevel4Like() {
-    return orgLevel4Like;
   }
 
   @Override
@@ -478,7 +351,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -494,7 +367,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -515,7 +388,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       this.orderBy = cacheOrderBy;
@@ -534,7 +407,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
 
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -549,7 +422,7 @@ public class WorkbasketHistoryQueryImpl implements WorkbasketHistoryQuery {
       rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
       return (rowCount == null) ? 0L : rowCount;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return -1;
     } finally {
       taskanaHistoryEngine.returnConnection();

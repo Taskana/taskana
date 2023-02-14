@@ -4,8 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
@@ -21,12 +20,12 @@ import pro.taskana.task.internal.jobs.TaskRefreshJob;
  * This class executes a job of type {@linkplain
  * pro.taskana.classification.internal.jobs.ClassificationChangedJob}.
  */
+@Slf4j
 public class ClassificationChangedJob extends AbstractTaskanaJob {
 
   public static final String CLASSIFICATION_ID = "classificationId";
   public static final String PRIORITY_CHANGED = "priorityChanged";
   public static final String SERVICE_LEVEL_CHANGED = "serviceLevelChanged";
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationChangedJob.class);
   private static final String TASK_IDS = "taskIds";
   private final String classificationId;
   private final boolean priorityChanged;
@@ -43,7 +42,7 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
 
   @Override
   public void execute() throws TaskanaException {
-    LOGGER.info("Running ClassificationChangedJob for classification ({})", classificationId);
+    log.info("Running ClassificationChangedJob for classification ({})", classificationId);
     try {
       TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
       List<String> affectedTaskIds =
@@ -51,7 +50,7 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
       if (!affectedTaskIds.isEmpty()) {
         scheduleTaskRefreshJobs(affectedTaskIds);
       }
-      LOGGER.info("ClassificationChangedJob ended successfully.");
+      log.info("ClassificationChangedJob ended successfully.");
     } catch (Exception e) {
       throw new SystemException("Error while processing ClassificationChangedJob.", e);
     }
@@ -66,8 +65,8 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
     int batchSize = taskanaEngineImpl.getConfiguration().getJobBatchSize();
     Collection<List<String>> affectedTaskBatches =
         CollectionUtil.partitionBasedOnSize(affectedTaskIds, batchSize);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "Creating {} TaskRefreshJobs out of {} affected tasks "
               + "with a maximum number of {} tasks each. ",
           affectedTaskBatches.size(),

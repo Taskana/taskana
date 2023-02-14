@@ -2,14 +2,18 @@ package pro.taskana.monitor.rest.models;
 
 import java.beans.ConstructorProperties;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 
 /** EntityModel class for {@link Report}. */
+@Getter
+@RequiredArgsConstructor(onConstructor = @__({@ConstructorProperties({"meta", "rows", "sumRow"})}))
 public class ReportRepresentationModel extends RepresentationModel<ReportRepresentationModel> {
 
   /** Object holding meta info on the report. */
@@ -19,29 +23,11 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
   /** Array holding the sums in the columns over all rows. */
   private final List<RowRepresentationModel> sumRow;
 
-  @ConstructorProperties({"meta", "rows", "sumRow"})
-  public ReportRepresentationModel(
-      MetaInformation meta,
-      List<RowRepresentationModel> rows,
-      List<RowRepresentationModel> sumRow) {
-    this.meta = meta;
-    this.rows = rows;
-    this.sumRow = sumRow;
-  }
-
-  public MetaInformation getMeta() {
-    return meta;
-  }
-
-  public List<RowRepresentationModel> getRows() {
-    return rows;
-  }
-
-  public List<RowRepresentationModel> getSumRow() {
-    return sumRow;
-  }
-
   /** EntityModel class for {@link SingleRow}. */
+  @Getter
+  @RequiredArgsConstructor(
+      onConstructor = @__({@ConstructorProperties({"cells", "total", "depth", "desc", "display"})}))
+  @ToString
   public static class RowRepresentationModel {
 
     /** Array holding all the cell values of the given row. */
@@ -54,54 +40,14 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     private final String[] desc;
     /** Boolean identifying if the given row should be initially displayed or not. */
     private final boolean display;
-
-    @ConstructorProperties({"cells", "total", "depth", "desc", "display"})
-    public RowRepresentationModel(
-        int[] cells, int total, int depth, String[] desc, boolean display) {
-      this.cells = cells;
-      this.total = total;
-      this.depth = depth;
-      this.desc = desc;
-      this.display = display;
-    }
-
-    public int[] getCells() {
-      return cells;
-    }
-
-    public int getTotal() {
-      return total;
-    }
-
-    public int getDepth() {
-      return depth;
-    }
-
-    public String[] getDesc() {
-      return desc;
-    }
-
-    public boolean isDisplay() {
-      return display;
-    }
-
-    @Override
-    public String toString() {
-      return "RowResource [cells="
-          + Arrays.toString(cells)
-          + ", total="
-          + total
-          + ", depth="
-          + depth
-          + ", desc="
-          + Arrays.toString(desc)
-          + ", display="
-          + display
-          + "]";
-    }
   }
 
   /** Meta Information about this ReportResource. */
+  @Getter
+  @RequiredArgsConstructor(
+      onConstructor =
+          @__({@ConstructorProperties({"name", "date", "header", "rowDesc", "sumRowDesc"})}))
+  @ToString
   public static class MetaInformation {
 
     /** Name of the report. */
@@ -114,50 +60,5 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     private final String[] rowDesc;
     /** Description for the sum column. */
     private final String sumRowDesc;
-
-    @ConstructorProperties({"name", "date", "header", "rowDesc", "sumRowDesc"})
-    public MetaInformation(
-        String name, Instant date, String[] header, String[] rowDesc, String sumRowDesc) {
-      this.name = name;
-      this.date = date;
-      this.header = header;
-      this.rowDesc = rowDesc;
-      this.sumRowDesc = sumRowDesc;
-    }
-
-    public String getSumRowDesc() {
-      return sumRowDesc;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public Instant getDate() {
-      return date;
-    }
-
-    public String[] getHeader() {
-      return header;
-    }
-
-    public String[] getRowDesc() {
-      return rowDesc;
-    }
-
-    @Override
-    public String toString() {
-      return "MetaInformation [name="
-          + name
-          + ", date="
-          + date
-          + ", header="
-          + Arrays.toString(header)
-          + ", rowDesc="
-          + Arrays.toString(rowDesc)
-          + ", totalDesc="
-          + sumRowDesc
-          + "]";
-    }
   }
 }

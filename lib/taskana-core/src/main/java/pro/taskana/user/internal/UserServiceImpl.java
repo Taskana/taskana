@@ -7,9 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -26,8 +25,8 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
 import pro.taskana.workbasket.api.WorkbasketService;
 
+@Slf4j
 public class UserServiceImpl implements UserService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
   private final InternalTaskanaEngine internalTaskanaEngine;
   private final UserMapper userMapper;
   private final WorkbasketService workbasketService;
@@ -99,8 +98,8 @@ public class UserServiceImpl implements UserService {
     insertIntoDatabase(userToCreate);
     ((UserImpl) userToCreate).setDomains(determineDomains(userToCreate));
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method createUser() created User '{}'.", userToCreate);
+    if (log.isDebugEnabled()) {
+      log.debug("Method createUser() created User '{}'.", userToCreate);
     }
     return userToCreate;
   }
@@ -123,8 +122,8 @@ public class UserServiceImpl implements UserService {
     }
     ((UserImpl) userToUpdate).setDomains(determineDomains(userToUpdate));
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method updateUser() updated User '{}'.", userToUpdate);
+    if (log.isDebugEnabled()) {
+      log.debug("Method updateUser() updated User '{}'.", userToUpdate);
     }
 
     return userToUpdate;
@@ -143,8 +142,8 @@ public class UserServiceImpl implements UserService {
           userMapper.delete(id);
           userMapper.deleteGroups(id);
         });
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method deleteUser() deleted User with id '{}'.", id);
+    if (log.isDebugEnabled()) {
+      log.debug("Method deleteUser() deleted User with id '{}'.", id);
     }
   }
 

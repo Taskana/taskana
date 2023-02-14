@@ -2,6 +2,7 @@ package pro.taskana.user.rest;
 
 import java.util.HashSet;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -31,15 +32,10 @@ import pro.taskana.user.rest.models.UserRepresentationModel;
 /** Controller for all {@linkplain User} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class UserController {
   private final UserService userService;
   private final UserRepresentationModelAssembler userAssembler;
-
-  @Autowired
-  UserController(UserService userService, UserRepresentationModelAssembler userAssembler) {
-    this.userService = userService;
-    this.userAssembler = userAssembler;
-  }
 
   /**
    * This endpoint retrieves a User.

@@ -2,8 +2,10 @@ package pro.taskana.common.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
+import lombok.Getter;
 import org.springframework.hateoas.RepresentationModel;
 
+@Getter
 public abstract class PagedRepresentationModel<T extends RepresentationModel<? super T>>
     extends CollectionRepresentationModel<T> {
 
@@ -14,9 +16,5 @@ public abstract class PagedRepresentationModel<T extends RepresentationModel<? s
   protected PagedRepresentationModel(Collection<T> content, PageMetadata pageMetadata) {
     super(content);
     this.pageMetadata = pageMetadata;
-  }
-
-  public PageMetadata getPageMetadata() {
-    return pageMetadata;
   }
 }

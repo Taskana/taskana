@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
@@ -30,9 +29,8 @@ import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 
+@Slf4j
 public class HistoryCleanupJob extends AbstractTaskanaJob {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(HistoryCleanupJob.class);
 
   private static final String TASKANA_JOB_HISTORY_BATCH_SIZE = "taskana.jobs.history.batchSize";
 
@@ -62,7 +60,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
     Instant createdBefore = Instant.now().minus(minimumAge);
 
-    LOGGER.info("Running job to delete all history events created before ({})", createdBefore);
+    log.info("Running job to delete all history events created before ({})", createdBefore);
 
     try {
       SimpleHistoryServiceImpl simpleHistoryService =
@@ -120,7 +118,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
               .mapToInt(this::deleteHistoryEventsTransactionally)
               .sum();
 
-      LOGGER.info(
+      log.info(
           "Job ended successfully. {} history events deleted.", totalNumberOfHistoryEventsDeleted);
     } catch (Exception e) {
       throw new SystemException("Error while processing HistoryCleanupJob.", e);
@@ -163,7 +161,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     taskHistoryIdsByEventTypeByParentBusinessProcessId.forEach(
         (parentBusinessProcessId, taskHistoryIdsByEventType) -> {
           if (!taskHistoryIdsByEventType.containsKey(createdKey)) {
-            LOGGER.error(
+            log.error(
                 "Issue during history cleanup tasks with enabled parent business process. "
                     + "No events for parent business process {} with type {} found."
                     + "Please clean up those history events manually",
@@ -188,7 +186,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
           try {
             return deleteEvents(taskIdsToDeleteHistoryEventsFor);
           } catch (Exception e) {
-            LOGGER.warn("Could not delete history events.", e);
+            log.warn("Could not delete history events.", e);
             return 0;
           }
         });
@@ -208,8 +206,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
     simpleHistoryService.deleteHistoryEventsByTaskIds(taskIdsToDeleteHistoryEventsFor);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("{} events deleted.", deletedTasksCount);
+    if (log.isDebugEnabled()) {
+      log.debug("{} events deleted.", deletedTasksCount);
     }
 
     return deletedTasksCount;
@@ -222,7 +220,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       try {
         batchSize = Integer.parseInt(jobBatchSizeProperty);
       } catch (Exception e) {
-        LOGGER.warn(
+        log.warn(
             "Could not parse jobBatchSizeProperty ({}). Using default. Exception: {} ",
             jobBatchSizeProperty,
             e.getMessage());
@@ -236,7 +234,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       try {
         minimumAge = Duration.parse(historyEventCleanupJobMinimumAgeProperty);
       } catch (Exception e) {
-        LOGGER.warn(
+        log.warn(
             "Could not parse historyEventCleanupJobMinimumAgeProperty ({}). Using default."
                 + " Exception: {} ",
             historyEventCleanupJobMinimumAgeProperty,
@@ -244,10 +242,10 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       }
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Configured number of history events per transaction: {}", batchSize);
-      LOGGER.debug("HistoryCleanupJob configuration: runs every {}", runEvery);
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug("Configured number of history events per transaction: {}", batchSize);
+      log.debug("HistoryCleanupJob configuration: runs every {}", runEvery);
+      log.debug(
           "HistoryCleanupJob configuration: minimum age of history events to be cleanup up is {}",
           minimumAge);
     }

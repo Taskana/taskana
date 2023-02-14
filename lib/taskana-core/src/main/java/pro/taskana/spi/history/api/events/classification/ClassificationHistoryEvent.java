@@ -1,14 +1,22 @@
 package pro.taskana.spi.history.api.events.classification;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;
 
 /** Super class for all classification related events. */
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class ClassificationHistoryEvent {
 
   protected String id;
@@ -35,8 +43,6 @@ public class ClassificationHistoryEvent {
   protected String custom7;
   protected String custom8;
   protected String details;
-
-  public ClassificationHistoryEvent() {}
 
   public ClassificationHistoryEvent(
       String id, ClassificationSummary classification, String userId, String details) {
@@ -116,250 +122,5 @@ public class ClassificationHistoryEvent {
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
     }
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getEventType() {
-    return eventType;
-  }
-
-  public void setEventType(String eventType) {
-    this.eventType = eventType;
-  }
-
-  public Instant getCreated() {
-    return created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  public void setCreated(Instant created) {
-    this.created = created != null ? created.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
-  public String getClassificationId() {
-    return classificationId;
-  }
-
-  public void setClassificationId(String classificationId) {
-    this.classificationId = classificationId;
-  }
-
-  public String getApplicationEntryPoint() {
-    return applicationEntryPoint;
-  }
-
-  public void setApplicationEntryPoint(String applicationEntryPoint) {
-    this.applicationEntryPoint = applicationEntryPoint;
-  }
-
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getParentId() {
-    return parentId;
-  }
-
-  public void setParentId(String parentId) {
-    this.parentId = parentId;
-  }
-
-  public String getParentKey() {
-    return parentKey;
-  }
-
-  public void setParentKey(String parentKey) {
-    this.parentKey = parentKey;
-  }
-
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
-
-  public String getServiceLevel() {
-    return serviceLevel;
-  }
-
-  public void setServiceLevel(String serviceLevel) {
-    this.serviceLevel = serviceLevel;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getDetails() {
-    return details;
-  }
-
-  public void setDetails(String details) {
-    this.details = details;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        getId(),
-        getEventType(),
-        getCreated(),
-        getUserId(),
-        getClassificationId(),
-        getApplicationEntryPoint(),
-        getCategory(),
-        getDomain(),
-        getKey(),
-        getName(),
-        getParentId(),
-        getParentKey(),
-        getPriority(),
-        getServiceLevel(),
-        getType(),
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        getDetails());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof ClassificationHistoryEvent)) {
-      return false;
-    }
-    ClassificationHistoryEvent other = (ClassificationHistoryEvent) obj;
-    return getPriority() == other.getPriority()
-        && Objects.equals(getId(), other.getId())
-        && Objects.equals(getEventType(), other.getEventType())
-        && Objects.equals(getCreated(), other.getCreated())
-        && Objects.equals(getUserId(), other.getUserId())
-        && Objects.equals(getClassificationId(), other.getClassificationId())
-        && Objects.equals(getApplicationEntryPoint(), other.getApplicationEntryPoint())
-        && Objects.equals(getCategory(), other.getCategory())
-        && Objects.equals(getDomain(), other.getDomain())
-        && Objects.equals(getKey(), other.getKey())
-        && Objects.equals(getName(), other.getName())
-        && Objects.equals(getParentId(), other.getParentId())
-        && Objects.equals(getParentKey(), other.getParentKey())
-        && Objects.equals(getServiceLevel(), other.getServiceLevel())
-        && Objects.equals(getType(), other.getType())
-        && Objects.equals(custom1, other.custom1)
-        && Objects.equals(custom2, other.custom2)
-        && Objects.equals(custom3, other.custom3)
-        && Objects.equals(custom4, other.custom4)
-        && Objects.equals(custom5, other.custom5)
-        && Objects.equals(custom6, other.custom6)
-        && Objects.equals(custom7, other.custom7)
-        && Objects.equals(custom8, other.custom8)
-        && Objects.equals(getDetails(), other.getDetails());
-  }
-
-  @Override
-  public String toString() {
-    return "ClassificationHistoryEvent [id="
-        + id
-        + ", eventType="
-        + eventType
-        + ", created="
-        + created
-        + ", userId="
-        + userId
-        + ", classificationId="
-        + classificationId
-        + ", applicationEntryPoint="
-        + applicationEntryPoint
-        + ", category="
-        + category
-        + ", domain="
-        + domain
-        + ", key="
-        + key
-        + ", name="
-        + name
-        + ", parentId="
-        + parentId
-        + ", parentKey="
-        + parentKey
-        + ", priority="
-        + priority
-        + ", serviceLevel="
-        + serviceLevel
-        + ", type="
-        + type
-        + ", custom1="
-        + custom1
-        + ", custom2="
-        + custom2
-        + ", custom3="
-        + custom3
-        + ", custom4="
-        + custom4
-        + ", custom5="
-        + custom5
-        + ", custom6="
-        + custom6
-        + ", custom7="
-        + custom7
-        + ", custom8="
-        + custom8
-        + ", details="
-        + details
-        + "]";
   }
 }

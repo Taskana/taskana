@@ -9,9 +9,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -26,16 +26,11 @@ import pro.taskana.task.internal.models.AttachmentImpl;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
+@Slf4j
+@RequiredArgsConstructor
 public class AttachmentHandler {
-  private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentHandler.class);
   private final AttachmentMapper attachmentMapper;
   private final ClassificationService classificationService;
-
-  AttachmentHandler(
-      AttachmentMapper attachmentMapper, ClassificationService classificationService) {
-    this.attachmentMapper = attachmentMapper;
-    this.classificationService = classificationService;
-  }
 
   void insertAndDeleteAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws AttachmentPersistenceException, InvalidArgumentException,
@@ -67,8 +62,8 @@ public class AttachmentHandler {
 
         try {
           attachmentMapper.insert(attachmentImpl);
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
+          if (log.isDebugEnabled()) {
+            log.debug(
                 "TaskService.createTask() for TaskId={} INSERTED an Attachment={}.",
                 task.getId(),
                 attachmentImpl);
@@ -132,8 +127,8 @@ public class AttachmentHandler {
           a -> {
             if (!newAttIds.contains(a.getId())) {
               attachmentMapper.delete(a.getId());
-              if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(
+              if (log.isDebugEnabled()) {
+                log.debug(
                     "TaskService.updateTask() for TaskId={} DELETED an Attachment={}.",
                     newTaskImpl.getId(),
                     a);
@@ -149,8 +144,8 @@ public class AttachmentHandler {
 
     try {
       attachmentMapper.insert(attachmentImpl);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
             newTaskImpl.getId(),
             attachmentImpl);

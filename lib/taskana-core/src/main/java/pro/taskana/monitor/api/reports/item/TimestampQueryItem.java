@@ -1,15 +1,19 @@
 package pro.taskana.monitor.api.reports.item;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TimestampReport;
 
 /** The TimestampQueryItem represents the content of a cell in the {@linkplain TimestampReport}. */
+@Setter
 public class TimestampQueryItem implements AgeQueryItem {
 
   private static final String N_A = "N/A";
   private int count;
   private TaskTimestamp status;
-  private int ageInDays;
+  @Getter private int ageInDays;
   private String orgLevel1;
   private String orgLevel2;
   private String orgLevel3;
@@ -23,16 +27,6 @@ public class TimestampQueryItem implements AgeQueryItem {
   @Override
   public int getValue() {
     return count;
-  }
-
-  @Override
-  public int getAgeInDays() {
-    return ageInDays;
-  }
-
-  @Override
-  public void setAgeInDays(int ageInDays) {
-    this.ageInDays = ageInDays;
   }
 
   public String getOrgLevel1() {

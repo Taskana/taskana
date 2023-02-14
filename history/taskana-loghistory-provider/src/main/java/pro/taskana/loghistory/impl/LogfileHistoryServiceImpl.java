@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +15,10 @@ import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEv
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
+@Slf4j
 public class LogfileHistoryServiceImpl implements TaskanaHistory {
 
   public static final String TASKANA_HISTORY_LOGGER_NAME = "taskana.historylogger.name";
-  private static final Logger LOGGER = LoggerFactory.getLogger(LogfileHistoryServiceImpl.class);
   private static final String JSON_EXCEPTION =
       "Caught exception while serializing history event to JSON ";
   private ObjectMapper objectMapper;
@@ -34,11 +35,11 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
     if (historyLoggerName != null) {
       historyLogger = LoggerFactory.getLogger(historyLoggerName);
     } else {
-      historyLogger = LOGGER;
+      historyLogger = log;
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "LogfileHistoryServiceProvider initialized with name: {} ", historyLogger.getName());
     }
   }

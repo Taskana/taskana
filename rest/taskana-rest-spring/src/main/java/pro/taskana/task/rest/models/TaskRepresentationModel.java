@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import lombok.Getter;
+import lombok.Setter;
 
 import pro.taskana.task.api.models.Task;
 
 /** EntityModel class for {@link Task}. */
 @JsonIgnoreProperties("attachmentSummaries")
+@Getter
+@Setter
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   // All objects have to be serializable
@@ -22,34 +26,12 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
   /** Attachments of the task. */
   private List<AttachmentRepresentationModel> attachments = new ArrayList<>();
 
-  public List<CustomAttribute> getCustomAttributes() {
-    return customAttributes;
-  }
-
-  public void setCustomAttributes(List<CustomAttribute> customAttributes) {
-    this.customAttributes = customAttributes;
-  }
-
-  public List<CustomAttribute> getCallbackInfo() {
-    return callbackInfo;
-  }
-
-  public void setCallbackInfo(List<CustomAttribute> callbackInfo) {
-    this.callbackInfo = callbackInfo;
-  }
-
-  public List<AttachmentRepresentationModel> getAttachments() {
-    return attachments;
-  }
-
-  public void setAttachments(List<AttachmentRepresentationModel> attachments) {
-    this.attachments = attachments;
-  }
-
   /**
    * A CustomAttribute is a user customized attribute which is saved as a Map and can be retreived
    * from either {@link Task#getCustomAttributeMap()} or {@link Task#getCallbackInfo()}.
    */
+  @Getter
+  @Setter
   public static class CustomAttribute {
 
     /** the key of the custom attribute. */
@@ -66,22 +48,6 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
       customAttribute.setKey(key);
       customAttribute.setValue(value);
       return customAttribute;
-    }
-
-    public String getKey() {
-      return key;
-    }
-
-    public void setKey(String key) {
-      this.key = key;
-    }
-
-    public String getValue() {
-      return value;
-    }
-
-    public void setValue(String value) {
-      this.value = value;
     }
   }
 }

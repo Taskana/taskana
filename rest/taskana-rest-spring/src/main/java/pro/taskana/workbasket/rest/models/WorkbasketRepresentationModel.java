@@ -1,10 +1,14 @@
 package pro.taskana.workbasket.rest.models;
 
 import java.time.Instant;
+import lombok.Getter;
+import lombok.Setter;
 
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /** EntityModel class for {@link Workbasket}. */
+@Getter
+@Setter
 public class WorkbasketRepresentationModel extends WorkbasketSummaryRepresentationModel {
 
   /**
@@ -19,20 +23,4 @@ public class WorkbasketRepresentationModel extends WorkbasketSummaryRepresentati
    * <p>The format is ISO-8601.
    */
   private Instant modified;
-
-  public Instant getCreated() {
-    return created;
-  }
-
-  public void setCreated(Instant created) {
-    this.created = created;
-  }
-
-  public Instant getModified() {
-    return modified;
-  }
-
-  public void setModified(Instant modified) {
-    this.modified = modified;
-  }
 }

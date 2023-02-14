@@ -57,6 +57,7 @@
     <version.maven.clean>3.2.0</version.maven.clean>
     <version.maven.dependency>3.5.0</version.maven.dependency>
     <version.maven.sonar>3.9.1.2184</version.maven.sonar>
+    <version.lombok>1.18.26</version.lombok>
 
     <!-- release dependencies -->
     <version.maven.gpg>3.0.1</version.maven.gpg>
@@ -83,8 +84,6 @@
 
     <!-- test dependencies -->
     <version.archunit>1.0.1</version.archunit>
-    <version.equalsverifier>3.13</version.equalsverifier>
-    <version.openpojo>0.9.1</version.openpojo>
     <version.jacoco>0.8.8</version.jacoco>
     <version.slf4j-test>1.2.0</version.slf4j-test>
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
@@ -119,6 +118,7 @@
   </properties>
 
   <modules>
+    <module>aspect</module>
     <module>common</module>
     <module>lib</module>
     <module>rest</module>
@@ -142,6 +142,12 @@
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
         <version>${version.google-java-format}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${version.lombok}</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -286,10 +292,13 @@
           <showWarnings>true</showWarnings>
           <failOnWarning>true</failOnWarning>
           <showDeprecation>true</showDeprecation>
-          <compilerArgs>
-            <arg>-Xlint:-serial</arg>
-            <arg>-proc:none</arg>
-          </compilerArgs>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${version.lombok}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
@@ -317,6 +326,10 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <failOnError>false</failOnError>
+          <failOnWarnings>false</failOnWarnings>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -348,39 +361,6 @@
             <phase>process-classes</phase>
             <goals>
               <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>aspectj-maven-plugin</artifactId>
-        <version>${version.aspectj-maven-plugin}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>${version.aspectj}</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <complianceLevel>${java.version}</complianceLevel>
-          <source>11</source>
-          <target>8</target>
-          <showWeaveInfo>false</showWeaveInfo>
-          <verbose>true</verbose>
-          <aspectLibraries>
-            <aspectLibrary>
-              <groupId>pro.taskana</groupId>
-              <artifactId>taskana-common-logging</artifactId>
-            </aspectLibrary>
-          </aspectLibraries>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>test-compile</goal>
             </goals>
           </execution>
         </executions>

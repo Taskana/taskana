@@ -96,8 +96,8 @@ class DmnConverterServiceAccTest {
         .extracting(TaskanaRuntimeException::getMessage)
         .isEqualTo(
             "Unknown workbasket Key/Domain pairs defined in DMN Table: "
-                + "[KeyDomain [key=GPK_KSC1, domain=DOMAIN_A], "
-                + "KeyDomain [key=GPK_KSC, domain=DOMAIN_XZ]]");
+                + "[KeyDomain(key=GPK_KSC1, domain=DOMAIN_A), "
+                + "KeyDomain(key=GPK_KSC, domain=DOMAIN_XZ)]");
   }
 
   @Test

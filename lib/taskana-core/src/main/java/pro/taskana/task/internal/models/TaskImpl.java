@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -18,15 +22,16 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class TaskImpl extends TaskSummaryImpl implements Task {
 
   // All objects have to be serializable
-  private Map<String, String> customAttributes = new HashMap<>();
-  private Map<String, String> callbackInfo = new HashMap<>();
-  private CallbackState callbackState;
+  @Getter @Setter private Map<String, String> customAttributes = new HashMap<>();
+  @Setter private Map<String, String> callbackInfo = new HashMap<>();
+  @Getter @Setter private CallbackState callbackState;
   private List<Attachment> attachments = new ArrayList<>();
-
-  public TaskImpl() {}
 
   private TaskImpl(TaskImpl copyFrom) {
     super(copyFrom);
@@ -34,14 +39,6 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     callbackInfo = new HashMap<>(copyFrom.callbackInfo);
     callbackState = copyFrom.callbackState;
     attachments = copyFrom.attachments.stream().map(Attachment::copy).collect(Collectors.toList());
-  }
-
-  public Map<String, String> getCustomAttributes() {
-    return customAttributes;
-  }
-
-  public void setCustomAttributes(Map<String, String> customAttributes) {
-    this.customAttributes = customAttributes;
   }
 
   public String getClassificationId() {
@@ -88,25 +85,12 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     setCustomAttributes(customAttributes);
   }
 
-  public CallbackState getCallbackState() {
-    return callbackState;
-  }
-
-  public void setCallbackState(CallbackState callbackState) {
-    this.callbackState = callbackState;
-  }
-
   @Override
   public Map<String, String> getCallbackInfo() {
     if (callbackInfo == null) {
       callbackInfo = new HashMap<>();
     }
     return callbackInfo;
-  }
-
-  @Override
-  public void setCallbackInfo(Map<String, String> callbackInfo) {
-    this.callbackInfo = callbackInfo;
   }
 
   @Deprecated
@@ -317,151 +301,5 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
       this.classificationSummary = new ClassificationSummaryImpl();
     }
     ((ClassificationSummaryImpl) this.classificationSummary).setCategory(classificationCategory);
-  }
-
-  @Override
-  protected boolean canEqual(Object other) {
-    return (other instanceof TaskImpl);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), id, customAttributes, callbackInfo, callbackState, attachments);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof TaskImpl)) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    TaskImpl other = (TaskImpl) obj;
-    if (!other.canEqual(this)) {
-      return false;
-    }
-    return Objects.equals(id, other.id)
-        && Objects.equals(customAttributes, other.customAttributes)
-        && Objects.equals(callbackInfo, other.callbackInfo)
-        && callbackState == other.callbackState
-        && Objects.equals(attachments, other.attachments);
-  }
-
-  @Override
-  public String toString() {
-    return "TaskImpl [customAttributes="
-        + customAttributes
-        + ", callbackInfo="
-        + callbackInfo
-        + ", callbackState="
-        + callbackState
-        + ", attachments="
-        + attachments
-        + ", objectReferences="
-        + secondaryObjectReferences
-        + ", id="
-        + id
-        + ", externalId="
-        + externalId
-        + ", created="
-        + created
-        + ", claimed="
-        + claimed
-        + ", completed="
-        + completed
-        + ", modified="
-        + modified
-        + ", planned="
-        + planned
-        + ", received="
-        + received
-        + ", due="
-        + due
-        + ", name="
-        + name
-        + ", creator="
-        + creator
-        + ", note="
-        + note
-        + ", description="
-        + description
-        + ", priority="
-        + priority
-        + ", manualPriority="
-        + manualPriority
-        + ", state="
-        + state
-        + ", classificationSummary="
-        + classificationSummary
-        + ", workbasketSummary="
-        + workbasketSummary
-        + ", businessProcessId="
-        + businessProcessId
-        + ", parentBusinessProcessId="
-        + parentBusinessProcessId
-        + ", owner="
-        + owner
-        + ", primaryObjRef="
-        + primaryObjRef
-        + ", isRead="
-        + isRead
-        + ", isTransferred="
-        + isTransferred
-        + ", attachmentSummaries="
-        + attachmentSummaries
-        + ", custom1="
-        + custom1
-        + ", custom2="
-        + custom2
-        + ", custom3="
-        + custom3
-        + ", custom4="
-        + custom4
-        + ", custom5="
-        + custom5
-        + ", custom6="
-        + custom6
-        + ", custom7="
-        + custom7
-        + ", custom8="
-        + custom8
-        + ", custom9="
-        + custom9
-        + ", custom10="
-        + custom10
-        + ", custom11="
-        + custom11
-        + ", custom12="
-        + custom12
-        + ", custom13="
-        + custom13
-        + ", custom14="
-        + custom14
-        + ", custom15="
-        + custom15
-        + ", custom16="
-        + custom16
-        + ", customInt1="
-        + customInt1
-        + ", customInt2="
-        + customInt2
-        + ", customInt3="
-        + customInt3
-        + ", customInt4="
-        + customInt4
-        + ", customInt5="
-        + customInt5
-        + ", customInt6="
-        + customInt6
-        + ", customInt7="
-        + customInt7
-        + ", customInt8="
-        + customInt8
-        + "]";
   }
 }

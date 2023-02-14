@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.CheckedFunction;
@@ -18,20 +17,20 @@ import pro.taskana.task.api.models.Task;
  * Loads TaskRoutingProvider SPI implementation(s) and passes requests to determine workbasketids to
  * them.
  */
+@Slf4j
 public final class TaskRoutingManager {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskRoutingManager.class);
   private final List<TaskRoutingProvider> taskRoutingProviders;
 
   public TaskRoutingManager(TaskanaEngine taskanaEngine) {
     taskRoutingProviders = SpiLoader.load(TaskRoutingProvider.class);
     for (TaskRoutingProvider taskRoutingProvider : taskRoutingProviders) {
       taskRoutingProvider.initialize(taskanaEngine);
-      LOGGER.info("Registered TaskRouter provider: {}", taskRoutingProvider.getClass().getName());
+      log.info("Registered TaskRouter provider: {}", taskRoutingProvider.getClass().getName());
     }
 
     if (taskRoutingProviders.isEmpty()) {
-      LOGGER.info("No TaskRouter provider found. Running without Task routing.");
+      log.info("No TaskRouter provider found. Running without Task routing.");
     }
   }
 
@@ -55,14 +54,14 @@ public final class TaskRoutingManager {
               .filter(Objects::nonNull)
               .collect(Collectors.toSet());
       if (workbasketIds.isEmpty()) {
-        if (LOGGER.isErrorEnabled()) {
-          LOGGER.error(
+        if (log.isErrorEnabled()) {
+          log.error(
               "No TaskRouter determined a workbasket for task {}.",
               LogSanitizer.stripLineBreakingChars(task));
         }
       } else if (workbasketIds.size() > 1) {
-        if (LOGGER.isErrorEnabled()) {
-          LOGGER.error(
+        if (log.isErrorEnabled()) {
+          log.error(
               "The TaskRouters determined more than one workbasket for task {}",
               LogSanitizer.stripLineBreakingChars(task));
         }

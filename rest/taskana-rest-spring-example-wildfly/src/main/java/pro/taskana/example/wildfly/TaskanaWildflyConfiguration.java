@@ -5,8 +5,7 @@ import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +16,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import pro.taskana.sampledata.SampleDataGenerator;
 
 @Configuration
+@Slf4j
 public class TaskanaWildflyConfiguration {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaWildflyConfiguration.class);
 
   @Bean
   public PlatformTransactionManager txManager(DataSource dataSource) {
@@ -49,13 +47,13 @@ public class TaskanaWildflyConfiguration {
       Properties properties = new Properties();
       ctx = new InitialContext();
       properties.load(propertyStream);
-      LOGGER.debug(
+      log.debug(
           "TASKANA is using datasource '{}' from application.properties.",
           properties.getProperty("datasource.jndi"));
       dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
       return dataSource;
     } catch (Exception e) {
-      LOGGER.error(
+      log.error(
           "Caught exception when attempting to start Taskana with Datasource "
               + "from Jndi. Using default H2 datasource. ",
           e);

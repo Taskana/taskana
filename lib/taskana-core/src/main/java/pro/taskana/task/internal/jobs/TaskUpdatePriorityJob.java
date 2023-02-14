@@ -2,8 +2,7 @@ package pro.taskana.task.internal.jobs;
 
 import static pro.taskana.common.internal.util.CollectionUtil.partitionBasedOnSize;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
@@ -14,9 +13,8 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.jobs.helper.TaskUpdatePriorityWorker;
 
 /** Job to recalculate the priority of each task that is not in an endstate. */
+@Slf4j
 public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskUpdatePriorityJob.class);
 
   private final int batchSize;
   private final boolean isJobActive;
@@ -39,15 +37,15 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
   @Override
   public void execute() {
     if (!isJobActive()) {
-      LOGGER.debug("Job to update task priority is not active.");
+      log.debug("Job to update task priority is not active.");
       return;
     }
     TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngineImpl);
-    LOGGER.info("Running job to calculate all non finished task priorities");
+    log.info("Running job to calculate all non finished task priorities");
     try {
       partitionBasedOnSize(worker.getAllRelevantTaskIds(), getBatchSize())
           .forEach(worker::executeBatch);
-      LOGGER.info("Job to update priority of tasks has finished.");
+      log.info("Job to update priority of tasks has finished.");
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskUpdatePriorityJob.", e);
     }

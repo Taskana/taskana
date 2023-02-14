@@ -1,8 +1,7 @@
 package pro.taskana.common.internal.jobs;
 
 import java.lang.reflect.InvocationTargetException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -16,9 +15,9 @@ import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
  *
  * <p>For running the jobs the {@linkplain PlainJavaTransactionProvider} is used.
  */
+@Slf4j
 public class JobScheduler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
   public static final String LOG_MSG_JOB_ENABLED = "Job '{}' enabled";
   private final TaskanaEngine taskanaEngine;
 
@@ -31,20 +30,20 @@ public class JobScheduler {
     this.clock = clock;
     this.plainJavaTransactionProvider =
         new PlainJavaTransactionProvider(
-            taskanaEngine, taskanaEngine.getConfiguration().getDatasource());
+            taskanaEngine, taskanaEngine.getConfiguration().getDataSource());
     plainJavaTransactionProvider.executeInTransaction(
         () -> {
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableTaskCleanupJob()) {
             TaskCleanupJob.initializeSchedule(taskanaEngine);
-            LOGGER.info(LOG_MSG_JOB_ENABLED, TaskCleanupJob.class.getName());
+            log.info(LOG_MSG_JOB_ENABLED, TaskCleanupJob.class.getName());
           }
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableTaskUpdatePriorityJob()) {
             TaskUpdatePriorityJob.initializeSchedule(taskanaEngine);
-            LOGGER.info(LOG_MSG_JOB_ENABLED, TaskUpdatePriorityJob.class.getName());
+            log.info(LOG_MSG_JOB_ENABLED, TaskUpdatePriorityJob.class.getName());
           }
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableWorkbasketCleanupJob()) {
             WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
-            LOGGER.info(LOG_MSG_JOB_ENABLED, WorkbasketCleanupJob.class.getName());
+            log.info(LOG_MSG_JOB_ENABLED, WorkbasketCleanupJob.class.getName());
           }
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableUserInfoRefreshJob()) {
             initJobByClassName("pro.taskana.user.jobs.UserInfoRefreshJob");
@@ -77,7 +76,7 @@ public class JobScheduler {
           .loadClass(className)
           .getDeclaredMethod("initializeSchedule", TaskanaEngine.class)
           .invoke(null, taskanaEngine);
-      LOGGER.info(LOG_MSG_JOB_ENABLED, className);
+      log.info(LOG_MSG_JOB_ENABLED, className);
     } catch (IllegalAccessException e) {
       throw new SystemException(
           "Method initializeSchedule in class " + className + " is not public", e);
@@ -97,7 +96,7 @@ public class JobScheduler {
         () -> {
           JobRunner runner = new JobRunner(taskanaEngine);
           runner.registerTransactionProvider(plainJavaTransactionProvider);
-          LOGGER.info("Running Jobs");
+          log.info("Running Jobs");
           runner.runJobs();
           return "Successful";
         });

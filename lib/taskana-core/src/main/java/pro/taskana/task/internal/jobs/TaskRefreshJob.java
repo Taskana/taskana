@@ -3,8 +3,7 @@ package pro.taskana.task.internal.jobs;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
@@ -15,12 +14,12 @@ import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.TaskServiceImpl;
 
 /** This class executes a job of type {@linkplain TaskRefreshJob}. */
+@Slf4j
 public class TaskRefreshJob extends AbstractTaskanaJob {
 
   public static final String TASK_IDS = "taskIds";
   public static final String PRIORITY_CHANGED = "priorityChanged";
   public static final String SERVICE_LEVEL_CHANGED = "serviceLevelChanged";
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskRefreshJob.class);
   private final List<String> affectedTaskIds;
   private final boolean priorityChanged;
   private final boolean serviceLevelChanged;
@@ -37,12 +36,12 @@ public class TaskRefreshJob extends AbstractTaskanaJob {
 
   @Override
   public void execute() throws TaskanaException {
-    LOGGER.info("Running TaskRefreshJob for {} tasks", affectedTaskIds.size());
+    log.info("Running TaskRefreshJob for {} tasks", affectedTaskIds.size());
     try {
       TaskServiceImpl taskService = (TaskServiceImpl) taskanaEngineImpl.getTaskService();
       taskService.refreshPriorityAndDueDatesOfTasksOnClassificationUpdate(
           affectedTaskIds, serviceLevelChanged, priorityChanged);
-      LOGGER.info("TaskRefreshJob ended successfully.");
+      log.info("TaskRefreshJob ended successfully.");
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskRefreshJob.", e);
     }

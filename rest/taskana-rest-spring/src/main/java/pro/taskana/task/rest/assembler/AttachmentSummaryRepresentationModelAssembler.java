@@ -1,5 +1,6 @@
 package pro.taskana.task.rest.assembler;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -13,23 +14,14 @@ import pro.taskana.task.rest.models.AttachmentSummaryRepresentationModel;
 
 /** EntityModel assembler for {@link AttachmentSummaryRepresentationModel}. */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class AttachmentSummaryRepresentationModelAssembler
     implements RepresentationModelAssembler<
         AttachmentSummary, AttachmentSummaryRepresentationModel> {
 
+  private final TaskService taskService;
   private final ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler;
   private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
-  private final TaskService taskService;
-
-  @Autowired
-  public AttachmentSummaryRepresentationModelAssembler(
-      TaskService taskService,
-      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler,
-      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler) {
-    this.taskService = taskService;
-    this.classificationSummaryAssembler = classificationSummaryAssembler;
-    this.objectReferenceAssembler = objectReferenceAssembler;
-  }
 
   @NonNull
   @Override

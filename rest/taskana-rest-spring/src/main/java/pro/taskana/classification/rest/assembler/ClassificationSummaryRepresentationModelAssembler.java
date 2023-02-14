@@ -10,6 +10,7 @@ import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 
 import java.util.Collection;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import pro.taskana.common.rest.models.PageMetadata;
 
 /** EntityModel assembler for {@link ClassificationSummaryRepresentationModel}. */
 @Component
+@AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class ClassificationSummaryRepresentationModelAssembler
     implements PagedRepresentationModelAssembler<
         ClassificationSummary,
@@ -31,12 +33,6 @@ public class ClassificationSummaryRepresentationModelAssembler
         ClassificationSummaryPagedRepresentationModel> {
 
   private final ClassificationService classificationService;
-
-  @Autowired
-  public ClassificationSummaryRepresentationModelAssembler(
-      ClassificationService classificationService) {
-    this.classificationService = classificationService;
-  }
 
   @NonNull
   @Override

@@ -3,9 +3,9 @@ package pro.taskana.task.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
@@ -19,9 +19,8 @@ import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketExcep
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
 /** TaskCommentQuery for generating dynamic sql. */
+@Slf4j
 public class TaskCommentQueryImpl implements TaskCommentQuery {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentQueryImpl.class);
 
   private static final String LINK_TO_MAPPER =
       "pro.taskana.task.internal.TaskCommentQueryMapper.queryTaskComments";
@@ -36,25 +35,24 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
   private final TaskServiceImpl taskService;
   private final List<String> orderBy;
   private final List<String> orderColumns;
-  private TaskCommentQueryColumnName queryColumnName;
-  private String[] idIn;
-  private String[] idNotIn;
-  private String[] idLike;
-  private String[] idNotLike;
-  private String[] taskIdIn;
-  private String[] creatorIn;
-  private String[] creatorNotIn;
-  private String[] creatorLike;
-  private String[] creatorNotLike;
-  private String[] textFieldLike;
-  private String[] textFieldNotLike;
-  private TimeInterval[] modifiedIn;
-  private TimeInterval[] modifiedNotIn;
-  private TimeInterval[] createdIn;
-  private TimeInterval[] createdNotIn;
-
-  private String[] accessIdIn;
-  private boolean joinWithUserInfo;
+  @Getter private TaskCommentQueryColumnName queryColumnName;
+  @Getter private String[] idIn;
+  @Getter private String[] idNotIn;
+  @Getter private String[] idLike;
+  @Getter private String[] idNotLike;
+  @Getter private String[] taskIdIn;
+  @Getter private String[] creatorIn;
+  @Getter private String[] creatorNotIn;
+  @Getter private String[] creatorLike;
+  @Getter private String[] creatorNotLike;
+  @Getter private String[] textFieldLike;
+  @Getter private String[] textFieldNotLike;
+  @Getter private TimeInterval[] modifiedIn;
+  @Getter private TimeInterval[] modifiedNotIn;
+  @Getter private TimeInterval[] createdIn;
+  @Getter private TimeInterval[] createdNotIn;
+  @Getter private String[] accessIdIn;
+  @Getter private boolean joinWithUserInfo;
 
   TaskCommentQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -206,82 +204,6 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
     return (rowCount == null) ? 0L : rowCount;
   }
 
-  public TaskCommentQueryColumnName getQueryColumnName() {
-    return queryColumnName;
-  }
-
-  public String[] getIdIn() {
-    return idIn;
-  }
-
-  public String[] getIdNotIn() {
-    return idNotIn;
-  }
-
-  public String[] getIdLike() {
-    return idLike;
-  }
-
-  public String[] getIdNotLike() {
-    return idNotLike;
-  }
-
-  public String[] getTaskIdIn() {
-    return taskIdIn;
-  }
-
-  public String[] getCreatorIn() {
-    return creatorIn;
-  }
-
-  public String[] getCreatorNotIn() {
-    return creatorNotIn;
-  }
-
-  public String[] getCreatorLike() {
-    return creatorLike;
-  }
-
-  public String[] getCreatorNotLike() {
-    return creatorNotLike;
-  }
-
-  public String[] getTextFieldLike() {
-    return textFieldLike;
-  }
-
-  public String[] getTextFieldNotLike() {
-    return textFieldNotLike;
-  }
-
-  public TimeInterval[] getModifiedIn() {
-    return modifiedIn;
-  }
-
-  public TimeInterval[] getModifiedNotIn() {
-    return modifiedNotIn;
-  }
-
-  public TimeInterval[] getCreatedIn() {
-    return createdIn;
-  }
-
-  public TimeInterval[] getCreatedNotIn() {
-    return createdNotIn;
-  }
-
-  public String[] getAccessIdIn() {
-    return accessIdIn;
-  }
-
-  public boolean isIncludeLongName() {
-    return joinWithUserInfo;
-  }
-
-  public void setIncludeLongName(boolean joinWithUserInfo) {
-    this.joinWithUserInfo = joinWithUserInfo;
-  }
-
   @Override
   public TaskCommentQuery orderByCreated(SortDirection sortDirection) {
     return addOrderCriteria("CREATED", sortDirection);
@@ -296,8 +218,8 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
     if (taskIdIn != null) {
       if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
+        if (log.isDebugEnabled()) {
+          log.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
         }
         return;
       }
@@ -311,8 +233,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
                   throw new NotAuthorizedToQueryWorkbasketException(
                       e.getMessage(), e.getErrorCode(), e);
                 } catch (TaskNotFoundException e) {
-                  LOGGER.warn(
-                      String.format("The Task with the ID ' %s ' does not exist.", taskId), e);
+                  log.warn(String.format("The Task with the ID ' %s ' does not exist.", taskId), e);
                 }
               });
     }

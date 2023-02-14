@@ -2,6 +2,7 @@ package pro.taskana.workbasket.rest.assembler;
 
 import java.util.Collection;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
 /** EntityModel assembler for {@link WorkbasketSummaryRepresentationModel}. */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketSummaryRepresentationModelAssembler
     implements PagedRepresentationModelAssembler<
             WorkbasketSummary,
@@ -29,14 +31,7 @@ public class WorkbasketSummaryRepresentationModelAssembler
             WorkbasketSummaryRepresentationModel,
             DistributionTargetsCollectionRepresentationModel> {
 
-  private WorkbasketService workbasketService;
-
-  public WorkbasketSummaryRepresentationModelAssembler() {}
-
-  @Autowired
-  public WorkbasketSummaryRepresentationModelAssembler(WorkbasketService workbasketService) {
-    this.workbasketService = workbasketService;
-  }
+  private final WorkbasketService workbasketService;
 
   @NonNull
   @Override
@@ -71,7 +66,7 @@ public class WorkbasketSummaryRepresentationModelAssembler
     workbasket.setType(repModel.getType());
     workbasket.setDescription(repModel.getDescription());
     workbasket.setOwner(repModel.getOwner());
-    workbasket.setMarkedForDeletion(repModel.getMarkedForDeletion());
+    workbasket.setMarkedForDeletion(repModel.isMarkedForDeletion());
     workbasket.setCustom1(repModel.getCustom1());
     workbasket.setCustom2(repModel.getCustom2());
     workbasket.setCustom3(repModel.getCustom3());

@@ -4,10 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.task.api.TaskCommentQuery;
 
+@RequiredArgsConstructor(
+    onConstructor =
+        @__({
+          @ConstructorProperties({
+            "id",
+            "id-not",
+            "id-like",
+            "id-not-like",
+            "task-id",
+            "creator",
+            "creator-not",
+            "creator-like",
+            "creator-not-like",
+            "textfield-like",
+            "textfield-not-like",
+            "modified",
+            "modified-not",
+            "created",
+            "created-not"
+          })
+        }))
 public class TaskCommentQueryFilterParameter implements QueryParameter<TaskCommentQuery, Void> {
 
   /** Filter by the id of the TaskComment. This is an exact match. */
@@ -113,57 +135,6 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    */
   @JsonProperty("created-not")
   private final Instant[] createdNotWithin;
-
-  @SuppressWarnings("indentation")
-  @ConstructorProperties({
-    "id",
-    "id-not",
-    "id-like",
-    "id-not-like",
-    "task-id",
-    "creator",
-    "creator-not",
-    "creator-like",
-    "creator-not-like",
-    "textfield-like",
-    "textfield-not-like",
-    "modified",
-    "modified-not",
-    "created",
-    "created-not"
-  })
-  public TaskCommentQueryFilterParameter(
-      String[] idIn,
-      String[] idNotIn,
-      String[] idLike,
-      String[] idNotLike,
-      String[] taskIdIn,
-      String[] creatorIn,
-      String[] creatorNotIn,
-      String[] creatorLike,
-      String[] creatorNotLike,
-      String[] textfieldLike,
-      String[] textfieldNotLike,
-      Instant[] modifiedWithin,
-      Instant[] modifiedNotWithin,
-      Instant[] createdWithin,
-      Instant[] createdNotWithin) {
-    this.idIn = idIn;
-    this.idNotIn = idNotIn;
-    this.idLike = idLike;
-    this.idNotLike = idNotLike;
-    this.taskIdIn = taskIdIn;
-    this.creatorIn = creatorIn;
-    this.creatorNotIn = creatorNotIn;
-    this.creatorLike = creatorLike;
-    this.creatorNotLike = creatorNotLike;
-    this.textfieldLike = textfieldLike;
-    this.textfieldNotLike = textfieldNotLike;
-    this.modifiedWithin = modifiedWithin;
-    this.modifiedNotWithin = modifiedNotWithin;
-    this.createdWithin = createdWithin;
-    this.createdNotWithin = createdNotWithin;
-  }
 
   @Override
   public Void apply(TaskCommentQuery query) {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionTableResult;
 import org.camunda.bpm.dmn.engine.DmnEngine;
@@ -16,8 +17,6 @@ import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -29,9 +28,9 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
+@Slf4j
 public class DmnTaskRouter implements TaskRoutingProvider {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DmnTaskRouter.class);
   private static final String DMN_TABLE_PROPERTY = "taskana.routing.dmn";
 
   private static final String DECISION_ID = "workbasketRouting";
@@ -103,7 +102,7 @@ public class DmnTaskRouter implements TaskRoutingProvider {
     try (InputStream stream = FileLoaderUtil.openFileFromClasspathOrSystem(pathToDmn, getClass())) {
       return Dmn.readModelFromStream(stream);
     } catch (IOException e) {
-      LOGGER.error("caught IOException when processing dmn file {}.", pathToDmn);
+      log.error("caught IOException when processing dmn file {}.", pathToDmn);
       throw new SystemException(
           "internal System error when processing dmn file " + pathToDmn, e.getCause());
     }

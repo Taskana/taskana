@@ -3,10 +3,14 @@ package pro.taskana.common.api;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import pro.taskana.common.api.exceptions.SystemException;
 
 /** The TaskanaRole enum contains all roles that are known to TASKANA. */
+@Getter
+@AllArgsConstructor
 public enum TaskanaRole {
   USER("taskana.roles.user"),
   BUSINESS_ADMIN("taskana.roles.businessadmin"),
@@ -16,10 +20,6 @@ public enum TaskanaRole {
   TASK_ROUTER("taskana.roles.taskrouter");
 
   private final String propertyName;
-
-  TaskanaRole(String propertyName) {
-    this.propertyName = propertyName;
-  }
 
   public static TaskanaRole fromPropertyName(String name) {
     return Arrays.stream(TaskanaRole.values())
@@ -32,9 +32,5 @@ public enum TaskanaRole {
 
   public static List<String> getValidPropertyNames() {
     return Arrays.stream(values()).map(TaskanaRole::getPropertyName).collect(Collectors.toList());
-  }
-
-  public String getPropertyName() {
-    return propertyName;
   }
 }

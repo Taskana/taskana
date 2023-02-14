@@ -4,8 +4,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
@@ -20,10 +24,13 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** Entity which contains the most important information about a Task. */
+@NoArgsConstructor
+@EqualsAndHashCode()
+@ToString
 public class TaskSummaryImpl implements TaskSummary {
 
-  protected String id;
-  protected String externalId;
+  @Getter @Setter protected String id;
+  @Getter @Setter protected String externalId;
   protected Instant received;
   protected Instant created;
   protected Instant claimed;
@@ -31,51 +38,49 @@ public class TaskSummaryImpl implements TaskSummary {
   protected Instant planned;
   protected Instant due;
   protected Instant completed;
-  protected String name;
-  protected String creator;
-  protected String note;
-  protected String description;
-  protected int priority;
-  protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
-  protected TaskState state;
-  protected ClassificationSummary classificationSummary;
-  protected WorkbasketSummary workbasketSummary;
-  protected String businessProcessId;
-  protected String parentBusinessProcessId;
-  protected String owner;
-  protected String ownerLongName;
-  protected ObjectReference primaryObjRef;
-  protected boolean isRead;
-  protected boolean isTransferred;
+  @Getter protected String name;
+  @Getter @Setter protected String creator;
+  @Getter protected String note;
+  @Getter protected String description;
+  @Getter @Setter protected int priority;
+  @Getter protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
+  @Getter @Setter protected TaskState state;
+  @Getter @Setter protected ClassificationSummary classificationSummary;
+  @Getter @Setter protected WorkbasketSummary workbasketSummary;
+  @Getter @Setter protected String businessProcessId;
+  @Getter @Setter protected String parentBusinessProcessId;
+  @Getter @Setter protected String owner;
+  @Getter protected String ownerLongName;
+  @Getter @Setter protected ObjectReference primaryObjRef;
+  @Getter @Setter protected boolean isRead;
+  @Getter @Setter protected boolean isTransferred;
   // All objects have to be serializable
-  protected List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
-  protected List<ObjectReference> secondaryObjectReferences = new ArrayList<>();
-  protected String custom1;
-  protected String custom2;
-  protected String custom3;
-  protected String custom4;
-  protected String custom5;
-  protected String custom6;
-  protected String custom7;
-  protected String custom8;
-  protected String custom9;
-  protected String custom10;
-  protected String custom11;
-  protected String custom12;
-  protected String custom13;
-  protected String custom14;
-  protected String custom15;
-  protected String custom16;
-  protected Integer customInt1;
-  protected Integer customInt2;
-  protected Integer customInt3;
-  protected Integer customInt4;
-  protected Integer customInt5;
-  protected Integer customInt6;
-  protected Integer customInt7;
-  protected Integer customInt8;
-
-  public TaskSummaryImpl() {}
+  @Getter @Setter protected List<AttachmentSummary> attachmentSummaries = new ArrayList<>();
+  @Getter @Setter protected List<ObjectReference> secondaryObjectReferences = new ArrayList<>();
+  @Getter protected String custom1;
+  @Getter protected String custom2;
+  @Getter protected String custom3;
+  @Getter protected String custom4;
+  @Getter protected String custom5;
+  @Getter protected String custom6;
+  @Getter protected String custom7;
+  @Getter protected String custom8;
+  @Getter protected String custom9;
+  @Getter protected String custom10;
+  @Getter protected String custom11;
+  @Getter protected String custom12;
+  @Getter protected String custom13;
+  @Getter protected String custom14;
+  @Getter protected String custom15;
+  @Getter protected String custom16;
+  @Getter @Setter protected Integer customInt1;
+  @Getter @Setter protected Integer customInt2;
+  @Getter @Setter protected Integer customInt3;
+  @Getter @Setter protected Integer customInt4;
+  @Getter @Setter protected Integer customInt5;
+  @Getter @Setter protected Integer customInt6;
+  @Getter @Setter protected Integer customInt7;
+  @Getter @Setter protected Integer customInt8;
 
   protected TaskSummaryImpl(TaskSummaryImpl copyFrom) {
     received = copyFrom.received;
@@ -130,33 +135,6 @@ public class TaskSummaryImpl implements TaskSummary {
     customInt6 = copyFrom.customInt6;
     customInt7 = copyFrom.customInt7;
     customInt8 = copyFrom.customInt8;
-  }
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  @Override
-  public String getExternalId() {
-    return externalId;
-  }
-
-  public void setExternalId(String externalId) {
-    this.externalId = externalId;
-  }
-
-  @Override
-  public String getCreator() {
-    return creator;
-  }
-
-  public void setCreator(String creator) {
-    this.creator = creator;
   }
 
   @Override
@@ -222,45 +200,16 @@ public class TaskSummaryImpl implements TaskSummary {
     this.due = due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
   }
 
-  @Override
-  public String getName() {
-    return name;
-  }
-
   public void setName(String name) {
     this.name = name == null ? null : name.trim();
-  }
-
-  @Override
-  public String getNote() {
-    return note;
   }
 
   public void setNote(String note) {
     this.note = note == null ? null : note.trim();
   }
 
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
   public void setDescription(String description) {
     this.description = description == null ? null : description.trim();
-  }
-
-  @Override
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
-
-  @Override
-  public int getManualPriority() {
-    return manualPriority;
   }
 
   public void setManualPriority(int manualPriority) {
@@ -268,51 +217,6 @@ public class TaskSummaryImpl implements TaskSummary {
     if (isManualPriorityActive()) {
       this.priority = manualPriority;
     }
-  }
-
-  @Override
-  public TaskState getState() {
-    return state;
-  }
-
-  public void setState(TaskState state) {
-    this.state = state;
-  }
-
-  @Override
-  public ClassificationSummary getClassificationSummary() {
-    return classificationSummary;
-  }
-
-  public void setClassificationSummary(ClassificationSummary classificationSummary) {
-    this.classificationSummary = classificationSummary;
-  }
-
-  @Override
-  public WorkbasketSummary getWorkbasketSummary() {
-    return workbasketSummary;
-  }
-
-  public void setWorkbasketSummary(WorkbasketSummary workbasketSummary) {
-    this.workbasketSummary = workbasketSummary;
-  }
-
-  @Override
-  public List<AttachmentSummary> getAttachmentSummaries() {
-    return attachmentSummaries;
-  }
-
-  public void setAttachmentSummaries(List<AttachmentSummary> attachmentSummaries) {
-    this.attachmentSummaries = attachmentSummaries;
-  }
-
-  @Override
-  public List<ObjectReference> getSecondaryObjectReferences() {
-    return secondaryObjectReferences;
-  }
-
-  public void setSecondaryObjectReferences(List<ObjectReference> objectReferences) {
-    this.secondaryObjectReferences = objectReferences;
   }
 
   @Override
@@ -327,72 +231,13 @@ public class TaskSummaryImpl implements TaskSummary {
     ((WorkbasketSummaryImpl) this.workbasketSummary).setDomain(domain);
   }
 
-  @Override
-  public String getBusinessProcessId() {
-    return businessProcessId;
-  }
-
-  public void setBusinessProcessId(String businessProcessId) {
-    this.businessProcessId = businessProcessId;
-  }
-
-  @Override
-  public String getParentBusinessProcessId() {
-    return parentBusinessProcessId;
-  }
-
-  public void setParentBusinessProcessId(String parentBusinessProcessId) {
-    this.parentBusinessProcessId = parentBusinessProcessId;
-  }
-
-  @Override
-  public String getOwner() {
-    return owner;
-  }
-
-  public void setOwner(String owner) {
-    this.owner = owner;
-  }
-
-  @Override
-  public String getOwnerLongName() {
-    return ownerLongName;
-  }
-
   public void setOwnerLongName(String ownerLongName) {
     this.ownerLongName = ownerLongName == null ? null : ownerLongName.trim();
-  }
-
-  @Override
-  public ObjectReference getPrimaryObjRef() {
-    return primaryObjRef;
-  }
-
-  public void setPrimaryObjRef(ObjectReference primaryObjRef) {
-    this.primaryObjRef = primaryObjRef;
   }
 
   public void setPrimaryObjRef(
       String company, String system, String systemInstance, String type, String value) {
     this.primaryObjRef = new ObjectReferenceImpl(company, system, systemInstance, type, value);
-  }
-
-  @Override
-  public boolean isRead() {
-    return isRead;
-  }
-
-  public void setRead(boolean isRead) {
-    this.isRead = isRead;
-  }
-
-  @Override
-  public boolean isTransferred() {
-    return isTransferred;
-  }
-
-  public void setTransferred(boolean isTransferred) {
-    this.isTransferred = isTransferred;
   }
 
   @Deprecated
@@ -478,11 +323,13 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   // auxiliary method to allow mybatis access to workbasketSummary
+  @SuppressWarnings("unused")
   public WorkbasketSummaryImpl getWorkbasketSummaryImpl() {
     return (WorkbasketSummaryImpl) workbasketSummary;
   }
 
   // auxiliary method to allow mybatis access to workbasketSummary
+  @SuppressWarnings("unused")
   public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
     setWorkbasketSummary(workbasketSummary);
   }
@@ -539,462 +386,90 @@ public class TaskSummaryImpl implements TaskSummary {
   }
 
   // auxiliary Method to enable Mybatis to access classificationSummary
+  @SuppressWarnings("unused")
   public ClassificationSummaryImpl getClassificationSummaryImpl() {
     return (ClassificationSummaryImpl) classificationSummary;
   }
 
   // auxiliary Method to enable Mybatis to access classificationSummary
+  @SuppressWarnings("unused")
   public void setClassificationSummaryImpl(ClassificationSummaryImpl classificationSummary) {
     setClassificationSummary(classificationSummary);
   }
 
   // auxiliary Method to enable Mybatis to access primaryObjRef
+  @SuppressWarnings("unused")
   public ObjectReferenceImpl getPrimaryObjRefImpl() {
     return (ObjectReferenceImpl) primaryObjRef;
   }
 
   // auxiliary Method to enable Mybatis to access primaryObjRef
+  @SuppressWarnings("unused")
   public void setPrimaryObjRefImpl(ObjectReferenceImpl objectReference) {
     setPrimaryObjRef(objectReference);
   }
 
-  public String getCustom1() {
-    return custom1;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom1(String custom1) {
     this.custom1 = custom1 == null ? null : custom1.trim();
   }
 
-  public String getCustom2() {
-    return custom2;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom2(String custom2) {
     this.custom2 = custom2 == null ? null : custom2.trim();
   }
 
-  public String getCustom3() {
-    return custom3;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom3(String custom3) {
     this.custom3 = custom3 == null ? null : custom3.trim();
   }
 
-  public String getCustom4() {
-    return custom4;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom4(String custom4) {
     this.custom4 = custom4 == null ? null : custom4.trim();
   }
 
-  public String getCustom5() {
-    return custom5;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom5(String custom5) {
     this.custom5 = custom5 == null ? null : custom5.trim();
   }
 
-  public String getCustom6() {
-    return custom6;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom6(String custom6) {
     this.custom6 = custom6 == null ? null : custom6.trim();
   }
 
-  public String getCustom7() {
-    return custom7;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom7(String custom7) {
     this.custom7 = custom7 == null ? null : custom7.trim();
   }
 
-  public String getCustom8() {
-    return custom8;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom8(String custom8) {
     this.custom8 = custom8 == null ? null : custom8.trim();
   }
 
-  public String getCustom9() {
-    return custom9;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom9(String custom9) {
     this.custom9 = custom9 == null ? null : custom9.trim();
   }
 
-  public String getCustom10() {
-    return custom10;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom10(String custom10) {
     this.custom10 = custom10 == null ? null : custom10.trim();
   }
 
-  public String getCustom11() {
-    return custom11;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom11(String custom11) {
     this.custom11 = custom11 == null ? null : custom11.trim();
   }
 
-  public String getCustom12() {
-    return custom12;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom12(String custom12) {
     this.custom12 = custom12 == null ? null : custom12.trim();
   }
 
-  public String getCustom13() {
-    return custom13;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom13(String custom13) {
     this.custom13 = custom13 == null ? null : custom13.trim();
   }
 
-  public String getCustom14() {
-    return custom14;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom14(String custom14) {
     this.custom14 = custom14 == null ? null : custom14.trim();
   }
 
-  public String getCustom15() {
-    return custom15;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom15(String custom15) {
     this.custom15 = custom15 == null ? null : custom15.trim();
   }
 
-  public String getCustom16() {
-    return custom16;
-  }
-
-  // auxiliary Method needed by Mybatis
   public void setCustom16(String custom16) {
     this.custom16 = custom16 == null ? null : custom16.trim();
-  }
-
-  public Integer getCustomInt1() {
-    return customInt1;
-  }
-
-  public void setCustomInt1(Integer customInt1) {
-    this.customInt1 = customInt1;
-  }
-
-  public Integer getCustomInt2() {
-    return customInt2;
-  }
-
-  public void setCustomInt2(Integer customInt2) {
-    this.customInt2 = customInt2;
-  }
-
-  public Integer getCustomInt3() {
-    return customInt3;
-  }
-
-  public void setCustomInt3(Integer customInt3) {
-    this.customInt3 = customInt3;
-  }
-
-  public Integer getCustomInt4() {
-    return customInt4;
-  }
-
-  public void setCustomInt4(Integer customInt4) {
-    this.customInt4 = customInt4;
-  }
-
-  public Integer getCustomInt5() {
-    return customInt5;
-  }
-
-  public void setCustomInt5(Integer customInt5) {
-    this.customInt5 = customInt5;
-  }
-
-  public Integer getCustomInt6() {
-    return customInt6;
-  }
-
-  public void setCustomInt6(Integer customInt6) {
-    this.customInt6 = customInt6;
-  }
-
-  public Integer getCustomInt7() {
-    return customInt7;
-  }
-
-  public void setCustomInt7(Integer customInt7) {
-    this.customInt7 = customInt7;
-  }
-
-  public Integer getCustomInt8() {
-    return customInt8;
-  }
-
-  public void setCustomInt8(Integer customInt8) {
-    this.customInt8 = customInt8;
-  }
-
-  protected boolean canEqual(Object other) {
-    return (other instanceof TaskSummaryImpl);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        externalId,
-        created,
-        claimed,
-        completed,
-        modified,
-        planned,
-        received,
-        due,
-        name,
-        creator,
-        note,
-        description,
-        priority,
-        manualPriority,
-        state,
-        classificationSummary,
-        workbasketSummary,
-        businessProcessId,
-        parentBusinessProcessId,
-        owner,
-        ownerLongName,
-        primaryObjRef,
-        isRead,
-        isTransferred,
-        attachmentSummaries,
-        secondaryObjectReferences,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8,
-        custom9,
-        custom10,
-        custom11,
-        custom12,
-        custom13,
-        custom14,
-        custom15,
-        custom16,
-        customInt1,
-        customInt2,
-        customInt3,
-        customInt4,
-        customInt5,
-        customInt6,
-        customInt7,
-        customInt8);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof TaskSummaryImpl)) {
-      return false;
-    }
-    TaskSummaryImpl other = (TaskSummaryImpl) obj;
-    if (!other.canEqual(this)) {
-      return false;
-    }
-    return priority == other.priority
-        && manualPriority == other.manualPriority
-        && isRead == other.isRead
-        && isTransferred == other.isTransferred
-        && Objects.equals(id, other.id)
-        && Objects.equals(externalId, other.externalId)
-        && Objects.equals(created, other.created)
-        && Objects.equals(claimed, other.claimed)
-        && Objects.equals(completed, other.completed)
-        && Objects.equals(modified, other.modified)
-        && Objects.equals(planned, other.planned)
-        && Objects.equals(received, other.received)
-        && Objects.equals(due, other.due)
-        && Objects.equals(name, other.name)
-        && Objects.equals(creator, other.creator)
-        && Objects.equals(note, other.note)
-        && Objects.equals(description, other.description)
-        && state == other.state
-        && Objects.equals(classificationSummary, other.classificationSummary)
-        && Objects.equals(workbasketSummary, other.workbasketSummary)
-        && Objects.equals(businessProcessId, other.businessProcessId)
-        && Objects.equals(parentBusinessProcessId, other.parentBusinessProcessId)
-        && Objects.equals(owner, other.owner)
-        && Objects.equals(ownerLongName, other.ownerLongName)
-        && Objects.equals(primaryObjRef, other.primaryObjRef)
-        && Objects.equals(attachmentSummaries, other.attachmentSummaries)
-        && Objects.equals(secondaryObjectReferences, other.secondaryObjectReferences)
-        && Objects.equals(custom1, other.custom1)
-        && Objects.equals(custom2, other.custom2)
-        && Objects.equals(custom3, other.custom3)
-        && Objects.equals(custom4, other.custom4)
-        && Objects.equals(custom5, other.custom5)
-        && Objects.equals(custom6, other.custom6)
-        && Objects.equals(custom7, other.custom7)
-        && Objects.equals(custom8, other.custom8)
-        && Objects.equals(custom9, other.custom9)
-        && Objects.equals(custom10, other.custom10)
-        && Objects.equals(custom11, other.custom11)
-        && Objects.equals(custom12, other.custom12)
-        && Objects.equals(custom13, other.custom13)
-        && Objects.equals(custom14, other.custom14)
-        && Objects.equals(custom15, other.custom15)
-        && Objects.equals(custom16, other.custom16)
-        && Objects.equals(customInt1, other.customInt1)
-        && Objects.equals(customInt2, other.customInt2)
-        && Objects.equals(customInt3, other.customInt3)
-        && Objects.equals(customInt4, other.customInt4)
-        && Objects.equals(customInt5, other.customInt5)
-        && Objects.equals(customInt6, other.customInt6)
-        && Objects.equals(customInt7, other.customInt7)
-        && Objects.equals(customInt8, other.customInt8);
-  }
-
-  @Override
-  public String toString() {
-    return "TaskSummaryImpl [id="
-        + id
-        + ", externalId="
-        + externalId
-        + ", created="
-        + created
-        + ", claimed="
-        + claimed
-        + ", completed="
-        + completed
-        + ", modified="
-        + modified
-        + ", planned="
-        + planned
-        + ", received="
-        + received
-        + ", due="
-        + due
-        + ", name="
-        + name
-        + ", creator="
-        + creator
-        + ", note="
-        + note
-        + ", description="
-        + description
-        + ", priority="
-        + priority
-        + ", manualPriority="
-        + manualPriority
-        + ", state="
-        + state
-        + ", classificationSummary="
-        + classificationSummary
-        + ", workbasketSummary="
-        + workbasketSummary
-        + ", businessProcessId="
-        + businessProcessId
-        + ", parentBusinessProcessId="
-        + parentBusinessProcessId
-        + ", owner="
-        + owner
-        + ", ownerLongName="
-        + ownerLongName
-        + ", primaryObjRef="
-        + primaryObjRef
-        + ", isRead="
-        + isRead
-        + ", isTransferred="
-        + isTransferred
-        + ", attachmentSummaries="
-        + attachmentSummaries
-        + ", objectReferences="
-        + secondaryObjectReferences
-        + ", custom1="
-        + custom1
-        + ", custom2="
-        + custom2
-        + ", custom3="
-        + custom3
-        + ", custom4="
-        + custom4
-        + ", custom5="
-        + custom5
-        + ", custom6="
-        + custom6
-        + ", custom7="
-        + custom7
-        + ", custom8="
-        + custom8
-        + ", custom9="
-        + custom9
-        + ", custom10="
-        + custom10
-        + ", custom11="
-        + custom11
-        + ", custom12="
-        + custom12
-        + ", custom13="
-        + custom13
-        + ", custom14="
-        + custom14
-        + ", custom15="
-        + custom15
-        + ", custom16="
-        + custom16
-        + ", customInt1="
-        + customInt1
-        + ", customInt2="
-        + customInt2
-        + ", customInt3="
-        + customInt3
-        + ", customInt4="
-        + customInt4
-        + ", customInt5="
-        + customInt5
-        + ", customInt6="
-        + customInt6
-        + ", customInt7="
-        + customInt7
-        + ", customInt8="
-        + customInt8
-        + "]";
   }
 }

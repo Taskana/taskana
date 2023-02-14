@@ -2,6 +2,7 @@ package pro.taskana.common.rest;
 
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +24,13 @@ import pro.taskana.common.rest.models.VersionRepresentationModel;
 /** Controller for TaskanaEngine related tasks. */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class TaskanaEngineController {
 
   private final TaskanaConfiguration taskanaEngineConfiguration;
   private final TaskanaEngine taskanaEngine;
   private final CurrentUserContext currentUserContext;
   private final ConfigurationService configurationService;
-
-  @Autowired
-  TaskanaEngineController(
-      TaskanaConfiguration taskanaEngineConfiguration,
-      TaskanaEngine taskanaEngine,
-      CurrentUserContext currentUserContext,
-      ConfigurationService configurationService) {
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-    this.taskanaEngine = taskanaEngine;
-    this.currentUserContext = currentUserContext;
-    this.configurationService = configurationService;
-  }
 
   /**
    * This endpoint retrieves all configured Domains.

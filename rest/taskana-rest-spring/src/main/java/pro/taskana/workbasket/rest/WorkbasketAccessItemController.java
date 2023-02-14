@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -30,21 +31,12 @@ import pro.taskana.workbasket.rest.models.WorkbasketAccessItemPagedRepresentatio
 /** Controller for Workbasket access. */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketAccessItemController {
 
   private final LdapClient ldapClient;
   private final WorkbasketService workbasketService;
   private final WorkbasketAccessItemRepresentationModelAssembler modelAssembler;
-
-  @Autowired
-  public WorkbasketAccessItemController(
-      LdapClient ldapClient,
-      WorkbasketService workbasketService,
-      WorkbasketAccessItemRepresentationModelAssembler modelAssembler) {
-    this.ldapClient = ldapClient;
-    this.workbasketService = workbasketService;
-    this.modelAssembler = modelAssembler;
-  }
 
   /**
    * This endpoint retrieves a list of existing Workbasket Access Items. Filters can be applied.

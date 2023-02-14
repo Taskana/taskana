@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.naming.directory.SearchControls;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.DirContextOperations;
@@ -38,14 +37,14 @@ import pro.taskana.user.internal.models.UserImpl;
 
 /** Class for Ldap access. */
 @Component
+@Slf4j
 public class LdapClient {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
   private static final String CN = "cn";
 
-  private final TaskanaConfiguration taskanaEngineConfiguration;
   private final Environment env;
   private final LdapTemplate ldapTemplate;
+  private final TaskanaConfiguration taskanaEngineConfiguration;
   private final boolean useLowerCaseForAccessIds;
   private boolean active = false;
   private int minSearchForLength;
@@ -91,7 +90,7 @@ public class LdapClient {
   public List<AccessIdRepresentationModel> searchUsersByNameOrAccessIdInUserRole(
       final String nameOrAccessId) throws InvalidArgumentException {
 
-    LOGGER.debug(
+    log.debug(
         "entry to searchUsersByNameOrAccessIdInUserRoleGroups(nameOrAccessId = {}).",
         nameOrAccessId);
 
@@ -126,7 +125,7 @@ public class LdapClient {
             SearchControls.SUBTREE_SCOPE,
             getLookUpUserAttributesToReturn(),
             new UserContextMapper());
-    LOGGER.debug(
+    log.debug(
         "exit from searchUsersByNameOrAccessIdInUserRoleGroups. Retrieved the following users: {}.",
         accessIds);
     return accessIds;
@@ -151,7 +150,7 @@ public class LdapClient {
             getLookUpUserInfoAttributesToReturn(),
             new UserInfoContextMapper());
 
-    LOGGER.debug("exit from searchUsersInUserRole. Retrieved the following users: {}.", users);
+    log.debug("exit from searchUsersInUserRole. Retrieved the following users: {}.", users);
 
     return users;
   }
@@ -171,7 +170,7 @@ public class LdapClient {
     orFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), name));
     andFilter.and(orFilter);
 
-    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
+    log.debug("Using filter '{}' for LDAP query.", andFilter);
 
     return ldapTemplate.search(
         getUserSearchBase(),
@@ -192,7 +191,7 @@ public class LdapClient {
       getUserFirstnameAttribute(), getUserLastnameAttribute(), getUserIdAttribute()
     };
 
-    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
+    log.debug("Using filter '{}' for LDAP query.", andFilter);
 
     return ldapTemplate.search(
         getUserSearchBase(),
@@ -216,7 +215,7 @@ public class LdapClient {
     }
     andFilter.and(orFilter);
 
-    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
+    log.debug("Using filter '{}' for LDAP query.", andFilter);
 
     return ldapTemplate.search(
         getGroupSearchBase(),
@@ -234,8 +233,8 @@ public class LdapClient {
     // Therefore we have to remove the base name from the dn before performing the lookup
     String nameWithoutBaseDn = getNameWithoutBaseDn(dn).toLowerCase();
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
     }
     return ldapTemplate.lookup(
@@ -263,7 +262,7 @@ public class LdapClient {
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
 
-    LOGGER.debug(
+    log.debug(
         "Using filter '{}' for LDAP query with group search base {}.",
         andFilter,
         getGroupSearchBase());
@@ -296,7 +295,7 @@ public class LdapClient {
       orFilter.or(new EqualsFilter(getUserIdAttribute(), accessId));
       andFilter.and(orFilter);
 
-      LOGGER.debug(
+      log.debug(
           "Using filter '{}' for LDAP query with user search base {}.",
           andFilter,
           getUserSearchBase());

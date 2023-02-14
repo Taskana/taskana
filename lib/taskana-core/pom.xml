@@ -16,8 +16,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${version.lombok}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>pro.taskana</groupId>
-      <artifactId>taskana-common-logging</artifactId>
+      <artifactId>taskana-aspect-logging</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -39,6 +45,7 @@
       <artifactId>json</artifactId>
       <version>${version.json}</version>
     </dependency>
+
     <!-- test dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>

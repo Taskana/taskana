@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -59,21 +60,12 @@ import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 /** Controller for all {@link Task} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class TaskController {
 
   private final TaskService taskService;
   private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
   private final TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
-
-  @Autowired
-  TaskController(
-      TaskService taskService,
-      TaskRepresentationModelAssembler taskRepresentationModelAssembler,
-      TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler) {
-    this.taskService = taskService;
-    this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
-    this.taskSummaryRepresentationModelAssembler = taskSummaryRepresentationModelAssembler;
-  }
 
   // region CREATE
 
@@ -565,7 +557,7 @@ public class TaskController {
       @PathVariable String taskId, @RequestBody IsReadRepresentationModel isRead)
       throws TaskNotFoundException, MismatchedWorkbasketPermissionException {
 
-    Task updatedTask = taskService.setTaskRead(taskId, isRead.getIsRead());
+    Task updatedTask = taskService.setTaskRead(taskId, isRead.isRead());
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }

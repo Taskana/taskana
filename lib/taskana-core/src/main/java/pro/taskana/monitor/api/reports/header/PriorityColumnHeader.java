@@ -1,16 +1,16 @@
 package pro.taskana.monitor.api.reports.header;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import pro.taskana.monitor.api.reports.item.PriorityQueryItem;
 
+@Getter
+@AllArgsConstructor
 public class PriorityColumnHeader implements ColumnHeader<PriorityQueryItem> {
 
   private final int lowerBoundInc;
   private final int upperBoundInc;
-
-  public PriorityColumnHeader(int lowerBoundInc, int upperBoundInc) {
-    this.lowerBoundInc = lowerBoundInc;
-    this.upperBoundInc = upperBoundInc;
-  }
 
   @Override
   public String getDisplayName() {
@@ -26,13 +26,5 @@ public class PriorityColumnHeader implements ColumnHeader<PriorityQueryItem> {
   @Override
   public boolean fits(PriorityQueryItem item) {
     return lowerBoundInc <= item.getPriority() && upperBoundInc >= item.getPriority();
-  }
-
-  public int getLowerBoundInc() {
-    return lowerBoundInc;
-  }
-
-  public int getUpperBoundInc() {
-    return upperBoundInc;
   }
 }

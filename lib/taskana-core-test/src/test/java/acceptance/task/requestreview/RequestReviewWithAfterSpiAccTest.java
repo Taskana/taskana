@@ -251,7 +251,7 @@ public class RequestReviewWithAfterSpiAccTest {
     void setup(TaskanaConfiguration taskanaEngineConfiguration) {
       transactionProvider =
           new PlainJavaTransactionProvider(
-              taskanaEngine, taskanaEngineConfiguration.getDatasource());
+              taskanaEngine, taskanaEngineConfiguration.getDataSource());
     }
 
     @WithAccessId(user = "user-1-1")

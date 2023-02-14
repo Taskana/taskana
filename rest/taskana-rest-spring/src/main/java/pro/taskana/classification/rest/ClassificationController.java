@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -46,21 +47,12 @@ import pro.taskana.common.rest.util.QueryParamsValidator;
 /** Controller for all {@link Classification} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class ClassificationController {
 
   private final ClassificationService classificationService;
   private final ClassificationRepresentationModelAssembler modelAssembler;
   private final ClassificationSummaryRepresentationModelAssembler summaryModelAssembler;
-
-  @Autowired
-  ClassificationController(
-      ClassificationService classificationService,
-      ClassificationRepresentationModelAssembler modelAssembler,
-      ClassificationSummaryRepresentationModelAssembler summaryModelAssembler) {
-    this.classificationService = classificationService;
-    this.modelAssembler = modelAssembler;
-    this.summaryModelAssembler = summaryModelAssembler;
-  }
 
   /**
    * This endpoint retrieves a list of existing Classifications. Filters can be applied.

@@ -2,18 +2,17 @@ package pro.taskana.routing.dmn.spi.internal;
 
 import java.util.Objects;
 import java.util.ServiceLoader;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.routing.dmn.spi.api.DmnValidator;
 
 /** Loads DmnValidator SPI implementation(s) and passes requests to validate DmnModelInstances. */
+@Slf4j
 public class DmnValidatorManager {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DmnValidatorManager.class);
   private static DmnValidatorManager singleton;
   private final ServiceLoader<DmnValidator> serviceLoader;
   private boolean enabled = false;
@@ -22,11 +21,11 @@ public class DmnValidatorManager {
     serviceLoader = ServiceLoader.load(DmnValidator.class);
     for (DmnValidator dmnValidator : serviceLoader) {
       dmnValidator.initialize(taskanaEngine);
-      LOGGER.info("Registered DmnValidator: {}", dmnValidator.getClass().getName());
+      log.info("Registered DmnValidator: {}", dmnValidator.getClass().getName());
       enabled = true;
     }
     if (!enabled) {
-      LOGGER.info("No DmnValidator found. Running without DmnValidator.");
+      log.info("No DmnValidator found. Running without DmnValidator.");
     }
   }
 
@@ -43,8 +42,8 @@ public class DmnValidatorManager {
 
   public void validate(DmnModelInstance dmnModelInstanceToValidate) {
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending DmnModelInstance to DmnValidators: {}", dmnModelInstanceToValidate);
+    if (log.isDebugEnabled()) {
+      log.debug("Sending DmnModelInstance to DmnValidators: {}", dmnModelInstanceToValidate);
     }
     serviceLoader.forEach(
         dmnValidator -> {

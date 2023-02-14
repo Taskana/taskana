@@ -10,13 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.dmn.xlsx.AdvancedSpreadsheetAdapter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,9 +32,8 @@ import pro.taskana.workbasket.api.WorkbasketService;
 
 /** This class converts an Excel file with routing roules to a DMN table. */
 @Service
+@Slf4j
 public class DmnConverterService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DmnConverterService.class);
 
   private final TaskanaEngine taskanaEngine;
 
@@ -79,8 +77,8 @@ public class DmnConverterService {
         DmnValidatorManager.getInstance(taskanaEngine).validate(patchedModel);
       }
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(String.format("Persisting generated DMN table to %s", dmnUploadPath));
+      if (log.isDebugEnabled()) {
+        log.debug(String.format("Persisting generated DMN table to %s", dmnUploadPath));
       }
 
       File uploadDestinationFile = new File(dmnUploadPath);

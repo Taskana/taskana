@@ -3,6 +3,7 @@ package pro.taskana.workbasket.rest.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -24,15 +25,11 @@ import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
  * and vice versa.
  */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketRepresentationModelAssembler
     implements RepresentationModelAssembler<Workbasket, WorkbasketRepresentationModel> {
 
   private final WorkbasketService workbasketService;
-
-  @Autowired
-  public WorkbasketRepresentationModelAssembler(WorkbasketService workbasketService) {
-    this.workbasketService = workbasketService;
-  }
 
   @NonNull
   @Override
@@ -71,7 +68,7 @@ public class WorkbasketRepresentationModelAssembler
     workbasket.setType(repModel.getType());
     workbasket.setDescription(repModel.getDescription());
     workbasket.setOwner(repModel.getOwner());
-    workbasket.setMarkedForDeletion(repModel.getMarkedForDeletion());
+    workbasket.setMarkedForDeletion(repModel.isMarkedForDeletion());
     workbasket.setCustom1(repModel.getCustom1());
     workbasket.setCustom2(repModel.getCustom2());
     workbasket.setCustom3(repModel.getCustom3());

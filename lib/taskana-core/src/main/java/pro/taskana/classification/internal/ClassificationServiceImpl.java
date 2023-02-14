@@ -11,9 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
@@ -44,9 +43,9 @@ import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.TaskMapper;
 
 /** This is the implementation of ClassificationService. */
+@Slf4j
 public class ClassificationServiceImpl implements ClassificationService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationServiceImpl.class);
   private final HistoryEventManager historyEventManager;
   private final PriorityServiceManager priorityServiceManager;
   private final ClassificationMapper classificationMapper;
@@ -221,8 +220,8 @@ public class ClassificationServiceImpl implements ClassificationService {
                 details));
       }
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Method createClassification created classification {}.", classificationImpl);
+      if (log.isDebugEnabled()) {
+        log.debug("Method createClassification created classification {}.", classificationImpl);
       }
 
       if (!classification.getDomain().isEmpty()) {
@@ -278,8 +277,8 @@ public class ClassificationServiceImpl implements ClassificationService {
                 taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
                 details));
       }
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "Method updateClassification() updated the classification {}.", classificationImpl);
       }
       return classification;
@@ -378,21 +377,21 @@ public class ClassificationServiceImpl implements ClassificationService {
         this.getClassification(masterClassification.getKey(), masterClassification.getDomain());
         throw new ClassificationAlreadyExistException(masterClassification);
       } catch (ClassificationNotFoundException e) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(
+        if (log.isDebugEnabled()) {
+          log.debug(
               "Method createClassification: Classification does not "
                   + "exist in master domain. Classification {}.",
               masterClassification);
         }
         classificationMapper.insert(masterClassification);
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(
+        if (log.isDebugEnabled()) {
+          log.debug(
               "Method createClassification: Classification created in "
                   + "master-domain, too. Classification {}.",
               masterClassification);
         }
       } catch (ClassificationAlreadyExistException ex) {
-        LOGGER.warn(
+        log.warn(
             "Method createClassification: Classification does already exist "
                 + "in master domain. Classification {}.",
             LogSanitizer.stripLineBreakingChars(masterClassification));
@@ -484,7 +483,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         isExisting = true;
       }
     } catch (Exception ex) {
-      LOGGER.warn(
+      log.warn(
           "Classification-Service threw Exception while calling "
               + "mapper and searching for classification. EX={}",
           ex,

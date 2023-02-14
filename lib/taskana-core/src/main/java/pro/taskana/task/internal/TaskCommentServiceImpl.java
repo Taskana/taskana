@@ -2,8 +2,8 @@ package pro.taskana.task.internal;
 
 import java.time.Instant;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
@@ -20,25 +20,14 @@ import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.UserMapper;
 import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
 
+@Slf4j
+@RequiredArgsConstructor
 class TaskCommentServiceImpl {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskCommentServiceImpl.class);
-
   private final InternalTaskanaEngine taskanaEngine;
-  private final TaskServiceImpl taskService;
   private final TaskCommentMapper taskCommentMapper;
   private final UserMapper userMapper;
-
-  TaskCommentServiceImpl(
-      InternalTaskanaEngine taskanaEngine,
-      TaskCommentMapper taskCommentMapper,
-      UserMapper userMapper,
-      TaskServiceImpl taskService) {
-    this.taskanaEngine = taskanaEngine;
-    this.taskService = taskService;
-    this.taskCommentMapper = taskCommentMapper;
-    this.userMapper = userMapper;
-  }
+  private final TaskServiceImpl taskService;
 
   TaskComment newTaskComment(String taskId) {
 
@@ -74,8 +63,8 @@ class TaskCommentServiceImpl {
 
         taskCommentMapper.update(taskCommentImplToUpdate);
 
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(
+        if (log.isDebugEnabled()) {
+          log.debug(
               "Method updateTaskComment() updated taskComment '{}' for user '{}'.",
               taskCommentImplToUpdate.getId(),
               userId);
@@ -134,8 +123,8 @@ class TaskCommentServiceImpl {
 
         taskCommentMapper.delete(taskCommentId);
 
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());
+        if (log.isDebugEnabled()) {
+          log.debug("taskComment {} deleted", taskCommentToDelete.getId());
         }
 
       } else {
@@ -158,8 +147,8 @@ class TaskCommentServiceImpl {
 
       List<TaskComment> taskComments = taskService.createTaskCommentQuery().taskIdIn(taskId).list();
 
-      if (taskComments.isEmpty() && LOGGER.isDebugEnabled()) {
-        LOGGER.debug("getTaskComments() found no comments for the provided taskId");
+      if (taskComments.isEmpty() && log.isDebugEnabled()) {
+        log.debug("getTaskComments() found no comments for the provided taskId");
       }
 
       return taskComments;

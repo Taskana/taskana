@@ -1,8 +1,12 @@
 package pro.taskana.common.rest.ldap;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.core.env.Environment;
 
 /** Required settings to run ldap. */
+@Getter
+@AllArgsConstructor
 enum LdapSettings {
   TASKANA_LDAP_USER_SEARCH_BASE("taskana.ldap.userSearchBase"),
   TASKANA_LDAP_USER_SEARCH_FILTER_NAME("taskana.ldap.userSearchFilterName"),
@@ -31,14 +35,6 @@ enum LdapSettings {
   TASKANA_LDAP_GROUPS_OF_USER_TYPE("taskana.ldap.groupsOfUser.type");
 
   private final String key;
-
-  LdapSettings(String key) {
-    this.key = key;
-  }
-
-  String getKey() {
-    return key;
-  }
 
   String getValueFromEnv(Environment env) {
     if (env == null) {

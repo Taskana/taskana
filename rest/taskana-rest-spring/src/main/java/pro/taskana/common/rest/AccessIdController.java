@@ -1,6 +1,7 @@
 package pro.taskana.common.rest;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -19,16 +20,11 @@ import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 /** Controller for Access Id validation. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class AccessIdController {
 
   private final LdapClient ldapClient;
   private final TaskanaEngine taskanaEngine;
-
-  @Autowired
-  public AccessIdController(LdapClient ldapClient, TaskanaEngine taskanaEngine) {
-    this.ldapClient = ldapClient;
-    this.taskanaEngine = taskanaEngine;
-  }
 
   /**
    * This endpoint searches a provided access Id in the configured ldap.

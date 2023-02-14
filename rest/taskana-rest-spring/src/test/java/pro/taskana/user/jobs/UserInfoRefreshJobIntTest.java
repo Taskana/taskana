@@ -49,7 +49,7 @@ class UserInfoRefreshJobIntTest {
   @Order(1)
   void should_RefreshUserInfo_When_UserInfoRefreshJobIsExecuted() throws Exception {
 
-    try (Connection connection = taskanaEngine.getConfiguration().getDatasource().getConnection()) {
+    try (Connection connection = taskanaEngine.getConfiguration().getDataSource().getConnection()) {
 
       List<User> users = getUsers(connection);
       assertThat(users).hasSize(14);
@@ -100,7 +100,7 @@ class UserInfoRefreshJobIntTest {
   @Order(2)
   void should_PostprocessUser_When_RefreshUserPostprocessorIsActive() throws Exception {
 
-    try (Connection connection = taskanaEngine.getConfiguration().getDatasource().getConnection()) {
+    try (Connection connection = taskanaEngine.getConfiguration().getDataSource().getConnection()) {
 
       UserInfoRefreshJob userInfoRefreshJob = new UserInfoRefreshJob(taskanaEngine);
       userInfoRefreshJob.execute();
