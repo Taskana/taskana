@@ -587,13 +587,189 @@ class TaskControllerIntTest {
     }
 
     @Test
+    void should_GetAllTasks_For_SpecifiedWorkbasketIdAndPriorityFromAndUntil() {
+      Integer priorityFrom = 2;
+      Integer priorityTo = 3;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-from=%s&priority-until=%s",
+                  priorityFrom, priorityTo);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(2);
+    }
+
+    @Test
+    void should_GetAllTasks_For_SpecifiedWorkbasketIdAndMultiplePriorityWithinIntervals() {
+      Integer priorityFrom1 = 2;
+      Integer priorityFrom2 = 0;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-within=%s&priority-within=&priority-within=%s&priority-within=",
+                  priorityFrom1, priorityFrom2);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(3);
+    }
+
+    @Test
+    void should_GetAllTasks_For_SpecifiedWorkbasketIdAndPriorityNotFromAndNotUntil() {
+      Integer priorityFrom = 2;
+      Integer priorityTo = 3;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-not-from=%s&priority-not-until=%s",
+                  priorityFrom, priorityTo);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(1);
+    }
+
+    @Test
+    void should_GetAllTasks_For_SpecifiedWorkbasketIdAndMultiplePriorityNotWithinIntervals() {
+      Integer priorityFrom1 = 2;
+      Integer priorityFrom2 = 1;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-not-within=%s&priority-not-within="
+                      + "&priority-not-within=%s&priority-not-within=",
+                  priorityFrom1, priorityFrom2);
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(1);
+    }
+
+    @Test
+    void should_ThrowException_When_GettingTasksByWorkbasketIdWithPriorityNotWithinAndNotFrom() {
+      Integer priorityFrom1 = 2;
+      Integer priorityFrom2 = 1;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-not-within=%s&priority-not-within="
+                      + "&priority-not-from=%s&priority-not-until=",
+                  priorityFrom1, priorityFrom2);
+
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+          .isInstanceOf(HttpStatusCodeException.class)
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void should_ThrowException_When_GettingTasksByWorkbasketIdWithPriorityWithinAndPriorityFrom() {
+      Integer priorityFrom1 = 2;
+      Integer priorityFrom2 = 1;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-within=%s&priority-within=&priority-from=%s&priority-until=",
+                  priorityFrom1, priorityFrom2);
+
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+          .isInstanceOf(HttpStatusCodeException.class)
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void
+        should_ThrowException_When_GettingTasksByWorkbasketIdWithEvenNumberOfPriorityWithin() {
+      Integer priorityFrom1 = 2;
+      Integer priorityFrom2 = 1;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-within=%s&priority-within=&priority-within=%s",
+                  priorityFrom1, priorityFrom2);
+
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+          .isInstanceOf(HttpStatusCodeException.class)
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void
+        should_ThrowException_When_GettingTasksByWorkbasketIdWithEvenNumberOfPriorityNotWithin() {
+      Integer priorityFrom1 = 2;
+      Integer priorityFrom2 = 1;
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + String.format(
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&priority-not-within=%s&priority-not-within=&priority-not-within=%s",
+                  priorityFrom1, priorityFrom2);
+
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      ThrowingCallable httpCall =
+          () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+          .isInstanceOf(HttpStatusCodeException.class)
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     void should_ReturnAllTasks_For_SpecifiedWorkbasketIdAndClassificationParentKeyIn() {
       String parentKey = "L11010";
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
               + String.format(
                   "?workbasket-id=WBI:100000000000000000000000000000000006"
-                     + "&classification-parent-key=%s",
+                      + "&classification-parent-key=%s",
                   parentKey);
       HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
@@ -610,9 +786,9 @@ class TaskControllerIntTest {
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
               + String.format(
-              "?workbasket-id=WBI:100000000000000000000000000000000006"
-                  + "&classification-parent-key-not=%s",
-              parentKey);
+                  "?workbasket-id=WBI:100000000000000000000000000000000006"
+                      + "&classification-parent-key-not=%s",
+                  parentKey);
       HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -627,9 +803,7 @@ class TaskControllerIntTest {
       String parentKey = "L%";
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
-              + String.format(
-                  "?classification-parent-key-like=%s",
-              parentKey);
+              + String.format("?classification-parent-key-like=%s", parentKey);
       HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
@@ -644,9 +818,7 @@ class TaskControllerIntTest {
       String parentKey = "L%";
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
-              + String.format(
-              "?classification-parent-key-not-like=%s",
-              parentKey);
+              + String.format("?classification-parent-key-not-like=%s", parentKey);
       HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
           TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
