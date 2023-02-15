@@ -506,6 +506,8 @@ public class TaskQuerySqlProvider {
     whereNotInInterval("plannedNotWithin", "t.PLANNED", sb);
     whereInInterval("receivedWithin", "t.RECEIVED", sb);
     whereNotInInterval("receivedNotWithin", "t.RECEIVED", sb);
+    whereInInterval("priorityWithin", "t.PRIORITY", sb);
+    whereNotInInterval("priorityNotWithin", "t.PRIORITY", sb);
 
     whereLike("ownerLongNameLike", "u.LONG_NAME", sb);
     whereNotLike("ownerLongNameNotLike", "u.LONG_NAME", sb);

@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
 
+import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -483,6 +484,30 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the priority of the Task shouldn't be. This is an exact match. */
   @JsonProperty("priority-not")
   private final int[] priorityNotIn;
+
+  /** Filter by the range of values of the priority field of the Task. */
+  @JsonProperty("priority-within")
+  private final Integer[] priorityWithin;
+
+  /** Filter by priority starting from the given value (inclusive). */
+  @JsonProperty("priority-from")
+  private final Integer priorityFrom;
+
+  /** Filter by priority up to the given value (inclusive). */
+  @JsonProperty("priority-until")
+  private final Integer priorityUntil;
+
+  /** Filter by exclusing the range of values of the priority field of the Task. */
+  @JsonProperty("priority-not-within")
+  private final Integer[] priorityNotWithin;
+
+  /** Filter by excluding priority starting from the given value (inclusive). */
+  @JsonProperty("priority-not-from")
+  private final Integer priorityNotFrom;
+
+  /** Filter by excluding priority up to the given value (inclusive). */
+  @JsonProperty("priority-not-until")
+  private final Integer priorityNotUntil;
   // endregion
   // region state
   /** Filter by the Task state. This is an exact match. */
@@ -1192,6 +1217,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "description-not-like",
     "priority",
     "priority-not",
+    "priority-within",
+    "priority-from",
+    "priority-until",
+    "priority-not-within",
+    "priority-not-from",
+    "priority-not-until",
     "state",
     "state-not",
     "classification-id",
@@ -1342,6 +1373,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] descriptionNotLike,
       int[] priorityIn,
       int[] priorityNotIn,
+      Integer[] priorityWithin,
+      Integer priorityFrom,
+      Integer priorityUntil,
+      Integer[] priorityNotWithin,
+      Integer priorityNotFrom,
+      Integer priorityNotUntil,
       TaskState[] stateIn,
       TaskState[] stateNotIn,
       String[] classificationIdIn,
@@ -1491,6 +1528,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.descriptionNotLike = descriptionNotLike;
     this.priorityIn = priorityIn;
     this.priorityNotIn = priorityNotIn;
+    this.priorityWithin = priorityWithin;
+    this.priorityFrom = priorityFrom;
+    this.priorityUntil = priorityUntil;
+    this.priorityNotWithin = priorityNotWithin;
+    this.priorityNotFrom = priorityNotFrom;
+    this.priorityNotUntil = priorityNotUntil;
     this.stateIn = stateIn;
     this.stateNotIn = stateNotIn;
     this.classificationIdIn = classificationIdIn;
@@ -1708,6 +1751,20 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
     Optional.ofNullable(priorityIn).ifPresent(query::priorityIn);
     Optional.ofNullable(priorityNotIn).ifPresent(query::priorityNotIn);
+
+    Optional.ofNullable(priorityWithin)
+        .map(this::extractIntIntervals)
+        .ifPresent(query::priorityWithin);
+    if (priorityFrom != null || priorityUntil != null) {
+      query.priorityWithin(new IntInterval(priorityFrom, priorityUntil));
+    }
+
+    Optional.ofNullable(priorityNotWithin)
+        .map(this::extractIntIntervals)
+        .ifPresent(query::priorityNotWithin);
+    if (priorityNotFrom != null || priorityNotUntil != null) {
+      query.priorityNotWithin(new IntInterval(priorityNotFrom, priorityNotUntil));
+    }
 
     Optional.ofNullable(stateIn).ifPresent(query::stateIn);
     Optional.ofNullable(stateNotIn).ifPresent(query::stateNotIn);
@@ -1999,6 +2056,28 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       throw new InvalidArgumentException(
           "It is prohibited to use the param 'completed-not-in' in combination with the params "
               + "'completed-not-in-from'  and / or 'completed-not-in-until'");
+    }
+
+    if (priorityWithin != null && (priorityFrom != null || priorityUntil != null)) {
+      throw new InvalidArgumentException(
+          "It is prohibited to use the param 'priority-within' in combination with the params "
+              + "'priority-from'  and / or 'priority-until'");
+    }
+
+    if (priorityNotWithin != null && (priorityNotFrom != null || priorityNotUntil != null)) {
+      throw new InvalidArgumentException(
+          "It is prohibited to use the param 'priority-not-within' in combination with the params "
+              + "'priority-not-from'  and / or 'priority-not-until'");
+    }
+
+    if (priorityWithin != null && priorityWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'priority-within' is not dividable by 2");
+    }
+
+    if (priorityNotWithin != null && priorityNotWithin.length % 2 != 0) {
+      throw new InvalidArgumentException(
+          "provided length of the property 'priority-not-within' is not dividable by 2");
     }
 
     if (wildcardSearchFieldIn == null ^ wildcardSearchValue == null) {

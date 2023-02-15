@@ -944,6 +944,8 @@ class TaskQueryImplAccTest {
       WorkbasketSummary wb;
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
+      TaskSummary taskSummary3;
+
 
       @WithAccessId(user = "user-1-1")
       @BeforeAll
@@ -951,6 +953,8 @@ class TaskQueryImplAccTest {
         wb = createWorkbasketWithPermission();
         taskSummary1 = taskInWorkbasket(wb).priority(1).buildAndStoreAsSummary(taskService);
         taskSummary2 = taskInWorkbasket(wb).priority(2).buildAndStoreAsSummary(taskService);
+        taskSummary3 = taskInWorkbasket(wb).priority(4).buildAndStoreAsSummary(taskService);
+
       }
 
       @WithAccessId(user = "user-1-1")
@@ -968,7 +972,33 @@ class TaskQueryImplAccTest {
         List<TaskSummary> list =
             taskService.createTaskQuery().workbasketIdIn(wb.getId()).priorityNotIn(1).list();
 
-        assertThat(list).containsExactly(taskSummary2);
+        assertThat(list).containsExactlyInAnyOrder(taskSummary2, taskSummary3);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForPriorityWithin() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .priorityWithin(new IntInterval(2, 4))
+                .list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary2, taskSummary3);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForPriorityNotWithin() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .priorityNotWithin(new IntInterval(2, 4))
+                .list();
+
+        assertThat(list).containsExactly(taskSummary1);
       }
     }
 

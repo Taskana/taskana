@@ -102,6 +102,8 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] descriptionNotLike;
   private int[] priority;
   private int[] priorityNotIn;
+  private IntInterval[] priorityWithin;
+  private IntInterval[] priorityNotWithin;
   private TaskState[] stateIn;
   private TaskState[] stateNotIn;
   private String[] classificationIdIn;
@@ -599,6 +601,18 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery priorityNotIn(int... priorities) {
     this.priorityNotIn = priorities;
+    return this;
+  }
+
+  @Override
+  public TaskQuery priorityWithin(IntInterval[] priorities) {
+    this.priorityWithin = priorities;
+    return this;
+  }
+
+  @Override
+  public TaskQuery priorityNotWithin(IntInterval[] priorities) {
+    this.priorityNotWithin = priorities;
     return this;
   }
 
@@ -2328,6 +2342,10 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(priority)
         + ", priorityNotIn="
         + Arrays.toString(priorityNotIn)
+        + ", priorityWithin="
+        + Arrays.toString(priorityWithin)
+        + ", priorityNotWithin="
+        + Arrays.toString(priorityNotWithin)
         + ", stateIn="
         + Arrays.toString(stateIn)
         + ", stateNotIn="

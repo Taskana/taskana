@@ -482,6 +482,24 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery priorityNotIn(int... priorities);
 
   /**
+   * Includes the priorities in the provided range (inclusive) to your query (eg. priorities = [1,3]
+   * includes 1,2,3).
+   *
+   * @param priorities as an integer intervals
+   * @return the query
+   */
+  TaskQuery priorityWithin(IntInterval... priorities);
+
+  /**
+   * Excludes the priorities in the provided range (inclusive) to your query (eg. priorities = [1,3]
+   * excludes 1,2,3).
+   *
+   * @param priorities as an integer intervals
+   * @return the query
+   */
+  TaskQuery priorityNotWithin(IntInterval... priorities);
+
+  /**
    * This method sorts the query result according to the priority.
    *
    * @param sortDirection Determines whether the result is sorted in ascending or descending order.
