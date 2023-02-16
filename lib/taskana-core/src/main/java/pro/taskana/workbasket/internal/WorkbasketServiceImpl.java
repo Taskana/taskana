@@ -422,8 +422,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                       taskanaEngine.getEngine().getCurrentUserContext().getAccessIds()))
               .map(this::getPermissionsFromWorkbasketAccessItem);
 
-      if (!grantedPermissions.isPresent()
-          || !grantedPermissions.get().containsAll(Arrays.asList(requestedPermissions))) {
+      if (grantedPermissions.isEmpty()
+          || !new HashSet<>(grantedPermissions.get())
+              .containsAll(Arrays.asList(requestedPermissions))) {
         throw new MismatchedWorkbasketPermissionException(
             taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
             workbasketId,
@@ -456,8 +457,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
                       taskanaEngine.getEngine().getCurrentUserContext().getAccessIds()))
               .map(this::getPermissionsFromWorkbasketAccessItem);
 
-      if (!grantedPermissions.isPresent()
-          || !grantedPermissions.get().containsAll(Arrays.asList(requestedPermissions))) {
+      if (grantedPermissions.isEmpty()
+          || !new HashSet<>(grantedPermissions.get())
+              .containsAll(Arrays.asList(requestedPermissions))) {
         throw new MismatchedWorkbasketPermissionException(
             taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
             workbasketKey,
