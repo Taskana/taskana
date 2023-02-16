@@ -64,7 +64,9 @@ public class TaskanaConfigurationInitializer {
                 PropertyParser<?> propertyParser =
                     Optional.ofNullable(PROPERTY_INITIALIZER_BY_CLASS.get(type))
                         .orElseThrow(
-                            () -> new SystemException("Unknown configuration type " + type));
+                            () ->
+                                new SystemException(
+                                    String.format("Unknown configuration type '%s'", type)));
                 propertyParser
                     .initialize(props, separator, field, taskanaProperty)
                     .ifPresent(value -> setFieldValue(instance, field, value));
@@ -139,18 +141,16 @@ public class TaskanaConfigurationInitializer {
   private static <T> Optional<T> parseProperty(
       Map<String, String> props, String key, CheckedFunction<String, T, Exception> function) {
     String property = props.getOrDefault(key, "");
-    if (!property.isEmpty()) {
-      try {
-        return Optional.ofNullable(function.apply(property));
-      } catch (Throwable t) {
-        LOGGER.warn(
-            "Could not parse property {} ({}). Using default. Exception: {}",
-            key,
-            property,
-            t.getMessage());
-      }
+    if (property.isEmpty()) {
+      return Optional.empty();
     }
-    return Optional.empty();
+
+    try {
+      return Optional.ofNullable(function.apply(property));
+    } catch (Exception t) {
+      throw new SystemException(
+          String.format("Could not parse property '%s' ('%s').", key, property), t);
+    }
   }
 
   interface PropertyParser<T> {

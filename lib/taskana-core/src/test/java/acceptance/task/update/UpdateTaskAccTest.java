@@ -74,7 +74,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     // Given
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
-            .validationAllowTimestampServiceLevelMismatch(false)
+            .allowTimestampServiceLevelMismatch(false)
             .build();
     TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     Task task = taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
@@ -96,7 +96,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     // Given
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
-            .validationAllowTimestampServiceLevelMismatch(true)
+            .allowTimestampServiceLevelMismatch(true)
             .build();
     TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     Task task = taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
