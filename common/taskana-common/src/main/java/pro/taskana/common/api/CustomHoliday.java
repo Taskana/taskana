@@ -8,7 +8,7 @@ public final class CustomHoliday {
   private final Integer month;
 
   public CustomHoliday(Integer day, Integer month) {
-    super();
+    // TODO: validate this is a valid date
     this.day = day;
     this.month = month;
   }

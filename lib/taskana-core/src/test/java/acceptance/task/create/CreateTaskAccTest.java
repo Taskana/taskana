@@ -199,7 +199,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     // Given
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
-            .validationAllowTimestampServiceLevelMismatch(true)
+            .allowTimestampServiceLevelMismatch(true)
             .build();
     TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
     Task newTask = taskanaEngine.getTaskService().newTask("USER-1-1", "DOMAIN_A");

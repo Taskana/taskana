@@ -63,7 +63,7 @@ public class ClassificationChangedJob extends AbstractTaskanaJob {
   }
 
   private void scheduleTaskRefreshJobs(List<String> affectedTaskIds) {
-    int batchSize = taskanaEngineImpl.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
+    int batchSize = taskanaEngineImpl.getConfiguration().getJobBatchSize();
     Collection<List<String>> affectedTaskBatches =
         CollectionUtil.partitionBasedOnSize(affectedTaskIds, batchSize);
     if (LOGGER.isDebugEnabled()) {

@@ -45,8 +45,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   private final boolean allCompletedSameParentBusiness;
 
   private Duration minimumAge = taskanaEngineImpl.getConfiguration().getCleanupJobMinimumAge();
-  private int batchSize =
-      taskanaEngineImpl.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
+  private int batchSize = taskanaEngineImpl.getConfiguration().getJobBatchSize();
 
   public HistoryCleanupJob(
       TaskanaEngine taskanaEngine,

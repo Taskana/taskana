@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,83 +44,105 @@ public class TaskanaConfiguration {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaConfiguration.class);
 
+  // region general configuration
   private final DataSource dataSource;
+  private final boolean securityEnabled;
+  private final boolean useManagedTransactions;
   private final String schemaName;
+
+  @TaskanaProperty("taskana.german.holidays.enabled")
+  private final boolean germanPublicHolidaysEnabled;
+  // endregion
+  @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
+  private final boolean corpusChristiEnabled;
+  // endregion
+  // region history configuration
+  @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
+  private final boolean deleteHistoryOnTaskDeletionEnabled;
+  // region custom configuration
   private final Map<String, String> properties;
 
-  // Taskana role configuration
-  private final Map<TaskanaRole, Set<String>> roleMap;
+  @TaskanaProperty("taskana.domains")
+  private List<String> domains = new ArrayList<>();
+  // endregion
+  // region authentication configuration
+  private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
+  // region classification configuration
+  @TaskanaProperty("taskana.classification.types")
+  private List<String> classificationTypes = new ArrayList<>();
+  // TODO: make this a Set
+  private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
+  // endregion
+  @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
+  private boolean allowTimestampServiceLevelMismatch = false;
+  // endregion
+  // region holiday configuration
+  @TaskanaProperty("taskana.custom.holidays")
+  private List<CustomHoliday> customHolidays = new ArrayList<>();
+  // region job configuration
+  // TODO validate this is positive
+  @TaskanaProperty("taskana.jobs.batchSize")
+  private int jobBatchSize = 100;
+  // TODO validate this is positive
+  @TaskanaProperty("taskana.jobs.maxRetries")
+  private int maxNumberOfJobRetries = 3;
 
-  private final boolean securityEnabled;
+  @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
+  private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+  // TODO: validate this is positive
+  @TaskanaProperty("taskana.jobs.cleanup.runEvery")
+  private Duration cleanupJobRunEvery = Duration.ofDays(1);
+  // TODO: validate this is positive
+  @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
+  private Duration cleanupJobMinimumAge = Duration.ofDays(14);
 
-  private final boolean useManagedTransactions;
+  @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
+  private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
+  // TODO: validate this is positive
+  @TaskanaProperty("taskana.jobs.priority.batchSize")
+  private int priorityJobBatchSize = 100;
 
-  private final List<String> domains;
-  private final List<String> classificationTypes;
+  @TaskanaProperty("taskana.jobs.priority.firstRunAt")
+  private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
+  // TODO: validate this is positive
+  @TaskanaProperty("taskana.jobs.priority.runEvery")
+  private Duration priorityJobRunEvery = Duration.ofDays(1);
 
-  private final Map<String, List<String>> classificationCategoriesByTypeMap;
-
-  private final List<CustomHoliday> customHolidays;
-  // Properties for the monitor
-  private final boolean deleteHistoryOnTaskDeletionEnabled;
-
-  private final boolean germanPublicHolidaysEnabled;
-
-  private final boolean corpusChristiEnabled;
-
-  private final int jobBatchSize;
-
-  private final int maxNumberOfJobRetries;
-
-  private final Instant cleanupJobFirstRun;
-
-  private final Duration cleanupJobRunEvery;
-
-  private final Duration cleanupJobMinimumAge;
-
-  private final boolean taskCleanupJobAllCompletedSameParentBusiness;
-
-  private final boolean validationAllowTimestampServiceLevelMismatch;
-  private final boolean addAdditionalUserInfo;
-
-  private final int priorityJobBatchSize;
-
-  private final Instant priorityJobFirstRun;
-
-  private final Duration priorityJobRunEvery;
-
-  private final boolean priorityJobActive;
-
-  private final Duration userRefreshJobRunEvery;
-
-  private final Instant userRefreshJobFirstRun;
-
-  private final List<WorkbasketPermission> minimalPermissionsToAssignDomains;
+  @TaskanaProperty("taskana.jobs.priority.active")
+  private boolean priorityJobActive = false;
+  // TODO: validate this is positive
+  @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
+  private Duration userRefreshJobRunEvery = Duration.ofDays(1);
+  // endregion
+  @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
+  private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
+  // region user configuration
+  @TaskanaProperty("taskana.addAdditionalUserInfo")
+  private boolean addAdditionalUserInfo = false;
+  // endregion
+  // TODO: make Set
+  @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
+  private List<WorkbasketPermission> minimalPermissionsToAssignDomains = new ArrayList<>();
+  // endregion
 
   protected TaskanaConfiguration(Builder builder) {
-
     this.dataSource = builder.dataSource;
     this.schemaName = builder.schemaName;
-
-    this.properties = Collections.unmodifiableMap(builder.properties);
-
+    this.properties = Map.copyOf(builder.properties);
     this.roleMap =
         builder.roleMap.entrySet().stream()
             .collect(
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
-
     this.securityEnabled = builder.securityEnabled;
     this.useManagedTransactions = builder.useManagedTransactions;
     this.domains = Collections.unmodifiableList(builder.domains);
     this.classificationTypes = Collections.unmodifiableList(builder.classificationTypes);
-
-    this.classificationCategoriesByTypeMap =
-        builder.classificationCategoriesByTypeMap.entrySet().stream()
+    this.classificationCategoriesByType =
+        builder.classificationCategoriesByType.entrySet().stream()
             .collect(
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableList(e.getValue())));
-
     this.customHolidays = Collections.unmodifiableList(builder.customHolidays);
     this.deleteHistoryOnTaskDeletionEnabled = builder.deleteHistoryOnTaskDeletionEnabled;
     this.germanPublicHolidaysEnabled = builder.germanPublicHolidaysEnabled;
@@ -131,8 +154,7 @@ public class TaskanaConfiguration {
     this.cleanupJobMinimumAge = builder.cleanupJobMinimumAge;
     this.taskCleanupJobAllCompletedSameParentBusiness =
         builder.taskCleanupJobAllCompletedSameParentBusiness;
-    this.validationAllowTimestampServiceLevelMismatch =
-        builder.validationAllowTimestampServiceLevelMismatch;
+    this.allowTimestampServiceLevelMismatch = builder.allowTimestampServiceLevelMismatch;
     this.addAdditionalUserInfo = builder.addAdditionalUserInfo;
     this.priorityJobBatchSize = builder.priorityJobBatchSize;
     this.priorityJobFirstRun = builder.priorityJobFirstRun;
@@ -188,7 +210,7 @@ public class TaskanaConfiguration {
     return this.useManagedTransactions;
   }
 
-  public int getMaxNumberOfUpdatesPerTransaction() {
+  public int getJobBatchSize() {
     return jobBatchSize;
   }
 
@@ -204,8 +226,8 @@ public class TaskanaConfiguration {
     return this.germanPublicHolidaysEnabled;
   }
 
-  public boolean isValidationAllowTimestampServiceLevelMismatch() {
-    return validationAllowTimestampServiceLevelMismatch;
+  public boolean isAllowTimestampServiceLevelMismatch() {
+    return allowTimestampServiceLevelMismatch;
   }
 
   public boolean isDeleteHistoryOnTaskDeletionEnabled() {
@@ -234,19 +256,19 @@ public class TaskanaConfiguration {
 
   public List<String> getAllClassificationCategories() {
     List<String> classificationCategories = new ArrayList<>();
-    for (Map.Entry<String, List<String>> type : this.classificationCategoriesByTypeMap.entrySet()) {
+    for (Map.Entry<String, List<String>> type : this.classificationCategoriesByType.entrySet()) {
       classificationCategories.addAll(type.getValue());
     }
     return classificationCategories;
   }
 
-  public Map<String, List<String>> getClassificationCategoriesByTypeMap() {
-    return this.classificationCategoriesByTypeMap.entrySet().stream()
+  public Map<String, List<String>> getClassificationCategoriesByType() {
+    return this.classificationCategoriesByType.entrySet().stream()
         .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
   }
 
   public List<String> getClassificationCategoriesByType(String type) {
-    return classificationCategoriesByTypeMap.getOrDefault(type, Collections.emptyList());
+    return classificationCategoriesByType.getOrDefault(type, Collections.emptyList());
   }
 
   public Instant getCleanupJobFirstRun() {
@@ -310,86 +332,105 @@ public class TaskanaConfiguration {
   public static class Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
-
     private static final String TASKANA_PROPERTIES = "/taskana.properties";
     private static final String TASKANA_PROPERTY_SEPARATOR = "|";
 
+    // region general configuration
     private final DataSource dataSource;
     private final boolean securityEnabled;
     private final boolean useManagedTransactions;
     private String schemaName;
-    private Map<String, String> properties;
 
-    private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
-
-    // List of configured domain names
     @TaskanaProperty("taskana.domains")
     private List<String> domains = new ArrayList<>();
+    // endregion
 
+    // region authentication configuration
+    private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
+    // endregion
+
+    // region classification configuration
     @TaskanaProperty("taskana.classification.types")
     private List<String> classificationTypes = new ArrayList<>();
 
-    private Map<String, List<String>> classificationCategoriesByTypeMap = new HashMap<>();
+    // TODO: make this a Set
+    private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
 
+    @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
+    private boolean allowTimestampServiceLevelMismatch = false;
+    // endregion
+
+    // region holiday configuration
     @TaskanaProperty("taskana.custom.holidays")
     private List<CustomHoliday> customHolidays = new ArrayList<>();
-    // Properties for the monitor
-    @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
-    private boolean deleteHistoryOnTaskDeletionEnabled;
 
     @TaskanaProperty("taskana.german.holidays.enabled")
     private boolean germanPublicHolidaysEnabled;
 
     @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
     private boolean corpusChristiEnabled;
+    // endregion
 
-    // Properties for general job execution
+    // region history configuration
+    @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
+    private boolean deleteHistoryOnTaskDeletionEnabled;
+    // endregion
+
+    // region job configuration
+    // TODO validate this is positive
     @TaskanaProperty("taskana.jobs.batchSize")
     private int jobBatchSize = 100;
 
+    // TODO validate this is positive
     @TaskanaProperty("taskana.jobs.maxRetries")
     private int maxNumberOfJobRetries = 3;
 
-    // Properties for the cleanup job
     @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
     private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
+    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.cleanup.runEvery")
-    private Duration cleanupJobRunEvery = Duration.parse("P1D");
-
+    private Duration cleanupJobRunEvery = Duration.ofDays(1);
+    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
-    private Duration cleanupJobMinimumAge = Duration.parse("P14D");
-    // TASKANA behavior
+    private Duration cleanupJobMinimumAge = Duration.ofDays(14);
 
     @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
     private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
-    @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
-    private boolean validationAllowTimestampServiceLevelMismatch = false;
-    // Property to enable/disable the addition of user full/long name through joins
-    @TaskanaProperty("taskana.addAdditionalUserInfo")
-    private boolean addAdditionalUserInfo = false;
-
+    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.priority.batchSize")
     private int priorityJobBatchSize = 100;
 
     @TaskanaProperty("taskana.jobs.priority.firstRunAt")
     private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
+    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.priority.runEvery")
-    private Duration priorityJobRunEvery = Duration.parse("P1D");
+    private Duration priorityJobRunEvery = Duration.ofDays(1);
 
     @TaskanaProperty("taskana.jobs.priority.active")
     private boolean priorityJobActive = false;
-
+    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
-    private Duration userRefreshJobRunEvery = Duration.parse("P1D");
+    private Duration userRefreshJobRunEvery = Duration.ofDays(1);
 
     @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
     private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
+    // endregion
 
+    // region user configuration
+    @TaskanaProperty("taskana.addAdditionalUserInfo")
+    private boolean addAdditionalUserInfo = false;
+
+    // TODO: make Set
     @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
     private List<WorkbasketPermission> minimalPermissionsToAssignDomains = new ArrayList<>();
+    // endregion
+
+    // region custom configuration
+    private Map<String, String> properties = Collections.emptyMap();
+    // endregion
 
     public Builder(TaskanaConfiguration tec) {
       this.dataSource = tec.getDatasource();
@@ -400,20 +441,19 @@ public class TaskanaConfiguration {
       this.useManagedTransactions = tec.isUseManagedTransactions();
       this.domains = tec.getDomains();
       this.classificationTypes = tec.getClassificationTypes();
-      this.classificationCategoriesByTypeMap = tec.getClassificationCategoriesByTypeMap();
+      this.classificationCategoriesByType = tec.getClassificationCategoriesByType();
       this.customHolidays = tec.getCustomHolidays();
       this.deleteHistoryOnTaskDeletionEnabled = tec.isDeleteHistoryOnTaskDeletionEnabled();
       this.germanPublicHolidaysEnabled = tec.isGermanPublicHolidaysEnabled();
       this.corpusChristiEnabled = tec.isCorpusChristiEnabled();
-      this.jobBatchSize = tec.getMaxNumberOfUpdatesPerTransaction();
+      this.jobBatchSize = tec.getJobBatchSize();
       this.maxNumberOfJobRetries = tec.getMaxNumberOfJobRetries();
       this.cleanupJobFirstRun = tec.getCleanupJobFirstRun();
       this.cleanupJobRunEvery = tec.getCleanupJobRunEvery();
       this.cleanupJobMinimumAge = tec.getCleanupJobMinimumAge();
       this.taskCleanupJobAllCompletedSameParentBusiness =
           tec.isTaskCleanupJobAllCompletedSameParentBusiness();
-      this.validationAllowTimestampServiceLevelMismatch =
-          tec.isValidationAllowTimestampServiceLevelMismatch();
+      this.allowTimestampServiceLevelMismatch = tec.isAllowTimestampServiceLevelMismatch();
       this.addAdditionalUserInfo = tec.isAddAdditionalUserInfo();
       this.priorityJobBatchSize = tec.getPriorityJobBatchSize();
       this.priorityJobFirstRun = tec.getPriorityJobFirstRun();
@@ -435,17 +475,14 @@ public class TaskanaConfiguration {
         boolean securityEnabled) {
       this.useManagedTransactions = useManagedTransactions;
       this.securityEnabled = securityEnabled;
-
-      if (dataSource != null) {
-        this.dataSource = dataSource;
-      } else {
-        throw new SystemException("DataSource can't be null");
-      }
-
+      this.dataSource = Objects.requireNonNull(dataSource);
       this.schemaName = initSchemaName(schemaName);
     }
 
+    // region builder methods
+
     @SuppressWarnings("unused")
+    // TODO: why do we need this method?
     public Builder schemaName(String schemaName) {
       this.schemaName = initSchemaName(schemaName);
       return this;
@@ -472,7 +509,7 @@ public class TaskanaConfiguration {
     @SuppressWarnings("unused")
     public Builder classificationCategoriesByTypeMap(
         Map<String, List<String>> classificationCategoriesByTypeMap) {
-      this.classificationCategoriesByTypeMap = classificationCategoriesByTypeMap;
+      this.classificationCategoriesByType = classificationCategoriesByTypeMap;
       return this;
     }
 
@@ -539,10 +576,9 @@ public class TaskanaConfiguration {
     }
 
     @SuppressWarnings("unused")
-    public Builder validationAllowTimestampServiceLevelMismatch(
+    public Builder allowTimestampServiceLevelMismatch(
         boolean validationAllowTimestampServiceLevelMismatch) {
-      this.validationAllowTimestampServiceLevelMismatch =
-          validationAllowTimestampServiceLevelMismatch;
+      this.allowTimestampServiceLevelMismatch = validationAllowTimestampServiceLevelMismatch;
       return this;
     }
 
@@ -599,55 +635,83 @@ public class TaskanaConfiguration {
       return new TaskanaConfiguration(this);
     }
 
-    @SuppressWarnings("unused")
+    // endregion
+
+    /**
+     * Configure the {@linkplain TaskanaConfiguration} with the default {@linkplain
+     * #TASKANA_PROPERTIES property file location} and {@linkplain #TASKANA_PROPERTY_SEPARATOR
+     * property separator}.
+     *
+     * @see #initTaskanaProperties(String, String)
+     */
+    @SuppressWarnings({"unused", "checkstyle:JavadocMethod"})
     public Builder initTaskanaProperties() {
       return this.initTaskanaProperties(TASKANA_PROPERTIES, TASKANA_PROPERTY_SEPARATOR);
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Configure the {@linkplain TaskanaConfiguration} with the default {@linkplain
+     * #TASKANA_PROPERTY_SEPARATOR property separator}.
+     *
+     * @see #initTaskanaProperties(String, String)
+     */
+    @SuppressWarnings({"unused", "checkstyle:JavadocMethod"})
     public Builder initTaskanaProperties(String propertiesFile) {
       return this.initTaskanaProperties(propertiesFile, TASKANA_PROPERTY_SEPARATOR);
     }
 
+    /**
+     * Configure the {@linkplain TaskanaConfiguration} using a property file from the classpath of
+     * {@linkplain TaskanaConfiguration TaskanaConfigurations} or the system.
+     *
+     * <p>Please check this builders instance fields for the {@linkplain TaskanaProperty} for
+     * property naming.
+     *
+     * @param propertiesFile path to the properties file.
+     * @param separator if a property is a collection type, this separator determines which sequence
+     *     delimits each individual value.
+     * @return the builder
+     * @throws SystemException if propertiesFile or separator is null or empty
+     */
     public Builder initTaskanaProperties(String propertiesFile, String separator) {
+      if (propertiesFile == null || propertiesFile.isEmpty() || propertiesFile.isBlank()) {
+        throw new SystemException("property file can't be null or empty");
+      }
+      if (separator == null || separator.isEmpty() || separator.isBlank()) {
+        throw new SystemException("separator file can't be null or empty");
+      }
+
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
       }
-      loadProperties(propertiesFile);
+      properties = loadProperties(propertiesFile);
       configureAnnotatedFields(this, separator, properties);
       roleMap = configureRoles(separator, properties, shouldUseLowerCaseForAccessIds());
-      classificationCategoriesByTypeMap =
+      classificationCategoriesByType =
           configureClassificationCategoriesForType(properties, classificationTypes);
       return this;
     }
 
     private String initSchemaName(String schemaName) {
-      String schemaNameTmp;
-      if (schemaName != null && !schemaName.isEmpty()) {
-        schemaNameTmp = schemaName;
-      } else {
-        throw new SystemException("SchemaName can't be null or empty");
+      if (schemaName == null || schemaName.isEmpty() || schemaName.isBlank()) {
+        throw new SystemException("schema name can't be null or empty");
       }
 
       try (Connection connection = dataSource.getConnection()) {
         String databaseProductId = DB.getDatabaseProductId(connection);
         if (DB.isPostgres(databaseProductId)) {
-          schemaNameTmp = schemaNameTmp.toLowerCase();
+          return schemaName.toLowerCase();
         } else {
-          schemaNameTmp = schemaNameTmp.toUpperCase();
+          return schemaName.toUpperCase();
         }
       } catch (SQLException ex) {
-        LOGGER.error("Caught exception when attempting to initialize the schema name", ex);
+        throw new SystemException(
+            "Caught exception when attempting to initialize the schema name", ex);
       }
-
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Using schema name {}", schemaNameTmp);
-      }
-      return schemaNameTmp;
     }
 
-    private void loadProperties(String propertiesFile) {
+    private Map<String, String> loadProperties(String propertiesFile) {
       Properties props = new Properties();
       try (InputStream stream =
           FileLoaderUtil.openFileFromClasspathOrSystem(
@@ -655,13 +719,12 @@ public class TaskanaConfiguration {
         props.load(stream);
       } catch (IOException e) {
         throw new SystemException(
-            "internal System error when processing properties file " + propertiesFile, e);
+            String.format("Could not process properties file '%s'", propertiesFile), e);
       }
-      this.properties =
-          props.entrySet().stream()
-              .collect(
-                  Collectors.toUnmodifiableMap(
-                      e -> e.getKey().toString(), e -> e.getValue().toString()));
+      return props.entrySet().stream()
+          .collect(
+              Collectors.toUnmodifiableMap(
+                  e -> e.getKey().toString(), e -> e.getValue().toString()));
     }
   }
 }
