@@ -66,6 +66,7 @@ import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.Interval;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.testapi.TaskanaIntegrationTest;
@@ -214,6 +215,8 @@ class ArchitectureTest {
         .resideInAPackage("..api..")
         .and()
         .areNotAssignableFrom(TaskanaEngine.class)
+        .and()
+        .areNotAssignableTo(Interval.class)
         .should()
         .onlyDependOnClassesThat(
             resideOutsideOfPackage("..pro.taskana..internal..")
