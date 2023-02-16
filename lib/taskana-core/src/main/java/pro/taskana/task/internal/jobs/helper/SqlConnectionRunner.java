@@ -26,14 +26,8 @@ public class SqlConnectionRunner {
   public void runWithConnection(CheckedConsumer<Connection, SQLException> consumer) {
 
     try (Connection connection = getConnection()) {
-      String originalSchema = connection.getSchema();
-      try {
-        connection.setSchema(taskanaEngine.getConfiguration().getSchemaName());
-        consumer.accept(connection);
-      } finally {
-        connection.setSchema(originalSchema);
-      }
-
+      connection.setSchema(taskanaEngine.getConfiguration().getSchemaName());
+      consumer.accept(connection);
     } catch (SQLException e) {
       throw new SystemException("SQL error while running low level SQL", e);
     }
