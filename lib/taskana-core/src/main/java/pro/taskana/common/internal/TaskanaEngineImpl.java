@@ -84,6 +84,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
+  protected final TaskanaConfiguration taskanaEngineConfiguration;
   private final TaskRoutingManager taskRoutingManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
@@ -92,21 +93,23 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
-
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingDaysToDaysConverter workingDaysToDaysConverter;
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
-  protected TaskanaConfiguration taskanaEngineConfiguration;
+  protected ConnectionManagementMode mode;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
-  protected ConnectionManagementMode mode;
   protected Connection connection;
 
   protected TaskanaEngineImpl(
       TaskanaConfiguration taskanaEngineConfiguration,
       ConnectionManagementMode connectionManagementMode)
       throws SQLException {
+    LOGGER.info(
+        "initializing TASKANA with this configuration: {} and this mode: {}",
+        taskanaEngineConfiguration,
+        connectionManagementMode);
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
     this.mode = connectionManagementMode;
     internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
@@ -345,7 +348,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     // register type handlers
     if (DB.isOracleDb(databaseProductName)) {
       // Use NULL instead of OTHER when jdbcType is not specified for null values,
-      // otherwise oracle driver will chunck on null values
+      // otherwise oracle driver will chunk on null values
       configuration.setJdbcTypeForNull(JdbcType.NULL);
       configuration.getTypeHandlerRegistry().register(String.class, new StringTypeHandler());
     }

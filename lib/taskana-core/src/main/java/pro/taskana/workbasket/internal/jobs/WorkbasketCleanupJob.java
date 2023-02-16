@@ -31,7 +31,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   public WorkbasketCleanupJob(
       TaskanaEngine taskanaEngine, TaskanaTransactionProvider txProvider, ScheduledJob job) {
     super(taskanaEngine, txProvider, job, true);
-    batchSize = taskanaEngine.getConfiguration().getMaxNumberOfUpdatesPerTransaction();
+    batchSize = taskanaEngine.getConfiguration().getJobBatchSize();
   }
 
   @Override

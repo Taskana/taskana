@@ -18,12 +18,8 @@ public class FileLoaderUtil {
   }
 
   public static boolean fileExistsOnSystem(String fileToLoad) {
-    boolean loadFromClasspath = false;
     File f = new File(fileToLoad);
-    if (f.exists() && !f.isDirectory()) {
-      loadFromClasspath = true;
-    }
-    return loadFromClasspath;
+    return f.exists() && !f.isDirectory();
   }
 
   public static InputStream openFileFromClasspathOrSystem(String fileToLoad, Class<?> clazz) {

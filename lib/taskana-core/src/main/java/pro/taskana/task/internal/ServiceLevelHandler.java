@@ -252,10 +252,7 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
-    if (taskanaEngine
-            .getEngine()
-            .getConfiguration()
-            .isValidationAllowTimestampServiceLevelMismatch()
+    if (taskanaEngine.getEngine().getConfiguration().isAllowTimestampServiceLevelMismatch()
         && newTaskImpl.getDue() != null
         && newTaskImpl.getPlanned() != null) {
 
@@ -343,10 +340,7 @@ class ServiceLevelHandler {
 
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
       TaskImpl newTask, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
-    if (taskanaEngine
-            .getEngine()
-            .getConfiguration()
-            .isValidationAllowTimestampServiceLevelMismatch()
+    if (taskanaEngine.getEngine().getConfiguration().isAllowTimestampServiceLevelMismatch()
         && newTask.getDue() != null
         && newTask.getPlanned() != null) {
       return newTask;

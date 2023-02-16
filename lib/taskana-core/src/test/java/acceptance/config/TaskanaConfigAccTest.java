@@ -84,7 +84,7 @@ class TaskanaConfigAccTest {
                 true)
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
-    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
+    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByType())
         .containsExactly(
             Map.entry("TASK", Collections.emptyList()),
             Map.entry("DOCUMENT", Collections.emptyList()));
@@ -102,7 +102,7 @@ class TaskanaConfigAccTest {
                 true)
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
-    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByTypeMap())
+    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByType())
         .containsExactly(
             Map.entry("TASK", List.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
             Map.entry("DOCUMENT", List.of("EXTERNAL")));
