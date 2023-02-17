@@ -24,19 +24,6 @@ import pro.taskana.common.internal.util.ComparableVersion;
 public class DbSchemaCreator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DbSchemaCreator.class);
-  private static final String SQL = "/sql";
-
-  private static final String DB_SCHEMA_H2 = SQL + "/h2/taskana-schema-h2.sql";
-  private static final String DB_SCHEMA_DETECTION_H2 = SQL + "/h2/schema-detection-h2.sql";
-  private static final String DB_SCHEMA_DB2 = SQL + "/db2/taskana-schema-db2.sql";
-  private static final String DB_SCHEMA_DETECTION_DB2 = SQL + "/db2/schema-detection-db2.sql";
-  private static final String DB_SCHEMA_ORACLE = SQL + "/oracle/taskana-schema-oracle.sql";
-  private static final String DB_SCHEMA_DETECTION_ORACLE =
-      SQL + "/oracle/schema-detection-oracle.sql";
-  private static final String DB_SCHEMA_POSTGRES = SQL + "/postgres/taskana-schema-postgres.sql";
-  private static final String DB_SCHEMA_DETECTION_POSTGRES =
-      SQL + "/postgres/schema-detection-postgres.sql";
-
   private final String schemaName;
   private final StringWriter outWriter = new StringWriter();
   private final PrintWriter logWriter = new PrintWriter(outWriter);
@@ -68,7 +55,7 @@ public class DbSchemaCreator {
       ScriptRunner runner = getScriptRunnerInstance(connection);
 
       if (!isSchemaPreexisting(connection, db)) {
-        String scriptPath = selectDbScriptFileName(db);
+        String scriptPath = db.schemaScript;
         InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
         BufferedReader reader =
             new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
@@ -132,34 +119,6 @@ public class DbSchemaCreator {
     this.dataSource = dataSource;
   }
 
-  private static String selectDbScriptFileName(DB db) {
-
-    switch (db) {
-      case DB2:
-        return DB_SCHEMA_DB2;
-      case ORACLE:
-        return DB_SCHEMA_ORACLE;
-      case POSTGRES:
-        return DB_SCHEMA_POSTGRES;
-      default:
-        return DB_SCHEMA_H2;
-    }
-  }
-
-  private static String selectDbSchemaDetectionScript(DB db) {
-
-    switch (db) {
-      case DB2:
-        return DB_SCHEMA_DETECTION_DB2;
-      case ORACLE:
-        return DB_SCHEMA_DETECTION_ORACLE;
-      case POSTGRES:
-        return DB_SCHEMA_DETECTION_POSTGRES;
-      default:
-        return DB_SCHEMA_DETECTION_H2;
-    }
-  }
-
   private ScriptRunner getScriptRunnerInstance(Connection connection) {
     ScriptRunner runner = new ScriptRunner(connection);
     runner.setStopOnError(true);
@@ -172,7 +131,7 @@ public class DbSchemaCreator {
     ScriptRunner runner = getScriptRunnerInstance(connection);
     runner.setErrorLogWriter(errorLogWriter);
 
-    String scriptPath = selectDbSchemaDetectionScript(db);
+    String scriptPath = db.detectionScript;
     try (InputStream resource = DbSchemaCreator.class.getResourceAsStream(scriptPath);
         InputStreamReader inputReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputReader)) {
