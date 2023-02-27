@@ -87,7 +87,7 @@ class ServiceLevelOfAllTasksAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetPlannedOnMultipleTasks() throws Exception {
-    Instant planned = Instant.parse("2020-05-03T07:00:00.000Z"); // Sunday
+    Instant planned = Instant.parse("2020-05-03T07:00:00.000Z");
     TaskSummary task1 =
         createDefaultTask()
             .classificationSummary(classificationSummarySmallServiceLevel)
@@ -117,7 +117,7 @@ class ServiceLevelOfAllTasksAccTest {
   @Test
   void should_ChangeDue_When_SettingPlannedAndClassificationHasSmallerServiceLevel()
       throws Exception {
-    Instant planned = Instant.parse("2020-05-03T07:00:00.000Z"); // Sunday
+    Instant planned = Instant.parse("2020-05-04T07:00:00.000Z");
     TaskSummary task1 =
         createDefaultTask()
             .classificationSummary(classificationSummarySmallServiceLevel)
@@ -135,7 +135,7 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId()).list();
-    Instant expectedDue = Instant.parse("2020-05-05T23:00:00.000Z");
+    Instant expectedDue = Instant.parse("2020-05-06T07:00:00.000Z");
     assertThat(result).extracting(TaskSummary::getDue).containsOnly(expectedDue);
   }
 
@@ -143,7 +143,7 @@ class ServiceLevelOfAllTasksAccTest {
   @Test
   void should_ChangeDue_When_SettingPlannedAndAttachmentHasSmallerOrEqualServiceLevel()
       throws Exception {
-    Instant planned = Instant.parse("2020-05-03T07:00:00.000Z");
+    Instant planned = Instant.parse("2020-05-04T07:00:00.000Z");
     TaskSummary task1 =
         createDefaultTask()
             .classificationSummary(classificationSummaryGreatServiceLevel)
@@ -162,14 +162,14 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId()).list();
-    Instant expectedDue = Instant.parse("2020-05-05T23:00:00.000Z");
+    Instant expectedDue = Instant.parse("2020-05-06T07:00:00.000Z");
     assertThat(result).extracting(TaskSummary::getDue).containsOnly(expectedDue);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
   void should_ChangeDue_When_SettingPlannedAndUsingDifferentServiceLevels() throws Exception {
-    Instant planned = Instant.parse("2020-05-03T07:00:00.000Z");
+    Instant planned = Instant.parse("2020-05-04T07:00:00.000Z");
     TaskSummary task1 =
         createDefaultTask()
             .classificationSummary(classificationSummaryGreatServiceLevel)
@@ -193,8 +193,8 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId(), task3.getId()).list();
-    Instant expectedDueSmallServiceLevel = Instant.parse("2020-05-05T23:00:00.000Z");
-    Instant expectedDueGreatServiceLevel = Instant.parse("2020-05-12T23:00:00.000Z");
+    Instant expectedDueSmallServiceLevel = Instant.parse("2020-05-06T07:00:00.000Z");
+    Instant expectedDueGreatServiceLevel = Instant.parse("2020-05-13T07:00:00.000Z");
     assertThat(result)
         .extracting(TaskSummary::getDue)
         .containsOnly(expectedDueSmallServiceLevel, expectedDueGreatServiceLevel);
