@@ -32,6 +32,7 @@ class SqlConnectionRunnerAccTest extends AbstractAccTest {
               connection.prepareStatement("select * from TASK where ID = ?");
           preparedStatement.setString(1, taskId);
           ResultSet resultSet = preparedStatement.executeQuery();
+          // then
           assertThat(resultSet.next()).isTrue();
         });
   }

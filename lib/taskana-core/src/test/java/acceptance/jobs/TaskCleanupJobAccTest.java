@@ -75,7 +75,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void shouldCleanCompletedTasksUntilDateWithSameParentBussiness() throws Exception {
+  void shouldCleanCompletedTasksUntilDateWithSameParentBusiness() throws Exception {
     long totalTasksCount = taskService.createTaskQuery().count();
     assertThat(totalTasksCount).isEqualTo(99);
 
@@ -163,7 +163,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
             .taskCleanupJobAllCompletedSameParentBusiness(true)
-            .cleanupJobMinimumAge(Duration.ZERO)
+            .cleanupJobMinimumAge(Duration.ofMillis(1))
             .build();
     TaskanaEngine taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(
@@ -226,7 +226,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
             .cleanupJobRunEvery(runEvery)
             .cleanupJobFirstRun(firstRun)
             .jobSchedulerEnabled(true)
-            .jobSchedulerInitialStartDelay(0)
+            .jobSchedulerInitialStartDelay(1)
             .jobSchedulerPeriod(1)
             .jobSchedulerPeriodTimeUnit(TimeUnit.SECONDS)
             .jobSchedulerEnableTaskCleanupJob(true)
@@ -247,7 +247,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
       throws Exception {
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
-            .cleanupJobRunEvery(Duration.ZERO)
+            .cleanupJobRunEvery(Duration.ofMillis(1))
             .cleanupJobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES))
             .build();
 
