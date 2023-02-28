@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.TaskanaProperty;
@@ -403,6 +404,89 @@ public class TaskanaConfiguration {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "TaskanaConfiguration [dataSource="
+        + dataSource
+        + ", securityEnabled="
+        + securityEnabled
+        + ", useManagedTransactions="
+        + useManagedTransactions
+        + ", schemaName="
+        + schemaName
+        + ", germanPublicHolidaysEnabled="
+        + germanPublicHolidaysEnabled
+        + ", corpusChristiEnabled="
+        + corpusChristiEnabled
+        + ", deleteHistoryOnTaskDeletionEnabled="
+        + deleteHistoryOnTaskDeletionEnabled
+        + ", properties="
+        + properties
+        + ", workingTimeSchedule="
+        + workingTimeSchedule
+        + ", jobSchedulerEnabled="
+        + jobSchedulerEnabled
+        + ", jobSchedulerInitialStartDelay="
+        + jobSchedulerInitialStartDelay
+        + ", jobSchedulerPeriod="
+        + jobSchedulerPeriod
+        + ", jobSchedulerPeriodTimeUnit="
+        + jobSchedulerPeriodTimeUnit
+        + ", jobSchedulerEnableTaskCleanupJob="
+        + jobSchedulerEnableTaskCleanupJob
+        + ", jobSchedulerEnableTaskUpdatePriorityJob="
+        + jobSchedulerEnableTaskUpdatePriorityJob
+        + ", jobSchedulerEnableWorkbasketCleanupJob="
+        + jobSchedulerEnableWorkbasketCleanupJob
+        + ", jobSchedulerEnableUserInfoRefreshJob="
+        + jobSchedulerEnableUserInfoRefreshJob
+        + ", jobSchedulerEnableHistorieCleanupJob="
+        + jobSchedulerEnableHistorieCleanupJob
+        + ", jobSchedulerCustomJobs="
+        + jobSchedulerCustomJobs
+        + ", domains="
+        + domains
+        + ", roleMap="
+        + roleMap
+        + ", classificationTypes="
+        + classificationTypes
+        + ", classificationCategoriesByType="
+        + classificationCategoriesByType
+        + ", allowTimestampServiceLevelMismatch="
+        + allowTimestampServiceLevelMismatch
+        + ", customHolidays="
+        + customHolidays
+        + ", jobBatchSize="
+        + jobBatchSize
+        + ", maxNumberOfJobRetries="
+        + maxNumberOfJobRetries
+        + ", cleanupJobFirstRun="
+        + cleanupJobFirstRun
+        + ", cleanupJobRunEvery="
+        + cleanupJobRunEvery
+        + ", cleanupJobMinimumAge="
+        + cleanupJobMinimumAge
+        + ", taskCleanupJobAllCompletedSameParentBusiness="
+        + taskCleanupJobAllCompletedSameParentBusiness
+        + ", priorityJobBatchSize="
+        + priorityJobBatchSize
+        + ", priorityJobFirstRun="
+        + priorityJobFirstRun
+        + ", priorityJobRunEvery="
+        + priorityJobRunEvery
+        + ", priorityJobActive="
+        + priorityJobActive
+        + ", userRefreshJobRunEvery="
+        + userRefreshJobRunEvery
+        + ", userRefreshJobFirstRun="
+        + userRefreshJobFirstRun
+        + ", addAdditionalUserInfo="
+        + addAdditionalUserInfo
+        + ", minimalPermissionsToAssignDomains="
+        + minimalPermissionsToAssignDomains
+        + "]";
+  }
+
   public static class Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
@@ -455,41 +539,36 @@ public class TaskanaConfiguration {
     // endregion
 
     // region job configuration
-    // TODO validate this is positive
     @TaskanaProperty("taskana.jobs.batchSize")
     private int jobBatchSize = 100;
 
-    // TODO validate this is positive
     @TaskanaProperty("taskana.jobs.maxRetries")
     private int maxNumberOfJobRetries = 3;
 
     @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
     private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
-    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.cleanup.runEvery")
     private Duration cleanupJobRunEvery = Duration.ofDays(1);
-    // TODO: validate this is positive
+
     @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
     private Duration cleanupJobMinimumAge = Duration.ofDays(14);
 
     @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
     private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
-    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.priority.batchSize")
     private int priorityJobBatchSize = 100;
 
     @TaskanaProperty("taskana.jobs.priority.firstRunAt")
     private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
-    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.priority.runEvery")
     private Duration priorityJobRunEvery = Duration.ofDays(1);
 
     @TaskanaProperty("taskana.jobs.priority.active")
     private boolean priorityJobActive = false;
-    // TODO: validate this is positive
+
     @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
     private Duration userRefreshJobRunEvery = Duration.ofDays(1);
 
@@ -811,6 +890,7 @@ public class TaskanaConfiguration {
     }
 
     public TaskanaConfiguration build() {
+      validateConfiguration();
       return new TaskanaConfiguration(this);
     }
 
@@ -870,6 +950,52 @@ public class TaskanaConfiguration {
       classificationCategoriesByType =
           configureClassificationCategoriesForType(properties, classificationTypes);
       return this;
+    }
+
+    private void validateConfiguration() {
+      if (jobBatchSize <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter jobBatchSize (taskana.jobs.batchSize)" + " must be a positve integer");
+      }
+      if (maxNumberOfJobRetries <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter maxNumberOfJobRetries (taskana.jobs.maxRetries)"
+                + " must be a positve integer");
+      }
+      if (cleanupJobRunEvery.isNegative() || cleanupJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter cleanupJobRunEvery (taskana.jobs.cleanup.runEvery)"
+                + " must be a positve integer");
+      }
+      if (cleanupJobMinimumAge.isNegative() || cleanupJobMinimumAge.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter cleanupJobMinimumAge (taskana.jobs.cleanup.minimumAge)"
+                + " must be a positve integer");
+      }
+      if (priorityJobBatchSize <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter priorityJobBatchSize (taskana.jobs.priority.batchSize)"
+                + " must be a positve integer");
+      }
+      if (priorityJobRunEvery.isNegative() || priorityJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter priorityJobRunEvery (taskana.jobs.priority.runEvery)"
+                + " must be a positve integer");
+      }
+      if (userRefreshJobRunEvery.isNegative() || userRefreshJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter userRefreshJobRunEvery (taskana.jobs.user.refresh.runEvery)"
+                + " must be a positve integer");
+      }
+      if (jobSchedulerInitialStartDelay <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter jobSchedulerInitialStartDelay (taskana.jobscheduler.initialstartdelay)"
+                + " must be a positve integer");
+      }
+      if (jobSchedulerPeriod <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter jobSchedulerPeriod (taskana.jobscheduler.period) must be a positve integer");
+      }
     }
 
     private String initSchemaName(String schemaName) {

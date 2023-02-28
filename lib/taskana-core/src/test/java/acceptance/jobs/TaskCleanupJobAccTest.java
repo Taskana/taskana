@@ -53,6 +53,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   void should_CleanCompletedTasksUntilDate() throws Exception {
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .initTaskanaProperties()
             .taskCleanupJobAllCompletedSameParentBusiness(false)
             .build();
     TaskanaEngine taskanaEngine =
@@ -81,6 +82,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
+            .initTaskanaProperties()
             .taskCleanupJobAllCompletedSameParentBusiness(true)
             .build();
 
@@ -162,8 +164,9 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
+            .initTaskanaProperties()
             .taskCleanupJobAllCompletedSameParentBusiness(true)
-            .cleanupJobMinimumAge(Duration.ZERO)
+            .cleanupJobMinimumAge(Duration.ofMillis(1))
             .build();
     TaskanaEngine taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(
@@ -223,10 +226,11 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     Duration runEvery = Duration.ofMinutes(5);
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+            .initTaskanaProperties()
             .cleanupJobRunEvery(runEvery)
             .cleanupJobFirstRun(firstRun)
             .jobSchedulerEnabled(true)
-            .jobSchedulerInitialStartDelay(0)
+            .jobSchedulerInitialStartDelay(1)
             .jobSchedulerPeriod(1)
             .jobSchedulerPeriodTimeUnit(TimeUnit.SECONDS)
             .jobSchedulerEnableTaskCleanupJob(true)
@@ -247,7 +251,8 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
       throws Exception {
     TaskanaConfiguration taskanaEngineConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
-            .cleanupJobRunEvery(Duration.ZERO)
+            .initTaskanaProperties()
+            .cleanupJobRunEvery(Duration.ofMillis(1))
             .cleanupJobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES))
             .build();
 

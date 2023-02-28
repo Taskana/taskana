@@ -2,7 +2,6 @@ package acceptance.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.time.Duration;
@@ -18,7 +17,6 @@ import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -53,21 +51,6 @@ class TaskUpdatePriorityJobAccTest extends AbstractAccTest {
 
     // then
     assertThatCode(job::execute).doesNotThrowAnyException();
-  }
-
-  @Test
-  @WithAccessId(user = "admin")
-  void should_catchException_When_executedWithWrongSettings() throws Exception {
-    // given
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
-            .priorityJobBatchSize(0)
-            .build();
-    TaskUpdatePriorityJob job =
-        new TaskUpdatePriorityJob(TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
-
-    // then
-    assertThatThrownBy(job::execute).isInstanceOf(SystemException.class);
   }
 
   @Test
