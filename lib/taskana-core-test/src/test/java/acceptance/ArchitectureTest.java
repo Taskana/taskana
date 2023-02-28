@@ -58,6 +58,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import pro.taskana.TaskanaConfiguration;
@@ -110,6 +111,7 @@ class ArchitectureTest {
         .that(
             are(
                 annotatedWith(Test.class)
+                    .or(annotatedWith(ParameterizedTest.class))
                     .or(annotatedWith(TestFactory.class))
                     .or(annotatedWith(TestTemplate.class))))
         .and()
