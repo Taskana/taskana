@@ -511,7 +511,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
       boolean taskCleanupJobAllCompletedSameParentBusiness) throws SQLException {
 
     TaskanaConfiguration tec =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .taskCleanupJobAllCompletedSameParentBusiness(
                 taskCleanupJobAllCompletedSameParentBusiness)
             .build();

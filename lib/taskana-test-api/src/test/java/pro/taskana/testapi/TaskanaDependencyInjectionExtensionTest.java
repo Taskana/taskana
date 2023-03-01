@@ -31,8 +31,8 @@ import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 @TaskanaIntegrationTest
 class TaskanaDependencyInjectionExtensionTest {
 
-  TaskanaConfiguration taskanaEngineConfigurationNotAnnotated;
-  @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+  TaskanaConfiguration taskanaConfigurationNotAnnotated;
+  @TaskanaInject TaskanaConfiguration taskanaConfiguration;
   @TaskanaInject TaskanaEngine taskanaEngine;
   @TaskanaInject TaskanaEngine taskanaEngine2;
   @TaskanaInject TaskanaEngineImpl taskanaEngineImpl;
@@ -59,7 +59,7 @@ class TaskanaDependencyInjectionExtensionTest {
 
   @Test
   void should_NotInjectTaskanaEngineConfiguration_When_FieldIsNotAnnotated() {
-    assertThat(taskanaEngineConfigurationNotAnnotated).isNull();
+    assertThat(taskanaConfigurationNotAnnotated).isNull();
   }
 
   @Test
@@ -69,8 +69,8 @@ class TaskanaDependencyInjectionExtensionTest {
 
   @Test
   void should_InjectTaskanaEngineConfiguration_When_FieldIsAnnotatedOrDeclaredAsParameter(
-      TaskanaConfiguration taskanaEngineConfiguration) {
-    assertThat(taskanaEngineConfiguration).isSameAs(this.taskanaEngineConfiguration).isNotNull();
+      TaskanaConfiguration taskanaConfiguration) {
+    assertThat(taskanaConfiguration).isSameAs(this.taskanaConfiguration).isNotNull();
   }
 
   @Test

@@ -196,8 +196,8 @@ class GetTaskCommentAccTest {
 
     @Override
     public TaskanaConfiguration.Builder modify(
-        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(true);
+        TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+      return taskanaConfigurationBuilder.addAdditionalUserInfo(true);
     }
 
     @WithAccessId(user = "user-1-1")
@@ -250,8 +250,8 @@ class GetTaskCommentAccTest {
 
     @Override
     public TaskanaConfiguration.Builder modify(
-        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(false);
+        TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+      return taskanaConfigurationBuilder.addAdditionalUserInfo(false);
     }
 
     @WithAccessId(user = "user-1-1")

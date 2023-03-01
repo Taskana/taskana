@@ -9,17 +9,16 @@ import pro.taskana.TaskanaConfiguration;
 public class SpringTaskanaEngineImpl extends TaskanaEngineImpl implements SpringTaskanaEngine {
 
   public SpringTaskanaEngineImpl(
-      TaskanaConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
+      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode mode)
       throws SQLException {
-    super(taskanaEngineConfiguration, mode);
+    super(taskanaConfiguration, mode);
     this.transactionFactory = new SpringManagedTransactionFactory();
     this.sessionManager = createSqlSessionManager();
   }
 
   public static SpringTaskanaEngine createTaskanaEngine(
-      TaskanaConfiguration taskanaEngineConfiguration,
-      ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode connectionManagementMode)
       throws SQLException {
-    return new SpringTaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
+    return new SpringTaskanaEngineImpl(taskanaConfiguration, connectionManagementMode);
   }
 }

@@ -33,7 +33,7 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
 
-  protected static TaskanaConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
   protected static TaskanaEngine taskanaEngine;
   protected static SimpleHistoryServiceImpl historyService;
@@ -114,10 +114,9 @@ public abstract class AbstractAccTest {
   }
 
   protected static void initTaskanaEngine(TaskanaConfiguration tec) throws SQLException {
-    taskanaEngineConfiguration = tec;
+    taskanaConfiguration = tec;
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
     taskService = taskanaEngine.getTaskService();
     historyService = new SimpleHistoryServiceImpl();

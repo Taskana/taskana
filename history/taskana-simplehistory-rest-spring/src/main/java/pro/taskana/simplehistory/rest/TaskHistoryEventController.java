@@ -42,14 +42,13 @@ public class TaskHistoryEventController {
 
   @Autowired
   public TaskHistoryEventController(
-      TaskanaConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaConfiguration,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
       TaskHistoryEventRepresentationModelAssembler assembler)
       throws SQLException {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
-    this.simpleHistoryService.initialize(
-        TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration));
+    this.simpleHistoryService.initialize(TaskanaEngine.buildTaskanaEngine(taskanaConfiguration));
     this.assembler = assembler;
   }
 

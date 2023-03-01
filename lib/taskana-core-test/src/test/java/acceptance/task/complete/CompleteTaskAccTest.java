@@ -62,8 +62,8 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
   @Override
   public TaskanaConfiguration.Builder modify(
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-    return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(true);
+      TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+    return taskanaConfigurationBuilder.addAdditionalUserInfo(true);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -83,8 +83,12 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
     defaultObjectReference = DefaultTestEntities.defaultTestObjectReference().build();
 
-    UserBuilder user11 = UserBuilder.newUser().id("user-1-1")
-            .longName("Mustermann, Max - (user-1-1)").firstName("Max").lastName("Mustermann");
+    UserBuilder user11 =
+        UserBuilder.newUser()
+            .id("user-1-1")
+            .longName("Mustermann, Max - (user-1-1)")
+            .firstName("Max")
+            .lastName("Mustermann");
     user11.buildAndStore(userService);
   }
 

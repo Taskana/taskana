@@ -1018,8 +1018,8 @@ class UserServiceAccTest {
 
       @Override
       public TaskanaConfiguration.Builder modify(
-          TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-        return taskanaEngineConfigurationBuilder.minimalPermissionsToAssignDomains(
+          TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+        return taskanaConfigurationBuilder.minimalPermissionsToAssignDomains(
             List.of(WorkbasketPermission.APPEND));
       }
 
@@ -1097,9 +1097,8 @@ class UserServiceAccTest {
 
       @Override
       public TaskanaConfiguration.Builder modify(
-          TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-        return taskanaEngineConfigurationBuilder.minimalPermissionsToAssignDomains(
-            new ArrayList<>());
+          TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+        return taskanaConfigurationBuilder.minimalPermissionsToAssignDomains(new ArrayList<>());
       }
 
       @WithAccessId(user = "user-1-1")

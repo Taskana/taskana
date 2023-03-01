@@ -51,14 +51,13 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_CleanCompletedTasksUntilDate() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .initTaskanaProperties()
             .taskCleanupJobAllCompletedSameParentBusiness(false)
             .build();
     TaskanaEngine taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     TaskService taskService = taskanaEngine.getTaskService();
     String taskId = createAndInsertTask(taskService, null);
     taskService.claim(taskId);
@@ -80,15 +79,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     long totalTasksCount = taskService.createTaskQuery().count();
     assertThat(totalTasksCount).isEqualTo(99);
 
-    TaskanaConfiguration taskanaEngineConfiguration =
+    TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
             .initTaskanaProperties()
             .taskCleanupJobAllCompletedSameParentBusiness(true)
             .build();
 
     TaskanaEngine taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     List<TaskSummary> tasks =
         taskanaEngine
             .getTaskService()
@@ -162,15 +160,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
           throws Exception {
     Iterator<String> iterator = Arrays.asList("", null).iterator();
 
-    TaskanaConfiguration taskanaEngineConfiguration =
+    TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
             .initTaskanaProperties()
             .taskCleanupJobAllCompletedSameParentBusiness(true)
             .cleanupJobMinimumAge(Duration.ofMillis(1))
             .build();
     TaskanaEngine taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
 
     TaskService taskService = taskanaEngine.getTaskService();
@@ -213,7 +210,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     JobRunner runner = new JobRunner(taskanaEngine);
     runner.runJobs();
-    Duration runEvery = taskanaEngineConfiguration.getCleanupJobRunEvery();
+    Duration runEvery = taskanaConfiguration.getCleanupJobRunEvery();
     jobsToRun = jobMapper.findJobsToRun(Instant.now().plus(runEvery));
 
     assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue.plus(runEvery));
@@ -224,8 +221,8 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   void should_ScheduleNextJobAccordingToFirstRun_When_PreviousJobNotExisting() throws Exception {
     Instant firstRun = Instant.now().minus(2, ChronoUnit.MINUTES).truncatedTo(ChronoUnit.MILLIS);
     Duration runEvery = Duration.ofMinutes(5);
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .initTaskanaProperties()
             .cleanupJobRunEvery(runEvery)
             .cleanupJobFirstRun(firstRun)
@@ -237,8 +234,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
             .build();
 
     TaskanaEngine taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
 
     List<ScheduledJob> nextJobs =
         getJobMapper(taskanaEngine).findJobsToRun(Instant.now().plus(runEvery));
@@ -249,14 +245,14 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
   @Test
   void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
       throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
+    TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
             .initTaskanaProperties()
             .cleanupJobRunEvery(Duration.ofMillis(1))
             .cleanupJobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES))
             .build();
 
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
 
     List<ScheduledJob> nextJobs = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());

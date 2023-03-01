@@ -97,11 +97,11 @@ class GetTaskAccTest extends AbstractAccTest {
   @Test
   void should_SetTaskOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
 
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -113,11 +113,11 @@ class GetTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_NotSetTaskOwnerLongNameOfTask_When_PropertyDisabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");

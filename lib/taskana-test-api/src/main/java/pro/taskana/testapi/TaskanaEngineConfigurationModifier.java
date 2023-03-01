@@ -4,6 +4,5 @@ import pro.taskana.TaskanaConfiguration;
 
 public interface TaskanaEngineConfigurationModifier {
 
-  TaskanaConfiguration.Builder modify(
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder);
+  TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder taskanaConfigurationBuilder);
 }

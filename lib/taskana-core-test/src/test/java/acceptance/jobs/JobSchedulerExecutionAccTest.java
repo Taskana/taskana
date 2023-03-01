@@ -48,8 +48,8 @@ class JobSchedulerExecutionAccTest implements TaskanaEngineConfigurationModifier
   ObjectReference primaryObjRef;
 
   @Override
-  public Builder modify(Builder taskanaEngineConfigurationBuilder) {
-    return taskanaEngineConfigurationBuilder
+  public Builder modify(Builder taskanaConfigurationBuilder) {
+    return taskanaConfigurationBuilder
         .jobSchedulerEnableTaskCleanupJob(true)
         .cleanupJobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
         .cleanupJobRunEvery(Duration.ofMillis(1))
@@ -123,8 +123,8 @@ class JobSchedulerExecutionAccTest implements TaskanaEngineConfigurationModifier
     ObjectReference primaryObjRef;
 
     @Override
-    public Builder modify(Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder
+    public Builder modify(Builder taskanaConfigurationBuilder) {
+      return taskanaConfigurationBuilder
           .jobSchedulerEnableTaskCleanupJob(false)
           .cleanupJobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
           .cleanupJobRunEvery(Duration.ofMillis(1))

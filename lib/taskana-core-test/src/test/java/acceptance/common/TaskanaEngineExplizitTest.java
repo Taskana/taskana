@@ -22,17 +22,17 @@ class TaskanaEngineExplizitTest {
       OracleSchemaHelper.initOracleSchema(TestContainerExtension.DATA_SOURCE, schemaName);
     }
 
-    TaskanaConfiguration taskanaEngineConfiguration =
+    TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 TestContainerExtension.DATA_SOURCE, false, schemaName, true)
             .initTaskanaProperties()
             .build();
 
-    TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration, ConnectionManagementMode.EXPLICIT);
+    TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.EXPLICIT);
 
     DbSchemaCreator dsc =
         new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
+            taskanaConfiguration.getDatasource(), taskanaConfiguration.getSchemaName());
     assertThat(dsc.isValidSchemaVersion(TaskanaEngine.MINIMAL_TASKANA_SCHEMA_VERSION)).isTrue();
   }
 }

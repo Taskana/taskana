@@ -537,7 +537,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
   private void createTaskanaEngineWithNewConfig(boolean addAdditionalUserInfo) throws SQLException {
 
     TaskanaConfiguration tec =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(addAdditionalUserInfo)
             .build();
     initTaskanaEngine(tec);

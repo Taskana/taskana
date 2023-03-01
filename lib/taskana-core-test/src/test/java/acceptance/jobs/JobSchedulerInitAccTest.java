@@ -29,8 +29,8 @@ class JobSchedulerInitAccTest implements TaskanaEngineConfigurationModifier {
 
   @Override
   public TaskanaConfiguration.Builder modify(
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-    return taskanaEngineConfigurationBuilder
+      TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+    return taskanaConfigurationBuilder
         .cleanupJobRunEvery(runEvery)
         .cleanupJobFirstRun(firstRun)
         // config for TaskUpdatePriorityJob

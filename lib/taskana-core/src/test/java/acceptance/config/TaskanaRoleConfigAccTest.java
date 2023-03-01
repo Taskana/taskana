@@ -19,11 +19,11 @@ import pro.taskana.common.test.config.DataSourceGenerator;
 class TaskanaRoleConfigAccTest {
 
   @TempDir Path tempDir;
-  private TaskanaConfiguration taskanaEngineConfiguration;
+  private TaskanaConfiguration taskanaConfiguration;
 
   @BeforeEach
   void setup() {
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName())
             .initTaskanaProperties()
@@ -32,10 +32,10 @@ class TaskanaRoleConfigAccTest {
 
   @Test
   void should_ApplyDefaultConfiguration_For_DefaultPropertiesFile() {
-    Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
+    Set<TaskanaRole> rolesConfigured = taskanaConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
 
-    Set<String> users = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+    Set<String> users = taskanaConfiguration.getRoleMap().get(TaskanaRole.USER);
     assertThat(users)
         .containsExactlyInAnyOrder(
             "cn=ksc-users,cn=groups,ou=test,o=taskana",
@@ -48,23 +48,22 @@ class TaskanaRoleConfigAccTest {
             "user-b-1",
             "user-b-2");
 
-    Set<String> admins = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.ADMIN);
+    Set<String> admins = taskanaConfiguration.getRoleMap().get(TaskanaRole.ADMIN);
     assertThat(admins).containsExactlyInAnyOrder("uid=admin,cn=users,ou=test,o=taskana", "admin");
 
-    Set<String> taskAdmins = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    Set<String> taskAdmins = taskanaConfiguration.getRoleMap().get(TaskanaRole.TASK_ADMIN);
     assertThat(taskAdmins).containsExactlyInAnyOrder("taskadmin");
 
-    Set<String> businessAdmins =
-        taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    Set<String> businessAdmins = taskanaConfiguration.getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
     assertThat(businessAdmins)
         .containsExactlyInAnyOrder(
             "businessadmin", "cn=business-admins,cn=groups,ou=test,o=taskana");
 
-    Set<String> monitorAccessIds = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.MONITOR);
+    Set<String> monitorAccessIds = taskanaConfiguration.getRoleMap().get(TaskanaRole.MONITOR);
     assertThat(monitorAccessIds)
         .containsExactlyInAnyOrder("monitor", "cn=monitor-users,cn=groups,ou=test,o=taskana");
 
-    Set<String> taskRouters = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.TASK_ROUTER);
+    Set<String> taskRouters = taskanaConfiguration.getRoleMap().get(TaskanaRole.TASK_ROUTER);
     assertThat(taskRouters)
         .containsExactlyInAnyOrder("cn=routers,cn=groups,ou=test,o=taskana", "user-taskrouter");
   }
@@ -73,7 +72,7 @@ class TaskanaRoleConfigAccTest {
   void should_ApplyDifferentConfiguration_For_DifferentFile() throws Exception {
     String propertiesFileName = createNewConfigFileWithSameDelimiter("dummyTestConfig.properties");
     String delimiter = "|";
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(),
                 true,
@@ -82,20 +81,19 @@ class TaskanaRoleConfigAccTest {
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
 
-    Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
+    Set<TaskanaRole> rolesConfigured = taskanaConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
 
-    Set<String> users = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+    Set<String> users = taskanaConfiguration.getRoleMap().get(TaskanaRole.USER);
     assertThat(users).containsExactly("nobody");
 
-    Set<String> admins = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.ADMIN);
+    Set<String> admins = taskanaConfiguration.getRoleMap().get(TaskanaRole.ADMIN);
     assertThat(admins).containsExactlyInAnyOrder("user", "username");
 
-    Set<String> businessAdmins =
-        taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    Set<String> businessAdmins = taskanaConfiguration.getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
     assertThat(businessAdmins).containsExactlyInAnyOrder("user2", "user3");
 
-    Set<String> taskAdmins = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    Set<String> taskAdmins = taskanaConfiguration.getRoleMap().get(TaskanaRole.TASK_ADMIN);
     assertThat(taskAdmins).containsExactlyInAnyOrder("taskadmin");
   }
 
@@ -105,7 +103,7 @@ class TaskanaRoleConfigAccTest {
     String propertiesFileName =
         createNewConfigFileWithDifferentDelimiter("dummyTestConfig.properties", delimiter);
 
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(),
                 true,
@@ -114,20 +112,19 @@ class TaskanaRoleConfigAccTest {
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
 
-    Set<TaskanaRole> rolesConfigured = taskanaEngineConfiguration.getRoleMap().keySet();
+    Set<TaskanaRole> rolesConfigured = taskanaConfiguration.getRoleMap().keySet();
     assertThat(rolesConfigured).containsExactlyInAnyOrder(TaskanaRole.values());
 
-    Set<String> users = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+    Set<String> users = taskanaConfiguration.getRoleMap().get(TaskanaRole.USER);
     assertThat(users).isEmpty();
 
-    Set<String> admins = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.ADMIN);
+    Set<String> admins = taskanaConfiguration.getRoleMap().get(TaskanaRole.ADMIN);
     assertThat(admins).containsExactlyInAnyOrder("user", "name=username,organisation=novatec");
 
-    Set<String> businessAdmins =
-        taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
+    Set<String> businessAdmins = taskanaConfiguration.getRoleMap().get(TaskanaRole.BUSINESS_ADMIN);
     assertThat(businessAdmins).containsExactlyInAnyOrder("name=user2, ou = bpm", "user3");
 
-    Set<String> taskAdmins = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.TASK_ADMIN);
+    Set<String> taskAdmins = taskanaConfiguration.getRoleMap().get(TaskanaRole.TASK_ADMIN);
     assertThat(taskAdmins).contains("taskadmin");
   }
 
