@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ import pro.taskana.workbasket.api.WorkbasketType;
 /** Controller for all monitoring endpoints. */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class MonitorController {
 
   private final MonitorService monitorService;
@@ -44,18 +46,6 @@ public class MonitorController {
   private final ReportRepresentationModelAssembler reportRepresentationModelAssembler;
   private final PriorityColumnHeaderRepresentationModelAssembler
       priorityColumnHeaderRepresentationModelAssembler;
-
-  @Autowired
-  MonitorController(
-      MonitorService monitorService,
-      ReportRepresentationModelAssembler reportRepresentationModelAssembler,
-      PriorityColumnHeaderRepresentationModelAssembler
-          priorityColumnHeaderRepresentationModelAssembler) {
-    this.monitorService = monitorService;
-    this.reportRepresentationModelAssembler = reportRepresentationModelAssembler;
-    this.priorityColumnHeaderRepresentationModelAssembler =
-        priorityColumnHeaderRepresentationModelAssembler;
-  }
 
   /**
    * This endpoint generates a Workbasket Report.

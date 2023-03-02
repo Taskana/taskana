@@ -1,6 +1,7 @@
 package pro.taskana.routing.dmn.rest;
 
 import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,10 @@ import pro.taskana.routing.dmn.service.DmnConverterService;
 
 /** Controller for all DMN upload related endpoints. */
 @RestController
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class DmnUploadController {
 
   private final DmnConverterService dmnConverterService;
-
-  @Autowired
-  public DmnUploadController(DmnConverterService dmnConverterService) {
-    this.dmnConverterService = dmnConverterService;
-  }
 
   /**
    * This endpoint converts an excel file to a DMN table and saves it on the filesystem.

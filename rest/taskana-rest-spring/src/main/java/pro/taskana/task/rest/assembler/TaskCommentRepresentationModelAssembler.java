@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -19,16 +20,12 @@ import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 
 /** EntityModel assembler for {@link TaskCommentRepresentationModel}. */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class TaskCommentRepresentationModelAssembler
     implements CollectionRepresentationModelAssembler<
         TaskComment, TaskCommentRepresentationModel, TaskCommentCollectionRepresentationModel> {
 
   private final TaskService taskService;
-
-  @Autowired
-  public TaskCommentRepresentationModelAssembler(TaskService taskService) {
-    this.taskService = taskService;
-  }
 
   @NonNull
   @Override

@@ -21,7 +21,7 @@ class TestContainerExtensionTest {
 
   @Test
   void should_CreateDataSource_For_TopLevelTestClass() {
-    DataSource datasource = taskanaEngineConfiguration.getDatasource();
+    DataSource datasource = taskanaEngineConfiguration.getDataSource();
 
     assertThat(datasource).isNotNull();
   }
@@ -41,9 +41,9 @@ class TestContainerExtensionTest {
 
     @Test
     void should_ReuseDataSource_For_NestedTestClass() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaEngineConfiguration.getDataSource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDataSource();
 
       assertThat(nestedDataSource).isSameAs(topLevelDataSource).isNotNull();
     }
@@ -72,9 +72,9 @@ class TestContainerExtensionTest {
 
     @Test
     void should_ReuseDataSource_For_NestedTestClassWhichImplementsConfigurationModifier() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaEngineConfiguration.getDataSource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDataSource();
 
       assertThat(nestedDataSource).isSameAs(topLevelDataSource).isNotNull();
     }
@@ -98,9 +98,9 @@ class TestContainerExtensionTest {
 
     @Test
     void should_ReuseDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaEngineConfiguration.getDataSource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDataSource();
 
       assertThat(nestedDataSource).isNotNull().isSameAs(topLevelDataSource);
     }
@@ -123,12 +123,12 @@ class TestContainerExtensionTest {
 
       @Test
       void should_ReuseDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-        DataSource nestedNestedDataSource = taskanaEngineConfiguration.getDatasource();
+        DataSource nestedNestedDataSource = taskanaEngineConfiguration.getDataSource();
         DataSource nestedDataSource =
             NestedNestedTestClassAnnotatedWithCleanTaskanaContext.this.taskanaEngineConfiguration
-                .getDatasource();
+                .getDataSource();
         DataSource topLevelDataSource =
-            TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+            TestContainerExtensionTest.this.taskanaEngineConfiguration.getDataSource();
 
         assertThat(nestedNestedDataSource)
             .isNotNull()
@@ -171,9 +171,9 @@ class TestContainerExtensionTest {
 
     @Test
     void should_ReuseNewDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaEngineConfiguration.getDataSource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDataSource();
 
       assertThat(nestedDataSource).isNotNull().isSameAs(topLevelDataSource);
     }
@@ -199,9 +199,9 @@ class TestContainerExtensionTest {
 
     @Test
     void should_ReuseDataSource_For_NestedTestClassWithServiceProvider() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaEngineConfiguration.getDataSource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDataSource();
 
       assertThat(nestedDataSource).isSameAs(topLevelDataSource).isNotNull();
     }

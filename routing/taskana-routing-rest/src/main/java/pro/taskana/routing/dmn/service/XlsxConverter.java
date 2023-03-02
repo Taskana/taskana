@@ -36,8 +36,6 @@ import org.docx4j.openpackaging.parts.SpreadsheetML.WorksheetPart;
 public class XlsxConverter {
   protected SpreadsheetAdapter ioDetectionStrategy = new SimpleInputOutputDetectionStrategy();
 
-  public XlsxConverter() {}
-
   public DmnModelInstance convert(InputStream inputStream, StringBuilder serializedRules) {
     SpreadsheetMLPackage spreadSheetPackage;
 

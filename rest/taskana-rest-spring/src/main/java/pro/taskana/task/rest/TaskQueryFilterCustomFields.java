@@ -23,11 +23,82 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.task.api.TaskQuery;
 
+@RequiredArgsConstructor(
+    onConstructor =
+        @__({
+          @ConstructorProperties({
+            "custom-1",
+            "custom-1-not",
+            "custom-1-like",
+            "custom-1-not-like",
+            "custom-2",
+            "custom-2-not",
+            "custom-2-like",
+            "custom-2-not-like",
+            "custom-3",
+            "custom-3-not",
+            "custom-3-like",
+            "custom-3-not-like",
+            "custom-4",
+            "custom-4-not",
+            "custom-4-like",
+            "custom-4-not-like",
+            "custom-5",
+            "custom-5-not",
+            "custom-5-like",
+            "custom-5-not-like",
+            "custom-6",
+            "custom-6-not",
+            "custom-6-like",
+            "custom-6-not-like",
+            "custom-7",
+            "custom-7-not",
+            "custom-7-like",
+            "custom-7-not-like",
+            "custom-8",
+            "custom-8-not",
+            "custom-8-like",
+            "custom-8-not-like",
+            "custom-9",
+            "custom-9-not",
+            "custom-9-like",
+            "custom-9-not-like",
+            "custom-10",
+            "custom-10-not",
+            "custom-10-like",
+            "custom-10-not-like",
+            "custom-11",
+            "custom-11-not",
+            "custom-11-like",
+            "custom-11-not-like",
+            "custom-12",
+            "custom-12-not",
+            "custom-12-like",
+            "custom-12-not-like",
+            "custom-13",
+            "custom-13-not",
+            "custom-13-like",
+            "custom-13-not-like",
+            "custom-14",
+            "custom-14-not",
+            "custom-14-like",
+            "custom-14-not-like",
+            "custom-15",
+            "custom-15-not",
+            "custom-15-like",
+            "custom-15-not-like",
+            "custom-16",
+            "custom-16-not",
+            "custom-16-like",
+            "custom-16-not-like"
+          })
+        }))
 public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Void> {
   /** Filter by the value of the field custom1 of the Task. This is an exact match. */
   @JsonProperty("custom-1")
@@ -411,203 +482,6 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    */
   @JsonProperty("custom-16-not-like")
   private final String[] custom16NotLike;
-
-  @ConstructorProperties({
-    "custom-1",
-    "custom-1-not",
-    "custom-1-like",
-    "custom-1-not-like",
-    "custom-2",
-    "custom-2-not",
-    "custom-2-like",
-    "custom-2-not-like",
-    "custom-3",
-    "custom-3-not",
-    "custom-3-like",
-    "custom-3-not-like",
-    "custom-4",
-    "custom-4-not",
-    "custom-4-like",
-    "custom-4-not-like",
-    "custom-5",
-    "custom-5-not",
-    "custom-5-like",
-    "custom-5-not-like",
-    "custom-6",
-    "custom-6-not",
-    "custom-6-like",
-    "custom-6-not-like",
-    "custom-7",
-    "custom-7-not",
-    "custom-7-like",
-    "custom-7-not-like",
-    "custom-8",
-    "custom-8-not",
-    "custom-8-like",
-    "custom-8-not-like",
-    "custom-9",
-    "custom-9-not",
-    "custom-9-like",
-    "custom-9-not-like",
-    "custom-10",
-    "custom-10-not",
-    "custom-10-like",
-    "custom-10-not-like",
-    "custom-11",
-    "custom-11-not",
-    "custom-11-like",
-    "custom-11-not-like",
-    "custom-12",
-    "custom-12-not",
-    "custom-12-like",
-    "custom-12-not-like",
-    "custom-13",
-    "custom-13-not",
-    "custom-13-like",
-    "custom-13-not-like",
-    "custom-14",
-    "custom-14-not",
-    "custom-14-like",
-    "custom-14-not-like",
-    "custom-15",
-    "custom-15-not",
-    "custom-15-like",
-    "custom-15-not-like",
-    "custom-16",
-    "custom-16-not",
-    "custom-16-like",
-    "custom-16-not-like"
-  })
-  public TaskQueryFilterCustomFields(
-      String[] custom1In,
-      String[] custom1NotIn,
-      String[] custom1Like,
-      String[] custom1NotLike,
-      String[] custom2In,
-      String[] custom2NotIn,
-      String[] custom2Like,
-      String[] custom2NotLike,
-      String[] custom3In,
-      String[] custom3NotIn,
-      String[] custom3Like,
-      String[] custom3NotLike,
-      String[] custom4In,
-      String[] custom4NotIn,
-      String[] custom4Like,
-      String[] custom4NotLike,
-      String[] custom5In,
-      String[] custom5NotIn,
-      String[] custom5Like,
-      String[] custom5NotLike,
-      String[] custom6In,
-      String[] custom6NotIn,
-      String[] custom6Like,
-      String[] custom6NotLike,
-      String[] custom7In,
-      String[] custom7NotIn,
-      String[] custom7Like,
-      String[] custom7NotLike,
-      String[] custom8In,
-      String[] custom8NotIn,
-      String[] custom8Like,
-      String[] custom8NotLike,
-      String[] custom9In,
-      String[] custom9NotIn,
-      String[] custom9Like,
-      String[] custom9NotLike,
-      String[] custom10In,
-      String[] custom10NotIn,
-      String[] custom10Like,
-      String[] custom10NotLike,
-      String[] custom11In,
-      String[] custom11NotIn,
-      String[] custom11Like,
-      String[] custom11NotLike,
-      String[] custom12In,
-      String[] custom12NotIn,
-      String[] custom12Like,
-      String[] custom12NotLike,
-      String[] custom13In,
-      String[] custom13NotIn,
-      String[] custom13Like,
-      String[] custom13NotLike,
-      String[] custom14In,
-      String[] custom14NotIn,
-      String[] custom14Like,
-      String[] custom14NotLike,
-      String[] custom15In,
-      String[] custom15NotIn,
-      String[] custom15Like,
-      String[] custom15NotLike,
-      String[] custom16In,
-      String[] custom16NotIn,
-      String[] custom16Like,
-      String[] custom16NotLike) {
-    this.custom1In = custom1In;
-    this.custom1NotIn = custom1NotIn;
-    this.custom1Like = custom1Like;
-    this.custom1NotLike = custom1NotLike;
-    this.custom2In = custom2In;
-    this.custom2NotIn = custom2NotIn;
-    this.custom2Like = custom2Like;
-    this.custom2NotLike = custom2NotLike;
-    this.custom3In = custom3In;
-    this.custom3NotIn = custom3NotIn;
-    this.custom3Like = custom3Like;
-    this.custom3NotLike = custom3NotLike;
-    this.custom4In = custom4In;
-    this.custom4NotIn = custom4NotIn;
-    this.custom4Like = custom4Like;
-    this.custom4NotLike = custom4NotLike;
-    this.custom5In = custom5In;
-    this.custom5NotIn = custom5NotIn;
-    this.custom5Like = custom5Like;
-    this.custom5NotLike = custom5NotLike;
-    this.custom6In = custom6In;
-    this.custom6NotIn = custom6NotIn;
-    this.custom6Like = custom6Like;
-    this.custom6NotLike = custom6NotLike;
-    this.custom7In = custom7In;
-    this.custom7NotIn = custom7NotIn;
-    this.custom7Like = custom7Like;
-    this.custom7NotLike = custom7NotLike;
-    this.custom8In = custom8In;
-    this.custom8NotIn = custom8NotIn;
-    this.custom8Like = custom8Like;
-    this.custom8NotLike = custom8NotLike;
-    this.custom9In = custom9In;
-    this.custom9NotIn = custom9NotIn;
-    this.custom9Like = custom9Like;
-    this.custom9NotLike = custom9NotLike;
-    this.custom10In = custom10In;
-    this.custom10NotIn = custom10NotIn;
-    this.custom10Like = custom10Like;
-    this.custom10NotLike = custom10NotLike;
-    this.custom11In = custom11In;
-    this.custom11NotIn = custom11NotIn;
-    this.custom11Like = custom11Like;
-    this.custom11NotLike = custom11NotLike;
-    this.custom12In = custom12In;
-    this.custom12NotIn = custom12NotIn;
-    this.custom12Like = custom12Like;
-    this.custom12NotLike = custom12NotLike;
-    this.custom13In = custom13In;
-    this.custom13NotIn = custom13NotIn;
-    this.custom13Like = custom13Like;
-    this.custom13NotLike = custom13NotLike;
-    this.custom14In = custom14In;
-    this.custom14NotIn = custom14NotIn;
-    this.custom14Like = custom14Like;
-    this.custom14NotLike = custom14NotLike;
-    this.custom15In = custom15In;
-    this.custom15NotIn = custom15NotIn;
-    this.custom15Like = custom15Like;
-    this.custom15NotLike = custom15NotLike;
-    this.custom16In = custom16In;
-    this.custom16NotIn = custom16NotIn;
-    this.custom16Like = custom16Like;
-    this.custom16NotLike = custom16NotLike;
-  }
 
   @Override
   public Void apply(TaskQuery query) {

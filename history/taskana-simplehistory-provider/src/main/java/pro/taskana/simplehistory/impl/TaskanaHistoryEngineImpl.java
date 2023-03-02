@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -18,8 +19,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
@@ -42,10 +41,10 @@ import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.user.internal.UserMapper;
 
 /** This is the implementation of TaskanaHistoryEngine. */
+@Slf4j
 public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
   protected static final ThreadLocal<Deque<SqlSessionManager>> SESSION_STACK = new ThreadLocal<>();
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaHistoryEngineImpl.class);
   private static final String DEFAULT = "default";
   private final SqlSessionManager sessionManager;
   private final TaskanaConfiguration taskanaEngineConfiguration;
@@ -91,8 +90,8 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
   public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
     if (!isUserInRole(roles)) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
             taskanaEngine.getCurrentUserContext().getAccessIds(),
             Arrays.toString(roles));
@@ -108,12 +107,12 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
         new Environment(
-            DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+            DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDataSource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     String databaseProductName;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaEngineConfiguration.getDataSource().getConnection()) {
       databaseProductName = DB.getDatabaseProductName(con);
       configuration.setDatabaseId(DB.getDatabaseProductId(con));
 

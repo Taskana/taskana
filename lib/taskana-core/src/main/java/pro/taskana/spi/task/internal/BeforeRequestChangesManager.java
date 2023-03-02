@@ -1,8 +1,7 @@
 package pro.taskana.spi.task.internal;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -10,9 +9,8 @@ import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.spi.task.api.BeforeRequestChangesProvider;
 import pro.taskana.task.api.models.Task;
 
+@Slf4j
 public class BeforeRequestChangesManager {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(BeforeRequestChangesManager.class);
 
   private final List<BeforeRequestChangesProvider> beforeRequestChangesProviders;
 
@@ -20,20 +18,20 @@ public class BeforeRequestChangesManager {
     beforeRequestChangesProviders = SpiLoader.load(BeforeRequestChangesProvider.class);
     for (BeforeRequestChangesProvider serviceProvider : beforeRequestChangesProviders) {
       serviceProvider.initialize(taskanaEngine);
-      LOGGER.info(
+      log.info(
           "Registered BeforeRequestChangesProvider service provider: {}",
           serviceProvider.getClass().getName());
     }
     if (beforeRequestChangesProviders.isEmpty()) {
-      LOGGER.info(
+      log.info(
           "No BeforeRequestChangesProvider service provider found. "
               + "Running without any BeforeRequestChangesProvider implementation.");
     }
   }
 
   public Task beforeRequestChanges(Task task) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending Task to BeforeRequestChangesProvider service providers: {}", task);
+    if (log.isDebugEnabled()) {
+      log.debug("Sending Task to BeforeRequestChangesProvider service providers: {}", task);
     }
     for (BeforeRequestChangesProvider serviceProvider : beforeRequestChangesProviders) {
       try {

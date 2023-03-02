@@ -2,6 +2,7 @@ package pro.taskana.task.rest.assembler;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -16,6 +17,7 @@ import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 
 /** EntityModel assembler for {@link AttachmentRepresentationModel}. */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class AttachmentRepresentationModelAssembler
     implements RepresentationModelAssembler<Attachment, AttachmentRepresentationModel> {
 
@@ -23,16 +25,6 @@ public class AttachmentRepresentationModelAssembler
 
   private final ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler;
   private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
-
-  @Autowired
-  public AttachmentRepresentationModelAssembler(
-      TaskService taskService,
-      ClassificationSummaryRepresentationModelAssembler classificationSummaryAssembler,
-      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler) {
-    this.taskService = taskService;
-    this.classificationSummaryAssembler = classificationSummaryAssembler;
-    this.objectReferenceAssembler = objectReferenceAssembler;
-  }
 
   @NonNull
   @Override

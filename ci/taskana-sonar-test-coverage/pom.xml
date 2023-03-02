@@ -19,7 +19,7 @@
     <!-- all common dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
-      <artifactId>taskana-common-logging</artifactId>
+      <artifactId>taskana-aspect-logging</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

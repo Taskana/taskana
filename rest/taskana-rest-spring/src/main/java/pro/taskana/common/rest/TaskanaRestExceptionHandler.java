@@ -13,6 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.Ordered;
@@ -251,31 +254,11 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     return Stream.of(value).map(Objects::toString);
   }
 
+  @Getter
+  @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
   public static class MalformedQueryParameter implements Serializable {
     private final String queryParameter;
     private final String actualValue;
     private final Collection<String> expectedValues;
-
-    MalformedQueryParameter(
-        String queryParameter, String actualValue, Collection<String> expectedValues) {
-      this.queryParameter = queryParameter;
-      this.actualValue = actualValue;
-      this.expectedValues = expectedValues;
-    }
-
-    @SuppressWarnings("unused")
-    public String getActualValue() {
-      return actualValue;
-    }
-
-    @SuppressWarnings("unused")
-    public Collection<String> getExpectedValues() {
-      return expectedValues;
-    }
-
-    @SuppressWarnings("unused")
-    public String getQueryParameter() {
-      return queryParameter;
-    }
   }
 }

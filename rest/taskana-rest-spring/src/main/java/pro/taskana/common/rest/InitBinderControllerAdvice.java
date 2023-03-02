@@ -1,6 +1,7 @@
 package pro.taskana.common.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -12,14 +13,10 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 @ControllerAdvice
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class InitBinderControllerAdvice {
 
   private final ObjectMapper objectMapper;
-
-  @Autowired
-  public InitBinderControllerAdvice(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
 
   @InitBinder
   @SuppressWarnings("ConstantConditions")

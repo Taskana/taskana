@@ -86,7 +86,7 @@ public interface TaskanaEngine {
 
   /**
    * This method creates the {@linkplain TaskanaEngine} with {@linkplain
-   * ConnectionManagementMode#PARTICIPATE }.
+   * ConnectionManagementMode#PARTICIPATE} and enabled JobScheduler.
    *
    * @see TaskanaEngine#buildTaskanaEngine(TaskanaConfiguration, ConnectionManagementMode)
    */
@@ -99,15 +99,32 @@ public interface TaskanaEngine {
    * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaConfiguration} and
    * SqlConnectionMode.
    *
+   * @see TaskanaEngine#buildTaskanaEngine(TaskanaConfiguration, ConnectionManagementMode,
+   *     boolean)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  static TaskanaEngine buildTaskanaEngine(
+      TaskanaConfiguration configuration, ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return buildTaskanaEngine(configuration, connectionManagementMode, true);
+  }
+
+  /**
+   * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaConfiguration} and
+   * SqlConnectionMode.
+   *
    * @param configuration complete taskanaEngineConfig to build the engine
    * @param connectionManagementMode connectionMode for the SqlSession
+   * @param initSpis should the SPIs initialized or not
    * @return a {@linkplain TaskanaEngineImpl}
    * @throws SQLException when the db schema could not be initialized
    */
   static TaskanaEngine buildTaskanaEngine(
-      TaskanaConfiguration configuration, ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration configuration,
+      ConnectionManagementMode connectionManagementMode,
+      boolean initSpis)
       throws SQLException {
-    return TaskanaEngineImpl.createTaskanaEngine(configuration, connectionManagementMode);
+    return TaskanaEngineImpl.createTaskanaEngine(configuration, connectionManagementMode, initSpis);
   }
 
   /**

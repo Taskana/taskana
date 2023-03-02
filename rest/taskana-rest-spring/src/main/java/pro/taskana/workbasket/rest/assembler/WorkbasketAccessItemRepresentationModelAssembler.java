@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Collection;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketAccessItemRepresentationMode
  * WorkbasketAccessItemRepresentationModel} and vice versa.
  */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketAccessItemRepresentationModelAssembler
     implements CollectionRepresentationModelAssembler<
             WorkbasketAccessItem,
@@ -39,11 +41,6 @@ public class WorkbasketAccessItemRepresentationModelAssembler
             WorkbasketAccessItemPagedRepresentationModel> {
 
   private final WorkbasketService workbasketService;
-
-  @Autowired
-  public WorkbasketAccessItemRepresentationModelAssembler(WorkbasketService workbasketService) {
-    this.workbasketService = workbasketService;
-  }
 
   @NonNull
   @Override

@@ -4,6 +4,7 @@ import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -41,18 +42,11 @@ import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionExcep
 /** Controller for all {@link TaskComment} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class TaskCommentController {
 
   private final TaskService taskService;
   private final TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler;
-
-  @Autowired
-  TaskCommentController(
-      TaskService taskService,
-      TaskCommentRepresentationModelAssembler taskCommentRepresentationModelAssembler) {
-    this.taskService = taskService;
-    this.taskCommentRepresentationModelAssembler = taskCommentRepresentationModelAssembler;
-  }
 
   /**
    * This endpoint retrieves a Task Comment.

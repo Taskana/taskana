@@ -9,9 +9,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.IdGenerator;
@@ -22,13 +22,10 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 
 /** Handles all operations on secondary {@link ObjectReference}s. */
+@Slf4j
+@RequiredArgsConstructor
 public class ObjectReferenceHandler {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReferenceHandler.class);
   private final ObjectReferenceMapper objectReferenceMapper;
-
-  ObjectReferenceHandler(ObjectReferenceMapper objectReferenceMapper) {
-    this.objectReferenceMapper = objectReferenceMapper;
-  }
 
   void insertNewSecondaryObjectReferencesOnTaskCreation(TaskImpl task)
       throws ObjectReferencePersistenceException, InvalidArgumentException {
@@ -41,8 +38,8 @@ public class ObjectReferenceHandler {
         ObjectReferenceImpl.validate(objectReferenceImpl, "ObjectReference", "Task");
         try {
           objectReferenceMapper.insert(objectReferenceImpl);
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
+          if (log.isDebugEnabled()) {
+            log.debug(
                 "TaskService.createTask() for TaskId={} INSERTED an object reference={}.",
                 task.getId(),
                 objectReference);
@@ -126,8 +123,8 @@ public class ObjectReferenceHandler {
           o -> {
             if (!newObjRefIds.contains(o.getId())) {
               objectReferenceMapper.delete(o.getId());
-              if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(
+              if (log.isDebugEnabled()) {
+                log.debug(
                     "TaskService.updateTask() for TaskId={} DELETED an ObjectReference={}.",
                     newTaskImpl.getId(),
                     o);
@@ -143,8 +140,8 @@ public class ObjectReferenceHandler {
     ObjectReferenceImpl objectReferenceImpl = (ObjectReferenceImpl) objectReference;
     try {
       objectReferenceMapper.insert(objectReferenceImpl);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "TaskService.updateTask() for TaskId={} INSERTED an ObjectReference={}.",
             newTaskImpl.getId(),
             objectReferenceImpl);

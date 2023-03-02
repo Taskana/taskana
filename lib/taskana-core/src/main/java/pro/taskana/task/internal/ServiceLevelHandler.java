@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
@@ -31,9 +30,8 @@ import pro.taskana.task.internal.models.MinimalTaskSummary;
 import pro.taskana.task.internal.models.TaskImpl;
 
 /** This class handles service level manipulations. */
+@Slf4j
 class ServiceLevelHandler {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceLevelHandler.class);
   private static final Duration MAX_DURATION = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskMapper taskMapper;
@@ -90,13 +88,13 @@ class ServiceLevelHandler {
   BulkLog setPlannedPropertyOfTasksImpl(Instant planned, List<MinimalTaskSummary> tasks) {
     BulkLog bulkLog = new BulkLog();
     List<AttachmentSummaryImpl> attachments = getAttachmentSummaries(tasks);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("found attachments {}.", attachments);
+    if (log.isDebugEnabled()) {
+      log.debug("found attachments {}.", attachments);
     }
     List<ClassificationSummary> allInvolvedClassifications =
         findAllClassificationsReferencedByTasksAndAttachments(tasks, attachments);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("found involved classifications {}.", allInvolvedClassifications);
+    if (log.isDebugEnabled()) {
+      log.debug("found involved classifications {}.", allInvolvedClassifications);
     }
     List<ClassificationWithServiceLevelResolved> allInvolvedClassificationsWithDuration =
         resolveDurationsInClassifications(allInvolvedClassifications);

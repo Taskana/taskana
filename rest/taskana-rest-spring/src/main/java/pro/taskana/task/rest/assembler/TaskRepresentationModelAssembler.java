@@ -6,6 +6,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -26,6 +27,7 @@ import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationMode
 
 /** EntityModel assembler for {@link TaskRepresentationModel}. */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class TaskRepresentationModelAssembler
     implements RepresentationModelAssembler<Task, TaskRepresentationModel> {
 
@@ -34,20 +36,6 @@ public class TaskRepresentationModelAssembler
   private final WorkbasketSummaryRepresentationModelAssembler workbasketAssembler;
   private final AttachmentRepresentationModelAssembler attachmentAssembler;
   private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
-
-  @Autowired
-  public TaskRepresentationModelAssembler(
-      TaskService taskService,
-      ClassificationSummaryRepresentationModelAssembler classificationAssembler,
-      WorkbasketSummaryRepresentationModelAssembler workbasketAssembler,
-      AttachmentRepresentationModelAssembler attachmentAssembler,
-      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler) {
-    this.taskService = taskService;
-    this.classificationAssembler = classificationAssembler;
-    this.workbasketAssembler = workbasketAssembler;
-    this.attachmentAssembler = attachmentAssembler;
-    this.objectReferenceAssembler = objectReferenceAssembler;
-  }
 
   @NonNull
   @Override

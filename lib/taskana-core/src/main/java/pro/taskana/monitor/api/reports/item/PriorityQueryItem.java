@@ -1,14 +1,13 @@
 package pro.taskana.monitor.api.reports.item;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class PriorityQueryItem implements QueryItem {
 
-  private String workbasketKey;
-  private int count;
-  private int priority;
-
-  public int getPriority() {
-    return priority;
-  }
+  @Setter private String workbasketKey;
+  @Setter private int count;
+  @Getter @Setter private int priority;
 
   @Override
   public String getKey() {

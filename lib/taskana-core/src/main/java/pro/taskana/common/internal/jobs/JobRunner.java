@@ -4,8 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
@@ -14,9 +13,9 @@ import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
 /** This is the runner for Tasks jobs. */
+@Slf4j
 public class JobRunner {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JobRunner.class);
   private final TaskanaEngine taskanaEngine;
   private final JobServiceImpl jobService;
   private TaskanaTransactionProvider txProvider;
@@ -50,7 +49,7 @@ public class JobRunner {
     try {
       AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, txProvider, scheduledJob).run();
     } catch (Exception e) {
-      LOGGER.error("Error running job: {} ", scheduledJob.getType(), e);
+      log.error("Error running job: {} ", scheduledJob.getType(), e);
       throw new SystemException(String.format("Error running job '%s'", scheduledJob.getType()), e);
     }
   }
@@ -60,8 +59,8 @@ public class JobRunner {
     String owner = hostAddress + " - " + Thread.currentThread().getName();
     job.setLockedBy(owner);
     ScheduledJob lockedJob = jobService.lockJob(job, owner);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Locked job: {}", lockedJob);
+    if (log.isDebugEnabled()) {
+      log.debug("Locked job: {}", lockedJob);
     }
     return lockedJob;
   }

@@ -3,32 +3,30 @@ package pro.taskana.spi.task.internal;
 import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.task.api.models.Task;
 
+@Slf4j
 public class CreateTaskPreprocessorManager {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CreateTaskPreprocessorManager.class);
   private final List<CreateTaskPreprocessor> createTaskPreprocessors;
 
   public CreateTaskPreprocessorManager() {
     createTaskPreprocessors = SpiLoader.load(CreateTaskPreprocessor.class);
     for (CreateTaskPreprocessor preprocessor : createTaskPreprocessors) {
-      LOGGER.info(
-          "Registered CreateTaskPreprocessor provider: {}", preprocessor.getClass().getName());
+      log.info("Registered CreateTaskPreprocessor provider: {}", preprocessor.getClass().getName());
     }
     if (createTaskPreprocessors.isEmpty()) {
-      LOGGER.info("No CreateTaskPreprocessor found. Running without CreateTaskPreprocessor.");
+      log.info("No CreateTaskPreprocessor found. Running without CreateTaskPreprocessor.");
     }
   }
 
   public Task processTaskBeforeCreation(Task taskToProcess) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending task to CreateTaskPreprocessor providers: {}", taskToProcess);
+    if (log.isDebugEnabled()) {
+      log.debug("Sending task to CreateTaskPreprocessor providers: {}", taskToProcess);
     }
     createTaskPreprocessors.forEach(
         wrap(

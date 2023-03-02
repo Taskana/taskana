@@ -1,5 +1,10 @@
 package pro.taskana.monitor.api;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.monitor.api.reports.WorkbasketReport;
 import pro.taskana.task.api.models.Attachment;
@@ -13,6 +18,10 @@ import pro.taskana.task.api.models.Task;
  * To filter by the {@linkplain Classification} of the {@linkplain Task}, the
  * attachmentClassificationId of the CombinedClassificationFilter should be NULL.
  */
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
 public class CombinedClassificationFilter {
 
   private String taskClassificationId;
@@ -20,36 +29,5 @@ public class CombinedClassificationFilter {
 
   public CombinedClassificationFilter(String taskClassificationId) {
     this.taskClassificationId = taskClassificationId;
-  }
-
-  public CombinedClassificationFilter(
-      String taskClassificationId, String attachmentClassificationId) {
-    this.taskClassificationId = taskClassificationId;
-    this.attachmentClassificationId = attachmentClassificationId;
-  }
-
-  public String getTaskClassificationId() {
-    return this.taskClassificationId;
-  }
-
-  public void setTaskClassificationId(String taskClassificationId) {
-    this.taskClassificationId = taskClassificationId;
-  }
-
-  public String getAttachmentClassificationId() {
-    return this.attachmentClassificationId;
-  }
-
-  public void setAttachmentClassificationId(String attachmentClassificationId) {
-    this.attachmentClassificationId = attachmentClassificationId;
-  }
-
-  @Override
-  public String toString() {
-    return "CombinedClassificationFilter [taskClassificationId="
-        + taskClassificationId
-        + ", attachmentClassificationId="
-        + attachmentClassificationId
-        + "]";
   }
 }

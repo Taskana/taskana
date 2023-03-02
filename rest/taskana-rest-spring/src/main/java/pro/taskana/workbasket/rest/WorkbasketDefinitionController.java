@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 /** Controller for all {@link WorkbasketDefinitionRepresentationModel} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketDefinitionController {
 
   private final WorkbasketService workbasketService;
@@ -57,20 +59,6 @@ public class WorkbasketDefinitionController {
   private final WorkbasketRepresentationModelAssembler workbasketAssembler;
   private final WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler;
   private final ObjectMapper mapper;
-
-  @Autowired
-  WorkbasketDefinitionController(
-      WorkbasketService workbasketService,
-      WorkbasketDefinitionRepresentationModelAssembler workbasketDefinitionAssembler,
-      WorkbasketRepresentationModelAssembler workbasketAssembler,
-      WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler,
-      ObjectMapper mapper) {
-    this.workbasketService = workbasketService;
-    this.workbasketDefinitionAssembler = workbasketDefinitionAssembler;
-    this.workbasketAssembler = workbasketAssembler;
-    this.accessItemAssembler = accessItemAssembler;
-    this.mapper = mapper;
-  }
 
   /**
    * This endpoint exports all Workbaskets with the corresponding Workbasket Access Items and

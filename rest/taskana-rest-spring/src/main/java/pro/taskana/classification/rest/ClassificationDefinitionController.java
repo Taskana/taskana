@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -43,21 +44,12 @@ import pro.taskana.common.rest.RestEndpoints;
 /** Controller for Importing / Exporting classifications. */
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class ClassificationDefinitionController {
 
   private final ObjectMapper mapper;
   private final ClassificationService classificationService;
   private final ClassificationDefinitionRepresentationModelAssembler assembler;
-
-  @Autowired
-  ClassificationDefinitionController(
-      ObjectMapper mapper,
-      ClassificationService classificationService,
-      ClassificationDefinitionRepresentationModelAssembler assembler) {
-    this.mapper = mapper;
-    this.classificationService = classificationService;
-    this.assembler = assembler;
-  }
 
   /**
    * This endpoint exports all configured Classifications.

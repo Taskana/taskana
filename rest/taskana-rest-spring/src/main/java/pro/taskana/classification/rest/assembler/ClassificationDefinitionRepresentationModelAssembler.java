@@ -1,6 +1,7 @@
 package pro.taskana.classification.rest.assembler;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
@@ -12,6 +13,7 @@ import pro.taskana.classification.rest.models.ClassificationRepresentationModel;
 import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 
 @Component
+@AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class ClassificationDefinitionRepresentationModelAssembler
     implements RepresentationModelAssembler<
             Classification, ClassificationDefinitionRepresentationModel>,
@@ -21,12 +23,6 @@ public class ClassificationDefinitionRepresentationModelAssembler
             ClassificationDefinitionCollectionRepresentationModel> {
 
   private final ClassificationRepresentationModelAssembler classificationAssembler;
-
-  @Autowired
-  public ClassificationDefinitionRepresentationModelAssembler(
-      ClassificationRepresentationModelAssembler classificationAssembler) {
-    this.classificationAssembler = classificationAssembler;
-  }
 
   @Override
   @NonNull

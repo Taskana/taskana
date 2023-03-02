@@ -11,7 +11,7 @@ public class SpringTaskanaEngineImpl extends TaskanaEngineImpl implements Spring
   public SpringTaskanaEngineImpl(
       TaskanaConfiguration taskanaEngineConfiguration, ConnectionManagementMode mode)
       throws SQLException {
-    super(taskanaEngineConfiguration, mode);
+    super(taskanaEngineConfiguration, mode, true);
     this.transactionFactory = new SpringManagedTransactionFactory();
     this.sessionManager = createSqlSessionManager();
   }

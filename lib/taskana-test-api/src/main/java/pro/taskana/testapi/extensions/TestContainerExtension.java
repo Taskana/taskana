@@ -89,12 +89,7 @@ public class TestContainerExtension implements InvocationInterceptor {
     return ds;
   }
 
-  private static void copyValue(String key, Store source, Store destination) {
-    Object value = source.get(key);
-    destination.put(key, value);
-  }
-
-  private static String determineSchemaName() {
+  public static String determineSchemaName() {
     String uniqueId = "A" + UUID.randomUUID().toString().replace("-", "_");
     if (EXECUTION_DATABASE == DB.ORACLE) {
       uniqueId = uniqueId.substring(0, 26);
@@ -102,6 +97,11 @@ public class TestContainerExtension implements InvocationInterceptor {
       uniqueId = uniqueId.toLowerCase();
     }
     return uniqueId;
+  }
+
+  private static void copyValue(String key, Store source, Store destination) {
+    Object value = source.get(key);
+    destination.put(key, value);
   }
 
   private static DB retrieveDatabaseFromEnv() {

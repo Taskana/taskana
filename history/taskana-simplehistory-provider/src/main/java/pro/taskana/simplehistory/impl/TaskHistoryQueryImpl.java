@@ -3,9 +3,9 @@ package pro.taskana.simplehistory.impl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -15,6 +15,8 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Implementation for generating dynamic sql. */
+@Slf4j
+@Getter
 public class TaskHistoryQueryImpl implements TaskHistoryQuery {
 
   private static final String LINK_TO_MAPPER =
@@ -23,8 +25,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       "pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper.queryHistoryColumnValues";
   private static final String LINK_TO_COUNTER =
       "pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper.countHistoryEvents";
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskHistoryQueryImpl.class);
 
   private static final String SQL_EXCEPTION_MESSAGE =
       "Method openConnection() could not open a connection to the database.";
@@ -87,182 +87,6 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
     this.joinWithUserInfo = taskanaHistoryEngine.getConfiguration().isAddAdditionalUserInfo();
-  }
-
-  public String[] getIdIn() {
-    return idIn;
-  }
-
-  public String[] getBusinessProcessIdIn() {
-    return businessProcessIdIn;
-  }
-
-  public String[] getParentBusinessProcessIdIn() {
-    return parentBusinessProcessIdIn;
-  }
-
-  public String[] getTaskIdIn() {
-    return taskIdIn;
-  }
-
-  public String[] getEventTypeIn() {
-    return eventTypeIn;
-  }
-
-  public TimeInterval[] getCreatedIn() {
-    return createdIn;
-  }
-
-  public String[] getUserIdIn() {
-    return userIdIn;
-  }
-
-  public String[] getDomainIn() {
-    return domainIn;
-  }
-
-  public String[] getWorkbasketKeyIn() {
-    return workbasketKeyIn;
-  }
-
-  public String[] getPorCompanyIn() {
-    return porCompanyIn;
-  }
-
-  public String[] getPorSystemIn() {
-    return porSystemIn;
-  }
-
-  public String[] getPorInstanceIn() {
-    return porInstanceIn;
-  }
-
-  public String[] getPorTypeIn() {
-    return porTypeIn;
-  }
-
-  public String[] getPorValueIn() {
-    return porValueIn;
-  }
-
-  public String[] getTaskClassificationKeyIn() {
-    return taskClassificationKeyIn;
-  }
-
-  public String[] getTaskClassificationCategoryIn() {
-    return taskClassificationCategoryIn;
-  }
-
-  public String[] getAttachmentClassificationKeyIn() {
-    return attachmentClassificationKeyIn;
-  }
-
-  public String[] getOldValueIn() {
-    return oldValueIn;
-  }
-
-  public String[] getNewValueIn() {
-    return newValueIn;
-  }
-
-  public String[] getCustom1In() {
-    return custom1In;
-  }
-
-  public String[] getCustom2In() {
-    return custom2In;
-  }
-
-  public String[] getCustom3In() {
-    return custom3In;
-  }
-
-  public String[] getCustom4In() {
-    return custom4In;
-  }
-
-  public String[] getBusinessProcessIdLike() {
-    return businessProcessIdLike;
-  }
-
-  public String[] getParentBusinessProcessIdLike() {
-    return parentBusinessProcessIdLike;
-  }
-
-  public String[] getTaskIdLike() {
-    return taskIdLike;
-  }
-
-  public String[] getEventTypeLike() {
-    return eventTypeLike;
-  }
-
-  public String[] getUserIdLike() {
-    return userIdLike;
-  }
-
-  public String[] getDomainLike() {
-    return domainLike;
-  }
-
-  public String[] getWorkbasketKeyLike() {
-    return workbasketKeyLike;
-  }
-
-  public String[] getPorCompanyLike() {
-    return porCompanyLike;
-  }
-
-  public String[] getPorSystemLike() {
-    return porSystemLike;
-  }
-
-  public String[] getPorInstanceLike() {
-    return porInstanceLike;
-  }
-
-  public String[] getPorTypeLike() {
-    return porTypeLike;
-  }
-
-  public String[] getPorValueLike() {
-    return porValueLike;
-  }
-
-  public String[] getTaskClassificationKeyLike() {
-    return taskClassificationKeyLike;
-  }
-
-  public String[] getTaskClassificationCategoryLike() {
-    return taskClassificationCategoryLike;
-  }
-
-  public String[] getAttachmentClassificationKeyLike() {
-    return attachmentClassificationKeyLike;
-  }
-
-  public String[] getOldValueLike() {
-    return oldValueLike;
-  }
-
-  public String[] getNewValueLike() {
-    return newValueLike;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
   }
 
   @Override
@@ -634,7 +458,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -650,7 +474,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -675,7 +499,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       this.orderColumns.remove(orderColumns.size() - 1);
@@ -693,7 +517,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       return result;
 
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -708,7 +532,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
       rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
       return (rowCount == null) ? 0L : rowCount;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return -1;
     } finally {
       taskanaHistoryEngine.returnConnection();

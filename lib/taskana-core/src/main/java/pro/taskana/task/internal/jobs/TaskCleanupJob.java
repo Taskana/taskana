@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
@@ -29,9 +28,8 @@ import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.task.api.models.TaskSummary;
 
 /** Job to cleanup completed tasks after a period of time. */
+@Slf4j
 public class TaskCleanupJob extends AbstractTaskanaJob {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskCleanupJob.class);
 
   private final Duration minimumAge;
   private final int batchSize;
@@ -51,7 +49,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   @Override
   public void execute() {
     Instant completedBefore = Instant.now().minus(minimumAge);
-    LOGGER.info("Running job to delete all tasks completed before ({})", completedBefore);
+    log.info("Running job to delete all tasks completed before ({})", completedBefore);
     try {
       List<TaskSummary> tasksCompletedBefore = getTasksCompletedBefore(completedBefore);
 
@@ -60,7 +58,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
               .mapToInt(this::deleteTasksTransactionally)
               .sum();
 
-      LOGGER.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
+      log.info("Job ended successfully. {} tasks deleted.", totalNumberOfTasksDeleted);
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskCleanupJob.", e);
     }
@@ -139,7 +137,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
           try {
             return deleteTasks(tasksToBeDeleted);
           } catch (Exception ex) {
-            LOGGER.warn("Could not delete tasks.", ex);
+            log.warn("Could not delete tasks.", ex);
             return 0;
           }
         });
@@ -152,12 +150,12 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
         tasksToBeDeleted.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
+    if (log.isDebugEnabled()) {
+      log.debug("{} tasks deleted.", tasksIdsToBeDeleted.size() - results.getFailedIds().size());
     }
     for (String failedId : results.getFailedIds()) {
-      if (LOGGER.isWarnEnabled()) {
-        LOGGER.warn(
+      if (log.isWarnEnabled()) {
+        log.warn(
             "Task with id {} could not be deleted. Reason: {}",
             LogSanitizer.stripLineBreakingChars(failedId),
             LogSanitizer.stripLineBreakingChars(results.getErrorForId(failedId)));

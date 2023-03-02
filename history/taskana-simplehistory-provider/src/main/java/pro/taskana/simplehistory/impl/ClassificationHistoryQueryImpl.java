@@ -3,9 +3,9 @@ package pro.taskana.simplehistory.impl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.TimeInterval;
@@ -15,6 +15,8 @@ import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQueryColumnName;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 
+@Slf4j
+@Getter
 public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuery {
 
   private static final String CLASSIFICATION_PACKAGE_PATH =
@@ -25,9 +27,6 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       CLASSIFICATION_PACKAGE_PATH + "ClassificationHistoryQueryMapper.queryHistoryColumnValues";
   private static final String LINK_TO_COUNTER =
       CLASSIFICATION_PACKAGE_PATH + "ClassificationHistoryQueryMapper.countHistoryEvents";
-
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ClassificationHistoryQueryImpl.class);
 
   private static final String SQL_EXCEPTION_MESSAGE =
       "Method openConnection() could not open a connection to the database.";
@@ -420,7 +419,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -436,7 +435,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -457,7 +456,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       this.orderBy.addAll(cacheOrderBy);
@@ -477,7 +476,7 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
 
       return result;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return result;
     } finally {
       taskanaHistoryEngine.returnConnection();
@@ -492,195 +491,11 @@ public class ClassificationHistoryQueryImpl implements ClassificationHistoryQuer
       rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
       return (rowCount == null) ? 0L : rowCount;
     } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      log.error(SQL_EXCEPTION_MESSAGE, e.getCause());
       return -1;
     } finally {
       taskanaHistoryEngine.returnConnection();
     }
-  }
-
-  public String[] getIdIn() {
-    return idIn;
-  }
-
-  public String[] getEventTypeIn() {
-    return eventTypeIn;
-  }
-
-  public TimeInterval[] getCreatedIn() {
-    return createdIn;
-  }
-
-  public String[] getUserIdIn() {
-    return userIdIn;
-  }
-
-  public String[] getClassificationIdIn() {
-    return classificationIdIn;
-  }
-
-  public String[] getApplicationEntryPointIn() {
-    return applicationEntryPointIn;
-  }
-
-  public String[] getCategoryIn() {
-    return categoryIn;
-  }
-
-  public String[] getDomainIn() {
-    return domainIn;
-  }
-
-  public String[] getKeyIn() {
-    return keyIn;
-  }
-
-  public String[] getNameIn() {
-    return nameIn;
-  }
-
-  public String[] getParentIdIn() {
-    return parentIdIn;
-  }
-
-  public String[] getParentKeyIn() {
-    return parentKeyIn;
-  }
-
-  public int[] getPriorityIn() {
-    return priorityIn;
-  }
-
-  public String[] getServiceLevelIn() {
-    return serviceLevelIn;
-  }
-
-  public String[] getTypeIn() {
-    return typeIn;
-  }
-
-  public String[] getCustom1In() {
-    return custom1In;
-  }
-
-  public String[] getCustom2In() {
-    return custom2In;
-  }
-
-  public String[] getCustom3In() {
-    return custom3In;
-  }
-
-  public String[] getCustom4In() {
-    return custom4In;
-  }
-
-  public String[] getCustom5In() {
-    return custom5In;
-  }
-
-  public String[] getCustom6In() {
-    return custom6In;
-  }
-
-  public String[] getCustom7In() {
-    return custom7In;
-  }
-
-  public String[] getCustom8In() {
-    return custom8In;
-  }
-
-  public String[] getEventTypeLike() {
-    return eventTypeLike;
-  }
-
-  public String[] getUserIdLike() {
-    return userIdLike;
-  }
-
-  public String[] getClassificationIdLike() {
-    return classificationIdLike;
-  }
-
-  public String[] getApplicationEntryPointLike() {
-    return applicationEntryPointLike;
-  }
-
-  public String[] getCategoryLike() {
-    return categoryLike;
-  }
-
-  public String[] getDomainLike() {
-    return domainLike;
-  }
-
-  public String[] getKeyLike() {
-    return keyLike;
-  }
-
-  public String[] getNameLike() {
-    return nameLike;
-  }
-
-  public String[] getParentIdLike() {
-    return parentIdLike;
-  }
-
-  public String[] getParentKeyLike() {
-    return parentKeyLike;
-  }
-
-  public String[] getServiceLevelLike() {
-    return serviceLevelLike;
-  }
-
-  public String[] getTypeLike() {
-    return typeLike;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
-  public String[] getCustom5Like() {
-    return custom5Like;
-  }
-
-  public String[] getCustom6Like() {
-    return custom6Like;
-  }
-
-  public String[] getCustom7Like() {
-    return custom7Like;
-  }
-
-  public String[] getCustom8Like() {
-    return custom8Like;
-  }
-
-  public ClassificationHistoryQueryColumnName getColumnName() {
-    return columnName;
-  }
-
-  public List<String> getOrderBy() {
-    return orderBy;
-  }
-
-  public List<String> getOrderColumns() {
-    return orderColumns;
   }
 
   private ClassificationHistoryQueryImpl addOrderCriteria(

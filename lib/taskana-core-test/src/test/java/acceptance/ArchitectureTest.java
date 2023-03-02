@@ -67,6 +67,7 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.Interval;
+import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.testapi.TaskanaIntegrationTest;
@@ -110,8 +111,6 @@ class ArchitectureTest {
                     .or(annotatedWith(TestTemplate.class))))
         .and()
         .areNotDeclaredIn(ArchitectureTest.class)
-        .and()
-        .areNotDeclaredIn(PojoTest.class) // we have to find a proper naming for those tests
         .should()
         .bePackagePrivate()
         .andShould()
@@ -326,6 +325,8 @@ class ArchitectureTest {
                 .areNotAssignableTo(TaskanaEngine.class)
                 .and()
                 .areNotAssignableTo(InternalTaskanaEngine.class)
+                .and()
+                .areNotAssignableTo(JobScheduler.class)
                 .should()
                 .onlyDependOnClassesThat()
                 .resideOutsideOfPackage(rootPackage + "..")

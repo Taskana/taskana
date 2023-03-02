@@ -3,6 +3,7 @@ package pro.taskana.task.rest.assembler;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import pro.taskana.workbasket.rest.assembler.WorkbasketSummaryRepresentationMode
 
 /** EntityModel assembler for {@link TaskSummaryRepresentationModel}. */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class TaskSummaryRepresentationModelAssembler
     implements PagedRepresentationModelAssembler<
             TaskSummary, TaskSummaryRepresentationModel, TaskSummaryPagedRepresentationModel>,
@@ -34,20 +36,6 @@ public class TaskSummaryRepresentationModelAssembler
   private final AttachmentSummaryRepresentationModelAssembler attachmentAssembler;
   private final ObjectReferenceRepresentationModelAssembler objectReferenceAssembler;
   private final TaskService taskService;
-
-  @Autowired
-  public TaskSummaryRepresentationModelAssembler(
-      ClassificationSummaryRepresentationModelAssembler classificationAssembler,
-      WorkbasketSummaryRepresentationModelAssembler workbasketAssembler,
-      AttachmentSummaryRepresentationModelAssembler attachmentAssembler,
-      ObjectReferenceRepresentationModelAssembler objectReferenceAssembler,
-      TaskService taskService) {
-    this.classificationAssembler = classificationAssembler;
-    this.workbasketAssembler = workbasketAssembler;
-    this.attachmentAssembler = attachmentAssembler;
-    this.objectReferenceAssembler = objectReferenceAssembler;
-    this.taskService = taskService;
-  }
 
   @NonNull
   @Override

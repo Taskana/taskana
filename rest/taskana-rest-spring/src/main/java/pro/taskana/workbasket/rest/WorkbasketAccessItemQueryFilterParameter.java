@@ -3,10 +3,21 @@ package pro.taskana.workbasket.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 
+@RequiredArgsConstructor(
+    onConstructor =
+        @__({
+          @ConstructorProperties({
+            "workbasket-key",
+            "workbasket-key-like",
+            "access-id",
+            "access-id-like"
+          })
+        }))
 public class WorkbasketAccessItemQueryFilterParameter
     implements QueryParameter<WorkbasketAccessItemQuery, Void> {
 
@@ -33,18 +44,6 @@ public class WorkbasketAccessItemQueryFilterParameter
    */
   @JsonProperty("access-id-like")
   private final String[] accessIdLike;
-
-  @ConstructorProperties({"workbasket-key", "workbasket-key-like", "access-id", "access-id-like"})
-  public WorkbasketAccessItemQueryFilterParameter(
-      String[] workbasketKey,
-      String[] workbasketKeyLike,
-      String[] accessId,
-      String[] accessIdLike) {
-    this.workbasketKey = workbasketKey;
-    this.workbasketKeyLike = workbasketKeyLike;
-    this.accessId = accessId;
-    this.accessIdLike = accessIdLike;
-  }
 
   @Override
   public Void apply(WorkbasketAccessItemQuery query) {

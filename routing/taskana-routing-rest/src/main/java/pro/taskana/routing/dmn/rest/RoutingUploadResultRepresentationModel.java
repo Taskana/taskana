@@ -1,8 +1,12 @@
 package pro.taskana.routing.dmn.rest;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 /** Model class for a routing upload result. */
+@Getter
+@Setter
 public class RoutingUploadResultRepresentationModel
     extends RepresentationModel<RoutingUploadResultRepresentationModel> {
 
@@ -11,20 +15,4 @@ public class RoutingUploadResultRepresentationModel
 
   /** A human readable String that contains the amount of imported rows. */
   protected String result;
-
-  public int getAmountOfImportedRows() {
-    return amountOfImportedRows;
-  }
-
-  public void setAmountOfImportedRows(int amountOfImportedRows) {
-    this.amountOfImportedRows = amountOfImportedRows;
-  }
-
-  public String getResult() {
-    return result;
-  }
-
-  public void setResult(String result) {
-    this.result = result;
-  }
 }

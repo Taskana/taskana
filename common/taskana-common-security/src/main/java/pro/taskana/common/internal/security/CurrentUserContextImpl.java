@@ -12,19 +12,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.security.auth.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.GroupPrincipal;
 
+@Slf4j
 public class CurrentUserContextImpl implements CurrentUserContext {
 
   private static final String GET_UNIQUE_SECURITY_NAME_METHOD = "getUniqueSecurityName";
   private static final String GET_CALLER_SUBJECT_METHOD = "getCallerSubject";
   private static final String WSSUBJECT_CLASSNAME = "com.ibm.websphere.security.auth.WSSubject";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CurrentUserContextImpl.class);
   private final boolean shouldUseLowerCaseForAccessIds;
   private boolean runningOnWebSphere;
 
@@ -32,14 +31,10 @@ public class CurrentUserContextImpl implements CurrentUserContext {
     this.shouldUseLowerCaseForAccessIds = shouldUseLowerCaseForAccessIds;
     try {
       Class.forName(WSSUBJECT_CLASSNAME);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
-      }
+      log.debug("WSSubject detected. Assuming that Taskana runs on IBM WebSphere.");
       runningOnWebSphere = true;
     } catch (ClassNotFoundException e) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("No WSSubject detected. Using JAAS subject further on.");
-      }
+      log.debug("No WSSubject detected. Using JAAS subject further on.");
       runningOnWebSphere = false;
     }
   }
@@ -52,17 +47,17 @@ public class CurrentUserContextImpl implements CurrentUserContext {
   @Override
   public List<String> getGroupIds() {
     Subject subject = Subject.getSubject(AccessController.getContext());
-    LOGGER.trace("Subject of caller: {}", subject);
+    log.trace("Subject of caller: {}", subject);
     if (subject != null) {
       Set<GroupPrincipal> groups = subject.getPrincipals(GroupPrincipal.class);
-      LOGGER.trace("Public groups of caller: {}", groups);
+      log.trace("Public groups of caller: {}", groups);
       return groups.stream()
           .map(Principal::getName)
           .filter(Objects::nonNull)
           .map(this::convertAccessId)
           .collect(Collectors.toList());
     }
-    LOGGER.trace("No groupIds found in subject!");
+    log.trace("No groupIds found in subject!");
     return Collections.emptyList();
   }
 
@@ -85,14 +80,10 @@ public class CurrentUserContextImpl implements CurrentUserContext {
       Method getCallerSubjectMethod =
           wsSubjectClass.getMethod(GET_CALLER_SUBJECT_METHOD, (Class<?>[]) null);
       Subject callerSubject = (Subject) getCallerSubjectMethod.invoke(null, (Object[]) null);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Subject of caller: {}", callerSubject);
-      }
+      log.debug("Subject of caller: {}", callerSubject);
       if (callerSubject != null) {
         Set<Object> publicCredentials = callerSubject.getPublicCredentials();
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Public credentials of caller: {}", publicCredentials);
-        }
+        log.debug("Public credentials of caller: {}", publicCredentials);
         return publicCredentials.stream()
             .map(
                 // we could use CheckedFunction#wrap here, but this either requires a dependency
@@ -113,7 +104,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
                 })
             .peek(
                 o ->
-                    LOGGER.debug(
+                    log.debug(
                         "Returning the unique security name of first public credential: {}", o))
             .map(Object::toString)
             .map(this::convertAccessId)
@@ -121,17 +112,17 @@ public class CurrentUserContextImpl implements CurrentUserContext {
             .orElse(null);
       }
     } catch (Exception e) {
-      LOGGER.warn("Could not get user from WSSubject. Going ahead unauthorized.");
+      log.warn("Could not get user from WSSubject. Going ahead unauthorized.");
     }
     return null;
   }
 
   private String getUserIdFromJaasSubject() {
     Subject subject = Subject.getSubject(AccessController.getContext());
-    LOGGER.trace("Subject of caller: {}", subject);
+    log.trace("Subject of caller: {}", subject);
     if (subject != null) {
       Set<Principal> principals = subject.getPrincipals();
-      LOGGER.trace("Public principals of caller: {}", principals);
+      log.trace("Public principals of caller: {}", principals);
       return principals.stream()
           .filter(not(GroupPrincipal.class::isInstance))
           .map(Principal::getName)
@@ -140,7 +131,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
           .findFirst()
           .orElse(null);
     }
-    LOGGER.trace("No userId found in subject!");
+    log.trace("No userId found in subject!");
     return null;
   }
 
@@ -149,7 +140,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
     if (shouldUseLowerCaseForAccessIds) {
       toReturn = accessId.toLowerCase();
     }
-    LOGGER.trace("Found AccessId '{}'. Returning AccessId '{}' ", accessId, toReturn);
+    log.trace("Found AccessId '{}'. Returning AccessId '{}' ", accessId, toReturn);
     return toReturn;
   }
 }

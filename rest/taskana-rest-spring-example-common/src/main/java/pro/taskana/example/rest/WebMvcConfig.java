@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /** The Web MVC Configuration. */
 @Configuration
 @EnableWebMvc
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WebMvcConfig implements WebMvcConfigurer {
 
   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
@@ -23,11 +25,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
   };
 
   private final ObjectMapper objectMapper;
-
-  @Autowired
-  public WebMvcConfig(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {

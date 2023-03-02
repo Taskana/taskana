@@ -14,8 +14,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
@@ -25,9 +24,8 @@ import pro.taskana.workbasket.api.WorkbasketService;
 
 /** TODO. */
 @ApplicationScoped
+@Slf4j
 public class TaskanaProducers {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaProducers.class);
 
   private static final String TASKANA_PROPERTIES = "taskana.properties";
 
@@ -47,10 +45,10 @@ public class TaskanaProducers {
       ctx = new InitialContext();
       properties.load(propertyStream);
       dataSource = (DataSource) ctx.lookup(properties.getProperty("datasource.jndi"));
-      if (LOGGER.isDebugEnabled()) {
+      if (log.isDebugEnabled()) {
         try (Connection connection = dataSource.getConnection()) {
           DatabaseMetaData metaData = connection.getMetaData();
-          LOGGER.debug("---------------> {}", metaData);
+          log.debug("---------------> {}", metaData);
         }
       }
       this.taskanaEngineConfiguration =
@@ -58,7 +56,7 @@ public class TaskanaProducers {
               .initTaskanaProperties()
               .build();
     } catch (NamingException | SQLException | IOException e) {
-      LOGGER.error("Could not start Taskana: ", e);
+      log.error("Could not start Taskana: ", e);
     }
   }
 

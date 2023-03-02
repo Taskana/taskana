@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
  * all additional information about that workbasket.
  */
 @Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketDefinitionRepresentationModelAssembler
     implements CollectionRepresentationModelAssembler<
         Workbasket,
@@ -36,16 +38,6 @@ public class WorkbasketDefinitionRepresentationModelAssembler
   private final WorkbasketService workbasketService;
   private final WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler;
   private final WorkbasketRepresentationModelAssembler workbasketAssembler;
-
-  @Autowired
-  public WorkbasketDefinitionRepresentationModelAssembler(
-      WorkbasketService workbasketService,
-      WorkbasketAccessItemRepresentationModelAssembler accessItemAssembler,
-      WorkbasketRepresentationModelAssembler workbasketAssembler) {
-    this.workbasketService = workbasketService;
-    this.accessItemAssembler = accessItemAssembler;
-    this.workbasketAssembler = workbasketAssembler;
-  }
 
   @NonNull
   public WorkbasketDefinitionRepresentationModel toModel(@NonNull Workbasket workbasket) {

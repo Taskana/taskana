@@ -21,6 +21,79 @@
     <module>taskana-common-security</module>
     <module>taskana-common-data</module>
     <module>taskana-common-test</module>
-    <module>taskana-common-logging</module>
   </modules>
+  <dependencies>
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-aspect-logging</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>aspectj-maven-plugin</artifactId>
+        <version>${version.aspectj-maven-plugin}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${version.aspectj}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>${version.aspectj}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <complianceLevel>${java.version}</complianceLevel>
+          <source>11</source>
+          <target>8</target>
+          <showWeaveInfo>false</showWeaveInfo>
+          <verbose>true</verbose>
+          <forceAjcCompile>true</forceAjcCompile>
+          <excludes>
+            <exclude>**/*.java</exclude>
+          </excludes>
+          <sources/>
+          <aspectLibraries>
+            <aspectLibrary>
+              <groupId>pro.taskana</groupId>
+              <artifactId>taskana-aspect-logging</artifactId>
+            </aspectLibrary>
+          </aspectLibraries>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>process-classes</phase>
+            <goals>
+              <!-- use this goal to weave all your main classes -->
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <weaveDirectories>
+                <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
+              </weaveDirectories>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <!-- use this goal to weave all your test classes -->
+              <goal>test-compile</goal>
+            </goals>
+            <configuration>
+              <weaveDirectories>
+                <weaveDirectory>${project.build.directory}/test-classes</weaveDirectory>
+              </weaveDirectories>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

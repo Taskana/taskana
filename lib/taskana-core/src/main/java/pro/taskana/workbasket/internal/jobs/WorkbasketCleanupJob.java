@@ -1,8 +1,7 @@
 package pro.taskana.workbasket.internal.jobs;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BulkOperationResults;
@@ -22,9 +21,8 @@ import pro.taskana.workbasket.api.WorkbasketQueryColumnName;
  * Job to cleanup completed workbaskets after a period of time if there are no pending tasks
  * associated to the workbasket.
  */
+@Slf4j
 public class WorkbasketCleanupJob extends AbstractTaskanaJob {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketCleanupJob.class);
 
   private final int batchSize;
 
@@ -36,15 +34,14 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 
   @Override
   public void execute() throws TaskanaException {
-    LOGGER.info("Running job to delete all workbaskets marked for deletion");
+    log.info("Running job to delete all workbaskets marked for deletion");
     try {
       List<String> workbasketsMarkedForDeletion = getWorkbasketsMarkedForDeletion();
       int totalNumberOfWorkbasketDeleted =
           CollectionUtil.partitionBasedOnSize(workbasketsMarkedForDeletion, batchSize).stream()
               .mapToInt(this::deleteWorkbasketsTransactionally)
               .sum();
-      LOGGER.info(
-          "Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
+      log.info("Job ended successfully. {} workbaskets deleted.", totalNumberOfWorkbasketDeleted);
     } catch (Exception e) {
       throw new SystemException("Error while processing WorkbasketCleanupJob.", e);
     }
@@ -84,7 +81,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
           try {
             return deleteWorkbaskets(workbasketsToBeDeleted);
           } catch (Exception e) {
-            LOGGER.warn("Could not delete workbaskets.", e);
+            log.warn("Could not delete workbaskets.", e);
             return 0;
           }
         });
@@ -95,12 +92,12 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
 
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getWorkbasketService().deleteWorkbaskets(workbasketsToBeDeleted);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "{} workbasket deleted.", workbasketsToBeDeleted.size() - results.getFailedIds().size());
     }
     for (String failedId : results.getFailedIds()) {
-      LOGGER.warn(
+      log.warn(
           "Workbasket with id {} could not be deleted. Reason:",
           failedId,
           results.getErrorForId(failedId));

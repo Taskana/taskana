@@ -2,7 +2,11 @@ package pro.taskana.classification.internal.models;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.Classification;
@@ -10,14 +14,15 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;
 
 /** Classification entity. */
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class ClassificationImpl extends ClassificationSummaryImpl implements Classification {
 
-  private Boolean isValidInDomain;
+  @Getter @Setter private Boolean isValidInDomain;
   private Instant created;
   private Instant modified;
-  private String description;
-
-  public ClassificationImpl() {}
+  @Getter private String description;
 
   private ClassificationImpl(ClassificationImpl copyFrom, String key) {
     super(copyFrom);
@@ -29,28 +34,8 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
   }
 
   @Override
-  public String getApplicationEntryPoint() {
-    return applicationEntryPoint;
-  }
-
-  @Override
-  public void setApplicationEntryPoint(String applicationEntryPoint) {
-    this.applicationEntryPoint = applicationEntryPoint;
-  }
-
-  @Override
   public ClassificationImpl copy(String key) {
     return new ClassificationImpl(this, key);
-  }
-
-  @Override
-  public Boolean getIsValidInDomain() {
-    return isValidInDomain;
-  }
-
-  @Override
-  public void setIsValidInDomain(Boolean isValidInDomain) {
-    this.isValidInDomain = isValidInDomain;
   }
 
   @Override
@@ -69,11 +54,6 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
 
   public void setModified(Instant modified) {
     this.modified = modified != null ? modified.truncatedTo(ChronoUnit.MILLIS) : null;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
   }
 
   @Override
@@ -142,84 +122,5 @@ public class ClassificationImpl extends ClassificationSummaryImpl implements Cla
     summary.setCustom7(custom7);
     summary.setCustom8(custom8);
     return summary;
-  }
-
-  @Override
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationImpl);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), isValidInDomain, created, modified, description);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof ClassificationImpl)) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    ClassificationImpl other = (ClassificationImpl) obj;
-    return Objects.equals(isValidInDomain, other.isValidInDomain)
-        && Objects.equals(created, other.created)
-        && Objects.equals(modified, other.modified)
-        && Objects.equals(description, other.description);
-  }
-
-  @Override
-  public String toString() {
-    return "ClassificationImpl [id="
-        + id
-        + ", key="
-        + key
-        + ", parentId="
-        + parentId
-        + ", parentKey="
-        + parentKey
-        + ", category="
-        + category
-        + ", type="
-        + type
-        + ", domain="
-        + domain
-        + ", isValidInDomain="
-        + isValidInDomain
-        + ", created="
-        + created
-        + ", modified="
-        + modified
-        + ", name="
-        + name
-        + ", description="
-        + description
-        + ", priority="
-        + priority
-        + ", serviceLevel="
-        + serviceLevel
-        + ", applicationEntryPoint="
-        + applicationEntryPoint
-        + ", custom1="
-        + custom1
-        + ", custom2="
-        + custom2
-        + ", custom3="
-        + custom3
-        + ", custom4="
-        + custom4
-        + ", custom5="
-        + custom5
-        + ", custom6="
-        + custom6
-        + ", custom7="
-        + custom7
-        + ", custom8="
-        + custom8
-        + "]";
   }
 }

@@ -1,35 +1,69 @@
 package pro.taskana.classification.internal.models;
 
-import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;
 
 /** Implementation for the short summaries of a classification entity. */
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class ClassificationSummaryImpl implements ClassificationSummary {
 
   protected String id;
+
+  @Setter(AccessLevel.NONE)
   protected String applicationEntryPoint;
+
   protected String category;
+
+  @Setter(AccessLevel.NONE)
   protected String domain;
+
+  @Setter(AccessLevel.NONE)
   protected String key;
+
+  @Setter(AccessLevel.NONE)
   protected String name;
+
   protected String parentId;
   protected String parentKey;
   protected int priority;
   protected String serviceLevel; // PddDThhHmmM
   protected String type;
-  protected String custom1;
-  protected String custom2;
-  protected String custom3;
-  protected String custom4;
-  protected String custom5;
-  protected String custom6;
-  protected String custom7;
-  protected String custom8;
 
-  public ClassificationSummaryImpl() {}
+  @Setter(AccessLevel.NONE)
+  protected String custom1;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom2;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom3;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom4;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom5;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom6;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom7;
+
+  @Setter(AccessLevel.NONE)
+  protected String custom8;
 
   protected ClassificationSummaryImpl(ClassificationSummaryImpl copyFrom) {
     applicationEntryPoint = copyFrom.applicationEntryPoint;
@@ -51,104 +85,21 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     custom8 = copyFrom.custom8;
   }
 
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  @Override
-  public String getKey() {
-    return key;
-  }
-
   public void setKey(String key) {
     this.key = key == null ? null : key.trim();
-  }
-
-  @Override
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  @Override
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  @Override
-  public String getDomain() {
-    return domain;
   }
 
   public void setDomain(String domain) {
     this.domain = domain == null ? null : domain.trim();
   }
 
-  @Override
-  public String getName() {
-    return name;
-  }
-
   public void setName(String name) {
     this.name = name == null ? null : name.trim();
-  }
-
-  @Override
-  public String getParentId() {
-    return parentId;
-  }
-
-  public void setParentId(String parentId) {
-    this.parentId = parentId;
-  }
-
-  @Override
-  public String getParentKey() {
-    return parentKey;
-  }
-
-  public void setParentKey(String parentKey) {
-    this.parentKey = parentKey;
-  }
-
-  @Override
-  public String getServiceLevel() {
-    return serviceLevel;
-  }
-
-  public void setServiceLevel(String serviceLevel) {
-    this.serviceLevel = serviceLevel;
-  }
-
-  @Override
-  public String getApplicationEntryPoint() {
-    return this.applicationEntryPoint;
   }
 
   public void setApplicationEntryPoint(String applicationEntryPoint) {
     this.applicationEntryPoint =
         applicationEntryPoint == null ? null : applicationEntryPoint.trim();
-  }
-
-  @Override
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
   }
 
   @Deprecated
@@ -186,173 +137,35 @@ public class ClassificationSummaryImpl implements ClassificationSummary {
     return new ClassificationSummaryImpl(this);
   }
 
-  public String getCustom1() {
-    return custom1;
-  }
-
   public void setCustom1(String custom1) {
     this.custom1 = custom1 == null ? null : custom1.trim();
-  }
-
-  public String getCustom2() {
-    return custom2;
   }
 
   public void setCustom2(String custom2) {
     this.custom2 = custom2 == null ? null : custom2.trim();
   }
 
-  public String getCustom3() {
-    return custom3;
-  }
-
   public void setCustom3(String custom3) {
     this.custom3 = custom3 == null ? null : custom3.trim();
-  }
-
-  public String getCustom4() {
-    return custom4;
   }
 
   public void setCustom4(String custom4) {
     this.custom4 = custom4 == null ? null : custom4.trim();
   }
 
-  public String getCustom5() {
-    return custom5;
-  }
-
   public void setCustom5(String custom5) {
     this.custom5 = custom5 == null ? null : custom5.trim();
-  }
-
-  public String getCustom6() {
-    return custom6;
   }
 
   public void setCustom6(String custom6) {
     this.custom6 = custom6 == null ? null : custom6.trim();
   }
 
-  public String getCustom7() {
-    return custom7;
-  }
-
   public void setCustom7(String custom7) {
     this.custom7 = custom7 == null ? null : custom7.trim();
   }
 
-  public String getCustom8() {
-    return custom8;
-  }
-
   public void setCustom8(String custom8) {
     this.custom8 = custom8 == null ? null : custom8.trim();
-  }
-
-  protected boolean canEqual(Object other) {
-    return (other instanceof ClassificationSummaryImpl);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        applicationEntryPoint,
-        key,
-        category,
-        type,
-        domain,
-        name,
-        parentId,
-        parentKey,
-        priority,
-        serviceLevel,
-        custom1,
-        custom2,
-        custom3,
-        custom4,
-        custom5,
-        custom6,
-        custom7,
-        custom8);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof ClassificationSummaryImpl)) {
-      return false;
-    }
-    ClassificationSummaryImpl other = (ClassificationSummaryImpl) obj;
-
-    if (!other.canEqual(this)) {
-      return false;
-    }
-    return priority == other.priority
-        && Objects.equals(id, other.id)
-        && Objects.equals(applicationEntryPoint, other.applicationEntryPoint)
-        && Objects.equals(key, other.key)
-        && Objects.equals(category, other.category)
-        && Objects.equals(type, other.type)
-        && Objects.equals(domain, other.domain)
-        && Objects.equals(name, other.name)
-        && Objects.equals(parentId, other.parentId)
-        && Objects.equals(parentKey, other.parentKey)
-        && Objects.equals(serviceLevel, other.serviceLevel)
-        && Objects.equals(custom1, other.custom1)
-        && Objects.equals(custom2, other.custom2)
-        && Objects.equals(custom3, other.custom3)
-        && Objects.equals(custom4, other.custom4)
-        && Objects.equals(custom5, other.custom5)
-        && Objects.equals(custom6, other.custom6)
-        && Objects.equals(custom7, other.custom7)
-        && Objects.equals(custom8, other.custom8);
-  }
-
-  @Override
-  public String toString() {
-    return "ClassificationSummaryImpl [id="
-        + id
-        + ", applicationEntryPoint="
-        + applicationEntryPoint
-        + ", category="
-        + category
-        + ", domain="
-        + domain
-        + ", key="
-        + key
-        + ", name="
-        + name
-        + ", parentId="
-        + parentId
-        + ", parentKey="
-        + parentKey
-        + ", priority="
-        + priority
-        + ", serviceLevel="
-        + serviceLevel
-        + ", type="
-        + type
-        + ", custom1="
-        + custom1
-        + ", custom2="
-        + custom2
-        + ", custom3="
-        + custom3
-        + ", custom4="
-        + custom4
-        + ", custom5="
-        + custom5
-        + ", custom6="
-        + custom6
-        + ", custom7="
-        + custom7
-        + ", custom8="
-        + custom8
-        + "]";
   }
 }

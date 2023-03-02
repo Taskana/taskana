@@ -3,12 +3,29 @@ package pro.taskana.workbasket.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketType;
 
+@RequiredArgsConstructor(
+    onConstructor =
+        @__({
+          @ConstructorProperties({
+            "name",
+            "name-like",
+            "key",
+            "key-like",
+            "owner",
+            "owner-like",
+            "description-like",
+            "domain",
+            "type",
+            "required-permission"
+          })
+        }))
 public class WorkbasketQueryFilterParameter implements QueryParameter<WorkbasketQuery, Void> {
 
   /** Filter by the name of the Workbasket. This is an exact match. */
@@ -66,42 +83,6 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   /** Filter by the required permission for the Workbasket. */
   @JsonProperty("required-permission")
   private final WorkbasketPermission[] requiredPermissions;
-
-  @SuppressWarnings("indentation")
-  @ConstructorProperties({
-    "name",
-    "name-like",
-    "key",
-    "key-like",
-    "owner",
-    "owner-like",
-    "description-like",
-    "domain",
-    "type",
-    "required-permission"
-  })
-  public WorkbasketQueryFilterParameter(
-      String[] name,
-      String[] nameLike,
-      String[] key,
-      String[] keyLike,
-      String[] owner,
-      String[] ownerLike,
-      String[] descriptionLike,
-      String[] domain,
-      WorkbasketType[] type,
-      WorkbasketPermission[] requiredPermissions) {
-    this.name = name;
-    this.nameLike = nameLike;
-    this.key = key;
-    this.keyLike = keyLike;
-    this.owner = owner;
-    this.ownerLike = ownerLike;
-    this.descriptionLike = descriptionLike;
-    this.domain = domain;
-    this.type = type;
-    this.requiredPermissions = requiredPermissions;
-  }
 
   @Override
   public Void apply(WorkbasketQuery query) {

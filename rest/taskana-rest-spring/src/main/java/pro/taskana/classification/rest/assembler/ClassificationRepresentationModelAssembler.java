@@ -3,6 +3,7 @@ package pro.taskana.classification.rest.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.lang.NonNull;
@@ -24,6 +25,7 @@ import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
  * ClassificationRepresentationModel} and vice versa.
  */
 @Component
+@AllArgsConstructor(onConstructor = @__({@Autowired}))
 public class ClassificationRepresentationModelAssembler
     implements CollectionRepresentationModelAssembler<
         Classification,
@@ -31,11 +33,6 @@ public class ClassificationRepresentationModelAssembler
         ClassificationCollectionRepresentationModel> {
 
   final ClassificationService classificationService;
-
-  @Autowired
-  public ClassificationRepresentationModelAssembler(ClassificationService classificationService) {
-    this.classificationService = classificationService;
-  }
 
   @NonNull
   @Override

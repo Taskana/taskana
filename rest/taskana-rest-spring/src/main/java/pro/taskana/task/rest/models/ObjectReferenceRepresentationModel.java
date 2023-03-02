@@ -1,7 +1,11 @@
 package pro.taskana.task.rest.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
+@Getter
+@Setter
 public class ObjectReferenceRepresentationModel
     extends RepresentationModel<ObjectReferenceRepresentationModel> {
 
@@ -20,60 +24,4 @@ public class ObjectReferenceRepresentationModel
   private String type;
   /** The value of the primary object reference. */
   private String value;
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getCompany() {
-    return company;
-  }
-
-  public void setCompany(String company) {
-    this.company = company;
-  }
-
-  public String getSystem() {
-    return system;
-  }
-
-  public void setSystem(String system) {
-    this.system = system;
-  }
-
-  public String getSystemInstance() {
-    return systemInstance;
-  }
-
-  public void setSystemInstance(String systemInstance) {
-    this.systemInstance = systemInstance;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
 }

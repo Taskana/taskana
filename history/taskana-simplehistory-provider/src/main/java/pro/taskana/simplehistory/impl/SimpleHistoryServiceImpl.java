@@ -3,8 +3,7 @@ package pro.taskana.simplehistory.impl;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
@@ -25,9 +24,9 @@ import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.UserMapper;
 
 /** This is the implementation of TaskanaHistory. */
+@Slf4j
 public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHistoryServiceImpl.class);
   private TaskanaHistoryEngineImpl taskanaHistoryEngine;
   private TaskHistoryEventMapper taskHistoryEventMapper;
   private WorkbasketHistoryEventMapper workbasketHistoryEventMapper;
@@ -38,8 +37,8 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
 
     this.taskanaHistoryEngine = getTaskanaEngine(taskanaEngine);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "Simple history service implementation initialized with schemaName: {} ",
           taskanaEngine.getConfiguration().getSchemaName());
     }
@@ -63,7 +62,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       }
       taskHistoryEventMapper.insert(event);
     } catch (SQLException e) {
-      LOGGER.error("Error while inserting task history event into database", e);
+      log.error("Error while inserting task history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
     }
@@ -79,7 +78,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       }
       workbasketHistoryEventMapper.insert(event);
     } catch (SQLException e) {
-      LOGGER.error("Error while inserting workbasket history event into database", e);
+      log.error("Error while inserting workbasket history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
     }
@@ -95,7 +94,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       }
       classificationHistoryEventMapper.insert(event);
     } catch (SQLException e) {
-      LOGGER.error("Error while inserting classification history event into database", e);
+      log.error("Error while inserting classification history event into database", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
     }
@@ -114,7 +113,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       taskanaHistoryEngine.openConnection();
       taskHistoryEventMapper.deleteMultipleByTaskIds(taskIds);
     } catch (SQLException e) {
-      LOGGER.error("Caught exception while trying to delete history events", e);
+      log.error("Caught exception while trying to delete history events", e);
     } finally {
       taskanaHistoryEngine.returnConnection();
     }
@@ -140,7 +139,7 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
       return resultEvent;
 
     } catch (SQLException e) {
-      LOGGER.error("Caught exception while trying to retrieve a history event", e);
+      log.error("Caught exception while trying to retrieve a history event", e);
       return resultEvent;
     } finally {
       taskanaHistoryEngine.returnConnection();

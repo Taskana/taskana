@@ -3,6 +3,7 @@ package pro.taskana.classification.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 
@@ -31,40 +32,40 @@ public class ClassificationQueryImpl implements ClassificationQuery {
   private final List<String> orderBy;
   private final List<String> orderColumns;
   private ClassificationQueryColumnName columnName;
-  private String[] key;
-  private String[] idIn;
-  private String[] parentId;
-  private String[] parentKey;
-  private String[] category;
-  private String[] type;
-  private String[] domain;
-  private Boolean validInDomain;
-  private TimeInterval[] createdIn;
-  private TimeInterval[] modifiedIn;
-  private String[] nameIn;
-  private String[] nameLike;
-  private String descriptionLike;
-  private int[] priority;
-  private String[] serviceLevelIn;
-  private String[] serviceLevelLike;
-  private String[] applicationEntryPointIn;
-  private String[] applicationEntryPointLike;
-  private String[] custom1In;
-  private String[] custom1Like;
-  private String[] custom2In;
-  private String[] custom2Like;
-  private String[] custom3In;
-  private String[] custom3Like;
-  private String[] custom4In;
-  private String[] custom4Like;
-  private String[] custom5In;
-  private String[] custom5Like;
-  private String[] custom6In;
-  private String[] custom6Like;
-  private String[] custom7In;
-  private String[] custom7Like;
-  private String[] custom8In;
-  private String[] custom8Like;
+  @Getter private String[] key;
+  @Getter private String[] idIn;
+  @Getter private String[] parentId;
+  @Getter private String[] parentKey;
+  @Getter private String[] category;
+  @Getter private String[] type;
+  @Getter private String[] domain;
+  @Getter private Boolean validInDomain;
+  @Getter private TimeInterval[] createdIn;
+  @Getter private TimeInterval[] modifiedIn;
+  @Getter private String[] nameIn;
+  @Getter private String[] nameLike;
+  @Getter private String descriptionLike;
+  @Getter private int[] priority;
+  @Getter private String[] serviceLevelIn;
+  @Getter private String[] serviceLevelLike;
+  @Getter private String[] applicationEntryPointIn;
+  @Getter private String[] applicationEntryPointLike;
+  @Getter private String[] custom1In;
+  @Getter private String[] custom1Like;
+  @Getter private String[] custom2In;
+  @Getter private String[] custom2Like;
+  @Getter private String[] custom3In;
+  @Getter private String[] custom3Like;
+  @Getter private String[] custom4In;
+  @Getter private String[] custom4Like;
+  @Getter private String[] custom5In;
+  @Getter private String[] custom5Like;
+  @Getter private String[] custom6In;
+  @Getter private String[] custom6Like;
+  @Getter private String[] custom7In;
+  @Getter private String[] custom7Like;
+  @Getter private String[] custom8In;
+  @Getter private String[] custom8Like;
 
   ClassificationQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -379,142 +380,6 @@ public class ClassificationQueryImpl implements ClassificationQuery {
     } finally {
       taskanaEngine.returnConnection();
     }
-  }
-
-  public String[] getKey() {
-    return key;
-  }
-
-  public String[] getIdIn() {
-    return idIn;
-  }
-
-  public String[] getparentId() {
-    return parentId;
-  }
-
-  public String[] getparentKey() {
-    return parentKey;
-  }
-
-  public String[] getCategory() {
-    return category;
-  }
-
-  public String[] getType() {
-    return type;
-  }
-
-  public String[] getNameIn() {
-    return nameIn;
-  }
-
-  public String[] getNameLike() {
-    return nameLike;
-  }
-
-  public String getDescriptionLike() {
-    return descriptionLike;
-  }
-
-  public int[] getPriority() {
-    return priority;
-  }
-
-  public String[] getServiceLevelIn() {
-    return serviceLevelIn;
-  }
-
-  public String[] getServiceLevelLike() {
-    return serviceLevelLike;
-  }
-
-  public String[] getDomain() {
-    return domain;
-  }
-
-  public Boolean getValidInDomain() {
-    return validInDomain;
-  }
-
-  public TimeInterval[] getCreatedIn() {
-    return createdIn;
-  }
-
-  public TimeInterval[] getModifiedIn() {
-    return modifiedIn;
-  }
-
-  public String[] getApplicationEntryPointIn() {
-    return applicationEntryPointIn;
-  }
-
-  public String[] getApplicationEntryPointLike() {
-    return applicationEntryPointLike;
-  }
-
-  public String[] getCustom1In() {
-    return custom1In;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom2In() {
-    return custom2In;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom3In() {
-    return custom3In;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom4In() {
-    return custom4In;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
-  public String[] getCustom5In() {
-    return custom5In;
-  }
-
-  public String[] getCustom5Like() {
-    return custom5Like;
-  }
-
-  public String[] getCustom6In() {
-    return custom6In;
-  }
-
-  public String[] getCustom6Like() {
-    return custom6Like;
-  }
-
-  public String[] getCustom7In() {
-    return custom7In;
-  }
-
-  public String[] getCustom7Like() {
-    return custom7Like;
-  }
-
-  public String[] getCustom8In() {
-    return custom8In;
-  }
-
-  public String[] getCustom8Like() {
-    return custom8Like;
   }
 
   public ClassificationQueryColumnName getColumnName() {

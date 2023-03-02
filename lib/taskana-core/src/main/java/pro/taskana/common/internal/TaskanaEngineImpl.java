@@ -1,5 +1,7 @@
 package pro.taskana.common.internal;
 
+import static pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode.EXPLICIT;
+
 import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.security.auth.Subject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -22,8 +25,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
@@ -43,6 +44,8 @@ import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.jobs.JobScheduler;
+import pro.taskana.common.internal.jobs.RealClock;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.persistence.StringTypeHandler;
@@ -78,11 +81,11 @@ import pro.taskana.workbasket.internal.WorkbasketQueryMapper;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 
 /** This is the implementation of TaskanaEngine. */
+@Slf4j
 public class TaskanaEngineImpl implements TaskanaEngine {
 
   // must match the VERSION value in table
-  private static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
+  public static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
   private static final SessionStack SESSION_STACK = new SessionStack();
   protected final TaskanaConfiguration taskanaEngineConfiguration;
   private final TaskRoutingManager taskRoutingManager;
@@ -104,14 +107,21 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   protected TaskanaEngineImpl(
       TaskanaConfiguration taskanaEngineConfiguration,
-      ConnectionManagementMode connectionManagementMode)
+      ConnectionManagementMode connectionManagementMode,
+      boolean initSpis)
       throws SQLException {
-    LOGGER.info(
+    log.info(
         "initializing TASKANA with this configuration: {} and this mode: {}",
         taskanaEngineConfiguration,
         connectionManagementMode);
+    if (connectionManagementMode == EXPLICIT) {
+      // at first we initialize Taskana DB with autocommit,
+      // at the end of constructor the mode is set
+      this.mode = ConnectionManagementMode.AUTOCOMMIT;
+    } else {
+      this.mode = connectionManagementMode;
+    }
     this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-    this.mode = connectionManagementMode;
     internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     workingDaysToDaysConverter =
         new WorkingDaysToDaysConverter(
@@ -125,24 +135,54 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     initializeDbSchema(taskanaEngineConfiguration);
 
-    // IMPORTANT: SPI has to be initialized last (and in this order) in order
-    // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
-    priorityServiceManager = new PriorityServiceManager();
-    createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
-    historyEventManager = new HistoryEventManager(this);
-    taskRoutingManager = new TaskRoutingManager(this);
-    reviewRequiredManager = new ReviewRequiredManager(this);
-    beforeRequestReviewManager = new BeforeRequestReviewManager(this);
-    afterRequestReviewManager = new AfterRequestReviewManager(this);
-    beforeRequestChangesManager = new BeforeRequestChangesManager(this);
-    afterRequestChangesManager = new AfterRequestChangesManager(this);
+    if (initSpis) {
+      // IMPORTANT: SPI has to be initialized last (and in this order) in order
+      // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
+      priorityServiceManager = new PriorityServiceManager();
+      createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
+      historyEventManager = new HistoryEventManager(this);
+      taskRoutingManager = new TaskRoutingManager(this);
+      reviewRequiredManager = new ReviewRequiredManager(this);
+      beforeRequestReviewManager = new BeforeRequestReviewManager(this);
+      afterRequestReviewManager = new AfterRequestReviewManager(this);
+      beforeRequestChangesManager = new BeforeRequestChangesManager(this);
+      afterRequestChangesManager = new AfterRequestChangesManager(this);
+    } else {
+      priorityServiceManager = null;
+      createTaskPreprocessorManager = null;
+      historyEventManager = null;
+      taskRoutingManager = null;
+      reviewRequiredManager = null;
+      beforeRequestReviewManager = null;
+      afterRequestReviewManager = null;
+      beforeRequestChangesManager = null;
+      afterRequestChangesManager = null;
+    }
+    if (this.taskanaEngineConfiguration.isJobSchedulerEnabled()) {
+      TaskanaConfiguration tec =
+          new TaskanaConfiguration.Builder(this.taskanaEngineConfiguration)
+              .jobSchedulerEnabled(false)
+              .build();
+      TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(tec, EXPLICIT, false);
+      RealClock clock =
+          new RealClock(
+              this.taskanaEngineConfiguration.getJobSchedulerInitialStartDelay(),
+              this.taskanaEngineConfiguration.getJobSchedulerPeriod(),
+              this.taskanaEngineConfiguration.getJobSchedulerPeriodTimeUnit());
+      JobScheduler jobScheduler = new JobScheduler(taskanaEngine, clock);
+      jobScheduler.start();
+    }
+
+    // don't remove, to reset possible explicit mode
+    this.mode = connectionManagementMode;
   }
 
   public static TaskanaEngine createTaskanaEngine(
       TaskanaConfiguration taskanaEngineConfiguration,
-      ConnectionManagementMode connectionManagementMode)
+      ConnectionManagementMode connectionManagementMode,
+      boolean initSpis)
       throws SQLException {
-    return new TaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
+    return new TaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode, initSpis);
   }
 
   @Override
@@ -196,7 +236,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public JobService getJobService() {
-    return new JobServiceImpl(internalTaskanaEngineImpl, sessionManager.getMapper(JobMapper.class));
+    return new JobServiceImpl(sessionManager.getMapper(JobMapper.class), internalTaskanaEngineImpl);
   }
 
   @Override
@@ -227,9 +267,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public void setConnectionManagementMode(ConnectionManagementMode mode) {
-    if (this.mode == ConnectionManagementMode.EXPLICIT
-        && connection != null
-        && mode != ConnectionManagementMode.EXPLICIT) {
+    if (this.mode == EXPLICIT && connection != null && mode != EXPLICIT) {
       if (sessionManager.isManagedSessionStarted()) {
         sessionManager.close();
       }
@@ -246,7 +284,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       // connection management
       connection.setAutoCommit(false);
       connection.setSchema(taskanaEngineConfiguration.getSchemaName());
-      mode = ConnectionManagementMode.EXPLICIT;
+      mode = EXPLICIT;
       sessionManager.startManagedSession(connection);
     } else if (this.connection != null) {
       closeConnection();
@@ -255,7 +293,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public void closeConnection() {
-    if (this.mode == ConnectionManagementMode.EXPLICIT) {
+    if (this.mode == EXPLICIT) {
       this.connection = null;
       if (sessionManager.isManagedSessionStarted()) {
         sessionManager.close();
@@ -287,9 +325,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   @Override
   public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
     if (!isUserInRole(roles)) {
-      if (LOGGER.isDebugEnabled()) {
+      if (log.isDebugEnabled()) {
         String rolesAsString = Arrays.toString(roles);
-        LOGGER.debug(
+        log.debug(
             "Throwing NotAuthorizedException because accessIds {} are not member of roles {}",
             currentUserContext.getAccessIds(),
             rolesAsString);
@@ -329,12 +367,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
         new Environment(
-            "default", this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+            "default", this.transactionFactory, taskanaEngineConfiguration.getDataSource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     String databaseProductName;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaEngineConfiguration.getDataSource().getConnection()) {
       databaseProductName = DB.getDatabaseProductName(con);
       configuration.setDatabaseId(DB.getDatabaseProductId(con));
 
@@ -390,21 +428,24 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 
-  private void initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
+  private boolean initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
-    dbSchemaCreator.run();
+            taskanaEngineConfiguration.getDataSource(), taskanaEngineConfiguration.getSchemaName());
+    boolean schemaCreated = dbSchemaCreator.run();
 
-    if (!dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
-      throw new SystemException(
-          "The Database Schema Version doesn't match the expected minimal version "
-              + MINIMAL_TASKANA_SCHEMA_VERSION);
+    if (!schemaCreated) {
+      if (!dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
+        throw new SystemException(
+            "The Database Schema Version doesn't match the expected minimal version "
+                + MINIMAL_TASKANA_SCHEMA_VERSION);
+      }
     }
     ((ConfigurationServiceImpl) getConfigurationService())
         .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
     ((ConfigurationServiceImpl) getConfigurationService()).setupDefaultCustomAttributes();
+    return schemaCreated;
   }
 
   /**
@@ -476,14 +517,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
                 + "to the database. No schema has been created.",
             e.getCause());
       }
-      if (mode != ConnectionManagementMode.EXPLICIT) {
+      if (mode != EXPLICIT) {
         SESSION_STACK.pushSessionToStack(sessionManager);
       }
     }
 
     @Override
     public void returnConnection() {
-      if (mode != ConnectionManagementMode.EXPLICIT) {
+      if (mode != EXPLICIT) {
         SESSION_STACK.popSessionFromStack();
         if (SESSION_STACK.getSessionStack().isEmpty()
             && sessionManager != null
@@ -513,10 +554,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     @Override
     public void initSqlSession() {
-      if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
+      if (mode == EXPLICIT && connection == null) {
         throw new ConnectionNotSetException();
-      } else if (mode != ConnectionManagementMode.EXPLICIT
-          && !sessionManager.isManagedSessionStarted()) {
+      } else if (mode != EXPLICIT && !sessionManager.isManagedSessionStarted()) {
         sessionManager.startManagedSession();
       }
     }

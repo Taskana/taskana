@@ -1,11 +1,20 @@
 package pro.taskana.task.internal.models;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.models.ObjectReference;
 
 /** ObjectReference entity. */
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class ObjectReferenceImpl implements ObjectReference {
   private String id;
   private String taskId;
@@ -14,8 +23,6 @@ public class ObjectReferenceImpl implements ObjectReference {
   private String systemInstance;
   private String type;
   private String value;
-
-  public ObjectReferenceImpl() {}
 
   public ObjectReferenceImpl(
       String company, String system, String systemInstance, String type, String value) {
@@ -32,69 +39,6 @@ public class ObjectReferenceImpl implements ObjectReference {
     systemInstance = copyFrom.systemInstance;
     type = copyFrom.type;
     value = copyFrom.value;
-  }
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  @Override
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  @Override
-  public String getCompany() {
-    return company;
-  }
-
-  public void setCompany(String company) {
-    this.company = company == null ? null : company.trim();
-  }
-
-  @Override
-  public String getSystem() {
-    return system;
-  }
-
-  public void setSystem(String system) {
-    this.system = system == null ? null : system.trim();
-  }
-
-  @Override
-  public String getSystemInstance() {
-    return systemInstance;
-  }
-
-  public void setSystemInstance(String systemInstance) {
-    this.systemInstance = systemInstance;
-  }
-
-  @Override
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type == null ? null : type.trim();
-  }
-
-  @Override
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value == null ? null : value.trim();
   }
 
   @Override
@@ -118,48 +62,5 @@ public class ObjectReferenceImpl implements ObjectReference {
       throw new InvalidArgumentException(
           String.format("Value of %s of %s must not be empty", objRefType, objName));
     }
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, taskId, company, system, systemInstance, type, value);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof ObjectReferenceImpl)) {
-      return false;
-    }
-    ObjectReferenceImpl other = (ObjectReferenceImpl) obj;
-    return Objects.equals(id, other.id)
-        && Objects.equals(taskId, other.taskId)
-        && Objects.equals(company, other.company)
-        && Objects.equals(system, other.system)
-        && Objects.equals(systemInstance, other.systemInstance)
-        && Objects.equals(type, other.type)
-        && Objects.equals(value, other.value);
-  }
-
-  @Override
-  public String toString() {
-    return "ObjectReference ["
-        + "id="
-        + this.id
-        + ", taskId="
-        + this.taskId
-        + ", company="
-        + this.company
-        + ", system="
-        + this.system
-        + ", systemInstance="
-        + this.systemInstance
-        + ", type="
-        + this.type
-        + ", value="
-        + this.value
-        + "]";
   }
 }

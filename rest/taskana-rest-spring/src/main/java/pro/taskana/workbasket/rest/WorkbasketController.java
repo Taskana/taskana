@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryPagedRepresentationMo
 /** Controller for all {@link Workbasket} related endpoints. */
 @RestController
 @EnableHypermediaSupport(type = HypermediaType.HAL)
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WorkbasketController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkbasketController.class);
@@ -64,22 +66,6 @@ public class WorkbasketController {
       workbasketSummaryRepresentationModelAssembler;
   private final WorkbasketAccessItemRepresentationModelAssembler
       workbasketAccessItemRepresentationModelAssembler;
-
-  @Autowired
-  WorkbasketController(
-      WorkbasketService workbasketService,
-      WorkbasketRepresentationModelAssembler workbasketRepresentationModelAssembler,
-      WorkbasketSummaryRepresentationModelAssembler workbasketSummaryRepresentationModelAssembler,
-      WorkbasketAccessItemRepresentationModelAssembler
-          workbasketAccessItemRepresentationModelAssembler) {
-    this.workbasketService = workbasketService;
-    this.workbasketRepresentationModelAssembler = workbasketRepresentationModelAssembler;
-    this.workbasketSummaryRepresentationModelAssembler =
-        workbasketSummaryRepresentationModelAssembler;
-
-    this.workbasketAccessItemRepresentationModelAssembler =
-        workbasketAccessItemRepresentationModelAssembler;
-  }
 
   /**
    * This endpoint retrieves a list of existing Workbaskets. Filters can be applied.

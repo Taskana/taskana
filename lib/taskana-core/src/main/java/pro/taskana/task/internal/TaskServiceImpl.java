@@ -19,9 +19,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -99,9 +98,8 @@ import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
 
 /** This is the implementation of TaskService. */
 @SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
+@Slf4j
 public class TaskServiceImpl implements TaskService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
 
   private final InternalTaskanaEngine taskanaEngine;
   private final WorkbasketService workbasketService;
@@ -244,8 +242,8 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidArgumentException("taskId must be empty when creating a task");
       }
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Task {} cannot be found, so it can be created.", task.getId());
+      if (log.isDebugEnabled()) {
+        log.debug("Task {} cannot be found, so it can be created.", task.getId());
       }
       Workbasket workbasket;
 
@@ -292,8 +290,8 @@ public class TaskServiceImpl implements TaskService {
 
       try {
         this.taskMapper.insert(task);
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Method createTask() created Task '{}'.", task.getId());
+        if (log.isDebugEnabled()) {
+          log.debug("Method createTask() created Task '{}'.", task.getId());
         }
         if (historyEventManager.isEnabled()) {
 
@@ -432,8 +430,8 @@ public class TaskServiceImpl implements TaskService {
       task.setRead(isRead);
       task.setModified(Instant.now());
       taskMapper.update(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Method setTaskRead() set read property of Task '{}' to {} ", task, isRead);
+      if (log.isDebugEnabled()) {
+        log.debug("Method setTaskRead() set read property of Task '{}' to {} ", task, isRead);
       }
       return task;
     } finally {
@@ -524,8 +522,8 @@ public class TaskServiceImpl implements TaskService {
 
       taskMapper.update(newTaskImpl);
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
+      if (log.isDebugEnabled()) {
+        log.debug("Method updateTask() updated task '{}' for user '{}'.", task.getId(), userId);
       }
 
       if (historyEventManager.isEnabled()) {
@@ -687,13 +685,13 @@ public class TaskServiceImpl implements TaskService {
       if (!taskSummaries.isEmpty()) {
         changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updated, fieldSelector);
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
+        if (log.isDebugEnabled()) {
+          log.debug("updateTasks() updated the following tasks: {} ", changedTasks);
         }
 
       } else {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("updateTasks() found no tasks for update ");
+        if (log.isDebugEnabled()) {
+          log.debug("updateTasks() found no tasks for update ");
         }
       }
       return changedTasks;
@@ -721,13 +719,13 @@ public class TaskServiceImpl implements TaskService {
       if (!taskSummaries.isEmpty()) {
         changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
+        if (log.isDebugEnabled()) {
+          log.debug("updateTasks() updated the following tasks: {} ", changedTasks);
         }
 
       } else {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("updateTasks() found no tasks for update ");
+        if (log.isDebugEnabled()) {
+          log.debug("updateTasks() found no tasks for update ");
         }
       }
       return changedTasks;
@@ -822,8 +820,8 @@ public class TaskServiceImpl implements TaskService {
         taskMapper.setOwnerOfTasks(owner, taskIdsToUpdate.getLeft(), Instant.now());
       }
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
+      if (log.isDebugEnabled()) {
+        log.debug(
             "Received the Request to set owner on {} tasks, actually modified tasks = {}"
                 + ", could not set owner on {} tasks.",
             taskIds.size(),
@@ -943,8 +941,8 @@ public class TaskServiceImpl implements TaskService {
             .map(Pair::getLeft)
             .collect(Collectors.toList());
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "the following tasks are affected by the update of classification {} : {}",
           classificationId,
           affectedTaskIds);
@@ -1075,8 +1073,8 @@ public class TaskServiceImpl implements TaskService {
       taskIds = null;
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "augmentTaskSummariesByContainedSummariesWithoutPartitioning() with sublist {} "
               + "about to query for attachmentSummaries ",
           taskSummaries);
@@ -1217,8 +1215,8 @@ public class TaskServiceImpl implements TaskService {
     task.setCompleted(now);
     task.setState(targetState);
     taskMapper.update(task);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "Task '{}' cancelled by user '{}'.",
           taskId,
           taskanaEngine.getEngine().getCurrentUserContext().getUserid());
@@ -1248,8 +1246,8 @@ public class TaskServiceImpl implements TaskService {
       checkPreconditionsForClaimTask(task, forceClaim);
       claimActionsOnTask(task, userId, userLongName, now);
       taskMapper.update(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Task '{}' claimed by user '{}'.", taskId, userId);
+      if (log.isDebugEnabled()) {
+        log.debug("Task '{}' claimed by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
         String changeDetails =
@@ -1297,8 +1295,8 @@ public class TaskServiceImpl implements TaskService {
       task.setModified(Instant.now());
 
       taskMapper.requestReview(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Requested review for Task '{}' by user '{}'.", taskId, userId);
+      if (log.isDebugEnabled()) {
+        log.debug("Requested review for Task '{}' by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
         String changeDetails =
@@ -1347,8 +1345,8 @@ public class TaskServiceImpl implements TaskService {
       task.setModified(Instant.now());
 
       taskMapper.requestChanges(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Requested changes for Task '{}' by user '{}'.", taskId, userId);
+      if (log.isDebugEnabled()) {
+        log.debug("Requested changes for Task '{}' by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
         String changeDetails =
@@ -1472,8 +1470,8 @@ public class TaskServiceImpl implements TaskService {
       Instant now = Instant.now();
       cancelClaimActionsOnTask(task, now);
       taskMapper.update(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
+      if (log.isDebugEnabled()) {
+        log.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
         String changeDetails =
@@ -1519,8 +1517,8 @@ public class TaskServiceImpl implements TaskService {
       Instant now = Instant.now();
       completeActionsOnTask(task, userId, now);
       taskMapper.update(task);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
+      if (log.isDebugEnabled()) {
+        log.debug("Task '{}' completed by user '{}'.", taskId, userId);
       }
       if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
@@ -1565,8 +1563,8 @@ public class TaskServiceImpl implements TaskService {
         historyEventManager.deleteEvents(Collections.singletonList(taskId));
       }
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Task {} deleted.", taskId);
+      if (log.isDebugEnabled()) {
+        log.debug("Task {} deleted.", taskId);
       }
     } finally {
       taskanaEngine.returnConnection();
@@ -1760,8 +1758,7 @@ public class TaskServiceImpl implements TaskService {
           CallbackState state = CallbackState.valueOf(value);
           task.setCallbackState(state);
         } catch (Exception e) {
-          LOGGER.warn(
-              "Attempted to determine callback state from {} and caught exception", value, e);
+          log.warn("Attempted to determine callback state from {} and caught exception", value, e);
           throw new InvalidArgumentException(
               String.format("Attempted to set callback state for task %s.", task.getId()), e);
         }
@@ -1849,8 +1846,8 @@ public class TaskServiceImpl implements TaskService {
   private List<ClassificationSummary> queryClassificationsForTasksAndAttachments(
       Set<String> classificationIds) {
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
+    if (log.isDebugEnabled()) {
+      log.debug(
           "queryClassificationsForTasksAndAttachments() about to query classifications and exit");
     }
     return this.classificationService
@@ -1861,8 +1858,8 @@ public class TaskServiceImpl implements TaskService {
 
   private List<WorkbasketSummary> queryWorkbasketsForTasks(Set<String> workbasketIds) {
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("queryWorkbasketsForTasks() about to query workbaskets and exit");
+    if (log.isDebugEnabled()) {
+      log.debug("queryWorkbasketsForTasks() about to query workbaskets and exit");
     }
     // perform classification query
     return this.workbasketService

@@ -2,9 +2,71 @@ package pro.taskana.monitor.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
+import lombok.RequiredArgsConstructor;
 
 import pro.taskana.task.api.TaskState;
 
+@RequiredArgsConstructor(
+    onConstructor =
+        @__({
+          @ConstructorProperties({
+            "in-working-days",
+            "workbasket-id",
+            "state",
+            "classification-category",
+            "domain",
+            "classification-id",
+            "excluded-classification-id",
+            "custom-1",
+            "custom-1-like",
+            "custom-1-not-in",
+            "custom-2",
+            "custom-2-like",
+            "custom-2-not-in",
+            "custom-3",
+            "custom-3-like",
+            "custom-3-not-in",
+            "custom-4",
+            "custom-4-like",
+            "custom-4-not-in",
+            "custom-5",
+            "custom-5-like",
+            "custom-5-not-in",
+            "custom-6",
+            "custom-6-like",
+            "custom-6-not-in",
+            "custom-7",
+            "custom-7-like",
+            "custom-7-not-in",
+            "custom-8",
+            "custom-8-like",
+            "custom-8-not-in",
+            "custom-9",
+            "custom-9-like",
+            "custom-9-not-in",
+            "custom-10",
+            "custom-10-like",
+            "custom-10-not-in",
+            "custom-11",
+            "custom-11-like",
+            "custom-11-not-in",
+            "custom-12",
+            "custom-12-like",
+            "custom-12-not-in",
+            "custom-13",
+            "custom-13-like",
+            "custom-13-not-in",
+            "custom-14",
+            "custom-14-like",
+            "custom-14-not-in",
+            "custom-15",
+            "custom-15-like",
+            "custom-15-not-in",
+            "custom-16",
+            "custom-16-like",
+            "custom-16-not-in"
+          })
+        }))
 public class ReportFilterParameter {
 
   /** Determine weather the report should convert the age of the Tasks into working days. */
@@ -290,174 +352,4 @@ public class ReportFilterParameter {
   /** Filter out by values of the field custom16 of the Task. This is an exact match. */
   @JsonProperty("custom-16-not-in")
   protected final String[] custom16NotIn;
-
-  @ConstructorProperties({
-    "in-working-days",
-    "workbasket-id",
-    "state",
-    "classification-category",
-    "domain",
-    "classification-id",
-    "excluded-classification-id",
-    "custom-1",
-    "custom-1-like",
-    "custom-1-not-in",
-    "custom-2",
-    "custom-2-like",
-    "custom-2-not-in",
-    "custom-3",
-    "custom-3-like",
-    "custom-3-not-in",
-    "custom-4",
-    "custom-4-like",
-    "custom-4-not-in",
-    "custom-5",
-    "custom-5-like",
-    "custom-5-not-in",
-    "custom-6",
-    "custom-6-like",
-    "custom-6-not-in",
-    "custom-7",
-    "custom-7-like",
-    "custom-7-not-in",
-    "custom-8",
-    "custom-8-like",
-    "custom-8-not-in",
-    "custom-9",
-    "custom-9-like",
-    "custom-9-not-in",
-    "custom-10",
-    "custom-10-like",
-    "custom-10-not-in",
-    "custom-11",
-    "custom-11-like",
-    "custom-11-not-in",
-    "custom-12",
-    "custom-12-like",
-    "custom-12-not-in",
-    "custom-13",
-    "custom-13-like",
-    "custom-13-not-in",
-    "custom-14",
-    "custom-14-like",
-    "custom-14-not-in",
-    "custom-15",
-    "custom-15-like",
-    "custom-15-not-in",
-    "custom-16",
-    "custom-16-like",
-    "custom-16-not-in"
-  })
-  public ReportFilterParameter(
-      Boolean inWorkingDays,
-      String[] workbasketId,
-      TaskState[] state,
-      String[] classificationCategory,
-      String[] domain,
-      String[] classificationId,
-      String[] excludedClassificationId,
-      String[] custom1,
-      String[] custom1Like,
-      String[] custom1NotIn,
-      String[] custom2,
-      String[] custom2Like,
-      String[] custom2NotIn,
-      String[] custom3,
-      String[] custom3Like,
-      String[] custom3NotIn,
-      String[] custom4,
-      String[] custom4Like,
-      String[] custom4NotIn,
-      String[] custom5,
-      String[] custom5Like,
-      String[] custom5NotIn,
-      String[] custom6,
-      String[] custom6Like,
-      String[] custom6NotIn,
-      String[] custom7,
-      String[] custom7Like,
-      String[] custom7NotIn,
-      String[] custom8,
-      String[] custom8Like,
-      String[] custom8NotIn,
-      String[] custom9,
-      String[] custom9Like,
-      String[] custom9NotIn,
-      String[] custom10,
-      String[] custom10Like,
-      String[] custom10NotIn,
-      String[] custom11,
-      String[] custom11Like,
-      String[] custom11NotIn,
-      String[] custom12,
-      String[] custom12Like,
-      String[] custom12NotIn,
-      String[] custom13,
-      String[] custom13Like,
-      String[] custom13NotIn,
-      String[] custom14,
-      String[] custom14Like,
-      String[] custom14NotIn,
-      String[] custom15,
-      String[] custom15Like,
-      String[] custom15NotIn,
-      String[] custom16,
-      String[] custom16Like,
-      String[] custom16NotIn) {
-    this.inWorkingDays = inWorkingDays;
-    this.workbasketId = workbasketId;
-    this.state = state;
-    this.classificationCategory = classificationCategory;
-    this.domain = domain;
-    this.classificationId = classificationId;
-    this.excludedClassificationId = excludedClassificationId;
-    this.custom1 = custom1;
-    this.custom1Like = custom1Like;
-    this.custom1NotIn = custom1NotIn;
-    this.custom2 = custom2;
-    this.custom2Like = custom2Like;
-    this.custom2NotIn = custom2NotIn;
-    this.custom3 = custom3;
-    this.custom3Like = custom3Like;
-    this.custom3NotIn = custom3NotIn;
-    this.custom4 = custom4;
-    this.custom4Like = custom4Like;
-    this.custom4NotIn = custom4NotIn;
-    this.custom5 = custom5;
-    this.custom5Like = custom5Like;
-    this.custom5NotIn = custom5NotIn;
-    this.custom6 = custom6;
-    this.custom6Like = custom6Like;
-    this.custom6NotIn = custom6NotIn;
-    this.custom7 = custom7;
-    this.custom7Like = custom7Like;
-    this.custom7NotIn = custom7NotIn;
-    this.custom8 = custom8;
-    this.custom8Like = custom8Like;
-    this.custom8NotIn = custom8NotIn;
-    this.custom9 = custom9;
-    this.custom9Like = custom9Like;
-    this.custom9NotIn = custom9NotIn;
-    this.custom10 = custom10;
-    this.custom10Like = custom10Like;
-    this.custom10NotIn = custom10NotIn;
-    this.custom11 = custom11;
-    this.custom11Like = custom11Like;
-    this.custom11NotIn = custom11NotIn;
-    this.custom12 = custom12;
-    this.custom12Like = custom12Like;
-    this.custom12NotIn = custom12NotIn;
-    this.custom13 = custom13;
-    this.custom13Like = custom13Like;
-    this.custom13NotIn = custom13NotIn;
-    this.custom14 = custom14;
-    this.custom14Like = custom14Like;
-    this.custom14NotIn = custom14NotIn;
-    this.custom15 = custom15;
-    this.custom15Like = custom15Like;
-    this.custom15NotIn = custom15NotIn;
-    this.custom16 = custom16;
-    this.custom16Like = custom16Like;
-    this.custom16NotIn = custom16NotIn;
-  }
 }
