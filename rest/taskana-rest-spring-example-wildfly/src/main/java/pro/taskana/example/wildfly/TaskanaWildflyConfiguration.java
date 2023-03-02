@@ -1,6 +1,7 @@
 package pro.taskana.example.wildfly;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -60,5 +62,13 @@ public class TaskanaWildflyConfiguration {
           e);
       throw e;
     }
+  }
+
+  @Bean
+  public AdditionalUserProperties getAdditionalUserProperties(Environment env) {
+    AdditionalUserProperties properties = new AdditionalUserProperties();
+    properties.setAuthorizedUsers(List.of(env.getProperty("authorizedUsers", "").split("\\|")));
+    properties.setEnableUserIdHeader(env.getProperty("enableUserIdHeader", Boolean.TYPE, false));
+    return properties;
   }
 }

@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This test class is configured to run with postgres DB if you want to run it with h2 it is needed.
- * to change data source configuration at project-defaults.yml.
+ * This test class is configured to run with postgres DB. In order to run them on db2, change the
+ * datasource.jndi to java:jboss/datasources/ExampleDS and set taskana.schemaName to TASKANA
  */
 @RunWith(Arquillian.class)
 public class TaskanaWildflyWithHistoryLoggerEnabledTest extends AbstractAccTest {
