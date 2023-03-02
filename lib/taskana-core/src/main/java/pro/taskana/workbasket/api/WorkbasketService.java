@@ -7,10 +7,10 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.user.api.models.User;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -49,7 +49,7 @@ public interface WorkbasketService {
    * @return the created and inserted {@linkplain Workbasket}
    * @throws InvalidArgumentException If a required property of the {@linkplain Workbasket} is not
    *     set.
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws WorkbasketAlreadyExistException if the {@linkplain Workbasket} exists already
@@ -58,7 +58,7 @@ public interface WorkbasketService {
    */
   Workbasket createWorkbasket(Workbasket workbasket)
       throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          MismatchedRoleException;
+          NotAuthorizedException;
 
   // READ
 
@@ -71,11 +71,11 @@ public interface WorkbasketService {
    * @return the requested Workbasket
    * @throws WorkbasketNotFoundException If the {@linkplain Workbasket} with workbasketId is not
    *     found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the requested {@linkplain Workbasket}
    */
   Workbasket getWorkbasket(String workbasketId)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Get the {@linkplain Workbasket} specified by the given {@linkplain WorkbasketSummary#getKey()
@@ -88,11 +88,11 @@ public interface WorkbasketService {
    * @return the requested {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException If the {@linkplain Workbasket} with workbasketId is not
    *     found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the requested {@linkplain Workbasket}
    */
   Workbasket getWorkbasket(String workbasketKey, String domain)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   // UPDATE
 
@@ -103,8 +103,8 @@ public interface WorkbasketService {
    * @return the updated {@linkplain Workbasket}
    * @throws InvalidArgumentException if {@linkplain Workbasket#getName() name} or {@linkplain
    *     Workbasket#getType() type} of the {@linkplain Workbasket} is invalid
-   * @throws MismatchedWorkbasketPermissionException This is never thrown
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException This is never thrown
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found.
    * @throws ConcurrencyException if an attempt is made to update the {@linkplain Workbasket} and
@@ -113,7 +113,7 @@ public interface WorkbasketService {
    */
   Workbasket updateWorkbasket(Workbasket workbasket)
       throws InvalidArgumentException, WorkbasketNotFoundException, ConcurrencyException,
-          MismatchedRoleException, MismatchedWorkbasketPermissionException;
+          NotAuthorizedException, NotAuthorizedOnWorkbasketException;
 
   // DELETE
 
@@ -124,8 +124,8 @@ public interface WorkbasketService {
    *     should be deleted.
    * @return true if the {@linkplain Workbasket} was deleted successfully; false if the {@linkplain
    *     Workbasket} is marked for deletion
-   * @throws MismatchedWorkbasketPermissionException This is never thrown
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException This is never thrown
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} does not exist
    * @throws WorkbasketInUseException if the {@linkplain Workbasket} does contain task-content
@@ -133,7 +133,7 @@ public interface WorkbasketService {
    */
   boolean deleteWorkbasket(String workbasketId)
       throws WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException,
-          MismatchedRoleException, MismatchedWorkbasketPermissionException;
+          NotAuthorizedException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Deletes the list of {@linkplain Workbasket}s specified via {@linkplain Workbasket#getId() ids}.
@@ -142,11 +142,11 @@ public interface WorkbasketService {
    *     to delete.
    * @return the result of the operations and an Exception for each failed workbasket deletion
    * @throws InvalidArgumentException if the WorkbasketIds parameter List is NULL or empty
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    */
   BulkOperationResults<String, TaskanaException> deleteWorkbaskets(List<String> workbasketsIds)
-      throws InvalidArgumentException, MismatchedRoleException;
+      throws InvalidArgumentException, NotAuthorizedException;
 
   // endregion
 
@@ -160,15 +160,15 @@ public interface WorkbasketService {
    * @param sourceWorkbasketId the {@linkplain Workbasket#getId() id} of the source {@linkplain
    *     Workbasket} for which the distribution targets are to be set
    * @param targetWorkbasketIds a list of the ids of the target {@linkplain Workbasket}s
-   * @throws MismatchedWorkbasketPermissionException This is never thrown
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException This is never thrown
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    * @throws WorkbasketNotFoundException if either the source {@linkplain Workbasket} or any of the
    *     target {@linkplain Workbasket}s don't exist
    */
   void setDistributionTargets(String sourceWorkbasketId, List<String> targetWorkbasketIds)
-      throws WorkbasketNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException;
 
   // READ
 
@@ -178,12 +178,12 @@ public interface WorkbasketService {
    * @param workbasketId the {@linkplain Workbasket#getId() id} of the referenced {@linkplain
    *     Workbasket}
    * @return the distribution targets of the specified {@linkplain Workbasket}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ READ permission} for the specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionTargets(String workbasketId)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Returns the distribution targets for a given {@linkplain Workbasket}.
@@ -193,12 +193,12 @@ public interface WorkbasketService {
    * @param domain the {@linkplain Workbasket#getDomain() domain} of the referenced {@linkplain
    *     Workbasket}
    * @return the distribution targets of the specified {@linkplain Workbasket}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ READ permission} for the specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionTargets(String workbasketKey, String domain)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Returns the distribution sources for a given {@linkplain Workbasket}.
@@ -206,12 +206,12 @@ public interface WorkbasketService {
    * @param workbasketId the {@linkplain Workbasket#getId() id} of the referenced {@linkplain
    *     Workbasket}
    * @return the workbaskets that are distribution sources of the specified {@linkplain Workbasket}.
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ READ permission} for the specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionSources(String workbasketId)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Returns the distribution sources for a given {@linkplain Workbasket}.
@@ -221,12 +221,12 @@ public interface WorkbasketService {
    * @param domain the {@linkplain Workbasket#getDomain() domain} of the referenced {@linkplain
    *     Workbasket}
    * @return the workbaskets that are distribution sources of the specified {@linkplain Workbasket}.
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ READ permission} for the specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} doesn't exist
    */
   List<WorkbasketSummary> getDistributionSources(String workbasketKey, String domain)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   // UPDATE
 
@@ -238,16 +238,16 @@ public interface WorkbasketService {
    *     Workbasket}
    * @param targetWorkbasketId the {@linkplain Workbasket#getId() id} of the target {@linkplain
    *     Workbasket}
-   * @throws MismatchedWorkbasketPermissionException if the current user doesn't have {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user doesn't have {@linkplain
    *     WorkbasketPermission#READ READ permission} for the source {@linkplain Workbasket}s
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    * @throws WorkbasketNotFoundException if either the source {@linkplain Workbasket} or the target
    *     {@linkplain Workbasket} doesn't exist
    */
   void addDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-      throws WorkbasketNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException;
 
   // DELETE
 
@@ -259,13 +259,13 @@ public interface WorkbasketService {
    *     Workbasket}
    * @param targetWorkbasketId The {@linkplain Workbasket#getId() id} of the target {@linkplain
    *     Workbasket}
-   * @throws MismatchedWorkbasketPermissionException If the current user doesn't have {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException If the current user doesn't have {@linkplain
    *     WorkbasketPermission#READ READ permission} for the source {@linkplain Workbasket}
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
    */
   void removeDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-      throws MismatchedRoleException, MismatchedWorkbasketPermissionException;
+      throws NotAuthorizedException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -292,7 +292,7 @@ public interface WorkbasketService {
    * @param workbasketAccessItem the new {@linkplain WorkbasketAccessItem}
    * @return the created {@linkplain WorkbasketAccessItem}
    * @throws InvalidArgumentException if the preconditions don't match the required ones.
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws WorkbasketNotFoundException if the {@linkplain WorkbasketAccessItem} refers to a not
@@ -303,7 +303,7 @@ public interface WorkbasketService {
    */
   WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException, MismatchedRoleException;
+          WorkbasketAccessItemAlreadyExistException, NotAuthorizedException;
 
   /**
    * Setting up the new {@linkplain WorkbasketAccessItem}s for a {@linkplain Workbasket}. Already
@@ -323,9 +323,9 @@ public interface WorkbasketService {
    *     stored ones.
    * @throws InvalidArgumentException will be thrown when the parameter {@code wbAccessItems} is
    *     NULL or member doesn't match the preconditions
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#BUSINESS_ADMIN} or {@linkplain TaskanaRole#ADMIN}
-   * @throws MismatchedWorkbasketPermissionException This is never thrown
+   * @throws NotAuthorizedOnWorkbasketException This is never thrown
    * @throws WorkbasketAccessItemAlreadyExistException if {@code wbAccessItems} contains multiple
    *     {@linkplain WorkbasketAccessItem} with the same {@linkplain
    *     WorkbasketAccessItem#getAccessId() accessId}.
@@ -334,8 +334,7 @@ public interface WorkbasketService {
    */
   void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
       throws InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
-          WorkbasketNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException;
+          WorkbasketNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException;
 
   // READ
 
@@ -344,12 +343,12 @@ public interface WorkbasketService {
    *
    * @param workbasketId the {@linkplain Workbasket#getId() id} of the {@linkplain Workbasket}
    * @return List of {@linkplain WorkbasketAccessItem}s for the {@linkplain Workbasket}
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN}
    */
   List<WorkbasketAccessItem> getWorkbasketAccessItems(String workbasketId)
-      throws MismatchedRoleException;
+      throws NotAuthorizedException;
 
   // UPDATE
 
@@ -361,12 +360,12 @@ public interface WorkbasketService {
    * @throws InvalidArgumentException if {@linkplain WorkbasketAccessItem#getAccessId() accessId} or
    *     {@linkplain WorkbasketAccessItem#getWorkbasketId() workbasketId} is changed in the
    *     {@linkplain WorkbasketAccessItem}
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
   WorkbasketAccessItem updateWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-      throws InvalidArgumentException, MismatchedRoleException;
+      throws InvalidArgumentException, NotAuthorizedException;
 
   // DELETE
 
@@ -375,22 +374,22 @@ public interface WorkbasketService {
    *
    * @param id the {@linkplain WorkbasketAccessItem#getId() id} of the {@linkplain
    *     WorkbasketAccessItem} to be deleted
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
-  void deleteWorkbasketAccessItem(String id) throws MismatchedRoleException;
+  void deleteWorkbasketAccessItem(String id) throws NotAuthorizedException;
 
   /**
    * Deletes all {@linkplain WorkbasketAccessItem}s using the given {@linkplain
    * WorkbasketAccessItem#getAccessId()}.
    *
    * @param accessId {@linkplain User#getId() id} of a taskana-{@linkplain User}.
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
-  void deleteWorkbasketAccessItemsForAccessId(String accessId) throws MismatchedRoleException;
+  void deleteWorkbasketAccessItemsForAccessId(String accessId) throws NotAuthorizedException;
 
   // endregion
 
@@ -406,11 +405,11 @@ public interface WorkbasketService {
    * This method provides a query builder for querying the database.
    *
    * @return a {@linkplain WorkbasketAccessItemQuery}
-   * @throws MismatchedRoleException if the current user is not member of role {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of role {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
-  WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws MismatchedRoleException;
+  WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException;
   // endregion
 
   // region Permission and Authorization
@@ -437,13 +436,13 @@ public interface WorkbasketService {
    *     want to access
    * @param permission the needed {@linkplain WorkbasketPermission}; if more than one {@linkplain
    *     WorkbasketPermission permission} is specified, the current user needs all of them
-   * @throws MismatchedWorkbasketPermissionException if the current user has not the requested
+   * @throws NotAuthorizedOnWorkbasketException if the current user has not the requested
    *     authorization for the specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} cannot be found for the
    *     given {@linkplain Workbasket#getId() id}.
    */
   void checkAuthorization(String workbasketId, WorkbasketPermission... permission)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   /**
    * This method checks the authorization for the actual User.
@@ -454,13 +453,13 @@ public interface WorkbasketService {
    *     want to access
    * @param permission the needed {@linkplain WorkbasketPermission}; if more than one {@linkplain
    *     WorkbasketPermission permission} is specified, the current user needs all of them.
-   * @throws MismatchedWorkbasketPermissionException if the current user has not the requested
+   * @throws NotAuthorizedOnWorkbasketException if the current user has not the requested
    *     {@linkplain WorkbasketPermission permission} for the specified {@linkplain Workbasket}
    * @throws WorkbasketNotFoundException if no {@linkplain Workbasket} can be found for the given
    *     {@linkplain Workbasket#getKey() key} and {@linkplain Workbasket#getDomain() domain} values.
    */
   void checkAuthorization(String workbasketKey, String domain, WorkbasketPermission... permission)
-      throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException;
+      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 

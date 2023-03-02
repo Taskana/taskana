@@ -319,7 +319,7 @@ class TaskCommentControllerIntTest {
 
     assertThatThrownBy(httpCall)
         .isInstanceOf(HttpStatusCodeException.class)
-        .hasMessageContaining("TASK_COMMENT_CREATOR_MISMATCHED")
+        .hasMessageContaining("NOT_AUTHORIZED_ON_TASK_COMMENT")
         .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);

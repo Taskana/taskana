@@ -4,12 +4,12 @@ import java.time.Instant;
 
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -115,8 +115,7 @@ public class WorkbasketBuilder
   @Override
   public Workbasket buildAndStore(WorkbasketService workbasketService)
       throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          WorkbasketNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException {
+          WorkbasketNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException {
     try {
       Workbasket w = workbasketService.createWorkbasket(testWorkbasket);
       return workbasketService.getWorkbasket(w.getId());

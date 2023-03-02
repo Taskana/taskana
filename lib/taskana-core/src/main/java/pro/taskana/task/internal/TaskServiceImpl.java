@@ -31,7 +31,7 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -68,7 +68,7 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidCallbackStateException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
-import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
+import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -90,7 +90,7 @@ import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.UserMapper;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -157,28 +157,28 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task claim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return claim(taskId, false);
   }
 
   @Override
   public Task forceClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return claim(taskId, true);
   }
 
   @Override
   public Task cancelClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return this.cancelClaim(taskId, false);
   }
 
   @Override
   public Task forceCancelClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return this.cancelClaim(taskId, true);
   }
@@ -186,41 +186,41 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task requestReview(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return requestReview(taskId, false);
   }
 
   @Override
   public Task forceRequestReview(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return requestReview(taskId, true);
   }
 
   @Override
   public Task requestChanges(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return requestChanges(taskId, false);
   }
 
   @Override
   public Task forceRequestChanges(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return requestChanges(taskId, true);
   }
 
   @Override
   public Task completeTask(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return completeTask(taskId, false);
   }
 
   @Override
   public Task forceCompleteTask(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return completeTask(taskId, true);
   }
@@ -229,7 +229,7 @@ public class TaskServiceImpl implements TaskService {
   public Task createTask(Task taskToCreate)
       throws WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, MismatchedWorkbasketPermissionException {
+          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException {
 
     if (createTaskPreprocessorManager.isEnabled()) {
       taskToCreate = createTaskPreprocessorManager.processTaskBeforeCreation(taskToCreate);
@@ -347,8 +347,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task getTask(String id)
-      throws MismatchedWorkbasketPermissionException, TaskNotFoundException {
+  public Task getTask(String id) throws NotAuthorizedOnWorkbasketException, TaskNotFoundException {
     try {
       taskanaEngine.openConnection();
 
@@ -359,7 +358,7 @@ public class TaskServiceImpl implements TaskService {
         String workbasketId = resultTask.getWorkbasketSummary().getId();
         List<WorkbasketSummary> workbaskets = query.idIn(workbasketId).list();
         if (workbaskets.isEmpty()) {
-          throw new MismatchedWorkbasketPermissionException(
+          throw new NotAuthorizedOnWorkbasketException(
               taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
               workbasketId,
               WorkbasketPermission.READ);
@@ -410,21 +409,21 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
     return taskTransferrer.transfer(taskId, destinationWorkbasketId, setTransferFlag);
   }
 
   @Override
   public Task transfer(String taskId, String workbasketKey, String domain, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
     return taskTransferrer.transfer(taskId, workbasketKey, domain, setTransferFlag);
   }
 
   @Override
   public Task setTaskRead(String taskId, boolean isRead)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException {
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException {
     TaskImpl task;
     try {
       taskanaEngine.openConnection();
@@ -501,7 +500,7 @@ public class TaskServiceImpl implements TaskService {
   public Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
           AttachmentPersistenceException, ObjectReferencePersistenceException,
-          ClassificationNotFoundException, MismatchedWorkbasketPermissionException,
+          ClassificationNotFoundException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     TaskImpl newTaskImpl = (TaskImpl) task;
@@ -551,7 +550,7 @@ public class TaskServiceImpl implements TaskService {
   public BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return taskTransferrer.transfer(taskIds, destinationWorkbasketId, setTransferFlag);
   }
 
@@ -562,30 +561,28 @@ public class TaskServiceImpl implements TaskService {
       List<String> taskIds,
       boolean setTransferFlag)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return taskTransferrer.transfer(
         taskIds, destinationWorkbasketKey, destinationWorkbasketDomain, setTransferFlag);
   }
 
   @Override
   public void deleteTask(String taskId)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException,
-          InvalidCallbackStateException {
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException, InvalidCallbackStateException {
     deleteTask(taskId, false);
   }
 
   @Override
   public void forceDeleteTask(String taskId)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException,
-          InvalidCallbackStateException {
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException, InvalidCallbackStateException {
     deleteTask(taskId, true);
   }
 
   @Override
   public Task selectAndClaim(TaskQuery taskQuery)
-      throws InvalidOwnerException, MismatchedWorkbasketPermissionException {
+      throws InvalidOwnerException, NotAuthorizedOnWorkbasketException {
 
     try {
 
@@ -612,7 +609,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public BulkOperationResults<String, TaskanaException> deleteTasks(List<String> taskIds)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
 
@@ -738,36 +735,35 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public TaskComment createTaskComment(TaskComment taskComment)
-      throws TaskNotFoundException, InvalidArgumentException,
-          MismatchedWorkbasketPermissionException {
+      throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedOnWorkbasketException {
     return taskCommentService.createTaskComment(taskComment);
   }
 
   @Override
   public TaskComment updateTaskComment(TaskComment taskComment)
       throws ConcurrencyException, TaskCommentNotFoundException, TaskNotFoundException,
-          InvalidArgumentException, MismatchedTaskCommentCreatorException,
-          MismatchedWorkbasketPermissionException {
+          InvalidArgumentException, NotAuthorizedOnTaskCommentException,
+          NotAuthorizedOnWorkbasketException {
     return taskCommentService.updateTaskComment(taskComment);
   }
 
   @Override
   public void deleteTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
-          MismatchedTaskCommentCreatorException, MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnTaskCommentException, NotAuthorizedOnWorkbasketException {
     taskCommentService.deleteTaskComment(taskCommentId);
   }
 
   @Override
   public TaskComment getTaskComment(String taskCommentid)
       throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return taskCommentService.getTaskComment(taskCommentid);
   }
 
   @Override
   public List<TaskComment> getTaskComments(String taskId)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException {
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException {
 
     return taskCommentService.getTaskComments(taskId);
   }
@@ -861,8 +857,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task cancelTask(String taskId)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException,
-          InvalidTaskStateException {
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
 
     Task cancelledTask;
 
@@ -886,8 +881,8 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task terminateTask(String taskId)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
 
@@ -1004,7 +999,7 @@ public class TaskServiceImpl implements TaskService {
       for (Pair<String, String> taskAndWorkbasketIds : taskAndWorkbasketIdsNotAuthorizedFor) {
         bulkLog.addError(
             taskAndWorkbasketIds.getLeft(),
-            new MismatchedWorkbasketPermissionException(
+            new NotAuthorizedOnWorkbasketException(
                 userId, taskAndWorkbasketIds.getRight(), WorkbasketPermission.READ));
       }
 
@@ -1199,8 +1194,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private TaskImpl terminateCancelCommonActions(String taskId, TaskState targetState)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException,
-          InvalidTaskStateException {
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
     if (taskId == null || taskId.isEmpty()) {
       throw new TaskNotFoundException(taskId);
     }
@@ -1225,7 +1219,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private Task claim(String taskId, boolean forceClaim)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     String userLongName = null;
@@ -1268,7 +1262,7 @@ public class TaskServiceImpl implements TaskService {
 
   private Task requestReview(String taskId, boolean force)
       throws TaskNotFoundException, InvalidTaskStateException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     TaskImpl task;
     try {
@@ -1319,7 +1313,7 @@ public class TaskServiceImpl implements TaskService {
 
   private Task requestChanges(String taskId, boolean force)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     TaskImpl task;
     try {
@@ -1447,7 +1441,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private Task cancelClaim(String taskId, boolean forceUnclaim)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     TaskImpl task;
@@ -1491,7 +1485,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private Task completeTask(String taskId, boolean isForced)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
     TaskImpl task;
@@ -1534,9 +1528,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void deleteTask(String taskId, boolean forceDelete)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException,
-          InvalidCallbackStateException {
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException, InvalidCallbackStateException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
     TaskImpl task;
     try {

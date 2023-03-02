@@ -16,7 +16,7 @@ import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** Example Bootstrap Application. */
@@ -30,7 +30,7 @@ public class ExampleBootstrap {
       throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
           InvalidOwnerException, TaskAlreadyExistException, InvalidArgumentException,
           AttachmentPersistenceException, ObjectReferencePersistenceException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
+          NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
     System.out.println("---------------------------> Start App");
     ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");

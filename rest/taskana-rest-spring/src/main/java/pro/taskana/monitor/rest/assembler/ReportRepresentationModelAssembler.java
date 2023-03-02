@@ -14,7 +14,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.ClassificationCategoryReport;
 import pro.taskana.monitor.api.reports.ClassificationReport;
@@ -49,7 +49,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull WorkbasketReport report,
       @NonNull TimeIntervalReportFilterParameter filterParameter,
       @NonNull TaskTimestamp taskTimestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -65,7 +65,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull PriorityReportFilterParameter filterParameter,
       WorkbasketType[] workbasketTypes,
       PriorityColumnHeaderRepresentationModel[] columnHeaders)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -81,7 +81,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull ClassificationCategoryReport report,
       @NonNull TimeIntervalReportFilterParameter filterParameter,
       @NonNull TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -96,7 +96,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull ClassificationReport report,
       @NonNull TimeIntervalReportFilterParameter filterParameter,
       @NonNull TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -111,7 +111,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull DetailedClassificationReport report,
       @NonNull TimeIntervalReportFilterParameter filterParameter,
       @NonNull TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -127,7 +127,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull TaskCustomField customField,
       @NonNull TimeIntervalReportFilterParameter filterParameter,
       @NonNull TaskTimestamp taskTimestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -144,7 +144,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull List<TaskState> state,
       @NonNull List<String> workbasketIds,
       @NonNull Integer priorityMinimum)
-      throws MismatchedRoleException {
+      throws NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(
@@ -159,7 +159,7 @@ public class ReportRepresentationModelAssembler {
       @NonNull TimestampReport report,
       @NonNull TimeIntervalReportFilterParameter filterParameter,
       TaskTimestamp[] timestamps)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
         linkTo(

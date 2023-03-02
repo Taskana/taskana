@@ -26,7 +26,7 @@ import pro.taskana.common.internal.util.Pair;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 public class DmnTaskRouter implements TaskRoutingProvider {
@@ -75,7 +75,7 @@ public class DmnTaskRouter implements TaskRoutingProvider {
           String.format(
               "Unknown workbasket defined in DMN Table. key: '%s', domain: '%s'",
               workbasketKey, domain));
-    } catch (MismatchedWorkbasketPermissionException e) {
+    } catch (NotAuthorizedOnWorkbasketException e) {
       throw new SystemException(
           String.format(
               "The current user is not authorized to create a task in the routed workbasket. "

@@ -7,7 +7,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -28,7 +28,6 @@ class GetWorkbasketAuthorizationsAccTest extends AbstractAccTest {
           workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000008");
         };
 
-    assertThatThrownBy(retrieveWorkbasketAccessItemCall)
-        .isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(retrieveWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
   }
 }

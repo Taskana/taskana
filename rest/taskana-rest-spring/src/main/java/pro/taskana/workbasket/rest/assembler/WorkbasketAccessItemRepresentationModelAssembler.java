@@ -14,7 +14,7 @@ import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
@@ -106,7 +106,7 @@ public class WorkbasketAccessItemRepresentationModelAssembler
   public WorkbasketAccessItemCollectionRepresentationModel
       toTaskanaCollectionModelForSingleWorkbasket(
           String workbasketId, List<WorkbasketAccessItem> workbasketAccessItems)
-          throws WorkbasketNotFoundException, MismatchedWorkbasketPermissionException {
+          throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException {
     WorkbasketAccessItemCollectionRepresentationModel pageModel =
         toTaskanaCollectionModel(workbasketAccessItems);
     pageModel.add(

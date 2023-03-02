@@ -5,7 +5,7 @@ import java.util.List;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.TaskCustomFieldValueReport;
@@ -33,13 +33,13 @@ public class TaskCustomFieldValueReportBuilderImpl
 
   @Override
   public TaskCustomFieldValueReport buildReport()
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     return buildReport(TaskTimestamp.DUE);
   }
 
   @Override
   public TaskCustomFieldValueReport buildReport(TaskTimestamp timestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();

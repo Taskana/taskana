@@ -1,7 +1,7 @@
 package pro.taskana.testapi.builder;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
@@ -47,7 +47,7 @@ public class WorkbasketAccessItemBuilder
   @Override
   public WorkbasketAccessItem buildAndStore(WorkbasketService workbasketService)
       throws InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
-          WorkbasketNotFoundException, MismatchedRoleException {
+          WorkbasketNotFoundException, NotAuthorizedException {
     return workbasketService.createWorkbasketAccessItem(testWorkbasketAccessItem);
   }
 }

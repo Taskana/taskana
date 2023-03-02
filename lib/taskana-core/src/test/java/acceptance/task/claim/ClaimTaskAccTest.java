@@ -15,7 +15,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 @ExtendWith(JaasExtension.class)
 class ClaimTaskAccTest extends AbstractAccTest {
@@ -129,14 +129,14 @@ class ClaimTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowNotAuthorizedException_When_UserHasNoReadPermissionAndTaskIsReady() {
     assertThatThrownBy(() -> taskService.claim("TKI:000000000000000000000000000000000000"))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-taskrouter")
   @Test
   void should_ThrowNotAuthorizedException_When_UserHasNoReadPermissionAndTaskIsReadyForReview() {
     assertThatThrownBy(() -> taskService.claim("TKI:500000000000000000000000000000000028"))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-2")

@@ -20,7 +20,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 /** Acceptance test for all "get task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -133,7 +133,7 @@ class GetTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable getTaskCall =
         () -> taskService.getTask("TKI:000000000000000000000000000000000000");
-    assertThatThrownBy(getTaskCall).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-taskrouter")
@@ -142,7 +142,7 @@ class GetTaskAccTest extends AbstractAccTest {
     ThrowingCallable getTaskCall =
         () -> taskService.getTask("TKI:000000000000000000000000000000000000");
 
-    assertThatThrownBy(getTaskCall).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(getTaskCall).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "admin")

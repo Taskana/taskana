@@ -23,7 +23,7 @@ import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 /** Acceptance test for all "set owner" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -76,9 +76,9 @@ class SetOwnerAccTest extends AbstractAccTest {
     String anyUserName = "TestUser3";
 
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
     assertThatThrownBy(() -> setOwner(taskReadyId, anyUserName))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -104,12 +104,12 @@ class SetOwnerAccTest extends AbstractAccTest {
     String anyUserName = "TestUser3";
 
     assertThatThrownBy(() -> taskService.getTask(taskReadyId))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
     BulkOperationResults<String, TaskanaException> results =
         taskService.setOwnerOfTasks(anyUserName, List.of(taskReadyId));
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorForId(taskReadyId))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -203,13 +203,13 @@ class SetOwnerAccTest extends AbstractAccTest {
             c -> c.getClass() == InvalidTaskStateException.class, "InvalidStateException");
     Condition<Object> mismatchedWorkbasketPermissionException =
         new Condition<>(
-            c -> c.getClass() == MismatchedWorkbasketPermissionException.class,
+            c -> c.getClass() == NotAuthorizedOnWorkbasketException.class,
             "MismatchedWorkbasketPermissionException");
     assertThat(results.getErrorMap())
         .hasSize(95)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfTypes(
-            InvalidTaskStateException.class, MismatchedWorkbasketPermissionException.class)
+            InvalidTaskStateException.class, NotAuthorizedOnWorkbasketException.class)
         .areExactly(35, invalidTaskStateException)
         .areExactly(60, mismatchedWorkbasketPermissionException);
   }

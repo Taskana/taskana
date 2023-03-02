@@ -14,7 +14,7 @@ import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCommentQueryColumnName;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
 
@@ -307,7 +307,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
               taskId -> {
                 try {
                   taskService.getTask(taskId);
-                } catch (MismatchedWorkbasketPermissionException e) {
+                } catch (NotAuthorizedOnWorkbasketException e) {
                   throw new NotAuthorizedToQueryWorkbasketException(
                       e.getMessage(), e.getErrorCode(), e);
                 } catch (TaskNotFoundException e) {

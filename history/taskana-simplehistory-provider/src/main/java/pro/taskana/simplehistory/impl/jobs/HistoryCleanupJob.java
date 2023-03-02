@@ -19,7 +19,7 @@ import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
@@ -181,7 +181,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteEvents(List<String> taskIdsToDeleteHistoryEventsFor)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     SimpleHistoryServiceImpl simpleHistoryService =
         (SimpleHistoryServiceImpl) taskanaHistoryEngine.getTaskanaHistoryService();
 

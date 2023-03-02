@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.common.test.security.JaasExtension;
@@ -111,6 +111,6 @@ class DmnConverterServiceAccTest {
     DmnConverterService dmnConverterService = new DmnConverterService(taskanaEngine);
 
     ThrowingCallable call = () -> dmnConverterService.convertExcelToDmn(routingMultiPartFile);
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 }

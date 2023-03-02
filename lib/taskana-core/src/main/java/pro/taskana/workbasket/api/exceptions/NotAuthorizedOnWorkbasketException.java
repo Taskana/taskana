@@ -12,17 +12,18 @@ import pro.taskana.workbasket.api.models.Workbasket;
  * This exception is thrown when the current user does not have a certain {@linkplain
  * WorkbasketPermission permission} on a {@linkplain Workbasket}.
  */
-public class MismatchedWorkbasketPermissionException extends TaskanaException {
+public class NotAuthorizedOnWorkbasketException extends TaskanaException {
 
-  public static final String ERROR_KEY_KEY_DOMAIN = "WORKBASKET_WITH_KEY_MISMATCHED_PERMISSION";
-  public static final String ERROR_KEY_ID = "WORKBASKET_WITH_ID_MISMATCHED_PERMISSION";
+  public static final String ERROR_KEY_KEY_DOMAIN =
+      "NOT_AUTHORIZED_ON_WORKBASKET_WITH_KEY_AND_DOMAIN";
+  public static final String ERROR_KEY_ID = "NOT_AUTHORIZED_ON_WORKBASKET_WITH_ID";
   private final String currentUserId;
   private final WorkbasketPermission[] requiredPermissions;
   private final String workbasketId;
   private final String workbasketKey;
   private final String domain;
 
-  public MismatchedWorkbasketPermissionException(
+  public NotAuthorizedOnWorkbasketException(
       String currentUserId, String workbasketId, WorkbasketPermission... requiredPermissions) {
     super(
         String.format(
@@ -45,7 +46,7 @@ public class MismatchedWorkbasketPermissionException extends TaskanaException {
     domain = null;
   }
 
-  public MismatchedWorkbasketPermissionException(
+  public NotAuthorizedOnWorkbasketException(
       String currentUserId,
       String workbasketKey,
       String domain,

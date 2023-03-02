@@ -24,7 +24,7 @@ import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 @TaskanaIntegrationTest
@@ -101,8 +101,8 @@ class CreateTaskCommentAccTest {
 
     ThrowingCallable call = () -> taskService.createTaskComment(taskCommentToCreate);
 
-    MismatchedWorkbasketPermissionException e =
-        catchThrowableOfType(call, MismatchedWorkbasketPermissionException.class);
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasket.getId());
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
