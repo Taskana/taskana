@@ -18,7 +18,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
@@ -75,7 +75,7 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
   @Test
   void should_ThrowNotAuthorizedException_When_UnauthorizedTryingToGetWorkbaskets() {
     assertThatThrownBy(() -> workbasketService.getWorkbasket("TEAMLEAD-2", "DOMAIN_A"))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "businessadmin")

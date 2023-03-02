@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketService;
@@ -30,14 +30,14 @@ class DeleteWorkbasketAuthorizationsAccTest extends AbstractAccTest {
           WORKBASKET_SERVICE.deleteWorkbasketAccessItemsForAccessId("group-1");
         };
 
-    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
 
     deleteWorkbasketAccessItemCall =
         () -> {
           WORKBASKET_SERVICE.deleteWorkbasketAccessItem("WAI:100000000000000000000000000000000001");
         };
 
-    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(deleteWorkbasketAccessItemCall).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "admin")

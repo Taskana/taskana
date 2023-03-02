@@ -3,7 +3,7 @@ package pro.taskana.testapi.builder;
 import java.util.Set;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.models.User;
@@ -91,7 +91,7 @@ public class UserBuilder implements EntityBuilder<User, UserService> {
 
   @Override
   public User buildAndStore(UserService userService)
-      throws UserAlreadyExistException, InvalidArgumentException, MismatchedRoleException {
+      throws UserAlreadyExistException, InvalidArgumentException, NotAuthorizedException {
     return userService.createUser(testUser);
   }
 }

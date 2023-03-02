@@ -39,7 +39,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.AutocommitFailedException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
@@ -319,7 +319,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
+  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
     if (!isUserInRole(roles)) {
       if (LOGGER.isDebugEnabled()) {
         String rolesAsString = Arrays.toString(roles);
@@ -328,7 +328,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             currentUserContext.getAccessIds(),
             rolesAsString);
       }
-      throw new MismatchedRoleException(currentUserContext.getUserid(), roles);
+      throw new NotAuthorizedException(currentUserContext.getUserid(), roles);
     }
   }
 

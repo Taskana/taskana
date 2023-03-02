@@ -40,7 +40,7 @@ import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
@@ -54,13 +54,13 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidCallbackStateException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
-import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
+import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
@@ -86,12 +86,11 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
               Pair.of(InvalidOwnerException.ERROR_KEY, HttpStatus.BAD_REQUEST),
               Pair.of(InvalidTaskStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
               //
-              Pair.of(MismatchedRoleException.ERROR_KEY, HttpStatus.FORBIDDEN),
-              Pair.of(MismatchedTaskCommentCreatorException.ERROR_KEY, HttpStatus.FORBIDDEN),
-              Pair.of(MismatchedWorkbasketPermissionException.ERROR_KEY_ID, HttpStatus.FORBIDDEN),
+              Pair.of(NotAuthorizedException.ERROR_KEY, HttpStatus.FORBIDDEN),
+              Pair.of(NotAuthorizedOnTaskCommentException.ERROR_KEY, HttpStatus.FORBIDDEN),
+              Pair.of(NotAuthorizedOnWorkbasketException.ERROR_KEY_ID, HttpStatus.FORBIDDEN),
               Pair.of(
-                  MismatchedWorkbasketPermissionException.ERROR_KEY_KEY_DOMAIN,
-                  HttpStatus.FORBIDDEN),
+                  NotAuthorizedOnWorkbasketException.ERROR_KEY_KEY_DOMAIN, HttpStatus.FORBIDDEN),
               //
               Pair.of(ClassificationNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
               Pair.of(ClassificationNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),

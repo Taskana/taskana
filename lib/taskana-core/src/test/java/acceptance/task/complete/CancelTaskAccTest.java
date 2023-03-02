@@ -17,7 +17,7 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 /** Acceptance tests for all "cancel task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -85,7 +85,7 @@ class CancelTaskAccTest extends AbstractAccTest {
   @Test
   void should_ThrowException_When_UserNotAuthorized() {
     assertThatThrownBy(() -> taskService.cancelTask("TKI:000000000000000000000000000000000001"))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "admin")

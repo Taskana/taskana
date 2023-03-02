@@ -19,7 +19,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
@@ -169,13 +169,13 @@ class GetWorkbasketAccTest extends AbstractAccTest {
   void should_ThrowException_When_TryingToGetByIdWithoutPermissions() {
     ThrowingCallable call =
         () -> WORKBASKET_SERVICE.getWorkbasket("WBI:100000000000000000000000000000000001");
-    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @Test
   void should_ThrowException_When_TryingToGetByKeyAndDomainWithoutPermissions() {
     assertThatThrownBy(() -> WORKBASKET_SERVICE.getWorkbasket("GPK_KSC", "DOMAIN_A"))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1")

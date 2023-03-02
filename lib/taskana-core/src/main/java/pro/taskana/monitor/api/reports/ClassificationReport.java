@@ -6,7 +6,7 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -36,11 +36,11 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
       extends TimeIntervalReportBuilder<Builder, MonitorQueryItem, TimeIntervalColumnHeader> {
 
     @Override
-    ClassificationReport buildReport() throws InvalidArgumentException, MismatchedRoleException;
+    ClassificationReport buildReport() throws InvalidArgumentException, NotAuthorizedException;
 
     @Override
     ClassificationReport buildReport(TaskTimestamp timestamp)
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     /**
      * Returns a {@linkplain DetailedClassificationReport} containing all tasks after applying the
@@ -50,14 +50,14 @@ public class ClassificationReport extends Report<MonitorQueryItem, TimeIntervalC
      *
      * @return the DetailedClassificationReport
      * @throws InvalidArgumentException if the column headers are not initialized
-     * @throws MismatchedRoleException if the current user is not member of {@linkplain
+     * @throws NotAuthorizedException if the current user is not member of {@linkplain
      *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
      */
     DetailedClassificationReport buildDetailedReport()
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     DetailedClassificationReport buildDetailedReport(TaskTimestamp timestamp)
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
   }
 
   /**

@@ -15,7 +15,7 @@ import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User createUser(User userToCreate)
-      throws InvalidArgumentException, UserAlreadyExistException, MismatchedRoleException {
+      throws InvalidArgumentException, UserAlreadyExistException, NotAuthorizedException {
     internalTaskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User updateUser(User userToUpdate)
-      throws UserNotFoundException, InvalidArgumentException, MismatchedRoleException {
+      throws UserNotFoundException, InvalidArgumentException, NotAuthorizedException {
     internalTaskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(String id)
-      throws UserNotFoundException, InvalidArgumentException, MismatchedRoleException {
+      throws UserNotFoundException, InvalidArgumentException, NotAuthorizedException {
     internalTaskanaEngine
         .getEngine()
         .checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);

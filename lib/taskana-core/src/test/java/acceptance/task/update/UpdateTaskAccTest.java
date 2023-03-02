@@ -37,7 +37,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 /** Acceptance test for all "update task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -179,7 +179,7 @@ class UpdateTaskAccTest extends AbstractAccTest {
     task.setWorkbasketKey("USER-1-2");
 
     assertThatThrownBy(() -> taskService.updateTask(task))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1")

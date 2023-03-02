@@ -30,7 +30,7 @@ import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
@@ -471,7 +471,7 @@ class UserServiceAccTest {
       userToCreate.setLastName("lastName");
       ThrowingCallable callable = () -> userService.createUser(userToCreate);
 
-      MismatchedRoleException ex = catchThrowableOfType(callable, MismatchedRoleException.class);
+      NotAuthorizedException ex = catchThrowableOfType(callable, NotAuthorizedException.class);
       assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
       assertThat(ex.getRoles())
           .isEqualTo(new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN});
@@ -563,7 +563,7 @@ class UserServiceAccTest {
             userService.updateUser(userToUpdate);
           };
 
-      MismatchedRoleException ex = catchThrowableOfType(callable, MismatchedRoleException.class);
+      NotAuthorizedException ex = catchThrowableOfType(callable, NotAuthorizedException.class);
       assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
       assertThat(ex.getRoles())
           .isEqualTo(new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN});
@@ -848,7 +848,7 @@ class UserServiceAccTest {
 
       ThrowingCallable callable = () -> userService.deleteUser(userToDelete.getId());
 
-      MismatchedRoleException ex = catchThrowableOfType(callable, MismatchedRoleException.class);
+      NotAuthorizedException ex = catchThrowableOfType(callable, NotAuthorizedException.class);
       assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
       assertThat(ex.getRoles())
           .isEqualTo(new TaskanaRole[] {TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN});

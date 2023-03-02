@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
@@ -52,7 +52,7 @@ public class TaskanaTestController {
   public @ResponseBody String transaction(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
       throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          MismatchedRoleException {
+          NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
     int workbaskets = getWorkbaskets();
@@ -68,7 +68,7 @@ public class TaskanaTestController {
   public @ResponseBody String transactionMany(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
       throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          MismatchedRoleException {
+          NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key3", "workbasket3"));
@@ -85,7 +85,7 @@ public class TaskanaTestController {
   public @ResponseBody String transactionCustomdb(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
       throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
-          MismatchedRoleException {
+          NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
 

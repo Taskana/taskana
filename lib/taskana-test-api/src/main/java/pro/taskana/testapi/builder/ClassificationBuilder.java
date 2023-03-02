@@ -11,7 +11,7 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
 
 public class ClassificationBuilder
@@ -119,7 +119,7 @@ public class ClassificationBuilder
   @Override
   public Classification buildAndStore(ClassificationService classificationService)
       throws InvalidArgumentException, ClassificationAlreadyExistException, DomainNotFoundException,
-          MalformedServiceLevelException, ClassificationNotFoundException, MismatchedRoleException {
+          MalformedServiceLevelException, ClassificationNotFoundException, NotAuthorizedException {
     try {
       Classification c = classificationService.createClassification(testClassification);
       return classificationService.getClassification(c.getId());

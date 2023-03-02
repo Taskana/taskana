@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 
 import pro.taskana.common.api.IntInterval;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -59,7 +59,7 @@ class ProvideWorkbasketPriorityReportAccTest extends AbstractReportAccTest {
   @TestTemplate
   void should_ThrowMismatchedRoleException_When_UserDoesNotHaveCorrectRole() {
     assertThatThrownBy(() -> MONITOR_SERVICE.createWorkbasketPriorityReportBuilder().buildReport())
-        .isInstanceOf(MismatchedRoleException.class);
+        .isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "monitor")

@@ -9,7 +9,7 @@ import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
@@ -547,7 +547,7 @@ abstract class TimeIntervalReportBuilderImpl<
   @Override
   public List<String> listTaskIdsForSelectedItems(
       List<SelectedItem> selectedItems, TaskTimestamp timestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
 
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
@@ -583,7 +583,7 @@ abstract class TimeIntervalReportBuilderImpl<
 
   @Override
   public List<String> listCustomAttributeValuesForCustomAttributeName(
-      TaskCustomField taskCustomField) throws MismatchedRoleException {
+      TaskCustomField taskCustomField) throws NotAuthorizedException {
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR);
     try {
       this.taskanaEngine.openConnection();

@@ -12,7 +12,7 @@ import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
 /** TODO. */
@@ -29,7 +29,7 @@ public class TaskanaComponent {
   public void triggerRollback()
       throws WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, MismatchedWorkbasketPermissionException {
+          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException {
     Task task = taskService.newTask("1");
     task.setName("Unit Test Task");
     ObjectReferenceImpl objRef = new ObjectReferenceImpl();

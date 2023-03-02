@@ -9,7 +9,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -35,7 +35,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
                   List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
               .list();
         };
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "unknownuser")
@@ -54,7 +54,7 @@ class WorkbasketQueryAccTest extends AbstractAccTest {
                   List.of(WorkbasketPermission.TRANSFER), "teamlead-1", GROUP_1_DN, GROUP_2_DN)
               .list();
         };
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "businessadmin")

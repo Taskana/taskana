@@ -14,7 +14,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
+import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 
@@ -56,7 +56,7 @@ class DeleteTaskCommentAccTest extends AbstractAccTest {
     ThrowingCallable lambda =
         () -> taskService.deleteTaskComment("TCI:000000000000000000000000000000000000");
 
-    assertThatThrownBy(lambda).isInstanceOf(MismatchedTaskCommentCreatorException.class);
+    assertThatThrownBy(lambda).isInstanceOf(NotAuthorizedOnTaskCommentException.class);
 
     // make sure the task comment was not deleted
     List<TaskComment> taskCommentsAfterDeletion =
