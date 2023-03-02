@@ -29,7 +29,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 import pro.taskana.workbasket.api.WorkbasketPermission;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.internal.WorkbasketQueryImpl;
@@ -694,7 +694,6 @@ public class TaskQueryImpl implements TaskQuery {
     this.joinWithClassifications = true;
     return this;
   }
-
 
   @Override
   public TaskQuery classificationCategoryIn(String... classificationCategories) {
@@ -2183,13 +2182,13 @@ public class TaskQueryImpl implements TaskQuery {
           checkOpenAndReadPermissionByKeyDomain(keyDomain);
         }
       }
-    } catch (MismatchedWorkbasketPermissionException e) {
+    } catch (NotAuthorizedOnWorkbasketException e) {
       throw new NotAuthorizedToQueryWorkbasketException(e.getMessage(), e.getErrorCode(), e);
     }
   }
 
   private void checkOpenAndReadPermissionById(String workbasketId)
-      throws MismatchedWorkbasketPermissionException {
+      throws NotAuthorizedOnWorkbasketException {
     try {
       taskanaEngine
           .getEngine()
@@ -2202,7 +2201,7 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   private void checkOpenAndReadPermissionByKeyDomain(KeyDomain keyDomain)
-      throws MismatchedWorkbasketPermissionException {
+      throws NotAuthorizedOnWorkbasketException {
     try {
       taskanaEngine
           .getEngine()

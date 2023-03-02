@@ -5,7 +5,7 @@ import java.util.List;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -34,10 +34,10 @@ public class ClassificationCategoryReport
 
     @Override
     ClassificationCategoryReport buildReport()
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     @Override
     ClassificationCategoryReport buildReport(TaskTimestamp timestamp)
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
   }
 }

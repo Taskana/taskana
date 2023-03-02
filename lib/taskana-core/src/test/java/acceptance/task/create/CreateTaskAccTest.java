@@ -41,7 +41,7 @@ import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -678,7 +678,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
     ThrowingCallable call = () -> taskService.createTask(newTask);
-    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -802,7 +802,7 @@ class CreateTaskAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_B", "SYSTEM_B", "INSTANCE_B", "VNR", "1234567"));
 
     ThrowingCallable call = () -> taskService.createTask(newTask);
-    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -823,7 +823,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     Task task = taskService.newTask("TEAMLEAD-2", "DOMAIN_A");
 
     ThrowingCallable call = () -> taskService.createTask(task);
-    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1")

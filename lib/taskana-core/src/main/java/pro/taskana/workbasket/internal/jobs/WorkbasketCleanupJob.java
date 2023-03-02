@@ -9,7 +9,7 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
@@ -77,7 +77,7 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
   }
 
   private int deleteWorkbaskets(List<String> workbasketsToBeDeleted)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
 
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getWorkbasketService().deleteWorkbaskets(workbasketsToBeDeleted);

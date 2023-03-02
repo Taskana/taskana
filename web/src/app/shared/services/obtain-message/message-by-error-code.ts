@@ -10,7 +10,7 @@ export const messageByErrorCode = {
     ENTITY_NOT_UP_TO_DATE:
       'Cannot be saved because there has been a modification while editing. Please reload to get the current version.',
     DOMAIN_NOT_FOUND: 'Domain {domain} cannot be found',
-    ROLE_MISMATCHED: 'Current user {currentUserId} is not authorized. User must be member of role(s) {roles}.',
+    NOT_AUTHORIZED: 'Current user {currentUserId} is not authorized. User must be member of role(s) {roles}.',
     SPINNER_TIMEOUT: 'Request time exceeded. Please make sure you have internet connection.',
     HISTORY_EVENT_NOT_FOUND: 'History Event with id {historyEventId} cannot be found',
     PAYLOAD_TOO_LARGE: 'Maximum upload size was exceeded',
@@ -37,9 +37,9 @@ export const messageByErrorCode = {
     WORKBASKET_IN_USE: 'Workbasket with id {workbasketId} cannot be deleted since it contains non-completed Tasks',
     WORKBASKET_ACCESS_ITEM_ALREADY_EXISTS:
       'Workbasket Access Item with access id {accessId} for Workbasket with id {workbasketId} cannot be created since it already exists',
-    WORKBASKET_WITH_ID_MISMATCHED_PERMISSION:
+    NOT_AUTHORIZED_ON_WORKBASKET_WITH_ID:
       'Current user {currentUserId} has no permission for Workbasket with id {workbasketId}. Required permission(s): {requiredPermissions}.',
-    WORKBASKET_WITH_KEY_MISMATCHED_PERMISSION:
+    NOT_AUTHORIZED_ON_WORKBASKET_WITH_KEY_AND_DOMAIN:
       'Current user {currentUserId} has no permission for Workbasket with key {workbasketKey}. Required permission(s): {requiredPermissions}.',
 
     TASK_ALREADY_EXISTS:

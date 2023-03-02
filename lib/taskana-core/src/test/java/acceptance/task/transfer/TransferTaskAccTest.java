@@ -30,7 +30,7 @@ import pro.taskana.task.api.exceptions.InvalidTaskStateException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -152,7 +152,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     ThrowingCallable call =
         () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
-    assertThatThrownBy(call).isInstanceOf(MismatchedWorkbasketPermissionException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1", groups = "cn=routers,cn=groups,OU=Test,O=TASKANA")
@@ -163,7 +163,7 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     assertThatThrownBy(
             () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005"))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
@@ -194,7 +194,7 @@ class TransferTaskAccTest extends AbstractAccTest {
                 "TKI:200000000000000000000000000000000007",
                 "WBI:100000000000000000000000000000000001");
     assertThatThrownBy(call)
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class)
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class)
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
@@ -210,7 +210,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
     assertThatThrownBy(call)
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class)
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class)
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
@@ -287,9 +287,9 @@ class TransferTaskAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap().values()).hasSize(6);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000041").getClass())
-        .isEqualTo(MismatchedWorkbasketPermissionException.class);
+        .isEqualTo(NotAuthorizedOnWorkbasketException.class);
     assertThat(results.getErrorForId("TKI:200000000000000000000000000000000008").getClass())
-        .isEqualTo(MismatchedWorkbasketPermissionException.class);
+        .isEqualTo(NotAuthorizedOnWorkbasketException.class);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000099").getClass())
         .isEqualTo(TaskNotFoundException.class);
     assertThat(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass())
@@ -331,7 +331,7 @@ class TransferTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> taskService.transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
     assertThatThrownBy(call)
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class)
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class)
         .hasMessageContaining("APPEND");
   }
 

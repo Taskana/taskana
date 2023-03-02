@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 import pro.taskana.monitor.api.reports.item.QueryItemPreprocessor;
@@ -133,6 +133,6 @@ public abstract class Report<I extends QueryItem, H extends ColumnHeader<? super
    */
   public interface Builder<I extends QueryItem, H extends ColumnHeader<? super I>> {
 
-    Report<I, H> buildReport() throws InvalidArgumentException, MismatchedRoleException;
+    Report<I, H> buildReport() throws InvalidArgumentException, NotAuthorizedException;
   }
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
@@ -85,13 +85,13 @@ public class UserController {
    * @return the inserted User
    * @throws InvalidArgumentException if the id has not been set
    * @throws UserAlreadyExistException if a User with id } is already existing
-   * @throws MismatchedRoleException if the current user is no admin or business-admin
+   * @throws NotAuthorizedException if the current user is no admin or business-admin
    */
   @PostMapping(RestEndpoints.URL_USERS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> createUser(
       @RequestBody UserRepresentationModel repModel)
-      throws InvalidArgumentException, UserAlreadyExistException, MismatchedRoleException {
+      throws InvalidArgumentException, UserAlreadyExistException, NotAuthorizedException {
     User user = userAssembler.toEntityModel(repModel);
     user = userService.createUser(user);
 
@@ -107,13 +107,13 @@ public class UserController {
    * @return the updated User
    * @throws InvalidArgumentException if the id has not been set
    * @throws UserNotFoundException if a User with id is not existing in the database
-   * @throws MismatchedRoleException if the current user is no admin or business-admin
+   * @throws NotAuthorizedException if the current user is no admin or business-admin
    */
   @PutMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> updateUser(
       @PathVariable(value = "userId") String userId, @RequestBody UserRepresentationModel repModel)
-      throws InvalidArgumentException, UserNotFoundException, MismatchedRoleException {
+      throws InvalidArgumentException, UserNotFoundException, NotAuthorizedException {
     if (!userId.equals(repModel.getUserId())) {
       throw new InvalidArgumentException(
           String.format(
@@ -134,13 +134,13 @@ public class UserController {
    * @param userId the id of the User to delete
    * @return no content
    * @throws UserNotFoundException if the id has not been found
-   * @throws MismatchedRoleException if the current user is no admin or business-admin
+   * @throws NotAuthorizedException if the current user is no admin or business-admin
    * @throws InvalidArgumentException if the id is null or empty
    */
   @DeleteMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> deleteUser(@PathVariable String userId)
-      throws UserNotFoundException, MismatchedRoleException, InvalidArgumentException {
+      throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException {
     userService.deleteUser(userId);
 
     return ResponseEntity.noContent().build();

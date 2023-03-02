@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.CombinedClassificationFilter;
 import pro.taskana.monitor.api.TaskTimestamp;
@@ -34,13 +34,13 @@ public class WorkbasketReportBuilderImpl
   }
 
   @Override
-  public WorkbasketReport buildReport() throws InvalidArgumentException, MismatchedRoleException {
+  public WorkbasketReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
     return buildReport(TaskTimestamp.DUE);
   }
 
   @Override
   public WorkbasketReport buildReport(TaskTimestamp timestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.QueryPagingParameter;
 import pro.taskana.common.rest.QuerySortBy;
 import pro.taskana.common.rest.QuerySortParameter;
@@ -55,7 +55,7 @@ public class WorkbasketAccessItemController {
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
    * @return the Workbasket Access Items with the given filter, sort and paging options.
-   * @throws MismatchedRoleException if the user is not authorized.
+   * @throws NotAuthorizedException if the user is not authorized.
    */
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> getWorkbasketAccessItems(
@@ -63,7 +63,7 @@ public class WorkbasketAccessItemController {
       WorkbasketAccessItemQueryFilterParameter filterParameter,
       WorkbasketAccessItemQuerySortParameter sortParameter,
       QueryPagingParameter<WorkbasketAccessItem, WorkbasketAccessItemQuery> pagingParameter)
-      throws MismatchedRoleException {
+      throws NotAuthorizedException {
 
     QueryParamsValidator.validateParams(
         request,
@@ -89,13 +89,13 @@ public class WorkbasketAccessItemController {
    * @title Delete a Workbasket Access Item
    * @param accessId the Access Id whose Workbasket Access Items should be removed
    * @return no content
-   * @throws MismatchedRoleException if the user is not authorized.
+   * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
   @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<Void> removeWorkbasketAccessItems(
       @RequestParam("access-id") String accessId)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     if (ldapClient.isUser(accessId)) {
       List<WorkbasketAccessItem> workbasketAccessItemList =
           workbasketService.createWorkbasketAccessItemQuery().accessIdIn(accessId).list();

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.OracleSqlSessionFactory;
 import pro.taskana.common.internal.configuration.DB;
@@ -89,7 +89,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
         .anyMatch(rolesMembers::contains);
   }
 
-  public void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException {
+  public void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException {
     if (!isUserInRole(roles)) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
@@ -97,7 +97,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
             taskanaEngine.getCurrentUserContext().getAccessIds(),
             Arrays.toString(roles));
       }
-      throw new MismatchedRoleException(taskanaEngine.getCurrentUserContext().getUserid(), roles);
+      throw new NotAuthorizedException(taskanaEngine.getCurrentUserContext().getUserid(), roles);
     }
   }
 

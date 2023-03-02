@@ -7,7 +7,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 public class TaskCommentBuilder implements EntityBuilder<TaskComment, TaskService> {
 
@@ -50,7 +50,7 @@ public class TaskCommentBuilder implements EntityBuilder<TaskComment, TaskServic
   @Override
   public TaskComment buildAndStore(TaskService taskService)
       throws InvalidArgumentException, TaskNotFoundException, TaskCommentNotFoundException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     try {
       TaskComment t = taskService.createTaskComment(testTaskComment);
       return taskService.getTaskComment(t.getId());

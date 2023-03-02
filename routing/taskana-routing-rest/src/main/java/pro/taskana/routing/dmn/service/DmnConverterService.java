@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.routing.dmn.service.util.InputEntriesSanitizer;
 import pro.taskana.routing.dmn.spi.internal.DmnValidatorManager;
@@ -57,7 +57,7 @@ public class DmnConverterService {
   }
 
   public DmnModelInstance convertExcelToDmn(MultipartFile excelRoutingFile)
-      throws IOException, MismatchedRoleException {
+      throws IOException, NotAuthorizedException {
 
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 

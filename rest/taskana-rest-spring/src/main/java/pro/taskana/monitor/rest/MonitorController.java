@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.api.TaskTimestamp;
@@ -68,7 +68,7 @@ public class MonitorController {
    * @param filterParameter the filter parameters
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown ...
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_REPORT)
@@ -76,7 +76,7 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> computeWorkbasketReport(
       TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -103,7 +103,7 @@ public class MonitorController {
    * @param workbasketTypes determine the WorkbasketTypes to include in the report
    * @param columnHeaders the column headers for the report
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException if topicWorkbaskets or useDefaultValues are false
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
@@ -113,7 +113,7 @@ public class MonitorController {
       @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes,
       @RequestParam(name = "columnHeader", required = false)
           PriorityColumnHeaderRepresentationModel[] columnHeaders)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
 
     WorkbasketPriorityReport.Builder builder =
         monitorService.createWorkbasketPriorityReportBuilder().workbasketTypeIn(workbasketTypes);
@@ -145,7 +145,7 @@ public class MonitorController {
    * @param filterParameter the filter parameters
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown ...
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT)
@@ -153,7 +153,7 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> computeClassificationCategoryReport(
       TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -180,7 +180,7 @@ public class MonitorController {
    * @param filterParameter the filter parameters
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_CLASSIFICATION_REPORT)
@@ -188,7 +188,7 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> computeClassificationReport(
       TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -215,7 +215,7 @@ public class MonitorController {
    * @param filterParameter the filter parameters
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_DETAILED_CLASSIFICATION_REPORT)
@@ -223,7 +223,7 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> computeDetailedClassificationReport(
       TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -250,7 +250,7 @@ public class MonitorController {
    * @param filterParameter the filter parameters
    * @param taskTimestamp determine which Task Timestamp should be used for comparison
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASK_CUSTOM_FIELD_VALUE_REPORT)
@@ -259,7 +259,7 @@ public class MonitorController {
       @RequestParam(name = "custom-field") TaskCustomField customField,
       TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
       taskTimestamp = TaskTimestamp.DUE;
     }
@@ -288,7 +288,7 @@ public class MonitorController {
    * @param workbasketIds Filter the report values by Workbasket Ids.
    * @param priorityMinimum Filter the report values by a minimum priority.
    * @return the computed Report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the Report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -297,7 +297,7 @@ public class MonitorController {
       @RequestParam(name = "state", required = false) List<TaskState> states,
       @RequestParam(name = "workbasket-id", required = false) List<String> workbasketIds,
       @RequestParam(name = "priority-minimum", required = false) Integer priorityMinimum)
-      throws MismatchedRoleException {
+      throws NotAuthorizedException {
 
     TaskStatusReport.Builder builder = monitorService.createTaskStatusReportBuilder();
     if (states != null && !states.isEmpty()) {
@@ -330,7 +330,7 @@ public class MonitorController {
    * @param filterParameter the filter parameter
    * @param timestamps Filter by the Task Timestamp of the task
    * @return the computed report
-   * @throws MismatchedRoleException if the current user is not authorized to compute the report
+   * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
   @GetMapping(path = RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT)
@@ -338,7 +338,7 @@ public class MonitorController {
   public ResponseEntity<ReportRepresentationModel> computeTimestampReport(
       TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp[] timestamps)
-      throws MismatchedRoleException, InvalidArgumentException {
+      throws NotAuthorizedException, InvalidArgumentException {
 
     TimestampReport.Builder builder = monitorService.createTimestampReportBuilder();
     filterParameter.apply(builder);

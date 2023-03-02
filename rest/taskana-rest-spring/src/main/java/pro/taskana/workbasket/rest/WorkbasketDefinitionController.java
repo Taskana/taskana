@@ -27,11 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.workbasket.api.WorkbasketQuery;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
@@ -111,7 +111,7 @@ public class WorkbasketDefinitionController {
    * @param file the list of Workbasket Definitions which will be imported to the current system.
    * @return no content
    * @throws IOException if multipart file cannot be parsed.
-   * @throws MismatchedRoleException if the user is not authorized.
+   * @throws NotAuthorizedException if the user is not authorized.
    * @throws DomainNotFoundException if domain information is incorrect.
    * @throws WorkbasketAlreadyExistException if any Workbasket already exists when trying to create
    *     a new one.
@@ -122,7 +122,7 @@ public class WorkbasketDefinitionController {
    * @throws WorkbasketAccessItemAlreadyExistException if a WorkbasketAccessItem for the same
    *     Workbasket and access id already exists.
    * @throws ConcurrencyException if Workbasket was updated by an other user
-   * @throws MismatchedWorkbasketPermissionException if the current user has not correct permissions
+   * @throws NotAuthorizedOnWorkbasketException if the current user has not correct permissions
    */
   @PostMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
@@ -130,7 +130,7 @@ public class WorkbasketDefinitionController {
       throws IOException, DomainNotFoundException, InvalidArgumentException,
           WorkbasketAlreadyExistException, WorkbasketNotFoundException,
           WorkbasketAccessItemAlreadyExistException, ConcurrencyException,
-          MismatchedWorkbasketPermissionException, MismatchedRoleException {
+          NotAuthorizedOnWorkbasketException, NotAuthorizedException {
     WorkbasketDefinitionCollectionRepresentationModel definitions =
         mapper.readValue(
             file.getInputStream(),

@@ -13,7 +13,7 @@ import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaRole;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.testapi.DefaultTestEntities;
@@ -79,7 +79,7 @@ class DeleteClassificationAccTest {
             classificationService.deleteClassification(
                 classification.getKey(), classification.getDomain());
 
-    MismatchedRoleException e = catchThrowableOfType(call, MismatchedRoleException.class);
+    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getRoles())
         .containsExactlyInAnyOrder(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -95,7 +95,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call =
         () -> classificationService.deleteClassification(classification.getId());
 
-    MismatchedRoleException e = catchThrowableOfType(call, MismatchedRoleException.class);
+    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getRoles())
         .containsExactlyInAnyOrder(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);

@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
@@ -61,8 +61,8 @@ public class WorkbasketDefinitionRepresentationModelAssembler
               .map(WorkbasketSummary::getId)
               .collect(Collectors.toSet());
     } catch (WorkbasketNotFoundException
-        | MismatchedRoleException
-        | MismatchedWorkbasketPermissionException e) {
+        | NotAuthorizedException
+        | NotAuthorizedOnWorkbasketException e) {
       throw new SystemException("Caught Exception", e);
     }
 

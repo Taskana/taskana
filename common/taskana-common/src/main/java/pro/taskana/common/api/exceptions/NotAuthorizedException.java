@@ -9,13 +9,13 @@ import pro.taskana.common.internal.util.MapCreator;
  * This exception is thrown when the current user is not in a certain {@linkplain TaskanaRole role}
  * it is supposed to be.
  */
-public class MismatchedRoleException extends TaskanaException {
+public class NotAuthorizedException extends TaskanaException {
 
-  public static final String ERROR_KEY = "ROLE_MISMATCHED";
+  public static final String ERROR_KEY = "NOT_AUTHORIZED";
   private final String currentUserId;
   private final TaskanaRole[] roles;
 
-  public MismatchedRoleException(String currentUserId, TaskanaRole... roles) {
+  public NotAuthorizedException(String currentUserId, TaskanaRole... roles) {
     super(
         String.format(
             "Not authorized. The current user '%s' is not member of role(s) '%s'.",
