@@ -27,7 +27,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 /** Acceptance test for all "create task" scenarios. */
 @ExtendWith(JaasExtension.class)
@@ -342,7 +342,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getFailedIds()).hasSize(3).containsAnyElementsOf(taskIds);
     assertThat(results.getErrorMap().values())
-        .hasOnlyElementsOfType(MismatchedWorkbasketPermissionException.class);
+        .hasOnlyElementsOfType(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "admin")

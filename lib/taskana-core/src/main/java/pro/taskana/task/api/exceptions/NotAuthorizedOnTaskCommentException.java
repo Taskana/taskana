@@ -9,13 +9,13 @@ import pro.taskana.task.api.models.TaskComment;
  * This exception is thrown when the current user is not the creator of the {@linkplain TaskComment}
  * it tries to modify.
  */
-public class MismatchedTaskCommentCreatorException extends TaskanaException {
+public class NotAuthorizedOnTaskCommentException extends TaskanaException {
 
-  public static final String ERROR_KEY = "TASK_COMMENT_CREATOR_MISMATCHED";
+  public static final String ERROR_KEY = "NOT_AUTHORIZED_ON_TASK_COMMENT";
   private final String currentUserId;
   private final String taskCommentId;
 
-  public MismatchedTaskCommentCreatorException(String currentUserId, String taskCommentId) {
+  public NotAuthorizedOnTaskCommentException(String currentUserId, String taskCommentId) {
     super(
         String.format(
             "Not authorized. Current user '%s' is not the creator of TaskComment with id '%s'.",

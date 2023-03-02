@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
 import pro.taskana.user.api.models.User;
@@ -41,14 +41,14 @@ public interface UserService {
    * @param userToCreate the {@linkplain User} which should be inserted
    * @return the inserted {@linkplain User}
    * @throws InvalidArgumentException if some fields are not set properly
-   * @throws MismatchedRoleException if the current user is not {@linkplain
+   * @throws NotAuthorizedException if the current user is not {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserAlreadyExistException if there already exists a {@linkplain User} with the
    *     specified {@linkplain User#getId() id} inside the database
    */
   User createUser(User userToCreate)
-      throws InvalidArgumentException, UserAlreadyExistException, MismatchedRoleException;
+      throws InvalidArgumentException, UserAlreadyExistException, NotAuthorizedException;
 
   /**
    * Gets a {@linkplain User}.
@@ -85,7 +85,7 @@ public interface UserService {
    *
    * @param userToUpdate the {@linkplain User} which should be updated
    * @return the updated {@linkplain User}
-   * @throws MismatchedRoleException if the current user is not {@linkplain
+   * @throws NotAuthorizedException if the current user is not {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
@@ -93,7 +93,7 @@ public interface UserService {
    * @throws InvalidArgumentException if some fields are not set properly
    */
   User updateUser(User userToUpdate)
-      throws UserNotFoundException, InvalidArgumentException, MismatchedRoleException;
+      throws UserNotFoundException, InvalidArgumentException, NotAuthorizedException;
 
   /**
    * Deletes a {@linkplain User}.
@@ -103,7 +103,7 @@ public interface UserService {
    * gets deleted.
    *
    * @param id the {@linkplain User#getId() id} of the {@linkplain User} which should be deleted
-   * @throws MismatchedRoleException if the current user is not {@linkplain
+   * @throws NotAuthorizedException if the current user is not {@linkplain
    *     pro.taskana.common.api.TaskanaRole#ADMIN admin} or {@linkplain
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    * @throws UserNotFoundException if there does not exist a {@linkplain User} with the specified
@@ -111,5 +111,5 @@ public interface UserService {
    * @throws InvalidArgumentException if the userIds parameter is NULL or empty
    */
   void deleteUser(String id)
-      throws UserNotFoundException, InvalidArgumentException, MismatchedRoleException;
+      throws UserNotFoundException, InvalidArgumentException, NotAuthorizedException;
 }

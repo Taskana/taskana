@@ -21,7 +21,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.testapi.builder.EntityBuilder.SummaryEntityBuilder;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
@@ -217,7 +217,7 @@ public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, Task
       throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
           ClassificationNotFoundException, AttachmentPersistenceException,
           ObjectReferencePersistenceException, TaskNotFoundException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     try {
       Task task = taskService.createTask(testTask);
       return taskService.getTask(task.getId());

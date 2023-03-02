@@ -37,7 +37,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.util.Pair;
@@ -654,8 +654,8 @@ class UpdateClassificationAccTest {
           classificationService.getClassification("BeforeAllClassification", "DOMAIN_A");
       classification.setCustomField(ClassificationCustomField.CUSTOM_1, "newCustom1");
 
-      MismatchedRoleException expectedException =
-          new MismatchedRoleException(
+      NotAuthorizedException expectedException =
+          new NotAuthorizedException(
               currentUserContext.getUserid(), TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
       assertThatThrownBy(() -> classificationService.updateClassification(classification))
           .usingRecursiveComparison()
@@ -672,8 +672,8 @@ class UpdateClassificationAccTest {
       classification.setApplicationEntryPoint("updated EntryPoint");
       classification.setName("updated Name");
 
-      MismatchedRoleException expectedException =
-          new MismatchedRoleException(
+      NotAuthorizedException expectedException =
+          new NotAuthorizedException(
               currentUserContext.getUserid(), TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
       assertThatThrownBy(() -> classificationService.updateClassification(classification))
           .usingRecursiveComparison()

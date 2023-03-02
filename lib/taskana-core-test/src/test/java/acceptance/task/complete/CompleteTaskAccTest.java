@@ -43,7 +43,7 @@ import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
@@ -213,8 +213,8 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.completeTask(claimedTask.getId());
 
-    MismatchedWorkbasketPermissionException e =
-        catchThrowableOfType(call, MismatchedWorkbasketPermissionException.class);
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getCurrentUserId()).isEqualTo(currentUserContext.getUserid());
     WorkbasketSummary workbasket = claimedTask.getWorkbasketSummary();
     assertThat(e.getWorkbasketId()).isEqualTo(workbasket.getId());

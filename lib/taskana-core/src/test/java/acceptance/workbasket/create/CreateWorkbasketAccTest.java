@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -70,7 +70,7 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setOrgLevel1("company");
 
     ThrowingCallable call = () -> workbasketService.createWorkbasket(workbasket);
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "businessadmin")

@@ -15,7 +15,7 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.task.api.TaskService;
-import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
+import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
@@ -28,7 +28,7 @@ import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
@@ -90,7 +90,7 @@ class UpdateTaskCommentAccTest {
     taskComment.setTextField("updated textfield");
 
     assertThatThrownBy(() -> taskService.updateTaskComment(taskComment))
-        .isInstanceOf(MismatchedWorkbasketPermissionException.class);
+        .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -108,7 +108,7 @@ class UpdateTaskCommentAccTest {
 
     ThrowingCallable updateTaskCommentCall = () -> taskService.updateTaskComment(taskComment);
     assertThatThrownBy(updateTaskCommentCall)
-        .isInstanceOf(MismatchedTaskCommentCreatorException.class);
+        .isInstanceOf(NotAuthorizedOnTaskCommentException.class);
   }
 
   @WithAccessId(user = "user-1-1")

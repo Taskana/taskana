@@ -10,14 +10,14 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidCallbackStateException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
-import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
+import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -27,7 +27,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.workbasket.api.WorkbasketPermission;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -107,7 +107,7 @@ public interface TaskService {
    * @param taskToCreate the transient {@linkplain Task} to be inserted
    * @return the created and inserted {@linkplain Task}
    * @throws TaskAlreadyExistException if the {@linkplain Task} already exists
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#APPEND} for the {@linkplain Workbasket} the {@linkplain Task} is in
    * @throws WorkbasketNotFoundException if the {@linkplain Workbasket} referenced by the
    *     {@linkplain Task#getWorkbasketSummary() workbasketSummary} of the {@linkplain Task} isn't
@@ -127,7 +127,7 @@ public interface TaskService {
   Task createTask(Task taskToCreate)
       throws WorkbasketNotFoundException, ClassificationNotFoundException,
           TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, MismatchedWorkbasketPermissionException;
+          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -139,10 +139,10 @@ public interface TaskService {
    * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task}
    * @return the {@linkplain Task} with the specified taskId
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
-  Task getTask(String taskId) throws TaskNotFoundException, MismatchedWorkbasketPermissionException;
+  Task getTask(String taskId) throws TaskNotFoundException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -157,11 +157,11 @@ public interface TaskService {
    * @throws InvalidTaskStateException if the {@linkplain Task#getState() state} of the {@linkplain
    *     Task} with taskId isn't {@linkplain TaskState#READY}
    * @throws InvalidOwnerException if the {@linkplain Task} with taskId is claimed by some else
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task claim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -174,11 +174,11 @@ public interface TaskService {
    * @throws InvalidTaskStateException if the state of Task with taskId is in {@linkplain
    *     TaskState#END_STATES}
    * @throws InvalidOwnerException cannot be thrown
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -187,11 +187,11 @@ public interface TaskService {
    * @param taskQuery the {@linkplain TaskQuery}
    * @return the {@linkplain Task} that got selected and claimed
    * @throws InvalidOwnerException if the {@linkplain Task} is claimed by someone else
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task selectAndClaim(TaskQuery taskQuery)
-      throws InvalidOwnerException, MismatchedWorkbasketPermissionException;
+      throws InvalidOwnerException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Cancel the claim of an existing {@linkplain Task} if it was claimed by the current user before.
@@ -203,11 +203,11 @@ public interface TaskService {
    * @throws InvalidTaskStateException if the {@linkplain Task} is already in one of the {@linkplain
    *     TaskState#END_STATES}
    * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task cancelClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -220,11 +220,11 @@ public interface TaskService {
    * @throws InvalidTaskStateException if the {@linkplain Task} is already in one of the {@linkplain
    *     TaskState#END_STATES}
    * @throws InvalidOwnerException cannot be thrown
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCancelClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -236,12 +236,12 @@ public interface TaskService {
    *     Task} with taskId is not in {@linkplain TaskState#CLAIMED}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task requestReview(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Request review for an existing {@linkplain Task} even if the current user is not the
@@ -253,12 +253,12 @@ public interface TaskService {
    *     Task} with taskId is one of the {@linkplain TaskState#END_STATES}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException cannot be thrown
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceRequestReview(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Request changes for an existing {@linkplain Task} that is in {@linkplain TaskState#IN_REVIEW}.
@@ -271,12 +271,12 @@ public interface TaskService {
    *     Task} with taskId is not in {@linkplain TaskState#IN_REVIEW}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task requestChanges(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Request changes for an existing {@linkplain Task} even if the current user is not the
@@ -290,12 +290,12 @@ public interface TaskService {
    *     Task} with taskId is one of the {@linkplain TaskState#END_STATES}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException cannot be thrown
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceRequestChanges(String taskId)
       throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Complete a claimed {@linkplain Task} as {@linkplain Task#getOwner() owner} or {@linkplain
@@ -312,11 +312,11 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException if current user isn't the {@linkplain Task#getOwner() owner} of
    *     the {@linkplain Task} or {@linkplain TaskanaRole#ADMIN}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task completeTask(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -334,11 +334,11 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidOwnerException if current user isn't the {@linkplain Task#getOwner() owner} of
    *     the {@linkplain Task} or {@linkplain TaskanaRole#ADMIN}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCompleteTask(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, MismatchedWorkbasketPermissionException,
+      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -381,12 +381,11 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidTaskStateException if the {@linkplain Task} isn't in {@linkplain
    *     TaskState#READY} or {@linkplain TaskState#CLAIMED}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task cancelTask(String taskId)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException,
-          InvalidTaskStateException;
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException;
 
   /**
    * Terminates a {@linkplain Task}. Termination is an administrative action to complete a
@@ -399,14 +398,14 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws InvalidTaskStateException if the {@linkplain Task} isn't in {@linkplain
    *     TaskState#READY} or {@linkplain TaskState#CLAIMED}
-   * @throws MismatchedRoleException if the current user isn't member of {@linkplain
+   * @throws NotAuthorizedException if the current user isn't member of {@linkplain
    *     TaskanaRole#ADMIN} or {@linkplain TaskanaRole#TASK_ADMIN}
-   * @throws MismatchedWorkbasketPermissionException If the current user doesn't have the correct
+   * @throws NotAuthorizedOnWorkbasketException If the current user doesn't have the correct
    *     permission
    */
   Task terminateTask(String taskId)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException;
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException;
 
   /**
    * Transfers a {@linkplain Task} to another {@linkplain Workbasket} while always setting
@@ -416,8 +415,8 @@ public interface TaskService {
    */
   @SuppressWarnings("checkstyle:JavadocMethod")
   default Task transfer(String taskId, String destinationWorkbasketId)
-      throws TaskNotFoundException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
     return transfer(taskId, destinationWorkbasketId, true);
   }
 
@@ -436,15 +435,15 @@ public interface TaskService {
    * @return the transferred {@linkplain Task}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
    * @throws WorkbasketNotFoundException if the target {@linkplain Workbasket} was not found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the source {@linkplain Workbasket} or no {@linkplain
    *     WorkbasketPermission#TRANSFER} for the target {@linkplain Workbasket}
    * @throws InvalidTaskStateException if the {@linkplain Task} is in one of the {@linkplain
    *     TaskState#END_STATES}
    */
   Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException;
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException;
 
   /**
    * Transfers a {@linkplain Task} to another {@linkplain Workbasket} while always setting
@@ -454,8 +453,8 @@ public interface TaskService {
    */
   @SuppressWarnings("checkstyle:JavadocMethod")
   default Task transfer(String taskId, String workbasketKey, String domain)
-      throws TaskNotFoundException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException {
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
     return transfer(taskId, workbasketKey, domain, true);
   }
 
@@ -476,15 +475,15 @@ public interface TaskService {
    * @return the transferred {@linkplain Task}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
    * @throws WorkbasketNotFoundException if the target {@linkplain Workbasket} was not found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the source {@linkplain Workbasket} or no {@linkplain
    *     WorkbasketPermission#TRANSFER} for the target {@linkplain Workbasket}
    * @throws InvalidTaskStateException if the {@linkplain Task} is in one of the {@linkplain
    *     TaskState#END_STATES}
    */
   Task transfer(String taskId, String workbasketKey, String domain, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException;
+      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException;
 
   /**
    * Transfers a List of {@linkplain Task Tasks} to another {@linkplain Workbasket} while always
@@ -496,7 +495,7 @@ public interface TaskService {
   default BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return transferTasks(destinationWorkbasketId, taskIds, true);
   }
 
@@ -514,7 +513,7 @@ public interface TaskService {
    * @param setTransferFlag controls whether to set {@linkplain Task#isTransferred() isTransferred}
    *     or not
    * @return Bulkresult with {@linkplain Task#getId() ids} and Error for each failed transactions
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the source {@linkplain Workbasket} or no {@linkplain
    *     WorkbasketPermission#TRANSFER} for the target {@linkplain Workbasket}
    * @throws InvalidArgumentException if the method parameters are empty or NULL
@@ -523,7 +522,7 @@ public interface TaskService {
   BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Transfers a List of {@linkplain Task Tasks} to another {@linkplain Workbasket} while always
@@ -535,7 +534,7 @@ public interface TaskService {
   default BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException {
+          NotAuthorizedOnWorkbasketException {
     return transferTasks(destinationWorkbasketKey, destinationWorkbasketDomain, taskIds, true);
   }
 
@@ -554,7 +553,7 @@ public interface TaskService {
    * @param setTransferFlag controls whether to set {@linkplain Task#isTransferred() isTransferred}
    *     or not
    * @return BulkResult with {@linkplain Task#getId() ids} and Error for each failed transactions
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the source {@linkplain Workbasket} or no {@linkplain
    *     WorkbasketPermission#TRANSFER} for the target {@linkplain Workbasket}
    * @throws InvalidArgumentException if the method parameters are empty or NULL
@@ -566,7 +565,7 @@ public interface TaskService {
       List<String> taskIds,
       boolean setTransferFlag)
       throws InvalidArgumentException, WorkbasketNotFoundException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Update a {@linkplain Task}.
@@ -584,7 +583,7 @@ public interface TaskService {
    * @throws ClassificationNotFoundException if the {@linkplain Task#getClassificationSummary()
    *     classificationSummary} of the updated {@linkplain Task} refers to a {@link Classification}
    *     that can't be found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    * @throws AttachmentPersistenceException if an {@linkplain Attachment} with the same {@linkplain
    *     Attachment#getId() id} was added to the {@linkplain Task} multiple times without using
@@ -599,7 +598,7 @@ public interface TaskService {
   Task updateTask(Task task)
       throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
           ClassificationNotFoundException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, MismatchedWorkbasketPermissionException,
+          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -643,11 +642,11 @@ public interface TaskService {
    * @param isRead the new status of {@linkplain Task#isRead() isRead}
    * @return the updated {@linkplain Task}
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId wasn't found
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task setTaskRead(String taskId, boolean isRead)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException;
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException;
 
   /**
    * Sets the specified {@linkplain CallbackState} on a List of {@linkplain Task Tasks}.
@@ -705,21 +704,19 @@ public interface TaskService {
    * Deletes the {@linkplain Task} with the given {@linkplain Task#getId() id}.
    *
    * @param taskId The {@linkplain Task#getId() id} of the {@linkplain Task} to delete
-   * @throws MismatchedWorkbasketPermissionException If the current user doesn't have correct
-   *     permission
+   * @throws NotAuthorizedOnWorkbasketException If the current user doesn't have correct permission
    * @throws TaskNotFoundException If the given {@linkplain Task#getId() id} doesn't refer to an
    *     existing {@linkplain Task}
    * @throws InvalidTaskStateException If the {@linkplain Task#getState() state} of the referenced
    *     {@linkplain Task} isn't one of the {@linkplain TaskState#END_STATES}
-   * @throws MismatchedRoleException if the current user isn't member of {@linkplain
+   * @throws NotAuthorizedException if the current user isn't member of {@linkplain
    *     TaskanaRole#ADMIN}
    * @throws InvalidCallbackStateException the Callback State of the Task is {@linkplain
    *     CallbackState#CALLBACK_PROCESSING_REQUIRED}
    */
   void deleteTask(String taskId)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException,
-          InvalidCallbackStateException;
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException, InvalidCallbackStateException;
 
   /**
    * Deletes the {@linkplain Task} with the given {@linkplain Task#getId() id} even if it isn't
@@ -731,17 +728,15 @@ public interface TaskService {
    * @throws InvalidTaskStateException if the {@linkplain Task#getState() state} of the referenced
    *     {@linkplain Task} isn't {@linkplain TaskState#TERMINATED} or {@linkplain
    *     TaskState#CANCELLED}
-   * @throws MismatchedWorkbasketPermissionException If the current user doesn't have correct
-   *     permissions
-   * @throws MismatchedRoleException if the current user isn't member of {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException If the current user doesn't have correct permissions
+   * @throws NotAuthorizedException if the current user isn't member of {@linkplain
    *     TaskanaRole#ADMIN}
    * @throws InvalidCallbackStateException the Callback State of the Task is {@linkplain
    *     CallbackState#CALLBACK_PROCESSING_REQUIRED}
    */
   void forceDeleteTask(String taskId)
-      throws TaskNotFoundException, MismatchedRoleException,
-          MismatchedWorkbasketPermissionException, InvalidTaskStateException,
-          InvalidCallbackStateException;
+      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException, InvalidCallbackStateException;
 
   /**
    * Deletes a List of {@linkplain Task Tasks}.
@@ -750,11 +745,11 @@ public interface TaskService {
    * @return the result of the operations with each {@linkplain Task#getId() id} and Exception for
    *     each failed deletion
    * @throws InvalidArgumentException if the tasks parameter contains NULL values
-   * @throws MismatchedRoleException if the current user isn't member of {@linkplain
+   * @throws NotAuthorizedException if the current user isn't member of {@linkplain
    *     TaskanaRole#ADMIN}
    */
   BulkOperationResults<String, TaskanaException> deleteTasks(List<String> tasks)
-      throws InvalidArgumentException, MismatchedRoleException;
+      throws InvalidArgumentException, NotAuthorizedException;
 
   // endregion
 
@@ -777,7 +772,7 @@ public interface TaskService {
    *
    * @param taskComment the {@linkplain TaskComment} to be created
    * @return the created {@linkplain TaskComment}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} of the commented {@linkplain
    *     Task}.
    * @throws TaskNotFoundException if the given {@linkplain TaskComment#getTaskId() taskId} doesn't
@@ -786,8 +781,7 @@ public interface TaskService {
    *     {@link TaskComment} is neither NULL nor empty
    */
   TaskComment createTaskComment(TaskComment taskComment)
-      throws TaskNotFoundException, InvalidArgumentException,
-          MismatchedWorkbasketPermissionException;
+      throws TaskNotFoundException, InvalidArgumentException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -801,7 +795,7 @@ public interface TaskService {
    * @return the {@linkplain TaskComment} identified by taskCommentId
    * @throws TaskCommentNotFoundException if the given taskCommentId doesn't refer to an existing
    *     {@linkplain TaskComment}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} of the commented {@linkplain
    *     Task}
    * @throws TaskNotFoundException if the {@linkplain TaskComment#getTaskId() taskId} of the
@@ -810,7 +804,7 @@ public interface TaskService {
    */
   TaskComment getTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
-          MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Retrieves the List of {@linkplain TaskComment TaskComments} for the {@linkplain Task} with
@@ -820,14 +814,14 @@ public interface TaskService {
    *     {@linkplain TaskComment TaskComments} should be retrieved
    * @return the List of {@linkplain TaskComment TaskComments} attached to the specified {@linkplain
    *     Task}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} of the commented {@linkplain
    *     Task}
    * @throws TaskNotFoundException if the given taskId doesn't refer to an existing {@linkplain
    *     Task}
    */
   List<TaskComment> getTaskComments(String taskId)
-      throws TaskNotFoundException, MismatchedWorkbasketPermissionException;
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -838,7 +832,7 @@ public interface TaskService {
    *
    * @param taskComment the {@linkplain TaskComment} to be updated in the database
    * @return the updated {@linkplain TaskComment}
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} of the commented {@linkplain
    *     Task}.
    * @throws ConcurrencyException if an attempt is made to update the {@linkplain TaskComment} and
@@ -850,13 +844,13 @@ public interface TaskService {
    *     to an existing {@linkplain Task}
    * @throws InvalidArgumentException if the {@linkplain TaskComment#getId() id} of the specified
    *     {@linkplain TaskComment} is NULL or empty
-   * @throws MismatchedTaskCommentCreatorException If the current user doesn't have correct
+   * @throws NotAuthorizedOnTaskCommentException If the current user doesn't have correct
    *     permissions
    */
   TaskComment updateTaskComment(TaskComment taskComment)
       throws ConcurrencyException, TaskCommentNotFoundException, TaskNotFoundException,
-          InvalidArgumentException, MismatchedTaskCommentCreatorException,
-          MismatchedWorkbasketPermissionException;
+          InvalidArgumentException, NotAuthorizedOnTaskCommentException,
+          NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -873,15 +867,15 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain TaskComment#getTaskId() taskId} of the
    *     TaskComment doesn't refer to an existing {@linkplain Task}
    * @throws InvalidArgumentException if the given taskCommentId is NULL or empty
-   * @throws MismatchedWorkbasketPermissionException if the current user has no {@linkplain
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the commented {@linkplain Task}
    *     is in
-   * @throws MismatchedTaskCommentCreatorException if the current user is not the {@linkplain
+   * @throws NotAuthorizedOnTaskCommentException if the current user is not the {@linkplain
    *     TaskComment#getCreator() creator} of the {@linkplain TaskComment}.
    */
   void deleteTaskComment(String taskCommentId)
       throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
-          MismatchedTaskCommentCreatorException, MismatchedWorkbasketPermissionException;
+          NotAuthorizedOnTaskCommentException, NotAuthorizedOnWorkbasketException;
 
   // endregion
 

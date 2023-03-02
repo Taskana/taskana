@@ -4,7 +4,7 @@ import java.util.List;
 
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -32,10 +32,10 @@ public class TaskCustomFieldValueReport extends Report<MonitorQueryItem, TimeInt
 
     @Override
     TaskCustomFieldValueReport buildReport()
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
 
     @Override
     TaskCustomFieldValueReport buildReport(TaskTimestamp timestamp)
-        throws InvalidArgumentException, MismatchedRoleException;
+        throws InvalidArgumentException, NotAuthorizedException;
   }
 }

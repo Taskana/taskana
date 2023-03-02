@@ -28,42 +28,42 @@ Additionally, an optional set of message variables, containing some technical in
 
 [%autowidth,width="100%"]
 |===
-| Status Code                 | Key                                       | Message Variables
-| *400 BAD_REQUEST*           | CLASSIFICATION_SERVICE_LEVEL_MALFORMED    | serviceLevel, classificationKey, domain
-| *400 BAD_REQUEST*           | CUSTOM_HOLIDAY_WRONG_FORMAT               | customHoliday
-| *400 BAD_REQUEST*           | DOMAIN_NOT_FOUND                          | domain
-| *400 BAD_REQUEST*           | INVALID_ARGUMENT                          |
-| *400 BAD_REQUEST*           | QUERY_PARAMETER_MALFORMED                 | malformedQueryParameters
-| *400 BAD_REQUEST*           | TASK_INVALID_CALLBACK_STATE               | taskId, taskCallbackState, requiredCallbackStates
-| *400 BAD_REQUEST*           | TASK_INVALID_OWNER                        | taskId, currentUserId
-| *400 BAD_REQUEST*           | TASK_INVALID_STATE                        | taskId, taskState, requiredTaskStates
-| *403 FORBIDDEN*             | ROLE_MISMATCHED                           | roles, currentUserId
-| *403 FORBIDDEN*             | TASK_COMMENT_CREATOR_MISMATCHED           | currentUserId, taskCommentId
-| *403 FORBIDDEN*             | WORKBASKET_WITH_ID_MISMATCHED_PERMISSION  | currentUserId, workbasketId, requiredPermissions
-| *403 FORBIDDEN*             | WORKBASKET_WITH_KEY_MISMATCHED_PERMISSION | currentUserId, workbasketKey, domain, requiredPermissions
-| *404 NOT_FOUND*             | CLASSIFICATION_WITH_ID_NOT_FOUND          | classificationId
-| *404 NOT_FOUND*             | CLASSIFICATION_WITH_KEY_NOT_FOUND         | classificationKey, domain
-| *404 NOT_FOUND*             | TASK_COMMENT_NOT_FOUND                    | taskCommentId
-| *404 NOT_FOUND*             | TASK_NOT_FOUND                            | taskId
-| *404 NOT_FOUND*             | USER_NOT_FOUND                            | userId
-| *404 NOT_FOUND*             | WORKBASKET_WITH_ID_NOT_FOUND              | workbasketId
-| *404 NOT_FOUND*             | WORKBASKET_WITH_KEY_NOT_FOUND             | workbasketKey, domain
-| *409 CONFLICT*              | ATTACHMENT_ALREADY_EXISTS                 | attachmentId, taskId
-| *409 CONFLICT*              | CLASSIFICATION_ALREADY_EXISTS             | classificationKey, domain
-| *409 CONFLICT*              | ENTITY_NOT_UP_TO_DATE                     | entityId
-| *409 CONFLICT*              | TASK_ALREADY_EXISTS                       | externalTaskId
-| *409 CONFLICT*              | USER_ALREADY_EXISTS                       | userID
-| *409 CONFLICT*              | WORKBASKET_ACCESS_ITEM_ALREADY_EXISTS     | accessId, workbasketId
-| *409 CONFLICT*              | WORKBASKET_ALREADY_EXISTS                 | workbasketKey, domain
-| *409 CONFLICT*              | WORKBASKET_MARKED_FOR_DELETION            | workbasketId
-| *413 PAYLOAD_TOO_LARGE*     | PAYLOAD_TOO_LARGE                         |
-| *423 LOCKED*                | CLASSIFICATION_IN_USE                     | classificationKey, domain
-| *423 LOCKED*                | WORKBASKET_IN_USE                         | workbasketId
-| *500 INTERNAL_SERVER_ERROR* | CONNECTION_AUTOCOMMIT_FAILED              |
-| *500 INTERNAL_SERVER_ERROR* | CONNECTION_NOT_SET                        |
-| *500 INTERNAL_SERVER_ERROR* | CRITICAL_SYSTEM_ERROR                     |
-| *500 INTERNAL_SERVER_ERROR* | DATABASE_UNSUPPORTED                      | databaseProductName
-| *500 INTERNAL_SERVER_ERROR* | UNKNOWN_ERROR                             |
+| Status Code                 | Key                                              | Message Variables
+| *400 BAD_REQUEST*           | CLASSIFICATION_SERVICE_LEVEL_MALFORMED           | serviceLevel, classificationKey, domain
+| *400 BAD_REQUEST*           | CUSTOM_HOLIDAY_WRONG_FORMAT                      | customHoliday
+| *400 BAD_REQUEST*           | DOMAIN_NOT_FOUND                                 | domain
+| *400 BAD_REQUEST*           | INVALID_ARGUMENT                                 |
+| *400 BAD_REQUEST*           | QUERY_PARAMETER_MALFORMED                        | malformedQueryParameters
+| *400 BAD_REQUEST*           | TASK_INVALID_CALLBACK_STATE                      | taskId, taskCallbackState, requiredCallbackStates
+| *400 BAD_REQUEST*           | TASK_INVALID_OWNER                               | taskId, currentUserId
+| *400 BAD_REQUEST*           | TASK_INVALID_STATE                               | taskId, taskState, requiredTaskStates
+| *403 FORBIDDEN*             | NOT_AUTHORIZED                                   | roles, currentUserId
+| *403 FORBIDDEN*             | NOT_AUTHORIZED_ON_TASK_COMMENT                   | currentUserId, taskCommentId
+| *403 FORBIDDEN*             | NOT_AUTHORIZED_ON_WORKBASKET_WITH_ID             | currentUserId, workbasketId, requiredPermissions
+| *403 FORBIDDEN*             | NOT_AUTHORIZED_ON_WORKBASKET_WITH_KEY_AND_DOMAIN | currentUserId, workbasketKey, domain, requiredPermissions
+| *404 NOT_FOUND*             | CLASSIFICATION_WITH_ID_NOT_FOUND                 | classificationId
+| *404 NOT_FOUND*             | CLASSIFICATION_WITH_KEY_NOT_FOUND                | classificationKey, domain
+| *404 NOT_FOUND*             | TASK_COMMENT_NOT_FOUND                           | taskCommentId
+| *404 NOT_FOUND*             | TASK_NOT_FOUND                                   | taskId
+| *404 NOT_FOUND*             | USER_NOT_FOUND                                   | userId
+| *404 NOT_FOUND*             | WORKBASKET_WITH_ID_NOT_FOUND                     | workbasketId
+| *404 NOT_FOUND*             | WORKBASKET_WITH_KEY_NOT_FOUND                    | workbasketKey, domain
+| *409 CONFLICT*              | ATTACHMENT_ALREADY_EXISTS                        | attachmentId, taskId
+| *409 CONFLICT*              | CLASSIFICATION_ALREADY_EXISTS                    | classificationKey, domain
+| *409 CONFLICT*              | ENTITY_NOT_UP_TO_DATE                            | entityId
+| *409 CONFLICT*              | TASK_ALREADY_EXISTS                              | externalTaskId
+| *409 CONFLICT*              | USER_ALREADY_EXISTS                              | userID
+| *409 CONFLICT*              | WORKBASKET_ACCESS_ITEM_ALREADY_EXISTS            | accessId, workbasketId
+| *409 CONFLICT*              | WORKBASKET_ALREADY_EXISTS                        | workbasketKey, domain
+| *409 CONFLICT*              | WORKBASKET_MARKED_FOR_DELETION                   | workbasketId
+| *413 PAYLOAD_TOO_LARGE*     | PAYLOAD_TOO_LARGE                                |
+| *423 LOCKED*                | CLASSIFICATION_IN_USE                            | classificationKey, domain
+| *423 LOCKED*                | WORKBASKET_IN_USE                                | workbasketId
+| *500 INTERNAL_SERVER_ERROR* | CONNECTION_AUTOCOMMIT_FAILED                     |
+| *500 INTERNAL_SERVER_ERROR* | CONNECTION_NOT_SET                               |
+| *500 INTERNAL_SERVER_ERROR* | CRITICAL_SYSTEM_ERROR                            |
+| *500 INTERNAL_SERVER_ERROR* | DATABASE_UNSUPPORTED                             | databaseProductName
+| *500 INTERNAL_SERVER_ERROR* | UNKNOWN_ERROR                                    |
 |===
 
 ==== Errors

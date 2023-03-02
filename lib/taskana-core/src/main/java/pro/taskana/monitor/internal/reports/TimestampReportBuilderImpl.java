@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
@@ -55,12 +55,12 @@ public class TimestampReportBuilderImpl
 
   @Override
   public Report<TimestampQueryItem, TimeIntervalColumnHeader> buildReport(TaskTimestamp timestamp)
-      throws InvalidArgumentException, MismatchedRoleException {
+      throws InvalidArgumentException, NotAuthorizedException {
     return buildReport();
   }
 
   @Override
-  public TimestampReport buildReport() throws InvalidArgumentException, MismatchedRoleException {
+  public TimestampReport buildReport() throws InvalidArgumentException, NotAuthorizedException {
     this.taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.MONITOR, TaskanaRole.ADMIN);
     try {
       this.taskanaEngine.openConnection();

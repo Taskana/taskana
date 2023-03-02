@@ -33,7 +33,7 @@ import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 @TaskanaIntegrationTest
@@ -131,8 +131,8 @@ class GetTaskCommentAccTest {
   @Test
   void should_FailToReturnTaskComments_When_TaskIsNotVisible() {
     ThrowingCallable call = () -> taskService.getTaskComments(task1.getId());
-    MismatchedWorkbasketPermissionException e =
-        catchThrowableOfType(call, MismatchedWorkbasketPermissionException.class);
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
 
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
@@ -151,8 +151,8 @@ class GetTaskCommentAccTest {
             .buildAndStore(taskService, "user-1-1");
 
     ThrowingCallable call = () -> taskService.getTaskComment(comment.getId());
-    MismatchedWorkbasketPermissionException e =
-        catchThrowableOfType(call, MismatchedWorkbasketPermissionException.class);
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
 
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);

@@ -28,7 +28,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaInject;
@@ -263,11 +263,11 @@ class CreateClassificationAccTest {
   void should_ThrowException_When_UserRoleIsNotAdminOrBusinessAdmin(WithAccessId accessId) {
     Classification classification =
         classificationService.newClassification("KeyErrCreation", MASTER_DOMAIN, "TASK");
-    MismatchedRoleException expectedException =
-        new MismatchedRoleException(accessId.user(), TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
+    NotAuthorizedException expectedException =
+        new NotAuthorizedException(accessId.user(), TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
     assertThatThrownBy(() -> classificationService.createClassification(classification))
-        .isInstanceOf(MismatchedRoleException.class)
+        .isInstanceOf(NotAuthorizedException.class)
         .usingRecursiveComparison()
         .isEqualTo(expectedException);
   }

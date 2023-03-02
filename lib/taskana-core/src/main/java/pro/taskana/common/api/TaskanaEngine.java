@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
@@ -190,10 +190,10 @@ public interface TaskanaEngine {
    *
    * @param roles The {@linkplain TaskanaRole TaskanaRoles} that are checked for membership of the
    *     current user
-   * @throws MismatchedRoleException If the current user is not member of any specified {@linkplain
+   * @throws NotAuthorizedException If the current user is not member of any specified {@linkplain
    *     TaskanaRole TaskanaRole}
    */
-  void checkRoleMembership(TaskanaRole... roles) throws MismatchedRoleException;
+  void checkRoleMembership(TaskanaRole... roles) throws NotAuthorizedException;
 
   /**
    * Executes a given {@code Supplier} with admin privileges and thus skips further permission

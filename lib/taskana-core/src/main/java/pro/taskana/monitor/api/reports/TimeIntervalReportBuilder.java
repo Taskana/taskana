@@ -5,7 +5,7 @@ import java.util.List;
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.SelectedItem;
 import pro.taskana.monitor.api.TaskTimestamp;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
@@ -216,33 +216,33 @@ public interface TimeIntervalReportBuilder<
    * @param timestamp the {@linkplain TaskTimestamp} of interest
    * @return the list of all taskIds
    * @throws InvalidArgumentException if the column headers are not initialized
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
    */
   List<String> listTaskIdsForSelectedItems(
       List<SelectedItem> selectedItems, TaskTimestamp timestamp)
-      throws InvalidArgumentException, MismatchedRoleException;
+      throws InvalidArgumentException, NotAuthorizedException;
 
   /**
    * Returns a list of all values of an entered custom field that are in the {@linkplain Report}.
    *
    * @param taskCustomField the {@linkplain TaskCustomField} whose values should appear in the list
    * @return the list of all custom attribute values
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
    */
   List<String> listCustomAttributeValuesForCustomAttributeName(TaskCustomField taskCustomField)
-      throws MismatchedRoleException;
+      throws NotAuthorizedException;
 
   /**
    * Builds the {@linkplain Report} for the specified {@linkplain TaskTimestamp}.
    *
    * @param timestamp The {@linkplain TaskTimestamp} of interest
    * @return The build {@linkplain Report}
-   * @throws MismatchedRoleException if the current user is not member of {@linkplain
+   * @throws NotAuthorizedException if the current user is not member of {@linkplain
    *     TaskanaRole#MONITOR} or {@linkplain TaskanaRole#ADMIN}
    * @throws InvalidArgumentException if an error occurs
    */
   Report<I, H> buildReport(TaskTimestamp timestamp)
-      throws InvalidArgumentException, MismatchedRoleException;
+      throws InvalidArgumentException, NotAuthorizedException;
 }

@@ -13,7 +13,7 @@ import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.ConnectionNotSetException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
@@ -22,19 +22,24 @@ import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
 import pro.taskana.task.api.exceptions.InvalidCallbackStateException;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
-import pro.taskana.task.api.exceptions.MismatchedTaskCommentCreatorException;
+import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAccessItemAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketAlreadyExistException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketMarkedForDeletionException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
+/**
+ * IMPORTANT NOTICE: Whenever a test from this class has to be modified in the Frontend and our rest
+ * documentation.
+ */
+@SuppressWarnings("TwistedAssertion")
 class ExceptionErrorKeyTest {
 
   @Test
@@ -56,7 +61,7 @@ class ExceptionErrorKeyTest {
     assertThat(ConcurrencyException.ERROR_KEY).isEqualTo("ENTITY_NOT_UP_TO_DATE");
     assertThat(ConnectionNotSetException.ERROR_KEY).isEqualTo("CONNECTION_NOT_SET");
     assertThat(DomainNotFoundException.ERROR_KEY).isEqualTo("DOMAIN_NOT_FOUND");
-    assertThat(MismatchedRoleException.ERROR_KEY).isEqualTo("ROLE_MISMATCHED");
+    assertThat(NotAuthorizedException.ERROR_KEY).isEqualTo("NOT_AUTHORIZED");
     assertThat(SystemException.ERROR_KEY).isEqualTo("CRITICAL_SYSTEM_ERROR");
     assertThat(UnsupportedDatabaseException.ERROR_KEY).isEqualTo("DATABASE_UNSUPPORTED");
     assertThat(WrongCustomHolidayFormatException.ERROR_KEY)
@@ -75,8 +80,8 @@ class ExceptionErrorKeyTest {
     assertThat(InvalidCallbackStateException.ERROR_KEY).isEqualTo("TASK_INVALID_CALLBACK_STATE");
     assertThat(InvalidOwnerException.ERROR_KEY).isEqualTo("TASK_INVALID_OWNER");
     assertThat(InvalidTaskStateException.ERROR_KEY).isEqualTo("TASK_INVALID_STATE");
-    assertThat(MismatchedTaskCommentCreatorException.ERROR_KEY)
-        .isEqualTo("TASK_COMMENT_CREATOR_MISMATCHED");
+    assertThat(NotAuthorizedOnTaskCommentException.ERROR_KEY)
+        .isEqualTo("NOT_AUTHORIZED_ON_TASK_COMMENT");
     assertThat(TaskAlreadyExistException.ERROR_KEY).isEqualTo("TASK_ALREADY_EXISTS");
     assertThat(TaskCommentNotFoundException.ERROR_KEY).isEqualTo("TASK_COMMENT_NOT_FOUND");
     assertThat(TaskNotFoundException.ERROR_KEY).isEqualTo("TASK_NOT_FOUND");
@@ -84,10 +89,10 @@ class ExceptionErrorKeyTest {
 
   @Test
   void should_ProvideConsistentErrorKey_For_WorkbasketExceptions() {
-    assertThat(MismatchedWorkbasketPermissionException.ERROR_KEY_ID)
-        .isEqualTo("WORKBASKET_WITH_ID_MISMATCHED_PERMISSION");
-    assertThat(MismatchedWorkbasketPermissionException.ERROR_KEY_KEY_DOMAIN)
-        .isEqualTo("WORKBASKET_WITH_KEY_MISMATCHED_PERMISSION");
+    assertThat(NotAuthorizedOnWorkbasketException.ERROR_KEY_ID)
+        .isEqualTo("NOT_AUTHORIZED_ON_WORKBASKET_WITH_ID");
+    assertThat(NotAuthorizedOnWorkbasketException.ERROR_KEY_KEY_DOMAIN)
+        .isEqualTo("NOT_AUTHORIZED_ON_WORKBASKET_WITH_KEY_AND_DOMAIN");
     assertThat(WorkbasketAccessItemAlreadyExistException.ERROR_KEY)
         .isEqualTo("WORKBASKET_ACCESS_ITEM_ALREADY_EXISTS");
     assertThat(WorkbasketAlreadyExistException.ERROR_KEY).isEqualTo("WORKBASKET_ALREADY_EXISTS");

@@ -33,7 +33,7 @@ import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
-import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionException;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
@@ -142,8 +142,8 @@ class RequestChangesAccTest {
     Task task = createTaskInReviewByUser("user-1-1").buildAndStore(taskService, "user-1-1");
     ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
-    MismatchedWorkbasketPermissionException e =
-        catchThrowableOfType(call, MismatchedWorkbasketPermissionException.class);
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());

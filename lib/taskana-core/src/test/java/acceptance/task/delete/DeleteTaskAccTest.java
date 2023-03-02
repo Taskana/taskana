@@ -12,7 +12,7 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.exceptions.MismatchedRoleException;
+import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -31,7 +31,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
     ThrowingCallable call =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000037");
 
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "user-taskrouter")
@@ -39,7 +39,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   void should_ThrowNotAuthorizedException_When_UserIsMemberOfTaskRouterRole() {
     ThrowingCallable call =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000037");
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -120,7 +120,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
             "TKI:000000000000000000000000000000000010");
 
     ThrowingCallable call = () -> taskService.deleteTasks(taskIds);
-    assertThatThrownBy(call).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(call).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "admin")
@@ -141,7 +141,7 @@ class DeleteTaskAccTest extends AbstractAccTest {
   void should_ThrowException_When_UserIsNotInAdminRole() {
     ThrowingCallable deleteTaskCall =
         () -> taskService.deleteTask("TKI:000000000000000000000000000000000041");
-    assertThatThrownBy(deleteTaskCall).isInstanceOf(MismatchedRoleException.class);
+    assertThatThrownBy(deleteTaskCall).isInstanceOf(NotAuthorizedException.class);
   }
 
   @WithAccessId(user = "admin")
