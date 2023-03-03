@@ -20,7 +20,7 @@ import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 @TaskanaIntegrationTest
-class JobSchedulerAccTest implements TaskanaEngineConfigurationModifier {
+class JobSchedulerInitAccTest implements TaskanaEngineConfigurationModifier {
 
   @TaskanaInject JobMapper jobMapper;
 
@@ -47,7 +47,7 @@ class JobSchedulerAccTest implements TaskanaEngineConfigurationModifier {
   }
 
   @Test
-  void should_StartTheJobsImmediately_When_StartMethodIsCalled() {
+  void should_StartTheJobsImmediately_When_StartMethodIsCalled() throws Exception {
     List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now().plus(runEvery));
     assertThat(nextJobs).extracting(ScheduledJob::getDue).containsOnly(firstRun.plus(runEvery));
     assertThat(nextJobs)

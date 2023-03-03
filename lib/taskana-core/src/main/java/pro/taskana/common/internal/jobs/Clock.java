@@ -5,8 +5,9 @@ public interface Clock {
 
   void start();
 
-  void stop();
+  default void stop() {}
 
+  @FunctionalInterface
   interface ClockListener {
     void timeElapsed();
   }

@@ -221,6 +221,25 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         sessionManager.getMapper(TaskMapper.class));
   }
 
+  public Connection getConnection() {
+    return connection;
+  }
+
+  @Override
+  public void setConnection(Connection connection) throws SQLException {
+    if (connection != null) {
+      this.connection = connection;
+      // disabling auto commit for passed connection in order to gain full control over the
+      // connection management
+      connection.setAutoCommit(false);
+      connection.setSchema(taskanaEngineConfiguration.getSchemaName());
+      mode = EXPLICIT;
+      sessionManager.startManagedSession(connection);
+    } else if (this.connection != null) {
+      closeConnection();
+    }
+  }
+
   // This should be part of the InternalTaskanaEngine. Unfortunately the jobs don't have access to
   // that engine.
   // Therefore, this getter exits and will be removed as soon as our jobs will be refactored.
@@ -268,21 +287,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       connection = null;
     }
     this.mode = mode;
-  }
-
-  @Override
-  public void setConnection(Connection connection) throws SQLException {
-    if (connection != null) {
-      this.connection = connection;
-      // disabling auto commit for passed connection in order to gain full control over the
-      // connection management
-      connection.setAutoCommit(false);
-      connection.setSchema(taskanaEngineConfiguration.getSchemaName());
-      mode = EXPLICIT;
-      sessionManager.startManagedSession(connection);
-    } else if (this.connection != null) {
-      closeConnection();
-    }
   }
 
   @Override
