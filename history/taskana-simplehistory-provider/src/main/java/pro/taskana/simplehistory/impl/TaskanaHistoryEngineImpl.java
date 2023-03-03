@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana.history:taskana-simplehistory-provider
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.simplehistory.impl;
 
 import java.sql.Connection;
@@ -48,16 +67,16 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaHistoryEngineImpl.class);
   private static final String DEFAULT = "default";
   private final SqlSessionManager sessionManager;
-  private final TaskanaConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaConfiguration;
   private final TaskanaEngine taskanaEngine;
   private TransactionFactory transactionFactory;
   private TaskanaHistory taskanaHistoryService;
 
   protected TaskanaHistoryEngineImpl(TaskanaEngine taskanaEngine) {
-    this.taskanaEngineConfiguration = taskanaEngine.getConfiguration();
+    this.taskanaConfiguration = taskanaEngine.getConfiguration();
     this.taskanaEngine = taskanaEngine;
 
-    createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
+    createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
   }
 
@@ -102,18 +121,17 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   }
 
   public TaskanaConfiguration getConfiguration() {
-    return this.taskanaEngineConfiguration;
+    return this.taskanaConfiguration;
   }
 
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
-        new Environment(
-            DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+        new Environment(DEFAULT, this.transactionFactory, taskanaConfiguration.getDatasource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     String databaseProductName;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaConfiguration.getDatasource().getConnection()) {
       databaseProductName = DB.getDatabaseProductName(con);
       configuration.setDatabaseId(DB.getDatabaseProductId(con));
 
@@ -206,7 +224,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
    */
   void openConnection() throws SQLException {
     initSqlSession();
-    this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+    this.sessionManager.getConnection().setSchema(taskanaConfiguration.getSchemaName());
   }
 
   /**

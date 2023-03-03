@@ -57,6 +57,7 @@
     <version.maven.clean>3.2.0</version.maven.clean>
     <version.maven.dependency>3.5.0</version.maven.dependency>
     <version.maven.sonar>3.9.1.2184</version.maven.sonar>
+    <version.maven.license>2.0.0</version.maven.license>
 
     <!-- release dependencies -->
     <version.maven.gpg>3.0.1</version.maven.gpg>
@@ -348,6 +349,31 @@
             <phase>process-classes</phase>
             <goals>
               <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>${version.maven.license}</version>
+        <configuration>
+          <verbose>false</verbose>
+          <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+          <licenseName>apache_v2</licenseName>
+          <organizationName>Taskana</organizationName>
+          <inceptionYear>2019</inceptionYear>
+          <copyrightOwners>original authors</copyrightOwners>
+          <failOnMissingHeader>true</failOnMissingHeader>
+          <includes>
+            <includes>**/*.java</includes>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check-file-header</goal>
             </goals>
           </execution>
         </executions>

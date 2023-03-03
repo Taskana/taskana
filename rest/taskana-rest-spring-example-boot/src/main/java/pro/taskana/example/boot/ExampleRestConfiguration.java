@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-rest-spring-example-boot
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.example.boot;
 
 import java.sql.SQLException;
@@ -24,17 +43,17 @@ public class ExampleRestConfiguration {
   }
 
   @Bean
-  @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
+  @DependsOn("taskanaConfiguration") // generate sample data after schema was inserted
   public SampleDataGenerator generateSampleData(
-      TaskanaConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaConfiguration,
       DataSource dataSource,
       @Value("${generateSampleData:true}") boolean generateSampleData)
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
-        new DbSchemaCreator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new DbSchemaCreator(dataSource, taskanaConfiguration.getSchemaName());
     dbSchemaCreator.run();
     SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new SampleDataGenerator(dataSource, taskanaConfiguration.getSchemaName());
     if (generateSampleData) {
       sampleDataGenerator.generateSampleData();
     }
@@ -43,9 +62,9 @@ public class ExampleRestConfiguration {
 
   @Bean
   @DependsOn("generateSampleData")
-  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaConfiguration)
       throws SQLException {
-    return TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    return TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
   }
 
   // only required to let the adapter example connect to the same database

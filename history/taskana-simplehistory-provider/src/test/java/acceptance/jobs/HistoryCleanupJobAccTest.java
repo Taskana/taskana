@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana.history:taskana-simplehistory-provider
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package acceptance.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +40,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.common.test.security.JaasExtension;
@@ -453,7 +473,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
                 scheduledJob -> scheduledJob.getType().equals(HistoryCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
-    HistoryCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, HistoryCleanupJob.class);
 
     jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 
@@ -510,7 +530,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
       boolean taskCleanupJobAllCompletedSameParentBusiness) throws SQLException {
 
     TaskanaConfiguration tec =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .taskCleanupJobAllCompletedSameParentBusiness(
                 taskCleanupJobAllCompletedSameParentBusiness)
             .build();

@@ -1,4 +1,25 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-core
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.common.internal;
+
+import static pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode.EXPLICIT;
 
 import java.security.PrivilegedAction;
 import java.sql.Connection;
@@ -43,6 +64,8 @@ import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
+import pro.taskana.common.internal.jobs.JobScheduler;
+import pro.taskana.common.internal.jobs.RealClock;
 import pro.taskana.common.internal.persistence.InstantTypeHandler;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.persistence.StringTypeHandler;
@@ -83,10 +106,9 @@ import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 public class TaskanaEngineImpl implements TaskanaEngine {
 
   // must match the VERSION value in table
-  private static final String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
-  protected final TaskanaConfiguration taskanaEngineConfiguration;
+  protected final TaskanaConfiguration taskanaConfiguration;
   private final TaskRoutingManager taskRoutingManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
@@ -107,30 +129,35 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected Connection connection;
 
   protected TaskanaEngineImpl(
-      TaskanaConfiguration taskanaEngineConfiguration,
-      ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     LOGGER.info(
         "initializing TASKANA with this configuration: {} and this mode: {}",
-        taskanaEngineConfiguration,
+        taskanaConfiguration,
         connectionManagementMode);
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
-    this.mode = connectionManagementMode;
+    if (connectionManagementMode == EXPLICIT) {
+      // at first we initialize Taskana DB with autocommit,
+      // at the end of constructor the mode is set
+      this.mode = ConnectionManagementMode.AUTOCOMMIT;
+    } else {
+      this.mode = connectionManagementMode;
+    }
+    this.taskanaConfiguration = taskanaConfiguration;
     internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     HolidaySchedule holidaySchedule =
         new HolidaySchedule(
-            taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
-            taskanaEngineConfiguration.isCorpusChristiEnabled(),
-            taskanaEngineConfiguration.getCustomHolidays());
+            taskanaConfiguration.isGermanPublicHolidaysEnabled(),
+            taskanaConfiguration.isCorpusChristiEnabled(),
+            taskanaConfiguration.getCustomHolidays());
     workingTimeCalculator =
         new WorkingTimeCalculatorImpl(
-            holidaySchedule, taskanaEngineConfiguration.getWorkingTimeSchedule());
+            holidaySchedule, taskanaConfiguration.getWorkingTimeSchedule());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
-    createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
+    createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
 
-    initializeDbSchema(taskanaEngineConfiguration);
+    initializeDbSchema(taskanaConfiguration);
 
     // IMPORTANT: SPI has to be initialized last (and in this order) in order
     // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
@@ -143,13 +170,31 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     afterRequestReviewManager = new AfterRequestReviewManager(this);
     beforeRequestChangesManager = new BeforeRequestChangesManager(this);
     afterRequestChangesManager = new AfterRequestChangesManager(this);
+
+    if (this.taskanaConfiguration.isJobSchedulerEnabled()) {
+      TaskanaConfiguration tec =
+          new TaskanaConfiguration.Builder(this.taskanaConfiguration)
+              .jobSchedulerEnabled(false)
+              .build();
+      TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(tec, EXPLICIT);
+      RealClock clock =
+          new RealClock(
+              this.taskanaConfiguration.getJobSchedulerInitialStartDelay(),
+              this.taskanaConfiguration.getJobSchedulerPeriod(),
+              this.taskanaConfiguration.getJobSchedulerPeriodTimeUnit());
+      JobScheduler jobScheduler = new JobScheduler(taskanaEngine, clock);
+      jobScheduler.start();
+    }
+
+    // don't remove, to reset possible explicit mode
+    this.mode = connectionManagementMode;
   }
 
   public static TaskanaEngine createTaskanaEngine(
-      TaskanaConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaConfiguration,
       ConnectionManagementMode connectionManagementMode)
       throws SQLException {
-    return new TaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
+    return new TaskanaEngineImpl(taskanaConfiguration, connectionManagementMode);
   }
 
   @Override
@@ -194,6 +239,25 @@ public class TaskanaEngineImpl implements TaskanaEngine {
         sessionManager.getMapper(TaskMapper.class));
   }
 
+  public Connection getConnection() {
+    return connection;
+  }
+
+  @Override
+  public void setConnection(Connection connection) throws SQLException {
+    if (connection != null) {
+      this.connection = connection;
+      // disabling auto commit for passed connection in order to gain full control over the
+      // connection management
+      connection.setAutoCommit(false);
+      connection.setSchema(taskanaConfiguration.getSchemaName());
+      mode = EXPLICIT;
+      sessionManager.startManagedSession(connection);
+    } else if (this.connection != null) {
+      closeConnection();
+    }
+  }
+
   // This should be part of the InternalTaskanaEngine. Unfortunately the jobs don't have access to
   // that engine.
   // Therefore, this getter exits and will be removed as soon as our jobs will be refactored.
@@ -214,7 +278,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public TaskanaConfiguration getConfiguration() {
-    return this.taskanaEngineConfiguration;
+    return this.taskanaConfiguration;
   }
 
   @Override
@@ -234,9 +298,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public void setConnectionManagementMode(ConnectionManagementMode mode) {
-    if (this.mode == ConnectionManagementMode.EXPLICIT
-        && connection != null
-        && mode != ConnectionManagementMode.EXPLICIT) {
+    if (this.mode == EXPLICIT && connection != null && mode != EXPLICIT) {
       if (sessionManager.isManagedSessionStarted()) {
         sessionManager.close();
       }
@@ -246,23 +308,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   @Override
-  public void setConnection(Connection connection) throws SQLException {
-    if (connection != null) {
-      this.connection = connection;
-      // disabling auto commit for passed connection in order to gain full control over the
-      // connection management
-      connection.setAutoCommit(false);
-      connection.setSchema(taskanaEngineConfiguration.getSchemaName());
-      mode = ConnectionManagementMode.EXPLICIT;
-      sessionManager.startManagedSession(connection);
-    } else if (this.connection != null) {
-      closeConnection();
-    }
-  }
-
-  @Override
   public void closeConnection() {
-    if (this.mode == ConnectionManagementMode.EXPLICIT) {
+    if (this.mode == EXPLICIT) {
       this.connection = null;
       if (sessionManager.isManagedSessionStarted()) {
         sessionManager.close();
@@ -335,13 +382,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    */
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
-        new Environment(
-            "default", this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+        new Environment("default", this.transactionFactory, taskanaConfiguration.getDatasource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     String databaseProductName;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaConfiguration.getDatasource().getConnection()) {
       databaseProductName = DB.getDatabaseProductName(con);
       configuration.setDatabaseId(DB.getDatabaseProductId(con));
 
@@ -397,21 +443,24 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 
-  private void initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
+  private boolean initializeDbSchema(TaskanaConfiguration taskanaConfiguration)
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
-    dbSchemaCreator.run();
+            taskanaConfiguration.getDatasource(), taskanaConfiguration.getSchemaName());
+    boolean schemaCreated = dbSchemaCreator.run();
 
-    if (!dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
-      throw new SystemException(
-          "The Database Schema Version doesn't match the expected minimal version "
-              + MINIMAL_TASKANA_SCHEMA_VERSION);
+    if (!schemaCreated) {
+      if (!dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
+        throw new SystemException(
+            "The Database Schema Version doesn't match the expected minimal version "
+                + MINIMAL_TASKANA_SCHEMA_VERSION);
+      }
     }
     ((ConfigurationServiceImpl) getConfigurationService())
-        .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
+        .checkSecureAccess(taskanaConfiguration.isSecurityEnabled());
     ((ConfigurationServiceImpl) getConfigurationService()).setupDefaultCustomAttributes();
+    return schemaCreated;
   }
 
   /**
@@ -476,21 +525,21 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     public void openConnection() {
       initSqlSession();
       try {
-        sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+        sessionManager.getConnection().setSchema(taskanaConfiguration.getSchemaName());
       } catch (SQLException e) {
         throw new SystemException(
             "Method openConnection() could not open a connection "
                 + "to the database. No schema has been created.",
             e.getCause());
       }
-      if (mode != ConnectionManagementMode.EXPLICIT) {
+      if (mode != EXPLICIT) {
         SESSION_STACK.pushSessionToStack(sessionManager);
       }
     }
 
     @Override
     public void returnConnection() {
-      if (mode != ConnectionManagementMode.EXPLICIT) {
+      if (mode != EXPLICIT) {
         SESSION_STACK.popSessionFromStack();
         if (SESSION_STACK.getSessionStack().isEmpty()
             && sessionManager != null
@@ -520,10 +569,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     @Override
     public void initSqlSession() {
-      if (mode == ConnectionManagementMode.EXPLICIT && connection == null) {
+      if (mode == EXPLICIT && connection == null) {
         throw new ConnectionNotSetException();
-      } else if (mode != ConnectionManagementMode.EXPLICIT
-          && !sessionManager.isManagedSessionStarted()) {
+      } else if (mode != EXPLICIT && !sessionManager.isManagedSessionStarted()) {
         sessionManager.startManagedSession();
       }
     }

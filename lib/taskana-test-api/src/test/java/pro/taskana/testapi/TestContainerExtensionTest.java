@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-test-api
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.testapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,18 +36,18 @@ import pro.taskana.testapi.TestContainerExtensionTest.NestedTestClassWithService
 @TaskanaIntegrationTest
 class TestContainerExtensionTest {
 
-  @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+  @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
   @Test
   void should_CreateDataSource_For_TopLevelTestClass() {
-    DataSource datasource = taskanaEngineConfiguration.getDatasource();
+    DataSource datasource = taskanaConfiguration.getDatasource();
 
     assertThat(datasource).isNotNull();
   }
 
   @Test
   void should_CreateSchemaName_For_TopLevelTestClass() {
-    String schemaName = taskanaEngineConfiguration.getSchemaName();
+    String schemaName = taskanaConfiguration.getSchemaName();
 
     assertThat(schemaName).isNotNull();
   }
@@ -37,22 +56,22 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClass {
 
-    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
     @Test
     void should_ReuseDataSource_For_NestedTestClass() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaConfiguration.getDatasource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaConfiguration.getDatasource();
 
       assertThat(nestedDataSource).isSameAs(topLevelDataSource).isNotNull();
     }
 
     @Test
     void should_ReuseSchemaName_For_NestedTestClass() {
-      String nestedSchemaName = taskanaEngineConfiguration.getSchemaName();
+      String nestedSchemaName = taskanaConfiguration.getSchemaName();
       String topLevelSchemaName =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
+          TestContainerExtensionTest.this.taskanaConfiguration.getSchemaName();
 
       assertThat(nestedSchemaName).isNotNull().isEqualTo(topLevelSchemaName);
     }
@@ -62,28 +81,28 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithConfigurationModifier implements TaskanaEngineConfigurationModifier {
 
-    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
     @Override
     public TaskanaConfiguration.Builder modify(
-        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder;
+        TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+      return taskanaConfigurationBuilder;
     }
 
     @Test
     void should_ReuseDataSource_For_NestedTestClassWhichImplementsConfigurationModifier() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaConfiguration.getDatasource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaConfiguration.getDatasource();
 
       assertThat(nestedDataSource).isSameAs(topLevelDataSource).isNotNull();
     }
 
     @Test
     void should_ReuseSchemaName_For_NestedTestClassWhichImplementsConfigurationModifier() {
-      String nestedSchemaName = taskanaEngineConfiguration.getSchemaName();
+      String nestedSchemaName = taskanaConfiguration.getSchemaName();
       String topLevelSchemaName =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
+          TestContainerExtensionTest.this.taskanaConfiguration.getSchemaName();
 
       assertThat(nestedSchemaName).isNotNull().isEqualTo(topLevelSchemaName);
     }
@@ -94,22 +113,22 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassAnnotatedWithCleanTaskanaContext {
 
-    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
     @Test
     void should_ReuseDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaConfiguration.getDatasource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaConfiguration.getDatasource();
 
       assertThat(nestedDataSource).isNotNull().isSameAs(topLevelDataSource);
     }
 
     @Test
     void should_GenerateNewSchemaName_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-      String nestedSchemaName = taskanaEngineConfiguration.getSchemaName();
+      String nestedSchemaName = taskanaConfiguration.getSchemaName();
       String topLevelSchemaName =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
+          TestContainerExtensionTest.this.taskanaConfiguration.getSchemaName();
 
       assertThat(nestedSchemaName).isNotNull().isNotEqualTo(topLevelSchemaName);
     }
@@ -119,16 +138,16 @@ class TestContainerExtensionTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class NestedNestedTestClassAnnotatedWithCleanTaskanaContext {
 
-      @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+      @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
       @Test
       void should_ReuseDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-        DataSource nestedNestedDataSource = taskanaEngineConfiguration.getDatasource();
+        DataSource nestedNestedDataSource = taskanaConfiguration.getDatasource();
         DataSource nestedDataSource =
-            NestedNestedTestClassAnnotatedWithCleanTaskanaContext.this.taskanaEngineConfiguration
+            NestedNestedTestClassAnnotatedWithCleanTaskanaContext.this.taskanaConfiguration
                 .getDatasource();
         DataSource topLevelDataSource =
-            TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+            TestContainerExtensionTest.this.taskanaConfiguration.getDatasource();
 
         assertThat(nestedNestedDataSource)
             .isNotNull()
@@ -138,12 +157,12 @@ class TestContainerExtensionTest {
 
       @Test
       void should_GenerateNewSchemaName_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-        String nestedNestedSchemaName = taskanaEngineConfiguration.getSchemaName();
+        String nestedNestedSchemaName = taskanaConfiguration.getSchemaName();
         String nestedSchemaName =
-            NestedTestClassAnnotatedWithCleanTaskanaContext.this.taskanaEngineConfiguration
+            NestedTestClassAnnotatedWithCleanTaskanaContext.this.taskanaConfiguration
                 .getSchemaName();
         String topLevelSchemaName =
-            TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
+            TestContainerExtensionTest.this.taskanaConfiguration.getSchemaName();
 
         assertThat(nestedSchemaName).isNotNull().isNotEqualTo(topLevelSchemaName);
 
@@ -161,28 +180,28 @@ class TestContainerExtensionTest {
   class NestedTestClassAnnotatedWithCleanTaskanaContextAndConfigModifier
       implements TaskanaEngineConfigurationModifier {
 
-    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
     @Override
     public TaskanaConfiguration.Builder modify(
-        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder;
+        TaskanaConfiguration.Builder taskanaConfigurationBuilder) {
+      return taskanaConfigurationBuilder;
     }
 
     @Test
     void should_ReuseNewDataSource_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaConfiguration.getDatasource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaConfiguration.getDatasource();
 
       assertThat(nestedDataSource).isNotNull().isSameAs(topLevelDataSource);
     }
 
     @Test
     void should_GenerateNewSchemaName_For_NestedTestAnnotatedWithCleanTaskanaContext() {
-      String nestedSchemaName = taskanaEngineConfiguration.getSchemaName();
+      String nestedSchemaName = taskanaConfiguration.getSchemaName();
       String topLevelSchemaName =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
+          TestContainerExtensionTest.this.taskanaConfiguration.getSchemaName();
 
       assertThat(nestedSchemaName).isNotNull().isNotEqualTo(topLevelSchemaName);
     }
@@ -195,22 +214,22 @@ class TestContainerExtensionTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class NestedTestClassWithServiceProvider {
 
-    @TaskanaInject TaskanaConfiguration taskanaEngineConfiguration;
+    @TaskanaInject TaskanaConfiguration taskanaConfiguration;
 
     @Test
     void should_ReuseDataSource_For_NestedTestClassWithServiceProvider() {
-      DataSource nestedDataSource = taskanaEngineConfiguration.getDatasource();
+      DataSource nestedDataSource = taskanaConfiguration.getDatasource();
       DataSource topLevelDataSource =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getDatasource();
+          TestContainerExtensionTest.this.taskanaConfiguration.getDatasource();
 
       assertThat(nestedDataSource).isSameAs(topLevelDataSource).isNotNull();
     }
 
     @Test
     void should_ReuseSchemaName_For_NestedTestClassWithServiceProvider() {
-      String nestedSchemaName = taskanaEngineConfiguration.getSchemaName();
+      String nestedSchemaName = taskanaConfiguration.getSchemaName();
       String topLevelSchemaName =
-          TestContainerExtensionTest.this.taskanaEngineConfiguration.getSchemaName();
+          TestContainerExtensionTest.this.taskanaConfiguration.getSchemaName();
 
       assertThat(nestedSchemaName).isNotNull().isEqualTo(topLevelSchemaName);
     }

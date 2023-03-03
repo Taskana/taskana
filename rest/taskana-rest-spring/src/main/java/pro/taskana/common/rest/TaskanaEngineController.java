@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-rest-spring
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.common.rest;
 
 import java.util.List;
@@ -25,18 +44,18 @@ import pro.taskana.common.rest.models.VersionRepresentationModel;
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class TaskanaEngineController {
 
-  private final TaskanaConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaConfiguration;
   private final TaskanaEngine taskanaEngine;
   private final CurrentUserContext currentUserContext;
   private final ConfigurationService configurationService;
 
   @Autowired
   TaskanaEngineController(
-      TaskanaConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaConfiguration,
       TaskanaEngine taskanaEngine,
       CurrentUserContext currentUserContext,
       ConfigurationService configurationService) {
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+    this.taskanaConfiguration = taskanaConfiguration;
     this.taskanaEngine = taskanaEngine;
     this.currentUserContext = currentUserContext;
     this.configurationService = configurationService;
@@ -50,7 +69,7 @@ public class TaskanaEngineController {
   @GetMapping(path = RestEndpoints.URL_DOMAIN)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<List<String>> getDomains() {
-    return ResponseEntity.ok(taskanaEngineConfiguration.getDomains());
+    return ResponseEntity.ok(taskanaConfiguration.getDomains());
   }
 
   /**
@@ -66,9 +85,9 @@ public class TaskanaEngineController {
   public ResponseEntity<List<String>> getClassificationCategories(
       @RequestParam(required = false) String type) {
     if (type != null) {
-      return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByType(type));
+      return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType(type));
     }
-    return ResponseEntity.ok(taskanaEngineConfiguration.getAllClassificationCategories());
+    return ResponseEntity.ok(taskanaConfiguration.getAllClassificationCategories());
   }
 
   /**
@@ -79,7 +98,7 @@ public class TaskanaEngineController {
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_TYPES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<List<String>> getClassificationTypes() {
-    return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationTypes());
+    return ResponseEntity.ok(taskanaConfiguration.getClassificationTypes());
   }
 
   /**
@@ -91,7 +110,7 @@ public class TaskanaEngineController {
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
-    return ResponseEntity.ok(taskanaEngineConfiguration.getClassificationCategoriesByType());
+    return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType());
   }
 
   /**
@@ -105,7 +124,7 @@ public class TaskanaEngineController {
     TaskanaUserInfoRepresentationModel resource = new TaskanaUserInfoRepresentationModel();
     resource.setUserId(currentUserContext.getUserid());
     resource.setGroupIds(currentUserContext.getGroupIds());
-    taskanaEngineConfiguration.getRoleMap().keySet().stream()
+    taskanaConfiguration.getRoleMap().keySet().stream()
         .filter(taskanaEngine::isUserInRole)
         .forEach(resource.getRoles()::add);
     return ResponseEntity.ok(resource);

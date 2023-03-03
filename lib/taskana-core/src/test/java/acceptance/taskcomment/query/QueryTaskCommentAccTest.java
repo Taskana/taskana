@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-core
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package acceptance.taskcomment.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -209,11 +228,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnListedValues_For_QueryColumnCreatorLongName() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<String> listedValues =
         taskanaEngine
             .getTaskService()
@@ -283,11 +302,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_SetTaskCreatorFullNameOfTaskComment_When_PropertyEnabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskComment> taskComments =
         taskanaEngine
             .getTaskService()
@@ -306,11 +325,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_NotSetTaskCreatorFullNameOfTaskComment_When_PropertyDisabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskComment> taskComments =
         taskanaEngine
             .getTaskService()
@@ -326,11 +345,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_SetTaskCreatorFullNameOfTaskCommentToNull_When_NotExistingAsUserInDatabase()
       throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskComment> taskComments =
         taskanaEngine
             .getTaskService()

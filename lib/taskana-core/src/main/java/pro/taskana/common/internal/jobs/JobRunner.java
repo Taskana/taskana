@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-core
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.common.internal.jobs;
 
 import java.net.InetAddress;
@@ -9,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
@@ -42,16 +60,22 @@ public class JobRunner {
 
   private void runJobTransactionally(ScheduledJob scheduledJob) {
     TaskanaTransactionProvider.executeInTransactionIfPossible(
-        txProvider, () -> taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob)));
-    jobService.deleteJob(scheduledJob);
+        txProvider,
+        () -> {
+          Boolean successful = taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob));
+          if (successful) {
+            jobService.deleteJob(scheduledJob);
+          }
+        });
   }
 
-  private void runScheduledJob(ScheduledJob scheduledJob) {
+  private boolean runScheduledJob(ScheduledJob scheduledJob) {
     try {
       AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, txProvider, scheduledJob).run();
+      return true;
     } catch (Exception e) {
       LOGGER.error("Error running job: {} ", scheduledJob.getType(), e);
-      throw new SystemException(String.format("Error running job '%s'", scheduledJob.getType()), e);
+      return false;
     }
   }
 

@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-core
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana;
 
 import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureAnnotatedFields;
@@ -23,6 +42,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -31,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.TaskanaProperty;
@@ -65,6 +86,16 @@ public class TaskanaConfiguration {
   // region custom configuration
   private final Map<String, String> properties;
   private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
+  private final boolean jobSchedulerEnabled;
+  private final long jobSchedulerInitialStartDelay;
+  private final long jobSchedulerPeriod;
+  private final TimeUnit jobSchedulerPeriodTimeUnit;
+  private final boolean jobSchedulerEnableTaskCleanupJob;
+  private final boolean jobSchedulerEnableTaskUpdatePriorityJob;
+  private final boolean jobSchedulerEnableWorkbasketCleanupJob;
+  private final boolean jobSchedulerEnableUserInfoRefreshJob;
+  private final boolean jobSchedulerEnableHistorieCleanupJob;
+  private final List<String> jobSchedulerCustomJobs;
 
   @TaskanaProperty("taskana.domains")
   private List<String> domains = new ArrayList<>();
@@ -96,6 +127,7 @@ public class TaskanaConfiguration {
   // TODO: validate this is positive
   @TaskanaProperty("taskana.jobs.cleanup.runEvery")
   private Duration cleanupJobRunEvery = Duration.ofDays(1);
+  // endregion
   // TODO: validate this is positive
   @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
   private Duration cleanupJobMinimumAge = Duration.ofDays(14);
@@ -127,7 +159,6 @@ public class TaskanaConfiguration {
   // TODO: make Set
   @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
   private List<WorkbasketPermission> minimalPermissionsToAssignDomains = new ArrayList<>();
-  // endregion
 
   protected TaskanaConfiguration(Builder builder) {
     this.dataSource = builder.dataSource;
@@ -173,6 +204,16 @@ public class TaskanaConfiguration {
     this.userRefreshJobFirstRun = builder.userRefreshJobFirstRun;
     this.minimalPermissionsToAssignDomains =
         Collections.unmodifiableList(builder.minimalPermissionsToAssignDomains);
+    this.jobSchedulerEnabled = builder.jobSchedulerEnabled;
+    this.jobSchedulerInitialStartDelay = builder.jobSchedulerInitialStartDelay;
+    this.jobSchedulerPeriod = builder.jobSchedulerPeriod;
+    this.jobSchedulerPeriodTimeUnit = builder.jobSchedulerPeriodTimeUnit;
+    this.jobSchedulerEnableTaskCleanupJob = builder.jobSchedulerEnableTaskCleanupJob;
+    this.jobSchedulerEnableTaskUpdatePriorityJob = builder.jobSchedulerEnableTaskUpdatePriorityJob;
+    this.jobSchedulerEnableWorkbasketCleanupJob = builder.jobSchedulerEnableWorkbasketCleanupJob;
+    this.jobSchedulerEnableUserInfoRefreshJob = builder.jobSchedulerEnableUserInfoRefreshJob;
+    this.jobSchedulerEnableHistorieCleanupJob = builder.jobSchedulerEnableHistorieCleanupJob;
+    this.jobSchedulerCustomJobs = Collections.unmodifiableList(builder.jobSchedulerCustomJobs);
 
     if (LOGGER.isDebugEnabled()) {
       // TODO remove the reflection magic when introducing lombok toString magic :-)
@@ -332,6 +373,46 @@ public class TaskanaConfiguration {
     return schemaName;
   }
 
+  public boolean isJobSchedulerEnabled() {
+    return jobSchedulerEnabled;
+  }
+
+  public long getJobSchedulerInitialStartDelay() {
+    return jobSchedulerInitialStartDelay;
+  }
+
+  public long getJobSchedulerPeriod() {
+    return jobSchedulerPeriod;
+  }
+
+  public TimeUnit getJobSchedulerPeriodTimeUnit() {
+    return jobSchedulerPeriodTimeUnit;
+  }
+
+  public boolean isJobSchedulerEnableTaskCleanupJob() {
+    return jobSchedulerEnableTaskCleanupJob;
+  }
+
+  public boolean isJobSchedulerEnableTaskUpdatePriorityJob() {
+    return jobSchedulerEnableTaskUpdatePriorityJob;
+  }
+
+  public boolean isJobSchedulerEnableWorkbasketCleanupJob() {
+    return jobSchedulerEnableWorkbasketCleanupJob;
+  }
+
+  public boolean isJobSchedulerEnableUserInfoRefreshJob() {
+    return jobSchedulerEnableUserInfoRefreshJob;
+  }
+
+  public boolean isJobSchedulerEnableHistorieCleanupJob() {
+    return jobSchedulerEnableHistorieCleanupJob;
+  }
+
+  public List<String> getJobSchedulerCustomJobs() {
+    return jobSchedulerCustomJobs;
+  }
+
   /**
    * Helper method to determine whether all access ids (user Id and group ids) should be used in
    * lower case.
@@ -340,6 +421,89 @@ public class TaskanaConfiguration {
    */
   public static boolean shouldUseLowerCaseForAccessIds() {
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return "TaskanaConfiguration [dataSource="
+        + dataSource
+        + ", securityEnabled="
+        + securityEnabled
+        + ", useManagedTransactions="
+        + useManagedTransactions
+        + ", schemaName="
+        + schemaName
+        + ", germanPublicHolidaysEnabled="
+        + germanPublicHolidaysEnabled
+        + ", corpusChristiEnabled="
+        + corpusChristiEnabled
+        + ", deleteHistoryOnTaskDeletionEnabled="
+        + deleteHistoryOnTaskDeletionEnabled
+        + ", properties="
+        + properties
+        + ", workingTimeSchedule="
+        + workingTimeSchedule
+        + ", jobSchedulerEnabled="
+        + jobSchedulerEnabled
+        + ", jobSchedulerInitialStartDelay="
+        + jobSchedulerInitialStartDelay
+        + ", jobSchedulerPeriod="
+        + jobSchedulerPeriod
+        + ", jobSchedulerPeriodTimeUnit="
+        + jobSchedulerPeriodTimeUnit
+        + ", jobSchedulerEnableTaskCleanupJob="
+        + jobSchedulerEnableTaskCleanupJob
+        + ", jobSchedulerEnableTaskUpdatePriorityJob="
+        + jobSchedulerEnableTaskUpdatePriorityJob
+        + ", jobSchedulerEnableWorkbasketCleanupJob="
+        + jobSchedulerEnableWorkbasketCleanupJob
+        + ", jobSchedulerEnableUserInfoRefreshJob="
+        + jobSchedulerEnableUserInfoRefreshJob
+        + ", jobSchedulerEnableHistorieCleanupJob="
+        + jobSchedulerEnableHistorieCleanupJob
+        + ", jobSchedulerCustomJobs="
+        + jobSchedulerCustomJobs
+        + ", domains="
+        + domains
+        + ", roleMap="
+        + roleMap
+        + ", classificationTypes="
+        + classificationTypes
+        + ", classificationCategoriesByType="
+        + classificationCategoriesByType
+        + ", allowTimestampServiceLevelMismatch="
+        + allowTimestampServiceLevelMismatch
+        + ", customHolidays="
+        + customHolidays
+        + ", jobBatchSize="
+        + jobBatchSize
+        + ", maxNumberOfJobRetries="
+        + maxNumberOfJobRetries
+        + ", cleanupJobFirstRun="
+        + cleanupJobFirstRun
+        + ", cleanupJobRunEvery="
+        + cleanupJobRunEvery
+        + ", cleanupJobMinimumAge="
+        + cleanupJobMinimumAge
+        + ", taskCleanupJobAllCompletedSameParentBusiness="
+        + taskCleanupJobAllCompletedSameParentBusiness
+        + ", priorityJobBatchSize="
+        + priorityJobBatchSize
+        + ", priorityJobFirstRun="
+        + priorityJobFirstRun
+        + ", priorityJobRunEvery="
+        + priorityJobRunEvery
+        + ", priorityJobActive="
+        + priorityJobActive
+        + ", userRefreshJobRunEvery="
+        + userRefreshJobRunEvery
+        + ", userRefreshJobFirstRun="
+        + userRefreshJobFirstRun
+        + ", addAdditionalUserInfo="
+        + addAdditionalUserInfo
+        + ", minimalPermissionsToAssignDomains="
+        + minimalPermissionsToAssignDomains
+        + "]";
   }
 
   public static class Builder {
@@ -394,46 +558,71 @@ public class TaskanaConfiguration {
     // endregion
 
     // region job configuration
-    // TODO validate this is positive
     @TaskanaProperty("taskana.jobs.batchSize")
     private int jobBatchSize = 100;
 
-    // TODO validate this is positive
     @TaskanaProperty("taskana.jobs.maxRetries")
     private int maxNumberOfJobRetries = 3;
 
     @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
     private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
-    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.cleanup.runEvery")
     private Duration cleanupJobRunEvery = Duration.ofDays(1);
-    // TODO: validate this is positive
+
     @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
     private Duration cleanupJobMinimumAge = Duration.ofDays(14);
 
     @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
     private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
-    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.priority.batchSize")
     private int priorityJobBatchSize = 100;
 
     @TaskanaProperty("taskana.jobs.priority.firstRunAt")
     private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
-    // TODO: validate this is positive
     @TaskanaProperty("taskana.jobs.priority.runEvery")
     private Duration priorityJobRunEvery = Duration.ofDays(1);
 
     @TaskanaProperty("taskana.jobs.priority.active")
     private boolean priorityJobActive = false;
-    // TODO: validate this is positive
+
     @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
     private Duration userRefreshJobRunEvery = Duration.ofDays(1);
 
     @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
     private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
+
+    @TaskanaProperty("taskana.jobscheduler.enabled")
+    private boolean jobSchedulerEnabled = true;
+
+    @TaskanaProperty("taskana.jobscheduler.initialstartdelay")
+    private long jobSchedulerInitialStartDelay = 100;
+
+    @TaskanaProperty("taskana.jobscheduler.period")
+    private long jobSchedulerPeriod = 12;
+
+    @TaskanaProperty("taskana.jobscheduler.periodtimeunit")
+    private TimeUnit jobSchedulerPeriodTimeUnit = TimeUnit.HOURS;
+
+    @TaskanaProperty("taskana.jobscheduler.enableTaskCleanupJob")
+    private boolean jobSchedulerEnableTaskCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableTaskUpdatePriorityJob")
+    private boolean jobSchedulerEnableTaskUpdatePriorityJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableWorkbasketCleanupJob")
+    private boolean jobSchedulerEnableWorkbasketCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableUserInfoRefreshJob")
+    private boolean jobSchedulerEnableUserInfoRefreshJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableHistorieCleanupJob")
+    private boolean jobSchedulerEnableHistorieCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.customJobs")
+    private List<String> jobSchedulerCustomJobs = new ArrayList<>();
     // endregion
 
     // region user configuration
@@ -480,6 +669,17 @@ public class TaskanaConfiguration {
       this.userRefreshJobRunEvery = tec.getUserRefreshJobRunEvery();
       this.userRefreshJobFirstRun = tec.getUserRefreshJobFirstRun();
       this.minimalPermissionsToAssignDomains = tec.getMinimalPermissionsToAssignDomains();
+      this.jobSchedulerEnabled = tec.isJobSchedulerEnabled();
+      this.jobSchedulerInitialStartDelay = tec.getJobSchedulerInitialStartDelay();
+      this.jobSchedulerPeriod = tec.getJobSchedulerPeriod();
+      this.jobSchedulerPeriodTimeUnit = tec.getJobSchedulerPeriodTimeUnit();
+      this.jobSchedulerEnableTaskCleanupJob = tec.isJobSchedulerEnableTaskCleanupJob();
+      this.jobSchedulerEnableTaskUpdatePriorityJob =
+          tec.isJobSchedulerEnableTaskUpdatePriorityJob();
+      this.jobSchedulerEnableWorkbasketCleanupJob = tec.isJobSchedulerEnableWorkbasketCleanupJob();
+      this.jobSchedulerEnableUserInfoRefreshJob = tec.isJobSchedulerEnableUserInfoRefreshJob();
+      this.jobSchedulerEnableHistorieCleanupJob = tec.isJobSchedulerEnableHistorieCleanupJob();
+      this.jobSchedulerCustomJobs = tec.getJobSchedulerCustomJobs();
     }
 
     public Builder(DataSource dataSource, boolean useManagedTransactions, String schemaName) {
@@ -649,7 +849,67 @@ public class TaskanaConfiguration {
       return this;
     }
 
+    public Builder jobSchedulerEnabled(boolean jobSchedulerEnabled) {
+      this.jobSchedulerEnabled = jobSchedulerEnabled;
+      return this;
+    }
+
+    public Builder jobSchedulerInitialStartDelay(long jobSchedulerInitialStartDelay) {
+      this.jobSchedulerInitialStartDelay = jobSchedulerInitialStartDelay;
+      return this;
+    }
+
+    public Builder jobSchedulerPeriod(long jobSchedulerPeriod) {
+      this.jobSchedulerPeriod = jobSchedulerPeriod;
+      return this;
+    }
+
+    public Builder jobSchedulerPeriodTimeUnit(TimeUnit jobSchedulerPeriodTimeUnit) {
+      this.jobSchedulerPeriodTimeUnit = jobSchedulerPeriodTimeUnit;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableTaskCleanupJob(boolean jobSchedulerEnableTaskCleanupJob) {
+      this.jobSchedulerEnableTaskCleanupJob = jobSchedulerEnableTaskCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableTaskUpdatePriorityJob(
+        boolean jobSchedulerEnableTaskUpdatePriorityJob) {
+      this.jobSchedulerEnableTaskUpdatePriorityJob = jobSchedulerEnableTaskUpdatePriorityJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableWorkbasketCleanupJob(
+        boolean jobSchedulerEnableWorkbasketCleanupJob) {
+      this.jobSchedulerEnableWorkbasketCleanupJob = jobSchedulerEnableWorkbasketCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableUserInfoRefreshJob(
+        boolean jobSchedulerEnableUserInfoRefreshJob) {
+      this.jobSchedulerEnableUserInfoRefreshJob = jobSchedulerEnableUserInfoRefreshJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableHistorieCleanupJob(
+        boolean jobSchedulerEnableHistorieCleanupJob) {
+      this.jobSchedulerEnableHistorieCleanupJob = jobSchedulerEnableHistorieCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerCustomJobs(List<String> jobSchedulerCustomJobs) {
+      this.jobSchedulerCustomJobs = jobSchedulerCustomJobs;
+      return this;
+    }
+
+    public Builder workingTimeSchedule(Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
+      this.workingTimeSchedule = workingTimeSchedule;
+      return this;
+    }
+
     public TaskanaConfiguration build() {
+      validateConfiguration();
       return new TaskanaConfiguration(this);
     }
 
@@ -709,6 +969,52 @@ public class TaskanaConfiguration {
       classificationCategoriesByType =
           configureClassificationCategoriesForType(properties, classificationTypes);
       return this;
+    }
+
+    private void validateConfiguration() {
+      if (jobBatchSize <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter jobBatchSize (taskana.jobs.batchSize)" + " must be a positve integer");
+      }
+      if (maxNumberOfJobRetries <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter maxNumberOfJobRetries (taskana.jobs.maxRetries)"
+                + " must be a positve integer");
+      }
+      if (cleanupJobRunEvery.isNegative() || cleanupJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter cleanupJobRunEvery (taskana.jobs.cleanup.runEvery)"
+                + " must be a positve integer");
+      }
+      if (cleanupJobMinimumAge.isNegative() || cleanupJobMinimumAge.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter cleanupJobMinimumAge (taskana.jobs.cleanup.minimumAge)"
+                + " must be a positve integer");
+      }
+      if (priorityJobBatchSize <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter priorityJobBatchSize (taskana.jobs.priority.batchSize)"
+                + " must be a positve integer");
+      }
+      if (priorityJobRunEvery.isNegative() || priorityJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter priorityJobRunEvery (taskana.jobs.priority.runEvery)"
+                + " must be a positve integer");
+      }
+      if (userRefreshJobRunEvery.isNegative() || userRefreshJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter userRefreshJobRunEvery (taskana.jobs.user.refresh.runEvery)"
+                + " must be a positve integer");
+      }
+      if (jobSchedulerInitialStartDelay <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter jobSchedulerInitialStartDelay (taskana.jobscheduler.initialstartdelay)"
+                + " must be a positve integer");
+      }
+      if (jobSchedulerPeriod <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter jobSchedulerPeriod (taskana.jobscheduler.period) must be a positve integer");
+      }
     }
 
     private String initSchemaName(String schemaName) {

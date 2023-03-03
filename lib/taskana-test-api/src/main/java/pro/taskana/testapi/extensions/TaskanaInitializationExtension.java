@@ -1,13 +1,34 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-test-api
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package pro.taskana.testapi.extensions;
 
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 import static pro.taskana.testapi.util.ExtensionCommunicator.getClassLevelStore;
 import static pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
@@ -27,6 +48,7 @@ import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.ConfigurationMapper;
 import pro.taskana.common.internal.ConfigurationServiceImpl;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
@@ -62,13 +84,13 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         || isAnnotated(testClass, WithServiceProviders.class)
         || testInstance instanceof TaskanaEngineConfigurationModifier) {
       Store store = getClassLevelStore(context);
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder =
+      TaskanaConfiguration.Builder taskanaConfigurationBuilder =
           createDefaultTaskanaEngineConfigurationBuilder(store);
 
       if (testInstance instanceof TaskanaEngineConfigurationModifier) {
         TaskanaEngineConfigurationModifier modifier =
             (TaskanaEngineConfigurationModifier) testInstance;
-        taskanaEngineConfigurationBuilder = modifier.modify(taskanaEngineConfigurationBuilder);
+        taskanaConfigurationBuilder = modifier.modify(taskanaConfigurationBuilder);
       }
 
       TaskanaEngine taskanaEngine;
@@ -80,7 +102,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
                     staticMock.when(() -> SpiLoader.load(spi)).thenReturn(serviceProviders));
         taskanaEngine =
             TaskanaEngine.buildTaskanaEngine(
-                taskanaEngineConfigurationBuilder.build(), ConnectionManagementMode.AUTOCOMMIT);
+                taskanaConfigurationBuilder.build(), ConnectionManagementMode.AUTOCOMMIT);
       }
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));
@@ -123,6 +145,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     UserService userService = taskanaEngine.getUserService();
     SqlSession sqlSession = taskanaEngineProxy.getSqlSession();
     WorkingTimeCalculator workingTimeCalculator = taskanaEngine.getWorkingTimeCalculator();
+    JobMapper jobMapper = getJobMapper(taskanaEngine);
     return Map.ofEntries(
         Map.entry(TaskanaConfiguration.class, taskanaEngine.getConfiguration()),
         Map.entry(TaskanaEngineImpl.class, taskanaEngine),
@@ -146,6 +169,18 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         Map.entry(WorkingTimeCalculatorImpl.class, workingTimeCalculator),
         Map.entry(ConfigurationMapper.class, sqlSession.getMapper(ConfigurationMapper.class)),
         Map.entry(UserService.class, userService),
-        Map.entry(UserServiceImpl.class, userService));
+        Map.entry(UserServiceImpl.class, userService),
+        Map.entry(JobMapper.class, jobMapper));
+  }
+
+  private static JobMapper getJobMapper(TaskanaEngine taskanaEngine)
+      throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager =
+        (SqlSessionManager) sessionManagerField.get(taskanaEngine);
+
+    return sqlSessionManager.getMapper(JobMapper.class);
   }
 }

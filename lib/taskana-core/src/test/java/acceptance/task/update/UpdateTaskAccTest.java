@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-core
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package acceptance.task.update;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,11 +91,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_PreventTimestampServiceLevelMismatch_When_ConfigurationPreventsIt() throws Exception {
     // Given
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .allowTimestampServiceLevelMismatch(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     Task task = taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
     // When
     Instant planned = Instant.parse("2018-03-02T00:00:00Z");
@@ -94,11 +113,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
     // Given
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .allowTimestampServiceLevelMismatch(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     Task task = taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
 
     // When

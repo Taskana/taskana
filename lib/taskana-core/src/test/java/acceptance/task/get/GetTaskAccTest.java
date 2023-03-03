@@ -1,3 +1,22 @@
+/*-
+ * #%L
+ * pro.taskana:taskana-core
+ * %%
+ * Copyright (C) 2019 - 2023 original authors
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package acceptance.task.get;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,11 +116,11 @@ class GetTaskAccTest extends AbstractAccTest {
   @Test
   void should_SetTaskOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
 
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
@@ -113,11 +132,11 @@ class GetTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_NotSetTaskOwnerLongNameOfTask_When_PropertyDisabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
