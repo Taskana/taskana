@@ -1,6 +1,5 @@
 package pro.taskana.common.internal.jobs;
 
-import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,15 +33,15 @@ public class JobScheduler {
     plainJavaTransactionProvider.executeInTransaction(
         () -> {
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableTaskCleanupJob()) {
-            TaskCleanupJob.initializeSchedule(taskanaEngine);
+            AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
             LOGGER.info("Job '{}' enabled", TaskCleanupJob.class.getName());
           }
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableTaskUpdatePriorityJob()) {
-            TaskUpdatePriorityJob.initializeSchedule(taskanaEngine);
+            AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskUpdatePriorityJob.class);
             LOGGER.info("Job '{}' enabled", TaskUpdatePriorityJob.class.getName());
           }
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableWorkbasketCleanupJob()) {
-            WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
+            AbstractTaskanaJob.initializeSchedule(taskanaEngine, WorkbasketCleanupJob.class);
             LOGGER.info("Job '{}' enabled", WorkbasketCleanupJob.class.getName());
           }
           if (taskanaEngine.getConfiguration().isJobSchedulerEnableUserInfoRefreshJob()) {
@@ -71,23 +70,11 @@ public class JobScheduler {
 
   private void initJobByClassName(String className) throws SystemException {
     try {
-      Thread.currentThread()
-          .getContextClassLoader()
-          .loadClass(className)
-          .getDeclaredMethod("initializeSchedule", TaskanaEngine.class)
-          .invoke(null, taskanaEngine);
+      Class<?> jobClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+      AbstractTaskanaJob.initializeSchedule(taskanaEngine, jobClass);
       LOGGER.info("Job '{}' enabled", className);
-    } catch (IllegalAccessException e) {
-      throw new SystemException(
-          "Method initializeSchedule in class " + className + " is not public", e);
-    } catch (InvocationTargetException e) {
-      throw new SystemException(
-          "Could not invoke Method initializeSchedule in class " + className, e);
-    } catch (NoSuchMethodException e) {
-      throw new SystemException(
-          "Class " + className + " does not have an initializeSchedule Method", e);
     } catch (ClassNotFoundException e) {
-      throw new SystemException("Could not find class " + className, e);
+      throw new SystemException(String.format("Could not find class '%s'", className), e);
     }
   }
 

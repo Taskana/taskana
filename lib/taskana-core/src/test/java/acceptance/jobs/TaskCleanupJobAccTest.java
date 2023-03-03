@@ -27,6 +27,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.JobServiceImpl;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -145,7 +146,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
             .filter(scheduledJob -> scheduledJob.getType().equals(TaskCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
-    TaskCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
 
     jobsToRun = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
 
@@ -251,7 +252,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
             .build();
 
     TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
-    TaskCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
 
     List<ScheduledJob> nextJobs = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
     assertThat(nextJobs).isEmpty();
