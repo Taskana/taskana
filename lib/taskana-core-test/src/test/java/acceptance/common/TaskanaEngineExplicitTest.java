@@ -12,13 +12,13 @@ import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.testapi.OracleSchemaHelper;
 import pro.taskana.testapi.extensions.TestContainerExtension;
 
-class TaskanaEngineExplizitTest {
+class TaskanaEngineExplicitTest {
 
   @Test
-  void should_CreateTaskanaEnine_When_ExplizitModeIsActive() throws Exception {
+  void should_CreateTaskanaEngine_When_ExplizitModeIsActive() throws Exception {
 
     String schemaName = TestContainerExtension.determineSchemaName();
-    if (DB.isOracle(TestContainerExtension.EXECUTION_DATABASE.dbProductId)) {
+    if (DB.ORACLE == TestContainerExtension.EXECUTION_DATABASE) {
       OracleSchemaHelper.initOracleSchema(TestContainerExtension.DATA_SOURCE, schemaName);
     }
 

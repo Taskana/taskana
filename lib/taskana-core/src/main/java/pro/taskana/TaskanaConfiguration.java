@@ -878,8 +878,8 @@ public class TaskanaConfiguration {
       }
 
       try (Connection connection = dataSource.getConnection()) {
-        String databaseProductId = DB.getDatabaseProductId(connection);
-        if (DB.isPostgres(databaseProductId)) {
+        DB db = DB.getDB(connection);
+        if (DB.POSTGRES == db) {
           return schemaName.toLowerCase();
         } else {
           return schemaName.toUpperCase();

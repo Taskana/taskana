@@ -54,7 +54,7 @@ public class TestContainerExtension implements InvocationInterceptor {
       String schemaName = determineSchemaName();
       store.put(STORE_SCHEMA_NAME, schemaName);
       store.put(STORE_DATA_SOURCE, DATA_SOURCE);
-      if (DB.isOracle(EXECUTION_DATABASE.dbProductId)) {
+      if (DB.ORACLE == EXECUTION_DATABASE) {
         initOracleSchema(DATA_SOURCE, schemaName);
       }
     } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)

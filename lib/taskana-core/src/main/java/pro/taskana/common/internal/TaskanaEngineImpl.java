@@ -369,10 +369,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
-    String databaseProductName;
+    DB db;
     try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
-      databaseProductName = DB.getDatabaseProductName(con);
-      configuration.setDatabaseId(DB.getDatabaseProductId(con));
+      db = DB.getDB(con);
+      configuration.setDatabaseId(db.dbProductId);
 
     } catch (SQLException e) {
       throw new SystemException(
@@ -382,7 +382,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     }
 
     // register type handlers
-    if (DB.isOracleDb(databaseProductName)) {
+    if (DB.ORACLE == db) {
       // Use NULL instead of OTHER when jdbcType is not specified for null values,
       // otherwise oracle driver will chunk on null values
       configuration.setJdbcTypeForNull(JdbcType.NULL);
@@ -411,7 +411,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     configuration.addMapper(ConfigurationMapper.class);
 
     SqlSessionFactory localSessionFactory;
-    if (DB.isOracleDb(databaseProductName)) {
+    if (DB.ORACLE == db) {
       localSessionFactory =
           new SqlSessionFactoryBuilder() {
             @Override
@@ -426,24 +426,21 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 
-  private boolean initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
+  private void initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(
             taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
     boolean schemaCreated = dbSchemaCreator.run();
 
-    if (!schemaCreated) {
-      if (!dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
-        throw new SystemException(
-            "The Database Schema Version doesn't match the expected minimal version "
-                + MINIMAL_TASKANA_SCHEMA_VERSION);
-      }
+    if (!schemaCreated && !dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
+      throw new SystemException(
+          "The Database Schema Version doesn't match the expected minimal version "
+              + MINIMAL_TASKANA_SCHEMA_VERSION);
     }
     ((ConfigurationServiceImpl) getConfigurationService())
         .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
     ((ConfigurationServiceImpl) getConfigurationService()).setupDefaultCustomAttributes();
-    return schemaCreated;
   }
 
   /**
