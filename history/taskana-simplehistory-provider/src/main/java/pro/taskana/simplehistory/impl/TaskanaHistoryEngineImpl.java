@@ -112,17 +112,17 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
-    String databaseProductName;
+    DB db;
     try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
-      databaseProductName = DB.getDatabaseProductName(con);
-      configuration.setDatabaseId(DB.getDatabaseProductId(con));
+      db = DB.getDB(con);
+      configuration.setDatabaseId(db.dbProductId);
 
     } catch (SQLException e) {
       throw new SystemException("Could not open a connection to set the databaseId", e);
     }
 
     // register type handlers
-    if (DB.isOracleDb(databaseProductName)) {
+    if (DB.ORACLE == db) {
       // Use NULL instead of OTHER when jdbcType is not specified for null values,
       // otherwise oracle driver will chunck on null values
       configuration.setJdbcTypeForNull(JdbcType.NULL);
@@ -142,7 +142,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
     configuration.addMapper(UserMapper.class);
 
     SqlSessionFactory localSessionFactory;
-    if (DB.isOracleDb(databaseProductName)) {
+    if (DB.ORACLE == db) {
       localSessionFactory =
           new SqlSessionFactoryBuilder() {
             @Override

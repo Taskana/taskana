@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import pro.taskana.common.api.LocalTimeInterval;
 
-public class WorkingTimeScheduleTest {
+class WorkingTimeScheduleTest {
 
   @Test
   void creationFailsIfWorkingTimesOverlap() {

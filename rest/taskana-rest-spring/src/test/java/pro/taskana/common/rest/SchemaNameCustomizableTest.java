@@ -30,9 +30,9 @@ class SchemaNameCustomizableTest {
   void resetDb() throws SQLException {
     SampleDataGenerator sampleDataGenerator;
     try (Connection connection = dataSource.getConnection()) {
-      String databaseProductId = DB.getDatabaseProductId(connection);
+      DB db = DB.getDB(connection);
 
-      if (DB.isPostgres(databaseProductId)) {
+      if (DB.POSTGRES == db) {
         schemaName = schemaName.toLowerCase(Locale.ENGLISH);
       }
     }

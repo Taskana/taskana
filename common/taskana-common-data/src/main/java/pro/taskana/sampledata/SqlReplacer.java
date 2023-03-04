@@ -25,8 +25,8 @@ final class SqlReplacer {
   // to prevent initialization
   private SqlReplacer() {}
 
-  static String getScriptAsSql(String dbProductId, ZonedDateTime now, String scriptPath) {
-    return parseAndReplace(getScriptBufferedStream(scriptPath), now, dbProductId);
+  static String getScriptAsSql(DB db, ZonedDateTime now, String scriptPath) {
+    return parseAndReplace(getScriptBufferedStream(scriptPath), now, db);
   }
 
   /**
@@ -70,13 +70,12 @@ final class SqlReplacer {
     return sql.replace("''", String.format("'%s'", EMPTY_PLACEHOLDER));
   }
 
-  private static String parseAndReplace(
-      BufferedReader bufferedReader, ZonedDateTime now, String dbProductId) {
+  private static String parseAndReplace(BufferedReader bufferedReader, ZonedDateTime now, DB db) {
     String sql = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-    if (DB.isDb2(dbProductId) || DB.isOracle(dbProductId)) {
+    if (DB.DB2 == db || DB.ORACLE == db) {
       sql = replaceBooleanWithInteger(sql);
     }
-    if (DB.isOracle(dbProductId)) {
+    if (DB.ORACLE == db) {
       sql = replaceEmptyStringWithPlaceholder(sql);
       // Oracle needs to be informed about the timestamp format used in data scripts
       sql = "ALTER SESSION SET NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF3';\n" + sql;

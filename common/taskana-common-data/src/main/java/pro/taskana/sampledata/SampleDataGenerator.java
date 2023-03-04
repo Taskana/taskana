@@ -78,9 +78,9 @@ public class SampleDataGenerator {
 
   private List<String> parseScripts(Stream<String> scripts) {
     try (Connection connection = dataSource.getConnection()) {
-      String dbProductId = DB.getDatabaseProductId(connection);
+      DB db = DB.getDB(connection);
       return scripts
-          .map(script -> SqlReplacer.getScriptAsSql(dbProductId, now, script))
+          .map(script -> SqlReplacer.getScriptAsSql(db, now, script))
           .collect(Collectors.toList());
     } catch (SQLException e) {
       throw new RuntimeSqlException("Connection to database failed.", e);
@@ -92,7 +92,7 @@ public class SampleDataGenerator {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Generating sample data for database of type '{}' with url '{}' and schema '{}'.",
-            DB.getDatabaseProductName(connection),
+            DB.getDB(connection).dbProductName,
             connection.getMetaData().getURL(),
             schema);
       }

@@ -60,15 +60,15 @@ public class DbSchemaCreator {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Using database of type {} with url '{}'",
-            DB.getDatabaseProductName(connection),
+            DB.getDB(connection).dbProductName,
             connection.getMetaData().getURL());
       }
-      String dbProductId = DB.getDatabaseProductId(connection);
+      DB db = DB.getDB(connection);
 
       ScriptRunner runner = getScriptRunnerInstance(connection);
 
-      if (!isSchemaPreexisting(connection, dbProductId)) {
-        String scriptPath = selectDbScriptFileName(dbProductId);
+      if (!isSchemaPreexisting(connection, db)) {
+        String scriptPath = selectDbScriptFileName(db);
         InputStream resourceAsStream = DbSchemaCreator.class.getResourceAsStream(scriptPath);
         BufferedReader reader =
             new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
@@ -132,9 +132,9 @@ public class DbSchemaCreator {
     this.dataSource = dataSource;
   }
 
-  private static String selectDbScriptFileName(String dbProductId) {
+  private static String selectDbScriptFileName(DB db) {
 
-    switch (DB.getDbForId(dbProductId)) {
+    switch (db) {
       case DB2:
         return DB_SCHEMA_DB2;
       case ORACLE:
@@ -146,9 +146,9 @@ public class DbSchemaCreator {
     }
   }
 
-  private static String selectDbSchemaDetectionScript(String dbProductId) {
+  private static String selectDbSchemaDetectionScript(DB db) {
 
-    switch (DB.getDbForId(dbProductId)) {
+    switch (db) {
       case DB2:
         return DB_SCHEMA_DETECTION_DB2;
       case ORACLE:
@@ -168,11 +168,11 @@ public class DbSchemaCreator {
     return runner;
   }
 
-  private boolean isSchemaPreexisting(Connection connection, String dbProductId) {
+  private boolean isSchemaPreexisting(Connection connection, DB db) {
     ScriptRunner runner = getScriptRunnerInstance(connection);
     runner.setErrorLogWriter(errorLogWriter);
 
-    String scriptPath = selectDbSchemaDetectionScript(dbProductId);
+    String scriptPath = selectDbSchemaDetectionScript(db);
     try (InputStream resource = DbSchemaCreator.class.getResourceAsStream(scriptPath);
         InputStreamReader inputReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputReader)) {
