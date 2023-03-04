@@ -96,8 +96,8 @@ public abstract class AbstractAccTest {
             ? schemaName
             : DataSourceGenerator.getSchemaName();
     try (Connection connection = dataSource.getConnection()) {
-      String dbProductId = DB.getDatabaseProductId(connection);
-      if (DB.isOracle(dbProductId)) {
+      DB db = DB.getDB(connection);
+      if (DB.ORACLE == db) {
         initOracleSchema(dataSource, schemaNameTmp);
       }
     }

@@ -43,7 +43,7 @@ public class JobRunner {
     TaskanaTransactionProvider.executeInTransactionIfPossible(
         txProvider,
         () -> {
-          Boolean successful = taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob));
+          boolean successful = taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob));
           if (successful) {
             jobService.deleteJob(scheduledJob);
           }

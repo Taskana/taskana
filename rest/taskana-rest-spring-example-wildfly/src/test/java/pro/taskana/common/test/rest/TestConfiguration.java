@@ -31,7 +31,7 @@ public class TestConfiguration {
       try (Connection connection = dataSource.getConnection()) {
         LOGGER.debug(
             "Using database of type {} with url '{}'",
-            DB.getDatabaseProductName(connection),
+            DB.getDB(connection).dbProductName,
             connection.getMetaData().getURL());
       } catch (SQLException e) {
         LOGGER.error(e.getMessage(), e);
