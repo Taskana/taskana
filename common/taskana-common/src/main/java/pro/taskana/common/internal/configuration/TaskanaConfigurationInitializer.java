@@ -45,12 +45,14 @@ public class TaskanaConfigurationInitializer {
 
   static {
     PROPERTY_INITIALIZER_BY_CLASS.put(Integer.class, new IntegerPropertyParser());
+    PROPERTY_INITIALIZER_BY_CLASS.put(Long.class, new LongPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Boolean.class, new BooleanPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(String.class, new StringPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Duration.class, new DurationPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Instant.class, new InstantPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(List.class, new ListPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Map.class, new MapPropertyParser());
+    PROPERTY_INITIALIZER_BY_CLASS.put(Enum.class, new EnumPropertyParser());
   }
 
   private TaskanaConfigurationInitializer() {
@@ -65,12 +67,15 @@ public class TaskanaConfigurationInitializer {
           .ifPresent(
               taskanaProperty -> {
                 Class<?> type = ReflectionUtil.wrap(field.getType());
-                PropertyParser<?> propertyParser =
-                    Optional.ofNullable(PROPERTY_INITIALIZER_BY_CLASS.get(type))
-                        .orElseThrow(
-                            () ->
-                                new SystemException(
-                                    String.format("Unknown configuration type '%s'", type)));
+                PropertyParser<?> propertyParser;
+                if (type.isEnum()) {
+                  propertyParser = PROPERTY_INITIALIZER_BY_CLASS.get(Enum.class);
+                } else {
+                  propertyParser = PROPERTY_INITIALIZER_BY_CLASS.get(type);
+                }
+                if (propertyParser == null) {
+                  throw new SystemException(String.format("Unknown configuration type '%s'", type));
+                }
                 propertyParser
                     .initialize(props, separator, field, taskanaProperty)
                     .ifPresent(value -> setFieldValue(instance, field, value));
@@ -275,7 +280,7 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty) {
-      if (!List.class.isAssignableFrom(field.getType())) {
+      if (!List.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
         throw new SystemException(
             String.format(
                 "Cannot initialize field '%s' because field type '%s' is not a List",
@@ -332,6 +337,12 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty) {
+      if (!Instant.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not an Instant",
+                field, field.getType()));
+      }
       return parseProperty(properties, taskanaProperty.value(), Instant::parse);
     }
   }
@@ -343,6 +354,12 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty) {
+      if (!Duration.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not a Duration",
+                field, field.getType()));
+      }
       return parseProperty(properties, taskanaProperty.value(), Duration::parse);
     }
   }
@@ -354,6 +371,12 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty) {
+      if (!String.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not a String",
+                field, field.getType()));
+      }
       return parseProperty(properties, taskanaProperty.value(), String::new);
     }
   }
@@ -365,7 +388,30 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty) {
+      if (!Integer.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not an Integer",
+                field, field.getType()));
+      }
       return parseProperty(properties, taskanaProperty.value(), Integer::parseInt);
+    }
+  }
+
+  static class LongPropertyParser implements PropertyParser<Long> {
+    @Override
+    public Optional<Long> initialize(
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
+      if (!Long.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not a Long",
+                field, field.getType()));
+      }
+      return parseProperty(properties, taskanaProperty.value(), Long::parseLong);
     }
   }
 
@@ -376,7 +422,48 @@ public class TaskanaConfigurationInitializer {
         String separator,
         Field field,
         TaskanaProperty taskanaProperty) {
+      if (!Boolean.class.isAssignableFrom(ReflectionUtil.wrap(field.getType()))) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not a Boolean",
+                field, field.getType()));
+      }
       return parseProperty(properties, taskanaProperty.value(), Boolean::parseBoolean);
+    }
+  }
+
+  static class EnumPropertyParser implements PropertyParser<Enum<?>> {
+    @Override
+    public Optional<Enum<?>> initialize(
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
+      if (!field.getType().isEnum()) {
+        throw new SystemException(
+            String.format(
+                "Cannot initialize field '%s' because field type '%s' is not an Enum",
+                field, field.getType()));
+      }
+      return parseProperty(
+          properties,
+          taskanaProperty.value(),
+          string -> {
+            Map<String, ?> enumConstantsByLowerCasedName =
+                Arrays.stream(field.getType().getEnumConstants())
+                    .collect(
+                        Collectors.toMap(e -> e.toString().toLowerCase(), Function.identity()));
+            Object o = enumConstantsByLowerCasedName.get(string.toLowerCase());
+            if (o == null) {
+              throw new SystemException(
+                  String.format(
+                      "Invalid property value '%s': Valid values are '%s' or '%s",
+                      string,
+                      enumConstantsByLowerCasedName.keySet(),
+                      Arrays.toString(field.getType().getEnumConstants())));
+            }
+            return (Enum<?>) o;
+          });
     }
   }
 }

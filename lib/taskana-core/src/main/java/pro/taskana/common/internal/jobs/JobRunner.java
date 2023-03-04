@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
@@ -42,16 +41,22 @@ public class JobRunner {
 
   private void runJobTransactionally(ScheduledJob scheduledJob) {
     TaskanaTransactionProvider.executeInTransactionIfPossible(
-        txProvider, () -> taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob)));
-    jobService.deleteJob(scheduledJob);
+        txProvider,
+        () -> {
+          Boolean successful = taskanaEngine.runAsAdmin(() -> runScheduledJob(scheduledJob));
+          if (successful) {
+            jobService.deleteJob(scheduledJob);
+          }
+        });
   }
 
-  private void runScheduledJob(ScheduledJob scheduledJob) {
+  private boolean runScheduledJob(ScheduledJob scheduledJob) {
     try {
       AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, txProvider, scheduledJob).run();
+      return true;
     } catch (Exception e) {
       LOGGER.error("Error running job: {} ", scheduledJob.getType(), e);
-      throw new SystemException(String.format("Error running job '%s'", scheduledJob.getType()), e);
+      return false;
     }
   }
 

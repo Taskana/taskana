@@ -21,7 +21,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.CollectionUtil;
@@ -64,19 +63,6 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskCleanupJob.", e);
     }
-  }
-
-  /**
-   * Initializes the TaskCleanupJob schedule. <br>
-   * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
-   *
-   * @param taskanaEngine the TASKANA engine.
-   */
-  public static void initializeSchedule(TaskanaEngine taskanaEngine) {
-    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    TaskCleanupJob job = new TaskCleanupJob(taskanaEngine, null, null);
-    jobService.deleteJobs(job.getType());
-    job.scheduleNextJob();
   }
 
   @Override
