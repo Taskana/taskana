@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.JobServiceImpl;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
@@ -144,7 +146,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
             .filter(scheduledJob -> scheduledJob.getType().equals(TaskCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
-    TaskCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
 
     jobsToRun = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
 
@@ -223,12 +225,16 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
             .cleanupJobRunEvery(runEvery)
             .cleanupJobFirstRun(firstRun)
+            .jobSchedulerEnabled(true)
+            .jobSchedulerInitialStartDelay(0)
+            .jobSchedulerPeriod(1)
+            .jobSchedulerPeriodTimeUnit(TimeUnit.SECONDS)
+            .jobSchedulerEnableTaskCleanupJob(true)
             .build();
 
     TaskanaEngine taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(
             taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
-    TaskCleanupJob.initializeSchedule(taskanaEngine);
 
     List<ScheduledJob> nextJobs =
         getJobMapper(taskanaEngine).findJobsToRun(Instant.now().plus(runEvery));
@@ -246,7 +252,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
             .build();
 
     TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
-    TaskCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
 
     List<ScheduledJob> nextJobs = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
     assertThat(nextJobs).isEmpty();

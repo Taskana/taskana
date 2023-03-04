@@ -11,7 +11,6 @@ import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.rest.ldap.LdapClient;
@@ -44,19 +43,6 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     refreshUserPostprocessorManager = new RefreshUserPostprocessorManager();
   }
 
-  /**
-   * Initializes the {@linkplain UserInfoRefreshJob} schedule. <br>
-   * All scheduled jobs are cancelled/deleted and a new one is scheduled.
-   *
-   * @param taskanaEngine the TASKANA engine.
-   */
-  public static void initializeSchedule(TaskanaEngine taskanaEngine) {
-    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    UserInfoRefreshJob job = new UserInfoRefreshJob(taskanaEngine);
-    jobService.deleteJobs(job.getType());
-    job.scheduleNextJob();
-  }
-
   @Override
   protected String getType() {
     return UserInfoRefreshJob.class.getName();
@@ -74,7 +60,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
       List<User> users = ldapClient.searchUsersInUserRole();
       List<User> usersAfterProcessing =
           users.stream()
-              .map(user -> refreshUserPostprocessorManager.processUserAfterRefresh(user))
+              .map(refreshUserPostprocessorManager::processUserAfterRefresh)
               .collect(Collectors.toList());
       addExistingConfigurationDataToUsers(usersAfterProcessing);
       clearExistingUsersAndGroups();

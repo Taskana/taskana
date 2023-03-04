@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
 public class PlainJavaTransactionProvider implements TaskanaTransactionProvider {
@@ -24,15 +25,18 @@ public class PlainJavaTransactionProvider implements TaskanaTransactionProvider 
 
   @Override
   public <T> T executeInTransaction(Supplier<T> supplier) {
+    if (((TaskanaEngineImpl) taskanaEngine).getConnection() != null) {
+      return supplier.get();
+    }
     try (Connection connection = dataSource.getConnection()) {
       taskanaEngine.setConnection(connection);
       final T t = supplier.get();
       connection.commit();
+      taskanaEngine.closeConnection();
       return t;
     } catch (SQLException ex) {
       throw new SystemException("caught exception", ex);
     } finally {
-      taskanaEngine.closeConnection();
       taskanaEngine.setConnectionManagementMode(defaultConnectionManagementMode);
     }
   }

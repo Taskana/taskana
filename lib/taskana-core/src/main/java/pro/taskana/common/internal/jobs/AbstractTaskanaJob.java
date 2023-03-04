@@ -1,12 +1,15 @@
 package pro.taskana.common.internal.jobs;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
 
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.TaskanaException;
+import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
@@ -52,6 +55,61 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     if (async) {
       scheduleNextJob();
     }
+  }
+
+  /**
+   * Initializes the TaskCleanupJob schedule. <br>
+   * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
+   *
+   * @param taskanaEngine the TASKANA engine.
+   * @param jobClass the class of the job which should be scheduled
+   * @throws SystemException if the jobClass could not be scheduled.
+   */
+  public static void initializeSchedule(TaskanaEngine taskanaEngine, Class<?> jobClass) {
+    if (!AbstractTaskanaJob.class.isAssignableFrom(jobClass)) {
+      throw new SystemException(
+          String.format("Job '%s' is not a subclass of '%s'", jobClass, AbstractTaskanaJob.class));
+    }
+    Constructor<?> constructor;
+    try {
+      constructor =
+          jobClass.getConstructor(
+              TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class);
+    } catch (NoSuchMethodException e) {
+      throw new SystemException(
+          String.format(
+              "Job '%s' does not have a constructor matching (%s, %s, %s)",
+              jobClass, TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class));
+    }
+    AbstractTaskanaJob job;
+    try {
+      job = (AbstractTaskanaJob) constructor.newInstance(taskanaEngine, null, null);
+    } catch (InvocationTargetException e) {
+      throw new SystemException(
+          String.format(
+              "Required Constructor(%s, %s, %s) of job '%s' could not be invoked",
+              TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class, jobClass),
+          e);
+    } catch (InstantiationException e) {
+      throw new SystemException(
+          String.format(
+              "Required Constructor(%s, %s, %s) of job '%s' could not be initialized",
+              TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class, jobClass),
+          e);
+    } catch (IllegalAccessException e) {
+      throw new SystemException(
+          String.format(
+              "Required Constructor(%s, %s, %s) of job '%s' is not public",
+              TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class, jobClass),
+          e);
+    }
+    if (!job.async) {
+      throw new SystemException(
+          String.format("Job '%s' is not an async job. Please declare it as async", jobClass));
+    }
+    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
+    jobService.deleteJobs(job.getType());
+    job.scheduleNextJob();
   }
 
   protected abstract String getType();

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.common.test.security.JaasExtension;
@@ -453,7 +454,7 @@ class HistoryCleanupJobAccTest extends AbstractAccTest {
                 scheduledJob -> scheduledJob.getType().equals(HistoryCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
-    HistoryCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, HistoryCleanupJob.class);
 
     jobsToRun = getJobMapper().findJobsToRun(Instant.now());
 

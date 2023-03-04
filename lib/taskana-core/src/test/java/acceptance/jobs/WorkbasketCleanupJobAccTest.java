@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskState;
@@ -112,7 +113,7 @@ class WorkbasketCleanupJobAccTest extends AbstractAccTest {
                 scheduledJob -> scheduledJob.getType().equals(WorkbasketCleanupJob.class.getName()))
             .collect(Collectors.toList());
 
-    WorkbasketCleanupJob.initializeSchedule(taskanaEngine);
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, WorkbasketCleanupJob.class);
 
     jobsToRun = getJobMapper(taskanaEngine).findJobsToRun(Instant.now());
 

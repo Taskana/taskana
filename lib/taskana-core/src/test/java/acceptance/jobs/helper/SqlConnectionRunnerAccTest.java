@@ -28,12 +28,10 @@ class SqlConnectionRunnerAccTest extends AbstractAccTest {
     // when
     runner.runWithConnection(
         connection -> {
-          ResultSet resultSet;
           PreparedStatement preparedStatement =
               connection.prepareStatement("select * from TASK where ID = ?");
           preparedStatement.setString(1, taskId);
-          resultSet = preparedStatement.executeQuery();
-          // then
+          ResultSet resultSet = preparedStatement.executeQuery();
           assertThat(resultSet.next()).isTrue();
         });
   }
