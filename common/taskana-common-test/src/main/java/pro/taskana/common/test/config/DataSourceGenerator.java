@@ -32,7 +32,7 @@ public final class DataSourceGenerator {
     if (dockerContainer.isPresent()) {
       dockerContainer.get().start();
       DATA_SOURCE = DockerContainerCreator.createDataSource(dockerContainer.get());
-      if (DB.isOracle(db.dbProductId)) {
+      if (DB.ORACLE == db) {
         initOracleSchema(DATA_SOURCE, SCHEMA_NAME);
       }
     } else {

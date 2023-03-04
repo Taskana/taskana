@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 
-public class LocalTimeIntervalTest {
+class LocalTimeIntervalTest {
 
   @Test
   void naturalOrderingIsDefinedByBegin() {

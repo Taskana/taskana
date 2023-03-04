@@ -115,11 +115,11 @@ class TaskanaSecurityConfigAccTest {
 
     try (Connection connection = DataSourceGenerator.getDataSource().getConnection()) {
 
-      String dbProductId = DB.getDatabaseProductId(connection);
+      DB db = DB.getDB(connection);
 
       String sql;
       final String securityFlagAsString;
-      if (DB.isOracle(dbProductId)) {
+      if (DB.ORACLE == db) {
         securityFlagAsString = securityFlag ? "1" : "0";
       } else {
         securityFlagAsString = String.valueOf(securityFlag);
