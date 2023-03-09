@@ -5,6 +5,7 @@ import static java.util.function.Predicate.not;
 import java.beans.ConstructorProperties;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -233,7 +234,7 @@ public class TaskController {
    * @param filterCustomFields the filter parameters regarding TaskCustomFields
    * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
    * @param sortParameter the sort parameters
-   * @return the claimed Task
+   * @return the claimed Task or 404 if no Task is found
    * @throws InvalidOwnerException if the Task is already claimed by someone else
    * @throws NotAuthorizedOnWorkbasketException if the current user has no read permission for the
    *     Workbasket the Task is in
@@ -254,9 +255,11 @@ public class TaskController {
     filterCustomIntFields.apply(query);
     sortParameter.apply(query);
 
-    Task selectedAndClaimedTask = taskService.selectAndClaim(query);
+    Optional<Task> selectedAndClaimedTask = taskService.selectAndClaim(query);
 
-    return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(selectedAndClaimedTask));
+    return selectedAndClaimedTask
+        .map(task -> ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task)))
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   /**
