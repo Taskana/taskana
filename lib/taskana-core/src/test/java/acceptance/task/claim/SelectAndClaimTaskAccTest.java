@@ -1,23 +1,21 @@
 package acceptance.task.claim;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.security.auth.Subject;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import pro.taskana.common.api.BaseQuery.SortDirection;
-import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.test.security.JaasExtension;
@@ -58,15 +56,11 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
 
   @Test
   @WithAccessId(user = "admin")
-  void should_ThrowException_When_TryingToSelectAndClaimNonExistingTask() {
+  void should_ReturnEmptyOptional_When_TryingToSelectAndClaimNonExistingTask() throws Exception {
 
     TaskQuery query = taskanaEngine.getTaskService().createTaskQuery().idIn("notexisting");
-    ThrowingCallable call = () -> taskanaEngine.getTaskService().selectAndClaim(query);
-    assertThatThrownBy(call)
-        .isInstanceOf(SystemException.class)
-        .hasMessageContaining(
-            "No tasks matched the specified filter and sorting options, "
-                + "task query returned nothing!");
+    Optional<Task> task = taskanaEngine.getTaskService().selectAndClaim(query);
+    assertThat(task).isEmpty();
   }
 
   private Runnable getRunnableTest(List<Task> selectedAndClaimedTasks, List<String> accessIds) {
@@ -76,10 +70,10 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
 
       Consumer<TaskService> consumer =
           CheckedConsumer.wrap(
-              taskService -> {
-                Task task = taskService.selectAndClaim(getTaskQuery());
-                selectedAndClaimedTasks.add(task);
-              });
+              taskService ->
+                  taskService
+                      .selectAndClaim(getTaskQuery())
+                      .ifPresent(selectedAndClaimedTasks::add));
       PrivilegedAction<Void> action =
           () -> {
             consumer.accept(taskanaEngine.getTaskService());
