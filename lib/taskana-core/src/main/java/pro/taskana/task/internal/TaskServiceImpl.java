@@ -1,6 +1,7 @@
 package pro.taskana.task.internal;
 
 import static java.util.function.Predicate.not;
+import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -581,30 +582,11 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task selectAndClaim(TaskQuery taskQuery)
-      throws InvalidOwnerException, NotAuthorizedOnWorkbasketException {
-
-    try {
-
-      taskanaEngine.openConnection();
-
-      ((TaskQueryImpl) taskQuery).selectAndClaimEquals(true);
-
-      TaskSummary taskSummary = taskQuery.single();
-
-      if (taskSummary == null) {
-        throw new SystemException(
-            "No tasks matched the specified filter and sorting options,"
-                + " task query returned nothing!");
-      }
-
-      return claim(taskSummary.getId());
-
-    } catch (TaskNotFoundException | InvalidTaskStateException e) {
-      throw new SystemException("Caught exception ", e);
-    } finally {
-      taskanaEngine.returnConnection();
-    }
+  public Optional<Task> selectAndClaim(TaskQuery taskQuery) {
+    ((TaskQueryImpl) taskQuery).selectAndClaimEquals(true);
+    return taskanaEngine.executeInDatabaseConnection(
+        () ->
+            Optional.ofNullable(taskQuery.single()).map(TaskSummary::getId).map(wrap(this::claim)));
   }
 
   @Override

@@ -3,6 +3,7 @@ package pro.taskana.task.api;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
@@ -190,7 +191,7 @@ public interface TaskService {
    * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
-  Task selectAndClaim(TaskQuery taskQuery)
+  Optional<Task> selectAndClaim(TaskQuery taskQuery)
       throws InvalidOwnerException, NotAuthorizedOnWorkbasketException;
 
   /**

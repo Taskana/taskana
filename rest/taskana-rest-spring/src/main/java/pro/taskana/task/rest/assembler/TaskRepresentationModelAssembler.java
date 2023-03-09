@@ -51,7 +51,7 @@ public class TaskRepresentationModelAssembler
 
   @NonNull
   @Override
-  public TaskRepresentationModel toModel(@NonNull Task task) {
+  public TaskRepresentationModel toModel(Task task) {
     TaskRepresentationModel repModel = new TaskRepresentationModel();
     repModel.setTaskId(task.getId());
     repModel.setExternalId(task.getExternalId());
