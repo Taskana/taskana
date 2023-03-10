@@ -9,6 +9,8 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
@@ -114,6 +116,7 @@ class TaskanaConfigurationTest {
     long expectedJobSchedulerPeriod = 10;
     TimeUnit expectedJobSchedulerPeriodTimeUnit = TimeUnit.DAYS;
     List<String> expectedJobSchedulerCustomJobs = List.of("Job_A", "Job_B");
+    ZoneId expectedWorkingTimeScheduleTimeZone = ZoneId.ofOffset("UTC", ZoneOffset.ofHours(4));
 
     // when
     Map<DayOfWeek, Set<LocalTimeInterval>> expectedWorkingTimeSchedule =
@@ -153,6 +156,7 @@ class TaskanaConfigurationTest {
             .jobSchedulerEnableHistorieCleanupJob(false)
             .jobSchedulerCustomJobs(expectedJobSchedulerCustomJobs)
             .workingTimeSchedule(expectedWorkingTimeSchedule)
+            .workingTimeScheduleTimeZone(expectedWorkingTimeScheduleTimeZone)
             .build();
 
     // then
@@ -194,6 +198,8 @@ class TaskanaConfigurationTest {
     assertThat(configuration.isJobSchedulerEnableHistorieCleanupJob()).isFalse();
     assertThat(configuration.getJobSchedulerCustomJobs()).isEqualTo(expectedJobSchedulerCustomJobs);
     assertThat(configuration.getWorkingTimeSchedule()).isEqualTo(expectedWorkingTimeSchedule);
+    assertThat(configuration.getWorkingTimeScheduleTimeZone())
+        .isEqualTo(expectedWorkingTimeScheduleTimeZone);
   }
 
   @Test
@@ -236,6 +242,7 @@ class TaskanaConfigurationTest {
             .workingTimeSchedule(
                 Map.of(
                     DayOfWeek.MONDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.NOON))))
+            .workingTimeScheduleTimeZone(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(4)))
             .build();
 
     TaskanaConfiguration copyConfiguration = new Builder(configuration).build();
