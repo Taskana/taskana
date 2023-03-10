@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -40,7 +41,8 @@ class WorkingDaysToDaysReportConverterTest {
     workingTimeCalculator =
         new WorkingTimeCalculatorImpl(
             new HolidaySchedule(true, false, List.of(dayOfReformation, allSaintsDays)),
-            workingTime);
+            workingTime,
+            ZoneOffset.UTC);
   }
 
   @Test

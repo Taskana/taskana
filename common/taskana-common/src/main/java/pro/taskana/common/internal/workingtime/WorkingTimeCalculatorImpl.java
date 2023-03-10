@@ -6,8 +6,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
@@ -18,31 +20,36 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
 
-  static final ZoneOffset UTC = ZoneOffset.UTC;
+  private final ZoneId zoneId;
 
   private final HolidaySchedule holidaySchedule;
   private final WorkingTimeSchedule workingTimeSchedule;
 
   public WorkingTimeCalculatorImpl(
-      HolidaySchedule holidaySchedule, Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
+      HolidaySchedule holidaySchedule,
+      Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule,
+      ZoneId zoneId) {
     this.holidaySchedule = holidaySchedule;
     this.workingTimeSchedule = new WorkingTimeSchedule(workingTimeSchedule);
+    this.zoneId = Objects.requireNonNull(zoneId);
   }
 
   @Override
   public Instant subtractWorkingTime(Instant workStart, Duration workingTime)
       throws InvalidArgumentException {
     validatePositiveDuration(workingTime);
-    WorkSlot workSlot = getWorkSlotOrPrevious(toLocalDateTime(workStart));
-    return workSlot.subtractWorkingTime(workStart, workingTime);
+    ZonedDateTime workStartInTimeZone = toZonedDateTime(workStart);
+    WorkSlot workSlot = getWorkSlotOrPrevious(workStartInTimeZone);
+    return workSlot.subtractWorkingTime(workStartInTimeZone, workingTime).toInstant();
   }
 
   @Override
   public Instant addWorkingTime(Instant workStart, Duration workingTime)
       throws InvalidArgumentException {
     validatePositiveDuration(workingTime);
-    WorkSlot bestMatchingWorkSlot = getWorkSlotOrNext(toLocalDateTime(workStart));
-    return bestMatchingWorkSlot.addWorkingTime(workStart, workingTime);
+    ZonedDateTime workStartInTimeZone = toZonedDateTime(workStart);
+    WorkSlot workSlot = getWorkSlotOrNext(workStartInTimeZone);
+    return workSlot.addWorkingTime(workStartInTimeZone, workingTime).toInstant();
   }
 
   @Override
@@ -60,24 +67,7 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
       to = second;
     }
 
-    WorkSlot bestMatchingWorkSlot = getWorkSlotOrNext(toLocalDateTime(from));
-    Instant earliestWorkStart = max(from, bestMatchingWorkSlot.start);
-    Instant endOfWorkSlot = bestMatchingWorkSlot.end;
-
-    if (endOfWorkSlot.compareTo(to) >= 0) {
-      if (bestMatchingWorkSlot.start.compareTo(to) <= 0) {
-        // easy part. _from_ and _to_ are in the same work slot
-        return Duration.between(earliestWorkStart, to);
-      } else {
-        // _from_ and _to_ are before the bestMatchingWorkSlot aka between two work slots. We simply
-        // drop it
-        return Duration.ZERO;
-      }
-    } else {
-      // Take the current duration and add the working time starting after this work slot.
-      return Duration.between(earliestWorkStart, endOfWorkSlot)
-          .plus(workingTimeBetween(endOfWorkSlot, to));
-    }
+    return calculateWorkingTime(toZonedDateTime(from), toZonedDateTime(to));
   }
 
   @Override
@@ -101,6 +91,29 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
     return holidaySchedule.isGermanHoliday(toLocalDate(instant));
   }
 
+  private Duration calculateWorkingTime(ZonedDateTime from, ZonedDateTime to)
+      throws InvalidArgumentException {
+
+    WorkSlot bestMatchingWorkSlot = getWorkSlotOrNext(from);
+    ZonedDateTime earliestWorkStart = max(from, bestMatchingWorkSlot.start);
+    ZonedDateTime endOfWorkSlot = bestMatchingWorkSlot.end;
+
+    if (endOfWorkSlot.compareTo(to) >= 0) {
+      if (bestMatchingWorkSlot.start.compareTo(to) <= 0) {
+        // easy part. _from_ and _to_ are in the same work slot
+        return Duration.between(earliestWorkStart, to);
+      } else {
+        // _from_ and _to_ are before the bestMatchingWorkSlot aka between two work slots. We simply
+        // drop it
+        return Duration.ZERO;
+      }
+    } else {
+      // Take the current duration and add the working time starting after this work slot.
+      return Duration.between(earliestWorkStart, endOfWorkSlot)
+          .plus(calculateWorkingTime(endOfWorkSlot, to));
+    }
+  }
+
   private void validateNonNullInstants(Instant first, Instant second) {
     if (first == null || second == null) {
       throw new InvalidArgumentException("Neither first nor second may be null.");
@@ -118,11 +131,11 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
    * within a WorkSlot that WorkSlot is returned, if currentDateTime is not within a WorkSlot the
    * next WorkSlot is returned.
    *
-   * @param currentDateTime The LocalDateTime we want the best matching WorkSlot for. May not be
+   * @param currentDateTime The ZonedDateTime we want the best matching WorkSlot for. May not be
    *     <code>null</code>.
    * @return The WorkSlot that matches best <code>currentDateTime</code> if we want to add.
    */
-  private WorkSlot getWorkSlotOrNext(LocalDateTime currentDateTime) {
+  private WorkSlot getWorkSlotOrNext(ZonedDateTime currentDateTime) {
     LocalDate currentDate = currentDateTime.toLocalDate();
     // We do not work on Holidays
     if (holidaySchedule.isHoliday(currentDate)) {
@@ -149,11 +162,11 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
    * within a WorkSlot that WorkSlot is returned, if currentDateTime is not within a WorkSlot the
    * previous WorkSlot is returned.
    *
-   * @param currentDateTime The LocalDateTime we want the best matching WorkSlot for. May not be
+   * @param currentDateTime The ZonedDateTime we want the best matching WorkSlot for. May not be
    *     <code>null</code>.
    * @return The WorkSlot that matches best <code>currentDateTime</code> if we want to subtract.
    */
-  private WorkSlot getWorkSlotOrPrevious(LocalDateTime currentDateTime) {
+  private WorkSlot getWorkSlotOrPrevious(ZonedDateTime currentDateTime) {
     LocalDate currentDate = currentDateTime.toLocalDate();
     // We do not work on Holidays
     if (holidaySchedule.isHoliday(currentDate)) {
@@ -177,31 +190,41 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
                 getWorkSlotOrPrevious(getDayBefore(currentDateTime)));
   }
 
-  private static boolean isBeforeOrEquals(LocalTime time, LocalDateTime currentDateTime) {
+  private static boolean isBeforeOrEquals(LocalTime time, ZonedDateTime currentDateTime) {
     return !time.isAfter(currentDateTime.toLocalTime());
   }
 
-  private LocalDateTime getDayAfter(LocalDateTime current) {
-    return LocalDateTime.of(current.toLocalDate().plusDays(1), LocalTime.MIN);
-  }
-
-  private LocalDateTime getDayBefore(LocalDateTime current) {
-    return LocalDateTime.of(current.toLocalDate().minusDays(1), LocalTime.MAX);
-  }
-
-  private LocalDateTime toLocalDateTime(Instant instant) {
-    return LocalDateTime.ofInstant(instant, UTC);
-  }
-
-  private LocalDate toLocalDate(Instant instant) {
-    return LocalDate.ofInstant(instant, UTC);
+  private ZonedDateTime getDayAfter(ZonedDateTime current) {
+    return LocalDateTime.of(current.toLocalDate().plusDays(1), LocalTime.MIN)
+        .atZone(current.getZone());
   }
 
   private DayOfWeek toDayOfWeek(Instant instant) {
     return toLocalDate(instant).getDayOfWeek();
   }
 
-  private static Instant max(Instant a, Instant b) {
+  private ZonedDateTime getDayBefore(ZonedDateTime current) {
+    return LocalDateTime.of(current.toLocalDate().minusDays(1), LocalTime.MAX)
+        .atZone(current.getZone());
+  }
+
+  private ZonedDateTime toZonedDateTime(Instant instant) {
+    return instant.atZone(zoneId);
+  }
+
+  private ZonedDateTime toZonedDateTime(LocalDateTime localDateTime) {
+    return localDateTime.atZone(zoneId);
+  }
+
+  private ZonedDateTime toZonedDateTime(LocalDate day, LocalTime time) {
+    return toZonedDateTime(LocalDateTime.of(day, time));
+  }
+
+  private LocalDate toLocalDate(Instant instant) {
+    return LocalDate.ofInstant(instant, zoneId);
+  }
+
+  private static ZonedDateTime max(ZonedDateTime a, ZonedDateTime b) {
     if (a.isAfter(b)) {
       return a;
     } else {
@@ -209,7 +232,7 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
     }
   }
 
-  private static Instant min(Instant a, Instant b) {
+  private static ZonedDateTime min(ZonedDateTime a, ZonedDateTime b) {
     if (a.isBefore(b)) {
       return a;
     } else {
@@ -219,21 +242,34 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
 
   class WorkSlot {
 
-    private final Instant start;
-    private final Instant end;
+    private final ZonedDateTime start;
+    private final ZonedDateTime end;
 
     public WorkSlot(LocalDate day, LocalTimeInterval interval) {
-      this.start = LocalDateTime.of(day, interval.getBegin()).toInstant(UTC);
+      this.start = toZonedDateTime(day, interval.getBegin());
       if (interval.getEnd().equals(LocalTime.MAX)) {
-        this.end = day.plusDays(1).atStartOfDay().toInstant(UTC);
+        this.end = toZonedDateTime(day.plusDays(1).atStartOfDay());
       } else {
-        this.end = LocalDateTime.of(day, interval.getEnd()).toInstant(UTC);
+        this.end = toZonedDateTime(day, interval.getEnd());
       }
     }
 
-    public Instant addWorkingTime(Instant workStart, Duration workingTime) {
+    private ZonedDateTime subtractWorkingTime(ZonedDateTime workStart, Duration workingTime) {
+      // _workStart_ might be outside the working hours. We need to adjust the end accordingly.
+      ZonedDateTime latestWorkEnd = min(workStart, end);
+      Duration untilStartOfWorkSlot = Duration.between(start, latestWorkEnd);
+      if (workingTime.compareTo(untilStartOfWorkSlot) <= 0) {
+        // easy part. It is due within the same work slot
+        return latestWorkEnd.minus(workingTime);
+      } else {
+        Duration remainingWorkingTime = workingTime.minus(untilStartOfWorkSlot);
+        return previous().subtractWorkingTime(start, remainingWorkingTime);
+      }
+    }
+
+    private ZonedDateTime addWorkingTime(ZonedDateTime workStart, Duration workingTime) {
       // _workStart_ might be outside the working hours. We need to adjust the start accordingly.
-      Instant earliestWorkStart = max(workStart, start);
+      ZonedDateTime earliestWorkStart = max(workStart, start);
       Duration untilEndOfWorkSlot = Duration.between(earliestWorkStart, end);
       if (workingTime.compareTo(untilEndOfWorkSlot) <= 0) {
         // easy part. It is due within the same work slot
@@ -247,26 +283,13 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
       }
     }
 
-    public Instant subtractWorkingTime(Instant workStart, Duration workingTime) {
-      // _workStart_ might be outside the working hours. We need to adjust the end accordingly.
-      Instant latestWorkEnd = min(workStart, end);
-      Duration untilStartOfWorkSlot = Duration.between(start, latestWorkEnd);
-      if (workingTime.compareTo(untilStartOfWorkSlot) <= 0) {
-        // easy part. It is due within the same work slot
-        return latestWorkEnd.minus(workingTime);
-      } else {
-        Duration remainingWorkingTime = workingTime.minus(untilStartOfWorkSlot);
-        return previous().subtractWorkingTime(start, remainingWorkingTime);
-      }
-    }
-
     private WorkSlot previous() {
       // We need to subtract a nanosecond because start is inclusive
-      return getWorkSlotOrPrevious(toLocalDateTime(start.minusNanos(1)));
+      return getWorkSlotOrPrevious(start.minusNanos(1));
     }
 
     private WorkSlot next() {
-      return getWorkSlotOrNext(toLocalDateTime(end));
+      return getWorkSlotOrNext(end);
     }
   }
 }
