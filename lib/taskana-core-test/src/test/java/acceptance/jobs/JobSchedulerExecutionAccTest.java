@@ -30,7 +30,7 @@ import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.testapi.DefaultTestEntities;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
@@ -39,7 +39,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-class JobSchedulerExecutionAccTest implements TaskanaEngineConfigurationModifier {
+class JobSchedulerExecutionAccTest implements TaskanaConfigurationModifier {
   @TaskanaInject TaskanaConfiguration taskanaConfiguration;
   @TaskanaInject TaskService taskService;
   @TaskanaInject JobMapper jobMapper;
@@ -48,8 +48,8 @@ class JobSchedulerExecutionAccTest implements TaskanaEngineConfigurationModifier
   ObjectReference primaryObjRef;
 
   @Override
-  public Builder modify(Builder taskanaEngineConfigurationBuilder) {
-    return taskanaEngineConfigurationBuilder
+  public Builder modify(Builder builder) {
+    return builder
         .jobSchedulerEnableTaskCleanupJob(true)
         .cleanupJobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
         .cleanupJobRunEvery(Duration.ofMillis(1))
@@ -113,7 +113,7 @@ class JobSchedulerExecutionAccTest implements TaskanaEngineConfigurationModifier
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
-  class AJobFails implements TaskanaEngineConfigurationModifier {
+  class AJobFails implements TaskanaConfigurationModifier {
 
     @TaskanaInject TaskanaConfiguration taskanaConfiguration;
     @TaskanaInject TaskService taskService;
@@ -123,8 +123,8 @@ class JobSchedulerExecutionAccTest implements TaskanaEngineConfigurationModifier
     ObjectReference primaryObjRef;
 
     @Override
-    public Builder modify(Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder
+    public Builder modify(Builder builder) {
+      return builder
           .jobSchedulerEnableTaskCleanupJob(false)
           .cleanupJobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
           .cleanupJobRunEvery(Duration.ofMillis(1))

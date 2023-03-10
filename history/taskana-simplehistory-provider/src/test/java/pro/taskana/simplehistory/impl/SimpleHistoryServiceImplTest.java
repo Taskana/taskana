@@ -44,7 +44,7 @@ class SimpleHistoryServiceImplTest {
 
   @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
 
-  @Mock private TaskanaConfiguration taskanaEngineConfiguration;
+  @Mock private TaskanaConfiguration taskanaConfiguration;
 
   @Mock private TaskanaEngine taskanaEngine;
 
@@ -85,8 +85,8 @@ class SimpleHistoryServiceImplTest {
         AbstractAccTest.createTaskHistoryEvent(
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails"));
 
-    when(taskanaHistoryEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
-    when(taskanaEngineConfiguration.isAddAdditionalUserInfo()).thenReturn(false);
+    when(taskanaHistoryEngineMock.getConfiguration()).thenReturn(taskanaConfiguration);
+    when(taskanaConfiguration.isAddAdditionalUserInfo()).thenReturn(false);
 
     when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));

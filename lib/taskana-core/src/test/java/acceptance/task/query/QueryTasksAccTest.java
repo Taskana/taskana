@@ -61,11 +61,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetOwnerLongNameOfTask_When_PropertyEnabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
 
     List<TaskSummary> tasks =
         taskanaEngine
@@ -82,11 +82,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_NotSetOwnerLongNameOfTask_When_PropertyDisabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
 
     List<TaskSummary> tasks =
         taskanaEngine
@@ -102,11 +102,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameIn() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
 
     String longName = "Eifrig, Elena - (user-1-2)";
     List<TaskSummary> tasks =
@@ -122,11 +122,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotIn() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskSummary> tasks =
         taskanaEngine
             .getTaskService()
@@ -146,11 +146,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameLike() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
 
     List<TaskSummary> tasks =
         taskanaEngine.getTaskService().createTaskQuery().ownerLongNameLike("%1-2%").list();
@@ -165,11 +165,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_SetOwnerLongNameOfTask_When_FilteringWithOwnerLongNameNotLike() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
 
     List<TaskSummary> tasks =
         taskanaEngine.getTaskService().createTaskQuery().ownerLongNameNotLike("%1-1%").list();
@@ -185,11 +185,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @Test
   void should_SetOwnerLongNameOfTaskToNull_When_OwnerNotExistingAsUserInDatabase()
       throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
 
     List<TaskSummary> tasks =
         taskanaEngine
@@ -208,11 +208,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_OrderByOwnerLongName_When_QueryingTask() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskSummary> tasks =
         taskanaEngine
             .getTaskService()
@@ -240,11 +240,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ListValues_For_OwnerLongName() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<String> longNames =
         taskanaEngine
             .getTaskService()
@@ -275,11 +275,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_ListValuesCorrectly_When_FilteringWithOwnerLongName() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     String longName = "Eifrig, Elena - (user-1-2)";
     List<String> listedValues =
         taskanaEngine
@@ -303,11 +303,11 @@ class QueryTasksAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-2")
   @Test
   void should_CountCorrectly_When_FilteringWithOwnerLongName() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     String longName = "Eifrig, Elena - (user-1-2)";
     long count = taskanaEngine.getTaskService().createTaskQuery().ownerLongNameIn(longName).count();
     assertThat(count).isEqualTo(25);

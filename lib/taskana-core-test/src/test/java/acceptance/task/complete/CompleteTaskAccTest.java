@@ -33,7 +33,7 @@ import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.testapi.DefaultTestEntities;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
@@ -47,7 +47,7 @@ import pro.taskana.workbasket.api.exceptions.MismatchedWorkbasketPermissionExcep
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
+class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
   @TaskanaInject TaskService taskService;
   @TaskanaInject CurrentUserContext currentUserContext;
@@ -61,9 +61,8 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
   ObjectReference defaultObjectReference;
 
   @Override
-  public TaskanaConfiguration.Builder modify(
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-    return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(true);
+  public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+    return builder.addAdditionalUserInfo(true);
   }
 
   @WithAccessId(user = "businessadmin")
@@ -83,8 +82,12 @@ class CompleteTaskAccTest implements TaskanaEngineConfigurationModifier {
 
     defaultObjectReference = DefaultTestEntities.defaultTestObjectReference().build();
 
-    UserBuilder user11 = UserBuilder.newUser().id("user-1-1")
-            .longName("Mustermann, Max - (user-1-1)").firstName("Max").lastName("Mustermann");
+    UserBuilder user11 =
+        UserBuilder.newUser()
+            .id("user-1-1")
+            .longName("Mustermann, Max - (user-1-1)")
+            .firstName("Max")
+            .lastName("Mustermann");
     user11.buildAndStore(userService);
   }
 

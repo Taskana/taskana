@@ -158,11 +158,10 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
 
   private void createTaskanaEngineWithNewConfig(boolean deleteHistoryOnTaskDeletionEnabled)
       throws SQLException {
-
-    TaskanaConfiguration tec =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration configuration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .deleteHistoryOnTaskDeletionEnabled(deleteHistoryOnTaskDeletionEnabled)
             .build();
-    initTaskanaEngine(tec);
+    initTaskanaEngine(configuration);
   }
 }

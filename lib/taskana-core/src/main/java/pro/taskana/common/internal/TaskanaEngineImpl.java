@@ -89,7 +89,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   // must match the VERSION value in table
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaEngineImpl.class);
   private static final SessionStack SESSION_STACK = new SessionStack();
-  protected final TaskanaConfiguration taskanaEngineConfiguration;
+  protected final TaskanaConfiguration taskanaConfiguration;
   private final TaskRoutingManager taskRoutingManager;
   private final CreateTaskPreprocessorManager createTaskPreprocessorManager;
   private final PriorityServiceManager priorityServiceManager;
@@ -110,12 +110,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected Connection connection;
 
   protected TaskanaEngineImpl(
-      TaskanaConfiguration taskanaEngineConfiguration,
-      ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode connectionManagementMode)
       throws SQLException {
     LOGGER.info(
         "initializing TASKANA with this configuration: {} and this mode: {}",
-        taskanaEngineConfiguration,
+        taskanaConfiguration,
         connectionManagementMode);
     if (connectionManagementMode == EXPLICIT) {
       // at first we initialize Taskana DB with autocommit,
@@ -124,22 +123,22 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     } else {
       this.mode = connectionManagementMode;
     }
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+    this.taskanaConfiguration = taskanaConfiguration;
     internalTaskanaEngineImpl = new InternalTaskanaEngineImpl();
     HolidaySchedule holidaySchedule =
         new HolidaySchedule(
-            taskanaEngineConfiguration.isGermanPublicHolidaysEnabled(),
-            taskanaEngineConfiguration.isCorpusChristiEnabled(),
-            taskanaEngineConfiguration.getCustomHolidays());
+            taskanaConfiguration.isGermanPublicHolidaysEnabled(),
+            taskanaConfiguration.isCorpusChristiEnabled(),
+            taskanaConfiguration.getCustomHolidays());
     workingTimeCalculator =
         new WorkingTimeCalculatorImpl(
-            holidaySchedule, taskanaEngineConfiguration.getWorkingTimeSchedule());
+            holidaySchedule, taskanaConfiguration.getWorkingTimeSchedule());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
-    createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
+    createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
 
-    initializeDbSchema(taskanaEngineConfiguration);
+    initializeDbSchema(taskanaConfiguration);
 
     // IMPORTANT: SPI has to be initialized last (and in this order) in order
     // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
@@ -153,17 +152,17 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     beforeRequestChangesManager = new BeforeRequestChangesManager(this);
     afterRequestChangesManager = new AfterRequestChangesManager(this);
 
-    if (this.taskanaEngineConfiguration.isJobSchedulerEnabled()) {
-      TaskanaConfiguration tec =
-          new TaskanaConfiguration.Builder(this.taskanaEngineConfiguration)
+    if (this.taskanaConfiguration.isJobSchedulerEnabled()) {
+      TaskanaConfiguration configuration =
+          new TaskanaConfiguration.Builder(this.taskanaConfiguration)
               .jobSchedulerEnabled(false)
               .build();
-      TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(tec, EXPLICIT);
+      TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(configuration, EXPLICIT);
       RealClock clock =
           new RealClock(
-              this.taskanaEngineConfiguration.getJobSchedulerInitialStartDelay(),
-              this.taskanaEngineConfiguration.getJobSchedulerPeriod(),
-              this.taskanaEngineConfiguration.getJobSchedulerPeriodTimeUnit());
+              this.taskanaConfiguration.getJobSchedulerInitialStartDelay(),
+              this.taskanaConfiguration.getJobSchedulerPeriod(),
+              this.taskanaConfiguration.getJobSchedulerPeriodTimeUnit());
       JobScheduler jobScheduler = new JobScheduler(taskanaEngine, clock);
       jobScheduler.start();
     }
@@ -173,10 +172,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public static TaskanaEngine createTaskanaEngine(
-      TaskanaConfiguration taskanaEngineConfiguration,
-      ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode connectionManagementMode)
       throws SQLException {
-    return new TaskanaEngineImpl(taskanaEngineConfiguration, connectionManagementMode);
+    return new TaskanaEngineImpl(taskanaConfiguration, connectionManagementMode);
   }
 
   @Override
@@ -232,7 +230,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       // disabling auto commit for passed connection in order to gain full control over the
       // connection management
       connection.setAutoCommit(false);
-      connection.setSchema(taskanaEngineConfiguration.getSchemaName());
+      connection.setSchema(taskanaConfiguration.getSchemaName());
       mode = EXPLICIT;
       sessionManager.startManagedSession(connection);
     } else if (this.connection != null) {
@@ -260,7 +258,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
   @Override
   public TaskanaConfiguration getConfiguration() {
-    return this.taskanaEngineConfiguration;
+    return this.taskanaConfiguration;
   }
 
   @Override
@@ -364,16 +362,14 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    */
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
-        new Environment(
-            "default", this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+        new Environment("default", this.transactionFactory, taskanaConfiguration.getDatasource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     DB db;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaConfiguration.getDatasource().getConnection()) {
       db = DB.getDB(con);
       configuration.setDatabaseId(db.dbProductId);
-
     } catch (SQLException e) {
       throw new SystemException(
           "Method createSqlSessionManager() could not open a connection "
@@ -426,11 +422,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return SqlSessionManager.newInstance(localSessionFactory);
   }
 
-  private void initializeDbSchema(TaskanaConfiguration taskanaEngineConfiguration)
-      throws SQLException {
+  private void initializeDbSchema(TaskanaConfiguration taskanaConfiguration) throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(
-            taskanaEngineConfiguration.getDatasource(), taskanaEngineConfiguration.getSchemaName());
+            taskanaConfiguration.getDatasource(), taskanaConfiguration.getSchemaName());
     boolean schemaCreated = dbSchemaCreator.run();
 
     if (!schemaCreated && !dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {
@@ -439,7 +434,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
               + MINIMAL_TASKANA_SCHEMA_VERSION);
     }
     ((ConfigurationServiceImpl) getConfigurationService())
-        .checkSecureAccess(taskanaEngineConfiguration.isSecurityEnabled());
+        .checkSecureAccess(taskanaConfiguration.isSecurityEnabled());
     ((ConfigurationServiceImpl) getConfigurationService()).setupDefaultCustomAttributes();
   }
 
@@ -505,7 +500,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     public void openConnection() {
       initSqlSession();
       try {
-        sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+        sessionManager.getConnection().setSchema(taskanaConfiguration.getSchemaName());
       } catch (SQLException e) {
         throw new SystemException(
             "Method openConnection() could not open a connection "

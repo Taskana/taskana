@@ -72,11 +72,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_PreventTimestampServiceLevelMismatch_When_ConfigurationPreventsIt() throws Exception {
     // Given
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .allowTimestampServiceLevelMismatch(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     Task task = taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
     // When
     Instant planned = Instant.parse("2018-03-02T00:00:00Z");
@@ -94,11 +94,11 @@ class UpdateTaskAccTest extends AbstractAccTest {
   @Test
   void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
     // Given
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .allowTimestampServiceLevelMismatch(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     Task task = taskanaEngine.getTaskService().getTask("TKI:000000000000000000000000000000000000");
 
     // When

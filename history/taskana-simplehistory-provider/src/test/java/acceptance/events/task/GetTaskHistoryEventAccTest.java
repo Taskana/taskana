@@ -62,11 +62,10 @@ class GetTaskHistoryEventAccTest extends AbstractAccTest {
   }
 
   private void createTaskanaEngineWithNewConfig(boolean addAdditionalUserInfo) throws SQLException {
-
-    TaskanaConfiguration tec =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration configuration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(addAdditionalUserInfo)
             .build();
-    initTaskanaEngine(tec);
+    initTaskanaEngine(configuration);
   }
 }

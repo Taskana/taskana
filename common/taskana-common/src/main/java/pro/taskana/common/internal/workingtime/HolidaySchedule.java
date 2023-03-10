@@ -67,7 +67,7 @@ public class HolidaySchedule {
     if (germanHolidaysEnabled && isGermanHoliday(date)) {
       return true;
     }
-    // Custom holidays that can be configured in the TaskanaEngineConfiguration
+    // Custom holidays that can be configured in the TaskanaConfiguration
     return customHolidays.contains(CustomHoliday.of(date.getDayOfMonth(), date.getMonthValue()));
   }
 

@@ -48,16 +48,16 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaHistoryEngineImpl.class);
   private static final String DEFAULT = "default";
   private final SqlSessionManager sessionManager;
-  private final TaskanaConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaConfiguration;
   private final TaskanaEngine taskanaEngine;
   private TransactionFactory transactionFactory;
   private TaskanaHistory taskanaHistoryService;
 
   protected TaskanaHistoryEngineImpl(TaskanaEngine taskanaEngine) {
-    this.taskanaEngineConfiguration = taskanaEngine.getConfiguration();
+    this.taskanaConfiguration = taskanaEngine.getConfiguration();
     this.taskanaEngine = taskanaEngine;
 
-    createTransactionFactory(taskanaEngineConfiguration.isUseManagedTransactions());
+    createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
   }
 
@@ -102,21 +102,19 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   }
 
   public TaskanaConfiguration getConfiguration() {
-    return this.taskanaEngineConfiguration;
+    return this.taskanaConfiguration;
   }
 
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
-        new Environment(
-            DEFAULT, this.transactionFactory, taskanaEngineConfiguration.getDatasource());
+        new Environment(DEFAULT, this.transactionFactory, taskanaConfiguration.getDatasource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     DB db;
-    try (Connection con = taskanaEngineConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaConfiguration.getDatasource().getConnection()) {
       db = DB.getDB(con);
       configuration.setDatabaseId(db.dbProductId);
-
     } catch (SQLException e) {
       throw new SystemException("Could not open a connection to set the databaseId", e);
     }
@@ -206,7 +204,7 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
    */
   void openConnection() throws SQLException {
     initSqlSession();
-    this.sessionManager.getConnection().setSchema(taskanaEngineConfiguration.getSchemaName());
+    this.sessionManager.getConnection().setSchema(taskanaConfiguration.getSchemaName());
   }
 
   /**
