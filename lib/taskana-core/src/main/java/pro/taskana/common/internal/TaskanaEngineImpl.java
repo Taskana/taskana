@@ -132,7 +132,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaConfiguration.getCustomHolidays());
     workingTimeCalculator =
         new WorkingTimeCalculatorImpl(
-            holidaySchedule, taskanaConfiguration.getWorkingTimeSchedule());
+            holidaySchedule,
+            taskanaConfiguration.getWorkingTimeSchedule(),
+            taskanaConfiguration.getWorkingTimeScheduleTimeZone());
     currentUserContext =
         new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
     createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
