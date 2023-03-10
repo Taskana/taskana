@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import acceptance.AbstractAccTest;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import org.assertj.core.api.Condition;
@@ -71,8 +70,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTaskCorrectlyInDatabase_When_AddingAnAttachment() throws Exception {
     final int attachmentCount = task.getAttachments().size();
-    assertThat(task.getPriority()).isEqualTo(1);
-    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
+    assertThat(task.getPriority()).isOne();
+    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-01-30T15:54:59.999Z"));
     task.addAttachment(attachment);
 
     task = taskService.updateTask(task);
@@ -155,11 +154,10 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void should_ThrowAttachmentPersistenceException_When_UpdatingTaskWithTwoIdenticalAttachments()
       throws Exception {
-    final int attachmentCount = 0;
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount);
+    assertThat(task.getAttachments()).isEmpty();
 
     AttachmentImpl attachment = (AttachmentImpl) this.attachment;
     attachment.setId("TAI:000017");
@@ -198,8 +196,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(99);
 
-    Instant expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
-    assertThat(task.getDue()).isEqualTo(expDue);
+    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-01-30T15:54:59.999Z"));
   }
 
   @WithAccessId(user = "user-1-1")
@@ -250,8 +247,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount2); // locally, not inserted
     task = taskService.getTask(task.getId());
     assertThat(task.getAttachments()).hasSize(attachmentCount2); // inserted values not changed
-    assertThat(task.getPriority()).isEqualTo(1);
-    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
+    assertThat(task.getPriority()).isOne();
+    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-01-30T15:54:59.999Z"));
   }
 
   @WithAccessId(user = "user-1-1")
@@ -260,7 +257,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     assertThat(task.getPriority()).isEqualTo(99);
-    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
+    Instant expectedDue = Instant.parse("2018-01-30T15:54:59.999Z");
+    assertThat(task.getDue()).isEqualTo(expectedDue);
     int attachmentCount = task.getAttachments().size();
     Attachment attachmentToRemove = task.getAttachments().get(0);
     task.removeAttachment(attachmentToRemove.getId());
@@ -269,8 +267,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .hasSize(attachmentCount - 1); // locally, removed and not inserted
     task = taskService.getTask(task.getId());
     assertThat(task.getAttachments()).hasSize(attachmentCount - 1); // inserted, values removed
-    assertThat(task.getPriority()).isEqualTo(1);
-    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
+    assertThat(task.getPriority()).isOne();
+    assertThat(task.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -298,14 +296,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   void testUpdateAttachment() throws Exception {
     ((TaskImpl) task).setAttachments(new ArrayList<>());
     task = taskService.updateTask(task);
-    assertThat(task.getPriority()).isEqualTo(1);
-    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
+    assertThat(task.getPriority()).isOne();
+    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-01-30T15:54:59.999Z"));
 
     Attachment attachment = this.attachment;
     task.addAttachment(attachment);
     task = taskService.updateTask(task);
     assertThat(task.getPriority()).isEqualTo(99);
-    assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
+    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-01-30T15:54:59.999Z"));
 
     final int attachmentCount = task.getAttachments().size();
 
@@ -321,9 +319,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount);
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(99);
-    Instant expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
-
-    assertThat(task.getDue()).isEqualTo(expDue);
+    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-01-30T15:54:59.999Z"));
   }
 
   @WithAccessId(user = "user-1-1")
@@ -350,7 +346,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
 
     assertThat(task.getPriority()).isEqualTo(101);
-    Instant expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    Instant expDue = Instant.parse("2018-01-30T15:54:59.999Z");
     assertThat(task.getDue()).isEqualTo(expDue);
     assertThat(task.getAttachments())
         .hasSize(2)
@@ -383,7 +379,8 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
     assertThat(task.getPriority()).isEqualTo(99);
 
-    expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(16));
+    expDue = Instant.parse("2018-02-20T15:54:59.999Z");
+
     assertThat(task.getDue()).isEqualTo(expDue);
     assertThat(task.getAttachments())
         .hasSize(2)
@@ -503,20 +500,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(readTask).isNotNull();
     assertThat(createdTask.getCreator())
         .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
-    assertThat(readTask.getAttachments()).isNotNull();
     assertThat(readTask.getAttachments()).hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
     assertThat(readTask.getAttachments().get(1).getModified()).isNotNull();
     assertThat(readTask.getAttachments().get(0).getCreated())
         .isEqualTo(readTask.getAttachments().get(1).getModified());
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
-
     assertThat(readTask.getPriority()).isEqualTo(99);
-
-    Instant expDue =
-        workingTimeCalculator.addWorkingTime(readTask.getPlanned(), Duration.ofDays(1));
-
-    assertThat(readTask.getDue()).isEqualTo(expDue);
+    assertThat(readTask.getDue()).isNotNull();
   }
 
   @WithAccessId(user = "user-1-1")

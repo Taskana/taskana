@@ -283,8 +283,8 @@ class ServiceLevelHandler {
   private void recalcPlannedBasedOnDue(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, Duration duration)
       throws InvalidArgumentException {
-    Instant calcDue = instantOrEndOfPreviousWorkSlot(newTaskImpl.getDue());
-    Instant calcPlanned = subtractWorkingTime(calcDue, duration);
+    Instant calcDue = normalizeDue(newTaskImpl.getDue());
+    Instant calcPlanned = calculatePlanned(calcDue, duration);
     if (plannedHasChanged(newTaskImpl, oldTaskImpl)) {
       ensureServiceLevelIsNotViolated(newTaskImpl, duration, calcPlanned);
     }
@@ -293,28 +293,49 @@ class ServiceLevelHandler {
   }
 
   private void recalcDueBasedPlanned(TaskImpl newTaskImpl, Duration duration) {
-    newTaskImpl.setPlanned(instantOrStartOfNextWorkSlot(newTaskImpl.getPlanned()));
-    newTaskImpl.setDue(addWorkingTime(newTaskImpl.getPlanned(), duration));
+    Instant planned = normalizePlanned(newTaskImpl.getPlanned());
+    newTaskImpl.setPlanned(planned);
+    newTaskImpl.setDue(calculateDue(planned, duration));
   }
 
   private boolean plannedHasChanged(Task newTask, Task oldTask) {
     return newTask.getPlanned() != null && !oldTask.getPlanned().equals(newTask.getPlanned());
   }
 
-  private Instant instantOrEndOfPreviousWorkSlot(Instant instant) {
-    return subtractWorkingTime(instant, Duration.ZERO);
+  private Instant calculateDue(Instant planned, Duration duration) {
+    Instant dueExclusive = workingTimeCalculator.addWorkingTime(planned, duration);
+    if (!planned.equals(dueExclusive)) {
+      // Calculation is exclusive, but we want due date to be inclusive. Hence, we subtract a
+      // millisecond
+      // If planned and dueExclusive are the same values, we don't want due to be before planned.
+      // To compensate for that we allow a delta of one millisecond in
+      // ensureServiceLevelIsNotViolated
+      dueExclusive = dueExclusive.minusMillis(1);
+    }
+    return dueExclusive;
   }
 
-  private Instant subtractWorkingTime(Instant instant, Duration workingTime) {
-    return workingTimeCalculator.subtractWorkingTime(instant, workingTime);
+  private Instant calculatePlanned(Instant due, Duration duration) {
+    if (Duration.ZERO.equals(duration)) {
+      // Since calculation happens on due, that is already inclusive we do not calculate at all
+      return due;
+    } else {
+      // due is inclusive, but calculation happens exclusive.
+      return workingTimeCalculator.subtractWorkingTime(due.plusMillis(1), duration);
+    }
   }
 
-  private Instant instantOrStartOfNextWorkSlot(Instant instant) {
-    return addWorkingTime(instant, Duration.ZERO);
+  private Instant normalizeDue(Instant due) {
+    // plusMillis since due is inclusive, but calculation happens exclusive.
+    // minusMillis since we calculated a due date
+    // Without that some edge case fail (e.g. due is exactly the start of weekend)
+    return workingTimeCalculator
+        .subtractWorkingTime(due.plusMillis(1), Duration.ZERO)
+        .minusMillis(1);
   }
 
-  private Instant addWorkingTime(Instant instant, Duration workingTime) {
-    return workingTimeCalculator.addWorkingTime(instant, workingTime);
+  private Instant normalizePlanned(Instant instant) {
+    return workingTimeCalculator.addWorkingTime(instant, Duration.ZERO);
   }
 
   /**
@@ -340,12 +361,15 @@ class ServiceLevelHandler {
    */
   private void ensureServiceLevelIsNotViolated(
       TaskImpl task, Duration duration, Instant calcPlanned) throws InvalidArgumentException {
-    // TODO tests mit coverage. falls die Exception nie auftritt weg mit der Methode
     if (task.getPlanned() != null
         && !task.getPlanned().equals(calcPlanned)
-        // manual entered planned date is a different working day than computed value
-        && (workingTimeCalculator.isWorkingDay(task.getPlanned())
-            || workingTimeCalculator.isWorkingTimeBetween(task.getPlanned(), calcPlanned))) {
+        // We allow a diff of at most one millisecond, because calcPlanned is based on due date
+        // which is inclusive and not exclusive. This handles standard cases and edge cases
+        // (planned und due on weekends, e.g.)
+        && (workingTimeCalculator
+                .workingTimeBetween(task.getPlanned(), calcPlanned)
+                .compareTo(Duration.ofMillis(1))
+            > 0)) {
       throw new InvalidArgumentException(
           String.format(
               "Cannot update a task with given planned %s "
@@ -363,8 +387,8 @@ class ServiceLevelHandler {
     }
     if (newTask.getDue() != null) {
       // due is specified: calculate back and check correctness
-      Instant calcDue = instantOrEndOfPreviousWorkSlot(newTask.getDue());
-      Instant calcPlanned = subtractWorkingTime(calcDue, duration);
+      Instant calcDue = normalizeDue(newTask.getDue());
+      Instant calcPlanned = calculatePlanned(calcDue, duration);
       ensureServiceLevelIsNotViolated(newTask, duration, calcPlanned);
       newTask.setDue(calcDue);
       newTask.setPlanned(calcPlanned);
@@ -392,7 +416,7 @@ class ServiceLevelHandler {
     TaskImpl referenceTask = new TaskImpl();
     referenceTask.setPlanned(durationHolder.getPlanned());
     referenceTask.setModified(Instant.now());
-    referenceTask.setDue(addWorkingTime(referenceTask.getPlanned(), durationHolder.getDuration()));
+    referenceTask.setDue(calculateDue(referenceTask.getPlanned(), durationHolder.getDuration()));
     List<String> taskIdsToUpdate =
         taskDurationList.stream().map(TaskDuration::getTaskId).collect(Collectors.toList());
     Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
@@ -412,7 +436,7 @@ class ServiceLevelHandler {
 
     taskIdsByDueDuration.forEach(
         (duration, taskIds) -> {
-          referenceTask.setDue(addWorkingTime(planned, duration));
+          referenceTask.setDue(calculateDue(planned, duration));
           Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
               taskServiceImpl.getMinimalTaskSummaries(taskIds);
           bulkLog.addAllErrors(existingAndAuthorizedTasks.getRight());

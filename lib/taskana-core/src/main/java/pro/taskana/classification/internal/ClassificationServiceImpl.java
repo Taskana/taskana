@@ -316,11 +316,6 @@ public class ClassificationServiceImpl implements ClassificationService {
       throw new MalformedServiceLevelException(
           serviceLevel, classification.getKey(), classification.getDomain());
     }
-    // check that the duration is based on format PnD, i.e. it must start with a P, end with a D
-    if (!serviceLevel.toLowerCase().startsWith("p") || !serviceLevel.toLowerCase().endsWith("d")) {
-      throw new MalformedServiceLevelException(
-          serviceLevel, classification.getKey(), classification.getDomain());
-    }
   }
 
   private void validateAndPopulateParentInformation(ClassificationImpl classificationImpl)

@@ -135,7 +135,7 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId()).list();
-    Instant expectedDue = Instant.parse("2020-05-06T07:00:00.000Z");
+    Instant expectedDue = Instant.parse("2020-05-06T06:59:59.999Z");
     assertThat(result).extracting(TaskSummary::getDue).containsOnly(expectedDue);
   }
 
@@ -162,7 +162,7 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId()).list();
-    Instant expectedDue = Instant.parse("2020-05-06T07:00:00.000Z");
+    Instant expectedDue = Instant.parse("2020-05-06T06:59:59.999Z");
     assertThat(result).extracting(TaskSummary::getDue).containsOnly(expectedDue);
   }
 
@@ -193,8 +193,8 @@ class ServiceLevelOfAllTasksAccTest {
     assertThat(bulkLog.containsErrors()).isFalse();
     List<TaskSummary> result =
         taskService.createTaskQuery().idIn(task1.getId(), task2.getId(), task3.getId()).list();
-    Instant expectedDueSmallServiceLevel = Instant.parse("2020-05-06T07:00:00.000Z");
-    Instant expectedDueGreatServiceLevel = Instant.parse("2020-05-13T07:00:00.000Z");
+    Instant expectedDueSmallServiceLevel = Instant.parse("2020-05-06T06:59:59.999Z");
+    Instant expectedDueGreatServiceLevel = Instant.parse("2020-05-13T06:59:59.999Z");
     assertThat(result)
         .extracting(TaskSummary::getDue)
         .containsOnly(expectedDueSmallServiceLevel, expectedDueGreatServiceLevel);
