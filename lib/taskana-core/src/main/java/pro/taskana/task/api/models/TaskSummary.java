@@ -84,6 +84,9 @@ public interface TaskSummary {
   /**
    * Returns the time when the {@linkplain Task} is due.
    *
+   * <p>This instant denotes the last point in the allowed work time has ended or in short it is
+   * inclusive.
+   *
    * @return the due Instant
    */
   Instant getDue();
