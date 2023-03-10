@@ -49,6 +49,9 @@ public interface Task extends TaskSummary {
   /**
    * Sets the time when the work on this Task should be finished.
    *
+   * <p><code>due</code> denotes the last point in the allowed work time has ended or in short it is
+   * inclusive.
+   *
    * @param due as exact {@linkplain Instant}
    */
   void setDue(Instant due);
