@@ -43,7 +43,7 @@ class JobRunnerAccTest extends AbstractAccTest {
           try {
             TaskanaEngine taskanaEngine =
                 TaskanaEngine.buildTaskanaEngine(
-                    taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+                    taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
             DataSource dataSource = DataSourceGenerator.getDataSource();
             // We have to slow down the transaction.
             // This is necessary to guarantee the execution of

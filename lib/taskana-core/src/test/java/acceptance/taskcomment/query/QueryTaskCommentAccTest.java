@@ -209,11 +209,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_ReturnListedValues_For_QueryColumnCreatorLongName() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<String> listedValues =
         taskanaEngine
             .getTaskService()
@@ -283,11 +283,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "admin")
   @Test
   void should_SetTaskCreatorFullNameOfTaskComment_When_PropertyEnabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskComment> taskComments =
         taskanaEngine
             .getTaskService()
@@ -306,11 +306,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_NotSetTaskCreatorFullNameOfTaskComment_When_PropertyDisabled() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(false)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskComment> taskComments =
         taskanaEngine
             .getTaskService()
@@ -326,11 +326,11 @@ class QueryTaskCommentAccTest extends AbstractAccTest {
   @Test
   void should_SetTaskCreatorFullNameOfTaskCommentToNull_When_NotExistingAsUserInDatabase()
       throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     List<TaskComment> taskComments =
         taskanaEngine
             .getTaskService()

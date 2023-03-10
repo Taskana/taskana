@@ -44,19 +44,18 @@ class DmnConverterServiceAccTest {
 
     DataSource dataSource = DataSourceGenerator.createDataSourceForH2();
     String schemaName = "TASKANA";
-    TaskanaConfiguration taskanaEngineConfiguration =
+    TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
             .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new SampleDataGenerator(dataSource, taskanaConfiguration.getSchemaName());
     if (dropTables) {
       sampleDataGenerator.dropDb();
     }
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
 
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();

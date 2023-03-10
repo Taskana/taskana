@@ -14,13 +14,13 @@ import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskUpdatePriorityJob;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 @TaskanaIntegrationTest
-class JobSchedulerInitAccTest implements TaskanaEngineConfigurationModifier {
+class JobSchedulerInitAccTest implements TaskanaConfigurationModifier {
 
   @TaskanaInject JobMapper jobMapper;
 
@@ -28,9 +28,8 @@ class JobSchedulerInitAccTest implements TaskanaEngineConfigurationModifier {
   Duration runEvery = Duration.ofMinutes(5);
 
   @Override
-  public TaskanaConfiguration.Builder modify(
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-    return taskanaEngineConfigurationBuilder
+  public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+    return builder
         .cleanupJobRunEvery(runEvery)
         .cleanupJobFirstRun(firstRun)
         // config for TaskUpdatePriorityJob

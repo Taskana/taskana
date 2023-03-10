@@ -20,7 +20,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.testapi.CleanTaskanaContext;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.WithServiceProvider;
 
 public class TestContainerExtension implements InvocationInterceptor {
@@ -57,9 +57,9 @@ public class TestContainerExtension implements InvocationInterceptor {
       if (DB.ORACLE == EXECUTION_DATABASE) {
         initOracleSchema(DATA_SOURCE, schemaName);
       }
-    } else if (TaskanaEngineConfigurationModifier.class.isAssignableFrom(testClass)
+    } else if (TaskanaConfigurationModifier.class.isAssignableFrom(testClass)
         || isAnnotated(testClass, WithServiceProvider.class)) {
-      // since the implementation of TaskanaEngineConfigurationModifier implies the generation of a
+      // since the implementation of TaskanaConfigurationModifier implies the generation of a
       // new TaskanaEngine, we have to copy the schema name and datasource from the enclosing class'
       // store to the testClass store.
       // This allows the following extensions to generate a new TaskanaEngine for the testClass.

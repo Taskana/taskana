@@ -41,7 +41,7 @@ import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.TaskServiceImpl;
 import pro.taskana.testapi.CleanTaskanaContext;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaEngineProxy;
 import pro.taskana.testapi.WithServiceProvider;
 import pro.taskana.testapi.WithServiceProvider.WithServiceProviders;
@@ -63,15 +63,14 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
         || isAnnotated(testClass, CleanTaskanaContext.class)
         || isAnnotated(testClass, WithServiceProvider.class)
         || isAnnotated(testClass, WithServiceProviders.class)
-        || testInstance instanceof TaskanaEngineConfigurationModifier) {
+        || testInstance instanceof TaskanaConfigurationModifier) {
       Store store = getClassLevelStore(context);
-      TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder =
-          createDefaultTaskanaEngineConfigurationBuilder(store);
+      TaskanaConfiguration.Builder taskanaConfigurationBuilder =
+          createDefaultTaskanaConfigurationBuilder(store);
 
-      if (testInstance instanceof TaskanaEngineConfigurationModifier) {
-        TaskanaEngineConfigurationModifier modifier =
-            (TaskanaEngineConfigurationModifier) testInstance;
-        taskanaEngineConfigurationBuilder = modifier.modify(taskanaEngineConfigurationBuilder);
+      if (testInstance instanceof TaskanaConfigurationModifier) {
+        TaskanaConfigurationModifier modifier = (TaskanaConfigurationModifier) testInstance;
+        taskanaConfigurationBuilder = modifier.modify(taskanaConfigurationBuilder);
       }
 
       TaskanaEngine taskanaEngine;
@@ -83,7 +82,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
                     staticMock.when(() -> SpiLoader.load(spi)).thenReturn(serviceProviders));
         taskanaEngine =
             TaskanaEngine.buildTaskanaEngine(
-                taskanaEngineConfigurationBuilder.build(), ConnectionManagementMode.AUTOCOMMIT);
+                taskanaConfigurationBuilder.build(), ConnectionManagementMode.AUTOCOMMIT);
       }
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));
@@ -99,7 +98,7 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
     return instanceByClass;
   }
 
-  private static TaskanaConfiguration.Builder createDefaultTaskanaEngineConfigurationBuilder(
+  private static TaskanaConfiguration.Builder createDefaultTaskanaConfigurationBuilder(
       Store store) {
     String schemaName = store.get(TestContainerExtension.STORE_SCHEMA_NAME, String.class);
     if (schemaName == null) {

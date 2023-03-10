@@ -33,7 +33,7 @@ public class TaskanaProducers {
 
   @Inject private TaskanaEngine taskanaEngine;
 
-  private TaskanaConfiguration taskanaEngineConfiguration;
+  private TaskanaConfiguration taskanaConfiguration;
 
   @PostConstruct
   public void init() {
@@ -53,7 +53,7 @@ public class TaskanaProducers {
           LOGGER.debug("---------------> {}", metaData);
         }
       }
-      this.taskanaEngineConfiguration =
+      this.taskanaConfiguration =
           new TaskanaConfiguration.Builder(dataSource, true, "TASKANA", false)
               .initTaskanaProperties()
               .build();
@@ -65,7 +65,7 @@ public class TaskanaProducers {
   @ApplicationScoped
   @Produces
   public TaskanaEngine generateTaskEngine() throws SQLException {
-    return TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    return TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
   }
 
   @ApplicationScoped

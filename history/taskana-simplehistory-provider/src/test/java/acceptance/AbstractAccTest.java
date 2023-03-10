@@ -33,7 +33,7 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 /** Set up database for tests. */
 public abstract class AbstractAccTest {
 
-  protected static TaskanaConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
   protected static TaskanaEngine taskanaEngine;
   protected static SimpleHistoryServiceImpl historyService;
@@ -101,23 +101,22 @@ public abstract class AbstractAccTest {
         initOracleSchema(dataSource, schemaNameTmp);
       }
     }
-    TaskanaConfiguration tec =
+    TaskanaConfiguration configuration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaNameTmp)
             .initTaskanaProperties()
             .build();
-    initTaskanaEngine(tec);
+    initTaskanaEngine(configuration);
 
     SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, tec.getSchemaName());
+        new SampleDataGenerator(dataSource, configuration.getSchemaName());
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
   }
 
-  protected static void initTaskanaEngine(TaskanaConfiguration tec) throws SQLException {
-    taskanaEngineConfiguration = tec;
+  protected static void initTaskanaEngine(TaskanaConfiguration configuration) throws SQLException {
+    taskanaConfiguration = configuration;
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
     taskService = taskanaEngine.getTaskService();
     historyService = new SimpleHistoryServiceImpl();

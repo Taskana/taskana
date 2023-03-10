@@ -10,18 +10,17 @@ import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
-/** Unit Test for TaskanaEngineConfigurationTest. */
-class TaskanaEngineConfigurationTest extends AbstractAccTest {
+class TaskanaConfigurationTest extends AbstractAccTest {
 
   @Test
   void testCreateTaskanaEngine() throws Exception {
     DataSource ds = DataSourceGenerator.getDataSource();
-    TaskanaConfiguration taskEngineConfiguration =
+    TaskanaConfiguration configuration =
         new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), false)
             .initTaskanaProperties()
             .build();
 
-    TaskanaEngine te = TaskanaEngine.buildTaskanaEngine(taskEngineConfiguration);
+    TaskanaEngine te = TaskanaEngine.buildTaskanaEngine(configuration);
 
     assertThat(te).isNotNull();
   }
