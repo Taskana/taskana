@@ -12,6 +12,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -75,6 +76,8 @@ public class TaskanaConfiguration {
   private final boolean corpusChristiEnabled;
 
   private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
+
+  private final ZoneId workingTimeScheduleTimeZone;
   // endregion
 
   // region history configuration
@@ -165,6 +168,7 @@ public class TaskanaConfiguration {
             .collect(
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
+    this.workingTimeScheduleTimeZone = builder.workingTimeScheduleTimeZone;
     this.jobBatchSize = builder.jobBatchSize;
     this.maxNumberOfJobRetries = builder.maxNumberOfJobRetries;
     this.cleanupJobFirstRun = builder.cleanupJobFirstRun;
@@ -247,6 +251,10 @@ public class TaskanaConfiguration {
 
   public Map<DayOfWeek, Set<LocalTimeInterval>> getWorkingTimeSchedule() {
     return workingTimeSchedule;
+  }
+
+  public ZoneId getWorkingTimeScheduleTimeZone() {
+    return workingTimeScheduleTimeZone;
   }
 
   public Map<TaskanaRole, Set<String>> getRoleMap() {
@@ -507,6 +515,9 @@ public class TaskanaConfiguration {
     @TaskanaProperty("taskana.workingtime.schedule")
     private Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule =
         initDefaultWorkingTimeSchedule();
+
+    @TaskanaProperty("taskana.workingtime.timezone")
+    private ZoneId workingTimeScheduleTimeZone = ZoneId.of("Europe/Berlin");
     // endregion
 
     // region history configuration
@@ -610,6 +621,7 @@ public class TaskanaConfiguration {
       this.germanPublicHolidaysEnabled = conf.isGermanPublicHolidaysEnabled();
       this.corpusChristiEnabled = conf.isCorpusChristiEnabled();
       this.workingTimeSchedule = conf.getWorkingTimeSchedule();
+      this.workingTimeScheduleTimeZone = conf.getWorkingTimeScheduleTimeZone();
       this.jobBatchSize = conf.getJobBatchSize();
       this.maxNumberOfJobRetries = conf.getMaxNumberOfJobRetries();
       this.cleanupJobFirstRun = conf.getCleanupJobFirstRun();
@@ -656,93 +668,78 @@ public class TaskanaConfiguration {
 
     // region builder methods
 
-    @SuppressWarnings("unused")
     // TODO: why do we need this method?
     public Builder schemaName(String schemaName) {
       this.schemaName = initSchemaName(schemaName);
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder roleMap(Map<TaskanaRole, Set<String>> roleMap) {
       this.roleMap = roleMap;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder domains(List<String> domains) {
       this.domains = domains;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder classificationTypes(List<String> classificationTypes) {
       this.classificationTypes = classificationTypes;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder classificationCategoriesByTypeMap(
         Map<String, List<String>> classificationCategoriesByTypeMap) {
       this.classificationCategoriesByType = classificationCategoriesByTypeMap;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder customHolidays(List<CustomHoliday> customHolidays) {
       this.customHolidays = customHolidays;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder deleteHistoryOnTaskDeletionEnabled(boolean deleteHistoryOnTaskDeletionEnabled) {
       this.deleteHistoryOnTaskDeletionEnabled = deleteHistoryOnTaskDeletionEnabled;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder germanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
       this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder corpusChristiEnabled(boolean corpusChristiEnabled) {
       this.corpusChristiEnabled = corpusChristiEnabled;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder jobBatchSize(int jobBatchSize) {
       this.jobBatchSize = jobBatchSize;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder maxNumberOfJobRetries(int maxNumberOfJobRetries) {
       this.maxNumberOfJobRetries = maxNumberOfJobRetries;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder cleanupJobFirstRun(Instant cleanupJobFirstRun) {
       this.cleanupJobFirstRun = cleanupJobFirstRun;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder cleanupJobRunEvery(Duration cleanupJobRunEvery) {
       this.cleanupJobRunEvery = cleanupJobRunEvery;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder cleanupJobMinimumAge(Duration cleanupJobMinimumAge) {
       this.cleanupJobMinimumAge = cleanupJobMinimumAge;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder taskCleanupJobAllCompletedSameParentBusiness(
         boolean taskCleanupJobAllCompletedSameParentBusiness) {
       this.taskCleanupJobAllCompletedSameParentBusiness =
@@ -750,56 +747,47 @@ public class TaskanaConfiguration {
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder allowTimestampServiceLevelMismatch(
         boolean validationAllowTimestampServiceLevelMismatch) {
       this.allowTimestampServiceLevelMismatch = validationAllowTimestampServiceLevelMismatch;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder addAdditionalUserInfo(boolean addAdditionalUserInfo) {
       this.addAdditionalUserInfo = addAdditionalUserInfo;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder priorityJobBatchSize(int priorityJobBatchSize) {
       this.priorityJobBatchSize = priorityJobBatchSize;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder priorityJobFirstRun(Instant priorityJobFirstRun) {
       this.priorityJobFirstRun = priorityJobFirstRun;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder priorityJobRunEvery(Duration priorityJobRunEvery) {
       this.priorityJobRunEvery = priorityJobRunEvery;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder priorityJobActive(boolean priorityJobActive) {
       this.priorityJobActive = priorityJobActive;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder userRefreshJobRunEvery(Duration userRefreshJobRunEvery) {
       this.userRefreshJobRunEvery = userRefreshJobRunEvery;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder userRefreshJobFirstRun(Instant userRefreshJobFirstRun) {
       this.userRefreshJobFirstRun = userRefreshJobFirstRun;
       return this;
     }
 
-    @SuppressWarnings("unused")
     public Builder minimalPermissionsToAssignDomains(
         List<WorkbasketPermission> minimalPermissionsToAssignDomains) {
       this.minimalPermissionsToAssignDomains = minimalPermissionsToAssignDomains;
@@ -862,6 +850,11 @@ public class TaskanaConfiguration {
 
     public Builder workingTimeSchedule(Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
       this.workingTimeSchedule = workingTimeSchedule;
+      return this;
+    }
+
+    public Builder workingTimeScheduleTimeZone(ZoneId workingTimeScheduleTimeZone) {
+      this.workingTimeScheduleTimeZone = workingTimeScheduleTimeZone;
       return this;
     }
 
@@ -1018,17 +1011,13 @@ public class TaskanaConfiguration {
     private static Map<DayOfWeek, Set<LocalTimeInterval>> initDefaultWorkingTimeSchedule() {
       Map<DayOfWeek, Set<LocalTimeInterval>> workingTime = new EnumMap<>(DayOfWeek.class);
 
-      // Default working time schedule is from Monday 00:00 - Friday 24:00, but CET (hence -1 hour)
       Set<LocalTimeInterval> standardWorkingSlots =
           Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
-      workingTime.put(
-          DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.of(23, 0), LocalTime.MAX)));
       workingTime.put(DayOfWeek.MONDAY, standardWorkingSlots);
       workingTime.put(DayOfWeek.TUESDAY, standardWorkingSlots);
       workingTime.put(DayOfWeek.WEDNESDAY, standardWorkingSlots);
       workingTime.put(DayOfWeek.THURSDAY, standardWorkingSlots);
-      workingTime.put(
-          DayOfWeek.FRIDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.of(23, 0))));
+      workingTime.put(DayOfWeek.FRIDAY, standardWorkingSlots);
       return workingTime;
     }
   }

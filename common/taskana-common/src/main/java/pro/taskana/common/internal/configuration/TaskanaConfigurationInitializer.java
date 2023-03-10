@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class TaskanaConfigurationInitializer {
     PROPERTY_INITIALIZER_BY_CLASS.put(Instant.class, new InstantPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(List.class, new ListPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Map.class, new MapPropertyParser());
+    PROPERTY_INITIALIZER_BY_CLASS.put(ZoneId.class, new ZoneIdPropertyParser());
     PROPERTY_INITIALIZER_BY_CLASS.put(Enum.class, new EnumPropertyParser());
   }
 
@@ -429,6 +431,18 @@ public class TaskanaConfigurationInitializer {
                 field, field.getType()));
       }
       return parseProperty(properties, taskanaProperty.value(), Boolean::parseBoolean);
+    }
+  }
+
+  static class ZoneIdPropertyParser implements PropertyParser<ZoneId> {
+
+    @Override
+    public Optional<ZoneId> initialize(
+        Map<String, String> properties,
+        String separator,
+        Field field,
+        TaskanaProperty taskanaProperty) {
+      return parseProperty(properties, taskanaProperty.value(), ZoneId::of);
     }
   }
 
