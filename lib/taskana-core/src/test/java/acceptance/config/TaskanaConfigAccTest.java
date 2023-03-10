@@ -22,11 +22,11 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 class TaskanaConfigAccTest {
 
   @TempDir Path tempDir;
-  private TaskanaConfiguration taskanaEngineConfiguration;
+  private TaskanaConfiguration taskanaConfiguration;
 
   @BeforeEach
   void setup() {
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(), true, DataSourceGenerator.getSchemaName())
             .initTaskanaProperties()
@@ -35,25 +35,24 @@ class TaskanaConfigAccTest {
 
   @Test
   void should_ConfigureDomains_For_DefaultPropertiesFile() {
-    assertThat(taskanaEngineConfiguration.getDomains())
-        .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+    assertThat(taskanaConfiguration.getDomains()).containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
   }
 
   @Test
   void should_ConfigureMinimalPermissionsToAssignDomains_For_DefaultPropertiesFile() {
-    assertThat(taskanaEngineConfiguration.getMinimalPermissionsToAssignDomains())
+    assertThat(taskanaConfiguration.getMinimalPermissionsToAssignDomains())
         .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.OPEN);
   }
 
   @Test
   void should_ConfigureClassificationTypes_For_DefaultPropertiesFile() {
-    assertThat(taskanaEngineConfiguration.getClassificationTypes())
+    assertThat(taskanaConfiguration.getClassificationTypes())
         .containsExactlyInAnyOrder("TASK", "DOCUMENT");
   }
 
   @Test
   void should_ConfigureClassificationCategories_For_DefaultPropertiesFile() {
-    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByType("TASK"))
+    assertThat(taskanaConfiguration.getClassificationCategoriesByType("TASK"))
         .containsExactlyInAnyOrder("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS");
   }
 
@@ -61,7 +60,7 @@ class TaskanaConfigAccTest {
   void should_NotConfigureClassificationTypes_When_PropertiesAreNotDefined() throws Exception {
     String propertiesFileName = createNewConfigFile("dummyTestConfig1.properties", false, true);
     String delimiter = ";";
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(),
                 true,
@@ -69,14 +68,14 @@ class TaskanaConfigAccTest {
                 true)
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
-    assertThat(taskanaEngineConfiguration.getClassificationTypes()).isEmpty();
+    assertThat(taskanaConfiguration.getClassificationTypes()).isEmpty();
   }
 
   @Test
   void should_NotConfigureClassificationCategories_When_PropertiesAreNotDefined() throws Exception {
     String propertiesFileName = createNewConfigFile("dummyTestConfig2.properties", true, false);
     String delimiter = ";";
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(),
                 true,
@@ -84,7 +83,7 @@ class TaskanaConfigAccTest {
                 true)
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
-    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByType())
+    assertThat(taskanaConfiguration.getClassificationCategoriesByType())
         .containsExactly(
             Map.entry("TASK", Collections.emptyList()),
             Map.entry("DOCUMENT", Collections.emptyList()));
@@ -94,7 +93,7 @@ class TaskanaConfigAccTest {
   void should_ApplyClassificationProperties_When_PropertiesAreDefined() throws Exception {
     String propertiesFileName = createNewConfigFile("dummyTestConfig3.properties", true, true);
     String delimiter = ";";
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(
                 DataSourceGenerator.getDataSource(),
                 true,
@@ -102,7 +101,7 @@ class TaskanaConfigAccTest {
                 true)
             .initTaskanaProperties(propertiesFileName, delimiter)
             .build();
-    assertThat(taskanaEngineConfiguration.getClassificationCategoriesByType())
+    assertThat(taskanaConfiguration.getClassificationCategoriesByType())
         .containsExactly(
             Map.entry("TASK", List.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
             Map.entry("DOCUMENT", List.of("EXTERNAL")));

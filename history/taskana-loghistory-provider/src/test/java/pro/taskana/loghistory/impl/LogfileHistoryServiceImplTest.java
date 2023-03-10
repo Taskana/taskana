@@ -38,12 +38,12 @@ class LogfileHistoryServiceImplTest {
 
   @BeforeAll
   public static void setupObjectMapper() {
-    TaskanaConfiguration taskanaEngineConfiguration = Mockito.mock(TaskanaConfiguration.class);
+    TaskanaConfiguration taskanaConfiguration = Mockito.mock(TaskanaConfiguration.class);
     taskanaEngineMock = Mockito.mock(TaskanaEngine.class);
-    Mockito.when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaEngineConfiguration);
+    Mockito.when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaConfiguration);
     Map<String, String> mockProperties = new HashMap<>();
     mockProperties.put(LogfileHistoryServiceImpl.TASKANA_HISTORY_LOGGER_NAME, "AUDIT");
-    Mockito.when(taskanaEngineConfiguration.getProperties()).thenReturn(mockProperties);
+    Mockito.when(taskanaConfiguration.getProperties()).thenReturn(mockProperties);
   }
 
   @Test

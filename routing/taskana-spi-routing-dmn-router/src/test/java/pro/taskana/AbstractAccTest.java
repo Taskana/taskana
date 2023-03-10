@@ -13,7 +13,7 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 public abstract class AbstractAccTest {
 
-  protected static TaskanaConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaEngine taskanaEngine;
 
   @BeforeAll
@@ -30,19 +30,18 @@ public abstract class AbstractAccTest {
       sampleDataGenerator.dropDb();
     }
     dataSource = DataSourceGenerator.getDataSource();
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
             .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     DbSchemaCreator dbSchemaCreator =
-        new DbSchemaCreator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new DbSchemaCreator(dataSource, taskanaConfiguration.getSchemaName());
     dbSchemaCreator.run();
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
   }
 
   protected ObjectReference createObjectReference(

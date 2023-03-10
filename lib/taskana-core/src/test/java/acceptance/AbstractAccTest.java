@@ -37,7 +37,7 @@ public abstract class AbstractAccTest {
   public static final String GROUP_2_DN =
       "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
 
-  protected static TaskanaConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaEngine taskanaEngine;
 
   protected static TaskServiceImpl taskService;
@@ -53,19 +53,18 @@ public abstract class AbstractAccTest {
     DataSource dataSource = DataSourceGenerator.getDataSource();
     String schemaName = DataSourceGenerator.getSchemaName();
 
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
             .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new SampleDataGenerator(dataSource, taskanaConfiguration.getSchemaName());
     if (dropTables) {
       sampleDataGenerator.dropDb();
     }
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     workingTimeCalculator = taskanaEngine.getWorkingTimeCalculator();
     taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
 

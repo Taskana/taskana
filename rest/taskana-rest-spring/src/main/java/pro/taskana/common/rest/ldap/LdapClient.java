@@ -43,7 +43,7 @@ public class LdapClient {
   private static final Logger LOGGER = LoggerFactory.getLogger(LdapClient.class);
   private static final String CN = "cn";
 
-  private final TaskanaConfiguration taskanaEngineConfiguration;
+  private final TaskanaConfiguration taskanaConfiguration;
   private final Environment env;
   private final LdapTemplate ldapTemplate;
   private final boolean useLowerCaseForAccessIds;
@@ -54,10 +54,10 @@ public class LdapClient {
 
   @Autowired
   public LdapClient(
-      Environment env, LdapTemplate ldapTemplate, TaskanaConfiguration taskanaEngineConfiguration) {
+      Environment env, LdapTemplate ldapTemplate, TaskanaConfiguration taskanaConfiguration) {
     this.env = env;
     this.ldapTemplate = ldapTemplate;
-    this.taskanaEngineConfiguration = taskanaEngineConfiguration;
+    this.taskanaConfiguration = taskanaConfiguration;
     this.useLowerCaseForAccessIds = TaskanaConfiguration.shouldUseLowerCaseForAccessIds();
   }
 
@@ -107,7 +107,7 @@ public class LdapClient {
         new WhitespaceWildcardsFilter(getUserFullnameAttribute(), nameOrAccessId));
     userDetailsOrFilter.or(new WhitespaceWildcardsFilter(getUserIdAttribute(), nameOrAccessId));
 
-    Set<String> userGroups = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+    Set<String> userGroups = taskanaConfiguration.getRoleMap().get(TaskanaRole.USER);
 
     final OrFilter groupMembershipOrFilter = new OrFilter();
     userGroups.forEach(
@@ -134,7 +134,7 @@ public class LdapClient {
 
   public List<User> searchUsersInUserRole() {
 
-    Set<String> userGroupsOrUser = taskanaEngineConfiguration.getRoleMap().get(TaskanaRole.USER);
+    Set<String> userGroupsOrUser = taskanaConfiguration.getRoleMap().get(TaskanaRole.USER);
 
     final OrFilter userOrGroupFilter = new OrFilter();
     userGroupsOrUser.forEach(

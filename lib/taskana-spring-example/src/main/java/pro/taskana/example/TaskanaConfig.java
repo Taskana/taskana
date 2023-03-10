@@ -51,7 +51,7 @@ public class TaskanaConfig {
   }
 
   @Bean
-  public TaskanaConfiguration taskanaEngineConfiguration(
+  public TaskanaConfiguration taskanaConfiguration(
       DataSource dataSource,
       @Qualifier("taskanaPropertiesFileName") String propertiesFileName,
       @Qualifier("taskanaPropertiesDelimiter") String delimiter) {
@@ -71,9 +71,9 @@ public class TaskanaConfig {
   }
 
   @Bean
-  public TaskanaEngine taskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine taskanaEngine(TaskanaConfiguration taskanaConfiguration)
       throws SQLException {
-    return SpringTaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    return SpringTaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
   }
 
   @Bean
