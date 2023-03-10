@@ -6,7 +6,6 @@ import static pro.taskana.common.internal.configuration.TaskanaConfigurationInit
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
@@ -47,99 +46,97 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
  */
 public class TaskanaConfiguration {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaConfiguration.class);
-
   // region general configuration
   private final DataSource dataSource;
   private final boolean securityEnabled;
   private final boolean useManagedTransactions;
   private final String schemaName;
 
-  @TaskanaProperty("taskana.german.holidays.enabled")
+  private final List<String> domains;
+  // endregion
+
+  // region authentication configuration
+  private final Map<TaskanaRole, Set<String>> roleMap;
+  // endregion
+
+  // region classification configuration
+  private final List<String> classificationTypes;
+
+  private final Map<String, List<String>> classificationCategoriesByType;
+
+  private final boolean allowTimestampServiceLevelMismatch;
+  // endregion
+
+  // region holiday configuration
+  private final List<CustomHoliday> customHolidays;
+
   private final boolean germanPublicHolidaysEnabled;
-  // endregion
-  @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
+
   private final boolean corpusChristiEnabled;
+
+  private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
   // endregion
+
   // region history configuration
-  @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
   private final boolean deleteHistoryOnTaskDeletionEnabled;
+  // endregion
+
+  // region job configuration
+  private final int jobBatchSize;
+
+  private final int maxNumberOfJobRetries;
+
+  private final Instant cleanupJobFirstRun;
+
+  private final Duration cleanupJobRunEvery;
+
+  private final Duration cleanupJobMinimumAge;
+
+  private final boolean taskCleanupJobAllCompletedSameParentBusiness;
+
+  private final int priorityJobBatchSize;
+
+  private final Instant priorityJobFirstRun;
+
+  private final Duration priorityJobRunEvery;
+
+  private final boolean priorityJobActive;
+
+  private final Duration userRefreshJobRunEvery;
+
+  private final Instant userRefreshJobFirstRun;
+
+  private final boolean jobSchedulerEnabled;
+
+  private final long jobSchedulerInitialStartDelay;
+
+  private final long jobSchedulerPeriod;
+
+  private final TimeUnit jobSchedulerPeriodTimeUnit;
+
+  private final boolean jobSchedulerEnableTaskCleanupJob;
+
+  private final boolean jobSchedulerEnableTaskUpdatePriorityJob;
+
+  private final boolean jobSchedulerEnableWorkbasketCleanupJob;
+
+  private final boolean jobSchedulerEnableUserInfoRefreshJob;
+
+  private final boolean jobSchedulerEnableHistorieCleanupJob;
+
+  private final List<String> jobSchedulerCustomJobs;
+  // endregion
+
+  // region user configuration
+  private final boolean addAdditionalUserInfo;
+
+  // TODO: make Set
+  private final List<WorkbasketPermission> minimalPermissionsToAssignDomains;
+  // endregion
+
   // region custom configuration
   private final Map<String, String> properties;
-  private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
-  private final boolean jobSchedulerEnabled;
-  private final long jobSchedulerInitialStartDelay;
-  private final long jobSchedulerPeriod;
-  private final TimeUnit jobSchedulerPeriodTimeUnit;
-  private final boolean jobSchedulerEnableTaskCleanupJob;
-  private final boolean jobSchedulerEnableTaskUpdatePriorityJob;
-  private final boolean jobSchedulerEnableWorkbasketCleanupJob;
-  private final boolean jobSchedulerEnableUserInfoRefreshJob;
-  private final boolean jobSchedulerEnableHistorieCleanupJob;
-  private final List<String> jobSchedulerCustomJobs;
-
-  @TaskanaProperty("taskana.domains")
-  private List<String> domains = new ArrayList<>();
   // endregion
-  // region authentication configuration
-  private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
-  // region classification configuration
-  @TaskanaProperty("taskana.classification.types")
-  private List<String> classificationTypes = new ArrayList<>();
-  // TODO: make this a Set
-  private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
-  // endregion
-  @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
-  private boolean allowTimestampServiceLevelMismatch = false;
-  // endregion
-  // region holiday configuration
-  @TaskanaProperty("taskana.custom.holidays")
-  private List<CustomHoliday> customHolidays = new ArrayList<>();
-  // region job configuration
-  // TODO validate this is positive
-  @TaskanaProperty("taskana.jobs.batchSize")
-  private int jobBatchSize = 100;
-  // TODO validate this is positive
-  @TaskanaProperty("taskana.jobs.maxRetries")
-  private int maxNumberOfJobRetries = 3;
-
-  @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
-  private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
-  // TODO: validate this is positive
-  @TaskanaProperty("taskana.jobs.cleanup.runEvery")
-  private Duration cleanupJobRunEvery = Duration.ofDays(1);
-  // endregion
-  // TODO: validate this is positive
-  @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
-  private Duration cleanupJobMinimumAge = Duration.ofDays(14);
-
-  @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
-  private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
-  // TODO: validate this is positive
-  @TaskanaProperty("taskana.jobs.priority.batchSize")
-  private int priorityJobBatchSize = 100;
-
-  @TaskanaProperty("taskana.jobs.priority.firstRunAt")
-  private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
-  // TODO: validate this is positive
-  @TaskanaProperty("taskana.jobs.priority.runEvery")
-  private Duration priorityJobRunEvery = Duration.ofDays(1);
-
-  @TaskanaProperty("taskana.jobs.priority.active")
-  private boolean priorityJobActive = false;
-  // TODO: validate this is positive
-  @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
-  private Duration userRefreshJobRunEvery = Duration.ofDays(1);
-  // endregion
-  @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
-  private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
-  // region user configuration
-  @TaskanaProperty("taskana.addAdditionalUserInfo")
-  private boolean addAdditionalUserInfo = false;
-  // endregion
-  // TODO: make Set
-  @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
-  private List<WorkbasketPermission> minimalPermissionsToAssignDomains = new ArrayList<>();
 
   protected TaskanaConfiguration(Builder builder) {
     this.dataSource = builder.dataSource;
@@ -195,27 +192,6 @@ public class TaskanaConfiguration {
     this.jobSchedulerEnableUserInfoRefreshJob = builder.jobSchedulerEnableUserInfoRefreshJob;
     this.jobSchedulerEnableHistorieCleanupJob = builder.jobSchedulerEnableHistorieCleanupJob;
     this.jobSchedulerCustomJobs = Collections.unmodifiableList(builder.jobSchedulerCustomJobs);
-
-    if (LOGGER.isDebugEnabled()) {
-      // TODO remove the reflection magic when introducing lombok toString magic :-)
-      StringBuilder result = new StringBuilder();
-      String newLine = System.getProperty("line.separator");
-      Field[] fields = this.getClass().getDeclaredFields();
-      result.append("TaskanaConfiguration:").append(newLine);
-      // print field names paired with their values
-      for (Field field : fields) {
-        try {
-          result.append(field.getName());
-          result.append(": ");
-          // requires access to private field:
-          result.append(field.get(this));
-        } catch (IllegalAccessException ex) {
-          // ignore this error
-        }
-        result.append(newLine);
-      }
-      LOGGER.debug(result.toString());
-    }
   }
 
   public boolean isSecurityEnabled() {
