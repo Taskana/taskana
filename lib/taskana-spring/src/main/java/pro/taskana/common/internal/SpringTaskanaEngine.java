@@ -24,7 +24,7 @@ public interface SpringTaskanaEngine extends TaskanaEngine {
    * Builds an {@linkplain SpringTaskanaEngine} based on {@linkplain TaskanaConfiguration} and
    * SqlConnectionMode.
    *
-   * @param configuration complete taskanaEngineConfig to build the engine
+   * @param configuration complete taskanaConfig to build the engine
    * @param connectionManagementMode connectionMode for the SqlSession
    * @return a {@linkplain SpringTaskanaEngineImpl}
    * @throws SQLException when the db schema could not be initialized

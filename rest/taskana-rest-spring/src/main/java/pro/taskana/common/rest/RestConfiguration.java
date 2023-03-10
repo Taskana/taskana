@@ -73,14 +73,14 @@ public class RestConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TaskanaEngine.class)
-  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaConfiguration)
       throws SQLException {
-    return SpringTaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    return SpringTaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
   }
 
   @Bean
   @ConditionalOnMissingBean(TaskanaConfiguration.class)
-  public TaskanaConfiguration taskanaEngineConfiguration(
+  public TaskanaConfiguration taskanaConfiguration(
       DataSource dataSource,
       @Qualifier("taskanaPropertiesFileName") String propertiesFileName,
       @Qualifier("taskanaPropertiesDelimiter") String delimiter) {

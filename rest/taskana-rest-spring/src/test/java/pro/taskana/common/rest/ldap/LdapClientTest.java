@@ -42,7 +42,7 @@ class LdapClientTest {
 
   @Mock LdapTemplate ldapTemplate;
 
-  @Mock TaskanaConfiguration taskanaEngineConfiguration;
+  @Mock TaskanaConfiguration taskanaConfiguration;
 
   @Spy @InjectMocks LdapClient cut;
 
@@ -98,7 +98,7 @@ class LdapClientTest {
     List<AccessIdRepresentationModel> accessIds =
         new ArrayList<>(List.of(model1, model2, model3, model4));
 
-    LdapClient ldapClient = new LdapClient(environment, ldapTemplate, taskanaEngineConfiguration);
+    LdapClient ldapClient = new LdapClient(environment, ldapTemplate, taskanaConfiguration);
     ldapClient.sortListOfAccessIdResources(accessIds);
     assertThat(accessIds)
         .extracting(AccessIdRepresentationModel::getAccessId)
@@ -117,7 +117,7 @@ class LdapClientTest {
     Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
     roleMap.put(TaskanaRole.USER, groupsOfUserRole);
 
-    when(taskanaEngineConfiguration.getRoleMap()).thenReturn(roleMap);
+    when(taskanaConfiguration.getRoleMap()).thenReturn(roleMap);
 
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))

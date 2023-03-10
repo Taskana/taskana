@@ -101,7 +101,7 @@ public interface TaskanaEngine {
    * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaConfiguration} and
    * SqlConnectionMode.
    *
-   * @param configuration complete taskanaEngineConfig to build the engine
+   * @param configuration complete taskanaConfig to build the engine
    * @param connectionManagementMode connectionMode for the SqlSession
    * @return a {@linkplain TaskanaEngineImpl}
    * @throws SQLException when the db schema could not be initialized

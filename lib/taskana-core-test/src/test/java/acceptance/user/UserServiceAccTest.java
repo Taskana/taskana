@@ -32,7 +32,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.MismatchedRoleException;
 import pro.taskana.common.internal.util.Triplet;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
@@ -1011,16 +1011,14 @@ class UserServiceAccTest {
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
-    class DifferentMinimalPermissionsToAssignDomains implements TaskanaEngineConfigurationModifier {
+    class DifferentMinimalPermissionsToAssignDomains implements TaskanaConfigurationModifier {
 
       @TaskanaInject UserService userService;
       @TaskanaInject WorkbasketService workbasketService;
 
       @Override
-      public TaskanaConfiguration.Builder modify(
-          TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-        return taskanaEngineConfigurationBuilder.minimalPermissionsToAssignDomains(
-            List.of(WorkbasketPermission.APPEND));
+      public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+        return builder.minimalPermissionsToAssignDomains(List.of(WorkbasketPermission.APPEND));
       }
 
       @WithAccessId(user = "user-1-1")
@@ -1090,16 +1088,14 @@ class UserServiceAccTest {
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class PropertyMinimalPermissionsToAssignDomainsIsNotSet
-        implements TaskanaEngineConfigurationModifier {
+        implements TaskanaConfigurationModifier {
 
       @TaskanaInject UserService userService;
       @TaskanaInject WorkbasketService workbasketService;
 
       @Override
-      public TaskanaConfiguration.Builder modify(
-          TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-        return taskanaEngineConfigurationBuilder.minimalPermissionsToAssignDomains(
-            new ArrayList<>());
+      public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+        return builder.minimalPermissionsToAssignDomains(new ArrayList<>());
       }
 
       @WithAccessId(user = "user-1-1")

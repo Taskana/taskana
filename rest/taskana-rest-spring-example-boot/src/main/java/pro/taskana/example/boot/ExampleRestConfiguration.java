@@ -24,17 +24,17 @@ public class ExampleRestConfiguration {
   }
 
   @Bean
-  @DependsOn("taskanaEngineConfiguration") // generate sample data after schema was inserted
+  @DependsOn("taskanaConfiguration") // generate sample data after schema was inserted
   public SampleDataGenerator generateSampleData(
-      TaskanaConfiguration taskanaEngineConfiguration,
+      TaskanaConfiguration taskanaConfiguration,
       DataSource dataSource,
       @Value("${generateSampleData:true}") boolean generateSampleData)
       throws SQLException {
     DbSchemaCreator dbSchemaCreator =
-        new DbSchemaCreator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new DbSchemaCreator(dataSource, taskanaConfiguration.getSchemaName());
     dbSchemaCreator.run();
     SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new SampleDataGenerator(dataSource, taskanaConfiguration.getSchemaName());
     if (generateSampleData) {
       sampleDataGenerator.generateSampleData();
     }
@@ -43,9 +43,9 @@ public class ExampleRestConfiguration {
 
   @Bean
   @DependsOn("generateSampleData")
-  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaEngineConfiguration)
+  public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaConfiguration)
       throws SQLException {
-    return TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    return TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
   }
 
   // only required to let the adapter example connect to the same database

@@ -619,48 +619,48 @@ public class TaskanaConfiguration {
     private Map<String, String> properties = Collections.emptyMap();
     // endregion
 
-    public Builder(TaskanaConfiguration tec) {
-      this.dataSource = tec.getDatasource();
-      this.schemaName = tec.getSchemaName();
-      this.properties = tec.getProperties();
-      this.roleMap = tec.getRoleMap();
-      this.securityEnabled = tec.isSecurityEnabled();
-      this.useManagedTransactions = tec.isUseManagedTransactions();
-      this.domains = tec.getDomains();
-      this.classificationTypes = tec.getClassificationTypes();
-      this.classificationCategoriesByType = tec.getClassificationCategoriesByType();
-      this.customHolidays = tec.getCustomHolidays();
-      this.deleteHistoryOnTaskDeletionEnabled = tec.isDeleteHistoryOnTaskDeletionEnabled();
-      this.germanPublicHolidaysEnabled = tec.isGermanPublicHolidaysEnabled();
-      this.corpusChristiEnabled = tec.isCorpusChristiEnabled();
-      this.workingTimeSchedule = tec.getWorkingTimeSchedule();
-      this.jobBatchSize = tec.getJobBatchSize();
-      this.maxNumberOfJobRetries = tec.getMaxNumberOfJobRetries();
-      this.cleanupJobFirstRun = tec.getCleanupJobFirstRun();
-      this.cleanupJobRunEvery = tec.getCleanupJobRunEvery();
-      this.cleanupJobMinimumAge = tec.getCleanupJobMinimumAge();
+    public Builder(TaskanaConfiguration conf) {
+      this.dataSource = conf.getDatasource();
+      this.schemaName = conf.getSchemaName();
+      this.properties = conf.getProperties();
+      this.roleMap = conf.getRoleMap();
+      this.securityEnabled = conf.isSecurityEnabled();
+      this.useManagedTransactions = conf.isUseManagedTransactions();
+      this.domains = conf.getDomains();
+      this.classificationTypes = conf.getClassificationTypes();
+      this.classificationCategoriesByType = conf.getClassificationCategoriesByType();
+      this.customHolidays = conf.getCustomHolidays();
+      this.deleteHistoryOnTaskDeletionEnabled = conf.isDeleteHistoryOnTaskDeletionEnabled();
+      this.germanPublicHolidaysEnabled = conf.isGermanPublicHolidaysEnabled();
+      this.corpusChristiEnabled = conf.isCorpusChristiEnabled();
+      this.workingTimeSchedule = conf.getWorkingTimeSchedule();
+      this.jobBatchSize = conf.getJobBatchSize();
+      this.maxNumberOfJobRetries = conf.getMaxNumberOfJobRetries();
+      this.cleanupJobFirstRun = conf.getCleanupJobFirstRun();
+      this.cleanupJobRunEvery = conf.getCleanupJobRunEvery();
+      this.cleanupJobMinimumAge = conf.getCleanupJobMinimumAge();
       this.taskCleanupJobAllCompletedSameParentBusiness =
-          tec.isTaskCleanupJobAllCompletedSameParentBusiness();
-      this.allowTimestampServiceLevelMismatch = tec.isAllowTimestampServiceLevelMismatch();
-      this.addAdditionalUserInfo = tec.isAddAdditionalUserInfo();
-      this.priorityJobBatchSize = tec.getPriorityJobBatchSize();
-      this.priorityJobFirstRun = tec.getPriorityJobFirstRun();
-      this.priorityJobRunEvery = tec.getPriorityJobRunEvery();
-      this.priorityJobActive = tec.isPriorityJobActive();
-      this.userRefreshJobRunEvery = tec.getUserRefreshJobRunEvery();
-      this.userRefreshJobFirstRun = tec.getUserRefreshJobFirstRun();
-      this.minimalPermissionsToAssignDomains = tec.getMinimalPermissionsToAssignDomains();
-      this.jobSchedulerEnabled = tec.isJobSchedulerEnabled();
-      this.jobSchedulerInitialStartDelay = tec.getJobSchedulerInitialStartDelay();
-      this.jobSchedulerPeriod = tec.getJobSchedulerPeriod();
-      this.jobSchedulerPeriodTimeUnit = tec.getJobSchedulerPeriodTimeUnit();
-      this.jobSchedulerEnableTaskCleanupJob = tec.isJobSchedulerEnableTaskCleanupJob();
+          conf.isTaskCleanupJobAllCompletedSameParentBusiness();
+      this.allowTimestampServiceLevelMismatch = conf.isAllowTimestampServiceLevelMismatch();
+      this.addAdditionalUserInfo = conf.isAddAdditionalUserInfo();
+      this.priorityJobBatchSize = conf.getPriorityJobBatchSize();
+      this.priorityJobFirstRun = conf.getPriorityJobFirstRun();
+      this.priorityJobRunEvery = conf.getPriorityJobRunEvery();
+      this.priorityJobActive = conf.isPriorityJobActive();
+      this.userRefreshJobRunEvery = conf.getUserRefreshJobRunEvery();
+      this.userRefreshJobFirstRun = conf.getUserRefreshJobFirstRun();
+      this.minimalPermissionsToAssignDomains = conf.getMinimalPermissionsToAssignDomains();
+      this.jobSchedulerEnabled = conf.isJobSchedulerEnabled();
+      this.jobSchedulerInitialStartDelay = conf.getJobSchedulerInitialStartDelay();
+      this.jobSchedulerPeriod = conf.getJobSchedulerPeriod();
+      this.jobSchedulerPeriodTimeUnit = conf.getJobSchedulerPeriodTimeUnit();
+      this.jobSchedulerEnableTaskCleanupJob = conf.isJobSchedulerEnableTaskCleanupJob();
       this.jobSchedulerEnableTaskUpdatePriorityJob =
-          tec.isJobSchedulerEnableTaskUpdatePriorityJob();
-      this.jobSchedulerEnableWorkbasketCleanupJob = tec.isJobSchedulerEnableWorkbasketCleanupJob();
-      this.jobSchedulerEnableUserInfoRefreshJob = tec.isJobSchedulerEnableUserInfoRefreshJob();
-      this.jobSchedulerEnableHistorieCleanupJob = tec.isJobSchedulerEnableHistorieCleanupJob();
-      this.jobSchedulerCustomJobs = tec.getJobSchedulerCustomJobs();
+          conf.isJobSchedulerEnableTaskUpdatePriorityJob();
+      this.jobSchedulerEnableWorkbasketCleanupJob = conf.isJobSchedulerEnableWorkbasketCleanupJob();
+      this.jobSchedulerEnableUserInfoRefreshJob = conf.isJobSchedulerEnableUserInfoRefreshJob();
+      this.jobSchedulerEnableHistorieCleanupJob = conf.isJobSchedulerEnableHistorieCleanupJob();
+      this.jobSchedulerCustomJobs = conf.getJobSchedulerCustomJobs();
     }
 
     public Builder(DataSource dataSource, boolean useManagedTransactions, String schemaName) {

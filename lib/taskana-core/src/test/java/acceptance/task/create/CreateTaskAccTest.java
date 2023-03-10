@@ -148,11 +148,11 @@ class CreateTaskAccTest extends AbstractAccTest {
   @WithAccessId(user = "user-1-1")
   @Test
   void should_CreateTaskWithAdditionalUserInfo() throws Exception {
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .addAdditionalUserInfo(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     TaskService taskService = taskanaEngine.getTaskService();
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
@@ -197,11 +197,11 @@ class CreateTaskAccTest extends AbstractAccTest {
   @Test
   void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
     // Given
-    TaskanaConfiguration taskanaEngineConfiguration =
-        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngineConfiguration)
+    TaskanaConfiguration taskanaConfiguration =
+        new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
             .allowTimestampServiceLevelMismatch(true)
             .build();
-    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaEngineConfiguration);
+    TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
     Task newTask = taskanaEngine.getTaskService().newTask("USER-1-1", "DOMAIN_A");
     newTask.setClassificationKey("T6310");
     ObjectReference objectReference =

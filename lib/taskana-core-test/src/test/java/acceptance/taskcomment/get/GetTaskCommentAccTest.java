@@ -22,7 +22,7 @@ import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.testapi.DefaultTestEntities;
-import pro.taskana.testapi.TaskanaEngineConfigurationModifier;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
@@ -188,16 +188,15 @@ class GetTaskCommentAccTest {
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
-  class WithAdditionalUserInfoEnabled implements TaskanaEngineConfigurationModifier {
+  class WithAdditionalUserInfoEnabled implements TaskanaConfigurationModifier {
 
     @TaskanaInject TaskService taskService;
 
     @TaskanaInject UserService userService;
 
     @Override
-    public TaskanaConfiguration.Builder modify(
-        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(true);
+    public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+      return builder.addAdditionalUserInfo(true);
     }
 
     @WithAccessId(user = "user-1-1")
@@ -244,14 +243,13 @@ class GetTaskCommentAccTest {
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
-  class WithAdditionalUserInfoDisabled implements TaskanaEngineConfigurationModifier {
+  class WithAdditionalUserInfoDisabled implements TaskanaConfigurationModifier {
 
     @TaskanaInject TaskService taskService;
 
     @Override
-    public TaskanaConfiguration.Builder modify(
-        TaskanaConfiguration.Builder taskanaEngineConfigurationBuilder) {
-      return taskanaEngineConfigurationBuilder.addAdditionalUserInfo(false);
+    public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+      return builder.addAdditionalUserInfo(false);
     }
 
     @WithAccessId(user = "user-1-1")
