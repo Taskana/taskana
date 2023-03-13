@@ -1,7 +1,6 @@
 package pro.taskana.spi.priority.api;
 
 import java.util.OptionalInt;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;

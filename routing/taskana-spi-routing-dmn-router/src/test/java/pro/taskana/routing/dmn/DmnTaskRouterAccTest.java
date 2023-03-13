@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.AbstractAccTest;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.test.security.JaasExtension;

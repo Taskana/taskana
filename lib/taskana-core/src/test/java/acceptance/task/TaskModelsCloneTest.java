@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.internal.models.AttachmentImpl;

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
 import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;

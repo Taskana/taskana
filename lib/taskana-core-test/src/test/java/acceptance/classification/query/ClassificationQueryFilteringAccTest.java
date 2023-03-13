@@ -35,7 +35,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;

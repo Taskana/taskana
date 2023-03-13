@@ -7,6 +7,7 @@ import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
@@ -225,7 +225,7 @@ class TaskHistoryEventControllerIntTest {
     String id = "THI:000000000000000000000000000000000000";
     String expectedUrl =
         UriComponentsBuilder.fromPath(HistoryRestEndpoints.URL_HISTORY_EVENTS_ID)
-            .buildAndExpand(URLEncoder.encode(id, "UTF-8"))
+            .buildAndExpand(URLEncoder.encode(id, StandardCharsets.UTF_8))
             .toUriString();
 
     ResponseEntity<TaskHistoryEventPagedRepresentationModel> response =

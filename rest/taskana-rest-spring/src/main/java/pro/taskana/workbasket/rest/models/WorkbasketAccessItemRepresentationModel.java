@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.rest.models;
 
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /** EntityModel class for {@link WorkbasketAccessItem}. */

@@ -10,12 +10,11 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.internal.stubbing.answers.CallsRealMethods;
 import outside.of.pro.taskana.OutsideOfProTaskanaPackageLoggingTestClass;
+import pro.taskana.AtProTaskanaRootPackageLoggingTestClass;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jtest.LoggingEvent;
 import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
-
-import pro.taskana.AtProTaskanaRootPackageLoggingTestClass;
 
 @NoLogging
 class LoggingAspectTest {

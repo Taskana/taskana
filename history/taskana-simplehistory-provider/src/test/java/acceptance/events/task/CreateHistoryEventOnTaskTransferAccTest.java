@@ -15,7 +15,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.common.internal.util.Quadruple;
 import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.common.test.security.JaasExtension;

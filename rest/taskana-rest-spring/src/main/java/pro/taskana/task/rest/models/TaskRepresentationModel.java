@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-
 import pro.taskana.task.api.models.Task;
 
 /** EntityModel class for {@link Task}. */

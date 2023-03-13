@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.testapi.extensions.TaskanaDependencyInjectionExtension;
 import pro.taskana.testapi.extensions.TaskanaInitializationExtension;
 import pro.taskana.testapi.extensions.TestContainerExtension;

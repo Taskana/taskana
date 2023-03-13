@@ -6,7 +6,6 @@ import acceptance.AbstractAccTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;

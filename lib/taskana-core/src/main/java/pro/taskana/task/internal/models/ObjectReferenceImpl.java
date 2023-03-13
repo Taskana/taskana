@@ -1,7 +1,6 @@
 package pro.taskana.task.internal.models;
 
 import java.util.Objects;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.models.ObjectReference;
 

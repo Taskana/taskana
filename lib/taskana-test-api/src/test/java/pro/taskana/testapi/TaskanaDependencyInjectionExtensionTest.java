@@ -3,7 +3,6 @@ package pro.taskana.testapi;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.internal.ClassificationServiceImpl;

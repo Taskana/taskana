@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
@@ -99,9 +98,13 @@ public class TaskController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> createTask(
       @RequestBody TaskRepresentationModel taskRepresentationModel)
-      throws WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException {
+      throws WorkbasketNotFoundException,
+          ClassificationNotFoundException,
+          TaskAlreadyExistException,
+          InvalidArgumentException,
+          AttachmentPersistenceException,
+          ObjectReferencePersistenceException,
+          NotAuthorizedOnWorkbasketException {
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
@@ -196,7 +199,9 @@ public class TaskController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> claimTask(
       @PathVariable String taskId, @RequestBody(required = false) String userName)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     // TODO verify user
     Task updatedTask = taskService.claim(taskId);
@@ -220,7 +225,9 @@ public class TaskController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceClaimTask(
       @PathVariable String taskId, @RequestBody(required = false) String userName)
-      throws TaskNotFoundException, InvalidTaskStateException, InvalidOwnerException,
+      throws TaskNotFoundException,
+          InvalidTaskStateException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     // TODO verify user
     Task updatedTask = taskService.forceClaim(taskId);
@@ -278,7 +285,9 @@ public class TaskController {
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidTaskStateException, InvalidOwnerException,
+      throws TaskNotFoundException,
+          InvalidTaskStateException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     Task updatedTask = taskService.cancelClaim(taskId);
 
@@ -300,7 +309,9 @@ public class TaskController {
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidTaskStateException, InvalidOwnerException,
+      throws TaskNotFoundException,
+          InvalidTaskStateException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     Task updatedTask = taskService.forceCancelClaim(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
@@ -321,7 +332,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> requestReview(@PathVariable String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     Task task = taskService.requestReview(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
@@ -342,7 +355,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceRequestReview(@PathVariable String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     Task task = taskService.forceRequestReview(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
@@ -363,7 +378,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_CHANGES)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> requestChanges(@PathVariable String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     Task task = taskService.requestChanges(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
@@ -384,7 +401,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_CHANGES_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceRequestChanges(@PathVariable String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
     Task task = taskService.forceRequestChanges(taskId);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
@@ -405,7 +424,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> completeTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, InvalidTaskStateException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          InvalidTaskStateException,
           NotAuthorizedOnWorkbasketException {
 
     Task updatedTask = taskService.completeTask(taskId);
@@ -429,7 +450,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceCompleteTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, InvalidTaskStateException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          InvalidTaskStateException,
           NotAuthorizedOnWorkbasketException {
 
     Task updatedTask = taskService.forceCompleteTask(taskId);
@@ -473,7 +496,9 @@ public class TaskController {
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_TERMINATE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> terminateTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidTaskStateException, NotAuthorizedException,
+      throws TaskNotFoundException,
+          InvalidTaskStateException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
 
     Task terminatedTask = taskService.terminateTask(taskId);
@@ -501,7 +526,9 @@ public class TaskController {
       @PathVariable String taskId,
       @PathVariable String workbasketId,
       @RequestBody(required = false) Boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     Task updatedTask =
         taskService.transfer(taskId, workbasketId, setTransferFlag == null || setTransferFlag);
@@ -534,9 +561,14 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> updateTask(
       @PathVariable(value = "taskId") String taskId,
       @RequestBody TaskRepresentationModel taskRepresentationModel)
-      throws TaskNotFoundException, ClassificationNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedOnWorkbasketException, AttachmentPersistenceException,
-          InvalidTaskStateException, ObjectReferencePersistenceException {
+      throws TaskNotFoundException,
+          ClassificationNotFoundException,
+          InvalidArgumentException,
+          ConcurrencyException,
+          NotAuthorizedOnWorkbasketException,
+          AttachmentPersistenceException,
+          InvalidTaskStateException,
+          ObjectReferencePersistenceException {
     if (!taskId.equals(taskRepresentationModel.getTaskId())) {
       throw new InvalidArgumentException(
           String.format(
@@ -590,8 +622,11 @@ public class TaskController {
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidTaskStateException, NotAuthorizedException,
-          NotAuthorizedOnWorkbasketException, InvalidCallbackStateException {
+      throws TaskNotFoundException,
+          InvalidTaskStateException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidCallbackStateException {
     taskService.deleteTask(taskId);
 
     return ResponseEntity.noContent().build();
@@ -613,8 +648,11 @@ public class TaskController {
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceDeleteTask(@PathVariable String taskId)
-      throws TaskNotFoundException, InvalidTaskStateException, NotAuthorizedException,
-          NotAuthorizedOnWorkbasketException, InvalidCallbackStateException {
+      throws TaskNotFoundException,
+          InvalidTaskStateException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidCallbackStateException {
     taskService.forceDeleteTask(taskId);
 
     return ResponseEntity.noContent().build();

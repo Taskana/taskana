@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
-
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 /** This class is the mybatis mapping of ObjectReference. */

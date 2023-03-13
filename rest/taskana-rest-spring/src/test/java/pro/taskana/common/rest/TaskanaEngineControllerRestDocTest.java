@@ -6,7 +6,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.rest.test.BaseRestDocTest;
 

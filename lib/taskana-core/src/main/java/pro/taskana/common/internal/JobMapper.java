@@ -12,7 +12,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 

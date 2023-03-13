@@ -16,7 +16,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import pro.taskana.classification.rest.models.ClassificationSummaryPagedRepresentationModel;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.rest.TaskanaRestExceptionHandler.MalformedQueryParameter;

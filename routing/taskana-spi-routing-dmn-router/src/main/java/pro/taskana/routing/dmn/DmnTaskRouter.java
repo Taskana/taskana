@@ -18,7 +18,6 @@ import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.util.FileLoaderUtil;

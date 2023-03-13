@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.rest.test.TaskanaSpringBootTest;

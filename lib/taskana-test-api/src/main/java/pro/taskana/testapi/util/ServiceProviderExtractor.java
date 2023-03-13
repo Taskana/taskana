@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.support.ReflectionSupport;
-
 import pro.taskana.spi.history.api.TaskanaHistory;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.spi.routing.api.TaskRoutingProvider;

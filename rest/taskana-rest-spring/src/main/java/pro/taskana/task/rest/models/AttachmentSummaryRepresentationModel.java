@@ -2,7 +2,6 @@ package pro.taskana.task.rest.models;
 
 import java.time.Instant;
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.task.api.models.AttachmentSummary;
 

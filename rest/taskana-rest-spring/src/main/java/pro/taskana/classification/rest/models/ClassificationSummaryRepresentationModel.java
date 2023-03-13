@@ -2,7 +2,6 @@ package pro.taskana.classification.rest.models;
 
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.classification.api.models.ClassificationSummary;
 
 /** EntityModel class for {@link ClassificationSummary}. */

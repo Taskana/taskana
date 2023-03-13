@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
@@ -87,7 +86,8 @@ public class WorkbasketRepresentationModelAssembler
 
   private WorkbasketRepresentationModel addLinks(
       WorkbasketRepresentationModel resource, Workbasket wb)
-      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           NotAuthorizedException {
     resource.add(
         linkTo(methodOn(WorkbasketController.class).getWorkbasket(wb.getId())).withSelfRel());

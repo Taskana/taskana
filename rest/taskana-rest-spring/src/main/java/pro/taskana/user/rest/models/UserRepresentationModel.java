@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.user.api.models.User;
 
 /** The entityModel class for {@linkplain User}. */

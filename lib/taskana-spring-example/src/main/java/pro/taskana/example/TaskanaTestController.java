@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -51,7 +50,9 @@ public class TaskanaTestController {
   @GetMapping(path = "/transaction")
   public @ResponseBody String transaction(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketAlreadyExistException,
+          DomainNotFoundException,
           NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
@@ -67,7 +68,9 @@ public class TaskanaTestController {
   @GetMapping(path = "/transaction-many")
   public @ResponseBody String transactionMany(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketAlreadyExistException,
+          DomainNotFoundException,
           NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));
@@ -84,7 +87,9 @@ public class TaskanaTestController {
   @GetMapping(path = "/customdb")
   public @ResponseBody String transactionCustomdb(
       @RequestParam(value = "rollback", defaultValue = "false") String rollback)
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketAlreadyExistException,
+          DomainNotFoundException,
           NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key1", "workbasket1"));
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key2", "workbasket2"));

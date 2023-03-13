@@ -3,7 +3,6 @@ package pro.taskana.classification.internal.models;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.api.models.ClassificationSummary;

@@ -2,7 +2,6 @@ package pro.taskana.common.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

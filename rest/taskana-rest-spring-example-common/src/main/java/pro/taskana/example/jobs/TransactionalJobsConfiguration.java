@@ -2,7 +2,6 @@ package pro.taskana.example.jobs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import pro.taskana.common.internal.transaction.SpringTransactionProvider;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 

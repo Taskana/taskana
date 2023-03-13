@@ -2,7 +2,6 @@ package pro.taskana.example;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import pro.taskana.task.api.TaskService;
 
 /** example Taskana EJB. */

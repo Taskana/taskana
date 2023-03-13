@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.Optional;
-
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.task.api.TaskCommentQuery;
 

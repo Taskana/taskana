@@ -4,7 +4,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
-
 import pro.taskana.task.internal.models.TaskCommentImpl;
 
 /** This class provides a mapper for all task comment queries. */

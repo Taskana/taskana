@@ -10,7 +10,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;

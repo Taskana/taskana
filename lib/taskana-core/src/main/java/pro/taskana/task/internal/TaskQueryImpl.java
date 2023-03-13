@@ -7,7 +7,6 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaRole;

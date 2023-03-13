@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
-
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 
 /** This class is the mybatis mapping of workbasket access items. */

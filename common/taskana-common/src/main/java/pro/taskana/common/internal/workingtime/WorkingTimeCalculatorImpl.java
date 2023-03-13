@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
-
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.QueryColumnName;

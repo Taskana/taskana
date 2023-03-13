@@ -14,7 +14,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.util.Pair;

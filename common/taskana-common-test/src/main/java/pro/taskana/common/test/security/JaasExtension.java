@@ -36,7 +36,6 @@ import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
 import org.junit.platform.commons.JUnitException;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.opentest4j.TestAbortedException;
-
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.GroupPrincipal;
 import pro.taskana.common.api.security.UserPrincipal;

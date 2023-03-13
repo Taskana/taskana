@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
-
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.Pair;

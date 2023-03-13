@@ -3,7 +3,6 @@ package pro.taskana.task.rest.assembler;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
-
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;

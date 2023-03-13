@@ -16,7 +16,6 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotLike;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
 import pro.taskana.task.api.TaskQueryColumnName;
 
 public class TaskQuerySqlProvider {

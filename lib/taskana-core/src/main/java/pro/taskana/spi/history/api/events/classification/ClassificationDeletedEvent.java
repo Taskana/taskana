@@ -1,7 +1,6 @@
 package pro.taskana.spi.history.api.events.classification;
 
 import java.time.Instant;
-
 import pro.taskana.classification.api.models.Classification;
 
 public class ClassificationDeletedEvent extends ClassificationHistoryEvent {

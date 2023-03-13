@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.BulkOperationResults;
@@ -126,9 +125,13 @@ public interface TaskService {
    *     without using {@linkplain Task#addSecondaryObjectReference(ObjectReference)}
    */
   Task createTask(Task taskToCreate)
-      throws WorkbasketNotFoundException, ClassificationNotFoundException,
-          TaskAlreadyExistException, InvalidArgumentException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException;
+      throws WorkbasketNotFoundException,
+          ClassificationNotFoundException,
+          TaskAlreadyExistException,
+          InvalidArgumentException,
+          AttachmentPersistenceException,
+          ObjectReferencePersistenceException,
+          NotAuthorizedOnWorkbasketException;
 
   // endregion
 
@@ -162,7 +165,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task claim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -179,7 +184,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -208,7 +215,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task cancelClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -225,7 +234,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCancelClaim(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -241,7 +252,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task requestReview(String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -258,7 +271,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceRequestReview(String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -276,7 +291,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task requestChanges(String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -295,7 +312,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceRequestChanges(String taskId)
-      throws InvalidTaskStateException, TaskNotFoundException, InvalidOwnerException,
+      throws InvalidTaskStateException,
+          TaskNotFoundException,
+          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -317,7 +336,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task completeTask(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -339,7 +360,9 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCompleteTask(String taskId)
-      throws TaskNotFoundException, InvalidOwnerException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -405,7 +428,9 @@ public interface TaskService {
    *     permission
    */
   Task terminateTask(String taskId)
-      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -416,7 +441,9 @@ public interface TaskService {
    */
   @SuppressWarnings("checkstyle:JavadocMethod")
   default Task transfer(String taskId, String destinationWorkbasketId)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return transfer(taskId, destinationWorkbasketId, true);
   }
@@ -443,7 +470,9 @@ public interface TaskService {
    *     TaskState#END_STATES}
    */
   Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -454,7 +483,9 @@ public interface TaskService {
    */
   @SuppressWarnings("checkstyle:JavadocMethod")
   default Task transfer(String taskId, String workbasketKey, String domain)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     return transfer(taskId, workbasketKey, domain, true);
   }
@@ -483,7 +514,9 @@ public interface TaskService {
    *     TaskState#END_STATES}
    */
   Task transfer(String taskId, String workbasketKey, String domain, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -495,7 +528,8 @@ public interface TaskService {
   @SuppressWarnings("checkstyle:JavadocMethod")
   default BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException {
     return transferTasks(destinationWorkbasketId, taskIds, true);
   }
@@ -522,7 +556,8 @@ public interface TaskService {
    */
   BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketId, List<String> taskIds, boolean setTransferFlag)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -534,7 +569,8 @@ public interface TaskService {
   @SuppressWarnings("checkstyle:JavadocMethod")
   default BulkOperationResults<String, TaskanaException> transferTasks(
       String destinationWorkbasketKey, String destinationWorkbasketDomain, List<String> taskIds)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException {
     return transferTasks(destinationWorkbasketKey, destinationWorkbasketDomain, taskIds, true);
   }
@@ -565,7 +601,8 @@ public interface TaskService {
       String destinationWorkbasketDomain,
       List<String> taskIds,
       boolean setTransferFlag)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -597,9 +634,13 @@ public interface TaskService {
    *     isn't {@linkplain TaskState#READY}
    */
   Task updateTask(Task task)
-      throws InvalidArgumentException, TaskNotFoundException, ConcurrencyException,
-          ClassificationNotFoundException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, NotAuthorizedOnWorkbasketException,
+      throws InvalidArgumentException,
+          TaskNotFoundException,
+          ConcurrencyException,
+          ClassificationNotFoundException,
+          AttachmentPersistenceException,
+          ObjectReferencePersistenceException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
@@ -716,8 +757,11 @@ public interface TaskService {
    *     CallbackState#CALLBACK_PROCESSING_REQUIRED}
    */
   void deleteTask(String taskId)
-      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
-          InvalidTaskStateException, InvalidCallbackStateException;
+      throws TaskNotFoundException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException,
+          InvalidCallbackStateException;
 
   /**
    * Deletes the {@linkplain Task} with the given {@linkplain Task#getId() id} even if it isn't
@@ -736,8 +780,11 @@ public interface TaskService {
    *     CallbackState#CALLBACK_PROCESSING_REQUIRED}
    */
   void forceDeleteTask(String taskId)
-      throws TaskNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException,
-          InvalidTaskStateException, InvalidCallbackStateException;
+      throws TaskNotFoundException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException,
+          InvalidCallbackStateException;
 
   /**
    * Deletes a List of {@linkplain Task Tasks}.
@@ -804,7 +851,9 @@ public interface TaskService {
    * @throws InvalidArgumentException if the given taskCommentId is NULL or empty
    */
   TaskComment getTaskComment(String taskCommentId)
-      throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
+      throws TaskCommentNotFoundException,
+          TaskNotFoundException,
+          InvalidArgumentException,
           NotAuthorizedOnWorkbasketException;
 
   /**
@@ -849,8 +898,11 @@ public interface TaskService {
    *     permissions
    */
   TaskComment updateTaskComment(TaskComment taskComment)
-      throws ConcurrencyException, TaskCommentNotFoundException, TaskNotFoundException,
-          InvalidArgumentException, NotAuthorizedOnTaskCommentException,
+      throws ConcurrencyException,
+          TaskCommentNotFoundException,
+          TaskNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnTaskCommentException,
           NotAuthorizedOnWorkbasketException;
 
   // endregion
@@ -875,8 +927,11 @@ public interface TaskService {
    *     TaskComment#getCreator() creator} of the {@linkplain TaskComment}.
    */
   void deleteTaskComment(String taskCommentId)
-      throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
-          NotAuthorizedOnTaskCommentException, NotAuthorizedOnWorkbasketException;
+      throws TaskCommentNotFoundException,
+          TaskNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnTaskCommentException,
+          NotAuthorizedOnWorkbasketException;
 
   // endregion
 

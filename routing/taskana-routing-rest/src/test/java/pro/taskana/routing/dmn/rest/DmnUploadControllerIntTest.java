@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 

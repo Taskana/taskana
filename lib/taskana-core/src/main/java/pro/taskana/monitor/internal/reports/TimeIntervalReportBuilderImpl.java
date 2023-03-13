@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingTimeCalculator;

@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
-
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -38,7 +37,9 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
 
   public static TaskanaJob createFromScheduledJob(
       TaskanaEngine engine, TaskanaTransactionProvider txProvider, ScheduledJob job)
-      throws ClassNotFoundException, IllegalAccessException, InstantiationException,
+      throws ClassNotFoundException,
+          IllegalAccessException,
+          InstantiationException,
           InvocationTargetException {
 
     return (TaskanaJob)

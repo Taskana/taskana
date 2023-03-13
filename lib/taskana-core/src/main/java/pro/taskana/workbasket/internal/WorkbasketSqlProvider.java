@@ -7,7 +7,6 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.OPENING_SCRIPT_TA
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import pro.taskana.common.internal.util.Pair;
 
 public class WorkbasketSqlProvider {

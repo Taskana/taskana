@@ -2,7 +2,6 @@ package pro.taskana.common.rest.models;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.WebRequest;
-
 import pro.taskana.common.api.exceptions.ErrorCode;
 
 /** This class holds error data. */

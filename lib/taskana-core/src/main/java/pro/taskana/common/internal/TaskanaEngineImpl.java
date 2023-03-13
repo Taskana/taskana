@@ -26,7 +26,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.internal.ClassificationMapper;

@@ -22,7 +22,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
 import pro.taskana.common.test.security.JaasExtensionTestExtensions.ShouldThrowJunitException;

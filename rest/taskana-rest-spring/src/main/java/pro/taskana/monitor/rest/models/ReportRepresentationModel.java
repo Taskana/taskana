@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 

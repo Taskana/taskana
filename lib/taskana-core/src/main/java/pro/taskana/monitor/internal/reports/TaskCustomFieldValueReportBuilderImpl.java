@@ -2,7 +2,6 @@ package pro.taskana.monitor.internal.reports;
 
 import java.time.Instant;
 import java.util.List;
-
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;

@@ -1,7 +1,6 @@
 package pro.taskana.monitor.api.reports;
 
 import java.util.List;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;

@@ -20,7 +20,6 @@ import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.internal.configuration.DB;
 
 /** This class generates sample data for manual testing purposes. */

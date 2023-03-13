@@ -3,7 +3,6 @@ package pro.taskana.workbasket.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
-
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketQuery;

@@ -68,8 +68,11 @@ public interface ClassificationService {
    * @throws InvalidArgumentException if the {@linkplain Classification} contains invalid properties
    */
   Classification createClassification(Classification classification)
-      throws ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException;
+      throws ClassificationAlreadyExistException,
+          DomainNotFoundException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException;
 
   // READ
 
@@ -124,8 +127,11 @@ public interface ClassificationService {
    * @throws InvalidArgumentException if the {@linkplain Classification} contains invalid properties
    */
   Classification updateClassification(Classification classification)
-      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException;
+      throws ClassificationNotFoundException,
+          ConcurrencyException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException;
 
   // DELETE
 

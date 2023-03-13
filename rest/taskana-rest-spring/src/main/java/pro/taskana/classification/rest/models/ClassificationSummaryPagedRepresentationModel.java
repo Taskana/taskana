@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Collection;
 import javax.validation.constraints.NotNull;
-
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.common.rest.models.PagedRepresentationModel;
 

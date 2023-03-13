@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.platform.commons.JUnitException;
-
 import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;

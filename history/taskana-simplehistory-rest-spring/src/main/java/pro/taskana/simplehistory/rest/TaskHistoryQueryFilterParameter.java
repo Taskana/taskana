@@ -5,7 +5,6 @@ import static java.util.Optional.ofNullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;

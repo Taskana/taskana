@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.testapi.builder.UserBuilder.newUser;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.security.WithAccessId;

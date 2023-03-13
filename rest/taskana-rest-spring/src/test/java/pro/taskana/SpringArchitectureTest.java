@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.common.rest.QueryParameter;
 
 class SpringArchitectureTest {

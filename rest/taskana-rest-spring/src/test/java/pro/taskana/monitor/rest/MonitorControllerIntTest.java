@@ -16,7 +16,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
-
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.monitor.rest.models.ReportRepresentationModel;

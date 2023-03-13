@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.time.Instant;
-
 import pro.taskana.classification.internal.models.ClassificationImpl;
 
 class ClassificationTestImpl extends ClassificationImpl {

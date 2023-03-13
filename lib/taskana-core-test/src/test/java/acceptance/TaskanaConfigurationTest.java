@@ -25,7 +25,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.TaskanaConfiguration.Builder;
 import pro.taskana.common.api.CustomHoliday;

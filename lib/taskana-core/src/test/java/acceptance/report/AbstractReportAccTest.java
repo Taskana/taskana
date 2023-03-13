@@ -2,7 +2,6 @@ package acceptance.report;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;

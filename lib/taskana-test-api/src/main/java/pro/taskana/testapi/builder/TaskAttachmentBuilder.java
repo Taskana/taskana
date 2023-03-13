@@ -2,7 +2,6 @@ package pro.taskana.testapi.builder;
 
 import java.time.Instant;
 import java.util.Map;
-
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.ObjectReference;

@@ -3,7 +3,6 @@ package acceptance.common;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;

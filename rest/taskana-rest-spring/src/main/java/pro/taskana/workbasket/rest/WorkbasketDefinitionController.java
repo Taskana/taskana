@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -127,10 +126,15 @@ public class WorkbasketDefinitionController {
   @PostMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
-      throws IOException, DomainNotFoundException, InvalidArgumentException,
-          WorkbasketAlreadyExistException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException, ConcurrencyException,
-          NotAuthorizedOnWorkbasketException, NotAuthorizedException {
+      throws IOException,
+          DomainNotFoundException,
+          InvalidArgumentException,
+          WorkbasketAlreadyExistException,
+          WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException,
+          ConcurrencyException,
+          NotAuthorizedOnWorkbasketException,
+          NotAuthorizedException {
     WorkbasketDefinitionCollectionRepresentationModel definitions =
         mapper.readValue(
             file.getInputStream(),

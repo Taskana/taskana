@@ -3,7 +3,6 @@ package pro.taskana.task.internal;
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.SelectProvider;
-
 import pro.taskana.task.internal.models.TaskSummaryImpl;
 
 /** This class provides a mapper for all task queries. */

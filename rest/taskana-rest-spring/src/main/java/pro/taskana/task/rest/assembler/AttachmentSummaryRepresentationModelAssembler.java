@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.classification.rest.assembler.ClassificationSummaryRepresentationModelAssembler;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.AttachmentSummary;

@@ -7,7 +7,6 @@ import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;

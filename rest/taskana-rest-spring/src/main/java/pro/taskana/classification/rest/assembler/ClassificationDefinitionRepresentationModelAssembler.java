@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.models.ClassificationDefinitionRepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationRepresentationModel;

@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.ClobTypeHandler;
-
 import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.task.internal.models.AttachmentImpl;

@@ -3,7 +3,6 @@ package pro.taskana.common.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;

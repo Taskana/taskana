@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.time.Instant;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -49,7 +48,9 @@ public class TaskCommentBuilder implements EntityBuilder<TaskComment, TaskServic
 
   @Override
   public TaskComment buildAndStore(TaskService taskService)
-      throws InvalidArgumentException, TaskNotFoundException, TaskCommentNotFoundException,
+      throws InvalidArgumentException,
+          TaskNotFoundException,
+          TaskCommentNotFoundException,
           NotAuthorizedOnWorkbasketException {
     try {
       TaskComment t = taskService.createTaskComment(testTaskComment);

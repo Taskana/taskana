@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.api;
 
 import java.util.List;
-
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;

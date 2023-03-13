@@ -5,7 +5,6 @@ import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-
 import pro.taskana.testapi.CleanTaskanaContext;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.WithServiceProvider;

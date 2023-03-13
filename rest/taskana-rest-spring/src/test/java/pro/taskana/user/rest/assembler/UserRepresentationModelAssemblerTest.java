@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.models.User;

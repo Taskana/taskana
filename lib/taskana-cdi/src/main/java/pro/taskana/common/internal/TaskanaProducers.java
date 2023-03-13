@@ -16,7 +16,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.TaskanaEngine;

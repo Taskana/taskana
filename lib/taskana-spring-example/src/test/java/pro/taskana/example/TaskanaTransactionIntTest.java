@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;

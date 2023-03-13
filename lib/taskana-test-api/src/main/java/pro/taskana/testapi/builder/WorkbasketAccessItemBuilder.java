@@ -46,8 +46,10 @@ public class WorkbasketAccessItemBuilder
 
   @Override
   public WorkbasketAccessItem buildAndStore(WorkbasketService workbasketService)
-      throws InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
-          WorkbasketNotFoundException, NotAuthorizedException {
+      throws InvalidArgumentException,
+          WorkbasketAccessItemAlreadyExistException,
+          WorkbasketNotFoundException,
+          NotAuthorizedException {
     return workbasketService.createWorkbasketAccessItem(testWorkbasketAccessItem);
   }
 }

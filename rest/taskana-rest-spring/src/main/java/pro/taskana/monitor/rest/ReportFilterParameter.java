@@ -2,7 +2,6 @@ package pro.taskana.monitor.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
-
 import pro.taskana.task.api.TaskState;
 
 public class ReportFilterParameter {

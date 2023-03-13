@@ -2,7 +2,6 @@ package pro.taskana.user.api;
 
 import java.util.List;
 import java.util.Set;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;

@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -38,7 +37,8 @@ public class AttachmentHandler {
   }
 
   void insertAndDeleteAttachmentsOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
-      throws AttachmentPersistenceException, InvalidArgumentException,
+      throws AttachmentPersistenceException,
+          InvalidArgumentException,
           ClassificationNotFoundException {
     List<Attachment> newAttachments =
         newTaskImpl.getAttachments().stream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -55,7 +55,8 @@ public class AttachmentHandler {
   }
 
   void insertNewAttachmentsOnTaskCreation(TaskImpl task)
-      throws InvalidArgumentException, AttachmentPersistenceException,
+      throws InvalidArgumentException,
+          AttachmentPersistenceException,
           ClassificationNotFoundException {
     List<Attachment> attachments = task.getAttachments();
 

@@ -2,7 +2,6 @@ package pro.taskana.common.api;
 
 import java.sql.SQLException;
 import java.util.function.Supplier;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;

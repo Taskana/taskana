@@ -1,7 +1,6 @@
 package pro.taskana.classification.rest.models;
 
 import java.time.Instant;
-
 import pro.taskana.classification.api.models.Classification;
 
 /** EntityModel class for {@link Classification}. */

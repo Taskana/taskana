@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.time.Instant;
-
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.internal.models.TaskImpl;
 

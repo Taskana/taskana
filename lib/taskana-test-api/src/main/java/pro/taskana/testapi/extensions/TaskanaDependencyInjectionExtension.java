@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.JUnitException;
-
 import pro.taskana.testapi.TaskanaInject;
 
 public class TaskanaDependencyInjectionExtension

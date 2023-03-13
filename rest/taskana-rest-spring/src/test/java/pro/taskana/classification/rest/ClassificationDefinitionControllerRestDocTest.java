@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.rest.assembler.ClassificationRepresentationModelAssembler;

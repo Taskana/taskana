@@ -21,7 +21,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;

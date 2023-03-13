@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.task.api.models.Task;

@@ -7,7 +7,6 @@ import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationInUseException;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;

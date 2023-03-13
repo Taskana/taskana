@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.api;
 
 import java.util.List;
-
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
@@ -57,7 +56,9 @@ public interface WorkbasketService {
    *     exist in the configuration.
    */
   Workbasket createWorkbasket(Workbasket workbasket)
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketAlreadyExistException,
+          DomainNotFoundException,
           NotAuthorizedException;
 
   // READ
@@ -112,8 +113,11 @@ public interface WorkbasketService {
    *     from the one in the database
    */
   Workbasket updateWorkbasket(Workbasket workbasket)
-      throws InvalidArgumentException, WorkbasketNotFoundException, ConcurrencyException,
-          NotAuthorizedException, NotAuthorizedOnWorkbasketException;
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          ConcurrencyException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException;
 
   // DELETE
 
@@ -132,8 +136,11 @@ public interface WorkbasketService {
    * @throws InvalidArgumentException if the workbasketId is NULL or EMPTY
    */
   boolean deleteWorkbasket(String workbasketId)
-      throws WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException,
-          NotAuthorizedException, NotAuthorizedOnWorkbasketException;
+      throws WorkbasketNotFoundException,
+          WorkbasketInUseException,
+          InvalidArgumentException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException;
 
   /**
    * Deletes the list of {@linkplain Workbasket}s specified via {@linkplain Workbasket#getId() ids}.
@@ -167,7 +174,8 @@ public interface WorkbasketService {
    *     target {@linkplain Workbasket}s don't exist
    */
   void setDistributionTargets(String sourceWorkbasketId, List<String> targetWorkbasketIds)
-      throws WorkbasketNotFoundException, NotAuthorizedException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException;
 
   // READ
@@ -246,7 +254,8 @@ public interface WorkbasketService {
    *     {@linkplain Workbasket} doesn't exist
    */
   void addDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException;
 
   // DELETE
@@ -302,8 +311,10 @@ public interface WorkbasketService {
    *     and {@linkplain Workbasket}
    */
   WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException, NotAuthorizedException;
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException,
+          NotAuthorizedException;
 
   /**
    * Setting up the new {@linkplain WorkbasketAccessItem}s for a {@linkplain Workbasket}. Already
@@ -333,8 +344,11 @@ public interface WorkbasketService {
    *     given {@linkplain Workbasket#getId() id}.
    */
   void setWorkbasketAccessItems(String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
-      throws InvalidArgumentException, WorkbasketAccessItemAlreadyExistException,
-          WorkbasketNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException;
+      throws InvalidArgumentException,
+          WorkbasketAccessItemAlreadyExistException,
+          WorkbasketNotFoundException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException;
 
   // READ
 

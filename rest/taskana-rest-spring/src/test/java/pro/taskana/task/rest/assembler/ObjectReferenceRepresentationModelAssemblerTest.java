@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;

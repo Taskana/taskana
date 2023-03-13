@@ -18,7 +18,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.rest.test.RestHelper;

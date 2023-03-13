@@ -25,7 +25,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;

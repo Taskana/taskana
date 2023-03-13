@@ -1,7 +1,6 @@
 package pro.taskana.common.api;
 
 import java.time.Instant;
-
 import pro.taskana.common.internal.Interval;
 
 /**

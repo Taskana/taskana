@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
-
 import pro.taskana.common.api.TaskanaRole;
 
 /** EntityModel class for user information. */

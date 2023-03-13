@@ -3,7 +3,6 @@ package pro.taskana.monitor.rest.assembler;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 

@@ -6,7 +6,6 @@ import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
-
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;

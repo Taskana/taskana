@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.util.CheckedRunnable;

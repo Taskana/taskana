@@ -3,7 +3,6 @@ package pro.taskana.workbasket.internal;
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
-
 import pro.taskana.workbasket.api.WorkbasketAccessItemQuery;
 import pro.taskana.workbasket.internal.models.WorkbasketAccessItemImpl;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;

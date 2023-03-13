@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.ObjectReferencePersistenceException;

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;

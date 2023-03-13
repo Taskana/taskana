@@ -34,7 +34,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.RestHelper;
@@ -715,8 +714,7 @@ class TaskControllerIntTest {
     }
 
     @Test
-    void
-        should_ThrowException_When_GettingTasksByWorkbasketIdWithEvenNumberOfPriorityWithin() {
+    void should_ThrowException_When_GettingTasksByWorkbasketIdWithEvenNumberOfPriorityWithin() {
       Integer priorityFrom1 = 2;
       Integer priorityFrom2 = 1;
       String url =
@@ -739,8 +737,7 @@ class TaskControllerIntTest {
     }
 
     @Test
-    void
-        should_ThrowException_When_GettingTasksByWorkbasketIdWithEvenNumberOfPriorityNotWithin() {
+    void should_ThrowException_When_GettingTasksByWorkbasketIdWithEvenNumberOfPriorityNotWithin() {
       Integer priorityFrom1 = 2;
       Integer priorityFrom2 = 1;
       String url =

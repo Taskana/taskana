@@ -12,7 +12,6 @@ import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
-
 import pro.taskana.common.internal.configuration.DB;
 
 public class DockerContainerCreator {

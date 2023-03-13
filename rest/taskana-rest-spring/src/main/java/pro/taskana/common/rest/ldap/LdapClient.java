@@ -27,7 +27,6 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

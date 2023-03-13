@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.TimeZone;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.JobService;

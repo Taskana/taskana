@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;

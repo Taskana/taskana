@@ -23,7 +23,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.jaasapi.JaasApiIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import pro.taskana.common.rest.SpringSecurityToJaasFilter;
 
 /** Default basic configuration for taskana web example. */
@@ -92,26 +91,6 @@ public class BootWebSecurityConfigurer {
     return http.build();
   }
 
-  protected void addLoginPageConfiguration(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .anyRequest()
-        .fullyAuthenticated()
-        .and()
-        .formLogin()
-        .loginPage("/login")
-        .failureUrl("/login?error")
-        .defaultSuccessUrl("/")
-        .permitAll()
-        .and()
-        .logout()
-        .invalidateHttpSession(true)
-        .clearAuthentication(true)
-        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-        .logoutSuccessUrl("/login?logout")
-        .deleteCookies("JSESSIONID")
-        .permitAll();
-  }
-
   @Bean
   public LdapAuthoritiesPopulator authoritiesPopulator(
       DefaultSpringSecurityContextSource contextSource) {
@@ -137,6 +116,26 @@ public class BootWebSecurityConfigurer {
     SimpleAuthorityMapper grantedAuthoritiesMapper = new SimpleAuthorityMapper();
     grantedAuthoritiesMapper.setPrefix("");
     return grantedAuthoritiesMapper;
+  }
+
+  protected void addLoginPageConfiguration(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+        .anyRequest()
+        .fullyAuthenticated()
+        .and()
+        .formLogin()
+        .loginPage("/login")
+        .failureUrl("/login?error")
+        .defaultSuccessUrl("/")
+        .permitAll()
+        .and()
+        .logout()
+        .invalidateHttpSession(true)
+        .clearAuthentication(true)
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutSuccessUrl("/login?logout")
+        .deleteCookies("JSESSIONID")
+        .permitAll();
   }
 
   protected JaasApiIntegrationFilter jaasApiIntegrationFilter() {

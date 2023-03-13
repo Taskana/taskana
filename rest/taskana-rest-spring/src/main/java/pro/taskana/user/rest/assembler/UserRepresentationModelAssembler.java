@@ -2,7 +2,6 @@ package pro.taskana.user.rest.assembler;
 
 import java.util.List;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.common.rest.assembler.CollectionRepresentationModelAssembler;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;

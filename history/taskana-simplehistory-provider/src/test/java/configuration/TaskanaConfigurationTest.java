@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import acceptance.AbstractAccTest;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.test.config.DataSourceGenerator;

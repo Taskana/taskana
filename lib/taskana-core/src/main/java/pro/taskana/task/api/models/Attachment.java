@@ -2,7 +2,6 @@ package pro.taskana.task.api.models;
 
 import java.time.Instant;
 import java.util.Map;
-
 import pro.taskana.classification.api.models.ClassificationSummary;
 
 /** Attachment-Interface to specify attributes of an Attachment. */

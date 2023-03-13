@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.workbasket.api.WorkbasketCustomField;

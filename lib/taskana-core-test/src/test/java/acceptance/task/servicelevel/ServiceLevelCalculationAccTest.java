@@ -6,7 +6,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import java.time.Instant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.task.api.TaskService;

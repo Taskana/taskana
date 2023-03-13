@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TimeInterval;

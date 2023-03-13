@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
-
 import pro.taskana.common.api.exceptions.SystemException;
 
 public class ObjectAttributeChangeDetector {

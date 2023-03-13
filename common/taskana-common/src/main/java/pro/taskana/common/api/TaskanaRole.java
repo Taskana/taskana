@@ -3,7 +3,6 @@ package pro.taskana.common.api;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import pro.taskana.common.api.exceptions.SystemException;
 
 /** The TaskanaRole enum contains all roles that are known to TASKANA. */

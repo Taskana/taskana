@@ -25,7 +25,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;

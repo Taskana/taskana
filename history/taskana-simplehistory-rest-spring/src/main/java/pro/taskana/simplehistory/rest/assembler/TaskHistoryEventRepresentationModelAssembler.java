@@ -6,7 +6,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.Collection;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.rest.assembler.PagedRepresentationModelAssembler;
 import pro.taskana.common.rest.models.PageMetadata;

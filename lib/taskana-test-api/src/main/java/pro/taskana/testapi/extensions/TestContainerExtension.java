@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.testapi.CleanTaskanaContext;
 import pro.taskana.testapi.TaskanaConfigurationModifier;

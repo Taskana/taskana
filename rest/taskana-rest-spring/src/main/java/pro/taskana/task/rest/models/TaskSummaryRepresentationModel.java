@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;

@@ -5,7 +5,6 @@ import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.task.api.TaskState;

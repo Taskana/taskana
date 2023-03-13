@@ -1,7 +1,6 @@
 package pro.taskana.task.api.models;
 
 import java.time.Instant;
-
 import pro.taskana.classification.api.models.ClassificationSummary;
 
 /**

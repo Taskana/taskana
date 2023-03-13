@@ -11,9 +11,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import uk.org.lidalia.slf4jtest.TestLogger;
-import uk.org.lidalia.slf4jtest.TestLoggerFactory;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
@@ -22,6 +19,8 @@ import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
+import uk.org.lidalia.slf4jtest.TestLogger;
+import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 class LogfileHistoryServiceImplTest {
 

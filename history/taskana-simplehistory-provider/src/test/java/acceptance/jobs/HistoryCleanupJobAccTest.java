@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.ScheduledJob;

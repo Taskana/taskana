@@ -3,7 +3,6 @@ package acceptance.priorityservice;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.OptionalInt;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
