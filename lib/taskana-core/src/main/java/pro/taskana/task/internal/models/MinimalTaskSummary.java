@@ -3,7 +3,6 @@ package pro.taskana.task.internal.models;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskState;
 

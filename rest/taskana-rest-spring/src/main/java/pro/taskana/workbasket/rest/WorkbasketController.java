@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.DomainNotFoundException;
@@ -163,8 +162,11 @@ public class WorkbasketController {
   @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
   public ResponseEntity<WorkbasketRepresentationModel> deleteWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId)
-      throws InvalidArgumentException, WorkbasketNotFoundException, WorkbasketInUseException,
-          NotAuthorizedException, NotAuthorizedOnWorkbasketException {
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          WorkbasketInUseException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException {
 
     boolean workbasketDeleted = workbasketService.deleteWorkbasket(workbasketId);
 
@@ -198,7 +200,9 @@ public class WorkbasketController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> createWorkbasket(
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
-      throws InvalidArgumentException, NotAuthorizedException, WorkbasketAlreadyExistException,
+      throws InvalidArgumentException,
+          NotAuthorizedException,
+          WorkbasketAlreadyExistException,
           DomainNotFoundException {
     Workbasket workbasket =
         workbasketRepresentationModelAssembler.toEntityModel(workbasketRepresentationModel);
@@ -228,8 +232,11 @@ public class WorkbasketController {
   public ResponseEntity<WorkbasketRepresentationModel> updateWorkbasket(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
-      throws WorkbasketNotFoundException, NotAuthorizedException, ConcurrencyException,
-          InvalidArgumentException, NotAuthorizedOnWorkbasketException {
+      throws WorkbasketNotFoundException,
+          NotAuthorizedException,
+          ConcurrencyException,
+          InvalidArgumentException,
+          NotAuthorizedOnWorkbasketException {
     if (!workbasketId.equals(workbasketRepresentationModel.getWorkbasketId())) {
       throw new InvalidArgumentException(
           "Target-WB-ID('"
@@ -262,7 +269,8 @@ public class WorkbasketController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> getWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
     List<WorkbasketAccessItem> accessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
@@ -293,8 +301,10 @@ public class WorkbasketController {
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> setWorkbasketAccessItems(
       @PathVariable(value = "workbasketId") String workbasketId,
       @RequestBody WorkbasketAccessItemCollectionRepresentationModel workbasketAccessItemRepModels)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException, NotAuthorizedException,
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
     if (workbasketAccessItemRepModels == null) {
       throw new InvalidArgumentException("Can't create something with NULL body-value.");
@@ -356,7 +366,8 @@ public class WorkbasketController {
       setDistributionTargetsForWorkbasketId(
           @PathVariable(value = "workbasketId") String sourceWorkbasketId,
           @RequestBody List<String> targetWorkbasketIds)
-          throws WorkbasketNotFoundException, NotAuthorizedException,
+          throws WorkbasketNotFoundException,
+              NotAuthorizedException,
               NotAuthorizedOnWorkbasketException {
     workbasketService.setDistributionTargets(sourceWorkbasketId, targetWorkbasketIds);
 
@@ -382,7 +393,8 @@ public class WorkbasketController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> removeDistributionTargetForWorkbasketId(
       @PathVariable(value = "workbasketId") String targetWorkbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           NotAuthorizedException {
     List<WorkbasketSummary> sourceWorkbaskets =
         workbasketService.getDistributionSources(targetWorkbasketId);

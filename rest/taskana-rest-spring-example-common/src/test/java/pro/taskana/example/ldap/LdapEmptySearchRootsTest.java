@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
-
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 

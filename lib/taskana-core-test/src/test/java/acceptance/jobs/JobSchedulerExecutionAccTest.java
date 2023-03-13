@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.TaskanaConfiguration.Builder;
 import pro.taskana.classification.api.ClassificationService;

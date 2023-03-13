@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.rest.test.TaskanaSpringBootTest;

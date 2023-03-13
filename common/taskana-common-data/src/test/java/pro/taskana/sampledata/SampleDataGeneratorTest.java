@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 
 /** Test SampleDataGenerator. */

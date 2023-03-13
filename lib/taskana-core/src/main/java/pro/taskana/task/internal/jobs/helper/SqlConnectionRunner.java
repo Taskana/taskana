@@ -3,7 +3,6 @@ package pro.taskana.task.internal.jobs.helper;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.util.CheckedConsumer;

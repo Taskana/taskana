@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.api.security.GroupPrincipal;
 

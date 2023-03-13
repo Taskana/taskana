@@ -3,7 +3,6 @@ package pro.taskana.user.internal.models;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-
 import pro.taskana.user.api.models.User;
 
 public class UserImpl implements User {

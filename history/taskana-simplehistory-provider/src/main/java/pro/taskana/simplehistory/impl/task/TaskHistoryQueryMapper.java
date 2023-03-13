@@ -3,7 +3,6 @@ package pro.taskana.simplehistory.impl.task;
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
-
 import pro.taskana.simplehistory.impl.TaskHistoryQueryImpl;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
@@ -131,8 +130,11 @@ public class ClassificationController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> createClassification(
       @RequestBody ClassificationRepresentationModel repModel)
-      throws ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ClassificationAlreadyExistException,
+          DomainNotFoundException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     Classification classification = modelAssembler.toEntityModel(repModel);
     classification = classificationService.createClassification(classification);
 
@@ -159,8 +161,11 @@ public class ClassificationController {
   public ResponseEntity<ClassificationRepresentationModel> updateClassification(
       @PathVariable(value = "classificationId") String classificationId,
       @RequestBody ClassificationRepresentationModel resource)
-      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ClassificationNotFoundException,
+          ConcurrencyException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     if (!classificationId.equals(resource.getClassificationId())) {
       throw new InvalidArgumentException(
           String.format(

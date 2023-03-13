@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import javax.sql.DataSource;
-
 import pro.taskana.common.api.exceptions.SystemException;
 
 public final class OracleSchemaHelper {

@@ -10,7 +10,6 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import pro.taskana.common.rest.models.CollectionRepresentationModel;
 
 public interface CollectionRepresentationModelAssembler<

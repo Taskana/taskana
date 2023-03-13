@@ -3,7 +3,6 @@ package pro.taskana.classification.internal;
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
-
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;
 
 /** This class provides a mapper for all classification queries. */

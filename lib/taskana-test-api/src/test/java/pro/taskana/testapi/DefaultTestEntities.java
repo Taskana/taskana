@@ -1,7 +1,6 @@
 package pro.taskana.testapi;
 
 import java.util.UUID;
-
 import pro.taskana.testapi.builder.ClassificationBuilder;
 import pro.taskana.testapi.builder.ObjectReferenceBuilder;
 import pro.taskana.testapi.builder.WorkbasketBuilder;

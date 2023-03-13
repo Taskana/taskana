@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-
 import pro.taskana.monitor.api.reports.item.AgeQueryItem;
 
 /**

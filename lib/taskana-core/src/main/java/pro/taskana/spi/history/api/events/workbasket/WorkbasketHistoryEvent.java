@@ -3,7 +3,6 @@ package pro.taskana.spi.history.api.events.workbasket;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;

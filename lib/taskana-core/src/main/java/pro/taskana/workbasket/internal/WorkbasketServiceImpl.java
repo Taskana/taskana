@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.TaskanaRole;
@@ -132,7 +131,9 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public Workbasket createWorkbasket(Workbasket newWorkbasket)
-      throws InvalidArgumentException, WorkbasketAlreadyExistException, DomainNotFoundException,
+      throws InvalidArgumentException,
+          WorkbasketAlreadyExistException,
+          DomainNotFoundException,
           NotAuthorizedException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
@@ -179,8 +180,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public Workbasket updateWorkbasket(Workbasket workbasketToUpdate)
-      throws InvalidArgumentException, WorkbasketNotFoundException, ConcurrencyException,
-          NotAuthorizedException, NotAuthorizedOnWorkbasketException {
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          ConcurrencyException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     WorkbasketImpl workbasketImplToUpdate = (WorkbasketImpl) workbasketToUpdate;
@@ -251,8 +255,10 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public WorkbasketAccessItem createWorkbasketAccessItem(WorkbasketAccessItem workbasketAccessItem)
-      throws InvalidArgumentException, WorkbasketNotFoundException,
-          WorkbasketAccessItemAlreadyExistException, NotAuthorizedException {
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          WorkbasketAccessItemAlreadyExistException,
+          NotAuthorizedException {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     WorkbasketAccessItemImpl accessItem = (WorkbasketAccessItemImpl) workbasketAccessItem;
@@ -490,8 +496,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
   @Override
   public void setWorkbasketAccessItems(
       String workbasketId, List<WorkbasketAccessItem> wbAccessItems)
-      throws WorkbasketAccessItemAlreadyExistException, InvalidArgumentException,
-          WorkbasketNotFoundException, NotAuthorizedException, NotAuthorizedOnWorkbasketException {
+      throws WorkbasketAccessItemAlreadyExistException,
+          InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
     Set<WorkbasketAccessItemImpl> accessItems =
@@ -605,7 +614,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public void setDistributionTargets(String sourceWorkbasketId, List<String> targetWorkbasketIds)
-      throws WorkbasketNotFoundException, NotAuthorizedException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -667,7 +677,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public void addDistributionTarget(String sourceWorkbasketId, String targetWorkbasketId)
-      throws WorkbasketNotFoundException, NotAuthorizedException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -784,8 +795,11 @@ public class WorkbasketServiceImpl implements WorkbasketService {
 
   @Override
   public boolean deleteWorkbasket(String workbasketId)
-      throws WorkbasketNotFoundException, WorkbasketInUseException, InvalidArgumentException,
-          NotAuthorizedException, NotAuthorizedOnWorkbasketException {
+      throws WorkbasketNotFoundException,
+          WorkbasketInUseException,
+          InvalidArgumentException,
+          NotAuthorizedException,
+          NotAuthorizedOnWorkbasketException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
 
     validateId(workbasketId);

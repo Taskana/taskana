@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.api.exceptions;
 
 import java.util.Arrays;
-
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.util.MapCreator;

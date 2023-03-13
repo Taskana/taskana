@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -55,7 +54,9 @@ final class TaskTransferrer {
   }
 
   Task transfer(String taskId, String destinationWorkbasketId, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     WorkbasketSummary destinationWorkbasket =
         workbasketService.getWorkbasket(destinationWorkbasketId).asSummary();
@@ -67,7 +68,9 @@ final class TaskTransferrer {
       String destinationWorkbasketKey,
       String destinationDomain,
       boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     WorkbasketSummary destinationWorkbasket =
         workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain).asSummary();
@@ -76,7 +79,8 @@ final class TaskTransferrer {
 
   BulkOperationResults<String, TaskanaException> transfer(
       List<String> taskIds, String destinationWorkbasketId, boolean setTransferFlag)
-      throws WorkbasketNotFoundException, InvalidArgumentException,
+      throws WorkbasketNotFoundException,
+          InvalidArgumentException,
           NotAuthorizedOnWorkbasketException {
     WorkbasketSummary destinationWorkbasket =
         workbasketService.getWorkbasket(destinationWorkbasketId).asSummary();
@@ -90,7 +94,8 @@ final class TaskTransferrer {
       String destinationWorkbasketKey,
       String destinationDomain,
       boolean setTransferFlag)
-      throws WorkbasketNotFoundException, InvalidArgumentException,
+      throws WorkbasketNotFoundException,
+          InvalidArgumentException,
           NotAuthorizedOnWorkbasketException {
     WorkbasketSummary destinationWorkbasket =
         workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain).asSummary();
@@ -101,7 +106,9 @@ final class TaskTransferrer {
 
   private Task transferSingleTask(
       String taskId, WorkbasketSummary destinationWorkbasket, boolean setTransferFlag)
-      throws TaskNotFoundException, WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     try {
       taskanaEngine.openConnection();
@@ -157,7 +164,8 @@ final class TaskTransferrer {
 
   private void checkPreconditionsForTransferTask(
       Task task, WorkbasketSummary destinationWorkbasket, WorkbasketSummary originWorkbasket)
-      throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException,
+      throws WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
     if (task.getState().isEndState()) {
       throw new InvalidTaskStateException(

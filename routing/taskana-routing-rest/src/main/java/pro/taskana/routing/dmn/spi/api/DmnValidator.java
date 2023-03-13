@@ -1,7 +1,6 @@
 package pro.taskana.routing.dmn.spi.api;
 
 import org.camunda.bpm.model.dmn.DmnModelInstance;
-
 import pro.taskana.common.api.TaskanaEngine;
 
 public interface DmnValidator {

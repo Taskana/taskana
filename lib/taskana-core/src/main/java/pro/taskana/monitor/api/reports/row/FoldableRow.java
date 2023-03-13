@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.item.QueryItem;
 

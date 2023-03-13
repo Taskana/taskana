@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.IntPredicate;
-
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.TaskanaEngineImpl;

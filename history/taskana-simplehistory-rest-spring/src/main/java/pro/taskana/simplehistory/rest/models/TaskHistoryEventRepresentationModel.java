@@ -2,7 +2,6 @@ package pro.taskana.simplehistory.rest.models;
 
 import java.time.Instant;
 import org.springframework.hateoas.RepresentationModel;
-
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /** Resource class for {@link TaskHistoryEvent}. */

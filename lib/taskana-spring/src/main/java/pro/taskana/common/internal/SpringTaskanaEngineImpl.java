@@ -2,7 +2,6 @@ package pro.taskana.common.internal;
 
 import java.sql.SQLException;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
-
 import pro.taskana.TaskanaConfiguration;
 
 /** This class configures the TaskanaEngine for spring. */

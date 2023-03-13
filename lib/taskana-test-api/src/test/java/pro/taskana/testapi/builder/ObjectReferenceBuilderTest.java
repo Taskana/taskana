@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.testapi.builder.ObjectReferenceBuilder.newObjectReference;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 

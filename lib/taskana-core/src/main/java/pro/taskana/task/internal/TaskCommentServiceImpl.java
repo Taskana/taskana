@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -49,8 +48,11 @@ class TaskCommentServiceImpl {
   }
 
   TaskComment updateTaskComment(TaskComment taskCommentToUpdate)
-      throws ConcurrencyException, TaskCommentNotFoundException, TaskNotFoundException,
-          InvalidArgumentException, NotAuthorizedOnTaskCommentException,
+      throws ConcurrencyException,
+          TaskCommentNotFoundException,
+          TaskNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnTaskCommentException,
           NotAuthorizedOnWorkbasketException {
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
@@ -116,8 +118,11 @@ class TaskCommentServiceImpl {
   }
 
   void deleteTaskComment(String taskCommentId)
-      throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
-          NotAuthorizedOnTaskCommentException, NotAuthorizedOnWorkbasketException {
+      throws TaskCommentNotFoundException,
+          TaskNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnTaskCommentException,
+          NotAuthorizedOnWorkbasketException {
 
     String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
 
@@ -169,7 +174,9 @@ class TaskCommentServiceImpl {
   }
 
   TaskComment getTaskComment(String taskCommentId)
-      throws TaskCommentNotFoundException, TaskNotFoundException, InvalidArgumentException,
+      throws TaskCommentNotFoundException,
+          TaskNotFoundException,
+          InvalidArgumentException,
           NotAuthorizedOnWorkbasketException {
 
     TaskCommentImpl result;

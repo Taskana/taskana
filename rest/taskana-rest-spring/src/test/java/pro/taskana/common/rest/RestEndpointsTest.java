@@ -6,7 +6,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import pro.taskana.task.rest.TaskController;
 
 /** Test RestEndpoints and Linkbuilder. */

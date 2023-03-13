@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.internal.workingtime.HolidaySchedule.EasterCalculator;
 

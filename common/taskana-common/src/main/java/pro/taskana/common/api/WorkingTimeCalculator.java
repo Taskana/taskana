@@ -2,7 +2,6 @@ package pro.taskana.common.api;
 
 import java.time.Duration;
 import java.time.Instant;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 @SuppressWarnings("unused")

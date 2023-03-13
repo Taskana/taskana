@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.LongStream;
 import java.util.stream.LongStream.Builder;
-
 import pro.taskana.common.api.CustomHoliday;
 
 /**

@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TimeInterval;
 

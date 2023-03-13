@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -70,7 +69,9 @@ public class TaskCommentController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
       @PathVariable String taskCommentId)
-      throws TaskNotFoundException, TaskCommentNotFoundException, InvalidArgumentException,
+      throws TaskNotFoundException,
+          TaskCommentNotFoundException,
+          InvalidArgumentException,
           NotAuthorizedOnWorkbasketException {
     TaskComment taskComment = taskService.getTaskComment(taskCommentId);
 
@@ -138,8 +139,11 @@ public class TaskCommentController {
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
       @PathVariable String taskCommentId)
-      throws TaskNotFoundException, TaskCommentNotFoundException, InvalidArgumentException,
-          NotAuthorizedOnTaskCommentException, NotAuthorizedException,
+      throws TaskNotFoundException,
+          TaskCommentNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnTaskCommentException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
     taskService.deleteTaskComment(taskCommentId);
 
@@ -167,8 +171,12 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
       @PathVariable String taskCommentId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
-      throws TaskNotFoundException, TaskCommentNotFoundException, InvalidArgumentException,
-          ConcurrencyException, NotAuthorizedOnTaskCommentException, NotAuthorizedException,
+      throws TaskNotFoundException,
+          TaskCommentNotFoundException,
+          InvalidArgumentException,
+          ConcurrencyException,
+          NotAuthorizedOnTaskCommentException,
+          NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
     if (!taskCommentId.equals(taskCommentRepresentationModel.getTaskCommentId())) {
       throw new InvalidArgumentException(

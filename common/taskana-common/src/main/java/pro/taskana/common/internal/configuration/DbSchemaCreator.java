@@ -17,7 +17,6 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.jdbc.SqlRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.internal.util.ComparableVersion;
 
 /** This class create the schema for taskana. */

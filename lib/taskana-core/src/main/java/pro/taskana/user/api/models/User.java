@@ -1,7 +1,6 @@
 package pro.taskana.user.api.models;
 
 import java.util.Set;
-
 import pro.taskana.TaskanaConfiguration;
 
 /** The User holds some relevant information about the TASKANA users. */

@@ -3,7 +3,6 @@ package pro.taskana.testapi.builder;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Map;
-
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -214,9 +213,13 @@ public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, Task
 
   @Override
   public Task buildAndStore(TaskService taskService)
-      throws TaskAlreadyExistException, InvalidArgumentException, WorkbasketNotFoundException,
-          ClassificationNotFoundException, AttachmentPersistenceException,
-          ObjectReferencePersistenceException, TaskNotFoundException,
+      throws TaskAlreadyExistException,
+          InvalidArgumentException,
+          WorkbasketNotFoundException,
+          ClassificationNotFoundException,
+          AttachmentPersistenceException,
+          ObjectReferencePersistenceException,
+          TaskNotFoundException,
           NotAuthorizedOnWorkbasketException {
     try {
       Task task = taskService.createTask(testTask);

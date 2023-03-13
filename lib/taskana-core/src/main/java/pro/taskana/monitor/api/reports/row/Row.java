@@ -1,7 +1,6 @@
 package pro.taskana.monitor.api.reports.row;
 
 import java.util.Map;
-
 import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
 import pro.taskana.monitor.api.reports.item.QueryItem;

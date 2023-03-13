@@ -1,7 +1,6 @@
 package pro.taskana.classification.internal.models;
 
 import java.util.Objects;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;

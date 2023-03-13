@@ -2,7 +2,6 @@ package pro.taskana.testapi;
 
 import java.lang.reflect.Field;
 import org.apache.ibatis.session.SqlSession;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.TaskanaEngineImpl;

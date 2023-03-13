@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.rest.models;
 
 import java.time.Instant;
-
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /** EntityModel class for {@link Workbasket}. */

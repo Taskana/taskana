@@ -3,7 +3,6 @@ package pro.taskana.common.test.util;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import pro.taskana.common.api.exceptions.SystemException;
 
 public class ParallelThreadHelper {

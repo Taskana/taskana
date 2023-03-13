@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;

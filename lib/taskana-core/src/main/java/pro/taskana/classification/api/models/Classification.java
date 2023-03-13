@@ -1,7 +1,6 @@
 package pro.taskana.classification.api.models;
 
 import java.time.Instant;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 
 /** Interface used to specify the Classification-Model. */

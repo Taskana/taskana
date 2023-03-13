@@ -1,7 +1,6 @@
 package pro.taskana.common.internal.util;
 
 import java.util.function.Function;
-
 import pro.taskana.common.api.exceptions.SystemException;
 
 @FunctionalInterface

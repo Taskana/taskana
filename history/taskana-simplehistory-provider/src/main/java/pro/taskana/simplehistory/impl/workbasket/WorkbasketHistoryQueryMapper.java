@@ -3,7 +3,6 @@ package pro.taskana.simplehistory.impl.workbasket;
 import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
-
 import pro.taskana.simplehistory.impl.WorkbasketHistoryQueryImpl;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 

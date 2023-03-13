@@ -5,7 +5,6 @@ import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
-
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -27,10 +26,16 @@ public class ExampleBootstrap {
 
   @PostConstruct
   public void init(@Observes @Initialized(ApplicationScoped.class) Object init)
-      throws TaskNotFoundException, WorkbasketNotFoundException, ClassificationNotFoundException,
-          InvalidOwnerException, TaskAlreadyExistException, InvalidArgumentException,
-          AttachmentPersistenceException, ObjectReferencePersistenceException,
-          NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          ClassificationNotFoundException,
+          InvalidOwnerException,
+          TaskAlreadyExistException,
+          InvalidArgumentException,
+          AttachmentPersistenceException,
+          ObjectReferencePersistenceException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
     System.out.println("---------------------------> Start App");
     ObjectReferenceImpl objRef = new ObjectReferenceImpl();
     objRef.setCompany("aCompany");

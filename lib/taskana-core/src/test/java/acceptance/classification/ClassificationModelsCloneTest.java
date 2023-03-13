@@ -11,7 +11,6 @@ import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_7;
 import static pro.taskana.classification.api.ClassificationCustomField.CUSTOM_8;
 
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.classification.internal.models.ClassificationImpl;
 import pro.taskana.classification.internal.models.ClassificationSummaryImpl;

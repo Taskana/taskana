@@ -2,7 +2,6 @@ package pro.taskana;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;

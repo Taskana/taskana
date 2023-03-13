@@ -1,7 +1,6 @@
 package pro.taskana.workbasket.api.models;
 
 import java.time.Instant;
-
 import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketType;
 

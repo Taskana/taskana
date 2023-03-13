@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.task.api.TaskQuery;

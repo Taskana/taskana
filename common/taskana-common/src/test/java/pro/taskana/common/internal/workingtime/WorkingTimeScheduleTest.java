@@ -7,7 +7,6 @@ import java.time.LocalTime;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.common.api.LocalTimeInterval;
 
 class WorkingTimeScheduleTest {

@@ -3,7 +3,6 @@ package pro.taskana.testapi.builder;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import javax.security.auth.Subject;
-
 import pro.taskana.common.api.security.UserPrincipal;
 
 public interface EntityBuilder<EntityT, ServiceT> {

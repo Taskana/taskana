@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.util.Set;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.user.api.UserService;

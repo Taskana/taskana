@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.time.Instant;
-
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
 
 class WorkbasketTestImpl extends WorkbasketImpl {

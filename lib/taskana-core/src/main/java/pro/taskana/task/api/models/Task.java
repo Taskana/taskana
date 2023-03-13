@@ -3,7 +3,6 @@ package pro.taskana.task.api.models;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;

@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;

@@ -1,7 +1,6 @@
 package pro.taskana.common.api.exceptions;
 
 import java.util.Arrays;
-
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.internal.util.MapCreator;
 

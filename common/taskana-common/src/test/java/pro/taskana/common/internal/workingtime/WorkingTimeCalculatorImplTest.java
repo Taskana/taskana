@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

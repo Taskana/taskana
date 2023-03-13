@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import pro.taskana.simplehistory.rest.models.TaskHistoryEventPagedRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 

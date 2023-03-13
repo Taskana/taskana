@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.monitor.api.reports.WorkbasketPriorityReport;

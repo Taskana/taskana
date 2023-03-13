@@ -3,7 +3,6 @@ package pro.taskana.simplehistory.rest.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Collection;
-
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.common.rest.models.PagedRepresentationModel;
 

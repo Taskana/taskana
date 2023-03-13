@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pro.taskana.monitor.api.reports.header.PriorityColumnHeader;
 import pro.taskana.monitor.rest.models.PriorityColumnHeaderRepresentationModel;
 import pro.taskana.rest.test.TaskanaSpringBootTest;

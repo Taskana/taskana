@@ -2,7 +2,6 @@ package pro.taskana.common.internal.jobs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;

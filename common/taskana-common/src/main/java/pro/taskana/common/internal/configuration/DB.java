@@ -3,7 +3,6 @@ package pro.taskana.common.internal.configuration;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
-
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
 

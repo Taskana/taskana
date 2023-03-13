@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.TaskanaEngine;

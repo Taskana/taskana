@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.time.Instant;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationAlreadyExistException;
@@ -118,8 +117,12 @@ public class ClassificationBuilder
 
   @Override
   public Classification buildAndStore(ClassificationService classificationService)
-      throws InvalidArgumentException, ClassificationAlreadyExistException, DomainNotFoundException,
-          MalformedServiceLevelException, ClassificationNotFoundException, NotAuthorizedException {
+      throws InvalidArgumentException,
+          ClassificationAlreadyExistException,
+          DomainNotFoundException,
+          MalformedServiceLevelException,
+          ClassificationNotFoundException,
+          NotAuthorizedException {
     try {
       Classification c = classificationService.createClassification(testClassification);
       return classificationService.getClassification(c.getId());

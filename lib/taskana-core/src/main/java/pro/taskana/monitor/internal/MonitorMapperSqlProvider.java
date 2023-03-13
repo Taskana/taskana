@@ -11,7 +11,6 @@ import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotIn;
 import static pro.taskana.common.internal.util.SqlProviderUtil.whereNotInInterval;
 
 import java.util.stream.IntStream;
-
 import pro.taskana.common.internal.util.SqlProviderUtil;
 
 public class MonitorMapperSqlProvider {

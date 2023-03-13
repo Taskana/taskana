@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import javax.security.auth.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.util.CheckedConsumer;

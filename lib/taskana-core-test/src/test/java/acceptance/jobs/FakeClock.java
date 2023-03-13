@@ -2,7 +2,6 @@ package acceptance.jobs;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import pro.taskana.common.internal.jobs.Clock;
 
 public class FakeClock implements Clock {

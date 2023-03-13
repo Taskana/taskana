@@ -3,7 +3,6 @@ package pro.taskana.spi.history.api.events.classification;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.SystemException;

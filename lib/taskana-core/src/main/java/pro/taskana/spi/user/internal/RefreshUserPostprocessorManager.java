@@ -5,7 +5,6 @@ import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.spi.user.api.RefreshUserPostprocessor;
 import pro.taskana.user.api.models.User;

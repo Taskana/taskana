@@ -1,7 +1,6 @@
 package pro.taskana.spi.history.api;
 
 import java.util.List;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

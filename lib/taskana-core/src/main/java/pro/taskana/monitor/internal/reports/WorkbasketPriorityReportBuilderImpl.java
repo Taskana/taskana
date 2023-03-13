@@ -2,7 +2,6 @@ package pro.taskana.monitor.internal.reports;
 
 import java.util.Collections;
 import java.util.List;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

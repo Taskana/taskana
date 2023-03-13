@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;

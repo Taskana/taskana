@@ -1,7 +1,6 @@
 package pro.taskana.common.internal;
 
 import java.sql.SQLException;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 

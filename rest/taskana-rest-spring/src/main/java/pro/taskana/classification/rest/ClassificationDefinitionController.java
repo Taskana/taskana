@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationQuery;
 import pro.taskana.classification.api.ClassificationService;
@@ -106,9 +105,14 @@ public class ClassificationDefinitionController {
   @PostMapping(path = RestEndpoints.URL_CLASSIFICATION_DEFINITIONS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importClassifications(@RequestParam("file") MultipartFile file)
-      throws InvalidArgumentException, ConcurrencyException, ClassificationNotFoundException,
-          ClassificationAlreadyExistException, DomainNotFoundException, IOException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws InvalidArgumentException,
+          ConcurrencyException,
+          ClassificationNotFoundException,
+          ClassificationAlreadyExistException,
+          DomainNotFoundException,
+          IOException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     Map<String, String> systemIds = getSystemIds();
     ClassificationDefinitionCollectionRepresentationModel collection =
         extractClassificationResourcesFromFile(file);
@@ -185,9 +189,13 @@ public class ClassificationDefinitionController {
   private void insertOrUpdateClassificationsWithoutParent(
       Collection<ClassificationDefinitionRepresentationModel> definitionList,
       Map<String, String> systemIds)
-      throws ClassificationNotFoundException, InvalidArgumentException,
-          ClassificationAlreadyExistException, DomainNotFoundException, ConcurrencyException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ClassificationNotFoundException,
+          InvalidArgumentException,
+          ClassificationAlreadyExistException,
+          DomainNotFoundException,
+          ConcurrencyException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     for (ClassificationDefinitionRepresentationModel definition : definitionList) {
       ClassificationRepresentationModel classificationRepModel = definition.getClassification();
       classificationRepModel.setParentKey(null);
@@ -207,8 +215,11 @@ public class ClassificationDefinitionController {
   }
 
   private void updateParentChildrenRelations(Map<Classification, String> childrenInFile)
-      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ClassificationNotFoundException,
+          ConcurrencyException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     for (Map.Entry<Classification, String> entry : childrenInFile.entrySet()) {
       Classification childRes = entry.getKey();
       String parentKey = entry.getValue();
@@ -230,8 +241,11 @@ public class ClassificationDefinitionController {
   }
 
   private void updateExistingClassification(Classification newClassification, String systemId)
-      throws ClassificationNotFoundException, ConcurrencyException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ClassificationNotFoundException,
+          ConcurrencyException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     Classification currentClassification = classificationService.getClassification(systemId);
     if (newClassification.getType() != null
         && !newClassification.getType().equals(currentClassification.getType())) {

@@ -1,7 +1,6 @@
 package pro.taskana.monitor.api.reports;
 
 import java.util.List;
-
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;

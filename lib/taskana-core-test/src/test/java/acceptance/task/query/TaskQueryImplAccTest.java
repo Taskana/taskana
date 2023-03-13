@@ -21,7 +21,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.IntInterval;
@@ -946,7 +945,6 @@ class TaskQueryImplAccTest {
       TaskSummary taskSummary2;
       TaskSummary taskSummary3;
 
-
       @WithAccessId(user = "user-1-1")
       @BeforeAll
       void setup() throws Exception {
@@ -954,7 +952,6 @@ class TaskQueryImplAccTest {
         taskSummary1 = taskInWorkbasket(wb).priority(1).buildAndStoreAsSummary(taskService);
         taskSummary2 = taskInWorkbasket(wb).priority(2).buildAndStoreAsSummary(taskService);
         taskSummary3 = taskInWorkbasket(wb).priority(4).buildAndStoreAsSummary(taskService);
-
       }
 
       @WithAccessId(user = "user-1-1")

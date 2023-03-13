@@ -2,7 +2,6 @@ package pro.taskana.task.rest.models;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import pro.taskana.task.api.models.Attachment;
 
 /** EntityModel class for {@link Attachment}. */

@@ -3,7 +3,6 @@ package pro.taskana.task.internal.models;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 

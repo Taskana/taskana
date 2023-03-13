@@ -1,7 +1,6 @@
 package pro.taskana.testapi.builder;
 
 import java.time.Instant;
-
 import pro.taskana.task.internal.models.TaskCommentImpl;
 
 class TaskCommentTestImpl extends TaskCommentImpl {

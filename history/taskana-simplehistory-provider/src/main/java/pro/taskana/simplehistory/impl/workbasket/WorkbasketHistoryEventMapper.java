@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
-
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
 /** This class is the mybatis mapping of workbasket history events. */

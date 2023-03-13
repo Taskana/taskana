@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import pro.taskana.common.internal.configuration.DB;
 
 /** This class replaces boolean values with int values if the database is db2. */

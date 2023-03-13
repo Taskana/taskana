@@ -5,7 +5,6 @@ import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
-
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;

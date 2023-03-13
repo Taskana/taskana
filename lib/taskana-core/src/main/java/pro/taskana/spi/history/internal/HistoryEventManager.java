@@ -3,7 +3,6 @@ package pro.taskana.spi.history.internal;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.internal.util.SpiLoader;

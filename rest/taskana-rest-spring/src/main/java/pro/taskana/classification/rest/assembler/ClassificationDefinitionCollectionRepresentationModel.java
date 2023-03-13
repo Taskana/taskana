@@ -3,7 +3,6 @@ package pro.taskana.classification.rest.assembler;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.util.Collection;
-
 import pro.taskana.classification.rest.models.ClassificationDefinitionRepresentationModel;
 import pro.taskana.common.rest.models.CollectionRepresentationModel;
 

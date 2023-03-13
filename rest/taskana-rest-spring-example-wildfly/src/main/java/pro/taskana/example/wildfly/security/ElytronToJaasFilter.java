@@ -11,7 +11,6 @@ import org.springframework.web.filter.GenericFilterBean;
 import org.wildfly.security.auth.server.SecurityDomain;
 import org.wildfly.security.auth.server.SecurityIdentity;
 import org.wildfly.security.authz.Roles;
-
 import pro.taskana.common.api.security.GroupPrincipal;
 
 /** Simple Filter to map all Elytron Roles to JAAS-Principals. */

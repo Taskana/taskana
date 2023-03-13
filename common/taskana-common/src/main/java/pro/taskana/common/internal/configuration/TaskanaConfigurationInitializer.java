@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;

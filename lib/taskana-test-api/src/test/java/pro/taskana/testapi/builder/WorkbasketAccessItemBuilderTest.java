@@ -8,7 +8,6 @@ import static pro.taskana.testapi.builder.WorkbasketAccessItemBuilder.newWorkbas
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;

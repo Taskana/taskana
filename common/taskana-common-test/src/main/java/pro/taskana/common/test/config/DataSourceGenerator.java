@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.sql.DataSource;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.test.DockerContainerCreator;
 

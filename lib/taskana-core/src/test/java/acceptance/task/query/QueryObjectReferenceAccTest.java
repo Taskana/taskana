@@ -7,7 +7,6 @@ import static pro.taskana.task.api.ObjectReferenceQueryColumnName.SYSTEM;
 import acceptance.AbstractAccTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.models.ObjectReference;
 
