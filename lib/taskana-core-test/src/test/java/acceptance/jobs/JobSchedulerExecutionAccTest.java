@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,10 +50,10 @@ class JobSchedulerExecutionAccTest implements TaskanaConfigurationModifier {
   @Override
   public Builder modify(Builder builder) {
     return builder
-        .jobSchedulerEnableTaskCleanupJob(true)
-        .cleanupJobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
-        .cleanupJobRunEvery(Duration.ofMillis(1))
-        .cleanupJobMinimumAge(Duration.ofMillis(10));
+        .taskCleanupJobEnabled(true)
+        .jobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
+        .jobRunEvery(Duration.ofMillis(1))
+        .taskCleanupJobMinimumAge(Duration.ofMillis(10));
   }
 
   @WithAccessId(user = "businessadmin")
@@ -124,12 +125,11 @@ class JobSchedulerExecutionAccTest implements TaskanaConfigurationModifier {
     @Override
     public Builder modify(Builder builder) {
       return builder
-          .jobSchedulerEnableTaskCleanupJob(false)
-          .cleanupJobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
-          .cleanupJobRunEvery(Duration.ofMillis(1))
-          .cleanupJobMinimumAge(Duration.ofMillis(10))
-          .jobSchedulerCustomJobs(
-              List.of(AlwaysFailJob.class.getName(), TaskCleanupJob.class.getName()));
+          .taskCleanupJobEnabled(false)
+          .jobFirstRun(Instant.now().minus(10, ChronoUnit.MILLIS))
+          .jobRunEvery(Duration.ofMillis(1))
+          .taskCleanupJobMinimumAge(Duration.ofMillis(10))
+          .customJobs(Set.of(AlwaysFailJob.class.getName(), TaskCleanupJob.class.getName()));
     }
 
     @WithAccessId(user = "businessadmin")

@@ -28,7 +28,7 @@ public enum ClassificationHistoryQueryColumnName implements QueryColumnName {
   CUSTOM_7("custom_7"),
   CUSTOM_8("custom_8");
 
-  private String name;
+  private final String name;
 
   ClassificationHistoryQueryColumnName(String name) {
     this.name = name;

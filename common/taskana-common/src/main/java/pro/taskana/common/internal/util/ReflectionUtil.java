@@ -3,6 +3,8 @@ package pro.taskana.common.internal.util;
 import static java.util.function.Predicate.not;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +39,13 @@ public class ReflectionUtil {
       currentClass = currentClass.getSuperclass();
     }
     return fields.stream().filter(not(Field::isSynthetic)).collect(Collectors.toList());
+  }
+
+  public static Class<?> getRawClass(Type type) {
+    if (type instanceof ParameterizedType) {
+      return getRawClass(((ParameterizedType) type).getRawType());
+    }
+    return (Class<?>) type;
   }
 
   // safe because both Long.class and long.class are of type Class<Long>

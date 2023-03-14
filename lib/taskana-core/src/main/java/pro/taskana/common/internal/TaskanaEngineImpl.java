@@ -98,11 +98,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
-
   private final WorkingTimeCalculator workingTimeCalculator;
-
   private final HistoryEventManager historyEventManager;
   private final CurrentUserContext currentUserContext;
+  private final JobScheduler jobScheduler;
   protected ConnectionManagementMode mode;
   protected TransactionFactory transactionFactory;
   protected SqlSessionManager sessionManager;
@@ -127,7 +126,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     HolidaySchedule holidaySchedule =
         new HolidaySchedule(
             taskanaConfiguration.isGermanPublicHolidaysEnabled(),
-            taskanaConfiguration.isCorpusChristiEnabled(),
+            taskanaConfiguration.isGermanPublicHolidaysCorpusChristiEnabled(),
             taskanaConfiguration.getCustomHolidays());
     workingTimeCalculator =
         new WorkingTimeCalculatorImpl(
@@ -141,18 +140,6 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     initializeDbSchema(taskanaConfiguration);
 
-    // IMPORTANT: SPI has to be initialized last (and in this order) in order
-    // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
-    priorityServiceManager = new PriorityServiceManager();
-    createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
-    historyEventManager = new HistoryEventManager(this);
-    taskRoutingManager = new TaskRoutingManager(this);
-    reviewRequiredManager = new ReviewRequiredManager(this);
-    beforeRequestReviewManager = new BeforeRequestReviewManager(this);
-    afterRequestReviewManager = new AfterRequestReviewManager(this);
-    beforeRequestChangesManager = new BeforeRequestChangesManager(this);
-    afterRequestChangesManager = new AfterRequestChangesManager(this);
-
     if (this.taskanaConfiguration.isJobSchedulerEnabled()) {
       TaskanaConfiguration configuration =
           new TaskanaConfiguration.Builder(this.taskanaConfiguration)
@@ -164,9 +151,23 @@ public class TaskanaEngineImpl implements TaskanaEngine {
               this.taskanaConfiguration.getJobSchedulerInitialStartDelay(),
               this.taskanaConfiguration.getJobSchedulerPeriod(),
               this.taskanaConfiguration.getJobSchedulerPeriodTimeUnit());
-      JobScheduler jobScheduler = new JobScheduler(taskanaEngine, clock);
+      jobScheduler = new JobScheduler(taskanaEngine, clock);
       jobScheduler.start();
+    } else {
+      jobScheduler = null;
     }
+
+    // IMPORTANT: SPI has to be initialized last (and in this order) in order
+    // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
+    priorityServiceManager = new PriorityServiceManager();
+    createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
+    historyEventManager = new HistoryEventManager(this);
+    taskRoutingManager = new TaskRoutingManager(this);
+    reviewRequiredManager = new ReviewRequiredManager(this);
+    beforeRequestReviewManager = new BeforeRequestReviewManager(this);
+    afterRequestReviewManager = new AfterRequestReviewManager(this);
+    beforeRequestChangesManager = new BeforeRequestChangesManager(this);
+    afterRequestChangesManager = new AfterRequestChangesManager(this);
 
     // don't remove, to reset possible explicit mode
     this.mode = connectionManagementMode;
@@ -255,6 +256,10 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   public UserService getUserService() {
     return new UserServiceImpl(
         internalTaskanaEngineImpl, sessionManager.getMapper(UserMapper.class));
+  }
+
+  public JobScheduler getJobScheduler() {
+    return jobScheduler;
   }
 
   @Override
@@ -363,12 +368,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
    */
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
-        new Environment("default", this.transactionFactory, taskanaConfiguration.getDatasource());
+        new Environment("default", this.transactionFactory, taskanaConfiguration.getDataSource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     DB db;
-    try (Connection con = taskanaConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaConfiguration.getDataSource().getConnection()) {
       db = DB.getDB(con);
       configuration.setDatabaseId(db.dbProductId);
     } catch (SQLException e) {
@@ -426,7 +431,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private void initializeDbSchema(TaskanaConfiguration taskanaConfiguration) throws SQLException {
     DbSchemaCreator dbSchemaCreator =
         new DbSchemaCreator(
-            taskanaConfiguration.getDatasource(), taskanaConfiguration.getSchemaName());
+            taskanaConfiguration.getDataSource(), taskanaConfiguration.getSchemaName());
     boolean schemaCreated = dbSchemaCreator.run();
 
     if (!schemaCreated && !dbSchemaCreator.isValidSchemaVersion(MINIMAL_TASKANA_SCHEMA_VERSION)) {

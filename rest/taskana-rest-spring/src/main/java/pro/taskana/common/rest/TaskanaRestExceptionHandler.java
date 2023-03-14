@@ -46,7 +46,6 @@ import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.internal.util.MapCreator;
-import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.ExceptionRepresentationModel;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -74,58 +73,56 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   public static final String ERROR_KEY_QUERY_MALFORMED = "QUERY_PARAMETER_MALFORMED";
   public static final String ERROR_KEY_PAYLOAD = "PAYLOAD_TOO_LARGE";
   public static final String ERROR_KEY_UNKNOWN_ERROR = "UNKNOWN_ERROR";
-  private static final Map<String, HttpStatus> HTTP_STATUS_BY_ERRORCODE_KEY =
-      Stream.of(
-              Pair.of(MalformedServiceLevelException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              Pair.of(WrongCustomHolidayFormatException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              Pair.of(DomainNotFoundException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              Pair.of(InvalidArgumentException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              Pair.of(ERROR_KEY_QUERY_MALFORMED, HttpStatus.BAD_REQUEST),
-              Pair.of(InvalidCallbackStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              Pair.of(InvalidOwnerException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              Pair.of(InvalidTaskStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
-              //
-              Pair.of(NotAuthorizedException.ERROR_KEY, HttpStatus.FORBIDDEN),
-              Pair.of(NotAuthorizedOnTaskCommentException.ERROR_KEY, HttpStatus.FORBIDDEN),
-              Pair.of(NotAuthorizedOnWorkbasketException.ERROR_KEY_ID, HttpStatus.FORBIDDEN),
-              Pair.of(
-                  NotAuthorizedOnWorkbasketException.ERROR_KEY_KEY_DOMAIN, HttpStatus.FORBIDDEN),
-              //
-              Pair.of(ClassificationNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
-              Pair.of(ClassificationNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),
-              Pair.of(TaskCommentNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
-              Pair.of(TaskNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
-              Pair.of(UserNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
-              Pair.of(WorkbasketNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
-              Pair.of(WorkbasketNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),
-              Pair.of(TaskanaHistoryEventNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
-              //
-              Pair.of(AttachmentPersistenceException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(ClassificationAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(ConcurrencyException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(TaskAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(UserAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(WorkbasketAccessItemAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(WorkbasketAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
-              Pair.of(WorkbasketMarkedForDeletionException.ERROR_KEY, HttpStatus.CONFLICT),
-              //
-              Pair.of(ERROR_KEY_PAYLOAD, HttpStatus.PAYLOAD_TOO_LARGE),
-              //
-              Pair.of(ClassificationInUseException.ERROR_KEY, HttpStatus.LOCKED),
-              Pair.of(WorkbasketInUseException.ERROR_KEY, HttpStatus.LOCKED),
-              //
-              Pair.of(AutocommitFailedException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
-              Pair.of(ConnectionNotSetException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
-              Pair.of(SystemException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
-              Pair.of(UnsupportedDatabaseException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
-              Pair.of(ERROR_KEY_UNKNOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR))
-          .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+  private static final Map<String, HttpStatus> HTTP_STATUS_BY_ERROR_CODE_KEY =
+      Map.ofEntries(
+          Map.entry(MalformedServiceLevelException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          Map.entry(WrongCustomHolidayFormatException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          Map.entry(DomainNotFoundException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          Map.entry(InvalidArgumentException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          Map.entry(ERROR_KEY_QUERY_MALFORMED, HttpStatus.BAD_REQUEST),
+          Map.entry(InvalidCallbackStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          Map.entry(InvalidOwnerException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          Map.entry(InvalidTaskStateException.ERROR_KEY, HttpStatus.BAD_REQUEST),
+          //
+          Map.entry(NotAuthorizedException.ERROR_KEY, HttpStatus.FORBIDDEN),
+          Map.entry(NotAuthorizedOnTaskCommentException.ERROR_KEY, HttpStatus.FORBIDDEN),
+          Map.entry(NotAuthorizedOnWorkbasketException.ERROR_KEY_ID, HttpStatus.FORBIDDEN),
+          Map.entry(NotAuthorizedOnWorkbasketException.ERROR_KEY_KEY_DOMAIN, HttpStatus.FORBIDDEN),
+          //
+          Map.entry(ClassificationNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
+          Map.entry(ClassificationNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),
+          Map.entry(TaskCommentNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+          Map.entry(TaskNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+          Map.entry(UserNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+          Map.entry(WorkbasketNotFoundException.ERROR_KEY_ID, HttpStatus.NOT_FOUND),
+          Map.entry(WorkbasketNotFoundException.ERROR_KEY_KEY_DOMAIN, HttpStatus.NOT_FOUND),
+          Map.entry(TaskanaHistoryEventNotFoundException.ERROR_KEY, HttpStatus.NOT_FOUND),
+          //
+          Map.entry(AttachmentPersistenceException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(ClassificationAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(ConcurrencyException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(TaskAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(UserAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(WorkbasketAccessItemAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(WorkbasketAlreadyExistException.ERROR_KEY, HttpStatus.CONFLICT),
+          Map.entry(WorkbasketMarkedForDeletionException.ERROR_KEY, HttpStatus.CONFLICT),
+          //
+          Map.entry(ERROR_KEY_PAYLOAD, HttpStatus.PAYLOAD_TOO_LARGE),
+          //
+          Map.entry(ClassificationInUseException.ERROR_KEY, HttpStatus.LOCKED),
+          Map.entry(WorkbasketInUseException.ERROR_KEY, HttpStatus.LOCKED),
+          //
+          Map.entry(AutocommitFailedException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+          Map.entry(ConnectionNotSetException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+          Map.entry(SystemException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+          Map.entry(UnsupportedDatabaseException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
+          Map.entry(ERROR_KEY_UNKNOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
       MaxUploadSizeExceededException ex, WebRequest req) {
     HttpStatus status =
-        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+        HTTP_STATUS_BY_ERROR_CODE_KEY.getOrDefault(
             ERROR_KEY_PAYLOAD, HttpStatus.INTERNAL_SERVER_ERROR);
     return buildResponse(ErrorCode.of(ERROR_KEY_PAYLOAD), ex, req, status);
   }
@@ -146,7 +143,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   protected ResponseEntity<Object> handleIllegalArgumentException(
       IllegalArgumentException ex, WebRequest req) {
     HttpStatus status =
-        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+        HTTP_STATUS_BY_ERROR_CODE_KEY.getOrDefault(
             InvalidArgumentException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR);
     return buildResponse(ErrorCode.of(InvalidArgumentException.ERROR_KEY), ex, req, status);
   }
@@ -155,7 +152,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   protected ResponseEntity<Object> handleTaskanaRuntimeException(
       TaskanaRuntimeException ex, WebRequest req) {
     HttpStatus status =
-        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+        HTTP_STATUS_BY_ERROR_CODE_KEY.getOrDefault(
             ex.getErrorCode().getKey(), HttpStatus.INTERNAL_SERVER_ERROR);
     return buildResponse(ex.getErrorCode(), ex, req, status);
   }
@@ -163,7 +160,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
   @ExceptionHandler(TaskanaException.class)
   protected ResponseEntity<Object> handleTaskanaException(TaskanaException ex, WebRequest req) {
     HttpStatus status =
-        HTTP_STATUS_BY_ERRORCODE_KEY.getOrDefault(
+        HTTP_STATUS_BY_ERROR_CODE_KEY.getOrDefault(
             ex.getErrorCode().getKey(), HttpStatus.INTERNAL_SERVER_ERROR);
     return buildResponse(ex.getErrorCode(), ex, req, status);
   }

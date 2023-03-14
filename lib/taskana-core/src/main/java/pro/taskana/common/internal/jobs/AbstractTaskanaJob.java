@@ -31,8 +31,8 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     this.txProvider = txProvider;
     this.scheduledJob = job;
     this.async = async;
-    firstRun = taskanaEngineImpl.getConfiguration().getCleanupJobFirstRun();
-    runEvery = taskanaEngineImpl.getConfiguration().getCleanupJobRunEvery();
+    firstRun = taskanaEngineImpl.getConfiguration().getJobFirstRun();
+    runEvery = taskanaEngineImpl.getConfiguration().getJobRunEvery();
   }
 
   public static TaskanaJob createFromScheduledJob(
@@ -111,6 +111,18 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
     jobService.deleteJobs(job.getType());
     job.scheduleNextJob();
+  }
+
+  public boolean isAsync() {
+    return async;
+  }
+
+  public Instant getFirstRun() {
+    return firstRun;
+  }
+
+  public Duration getRunEvery() {
+    return runEvery;
   }
 
   protected abstract String getType();

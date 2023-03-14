@@ -9,10 +9,12 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
@@ -21,6 +23,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
@@ -45,6 +48,12 @@ public abstract class AbstractAccTest {
   @BeforeAll
   protected static void setupTest() throws Exception {
     resetDb(false);
+  }
+
+  @AfterAll
+  protected static void destroyClass() {
+    Optional.ofNullable(((TaskanaEngineImpl) taskanaEngine).getJobScheduler())
+        .ifPresent(JobScheduler::stop);
   }
 
   protected static void resetDb(boolean dropTables) throws Exception {

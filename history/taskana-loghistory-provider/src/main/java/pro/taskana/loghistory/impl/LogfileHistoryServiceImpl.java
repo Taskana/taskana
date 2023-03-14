@@ -15,10 +15,7 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 
 public class LogfileHistoryServiceImpl implements TaskanaHistory {
 
-  public static final String TASKANA_HISTORY_LOGGER_NAME = "taskana.historylogger.name";
   private static final Logger LOGGER = LoggerFactory.getLogger(LogfileHistoryServiceImpl.class);
-  private static final String JSON_EXCEPTION =
-      "Caught exception while serializing history event to JSON ";
   private ObjectMapper objectMapper;
   private Logger historyLogger;
 
@@ -27,8 +24,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
 
     objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    String historyLoggerName =
-        taskanaEngine.getConfiguration().getProperties().get(TASKANA_HISTORY_LOGGER_NAME);
+    String historyLoggerName = taskanaEngine.getConfiguration().getLogHistoryLoggerName();
 
     if (historyLoggerName != null) {
       historyLogger = LoggerFactory.getLogger(historyLoggerName);
@@ -50,7 +46,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
         historyLogger.info(objectMapper.writeValueAsString(event));
       }
     } catch (JsonProcessingException e) {
-      throw new SystemException(JSON_EXCEPTION, e);
+      throw new SystemException("Caught exception while serializing history event to JSON ", e);
     }
   }
 
@@ -62,7 +58,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
         historyLogger.info(objectMapper.writeValueAsString(event));
       }
     } catch (JsonProcessingException e) {
-      throw new SystemException(JSON_EXCEPTION, e);
+      throw new SystemException("Caught exception while serializing history event to JSON ", e);
     }
   }
 
@@ -74,7 +70,7 @@ public class LogfileHistoryServiceImpl implements TaskanaHistory {
         historyLogger.info(objectMapper.writeValueAsString(event));
       }
     } catch (JsonProcessingException e) {
-      throw new SystemException(JSON_EXCEPTION, e);
+      throw new SystemException("Caught exception while serializing history event to JSON ", e);
     }
   }
 

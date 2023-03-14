@@ -4,7 +4,7 @@ import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.internal.util.MapCreator;
 
 /** This exception is thrown when an entry for the {@linkplain CustomHoliday} has a wrong format. */
-public class WrongCustomHolidayFormatException extends TaskanaException {
+public class WrongCustomHolidayFormatException extends TaskanaRuntimeException {
 
   public static final String ERROR_KEY = "CUSTOM_HOLIDAY_WRONG_FORMAT";
   private final String customHoliday;

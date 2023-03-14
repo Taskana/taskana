@@ -29,19 +29,18 @@ class JobSchedulerInitAccTest implements TaskanaConfigurationModifier {
   @Override
   public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
     return builder
-        .cleanupJobRunEvery(runEvery)
-        .cleanupJobFirstRun(firstRun)
+        .jobRunEvery(runEvery)
+        .jobFirstRun(firstRun)
         // config for TaskUpdatePriorityJob
-        .priorityJobActive(true)
-        .priorityJobRunEvery(runEvery)
-        .priorityJobFirstRun(firstRun)
+        .taskUpdatePriorityJobRunEvery(runEvery)
+        .taskUpdatePriorityJobFirstRun(firstRun)
         .jobSchedulerEnabled(true)
         .jobSchedulerInitialStartDelay(100)
         .jobSchedulerPeriod(100)
         .jobSchedulerPeriodTimeUnit(TimeUnit.SECONDS)
-        .jobSchedulerEnableTaskCleanupJob(true)
-        .jobSchedulerEnableTaskUpdatePriorityJob(true)
-        .jobSchedulerEnableWorkbasketCleanupJob(true);
+        .taskCleanupJobEnabled(true)
+        .taskUpdatePriorityJobEnabled(true)
+        .workbasketCleanupJobEnabled(true);
   }
 
   @Test

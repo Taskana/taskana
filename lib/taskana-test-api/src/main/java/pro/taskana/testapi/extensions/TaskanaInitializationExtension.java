@@ -7,12 +7,14 @@ import static pro.taskana.testapi.util.ExtensionCommunicator.isTopLevelClass;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 import org.junit.platform.commons.JUnitException;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -31,6 +33,7 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
 import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.common.internal.util.SpiLoader;
@@ -50,7 +53,8 @@ import pro.taskana.user.internal.UserServiceImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.internal.WorkbasketServiceImpl;
 
-public class TaskanaInitializationExtension implements TestInstancePostProcessor {
+public class TaskanaInitializationExtension
+    implements TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
   public static final String STORE_TASKANA_ENTITY_MAP = "taskanaEntityMap";
 
@@ -85,6 +89,18 @@ public class TaskanaInitializationExtension implements TestInstancePostProcessor
       }
 
       store.put(STORE_TASKANA_ENTITY_MAP, generateTaskanaEntityMap(taskanaEngine));
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void preDestroyTestInstance(ExtensionContext context) {
+    if (isTopLevelClass(context.getRequiredTestClass())) {
+      Map<Class<?>, Object> entityMap =
+          (Map<Class<?>, Object>) getClassLevelStore(context).get(STORE_TASKANA_ENTITY_MAP);
+      TaskanaEngineImpl taskanaEngineImpl =
+          (TaskanaEngineImpl) entityMap.get(TaskanaEngineImpl.class);
+      Optional.ofNullable(taskanaEngineImpl.getJobScheduler()).ifPresent(JobScheduler::stop);
     }
   }
 

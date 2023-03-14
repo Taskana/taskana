@@ -133,9 +133,9 @@ class TaskanaRoleConfigAccTest {
     List<String> lines =
         List.of(
             "taskana.roles.admin =uSeR " + delimiter + "name=Username,Organisation=novatec",
-            "  taskana.roles.businessadmin  = name=user2, ou = bpm " + delimiter + " user3 ",
+            "  taskana.roles.business_admin  = name=user2, ou = bpm " + delimiter + " user3 ",
             " taskana.roles.user = ",
-            "taskana.roles.taskadmin= taskadmin");
+            "taskana.roles.task_admin= taskadmin");
 
     Files.write(file, lines, StandardCharsets.UTF_8);
 
@@ -147,9 +147,9 @@ class TaskanaRoleConfigAccTest {
     List<String> lines =
         List.of(
             "taskana.roles.admin =uSeR|Username",
-            "  taskana.roles.businessadmin  = user2  | user3 ",
+            "  taskana.roles.business_admin  = user2  | user3 ",
             " taskana.roles.user = nobody",
-            "taskana.roles.taskadmin= taskadmin");
+            "taskana.roles.task_admin= taskadmin");
 
     Files.write(file, lines, StandardCharsets.UTF_8);
 

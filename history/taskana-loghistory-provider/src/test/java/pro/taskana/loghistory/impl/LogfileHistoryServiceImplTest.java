@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,9 +38,7 @@ class LogfileHistoryServiceImplTest {
     TaskanaConfiguration taskanaConfiguration = Mockito.mock(TaskanaConfiguration.class);
     taskanaEngineMock = Mockito.mock(TaskanaEngine.class);
     Mockito.when(taskanaEngineMock.getConfiguration()).thenReturn(taskanaConfiguration);
-    Map<String, String> mockProperties = new HashMap<>();
-    mockProperties.put(LogfileHistoryServiceImpl.TASKANA_HISTORY_LOGGER_NAME, "AUDIT");
-    Mockito.when(taskanaConfiguration.getProperties()).thenReturn(mockProperties);
+    Mockito.when(taskanaConfiguration.getLogHistoryLoggerName()).thenReturn("AUDIT");
   }
 
   @Test

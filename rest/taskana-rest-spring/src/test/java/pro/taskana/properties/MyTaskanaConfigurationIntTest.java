@@ -19,7 +19,6 @@ class MyTaskanaConfigurationIntTest {
 
   @Test
   void should_loadApplicationContextWithMyTaskanaProperties_When_ApplicationStarts() {
-
     assertThat(appContext.getBean("taskanaPropertiesFileName", String.class))
         .isEqualTo("/mytaskana.properties");
     assertThat(appContext.getBean("taskanaPropertiesDelimiter", String.class)).isEqualTo(";");

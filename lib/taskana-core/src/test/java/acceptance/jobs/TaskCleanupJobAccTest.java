@@ -160,7 +160,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
             .taskCleanupJobAllCompletedSameParentBusiness(true)
-            .cleanupJobMinimumAge(Duration.ofMillis(1))
+            .taskCleanupJobMinimumAge(Duration.ofMillis(1))
             .build();
     TaskanaEngine taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
@@ -206,7 +206,7 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
 
     JobRunner runner = new JobRunner(taskanaEngine);
     runner.runJobs();
-    Duration runEvery = taskanaConfiguration.getCleanupJobRunEvery();
+    Duration runEvery = taskanaConfiguration.getJobRunEvery();
     jobsToRun = jobMapper.findJobsToRun(Instant.now().plus(runEvery));
 
     assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue.plus(runEvery));
@@ -219,13 +219,13 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
     Duration runEvery = Duration.ofMinutes(5);
     TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaConfiguration)
-            .cleanupJobRunEvery(runEvery)
-            .cleanupJobFirstRun(firstRun)
+            .jobRunEvery(runEvery)
+            .jobFirstRun(firstRun)
             .jobSchedulerEnabled(true)
             .jobSchedulerInitialStartDelay(1)
             .jobSchedulerPeriod(1)
             .jobSchedulerPeriodTimeUnit(TimeUnit.SECONDS)
-            .jobSchedulerEnableTaskCleanupJob(true)
+            .taskCleanupJobEnabled(true)
             .build();
 
     TaskanaEngine taskanaEngine =
@@ -242,8 +242,8 @@ class TaskCleanupJobAccTest extends AbstractAccTest {
       throws Exception {
     TaskanaConfiguration taskanaConfiguration =
         new TaskanaConfiguration.Builder(AbstractAccTest.taskanaEngine.getConfiguration())
-            .cleanupJobRunEvery(Duration.ofMillis(1))
-            .cleanupJobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES))
+            .jobRunEvery(Duration.ofMillis(1))
+            .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES))
             .build();
 
     TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);

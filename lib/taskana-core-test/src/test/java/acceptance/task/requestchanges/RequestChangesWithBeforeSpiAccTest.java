@@ -283,7 +283,7 @@ public class RequestChangesWithBeforeSpiAccTest {
     @BeforeAll
     void setup(TaskanaConfiguration taskanaConfiguration) {
       transactionProvider =
-          new PlainJavaTransactionProvider(taskanaEngine, taskanaConfiguration.getDatasource());
+          new PlainJavaTransactionProvider(taskanaEngine, taskanaConfiguration.getDataSource());
     }
 
     @WithAccessId(user = "user-1-1")

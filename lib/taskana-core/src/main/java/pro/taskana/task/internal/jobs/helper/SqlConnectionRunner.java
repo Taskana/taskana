@@ -33,6 +33,6 @@ public class SqlConnectionRunner {
   }
 
   public Connection getConnection() throws SQLException {
-    return taskanaEngine.getConfiguration().getDatasource().getConnection();
+    return taskanaEngine.getConfiguration().getDataSource().getConnection();
   }
 }
