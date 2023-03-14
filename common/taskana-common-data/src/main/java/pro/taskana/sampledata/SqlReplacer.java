@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DB;
 
 /** This class replaces boolean values with int values if the database is db2. */
@@ -43,7 +44,7 @@ final class SqlReplacer {
    */
   static String replaceDatePlaceholder(ZonedDateTime now, String sql) {
     Matcher m = RELATIVE_DATE_PATTERN.matcher(sql);
-    StringBuffer sb = new StringBuffer(sql.length());
+    StringBuilder sb = new StringBuilder(sql.length());
     while (m.find()) {
       long daysToShift = Long.parseLong(m.group(1));
       String daysAsStringDate = formatToSqlDate(now, daysToShift);
@@ -58,7 +59,12 @@ final class SqlReplacer {
         .map(
             inputStream ->
                 new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
-        .orElse(null);
+        .orElseThrow(
+            () ->
+                new SystemException(
+                    String.format(
+                        "could not find sql script '%s' in the classpath of '%s'",
+                        script, SampleDataGenerator.class)));
   }
 
   private static String replaceBooleanWithInteger(String sql) {
