@@ -1,6 +1,7 @@
 package pro.taskana.example;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
@@ -21,7 +22,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.common.internal.util.IdGenerator;
@@ -35,6 +35,7 @@ import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
 import pro.taskana.workbasket.api.exceptions.WorkbasketInUseException;
+import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 import pro.taskana.workbasket.internal.models.WorkbasketImpl;
@@ -167,66 +168,61 @@ class TaskanaTransactionIntTest {
   }
 
   @Test
-  void testWorkbasketCleanupJobTransaction() {
-    try {
+  void testWorkbasketCleanupJobTransaction() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    workbasketService.createWorkbasket(createWorkBasket("key1", "wb1"));
+    workbasketService.createWorkbasket(createWorkBasket("key2", "wb2"));
+    workbasketService.createWorkbasket(createWorkBasket("key3", "wb3"));
+    TaskService taskService = taskanaEngine.getTaskService();
+    ClassificationService classificationService = taskanaEngine.getClassificationService();
+    classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
+    taskService.createTask(createTask("key1", "TEST"));
+    taskService.createTask(createTask("key2", "TEST"));
+    taskService.createTask(createTask("key3", "TEST"));
 
-      WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
-      workbasketService.createWorkbasket(createWorkBasket("key1", "wb1"));
-      workbasketService.createWorkbasket(createWorkBasket("key2", "wb2"));
-      workbasketService.createWorkbasket(createWorkBasket("key3", "wb3"));
-      TaskService taskService = taskanaEngine.getTaskService();
-      ClassificationService classificationService = taskanaEngine.getClassificationService();
-      classificationService.newClassification("TEST", "DOMAIN_A", "TASK");
-      taskService.createTask(createTask("key1", "TEST"));
-      taskService.createTask(createTask("key2", "TEST"));
-      taskService.createTask(createTask("key3", "TEST"));
+    assertThat(workbasketService.createWorkbasketQuery().count()).isEqualTo(3);
+    assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
-      assertThat(workbasketService.createWorkbasketQuery().count()).isEqualTo(3);
-      assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
+    List<TaskSummary> tasks =
+        taskService
+            .createTaskQuery()
+            .workbasketKeyDomainIn(new KeyDomain("key1", "DOMAIN_A"))
+            .list();
+    taskService.claim(tasks.get(0).getId());
+    taskService.completeTask(tasks.get(0).getId());
+    tasks =
+        taskService
+            .createTaskQuery()
+            .workbasketKeyDomainIn(new KeyDomain("key2", "DOMAIN_A"))
+            .list();
+    taskService.claim(tasks.get(0).getId());
+    taskService.completeTask(tasks.get(0).getId());
+    workbasketService.deleteWorkbasket(workbasketService.getWorkbasket("key1", "DOMAIN_A").getId());
+    workbasketService.deleteWorkbasket(workbasketService.getWorkbasket("key2", "DOMAIN_A").getId());
 
-      List<TaskSummary> tasks =
-          taskService
-              .createTaskQuery()
-              .workbasketKeyDomainIn(new KeyDomain("key1", "DOMAIN_A"))
-              .list();
-      taskService.claim(tasks.get(0).getId());
-      taskService.completeTask(tasks.get(0).getId());
-      tasks =
-          taskService
-              .createTaskQuery()
-              .workbasketKeyDomainIn(new KeyDomain("key2", "DOMAIN_A"))
-              .list();
-      taskService.claim(tasks.get(0).getId());
-      taskService.completeTask(tasks.get(0).getId());
-      workbasketService.deleteWorkbasket(
-          workbasketService.getWorkbasket("key1", "DOMAIN_A").getId());
-      workbasketService.deleteWorkbasket(
-          workbasketService.getWorkbasket("key2", "DOMAIN_A").getId());
+    // Clean two tasks, key1 and key2.
+    TaskCleanupJob taskCleanupJob =
+        new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
+    taskCleanupJob.run();
 
-      // Clean two tasks, key1 and key2.
-      TaskCleanupJob taskCleanupJob =
-          new TaskCleanupJob(taskanaEngine, springTransactionProvider, null);
-      taskCleanupJob.run();
+    ThrowingCallable httpCall =
+        () ->
+            workbasketService.deleteWorkbasket(
+                workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(WorkbasketInUseException.class)
+        .hasMessageContaining("contains non-completed Tasks");
 
-      ThrowingCallable httpCall =
-          () ->
-              workbasketService.deleteWorkbasket(
-                  workbasketService.getWorkbasket("key3", "DOMAIN_A").getId());
-      assertThatThrownBy(httpCall)
-          .isInstanceOf(WorkbasketInUseException.class)
-          .hasMessageContaining("contains non-completed Tasks");
+    WorkbasketCleanupJob job =
+        new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
+    job.run();
 
-      WorkbasketCleanupJob job =
-          new WorkbasketCleanupJob(taskanaEngine, springTransactionProvider, null);
-      job.run();
-
-      assertThat(workbasketService.getWorkbasket("key1", "DOMAIN_A")).isNull();
-      assertThat(workbasketService.getWorkbasket("key2", "DOMAIN_A")).isNull();
-      assertThat(workbasketService.getWorkbasket("key3", "DOMAIN_A")).isNotNull();
-
-    } catch (TaskanaException e) {
-      e.printStackTrace();
-    }
+    assertThatThrownBy(() -> workbasketService.getWorkbasket("key1", "DOMAIN_A"))
+        .isInstanceOf(WorkbasketNotFoundException.class);
+    assertThatThrownBy(() -> workbasketService.getWorkbasket("key2", "DOMAIN_A"))
+        .isInstanceOf(WorkbasketNotFoundException.class);
+    assertThatCode(() -> workbasketService.getWorkbasket("key3", "DOMAIN_A"))
+        .doesNotThrowAnyException();
   }
 
   private static ObjectReference createDefaultObjRef() {

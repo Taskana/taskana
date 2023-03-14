@@ -663,7 +663,7 @@ public class TaskServiceImpl implements TaskService {
             && taskanaEngine
                 .getEngine()
                 .getConfiguration()
-                .isDeleteHistoryOnTaskDeletionEnabled()) {
+                .isDeleteHistoryEventsOnTaskDeletionEnabled()) {
           historyEventManager.deleteEvents(taskIds);
         }
       }
@@ -1596,7 +1596,10 @@ public class TaskServiceImpl implements TaskService {
       taskMapper.delete(taskId);
 
       if (taskanaEngine.getEngine().isHistoryEnabled()
-          && taskanaEngine.getEngine().getConfiguration().isDeleteHistoryOnTaskDeletionEnabled()) {
+          && taskanaEngine
+              .getEngine()
+              .getConfiguration()
+              .isDeleteHistoryEventsOnTaskDeletionEnabled()) {
         historyEventManager.deleteEvents(Collections.singletonList(taskId));
       }
 

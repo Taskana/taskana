@@ -106,12 +106,12 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
 
   protected SqlSessionManager createSqlSessionManager() {
     Environment environment =
-        new Environment(DEFAULT, this.transactionFactory, taskanaConfiguration.getDatasource());
+        new Environment(DEFAULT, this.transactionFactory, taskanaConfiguration.getDataSource());
     Configuration configuration = new Configuration(environment);
 
     // set databaseId
     DB db;
-    try (Connection con = taskanaConfiguration.getDatasource().getConnection()) {
+    try (Connection con = taskanaConfiguration.getDataSource().getConnection()) {
       db = DB.getDB(con);
       configuration.setDatabaseId(db.dbProductId);
     } catch (SQLException e) {

@@ -8,7 +8,6 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 import static pro.taskana.testapi.DefaultTestEntities.randomTestUser;
 import static pro.taskana.testapi.builder.UserBuilder.newUser;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -1017,7 +1016,7 @@ class UserServiceAccTest {
 
       @Override
       public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
-        return builder.minimalPermissionsToAssignDomains(List.of(WorkbasketPermission.APPEND));
+        return builder.minimalPermissionsToAssignDomains(Set.of(WorkbasketPermission.APPEND));
       }
 
       @WithAccessId(user = "user-1-1")
@@ -1094,7 +1093,7 @@ class UserServiceAccTest {
 
       @Override
       public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
-        return builder.minimalPermissionsToAssignDomains(new ArrayList<>());
+        return builder.minimalPermissionsToAssignDomains(Set.of());
       }
 
       @WithAccessId(user = "user-1-1")

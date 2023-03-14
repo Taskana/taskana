@@ -1,12 +1,15 @@
 package acceptance.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import javax.sql.DataSource;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
 import pro.taskana.common.test.config.DataSourceGenerator;
 
 class TaskanaConfigurationTest {
@@ -32,7 +35,7 @@ class TaskanaConfigurationTest {
             .initTaskanaProperties("/corpusChristiEnabled.properties", "|")
             .build();
 
-    assertThat(configuration.isCorpusChristiEnabled()).isTrue();
+    assertThat(configuration.isGermanPublicHolidaysCorpusChristiEnabled()).isTrue();
   }
 
   @Test
@@ -47,12 +50,20 @@ class TaskanaConfigurationTest {
   }
 
   @Test
-  void should_ReturnEmptyList_When_AllCustomHolidaysAreInWrongFormatInPropertiesFile() {
+  void should_ThrowError_When_AnyCustomHolidayIsInWrongFormatInPropertiesFile() {
     DataSource ds = DataSourceGenerator.getDataSource();
-    TaskanaConfiguration configuration =
-        new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), true)
-            .initTaskanaProperties("/custom_holiday_with_wrong_format_taskana.properties", "|")
-            .build();
-    assertThat(configuration.getCustomHolidays()).isEmpty();
+    TaskanaConfiguration.Builder builder =
+        new TaskanaConfiguration.Builder(ds, false, DataSourceGenerator.getSchemaName(), true);
+
+    ThrowingCallable call =
+        () ->
+            builder.initTaskanaProperties(
+                "/custom_holiday_with_wrong_format_taskana.properties", "|");
+
+    assertThatThrownBy(call)
+        .isInstanceOf(WrongCustomHolidayFormatException.class)
+        .extracting(WrongCustomHolidayFormatException.class::cast)
+        .extracting(WrongCustomHolidayFormatException::getCustomHoliday)
+        .isEqualTo("31,07");
   }
 }

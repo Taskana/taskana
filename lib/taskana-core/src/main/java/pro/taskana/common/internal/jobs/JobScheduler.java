@@ -28,31 +28,28 @@ public class JobScheduler {
     this.clock = clock;
     this.plainJavaTransactionProvider =
         new PlainJavaTransactionProvider(
-            taskanaEngine, taskanaEngine.getConfiguration().getDatasource());
+            taskanaEngine, taskanaEngine.getConfiguration().getDataSource());
     plainJavaTransactionProvider.executeInTransaction(
         () -> {
-          if (taskanaEngine.getConfiguration().isJobSchedulerEnableTaskCleanupJob()) {
+          if (taskanaEngine.getConfiguration().isTaskCleanupJobEnabled()) {
             AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
             LOGGER.info("Job '{}' enabled", TaskCleanupJob.class.getName());
           }
-          if (taskanaEngine.getConfiguration().isJobSchedulerEnableTaskUpdatePriorityJob()) {
+          if (taskanaEngine.getConfiguration().isTaskUpdatePriorityJobEnabled()) {
             AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskUpdatePriorityJob.class);
             LOGGER.info("Job '{}' enabled", TaskUpdatePriorityJob.class.getName());
           }
-          if (taskanaEngine.getConfiguration().isJobSchedulerEnableWorkbasketCleanupJob()) {
+          if (taskanaEngine.getConfiguration().isWorkbasketCleanupJobEnabled()) {
             AbstractTaskanaJob.initializeSchedule(taskanaEngine, WorkbasketCleanupJob.class);
             LOGGER.info("Job '{}' enabled", WorkbasketCleanupJob.class.getName());
           }
-          if (taskanaEngine.getConfiguration().isJobSchedulerEnableUserInfoRefreshJob()) {
+          if (taskanaEngine.getConfiguration().isUserInfoRefreshJobEnabled()) {
             initJobByClassName("pro.taskana.user.jobs.UserInfoRefreshJob");
           }
-          if (taskanaEngine.getConfiguration().isJobSchedulerEnableHistorieCleanupJob()) {
+          if (taskanaEngine.getConfiguration().isSimpleHistoryCleanupJobEnabled()) {
             initJobByClassName("pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob");
           }
-          taskanaEngine
-              .getConfiguration()
-              .getJobSchedulerCustomJobs()
-              .forEach(this::initJobByClassName);
+          taskanaEngine.getConfiguration().getCustomJobs().forEach(this::initJobByClassName);
 
           return "Initialized Jobs successfully";
         });

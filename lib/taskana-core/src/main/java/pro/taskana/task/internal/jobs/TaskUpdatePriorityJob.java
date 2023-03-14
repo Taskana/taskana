@@ -17,7 +17,6 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskUpdatePriorityJob.class);
 
   private final int batchSize;
-  private final boolean isJobActive;
 
   public TaskUpdatePriorityJob(TaskanaEngine taskanaEngine) {
     this(taskanaEngine, null, null);
@@ -28,18 +27,13 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
       TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
     super(taskanaEngine, txProvider, scheduledJob, true);
-    batchSize = taskanaEngine.getConfiguration().getPriorityJobBatchSize();
-    isJobActive = taskanaEngine.getConfiguration().isPriorityJobActive();
-    runEvery = taskanaEngine.getConfiguration().getPriorityJobRunEvery();
-    firstRun = taskanaEngine.getConfiguration().getPriorityJobFirstRun();
+    batchSize = taskanaEngine.getConfiguration().getTaskUpdatePriorityJobBatchSize();
+    runEvery = taskanaEngine.getConfiguration().getTaskUpdatePriorityJobRunEvery();
+    firstRun = taskanaEngine.getConfiguration().getTaskUpdatePriorityJobFirstRun();
   }
 
   @Override
   public void execute() {
-    if (!isJobActive()) {
-      LOGGER.debug("Job to update task priority is not active.");
-      return;
-    }
     TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(taskanaEngineImpl);
     LOGGER.info("Running job to calculate all non finished task priorities");
     try {
@@ -49,10 +43,6 @@ public class TaskUpdatePriorityJob extends AbstractTaskanaJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskUpdatePriorityJob.", e);
     }
-  }
-
-  public boolean isJobActive() {
-    return isJobActive;
   }
 
   public int getBatchSize() {

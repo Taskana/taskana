@@ -37,7 +37,11 @@ public class UserServiceImpl implements UserService {
     this.userMapper = userMapper;
     this.workbasketService = internalTaskanaEngine.getEngine().getWorkbasketService();
     minimalWorkbasketPermissions =
-        internalTaskanaEngine.getEngine().getConfiguration().getMinimalPermissionsToAssignDomains();
+        List.copyOf(
+            internalTaskanaEngine
+                .getEngine()
+                .getConfiguration()
+                .getMinimalPermissionsToAssignDomains());
   }
 
   @Override

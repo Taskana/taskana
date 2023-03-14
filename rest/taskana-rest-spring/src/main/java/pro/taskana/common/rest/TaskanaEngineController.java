@@ -1,7 +1,7 @@
 package pro.taskana.common.rest;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +48,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_DOMAIN)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<List<String>> getDomains() {
+  public ResponseEntity<Set<String>> getDomains() {
     return ResponseEntity.ok(taskanaConfiguration.getDomains());
   }
 
@@ -62,7 +62,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<List<String>> getClassificationCategories(
+  public ResponseEntity<Set<String>> getClassificationCategories(
       @RequestParam(required = false) String type) {
     if (type != null) {
       return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType(type));
@@ -77,7 +77,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_TYPES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<List<String>> getClassificationTypes() {
+  public ResponseEntity<Set<String>> getClassificationTypes() {
     return ResponseEntity.ok(taskanaConfiguration.getClassificationTypes());
   }
 
@@ -89,7 +89,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
+  public ResponseEntity<Map<String, Set<String>>> getClassificationCategoriesByTypeMap() {
     return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType());
   }
 

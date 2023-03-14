@@ -32,36 +32,30 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HistoryCleanupJob.class);
 
-  private static final String TASKANA_JOB_HISTORY_BATCH_SIZE = "taskana.jobs.history.batchSize";
-
-  private static final String TASKANA_JOB_HISTORY_CLEANUP_MINIMUM_AGE =
-      "taskana.jobs.history.cleanup.minimumAge";
-
   private final TaskanaHistoryEngineImpl taskanaHistoryEngine =
       TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngineImpl);
 
-  private final boolean allCompletedSameParentBusiness;
+  private final boolean allCompletedSameParentBusiness =
+      taskanaEngineImpl
+          .getConfiguration()
+          .isSimpleHistoryCleanupJobAllCompletedSameParentBusiness();
 
-  private Duration minimumAge = taskanaEngineImpl.getConfiguration().getCleanupJobMinimumAge();
-  private int batchSize = taskanaEngineImpl.getConfiguration().getJobBatchSize();
+  private final Duration minimumAge =
+      taskanaEngineImpl.getConfiguration().getSimpleHistoryCleanupJobMinimumAge();
+  private final int batchSize =
+      taskanaEngineImpl.getConfiguration().getSimpleHistoryCleanupJobBatchSize();
 
   public HistoryCleanupJob(
       TaskanaEngine taskanaEngine,
       TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
     super(taskanaEngine, txProvider, scheduledJob, true);
-    allCompletedSameParentBusiness =
-        taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
-    initJobParameters(taskanaEngine.getConfiguration().getProperties());
   }
 
   @Override
   public void execute() {
-
     Instant createdBefore = Instant.now().minus(minimumAge);
-
     LOGGER.info("Running job to delete all history events created before ({})", createdBefore);
-
     try {
       SimpleHistoryServiceImpl simpleHistoryService =
           (SimpleHistoryServiceImpl) taskanaHistoryEngine.getTaskanaHistoryService();
@@ -198,43 +192,5 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
     }
 
     return deletedTasksCount;
-  }
-
-  private void initJobParameters(Map<String, String> props) {
-
-    String jobBatchSizeProperty = props.get(TASKANA_JOB_HISTORY_BATCH_SIZE);
-    if (jobBatchSizeProperty != null && !jobBatchSizeProperty.isEmpty()) {
-      try {
-        batchSize = Integer.parseInt(jobBatchSizeProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse jobBatchSizeProperty ({}). Using default. Exception: {} ",
-            jobBatchSizeProperty,
-            e.getMessage());
-      }
-    }
-
-    String historyEventCleanupJobMinimumAgeProperty =
-        props.get(TASKANA_JOB_HISTORY_CLEANUP_MINIMUM_AGE);
-    if (historyEventCleanupJobMinimumAgeProperty != null
-        && !historyEventCleanupJobMinimumAgeProperty.isEmpty()) {
-      try {
-        minimumAge = Duration.parse(historyEventCleanupJobMinimumAgeProperty);
-      } catch (Exception e) {
-        LOGGER.warn(
-            "Could not parse historyEventCleanupJobMinimumAgeProperty ({}). Using default."
-                + " Exception: {} ",
-            historyEventCleanupJobMinimumAgeProperty,
-            e.getMessage());
-      }
-    }
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Configured number of history events per transaction: {}", batchSize);
-      LOGGER.debug("HistoryCleanupJob configuration: runs every {}", runEvery);
-      LOGGER.debug(
-          "HistoryCleanupJob configuration: minimum age of history events to be cleanup up is {}",
-          minimumAge);
-    }
   }
 }

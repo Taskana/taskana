@@ -20,6 +20,11 @@ public class TaskanaRuntimeException extends RuntimeException {
 
   @Override
   public String toString() {
-    return "TaskanaRuntimeException [errorCode=" + errorCode + ", message=" + getMessage() + "]";
+    return getClass().getSimpleName()
+        + " [errorCode="
+        + errorCode
+        + ", message="
+        + getMessage()
+        + "]";
   }
 }

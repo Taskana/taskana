@@ -604,13 +604,13 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
-  public TaskQuery priorityWithin(IntInterval[] priorities) {
+  public TaskQuery priorityWithin(IntInterval... priorities) {
     this.priorityWithin = priorities;
     return this;
   }
 
   @Override
-  public TaskQuery priorityNotWithin(IntInterval[] priorities) {
+  public TaskQuery priorityNotWithin(IntInterval... priorities) {
     this.priorityNotWithin = priorities;
     return this;
   }

@@ -40,7 +40,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
       TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
     super(taskanaEngine, txProvider, scheduledJob, true);
-    minimumAge = taskanaEngine.getConfiguration().getCleanupJobMinimumAge();
+    minimumAge = taskanaEngine.getConfiguration().getTaskCleanupJobMinimumAge();
     batchSize = taskanaEngine.getConfiguration().getJobBatchSize();
     allCompletedSameParentBusiness =
         taskanaEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();

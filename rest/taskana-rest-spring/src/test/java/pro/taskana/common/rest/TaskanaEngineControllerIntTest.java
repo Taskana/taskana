@@ -60,7 +60,7 @@ class TaskanaEngineControllerIntTest {
         TEMPLATE.exchange(
             url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody())
-        .containsExactlyInAnyOrder("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS", "EXTERNAL");
+        .containsExactlyInAnyOrder("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS");
   }
 
   @Test
@@ -78,8 +78,9 @@ class TaskanaEngineControllerIntTest {
     assertThat(response.getBody().getUserId()).isEqualTo("teamlead-1");
     assertThat(response.getBody().getGroupIds())
         .contains("cn=business-admins,cn=groups,ou=test,o=taskana");
-    assertThat(response.getBody().getRoles()).contains(TaskanaRole.BUSINESS_ADMIN);
-    assertThat(response.getBody().getRoles()).doesNotContain(TaskanaRole.ADMIN);
+    assertThat(response.getBody().getRoles())
+        .contains(TaskanaRole.BUSINESS_ADMIN)
+        .doesNotContain(TaskanaRole.ADMIN);
   }
 
   @Test
