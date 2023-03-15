@@ -2,7 +2,6 @@ package pro.taskana.spi.history.api;
 
 import java.util.List;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
@@ -46,7 +45,7 @@ public interface TaskanaHistory {
    * @param taskIds the task ids for which all history events must be deleted
    * @throws InvalidArgumentException If the list of taskIds is null
    * @throws NotAuthorizedException if the current user is not member of {@linkplain
-   *     TaskanaRole#ADMIN}
+   *     pro.taskana.common.api.TaskanaRole#ADMIN}
    */
   void deleteHistoryEventsByTaskIds(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException;
