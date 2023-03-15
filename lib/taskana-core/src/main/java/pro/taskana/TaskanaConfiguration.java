@@ -1128,7 +1128,7 @@ public class TaskanaConfiguration {
     // endregion
 
     public TaskanaConfiguration build() {
-      transformConfiguration();
+      adjustConfiguration();
       validateConfiguration();
       return new TaskanaConfiguration(this);
     }
@@ -1157,7 +1157,7 @@ public class TaskanaConfiguration {
       }
     }
 
-    private void transformConfiguration() {
+    private void adjustConfiguration() {
       domains = domains.stream().map(String::toUpperCase).collect(Collectors.toSet());
       classificationTypes =
           classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toSet());
