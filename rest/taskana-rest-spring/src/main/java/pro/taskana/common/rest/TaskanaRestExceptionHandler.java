@@ -45,7 +45,6 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.api.exceptions.UnsupportedDatabaseException;
 import pro.taskana.common.api.exceptions.WrongCustomHolidayFormatException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.common.rest.models.ExceptionRepresentationModel;
 import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundException;
 import pro.taskana.task.api.exceptions.AttachmentPersistenceException;
@@ -190,8 +189,7 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
     ErrorCode errorCode =
         wrongQueryParameters.length != 0
             ? ErrorCode.of(
-                ERROR_KEY_QUERY_MALFORMED,
-                MapCreator.of("malformedQueryParameters", wrongQueryParameters))
+                ERROR_KEY_QUERY_MALFORMED, Map.of("malformedQueryParameters", wrongQueryParameters))
             : null;
 
     return buildResponse(errorCode, ex, request, HttpStatus.BAD_REQUEST);

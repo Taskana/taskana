@@ -1,8 +1,8 @@
 package pro.taskana.workbasket.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
 /**
@@ -20,7 +20,11 @@ public class WorkbasketAccessItemAlreadyExistException extends TaskanaException 
         String.format(
             "WorkbasketAccessItem with access id '%s' and workbasket id '%s' already exists.",
             accessId, workbasketId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("accessId", accessId, "workbasketId", workbasketId)));
+        ErrorCode.of(
+            ERROR_KEY,
+            Map.ofEntries(
+                Map.entry("accessId", ensureNullIsHandled(accessId)),
+                Map.entry("workbasketId", ensureNullIsHandled(workbasketId)))));
     this.accessId = accessId;
     this.workbasketId = workbasketId;
   }

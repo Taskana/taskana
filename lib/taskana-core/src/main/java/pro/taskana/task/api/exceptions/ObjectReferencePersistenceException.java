@@ -1,8 +1,8 @@
 package pro.taskana.task.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 
@@ -26,7 +26,10 @@ public class ObjectReferencePersistenceException extends TaskanaException {
                 + "because it already exists.",
             objectReferenceId, taskId),
         ErrorCode.of(
-            ERROR_KEY, MapCreator.of("objectReferenceId", objectReferenceId, "taskId", taskId)),
+            ERROR_KEY,
+            Map.ofEntries(
+                Map.entry("objectReferenceId", ensureNullIsHandled(objectReferenceId)),
+                Map.entry("taskId", ensureNullIsHandled(taskId)))),
         cause);
     this.objectReferenceId = objectReferenceId;
     this.taskId = taskId;

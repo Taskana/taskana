@@ -1,9 +1,9 @@
 package pro.taskana.task.api.exceptions;
 
 import java.util.Arrays;
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.Task;
 
@@ -26,13 +26,10 @@ public class InvalidTaskStateException extends TaskanaException {
             taskId, taskState, Arrays.toString(requiredTaskStates)),
         ErrorCode.of(
             ERROR_KEY,
-            MapCreator.of(
-                "taskId",
-                taskId,
-                "taskState",
-                taskState,
-                "requiredTaskStates",
-                requiredTaskStates)));
+            Map.ofEntries(
+                Map.entry("taskId", taskId),
+                Map.entry("taskState", taskState),
+                Map.entry("requiredTaskStates", requiredTaskStates))));
 
     this.taskId = taskId;
     this.taskState = taskState;

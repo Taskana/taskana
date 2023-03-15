@@ -1,8 +1,8 @@
 package pro.taskana.task.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.Task;
 
 /**
@@ -17,7 +17,7 @@ public class TaskAlreadyExistException extends TaskanaException {
   public TaskAlreadyExistException(String externalId) {
     super(
         String.format("Task with external id '%s' already exists", externalId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("externalTaskId", externalId)));
+        ErrorCode.of(ERROR_KEY, Map.of("externalTaskId", ensureNullIsHandled(externalId))));
     this.externalId = externalId;
   }
 

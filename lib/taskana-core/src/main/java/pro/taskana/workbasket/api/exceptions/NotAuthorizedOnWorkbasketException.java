@@ -1,9 +1,9 @@
 package pro.taskana.workbasket.api.exceptions;
 
 import java.util.Arrays;
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -30,13 +30,10 @@ public class NotAuthorizedOnWorkbasketException extends TaskanaException {
             currentUserId, Arrays.toString(requiredPermissions), workbasketId),
         ErrorCode.of(
             ERROR_KEY_ID,
-            MapCreator.of(
-                "currentUserId",
-                currentUserId,
-                "workbasketId",
-                workbasketId,
-                "requiredPermissions",
-                requiredPermissions)));
+            Map.ofEntries(
+                Map.entry("currentUserId", ensureNullIsHandled(currentUserId)),
+                Map.entry("workbasketId", ensureNullIsHandled(workbasketId)),
+                Map.entry("requiredPermissions", ensureNullIsHandled(requiredPermissions)))));
 
     this.currentUserId = currentUserId;
     this.requiredPermissions = requiredPermissions;
@@ -57,15 +54,11 @@ public class NotAuthorizedOnWorkbasketException extends TaskanaException {
             currentUserId, Arrays.toString(requiredPermissions), workbasketKey, domain),
         ErrorCode.of(
             ERROR_KEY_KEY_DOMAIN,
-            MapCreator.of(
-                "currentUserId",
-                currentUserId,
-                "workbasketKey",
-                workbasketKey,
-                "domain",
-                domain,
-                "requiredPermissions",
-                requiredPermissions)));
+            Map.ofEntries(
+                Map.entry("currentUserId", ensureNullIsHandled(currentUserId)),
+                Map.entry("workbasketKey", ensureNullIsHandled(workbasketKey)),
+                Map.entry("domain", ensureNullIsHandled(domain)),
+                Map.entry("requiredPermissions", ensureNullIsHandled(requiredPermissions)))));
 
     this.currentUserId = currentUserId;
     this.requiredPermissions = requiredPermissions;

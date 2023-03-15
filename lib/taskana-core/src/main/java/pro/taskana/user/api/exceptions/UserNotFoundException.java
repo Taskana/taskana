@@ -1,8 +1,8 @@
 package pro.taskana.user.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.user.api.models.User;
 
 /**
@@ -16,7 +16,7 @@ public class UserNotFoundException extends TaskanaException {
   public UserNotFoundException(String userId) {
     super(
         String.format("User with id '%s' was not found.", userId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("userId", userId)));
+        ErrorCode.of(ERROR_KEY, Map.of("userId", ensureNullIsHandled(userId))));
     this.userId = userId;
   }
 

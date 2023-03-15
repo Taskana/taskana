@@ -1,6 +1,6 @@
 package pro.taskana.common.api.exceptions;
 
-import pro.taskana.common.internal.util.MapCreator;
+import java.util.Map;
 
 /**
  * This exception is thrown when the database name doesn't match to one of the desired databases.
@@ -13,7 +13,8 @@ public class UnsupportedDatabaseException extends TaskanaRuntimeException {
   public UnsupportedDatabaseException(String databaseProductName) {
     super(
         String.format("Database '%s' is not supported", databaseProductName),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("databaseProductName", databaseProductName)));
+        ErrorCode.of(
+            ERROR_KEY, Map.of("databaseProductName", ensureNullIsHandled(databaseProductName))));
     this.databaseProductName = databaseProductName;
   }
 

@@ -1,5 +1,7 @@
 package pro.taskana.common.api.exceptions;
 
+import java.io.Serializable;
+
 /** common base class for TASKANA's checked exceptions. */
 public class TaskanaException extends Exception {
 
@@ -16,6 +18,10 @@ public class TaskanaException extends Exception {
 
   public ErrorCode getErrorCode() {
     return errorCode;
+  }
+
+  protected static Serializable ensureNullIsHandled(Serializable o) {
+    return o == null ? "null" : o;
   }
 
   @Override

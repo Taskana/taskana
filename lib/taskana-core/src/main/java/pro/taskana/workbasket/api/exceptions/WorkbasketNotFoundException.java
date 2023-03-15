@@ -1,8 +1,8 @@
 package pro.taskana.workbasket.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /** This exception is thrown when a specific {@linkplain Workbasket} is not in the database. */
@@ -17,7 +17,7 @@ public class WorkbasketNotFoundException extends TaskanaException {
   public WorkbasketNotFoundException(String id) {
     super(
         String.format("Workbasket with id '%s' was not found.", id),
-        ErrorCode.of(ERROR_KEY_ID, MapCreator.of("workbasketId", id)));
+        ErrorCode.of(ERROR_KEY_ID, Map.of("workbasketId", ensureNullIsHandled(id))));
     this.id = id;
     key = null;
     domain = null;
@@ -26,7 +26,11 @@ public class WorkbasketNotFoundException extends TaskanaException {
   public WorkbasketNotFoundException(String key, String domain) {
     super(
         String.format("Workbasket with key '%s' and domain '%s' was not found.", key, domain),
-        ErrorCode.of(ERROR_KEY_KEY_DOMAIN, MapCreator.of("workbasketKey", key, "domain", domain)));
+        ErrorCode.of(
+            ERROR_KEY_KEY_DOMAIN,
+            Map.ofEntries(
+                Map.entry("workbasketKey", ensureNullIsHandled(key)),
+                Map.entry("domain", ensureNullIsHandled(domain)))));
     id = null;
     this.key = key;
     this.domain = domain;

@@ -1,8 +1,8 @@
 package pro.taskana.user.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.user.api.models.User;
 
 /**
@@ -16,7 +16,7 @@ public class UserAlreadyExistException extends TaskanaException {
   public UserAlreadyExistException(String userId, Exception cause) {
     super(
         String.format("User with id '%s' already exists.", userId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("userId", userId)),
+        ErrorCode.of(ERROR_KEY, Map.of("userId", ensureNullIsHandled(userId))),
         cause);
     this.userId = userId;
   }

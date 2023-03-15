@@ -1,8 +1,8 @@
 package pro.taskana.spi.history.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
 
 /**
@@ -17,7 +17,7 @@ public class TaskanaHistoryEventNotFoundException extends TaskanaException {
   public TaskanaHistoryEventNotFoundException(String historyEventId) {
     super(
         String.format("TaskHistoryEvent with id '%s' was not found", historyEventId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("historyEventId", historyEventId)));
+        ErrorCode.of(ERROR_KEY, Map.of("historyEventId", ensureNullIsHandled(historyEventId))));
     this.historyEventId = historyEventId;
   }
 

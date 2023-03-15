@@ -1,5 +1,7 @@
 package pro.taskana.common.api.exceptions;
 
+import java.io.Serializable;
+
 /** The common base class for TASKANA's runtime exceptions. */
 public class TaskanaRuntimeException extends RuntimeException {
 
@@ -16,6 +18,10 @@ public class TaskanaRuntimeException extends RuntimeException {
 
   public ErrorCode getErrorCode() {
     return errorCode;
+  }
+
+  protected static Serializable ensureNullIsHandled(Serializable o) {
+    return o == null ? "null" : o;
   }
 
   @Override
