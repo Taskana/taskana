@@ -1,8 +1,8 @@
 package pro.taskana.task.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.TaskComment;
 
 /**
@@ -22,7 +22,9 @@ public class NotAuthorizedOnTaskCommentException extends TaskanaException {
             currentUserId, taskCommentId),
         ErrorCode.of(
             ERROR_KEY,
-            MapCreator.of("currentUserId", currentUserId, "taskCommentId", taskCommentId)));
+            Map.ofEntries(
+                Map.entry("currentUserId", ensureNullIsHandled(currentUserId)),
+                Map.entry("taskCommentId", ensureNullIsHandled(taskCommentId)))));
 
     this.currentUserId = currentUserId;
     this.taskCommentId = taskCommentId;

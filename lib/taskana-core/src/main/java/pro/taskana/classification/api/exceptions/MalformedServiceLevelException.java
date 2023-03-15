@@ -1,9 +1,9 @@
 package pro.taskana.classification.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 
 /**
  * This exception is thrown when the {@linkplain Classification#getServiceLevel() service level} of
@@ -30,13 +30,10 @@ public class MalformedServiceLevelException extends TaskanaException {
             serviceLevel, classificationKey, domain),
         ErrorCode.of(
             ERROR_KEY,
-            MapCreator.of(
-                "classificationKey",
-                classificationKey,
-                "domain",
-                domain,
-                "serviceLevel",
-                serviceLevel)));
+            Map.ofEntries(
+                Map.entry("classificationKey", classificationKey),
+                Map.entry("domain", domain),
+                Map.entry("serviceLevel", serviceLevel))));
     this.serviceLevel = serviceLevel;
     this.classificationKey = classificationKey;
     this.domain = domain;

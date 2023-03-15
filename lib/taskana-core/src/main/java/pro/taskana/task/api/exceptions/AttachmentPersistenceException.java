@@ -1,8 +1,8 @@
 package pro.taskana.task.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
 
@@ -24,7 +24,11 @@ public class AttachmentPersistenceException extends TaskanaException {
             "Cannot insert Attachment with id '%s' for Task with id '%s' "
                 + "because it already exists.",
             attachmentId, taskId),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("attachmentId", attachmentId, "taskId", taskId)),
+        ErrorCode.of(
+            ERROR_KEY,
+            Map.ofEntries(
+                Map.entry("attachmentId", ensureNullIsHandled(attachmentId)),
+                Map.entry("taskId", ensureNullIsHandled(taskId)))),
         cause);
     this.attachmentId = attachmentId;
     this.taskId = taskId;

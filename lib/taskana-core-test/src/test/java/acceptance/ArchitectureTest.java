@@ -70,7 +70,6 @@ import pro.taskana.common.internal.Interval;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.internal.logging.LoggingAspect;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.common.internal.workingtime.HolidaySchedule;
 import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.testapi.TaskanaIntegrationTest;
@@ -225,7 +224,7 @@ class ArchitectureTest {
         .should()
         .onlyDependOnClassesThat(
             resideOutsideOfPackage("..pro.taskana..internal..")
-                .or(assignableTo(LoggingAspect.class).or(assignableTo(MapCreator.class))))
+                .or(assignableTo(LoggingAspect.class)))
         .check(importedClasses);
   }
 

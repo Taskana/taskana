@@ -1,9 +1,9 @@
 package pro.taskana.classification.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
 
@@ -28,11 +28,9 @@ public class ClassificationInUseException extends TaskanaException {
             classification.getId(), classification.getKey(), classification.getDomain()),
         ErrorCode.of(
             ERROR_KEY,
-            MapCreator.of(
-                "classificationKey",
-                classification.getKey(),
-                "domain",
-                classification.getDomain())),
+            Map.ofEntries(
+                Map.entry("classificationKey", ensureNullIsHandled(classification.getKey())),
+                Map.entry("domain", ensureNullIsHandled(classification.getDomain())))),
         cause);
     classificationKey = classification.getKey();
     domain = classification.getDomain();

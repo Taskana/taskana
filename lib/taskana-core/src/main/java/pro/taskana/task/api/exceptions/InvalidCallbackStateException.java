@@ -1,9 +1,9 @@
 package pro.taskana.task.api.exceptions;
 
 import java.util.Arrays;
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.MinimalTaskSummary;
@@ -27,13 +27,10 @@ public class InvalidCallbackStateException extends TaskanaException {
             taskId, Arrays.toString(requiredCallbackStates), taskCallbackState),
         ErrorCode.of(
             ERROR_KEY,
-            MapCreator.of(
-                "taskId",
-                taskId,
-                "taskCallbackState",
-                taskCallbackState,
-                "requiredCallbackStates",
-                requiredCallbackStates)));
+            Map.ofEntries(
+                Map.entry("taskId", ensureNullIsHandled(taskId)),
+                Map.entry("taskCallbackState", ensureNullIsHandled(taskCallbackState)),
+                Map.entry("requiredCallbackStates", ensureNullIsHandled(requiredCallbackStates)))));
     this.taskId = taskId;
     this.taskCallbackState = taskCallbackState;
     this.requiredCallbackStates = requiredCallbackStates;

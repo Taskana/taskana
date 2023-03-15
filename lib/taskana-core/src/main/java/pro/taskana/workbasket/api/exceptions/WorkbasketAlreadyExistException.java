@@ -1,8 +1,8 @@
 package pro.taskana.workbasket.api.exceptions;
 
+import java.util.Map;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.workbasket.api.models.Workbasket;
 
 /**
@@ -18,7 +18,11 @@ public class WorkbasketAlreadyExistException extends TaskanaException {
   public WorkbasketAlreadyExistException(String key, String domain) {
     super(
         String.format("A Workbasket with key '%s' already exists in domain '%s'.", key, domain),
-        ErrorCode.of(ERROR_KEY, MapCreator.of("workbasketKey", key, "domain", domain)));
+        ErrorCode.of(
+            ERROR_KEY,
+            Map.ofEntries(
+                Map.entry("workbasketKey", ensureNullIsHandled(key)),
+                Map.entry("domain", ensureNullIsHandled(domain)))));
     this.key = key;
     this.domain = domain;
   }
