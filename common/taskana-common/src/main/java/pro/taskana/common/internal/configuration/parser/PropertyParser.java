@@ -36,7 +36,7 @@ public interface PropertyParser<T> {
               new SimpleParser<>(String.class, Function.identity()),
               new SimpleParser<>(ZoneId.class, ZoneId::of))
           .collect(
-              Collectors.toUnmodifiableMap(PropertyParser::getTargetClass, Function.identity()));
+              Collectors.toUnmodifiableMap(PropertyParser::getTargetClass, t -> t));
 
   static PropertyParser<?> getPropertyParser(Class<?> forClass) {
     forClass = ReflectionUtil.wrap(forClass);

@@ -34,7 +34,7 @@
   </licenses>
 
   <properties>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,6 +48,7 @@
     <version.google-java-format>1.16.0</version.google-java-format>
     <version.maven.checkstyle>3.2.1</version.maven.checkstyle>
     <version.maven.jar>3.3.0</version.maven.jar>
+    <version.maven.war>3.3.2</version.maven.war>
     <version.maven.compiler>3.11.0</version.maven.compiler>
     <version.maven.source>3.2.1</version.maven.source>
     <version.maven.javadoc>3.4.1</version.maven.javadoc>
@@ -263,7 +264,11 @@
           </execution>
         </executions>
       </plugin>
-
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${version.maven.war}</version>
+      </plugin>
       <!-- This plugin appends version information into the jar, so
           that it can be extracted from the jar. See TSK-837 for more information -->
       <plugin>

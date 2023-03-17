@@ -1,7 +1,6 @@
 package pro.taskana.example.wildfly.security;
 
 import java.io.IOException;
-import java.security.AccessController;
 import javax.security.auth.Subject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -42,8 +41,10 @@ public class ElytronToJaasFilter extends GenericFilterBean {
     }
   }
 
+  @SuppressWarnings("removal")
   private Subject obtainSubject() {
-    Subject subject = Subject.getSubject(AccessController.getContext());
+    // TODO replace with Subject.current() when migrating to newer Version then 17
+    Subject subject = Subject.getSubject(java.security.AccessController.getContext());
     if (logger.isDebugEnabled()) {
       logger.debug("Current JAAS subject: " + subject);
     }
