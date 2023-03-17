@@ -10,11 +10,13 @@
         name="serverConfig">../../../../src/test/resources/int-test-standalone.xml
       </property>
       <!--      <property name="javaVmArguments">-->
-      <!--        -Dh2.bindAddress=127.0.0.1-->
+      <!--        - -add-opens java.base/java.util=ALL-UNNAMED-->
       <!--        -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y-->
+      <!--        -Dh2.bindAddress=127.0.0.1-->
       <!--        -Djava.util.logging.manager=org.jboss.logmanager.LogManager-->
       <!--      </property>-->
       <property name="javaVmArguments">
+        --add-opens java.base/java.util=ALL-UNNAMED
         -Dh2.bindAddress=127.0.0.1
         -Djava.util.logging.manager=org.jboss.logmanager.LogManager
       </property>

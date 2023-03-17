@@ -192,11 +192,7 @@
               <doclet>capital.scalable.restdocs.jsondoclet.ExtractDocumentationAsJsonDoclet</doclet>
               <docletArtifact>
                 <groupId>capital.scalable</groupId>
-                <!--
-                    currently the jdk9+ version of this doclet has a very bad bug.
-                    see: https://github.com/ScaCap/spring-auto-restdocs/issues/412
-                -->
-                <artifactId>spring-auto-restdocs-json-doclet</artifactId>
+                <artifactId>spring-auto-restdocs-json-doclet-jdk9</artifactId>
                 <version>${version.auto-restdocs}</version>
               </docletArtifact>
               <destDir>generated-javadoc-json</destDir>
