@@ -3,5 +3,6 @@
   xmlns="http://java.sun.com/xml/ns/javaee"
   xsi:schemaLocation="
       http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd"
+      version="1.2" bean-discovery-mode="all">
 </beans>

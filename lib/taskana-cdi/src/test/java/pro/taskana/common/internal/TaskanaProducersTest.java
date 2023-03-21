@@ -2,6 +2,7 @@ package pro.taskana.common.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -19,15 +20,21 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.undertow.WARArchive;
+import pro.taskana.RestApplication;
+import pro.taskana.TaskanaCdiTestRestController;
+import pro.taskana.TaskanaEjb;
 
 @RunWith(Arquillian.class)
 public class TaskanaProducersTest {
 
-  private static final String REST_TEST_URL = "http://127.0.0.1:8090/rest/test";
+  private static final String REST_TEST_URL = "http://127.0.0.1:8080/taskana/rest/test";
 
   private static final HttpClient HTTP_CLIENT =
       HttpClient.newBuilder()
@@ -37,13 +44,30 @@ public class TaskanaProducersTest {
 
   @Deployment(testable = false)
   public static Archive<?> createDeployment() throws Exception {
-    WARArchive deployment = ShrinkWrap.create(WARArchive.class);
-    deployment.addPackage("pro.taskana");
-    deployment.addClass(TaskanaProducers.class);
-    deployment.addAllDependencies();
-    deployment.addAsResource("META-INF/beans.xml");
-    deployment.addAsResource("taskana.properties");
-    deployment.addAsResource("project-defaults.yml");
+    EnterpriseArchive deployment = ShrinkWrap.create(EnterpriseArchive.class, "taskana.ear");
+
+    File[] libs =
+        Maven.resolver()
+            .loadPomFromFile("pom.xml")
+            .importRuntimeAndTestDependencies()
+            .resolve()
+            .withTransitivity()
+            .asFile();
+    deployment.addAsLibraries(libs);
+
+    JavaArchive ejbModule = ShrinkWrap.create(JavaArchive.class, "taskana.jar");
+    ejbModule.addClasses(TaskanaProducers.class, TaskanaEjb.class);
+    ejbModule.addAsResource("taskana.properties");
+    deployment.addAsModule(ejbModule);
+
+    WebArchive webArchive =
+        ShrinkWrap.create(WebArchive.class, "taskana.war")
+            .addClasses(TaskanaCdiTestRestController.class, RestApplication.class)
+            .addAsWebInfResource("META-INF/beans.xml", "beans.xml")
+            .addAsWebInfResource("int-test-jboss-web.xml", "jboss-web.xml");
+    deployment.addAsModule(webArchive);
+
+    deployment.addAsManifestResource("META-INF/beans.xml", "beans.xml");
     return deployment;
   }
 
@@ -85,8 +109,8 @@ public class TaskanaProducersTest {
     return DriverManager.getConnection(
         "jdbc:h2:~/taskana-h2-data/testdb;NON_KEYWORDS=KEY,VALUE;AUTO_SERVER=TRUE;"
             + "IGNORECASE=TRUE;LOCK_MODE=0",
-        "SA",
-        "SA");
+        "sa",
+        "");
   }
 
   private int countTasksByName(String taskName) throws Exception {
