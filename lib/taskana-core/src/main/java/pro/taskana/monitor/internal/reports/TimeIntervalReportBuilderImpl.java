@@ -24,6 +24,8 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskState;
 
+import static pro.taskana.monitor.internal.utils.ReportsHelper.toLowerCopy;
+
 /**
  * Implementation of {@linkplain TimeIntervalReportBuilder}.
  *
@@ -627,20 +629,5 @@ abstract class TimeIntervalReportBuilderImpl<
       }
     }
     return false;
-  }
-
-  private String[] toLowerCopy(String... source) {
-    if (source == null || source.length == 0) {
-      // we are currently aware that this is a code smell. Unfortunately the resolution of this
-      // would cause havoc in our queries, since we do not have a concept
-      // for a user input validation yet. As soon as that is done we can resolve this code smell.
-      return null;
-    } else {
-      String[] target = new String[source.length];
-      for (int i = 0; i < source.length; i++) {
-        target[i] = source[i].toLowerCase();
-      }
-      return target;
-    }
   }
 }
