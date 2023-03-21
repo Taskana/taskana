@@ -722,10 +722,10 @@ public class TaskanaConfiguration {
     @TaskanaProperty("taskana.jobs.refresh.user.enable")
     private boolean userInfoRefreshJobEnabled = false;
 
-    @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
+    @TaskanaProperty("taskana.jobs.refresh.user.firstRunAt")
     private Instant userRefreshJobFirstRun = Instant.parse("2023-01-01T23:00:00Z");
 
-    @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
+    @TaskanaProperty("taskana.jobs.refresh.user.runEvery")
     private Duration userRefreshJobRunEvery = Duration.ofDays(1);
 
     @TaskanaProperty("taskana.jobs.customJobs")
@@ -1229,7 +1229,7 @@ public class TaskanaConfiguration {
           || userRefreshJobRunEvery.isNegative()
           || userRefreshJobRunEvery.isZero()) {
         throw new InvalidArgumentException(
-            "Parameter userRefreshJobRunEvery (taskana.jobs.user.refresh.runEvery)"
+            "Parameter userRefreshJobRunEvery (taskana.jobs.refresh.user.runEvery)"
                 + " must be a positive duration");
       }
       if (jobSchedulerInitialStartDelay < 0) {

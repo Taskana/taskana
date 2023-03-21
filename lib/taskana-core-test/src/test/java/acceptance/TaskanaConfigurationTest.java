@@ -892,7 +892,7 @@ class TaskanaConfigurationTest {
       assertThatThrownBy(call)
           .isInstanceOf(InvalidArgumentException.class)
           .hasMessageContaining(
-              "Parameter userRefreshJobRunEvery (taskana.jobs.user.refresh.runEvery)"
+              "Parameter userRefreshJobRunEvery (taskana.jobs.refresh.user.runEvery)"
                   + " must be a positive duration");
     }
 
