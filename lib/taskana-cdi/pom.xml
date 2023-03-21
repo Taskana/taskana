@@ -14,6 +14,24 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.bom</groupId>
+        <artifactId>wildfly-javaee8</artifactId>
+        <version>${version.wildfly}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.arquillian}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
@@ -58,15 +76,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>jaxrs</artifactId>
-      <version>${version.thorntail}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>cdi</artifactId>
-      <version>${version.thorntail}</version>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -75,15 +86,24 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>arquillian</artifactId>
-      <version>${version.thorntail}</version>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <version>${version.arquillian}</version>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.arquillian</groupId>
+      <artifactId>wildfly-arquillian-container-managed</artifactId>
+      <version>3.0.1.Final</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -91,14 +111,73 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>io.thorntail</groupId>
-        <artifactId>thorntail-maven-plugin</artifactId>
-        <version>${version.thorntail}</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${version.maven.dependency}</version>
         <executions>
           <execution>
+            <id>unpack-wildfly</id>
+            <phase>process-test-classes</phase>
             <goals>
-              <goal>package</goal>
+              <goal>unpack</goal>
             </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.wildfly</groupId>
+                  <artifactId>wildfly-dist</artifactId>
+                  <version>${version.wildfly}</version>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-latest-h2-db-driver</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.h2database</groupId>
+                  <artifactId>h2</artifactId>
+                  <outputDirectory>
+                    ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/com/h2database/h2/main
+                  </outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${version.maven.resources}</version>
+        <executions>
+          <execution>
+            <id>copy-h2-module-xml</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.directory}/wildfly-${version.wildfly}/modules/system/layers/base/com/h2database/h2/main
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/test/resources</directory>
+                  <includes>
+                    <include>module.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
