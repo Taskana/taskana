@@ -189,7 +189,7 @@ public class TaskServiceImpl implements TaskService {
           InvalidOwnerException
       try {
           return this.cancelClaim(taskId, true);
-      } catch (NotAuthorizedOnWorkbasketException e) {
+      } catch (InvalidOwnerException e) {
           throw new SystemException(
             "this should not have happened. You've discovered a new bug!", e);
       }
