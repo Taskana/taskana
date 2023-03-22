@@ -234,7 +234,7 @@ public interface TaskService {
    */
   Task forceCancelClaim(String taskId)
       throws TaskNotFoundException,
-          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
   /**
