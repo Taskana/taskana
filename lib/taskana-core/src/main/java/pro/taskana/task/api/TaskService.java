@@ -236,8 +236,14 @@ public interface TaskService {
   Task forceCancelClaim(String taskId)
       throws TaskNotFoundException,
           InvalidOwnerException,
-          NotAuthorizedOnWorkbasketException,
-          InvalidTaskStateException;
+          InvalidTaskStateException {
+      try {
+        return this.cancelClaim(taskId, true);
+      } catch (NotAuthorizedOnWorkbasketException e) {
+        throw new SystemException(
+        "this should not have happened. You've discovered a new bug! :D", e); 
+      }
+    }
 
   /**
    * Request review for an existing {@linkplain Task} that is in {@linkplain TaskState#CLAIMED}.
