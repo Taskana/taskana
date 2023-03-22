@@ -241,7 +241,7 @@ public interface TaskService {
         return this.cancelClaim(taskId, true);
       } catch (NotAuthorizedOnWorkbasketException e) {
         throw new SystemException(
-        "this should not have happened. You've discovered a new bug! :D", e); 
+        "this should not have happened. You've discovered a new bug! :D", e);
       }
     }
 
