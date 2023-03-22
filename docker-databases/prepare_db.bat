@@ -10,8 +10,8 @@ SETLOCAL
     ECHO 1 - Start DB2 11.5
     ECHO 2 - Stop  DB2 11.5
     ECHO.
-    ECHO 3 - Start POSTGRES 10
-    ECHO 4 - Stop  POSTGRES 10
+    ECHO 3 - Start POSTGRES 14
+    ECHO 4 - Stop  POSTGRES 14
     ECHO.
     ECHO 5 - Start ORACLE 18
     ECHO 6 - Stop  ORACLE 18
@@ -22,8 +22,8 @@ SETLOCAL
     ECHO.
     IF [%MENU%]==[1] GOTO START_DB2_11_5
     IF [%MENU%]==[2] GOTO STOP_DB2_11_5
-    IF [%MENU%]==[3] GOTO START_POSTGRES_10
-    IF [%MENU%]==[4] GOTO STOP_POSTGRES_10
+    IF [%MENU%]==[3] GOTO START_POSTGRES_14
+    IF [%MENU%]==[4] GOTO STOP_POSTGRES_14
     IF [%MENU%]==[5] GOTO START_ORACLE_18
     IF [%MENU%]==[6] GOTO STOP_ORACLE_18
     IF [%MENU%]==[7] GOTO STOP_ALL
@@ -44,19 +44,19 @@ SETLOCAL
     ECHO ---
     GOTO MENU
 
-:START_POSTGRES_10
+:START_POSTGRES_14
     ECHO ---
-    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_10
-    docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_10
+    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_14
+    docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_14
 
     ECHO ---
     GOTO MENU
 
-:STOP_POSTGRES_10
+:STOP_POSTGRES_14
     ECHO ---
-    ECHO docker stop taskana-postgres_10 
-    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_10
-    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_10
+    ECHO docker stop taskana-postgres_14
+    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_14
+    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_14
     ECHO ---
     GOTO MENU
 

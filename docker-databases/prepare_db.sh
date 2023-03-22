@@ -19,7 +19,7 @@ export TOP_PID=$$
 #H
 #H database:
 #H   - DB2 | DB2_11_5
-#H   - POSTGRES | POSTGRES_10
+#H   - POSTGRES | POSTGRES_14
 #H   - ORACLE | ORACLE_18
 # Arguments:
 #   $1: exit code
@@ -37,8 +37,8 @@ function mapDBToDockerComposeServiceName() {
     DB2|DB2_11_5)
       echo "taskana-db2_11-5"
       ;;
-    POSTGRES|POSTGRES_10)
-      echo "taskana-postgres_10"
+    POSTGRES|POSTGRES_14)
+      echo "taskana-postgres_14"
       ;;
     ORACLE|ORACLE_18)
       echo "taskana-oracle-18"
@@ -58,7 +58,7 @@ function main() {
   DB2|DB2_11_5)
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
-  POSTGRES|POSTGRES_10)
+  POSTGRES|POSTGRES_14)
     docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
   ORACLE|ORACLE_18)
