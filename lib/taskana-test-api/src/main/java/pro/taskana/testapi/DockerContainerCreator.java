@@ -43,7 +43,7 @@ public class DockerContainerCreator {
                 .withDatabaseName("TSKDB"));
       case POSTGRES:
         return Optional.of(
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:10"))
+            new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.7"))
                 .withUsername("postgres")
                 .withPassword("postgres")
                 .withDatabaseName("postgres")
@@ -52,7 +52,7 @@ public class DockerContainerCreator {
                     "-c",
                     "localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8 "
                         + "&& export LANG=de_DE.UTF-8 "
-                        + "&& ./docker-entrypoint.sh postgres -c fsync=off")
+                        + "&& /usr/local/bin/docker-entrypoint.sh postgres -c fsync=off")
                 .waitingFor(
                     new LogMessageWaitStrategy()
                         .withRegEx(".*Datenbanksystem ist bereit, um Verbindungen anzunehmen.*\\s")

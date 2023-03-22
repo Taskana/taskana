@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Postgres" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="bash ./docker-databases/prepare_db.sh POSTGRES_10 &amp;&amp; exit" />
+    <option name="SCRIPT_TEXT" value="bash ./docker-databases/prepare_db.sh POSTGRES_14 &amp;&amp; exit" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

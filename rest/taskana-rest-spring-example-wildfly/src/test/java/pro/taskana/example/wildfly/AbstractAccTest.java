@@ -120,13 +120,13 @@ public class AbstractAccTest {
             "cmd.exe",
             "/c",
             "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
-                + "taskana-postgres_10");
+                + "taskana-postgres_14");
       } else {
         builder.command(
             "sh",
             "-c",
             "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
-                + "taskana-postgres_10");
+                + "taskana-postgres_14");
       }
       Process process = builder.start();
       LOGGER.info("Starting POSTGRES...");

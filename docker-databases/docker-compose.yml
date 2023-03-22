@@ -1,7 +1,7 @@
 version: '3'
 services:
-  taskana-postgres_10:
-    build: postgres_10
+  taskana-postgres_14:
+    build: postgres_14
     ports:
       - 5102:5432
     environment:
