@@ -159,8 +159,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     // IMPORTANT: SPI has to be initialized last (and in this order) in order
     // to provide a fully initialized TaskanaEngine instance during the SPI initialization!
-    priorityServiceManager = new PriorityServiceManager();
     createTaskPreprocessorManager = new CreateTaskPreprocessorManager();
+    priorityServiceManager = new PriorityServiceManager(this);
     historyEventManager = new HistoryEventManager(this);
     taskRoutingManager = new TaskRoutingManager(this);
     reviewRequiredManager = new ReviewRequiredManager(this);
