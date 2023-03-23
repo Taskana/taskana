@@ -76,7 +76,7 @@ public interface BaseQuery<T, U extends Enum<U> & QueryColumnName> {
    */
   long count();
 
-  default String[] toLowerCopy(String... source) {
+  static String[] toLowerCopy(String... source) {
     if (source == null || source.length == 0) {
       return null;
       // we are currently aware that this is a code smell. Unfortunately the resolution of this

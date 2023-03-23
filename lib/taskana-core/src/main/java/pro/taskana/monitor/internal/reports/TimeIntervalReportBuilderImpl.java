@@ -24,7 +24,7 @@ import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskState;
 
-import static pro.taskana.monitor.internal.utils.ReportsHelper.toLowerCopy;
+import static pro.taskana.common.api.BaseQuery.toLowerCopy;
 
 /**
  * Implementation of {@linkplain TimeIntervalReportBuilder}.
