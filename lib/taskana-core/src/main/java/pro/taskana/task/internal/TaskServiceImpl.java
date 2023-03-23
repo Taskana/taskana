@@ -184,15 +184,12 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task forceCancelClaim(String taskId)
-      throws TaskNotFoundException,
-          InvalidTaskStateException,
-          InvalidOwnerException
-      try {
-          return this.cancelClaim(taskId, true);
-      } catch (InvalidOwnerException e) {
-          throw new SystemException(
-            "this should not have happened. You've discovered a new bug!", e);
-      }
+      throws TaskNotFoundException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
+    try {
+      return this.cancelClaim(taskId, true);
+    } catch (InvalidOwnerException e) {
+      throw new SystemException("this should not have happened. You've discovered a new bug!", e);
+    }
   }
 
   @Override
