@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.common.internal.util.SpiLoader;
 import pro.taskana.spi.priority.api.PriorityServiceProvider;
@@ -18,9 +19,10 @@ public class PriorityServiceManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(PriorityServiceManager.class);
   private final List<PriorityServiceProvider> priorityServiceProviders;
 
-  public PriorityServiceManager() {
+  public PriorityServiceManager(TaskanaEngine taskanaEngine) {
     priorityServiceProviders = SpiLoader.load(PriorityServiceProvider.class);
     for (PriorityServiceProvider priorityProvider : priorityServiceProviders) {
+      priorityProvider.initialize(taskanaEngine);
       LOGGER.info("Registered PriorityServiceProvider: {}", priorityProvider.getClass().getName());
     }
     if (priorityServiceProviders.isEmpty()) {
