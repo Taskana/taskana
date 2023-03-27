@@ -1,0 +1,1495 @@
+= Contribution Guideline
+
+Want to contribute?
+
+*Great!*
+
+We try to make it easy, and all contributions, even the smaller ones, are more than welcome.
+This includes bug reports, fixes, documentation, examples...
+
+But first, read this page
+
+== Table of Contents
+
+* <<Check out and build>>
+** <<Checking out the code>>
+** <<Build the application(s)>>
+** <<Start the application(s)>>
+* <<Setup Development Environment>>
+** <<Activate CI>>
+** <<SonarCloud Integration>>
+** <<Frontend Development>>
+** <<Backend Development>>
+* <<Workflow>>
+* <<Create your Pull Request>>
+** <<Preparations before Starting>>
+** <<Pull Request Pipeline>>
+** <<Git Command Pipeline>>
+* <<Definition of Done>>
+* <<Coding Guidelines>>
+** <<Backend Coding Guidelines>>
+** <<Frontend Coding Guidelines>>
+** <<_how_to_properly_create_a_maven_module>>
+** <<_keeping_the_rest_doc_up_to_date_when_adding_endpoints>>
+
+== Check out and build
+
+=== Checking out the code
+
+.Requirements
+[IMPORTANT]
+git, GitHub Account
+
+
+* Create a remote fork of https://github.com/Taskana/taskana
+[TIP]
+see https://help.github.com/articles/fork-a-repo/
+
+* Configure git to automatically adjust line endings with each commit (optional, but recommended)
+[source,bash]
+----
+git config --global core.autocrlf input
+----
+
+* Create a local clone
+[source,bash]
+----
+# using https
+git clone https://github.com/<yourname>/taskana.git
+# using ssh
+git clone git@github.com:<yourname>/taskana.git
+----
+
+* Configure git to automatically validate your commit messages
+[source,bash]
+----
+cd taskana
+git config core.hooksPath qa/hooks
+----
+
+** Optional: Create a symlink to .git/hooks in order to support external tools
+[source,bash]
+----
+rm -rf .git/hooks
+ln -s $PWD/qa/hooks .git/hooks
+----
+
+* Create a remote for the upstream project so that it is later easier to retrieve changes from the main repository.
+[source,bash]
+----
+# using https
+git remote add upstream https://github.com/Taskana/taskana.git
+# using ssh
+git remote add upstream git@github.com:Taskana/taskana.git
+----
+
+=== Build the application(s)
+
+.Requirements
+[IMPORTANT]
+java, node, yarn
+
+.Version Requirements
+[IMPORTANT]
+Java 11, Node 16.14.2
+
+We use https://github.com/takari/maven-wrapper[maven wrapper]. For windows please use `mvnw.cmd` instead of the bash script
+
+==== Full Build
+
+[source,bash]
+----
+./mvnw clean install
+----
+
+==== UI (admin / monitor / workspace)
+
+[source,bash]
+----
+cd web
+yarn
+----
+
+[WARNING]
+====
+When a taskana version is changed please do not forget to build taskana-parent, taskana-rest-parent and taskana-lib-parent
+Options:
+
+A) full build
+
+B) See codeblock below
+
+[source,bash]
+----
+./mvnw install -pl :taskana-parent,:taskana-common-parent,:taskana-rest-parent,:taskana-history-parent
+or
+./mvnw install -pl :<module name> -am
+----
+====
+
+
+=== Start the application(s)
+
+.Requirements
+[IMPORTANT]
+java, node
+
+==== REST API
+
+First of all change *devMode* property to *true* and *enableCsrf* property to *false* in taskana-rest-spring-example-boot application.properties file, then follow the next steps.
+
+[source,bash]
+----
+./mvnw spring-boot:run -pl :taskana-rest-spring-example-boot
+----
+
+==== Admin, Monitor and Workplace UI
+
+[source,bash]
+----
+cd web
+yarn install
+yarn start
+----
+
+Then you can open a browser pointing to http://localhost:4200/ to access to web application.
+
+=== Architecture example after running previous steps.
+
+image::../images/contribution/Example_Architecture_after_build_and_run.png[Example Architecture after build and start]
+
+== Setup Development Environment
+
+To unify code and avoid bugs, we highly recommend to do some settings in your environment.
+Whereas the first steps have to be followed by all contributors, there are settings which are only needed for frontend development or backend development.
+
+=== Activate CI
+
+We use GitHub Actions to automate our CI/CD workflows.
+
+Please make sure that you’ve set the GitHub Actions permissions on ‘Allow all actions' on your fork.
+
+You can use https://docs.github.com/en/github/administering-a-repository/disabling-or-limiting-github-actions-for-a-repository#managing-github-actions-permissions-for-your-repository[this guide] to do so.
+
+=== SonarCloud Integration
+
+[CAUTION]
+Please make sure that GitHub Action is enabled.
+
+==== Setup SonarCloud for your repository
+
+. Go to https://sonarcloud.io/
+
+. Log in / signup with your github account
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_01.png[]
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_02.png[]
+
+. Click on “Analyze new project”.
++
+You find this option when pressing the + on the upper left side of the menu bar:
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_03.png[]
+
+. When prompted to select a repository, click on “Import an organization from GitHub.”
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_04.png[]
+
+. Then click on “Choose an organization on GitHub”
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_05.png[]
+
+. Choose your account and repository and click “Install”
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_06.png[]
+
+. Select the free plan
++
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_07.png[]
+
+==== Configure GitHub Actions for SonarCloud integration
+
+. Go to your fork
+. Go to Settings → Secrets
+. Add the following repository secrets:
+
+* SONAR_ORGANIZATION
+* SONAR_PROJECT_KEY
+* SONAR_TOKEN
+
+===== How to find your token, organization and project key:
+
+In the SonarCloud projects overview, click “Administration -> Analysis Method” for the TASKANA project
+
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_08.png[]
+
+Click on "Github Actions -> Follow the tutorial"
+
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_09.png[]
+
+For the value of the SONAR-TOKEN, copy the token which can be found in the blurred section of the
+following image below “Create a GitHub Secret”.
+
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_10.png[]
+
+The value for SONAR_ORGANIZATION can be found within the <sonar.orginization> tag.
+The value for SONAR_PROJECT_KEY is in the arguments of the mvn command below.
+
+image::../images/contribution/Screenshot_Sonarcloud_New_Project_11.jpeg[]
+
+Now GitHub Actions should be configured and you can push a branch to get your SonarQube analysis on
+sonarcloud
+
+==== Where to find new analyzed branches
+
+After GitHub Actions successfully ran for your newly pushed branch, you can find the analysis in
+SonarCloud. Select your project and afterwards click on “branches” in the menu on the right. There
+you will be able to select the desired branch analysis.
+
+image::../images/contribution/Screenshot_Sonarcloud_new_branches.png[]
+
+
+=== Frontend Development
+
+==== Code Formatting Frontend
+
+We use eslint and prettier for styling and linting.
+By installing dependencies you already have everything needed for development, use command yarn lint:fix (styling .ts files) or yarn format (styling every files except html).
+
+To make the development more convenient, further IDEs settings should be configured for automation, please see official guide: https://prettier.io/docs/en/editors.html
+
+.Webstorm
+[TIP]
+Webstorm supports prettier natively, you can check the setting *Run on save for files.*
+
+image::../images/contribution/Webstorm.png[]
+
+.IntelliJ
+[TIP]
+Please install this add on: https://plugins.jetbrains.com/plugin/10456-prettier
+
+.VSCode
+[TIP]
+Install add on `prettier-vscode` (Prettier - Code Formatter).
+Settings for VS Code in `.vscode/settings.json` are already configured to format on save.
+If it somehow doesn’t work, check the setting manually.
+
+image::../images/contribution/VSCode.png[]
+
+=== Backend Development
+
+We preconfigured some IntelliJ run configurations.
+You can find them in the default directory `.run`
+and they are applied automatically as long as your IntelliJ project resided within the taskana git repository.
+If that’s not the case please create a symlink from your indellij project folder to `<taskana git repo>/.run`.
+
+==== Code Formatting Backend
+
+. In `Help -> Edit Custom VM Options` change the vm options as shown below:
++
+```
+-Xmx4192m
+--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
+```
+
+. Install and activate this plugin.
++
+Activation can be found under
+`File → Settings → Other Settings → google-java-format Settings`.
+Make sure the “Enable google-java-format”-checkbox is enabled.
+
+. In `File → Manage IDE Settings → Import Settings` import the `settings.zip` file from
+`qa/intellij`.
++
+Import the templates and the macro.
+
+. In `Settings → Editor → Code Style → Java -> gear wheel (icon) -> Import Scheme -> IntelliJ IDEA code style XML import taskana_formatter_intellij.xml` from `taskana/qa/intellij.`
+
+. In `Settings → Keymap` search for “save all” and bind `ctrl+s` to the macro, thus overriding the save key.
++
+The macro will automatically format the current file and save all files.
+
+[TIP]
+Currently we are evaluating if `Settings → Tools → Actions on save` is an alternative to the macro.
+Feel free to use either one.
+Set at least the actions “Reformat code”, “Optimize imports” and “Rearrange code”.
+
+[TIP]
+For other IDEs check out the official https://github.com/google/google-java-format[GitHub Repository]
+
+==== Checkstyle
+
+The Taskana-Checkstyle settings are specified under `taskana/qa/checkstyle/checkstyle.xml.`
+The import depends on the editor you use.
+
+===== IntelliJ
+
+Open plugin marketplace for Intellij in `File → Settings → Plugins`  (control + alt + s) and install *CheckStyle-IDEA* plugin.
+
+image::../images/contribution/Checkstyle.png[]
+
+After the installation, go to `File → Settings → Tools → Checkstyle` and apply the following configuration:
+
+. Choose scan scope: Only Java sources (including Tests)
+
+. Add a new configuration file
+
+. Choose the file checkstyle.xml from the taskana/qa/checkstyle folder
+
+. [Optional]  Check “Treat checkstyle errors as warnings”
+
+Refer to the picture below for reference
+
+image::../images/contribution/Checkstyle_Config.png[]
+
+==== Equals & HashCode Template
+
+===== IntelliJ
+
+When you want to generate `equals()` and `hashCode()` please make sure to use the Template Taskana.
+If that template does not exist in your IDE, please reimport the `settings.xml` file found in the qa folder.
+
+image::../images/contribution/equals_hashcode.png[]
+
+==== Enable TRACE Logging with Logging AspectJ
+
+The requirement to log method entries and exits specified in the
+https://taskana.atlassian.net/wiki/spaces/TAS/pages/228753427[Logging-Concept] is automatically implemented by the LoggingAspect class inside the `taskana-common-logging` module.
+If you don’t want to use the LoggingAspect you can deactivate it by deactivating the aspectj-logging profile by providing the property `-DskipAspectJ`.
+
+Furthermore you need to set the system property `enableLoggingAspect` to `true` in order to activate the automatic TRACE logging.
+
+===== Compile-Time Weaving
+
+In order to use the automatic TRACE logging the source code and the AspectJ LoggingAspect have to be combined together in a process called weaving.
+You have to compile the `taskana-common-logging`
+module first.
+Afterwards compile your desired module and set the log level to TRACE.
+
+Use the following maven commands
+
+. `mvn compile -pl :taskana-common-logging,:<your module>`
+
+. or simply `mvn compile` if you want to use the LoggingAscept for the entire project
+
+[TIP]
+If you modify something within the `taskana-common-logging` module you probably have to install it again.
+Use:
+
+`mvn install -pl :taskana-common-logging -DskipTests -Dcheckstyle.skip`
+
+==== Recommended Plugins for IntelliJ
+
+===== Productive
+
+* https://plugins.jetbrains.com/plugin/12195-concise-assertj-optimizing-nitpicker-cajon-[concise-assertj-optimizing-nitpicker]
+* https://plugins.jetbrains.com/plugin/7499-gittoolbox[gittoolbox]
+* https://plugins.jetbrains.com/plugin/7391-asciidoc[AsciiDoctor]
+* https://plugins.jetbrains.com/plugin/7345-presentation-assistant[Presentation Assistent]
+
+===== Fun
+
+* https://plugins.jetbrains.com/plugin/8575-nyan-progress-bar[Nyan Progress Bar]
+* https://plugins.jetbrains.com/plugin/8251-power-mode-ii[Power Mode II]
+
+==== Further Recommended Settings
+
+image::../images/contribution/IntelliJ_Settings_1.png[]
+
+image::../images/contribution/IntelliJ_Settings_2.png[]
+
+image::../images/contribution/IntelliJ_Settings_3.png[]
+
+image::../images/contribution/IntelliJ_Settings_4.png[]
+
+image::../images/contribution/IntelliJ_Settings_5.png[]
+
+=== Workflow
+
+If your change is non trivial then we ask you to create an issue (=ticket) in JIRA first (if none exists).
+Trivial changes can be made without an issue.
+
+The following workflow applies to issues:
+
+1. Start working on an issue:
+
+a. move the issue to state "In Progress"
+
+b. assign it to yourself
+
+2. Finish your work
+
+a. comment your change (e.g. link the pull request)
+
+b. move the issue to state "Review"
+
+3. Review (done by some-one else)
+
+a. assign the issue to yourself
+
+b. comment the successful review / your findings
+
+c. OK: move the issue to state "Done" and re-assign it to the original author
+
+d. Findings: Comment in the PR
+
+=== Create your Pull Request
+
+==== Preparations before Starting
+
+===== Understanding the Git basics
+
+Not sure what a pull request is, or how to submit one? Take a look at GitHub's excellent
+documentation at https://help.github.com/articles/about-pull-requests/ and
+https://help.github.com/en/articles/creating-a-pull-request first.
+
+To create a pull request, please refer to GIT basic, which gives a detailed description of the
+commands needed.
+
+===== Configure Git to use real name in commits
+
+Please configure git to use your real first and last name and your git noreply email adress for any
+commits you intend to submit as pull requests, e.g.
+Author: First Last <your_account@users.noreply.github.com>
+
+You can configure this globally with:
+```
+git config --global user.name "John Doe"
+git config --global user.email john_does_github_account@users.noreply.github.com
+```
+
+These settings will be written to `~/.gitconfig` on Unix and `%APPDATA%\.gitconfig` on Windows,
+see https://help.github.com/articles/set-up-git/
+
+Alternatively, you can configure this locally for the taskana repository only by omitting the
+`--global` flag:
+```
+cd taskana
+git config user.name "John Doe"
+git config user.email john_does_github_account@users.noreply.github.com
+```
+
+.Where to find my github noreply email
+[WARNING]
+Go to `Settings -> Email` in your account. Under "*Keep my email addresses private*" you can find
+the no reply email with your specific account. Also be sure to set this check box and the
+check box "*Block command line pushes that expose my mail*" also to avoid check ins with email
+other than the noreply address.
+
+==== Pull Request Pipeline
+
+[TIP]
+Each change to the master branch is done by a pull request (PR). A PR has to be reviewed and
+approved by one or many reviewers before merging into production code.  A submitter is a person
+who creates the pull request. A reviewer is a person who will approve or decline the pull request
+at its current state.  A merger is a person who finally integrates the PR into the master branch.
+
+===== Our definition of a good pull request
+
+* Single responsibility → split PR if possible
+* Preferring small PRs
+* No unneeded changes (like different formatting, makes hard to read the diff)
+* Comment on important reasons of “why this changes” on the PR  (not the code itself)
+* Solve merge conflicts (may also happen after PR is created)
+* Leave code a little better than you checked it out
+
+===== Before creating a pull request
+
+* Run all tests, verify checkstyle
+* Format your commit messages in the following way:
+** Prefix Git commit messages with the ticket number, e.g. "TSK-140: xyz"
+** Describe why you are making the change, e.g. "TSK-140: Added logback to suppress the debug messages during maven build" (not only "changed logging")
+* Review your diff & changes → be happy or rework your PR
+* Remove unneeded changes to make the review simpler
+* Don’t use a ticket again if the ticket is already part of a release
+
+===== When creating a pull request
+
+* Answer to the auto-comment bot’s checklist
+* In case it’s necessary, update the documentation
+* Include link of sonarcloud branch analysis in pull requests, see <<_sonarcloud_integration>>
+for installation details
+* In case the PR contains important changes and *needs additional explanation* besides the commit
+message, add a description of the changes in the draft release notes for the next release
+* Put your ticket in review
+
+===== After approval
+
+* The submitter merges his PR, not the reviewer
+* If PR is changed after approval, approval is removed
+
+===== After the merge
+
+* After successful integration of a pull request, verify bluemix test environment is not broken
+* The merger puts the ticket to “integrated”
+
+==== Git Command Pipeline
+
+The Git infrastructure is set up as follows:
+
+* The upstream repository contains the taskana repository on Github
+* The origin repository contains your private repository on Github
+* The local repository contains your private repository locally.
+
+If you start to work on a new ticket, you first go to your local repository in the master branch:
+
+```bash
+git checkout master
+```
+
+Then, bring this branch in sync with the upstream (i.e. taskana) master branch:
+
+```bash
+git fetch --all
+git rebase upstream/master
+```
+
+Then, bring your private remote master branch (origin) in sync:
+
+```bash
+git push origin master
+```
+
+Now, create your new branch that contains your work:
+
+```bash
+git checkout -b <branchname> master
+```
+
+Now, do your development work, stage modified, deleted and new files and commit locally.
+
+Now, push your local branch into your remote private repository.
+
+```bash
+git push origin <branchname>
+```
+
+This creates a new branch in your remote private Github repository. From there, create a pull
+request against the taskana repository on Github.
+
+image::../images/contribution/Pull_Request_Workflow.png[]
+
+== Definition of Done
+
+* Source code is checked in Git
+* Source code is reviewed by another developer
+* Source code is well-structered and understandable
+* Logging is implemented and allows to identify/analyze production problems
+* Automatic tests are existing and do test the important parts of the code
+* ALL tests run successfully
+* TASKANA is successfully built and deployed
+* Story is reviewed and accepted by the product owner
+* Documentation is up-to-date
+
+== Coding Guidelines
+
+=== Backend Coding Guidelines
+
+* Variable naming conventions:
+
+** Readability and understandability
+
+* If doable, do not use the user `admin` or `taskadmin` for any test.
+
+* All entities (in JavaDoc, REST doc and comments) start with a capital letter
+
+* All attributes (in JavaDoc, REST doc and comments) are written identical to  the variable name
+  (camel + lower case)
+
+* All method parameters of type varargs (e. g. String … ids) are in plural
+
+* Use code folding whenever it seems appropriate: `// region <region name> ... // endregion`
+
+* In our Service-Interfaces we want to separate methods by **C**REATE, **R**EAD, **U**PDATE
+  and **D**ELETE.
+
+** If appropriate we want to separate entities first by using code folding then separate by CRUD.
+
+** If one of CREATE, READ, UPDATE or DELETE sections have >= 5 methods then we want to separate
+   methods by using code folding.
+
+* We are using Spring Constructor Injection
+
+* HTTP Status Code return type: For NotFoundExceptions status code 404 should only be used if the
+  REST API can’t map the client’s URI to a resource. All other cases should use status code 400 - BAD REQUEST
+
+** example: DomainNotFoundException - if the domain does not exist it is an invalid request
+  message parameter which leads to a bad request
+
+* We always use method references whenever possible
+
+```Java
+// good
+assertThat(results)
+.hasSizeGreaterThan(2)
+.extracting(TaskSummary::getWorkbasketSummary)
+.extracting(WorkbasketSummary::getId)
+.isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+
+// not wanted
+assertThat(results)
+.hasSizeGreaterThan(2)
+.extracting(e -> e.getWorkbasketSummary().getId())
+.isSortedAccordingTo(CASE_INSENSITIVE_ORDER.reversed());
+```
+
+* We never want String constants for Exception messages or logging statements. We prefer to
+  duplicate those messages here because of code readability
+
+* We don’t enforce types in our lambda statements: `(sortBy, sortDirection) -> {}` instead of
+  `(String sortBy, SortDirection sortDirection) -> {}`
+
+* We prefer `String.format()` over String concatinations if the code is not constantly executed.
+  However, we don’t want to use `String.format()` in logging statements.
+
+* We want to use https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html[Default Methods]
+  in Interfaces, if methods are overlapping
+
+* We want to use the annotation `ContructorProperties`  instead of an empty private constructor for
+  initialization of models by jackson/spring.
+
+* We don’t want to use curly braces in `ThrowingCallable` lambda expressions
+
+* For Map variables, we use the `valueByKey` naming convention
+
+* How to write TASKANA specific words:
+
+** Entities: Camel case, exactly the class name
+   e.g. WorkbasketAccessItem → WorkbasketAccessItem
+
+** Instance variables: White spaces instead of camel case, all words start with lower case
+   e.g. <Classification>.serviceLevel → service level
+
+** Short names are valid if unambigous
+
+** Variable names should be unambigous
+
+* Use quotes when writing values of variables in String.format() and logging messages:
+
+** e.g. `Task with id '152'` instead of `Task with id 152`
+
+* In lambda expression we only use curly braces when it can not be avoided.
+
+* According to https://www.slf4j.org/faq.html#logging_performance[SlF4J FAQ], the debug message
+will only be formatted if debug is enabled. An additional check using `if (LOGGER.isDebugEnabled())`
+is not necessary.
+
+* We want to replace Thread.sleep with the help of Awaitility whenever it is possible.
+
+==== Logging Concept
+
+Logging should enable operators, system administrators and developers to identify what the system
+has done, is doing as well as identifying and fixing problems. The system should provide sufficient
+log data with the benefit of meaningful analysis, but not too much that the performance would be
+affected significantly during normal operations.
+
+In production, the used log level should usually be *WARNING* or *ERROR*. With this level, it must be
+possible to see important problems in the logs. Performance must not be affected significantly.
+
+In case of problems, when the system runs in 'analysis' mode (log level *DEBUG*), a certain
+performance impact may be tolerated, but probably not more than 20-30%.
+
+Therefore, log entries should be judiciously according to the following guidelines.
+
+* Use appropriate severity levels.
+Use log levels as follows
++
+|===
+|Loglevel |Usage |Examples
+
+|TRACE
+|For detailed failure and control flow analysis
+|performance behaviour
+
+|DEBUG
+|All relevant details needed to understand control flow
+|Info about method entry and exit
+
+Details to method parameters
+
+Entry into entry points of interfaces
+
+Calls to Databases, APIs or services
+
+Modification of internal state as e.g. a Task was created, claimed, transferred or completed.
+
+|INFO
+|All relevant details needed to understand the state of the system
+|Lifecycle events like start of the application
+
+Configuration details
+
+Informational messages about e.g. background tasks and processes.
+
+|WARNING
+|Unexpected or unwanted behaviour that is not necessarily wrong, but indicates potential problems.
+Perhaps the customer has already noted "something that should be investigated first in the morning".
+|Unexpected high latency when calling a database or service
+
+Service call works only at the second attempt
+
+Uncritical data that contain errors
+
+|ERROR
+|Erroneous behaviour of the system and permanent problems. Something failed and the system has no
+workarounds. The customer has certainly noticed something. "It is 2 a.m. and somewhere rings a
+phone".
+|Database not reachable
+
+Service permanently not reachable
+
+Unhandled exceptions in the programs control flow
+|===
+
+* Log every API call with level DEBUG
++
+Log method entry and exit as well as arguments and return values for every top level API call.
++
+```Java
+public Task create(Task task) {
+    log.debug("Entry to create(task={}) ", task);
+    // ... implementation
+    log.debug("Exit from create(), returning {}", task);
+    return task;
+}
+```
+* Log database interactions with level DEBUG.
++
+In DEBUG mode, MyBatis logs sql-statements, replacement parameters and the number of replies, not the returned content.
++
+Therefore, we should log the fact that we call MyBatis as well as the value(s) of the result received.
+
+* Write additional log entries with common sense
++
+The log should contain sufficient data to be able to identify the flow of control and data through the system, but not too many to impact performance too much.
+
+* Avoid common pitfalls
+
+. *Avoid* String concatenations in log expressions like the following
++
+```Java
+LOGGER.debug("Found " + records + " records matching filter: '" + filter + "'");
+```
+*Better* use SLF4J's parameterized messages
++
+```Java
+LOGGER.debug("Found {} records matching filter: '{}'", records, filter);
+```
+. *Avoid* _isEnabled()_ calls like the following
++
+```Java
+if(LOGGER.isDebugEnabled()) {
+    LOGGER.debug("Place for your commercial");
+}
+```
+With SLF4J's parameterized messages, the final log message is only constructed if the log level is
+enabled. Therefore, there is no need for _isEnabled()_ calls.
+Exception to this rule is if the logging arguments require an expensive evaluation before the log
+statement can check whether logging is enabled.
++
+```Java
+// Exception: evaluation of an argument (LoggerUtils.listToString(list)) may be expensive. The JVM must evaluate all arguments before LOGGER.debug() can be called
+// Therefore evaluate  LoggerUtils.listToString(list) only if debug is enabled
+if (LOGGER.isDebugEnabled()) {
+    LOGGER.debug("exit from method(). Returning {} ", LoggerUtils.listToString(list));
+}
+```
+. *Avoid* complicated expressions in log statements (e.g. chained method calls) - they have the
+potential for NullPointerExceptions.
+. *Avoid* huge data sizes in log statements - they may slow down the system too much.
+. *Avoid* the catch - log - throw pattern.
++
+If you rethrow an exception it will probably be logged somewhere on its way out. If you log it also,
+the log will be full of duplicate exceptions.
+. Exceptions *should* be logged (including the call stack) with level *ERROR* or *WARNING* if they
+are caught and swallowed.
++
+The correct syntax to log an exception including its stack is
++
+```Java
+LOGGER.error("Error doing something ", e);
+```
++
+If we create and throw an exception, a log record should be written (w/o Exception stack) indicating
+the reason for the exception.
++
+*Logging an exception without stack* is done via
++
+```Java
+LOGGER.error("Throwing exception {} because something bad happened", e.getClass().getName());
+```
+. *Avoid* print just the cause of the exception getCause() or the message getMessage().
+We should send the whole exception.
+* Implement `toString()` method
++
+It is very useful to implement the toString() method in the model classes, so when printed the
+object on the logger you can see the properties of this.
+
+==== Taskana programming model
+
+The core of taskana is a lightweight java library that manages human tasks.
+Taskana depends only to the Java standard edition.
+Human tasks in Taskana are organized in Workbaskets.
+Workbaskets are the main structure to distribute tasks to the available workers.
+
+The API for taskana is contained in package pro.taskana.
+It is structured along the major concepts of taskana:
+Tasks, Workbaskets and Classifications.
+
+===== The major Interfaces are:
+
+Task, TaskSummary, TaskService and TaskQuery
+Workbasket, WorkbasketSummary, WorkbasketService and WorkbaketQuery
+Classification, ClassificationSummary, ClassificationService and ClassificationQuery
+
+===== What is the purpose of the ...Summary objects?
+
+TaskSummaries are returned from task queries.
+A TaskSummary can also be created by Task.asSummary().
+A TaskSummary cannot be modifed by application code.
+The TaskSummary interface is very similar to the Task interface, but it
+
+* does not contain setters for the various properties
+
+* does not contain potentially large properties (LOBs in the Database) like customAttributes and
+callbackInfo
+
+The same is valid for WorkbasketSummary and ClassificationSummary. In addition, WorkbasketSummary
+objects and ClassificationSummary objects are contained in Task objects.
+
+===== How to create Task objects?
+
+TaskService contains a factory method for Tasks. Creation of a Task is a 3-step operation.
+
+* First create a transient task object with method TaskService.newTask().
+
+* Then set some properties of that task via its setter methods.
+
+* Finally persist this task to the database via TaskSerivce.createTask.
+Corresponding considerations apply to WorkbasketService and Workbasket as well as
+ClassificationService and Classification.
+
+A Task contains the workbasketSummary for the workbasket it is contained in as well as the
+ClassificationSummary of the classification it is associated with.
+
+===== How to manipulate a Task, Workbasket or Classification?
+
+Not all properties of a task can be set via the API. You must rather use the Action methods of
+TaskService to manipulate these properties.
+For example, a task is created via TaskService.newTask(). In this call, you have to specify in
+which workbasket the task is to be created. This can either be done by specifying the Id of the workbasket or key and domain of the workbasket (note: a workbasket key is a human readable key that identifies a workbasket inside a specific domain. WorkbasketKey is not unique by itself, but only in combination with the domain).
+Once a task object is created, its associated workbasket can only be changed by method
+TaskSerivce.transfer().
+In addition, once a task is created, it is in the state READY. The state of a task can only be
+modified by TaskService methods claim, forceClaim, cancelClaim, forceCancelClaim, completeTask,
+forceCompleteTask, and deleteTask.
+In addition, once an action method modfies a task, several timestamps on the task, like claimed,
+completed, modfied, etc. are changed.
+Corresponding considerations apply to Workbasket and Classification objects.
+
+===== How to use Taskana’s java API in an application?
+
+When you intend to use taskana in your application, you have to follow the following steps:
+
+* get a DataSource that addresses taskana's database.
+
+* Create a pro.taskana.configuration.TaskanaEngineConfiguration passing in that DataSource.
+
+* Call TaskanaEngineConfiguration.buildEngine to obtain a TaskanaEngine.
+
+* Use TaskanaEngine's method getClassificationService, getTaskService and getWorkbasketService in
+order to obtain the various service objects that are required to create, delete and manipulate
+tasks, workbaskets and classifications.
+
+==== JavaDoc Rules
+
+For the sake of readability and structure we agreed in the “Community of Practice” on consistent
+rules for our API description: We should document our entire API mandatorily and the internal
+classes optionally when we consider them important. API classes are inside a package `api`,
+internal classes inside `internal`.
+
+[WARNING]
+Currently we don’t have a styling rule for method parameter references. We will discuss this in the
+future, when we’ve tidied up our JavaDoc :)
+
+. *Class Description*
+.. The first sentence should start with the name of the class.
+.. The first sentence should be a summary sentence, containing a concise description of the API
+item. It should rather describe the role of the class than its certain behavior.
+... Examples:
+... *BAD*: The TaskService creates, deletes and transfers Tasks.
+... *GOOD*: The TaskService manages all operations on Tasks.
+. *Enum Description*
+.. The first sentence should be a summary sentence starting with the name of the class.
+. *Method Description*
+.. The first sentence should describe the intended purpose of the method precisely.
+... starts with verb in 3. Person (uppercase)
+... ends with dot
+... afterwards new paragraph
++
+```Java
+/**
+ * Transfers the specified Task to another Workbasket. <p>
+```
+.. The inner logic of the method should be described so far that the user knows, which side effects are involved when calling a method. It should describe how the states of the objects are affected by the method. It should not describe every internal detail about the way the method proceeds.
++
+```Java
+/**
+ * {@linkplain Task#isTransferred() isTransferred} is set and {@linkplain Task#isRead() isRead} is reset. The {@linkplain Task#getState() state} is set
+ * to {@linkplain TaskState#READY} and the {@linkplain Task#getOwner() owner} to NULL.
+```
+.. Getter should be described using “_Returns..._” instead of “_Gets..._”.
++
+```Java
+/**
+ * Returns the id of the parent Classification.
+ *
+ * @return parentId
+ */
+```
+.. Getter that have return value of type boolean should be described using following phrasing:
+... _Returns true if..._ or
+... _Returns whether..._
+. *Parameter Description* (@param)
+.. Used for every Parameter passed to a method.
++
+```Java
+/**
+* @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} which should be transferred
+```
+... only a phrase
+... begins with “the” (lowercase) or with a verb
+.... The noun followed by “the” should not reference the parameter name.
+... ends without dot
+... when more information / phrases necessary, divided by a semicolon
+.. If not setter method: Should add description beyond the API name of the parameter.
++
+Example:
++
+... *BAD*: “_the key of the Workbasket_”
+... *GOOD*: “_the key of the Workbasket the Task should be transferred to_”
+. *Return Value Description* (@return)
+.. Used for every non-void method.
++
+```Java
+/**
+ * @return the updated {@linkplain Task}
+```
++
+... only a phrase
+... begins with “the” / “a” (lowercase)
+... ends without dot
+... when more information / phrases necessary, divided by a semicolon
+... proposal: the return value of a getter consists only of the parameter name, without “the” or
+“a” in the beginning
+. *Exception Description* (@throws)
+.. Used for every Exception thrown by a method.
+... only a phrase
+... begins with if (lowercase)
+... ends without dot
+... when more information / phrases necessary, divided by a semicolon
+.. Should add description beyond the Exception name.
++
+Example: (NotAuthorizedException)
++
+... *BAD*: “_if the user is not authorized_”
+... *GOOD*: “_if the user has no transfer permission for the source Workbasket_”
+. *Overloaded & setter Methods* (@see)
+.. Used for overloaded methods when...
+... ...they are chained
++
+```Java
+default Task transfer(String taskId, String workbasketKey, String domain) {
+return transfer(taskId, workbasketKey, domain, true);
+
+      }
+```
++
+... ...the logic of both is identical
++
+Example:
++
+_transfer by Key and Domain vs. transfer by Id_
+.. Explain the method in one phrase as done with all other methods, but leave out further
+information. Just refer with @see to the called / almost identical method which should describe all
+necessary information as specified. If the parameters differ, only explain the different ones.
+.. Use the annotation `@SuppressWarnings("checkstyle:JavadocMethod")` to circumvent Checkstyle.
++
+```Java
+/**
+ * Transfers a {@linkplain Task} to another {@linkplain Workbasket} while always
+ * setting the transfer flag.
+ *
+ * @see #transfer(String, String, String, boolean)
+ */
+@SuppressWarnings("checkstyle:JavadocMethod")
+```
+. *Linking Classes* (@linkplain)
+.. We should link...
+... ...all our mentioned public API TASKANA classes.
+... ...fields by their corresponding getter-method.
+... ...public methods (without additional text).
++
+```Java
+/**
+ * Transfers the {@linkplain Task} to another {@linkplain Workbasket}. <p>
+ * The transfer sets the {@linkplain Task#isTransferred() transfer} flag.
+```
+.. We should only link components of our public API. We should not link...
+... ...internal classes, e. g. TaskImpl
+... ...classes from external libraries, e. g. List, Map or Instant
+... ...the class or its attributes itself, e. g. not link the id of the Task in Task
+.. When linking a class while referring to multiple Instances we include the `s` within the link.
++
+```Java
+  /**
+   * There can be a huge amount of {@linkplain Task Tasks} the SPI has to handle.
+```
+. *Linking (Entity) Attributes*
+.. When referencing an attribute of a class, we link it to it’s getter-method. The display text of
+the linked value should match our Entity naming guide, found in <<_backend_coding_guidelines>>
++
+```Java
+/**
+ * Changes the {@linkplain Task#getClassificationSummary() classificationSummary} of the
+ * specified {@linplain Task}.
+
+ * This is a link to a {@linkplain ClassificationSummary#getServiceLevel() serviceLevel}
+```
+. *Linking Enum values*
+.. When referencing an enum value, we link to the value only. No text should be added to the link.
++
+```Java
+/**
+ * @throws NotAuthorizedException if the current user has no {@linkplain
+ *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+```
+. Spelling and phrasing
+.. When referencing attributes from their class, use either the description of their content, or
+their original names.
++
+```Java
+/**
+ * Returns the externalId of the Task.
+ *
+ * @return externalId
+ */
+```
+.. 'NULL' is written in uppercase
+.. 'id' is written in lowercase, except in the beginning of the sentence
+.. Instant, Map, List and other external classes and data structures are capitalized
+.. Everything else starts with lowercase or uppercase according to English grammar
+.. Use contractions like wasn’t, isn’t and doesn’t (instead of the full versions)
+
+==== Testing Guidelines
+
+*General*
+
+* Tests should not be public
+
+* Instance variables should have no modifiers
+
+* Constants have to be private static final
+
+* Instead of using ““ for master domains, use constant MASTER_DOMAIN for better readability
+
+* The test API should only be used for setting up the test case. Tested behavior should be implemented using the API of TASKANA.
+
+** Example: If creating a Task is the test case, then use
++
+```Java
+Task task = taskService.newTask(defaultWorkbasketSummary.getId());
+task.setClassificationKey(defaultClassificationSummary.getKey());
+task.setPrimaryObjRef(defaultObjectReference);
+task.setManualPriority(123);
+Task result = taskService.createTask(task);
+```
++
+instead of
++
+```Java
+Task task = TaskBuilder.newTask()
+  .classificationSummary(defaultClassificationSummary)
+  .workbasketSummary(defaultWorkbasketSummary)
+  .primaryObjRef(defaultObjectReference)
+  .manualPriority(123).buildAndStore(taskService);
+```
+
+* If possible, getting entities from the database should be avoided by using return values.
+
+** Example:
++
+```Java
+Task task = createDefaultTask().manualPriority(123).buildAndStore(taskService);
+task.setManualPriority(42);
+Task result = taskService.updateTask(task);
+```
++
+instead of
++
+```Java
+Task task = createDefaultTask().manualPriority(123).buildAndStore(taskService);
+task.setManualPriority(42);
+taskService.updateTask(task);
+Task result = taskService.getTask(task.getId());
+```
+
+* If tests throw any exception, they must throw `Exception.class` only
+
+* Testclass name pattern:
+
+** rest: Start with the name of the tested class or description of the tested behavior, end
+with “IntTest” or “RestDocTest”, e.g. `TaskControllerIntTest`
+
+** lib: Start with the name of the tested class or description of the tested behavior, end with
+“AccTest”, e.g. `UpdateTaskAccTest`
+
+* Assertions
+
+** We are using AssertJ only
+
+** Concatenate the assertions if possible
+
+** We are strictly using the AssertJ fluent syntax. This means `assertThat(<testObject>).<operation>`
++
+examples:
++
+*BAD*: assertThat(string.contains(“foo”)).isTrue();
++
+*GOOD*: assertThat(string).contains(“foo”);
++
+*General Rule*: Do not use any operation within the assertThat() function. Use existing functions from AssertJ’s assert classes.
+
+** We want to use extracting instead of explicit extracting for collection-type entities.
++
+e.g.
++
+```Java
+assertThat(events)
+.extracting(WorkbasketHistoryEvent::getEventType)
+.containsExactly(WorkbasketHistoryEventType.DISTRIBUTION_TARGET_ADDED.getName());
+```
++
+instead of
++
+```Java
+type = events.get(0).getEventType();
+assertThat(type).isEqualTo(WorkbasketHistoryEventType.DISTRIBUTION_TARGET_ADDED.getName());
+```
+
+*Unit Tests*
+
+* Test name pattern: `should_ExpectedBehavior_When_StateUnderTest` or
+`should_ExpectedBehavior_For_Situation`
+In case it is not possible to name the test with “when” or “for”, it is okay to write
+`should_ExpectedBehaviour`. The most important thing is that the name is as understandable
+as possible.
+
+*Rest Tests*
+
+* Url and HttpEntity should be extracted. The variables should be named `url` and `auth`:
++
+```Java
+String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID)
++ "?search-for=cn=ksc-users,cn=groups,OU=Test,O=TASKANA";
+HttpEntity<?> auth = restHelper.defaultRequest();
+
+ResponseEntity<List<AccessIdRepresentationModel>> response =
+TEMPLATE.exchange(
+url,
+HttpMethod.GET,
+auth,
+ACCESS_ID_LIST_TYPE);
+```
+
+* When testing our REST Service, we always use an `ObjectMapper` instance to convert an Object to a
+JSON representation. We NEVER create JSON Strings manually.
+
+===== Fundamentals of good Testing
+
+====== Why do we test?
+
+Tests are like a safety net that is a last line of defense to prevent mistakes to go live.
+
+* Build up the trust that it works
+
+** it behaves at least as each test demands
+
+** enables refactoring and motivates to change code
+
+* Destroy fear that your code introduce bugs
+
+* Motivate to refactor code and everything still works
+
+* Documentation...
+
+* Avoid manual tests and automate them ...
+
+====== The challenges with testing...
+
+* Write code that is testable
+
+* DRTY (don’t repeat testing yourself)
+
+** Every test is adding value, but also maintenance
+
+* choose the right test type to test something
+
+* One test tests One single thing
+
+* If a test is failing, do you fix the code or the test?
+
+** A test assumes logic and demands certain behavior. As requirements changes, so should tests. Are these assumptions still true?
+
+* Tests are written with failing in mind. How fast can we understand why?
+
+** is the error message precise?
+
+** is the test repeatable and consistent or failing only sometimes?
+
+*** see flaky tests
+
+** is the test itself easy to understand?
+
+** do the surrounding tests cover what is still working?
+
+====== The 1x1 of testing
+
+* Always aim for unit tests
+
+* Unit tests focus on one thing and are easier to fix
+
+* Speed of tests is important
+
+** Don‘t wait 5 minutes to see if everything still works
+
+image::../images/contribution/testing_pyramid.png[]
+
+====== What should we (Unit)Test?
+
+image::../images/contribution/testing_priority.png[]
+
+====== Test evolution
+
+* Sometimes it‘s easier to start with manual tests
+
+* With time a healthy test suite should have more and more unit tests
+
+* like a melting ice cream cone
+
+image::../images/contribution/testing_ice_cone.png[]
+
+===== Existing Tests
+
+|===
+|Testtype |Where |What to test |Utilities
+
+|Acceptance
+|Taskana-Core
+|Use-cases, Business Logic, previous Bugs
+|Given real use-cases, Real Database, avoid mocks
+
+|Unit
+|Taskana-Core
+|Technical Testing of single classes. Every Dependency should be mocked. Unit Tests should run very fast
+|Do not use a Database, mocks only if needed. Should avoid Spymocks (verify that xx is called yy times)
+
+|Rest Documentation
+|Taskana-Rest-Spring
+|Generate working documentation from basic rest API calls, ensure that the rest API does not change unintended.
+|Asciidoc,
+
+|Spring Tests (Integration)
+|Taskana-Rest-Spring
+|Test user access,  API responses.
+|
+
+|Gui Tests
+|Taskana-Web (in progress)
+|Test that the GUI is not broken, buttons are functional, elements are still existing.
+|Selenium, Headless Browser
+
+|Static Code analysis
+|All Java Modules
+|Analyze weaknesses in Sourcecode that often lead to bugs or vulnerabilities.
+Not much to do here besides adjusting rules.
+|Sonarcloud, SpotBugs, Checkstyle
+|===
+
+===== To be discussed
+
+
+|===
+| |Topic |Counter Measure |Discussion
+
+|1
+|*Business Logic is only implicitly available*
+
+As a developer, I do not know the business processes, rules or logic and there is no managed source
+of truth. What are the conditions if I want to force claim a task? Change the due date of a task?
+
+At the moment I can look at acceptance tests. But what if a test fails? What if a test needs to
+be changed? Is the Business Logic still valid or is the test just fixed?
+|*Behavior Driven Development + Feature Files*
+
+Like https://cucumber.io/docs/gherkin/reference/[Cucumber] or
+https://concordion.org/tutorial/java/markdown/[Concordion]
+
+Introduce feature file-based testing. User stories are written in plain simple language and
+automatically tested and validated on each build. Therefor new users can quickly learn domain logic
+and conflicting cases can easily be discussed,
+
+Also feature files are *secured against unintended changes* to make tests run again.
+
+image:../images/contribution/testing_splitting_names.png[]
+|
+
+|2
+|*What to test and where?*
+
+As a developer, I want to test and verify that my code works. I will write tests to cover a freshly
+developed feature. What kind of test in which module should I add?
+
+Should I add a spring controller integration test to verify that I can change the owner of a task?
+|*Define the responsibilities of modules*
+
+This is still *to be discussed and a work in progress* as the source code changes
+
+image:../images/contribution/testing_compatibility_matrix.png[]
+
+*Security testing is a topic on each module and should always be included.*
+
+|
+
+|3
+|*How to write Unit Tests*
+
+As a well-behaved developer, I want to write unit tests, but as I write the tests I find it hard
+to test a specific method and need to mock a lot of dependencies
+|*Decoupled classes, pure functions*
+
+It's always more easy to test pure functions that do not have any side effects. Like an integer sum function that always returns the same result.
+
+* many small functions have better performance https://stackoverflow.com/questions/15756075/is-it-true-that-having-lots-of-small-methods-helps-the-jit-compiler-optimize[JIT, inlining]
+
+* small functions focus on one thing and you can easily test one thing
+
+* separate logic from persisting. Like changing the owner of a task into its own function and test that function. No Database required.
+
+* We already have a lot of little private helper functions in classes that follow that guideline but are not tested directly.
+
+* If you can extra a couple of helper functions, maybe you can group them into a new class?
+
+* See https://www.youtube.com/watch?v=wY_CUkU1zfw[this guide from Victor Rentea]
+|
+|===
+
+=== Frontend Coding Guidelines
+
+* Project and folder structure according to this
+  https://frontend.consulting/building-an-enterprise-grade-angular-project-structure[article]
+
+* CSS class names:
+
+** according to http://getbem.com/naming/[BEM] (block ≙ component)
+
+** in the SCSS files, use selectors like `&` instead of writing class names in full length
+   (see this https://sass-lang.com/documentation/style-rules/parent-selector[article])
+   example: `toolbar { …  &__buttons { … } }` instead of `toolbar { … } toolbar__buttons { … }`
+
+* Structure HTML files with sections and separate them with comments: `<!-- <section name> -->`
+
+* Use RxJS operator `take(1)` instead of `first()`
+
+* In the state, we have to use `take(1)` whenever we get an observable from a function we call
+
+* Our store’s actions always return observables (no void)
+
+* Use lambda function instead of `.bind(this)`
+  example:
+
+** `ret.children.map(children => this.classificationsDeepCopy(children));`
+   instead of `ret.children.map(this.classificationsDeepCopy.bind(this));`
+
+* We use `ExampleType[]` instead of `Array<ExampleType>`, when refactoring or writing new code
+
+* Test name pattern: `should_ExpectedBehavior` or `should_ExpectedBehavior_When_StateUnderTest`
+  depending on the specific test
+
+* Testing standards according to this
+  https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html[article]
+
+* All entities (displayed in the UI) should start with a capital letter
+
+* How to write TASKANA specific words which are displayed in the UI:
+
+** Entities: White spaces instead of camel case, all words start with a capital letter
+   e.g. WorkbasketAccessItem → Workbasket Access Item
+
+** Instance variables: White spaces instead of camel case, all words start with lower case in continuous text and with capital letter otherwise (e.g. in captions)
+   e.g. in *continuous text*: <Classification>.serviceLevel → service level
+   e.g. in *a caption*: <Classification>.serviceLevel → Service Level
+
+* For maps, we recommend to use ‘valueByKey’ naming convention
+
+* Use quotes when writing values of variables in strings:
+
+** e.g. `Task with id '152'` instead of `Task with id 152`
+
+=== How to properly create a maven module
+
+This short checklist assists you in creating a maven module and adding it everywhere
+
+* Create the maven module
+
+** add the `<name>${project.groupId}:${project.artifactId}</name>`
+and `<description>THE MODULE DESCRIPTION</description>`
+
+* Make sure that the module is part of the underlying reactor pom
+
+** add a reference to the logically correct parent pom
+
+** reference the new module from that parent pom
+
+* Add the module as a dependency to `ci/taskana-sonar-test-coverage` or
+`ci/taskana-adapter-sonar-test-coverage` (depending on the repository) so that the test coverage is
+computed correctly
+
+* For the Taskana/taskana repository: make sure that the module is listed (with the proper test
+database) in the `test_backend` job’s matrix. File: `.github/workflows/continuous-integration.yml`
+
+* If the module should be released: make sure that the module is listed in the Release artifacts to
+OSS Sonatype step
+
+* Add the following dependency to your module if not available in the parent pom
++
+```Xml
+<dependency>
+<groupId>pro.taskana</groupId>
+<artifactId>taskana-common-logging</artifactId>
+<version>${project.version}</version>
+</dependency>
+```
+* Ask an administrator to add the new module to the GitHub status check restriction (after PR creation)
+
+=== Keeping the REST-doc up to date when adding endpoints
+
+Whenever you add a new REST-endpoint, the REST-documentation needs to be updated.
+
+. All Path/Query Params and Request Fields must be documented in the JavaDoc of the new endpoint
+
+. Compile taskana-rest-spring module
+
+. Add a REST-doc test
+
+. Add the new generated snippet of that REST-doc test to the rest-api.adoc file
