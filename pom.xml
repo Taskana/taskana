@@ -51,7 +51,7 @@
     <version.maven.compiler>3.11.0</version.maven.compiler>
     <version.maven.source>3.2.1</version.maven.source>
     <version.maven.javadoc>3.4.1</version.maven.javadoc>
-    <version.maven.resources>3.3.0</version.maven.resources>
+    <version.maven.resources>3.3.1</version.maven.resources>
     <version.maven.surefire>3.0.0</version.maven.surefire>
     <version.maven.asciidoctor>2.2.3</version.maven.asciidoctor>
     <version.maven.clean>3.2.0</version.maven.clean>
