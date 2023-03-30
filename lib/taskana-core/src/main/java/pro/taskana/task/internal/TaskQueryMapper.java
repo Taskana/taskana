@@ -43,6 +43,7 @@ public interface TaskQueryMapper {
   @Result(property = "primaryObjRefImpl.value", column = "POR_VALUE")
   @Result(property = "isRead", column = "IS_READ")
   @Result(property = "isTransferred", column = "IS_TRANSFERRED")
+  @Result(property = "groupByCount", column = "R_COUNT")
   @Result(property = "custom1", column = "CUSTOM_1")
   @Result(property = "custom2", column = "CUSTOM_2")
   @Result(property = "custom3", column = "CUSTOM_3")

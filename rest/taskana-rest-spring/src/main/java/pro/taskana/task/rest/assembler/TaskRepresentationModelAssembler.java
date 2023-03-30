@@ -82,6 +82,7 @@ public class TaskRepresentationModelAssembler
             .collect(Collectors.toList()));
     repModel.setRead(task.isRead());
     repModel.setTransferred(task.isTransferred());
+    repModel.setGroupByCount(task.getGroupByCount());
     repModel.setAttachments(
         task.getAttachments().stream()
             .map(attachmentAssembler::toModel)
@@ -159,6 +160,7 @@ public class TaskRepresentationModelAssembler
     task.setPrimaryObjRef(objectReferenceAssembler.toEntity(repModel.getPrimaryObjRef()));
     task.setRead(repModel.isRead());
     task.setTransferred(repModel.isTransferred());
+    task.setGroupByCount(repModel.getGroupByCount());
     task.setCustomField(TaskCustomField.CUSTOM_1, repModel.getCustom1());
     task.setCustomField(TaskCustomField.CUSTOM_2, repModel.getCustom2());
     task.setCustomField(TaskCustomField.CUSTOM_3, repModel.getCustom3());

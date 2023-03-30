@@ -249,7 +249,7 @@ class TaskQueryImplAccTest {
       List<TaskSummary> list = taskService.createTaskQuery().workbasketIdIn(wb.getId()).list();
 
       assertThat(list).containsExactlyInAnyOrder(taskSummary1, taskSummary2);
-      assertThat(taskSummary1).hasNoNullFieldsOrPropertiesExcept("ownerLongName");
+      assertThat(taskSummary1).hasNoNullFieldsOrPropertiesExcept("ownerLongName", "groupByCount");
     }
 
     @WithAccessId(user = "user-1-1")
@@ -697,6 +697,9 @@ class TaskQueryImplAccTest {
             taskInWorkbasket(wb)
                 .completed(Instant.parse("2020-02-01T00:00:00Z"))
                 .buildAndStoreAsSummary(taskService);
+        taskInWorkbasket(wb)
+                .completed(null)
+                .buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -871,6 +874,7 @@ class TaskQueryImplAccTest {
         taskSummary1 = taskInWorkbasket(wb).note("Note1").buildAndStoreAsSummary(taskService);
         taskSummary2 = taskInWorkbasket(wb).note("Note2").buildAndStoreAsSummary(taskService);
         taskSummary3 = taskInWorkbasket(wb).note("Lorem ipsum").buildAndStoreAsSummary(taskService);
+        taskInWorkbasket(wb).note(null).buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -1772,8 +1776,16 @@ class TaskQueryImplAccTest {
         wb = createWorkbasketWithPermission();
         por1 = defaultTestObjectReference().company("15").build();
         ObjectReference por2 = defaultTestObjectReference().build();
-        taskSummary1 = taskInWorkbasket(wb).primaryObjRef(por1).buildAndStoreAsSummary(taskService);
-        taskSummary2 = taskInWorkbasket(wb).primaryObjRef(por2).buildAndStoreAsSummary(taskService);
+        taskSummary1 =
+            taskInWorkbasket(wb)
+                .primaryObjRef(por1)
+                .due(Instant.parse("2022-11-15T09:42:00.000Z"))
+                .buildAndStoreAsSummary(taskService);
+        taskSummary2 =
+            taskInWorkbasket(wb)
+                .primaryObjRef(por2)
+                .due(Instant.parse("2022-11-15T09:45:00.000Z"))
+                .buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -3066,13 +3078,17 @@ class TaskQueryImplAccTest {
                 .type("SecondType")
                 .build();
         taskSummary2 =
-            taskInWorkbasket(wb).objectReferences(sor2).buildAndStoreAsSummary(taskService);
+            taskInWorkbasket(wb)
+                .objectReferences(sor2)
+                .due(Instant.parse("2022-11-15T09:42:00.000Z"))
+                .buildAndStoreAsSummary(taskService);
 
         ObjectReference sor2copy = sor2.copy();
         ObjectReference sor1copy = sor1.copy();
         taskSummary3 =
             taskInWorkbasket(wb)
                 .objectReferences(sor2copy, sor1copy)
+                .due(Instant.parse("2022-11-15T09:45:00.000Z"))
                 .buildAndStoreAsSummary(taskService);
 
         ObjectReference sor3 =

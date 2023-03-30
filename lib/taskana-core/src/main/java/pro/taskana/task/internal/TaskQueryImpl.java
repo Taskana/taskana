@@ -53,7 +53,8 @@ public class TaskQueryImpl implements TaskQuery {
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskQueryImpl.class);
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
-  private final List<String> orderBy;
+  private final List<String> orderByOuter;
+  private final List<String> orderByInner;
 
   private TaskQueryColumnName columnName;
   private String[] accessIdIn;
@@ -70,7 +71,8 @@ public class TaskQueryImpl implements TaskQuery {
   private boolean addAttachmentClassificationNameToSelectClauseForOrdering = false;
   private boolean addWorkbasketNameToSelectClauseForOrdering = false;
   private boolean joinWithUserInfo;
-
+  private boolean groupByPor;
+  private String groupBySor;
   private String[] taskId;
   private String[] taskIdNotIn;
   private String[] externalIdIn;
@@ -338,7 +340,8 @@ public class TaskQueryImpl implements TaskQuery {
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = (TaskServiceImpl) taskanaEngine.getEngine().getTaskService();
-    this.orderBy = new ArrayList<>();
+    this.orderByOuter = new ArrayList<>();
+    this.orderByInner = new ArrayList<>();
     this.filterByAccessIdIn = true;
     this.withoutAttachment = false;
     this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo();
@@ -767,7 +770,8 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByClassificationName(SortDirection sortDirection) {
     joinWithClassifications = true;
     addClassificationNameToSelectClauseForOrdering = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("CNAME", sortDirection)
         : addOrderCriteria("c.NAME", sortDirection);
   }
@@ -1067,6 +1071,30 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   @Override
+  public TaskQuery groupByPor() {
+    if (taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery()
+        && getDB().equals(DB.DB2)) {
+      throw new SystemException(
+          "taskana.feature.useSpecificDb2Taskquery needs to be set to false "
+              + "in order to group by por.");
+    }
+    groupByPor = true;
+    return this;
+  }
+
+  @Override
+  public TaskQuery groupBySor(String type) {
+    if (taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery()
+        && getDB().equals(DB.DB2)) {
+      throw new SystemException(
+          "taskana.feature.useSpecificDb2Taskquery needs to be set to false "
+              + "in order to group by sor.");
+    }
+    groupBySor = type;
+    return sorTypeIn(type);
+  }
+
+  @Override
   public TaskQuery readEquals(Boolean isRead) {
     this.isRead = isRead;
     return this;
@@ -1096,7 +1124,8 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentClassificationId(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("ACLASSIFICATION_ID", sortDirection)
         : addOrderCriteria("a.CLASSIFICATION_ID", sortDirection);
   }
@@ -1133,7 +1162,8 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentClassificationKey(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("ACLASSIFICATION_KEY", sortDirection)
         : addOrderCriteria("a.CLASSIFICATION_KEY", sortDirection);
   }
@@ -1170,7 +1200,8 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentClassificationName(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentClassificationNameToSelectClauseForOrdering = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("ACNAME", sortDirection)
         : addOrderCriteria("ac.NAME", sortDirection);
   }
@@ -1207,7 +1238,10 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentChannel(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return addOrderCriteria("CHANNEL", sortDirection);
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
+        ? addOrderCriteria("CHANNEL", sortDirection)
+        : addOrderCriteria("a.CHANNEL", sortDirection);
   }
 
   @Override
@@ -1242,7 +1276,10 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentReference(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return addOrderCriteria("REF_VALUE", sortDirection);
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
+        ? addOrderCriteria("REF_VALUE", sortDirection)
+        : addOrderCriteria("a.REF_VALUE", sortDirection);
   }
 
   @Override
@@ -1265,7 +1302,8 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByAttachmentReceived(SortDirection sortDirection) {
     joinWithAttachments = true;
     addAttachmentColumnsToSelectClauseForOrdering = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("ARECEIVED", sortDirection)
         : addOrderCriteria("a.RECEIVED", sortDirection);
   }
@@ -1926,7 +1964,8 @@ public class TaskQueryImpl implements TaskQuery {
   public TaskQuery orderByWorkbasketName(SortDirection sortDirection) {
     joinWithWorkbaskets = true;
     addWorkbasketNameToSelectClauseForOrdering = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("WNAME", sortDirection)
         : addOrderCriteria("w.NAME", sortDirection);
   }
@@ -1934,7 +1973,8 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery orderByOwnerLongName(SortDirection sortDirection) {
     joinWithUserInfo = true;
-    return DB.DB2 == getDB()
+    return (DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery())
         ? addOrderCriteria("ULONG_NAME", sortDirection)
         : addOrderCriteria("u.LONG_NAME", sortDirection);
   }
@@ -1987,7 +2027,8 @@ public class TaskQueryImpl implements TaskQuery {
     try {
       taskanaEngine.openConnection();
       this.columnName = columnName;
-      this.orderBy.clear();
+      this.orderByOuter.clear();
+      this.orderByInner.clear();
       this.addOrderCriteria(columnName.toString(), sortDirection);
       checkForIllegalParamCombinations();
       checkOpenAndReadPermissionForSpecifiedWorkbaskets();
@@ -2069,7 +2110,9 @@ public class TaskQueryImpl implements TaskQuery {
   // optimized query for db2 can't be used for now in case of selectAndClaim because of temporary
   // tables and the "for update" clause clashing in db2
   private String getLinkToMapperScript() {
-    if (DB.DB2 == getDB() && !selectAndClaim) {
+    if (DB.DB2 == getDB()
+        && !selectAndClaim
+        && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery()) {
       return LINK_TO_MAPPER_DB2;
     } else if (selectAndClaim && DB.ORACLE == getDB()) {
       return LINK_TO_MAPPER_ORACLE;
@@ -2079,7 +2122,10 @@ public class TaskQueryImpl implements TaskQuery {
   }
 
   private String getLinkToCounterTaskScript() {
-    return DB.DB2 == getDB() ? LINK_TO_COUNTER_DB2 : LINK_TO_COUNTER;
+    return DB.DB2 == getDB()
+            && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery()
+        ? LINK_TO_COUNTER_DB2
+        : LINK_TO_COUNTER;
   }
 
   private void validateAllTimeIntervals(TimeInterval[] intervals) {
@@ -2239,7 +2285,16 @@ public class TaskQueryImpl implements TaskQuery {
     if (sortDirection == null) {
       sortDirection = SortDirection.ASCENDING;
     }
-    orderBy.add(columnName + " " + sortDirection);
+    orderByInner.add(columnName + " " + sortDirection);
+    if (columnName.startsWith("a") || columnName.startsWith("w") || columnName.startsWith("c")) {
+      orderByOuter.add(columnName.replace(".", "").toUpperCase() + " " + sortDirection);
+    } else {
+      if (columnName.startsWith("u")) {
+        orderByOuter.add(columnName.replace(".", "").substring(1) + " " + sortDirection);
+      } else {
+        orderByOuter.add(columnName + " " + sortDirection);
+      }
+    }
     return this;
   }
 
@@ -2249,8 +2304,8 @@ public class TaskQueryImpl implements TaskQuery {
         + taskanaEngine
         + ", taskService="
         + taskService
-        + ", orderBy="
-        + orderBy
+        + ", orderByOuter="
+        + orderByOuter
         + ", columnName="
         + columnName
         + ", accessIdIn="
@@ -2279,6 +2334,10 @@ public class TaskQueryImpl implements TaskQuery {
         + addAttachmentClassificationNameToSelectClauseForOrdering
         + ", addWorkbasketNameToSelectClauseForOrdering="
         + addWorkbasketNameToSelectClauseForOrdering
+        + ", groupByPor="
+        + groupByPor
+        + ", groupBySor="
+        + groupBySor
         + ", taskId="
         + Arrays.toString(taskId)
         + ", taskIdNotIn="
