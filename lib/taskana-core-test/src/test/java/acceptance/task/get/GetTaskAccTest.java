@@ -179,7 +179,8 @@ class GetTaskAccTest {
     assertThat(readTask.getCustomField(TaskCustomField.CUSTOM_16)).isEqualTo("custom16");
     assertThatCode(() -> readTask.getCustomAttributeMap().put("X", "Y")).doesNotThrowAnyException();
     assertThatCode(() -> readTask.getCallbackInfo().put("X", "Y")).doesNotThrowAnyException();
-    assertThat(readTask).hasNoNullFieldsOrPropertiesExcept("ownerLongName", "completed");
+    assertThat(readTask)
+        .hasNoNullFieldsOrPropertiesExcept("ownerLongName", "completed", "groupByCount");
   }
 
   @WithAccessId(user = "user-1-1")

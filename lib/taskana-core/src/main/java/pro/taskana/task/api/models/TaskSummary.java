@@ -81,6 +81,16 @@ public interface TaskSummary {
   Instant getReceived();
 
   /**
+   * Returns the number of {@linkplain Task Tasks} that are grouped together with this {@linkplain
+   * Task} by a {@linkplain pro.taskana.task.api.TaskQuery}. It's only not NULL when using
+   * {@linkplain pro.taskana.task.api.TaskQuery#groupByPor()} or {@linkplain
+   * pro.taskana.task.api.TaskQuery#groupBySor(String)}.
+   *
+   * @return the number of {@linkplain Task Tasks} grouped toghether with this {@linkplain Task}
+   */
+  Integer getGroupByCount();
+
+  /**
    * Returns the time when the {@linkplain Task} is due.
    *
    * <p>This instant denotes the last point in the allowed work time has ended or in short it is

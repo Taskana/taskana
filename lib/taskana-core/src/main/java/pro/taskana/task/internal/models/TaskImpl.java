@@ -33,6 +33,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     callbackInfo = new HashMap<>(copyFrom.callbackInfo);
     callbackState = copyFrom.callbackState;
     attachments = copyFrom.attachments.stream().map(Attachment::copy).collect(Collectors.toList());
+    groupByCount = copyFrom.groupByCount;
   }
 
   public Map<String, String> getCustomAttributes() {
@@ -280,6 +281,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     taskSummary.setNote(note);
     taskSummary.setDescription(description);
     taskSummary.setOwner(owner);
+    taskSummary.setOwnerLongName(ownerLongName);
     taskSummary.setParentBusinessProcessId(parentBusinessProcessId);
     taskSummary.setPlanned(planned);
     taskSummary.setReceived(received);

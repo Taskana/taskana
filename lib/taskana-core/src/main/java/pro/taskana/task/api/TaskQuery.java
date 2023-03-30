@@ -1218,6 +1218,29 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   TaskQuery orderByPrimaryObjectReferenceValue(SortDirection sortDirection);
 
   // endregion
+  // region groupBy
+
+  /**
+   * Group the {@linkplain Task Tasks} that will be returned by this query according to the value of
+   * their {@linkplain Task#getPrimaryObjRef() primary ObjectReference}. Only one Task will be
+   * returned for all Tasks with the same value.
+   *
+   * @return the query
+   */
+  TaskQuery groupByPor();
+
+  /**
+   * Group the {@linkplain Task Tasks} that will be returned by this query according to the value of
+   * their {@linkplain Task#getSecondaryObjectReferences() secondary ObjectReference} with the
+   * specified type. Only one Task will be returned for all Tasks with the same value.
+   *
+   * @param type the type of the relevant {@linkplain Task#getSecondaryObjectReferences() secondary
+   *     ObjectReference}
+   * @return the query
+   */
+  TaskQuery groupBySor(String type);
+
+  // endregion
   // region read
 
   /**
