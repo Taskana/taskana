@@ -22,7 +22,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "6.0.2-SNAPSHOT";
+  protected static final String DEPENDENCY_VERSION = "6.0.3-SNAPSHOT";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
 
@@ -120,13 +120,13 @@ public class AbstractAccTest {
             "cmd.exe",
             "/c",
             "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
-                + "taskana-postgres_10");
+                + "taskana-postgres_14");
       } else {
         builder.command(
             "sh",
             "-c",
             "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
-                + "taskana-postgres_10");
+                + "taskana-postgres_14");
       }
       Process process = builder.start();
       LOGGER.info("Starting POSTGRES...");

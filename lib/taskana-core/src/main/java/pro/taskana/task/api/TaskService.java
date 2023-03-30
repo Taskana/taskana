@@ -229,13 +229,11 @@ public interface TaskService {
    * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
    * @throws InvalidTaskStateException if the {@linkplain Task} is already in one of the {@linkplain
    *     TaskState#END_STATES}
-   * @throws InvalidOwnerException cannot be thrown
    * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCancelClaim(String taskId)
       throws TaskNotFoundException,
-          InvalidOwnerException,
           NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException;
 
