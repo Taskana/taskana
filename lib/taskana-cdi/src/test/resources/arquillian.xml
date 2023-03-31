@@ -5,7 +5,7 @@
   <defaultProtocol type="Servlet 3.0"/>
   <container qualifier="wildfly" default="true">
     <configuration>
-      <property name="jbossHome">target/wildfly-15.0.1.Final</property>
+      <property name="jbossHome">target/wildfly-25.0.1.Final</property>
       <property
         name="serverConfig">../../../../src/test/resources/int-test-standalone.xml
       </property>

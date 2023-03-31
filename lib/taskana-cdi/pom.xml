@@ -18,7 +18,7 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.bom</groupId>
-        <artifactId>wildfly-javaee8</artifactId>
+        <artifactId>wildfly-jakartaee8</artifactId>
         <version>${version.wildfly}</version>
         <scope>import</scope>
         <type>pom</type>
