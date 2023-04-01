@@ -8,37 +8,224 @@ TASKANA - The open source task management library
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/pro.taskana/taskana-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/pro.taskana/taskana-core)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-TASKANA is a task management component open source library. It can be embedded into your application or be operated standalone if appropriate. Beside the basic task management functionalities, TASKANA adds workbaskets and classifications to control and monitor a large amount of tasks within a larger organization. 
+TASKANA is a task management component open source library. It can be embedded into your application
+or be operated standalone if appropriate. Beside the basic task management functionalities, 
+TASKANA adds workbaskets and classifications to control and monitor a large amount of tasks within 
+a larger organization. 
 
 * Web Site: http://taskana.pro/
 * Demo Environment: https://taskana.azurewebsites.net/taskana
 * Getting Started: https://taskana.atlassian.net/wiki/spaces/TAS/pages/228655109/Getting+started
-* Issue Tracker: https://taskana.atlassian.net
+* Issue Tracker: https://github.com/Taskana/taskana/issues
 * Contribution Guildelines: https://taskana.atlassian.net/wiki/spaces/TAS/pages/274202625/Contribution+Guide
 * License: Apache License, Version 2.0  https://www.apache.org/licenses/LICENSE-2.0
 
-Components
-----------
+---
+_We're not aware of all installations of our Open Source project. However, we love_
+* _listening to your feedback,_
+* _discussing possible use cases with you,_
+* _aligning the roadmap to your needs!_
 
-TASKANA splits up into five components:
+📨 _Please [contact](#contact) us if you need consulting support._
 
-#### TASKANA core
- * The Java library providing the task management functions
+---
 
-#### TASKANA REST API
- * REST API to allow remote access to the TASKANA system.
+# Table of Contents
 
-#### TASKANA workplace
- * Angular based web application to work on the tasks
- * Sample tasklist application you can use if appropriate
+* ✨ [Overview](#Overview)
+    * [Tasks](#tasks)
+    * [Workbasket](#workbasket)
+    * [Classification](#classification)
+    * [Routing](#routing)
+    * [Prioritization](#prioritization)
+* [Components](#components)
+    * [TASKANA Lib](#taskana-lib)
+    * [TASKANA REST API](#taskana-rest-api)
+    * [TASKANA workplace](#taskana-workplace)
+    * [TASKANA admin](#taskana-admin)
+    * [TASKANA monitor](#taskana-monitor)
+* 🚀 [Getting Started](#getting-started)
+    * [Requirements](#requirements)
+    * [Wrapper Application](#wrapper-application)
+        * [Spring Boot Example](#spring-boot-example)
+        * [EJB Example](#ejb-example)
+* [Customize Behaviour](#customize-behaviour)
+* 📚 [Releases](#releases)
+* 📨 [Contact](#contact)
 
-#### TASKANA admin
- * Angular based web application to configure the system
- * Supports workbaskets and classifications
 
-#### TASKANA monitor
- * Angular based web application to monitor the status of the entire task pool
- * Provides views and statistics about the conformance with defined services levels
- * Shows the workload of your organization and the individual teams
+# ✨Overview
+
+## TASKS
+
+Tasks are the main entity of TASKANA. Each task has its describing attributes like priority and due 
+date.
+
+Furthermore each task has a state.
+
+And a task holds a reference to the system and business object, it is associated with. This is 
+important since  is meant to be a standalone component.
+
+All tasks are placed in a WORKBASKET to control and direct the handling of the tasks.
+
+![Tasklifecycle](docs/images/tasklifecycle.png)
+
+## WORKBASKETS
+
+Workbaskets are the main structure to distribute the tasks to the available users. There are 
+personal, group/team and topic Workbaskets.
+
+Workbaskets indicate the responsibility for a task. The concepts of Workbaskets allow to 
+differentiate between the permissions or the skills required to complete a tasks and the 
+determination who should complete the tasks. This can diverge a lot in a larger organization.
+
+![Workbaskets](docs/images/workbaskets.png)
+
+## CLASSIFICATIONS
+
+Classifications allow to identify the type of a task. The task derives some major attributes from 
+the classification, such as the service level and the priority.
+
+Classifications can be configured by a responsible business administrator to control the handling 
+of the tasks.
+
+## Routing
+
+It offers various routing and distribution functions to assign incoming tasks to the correct 
+Workbaskets, or to redistribute them between Workbaskets.
+
+![Routing](docs/images/routing.png)
+
+## Prioritization
+
+The dynamic prioritization functions in  allow you to control the processing sequence of 
+tasks at any time. This ensures that the most important tasks are always addressed first.
+
+![Prioritization](docs/images/prio.png)
+
+# Components
+
+![Components](docs/images/components.png)
+
+It splits up into five components:
+
+* TASKANA Lib
+  * The Java library providing the task management functions
+* TASKANA REST API
+  * REST API to allow remote access to the TASKANA system.
+* TASKANA workplace
+  * Angular based web application to work on the tasks
+  * Sample tasklist application you can use if appropriate
+* TASKANA admin
+  * Angular based web application to configure the system
+  * Supports workbaskets and classifications
+* TASKANA monitor
+  * Angular based web application to monitor the status of the entire task pool
+  * Provides views and statistics about the conformance with defined services levels
+  * Shows the workload of your organization and the individual teams
+
+## Demo App Components Diagram
+
+![Demo App Components](docs/images/componets_demo_app.png)
+
+# 🚀Getting Started
+
+As TASKANA is meant to be integrated in the development environment and process of your organisation, you have to create your own small integration project as a wrapper and starting point for your customisations.
+
+We currently provide examples how to run TASKANA as a Spring Boot Application or as a an Enterprise Application on Wildfly Application Server.
+
+If you are only interested in how TASKANA looks and feel, you can try our Demo Environment instead.
+
+## Requirements
+
+Runtime Environment at least Java 17
+
+Supported Databases:
+
+* H2 (We test with 2.1.214*)
+* Postgres (We test with 14.7*)
+* DB2 (We test with 11.5.6*)
+* Oracle (We test with 18c*)
+
+_* other versions of the named databases should work also, but haven't been tested_
+
+## Wrapper Application
+
+### Spring Boot Example
+
+We use the h2 database in this example.
+
+See `rest/taskana-rest-spring-example-boot` and it dependencies
+
+### EJB Example
+
+We use a Wildfly Application Server in this example.
+
+See `lib/taskana-cdi`.
+
+# Customize Behaviour
+
+TASKANA allows to customize and modify it’s behaviour through the use of dedicated Service 
+Provider Interfaces (SPI). Each SPI defines an interface that can be implemented by custom code. 
+This is a common approach for Java developers to extend their applications. You can find out more 
+about the background and the details in the Java documentation: 
+https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html
+
+In order to use an SPI within TASKANA, you must
+
+* create a class that implements the relevant interface.
+* place that class into the classpath of your application
+* provide a control file with full name of the SPI 
+  (e. g. pro.taskana.spi.task.api.CreateTaskPreprocessor) in the subdirectory META-INF/services of 
+  the classpath. This control file must contain the fully qualified classname (including the 
+  package) of the class that implements the relevant interface. This control file is used by the 
+  ServiceLoader to load the custom class at runtime. The control file may contain multiple classes 
+  has implement the interface. Each implementation should be declared in a new line.
+
+  All implementations will be used consecutively in the declaration order of the control file.
+
+If you provide one or multiple implementations according to the description above, TASKANA will invoke the implementations at a specific point. The Javadoc of each SPI describes the conditions for the implementation to be executed.
+
+Currently, TASKANA provides the following SPIs:
+
+* [`pro.taskana.spi.history.api.TaskanaHistory`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/history/api/TaskanaHistory.java)
+* [`pro.taskana.spi.priority.api.PriorityServiceProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/priority/api/PriorityServiceProvider.java)
+* [`pro.taskana.spi.routing.api.TaskRoutingProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/routing/api/TaskRoutingProvider.java)
+* [`pro.taskana.spi.task.api.AfterRequestChangesProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/task/api/AfterRequestChangesProvider.java)
+* [`pro.taskana.spi.task.api.AfterRequestReviewProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/task/api/AfterRequestReviewProvider.java)
+* [`pro.taskana.spi.task.api.BeforeRequestChangesProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/task/api/BeforeRequestChangesProvider.java)
+* [`pro.taskana.spi.task.api.BeforeRequestReviewProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/task/api/BeforeRequestReviewProvider.java)
+* [`pro.taskana.spi.task.api.CreateTaskPreprocessor`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/task/api/CreateTaskPreprocessor.java)
+* [`pro.taskana.spi.task.api.ReviewRequiredProvider`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/task/api/ReviewRequiredProvider.java)
+* [`pro.taskana.spi.user.api.RefreshUserPostprocessor`](https://github.com/Taskana/taskana/blob/master/lib/taskana-core/src/main/java/pro/taskana/spi/user/api/RefreshUserPostprocessor.java)
+
+# 📚Releases
+
+The list of [releases](https://github.com/Taskana/taskana/releases) contains a detailed changelog.
+
+We use [Semantic Versioning](https://semver.org/).
+
+The following compatibility matrix shows the officially supported Spring version for each release.
+Other combinations might also work but have not been tested.
+
+| Release | SpringBoot |
+|---------|------------|
+| 7.0.0   | 2.7.16     |
+| 6.3.2   | 2.7.14     |
+| 6.2.2   | 2.7.12     |
+| 6.1.1   | 2.7.10     |
 
 
+# 📨Contact
+
+If you have any questions or ideas feel free to create an [issue](https://github.com/Taskana/taskana/issues) or contact us via [GitHub Discussions](https://github.com/orgs/Taskana/discussions).
+
+We love listening to your feedback, and of course also discussing the project roadmap and possible use cases with you!
+
+This open source project is being developed by [Novatec Consulting GmbH](https://www.novatec-gmbh.de/en/) and [envite consulting GmbH](https://envite.de/) with the support of the open source community.
+
+---
+[![Novatec Consulting GmbH](docs/images/novatec.jpeg)](https://www.novatec-gmbh.de)
+---
+[![envite consulting GmbH](docs/images/envite-black.png)](https://envite.de/)
+---
