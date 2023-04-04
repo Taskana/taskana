@@ -14,8 +14,9 @@ TASKANA is a task management component open source library. It can be embedded i
 * Demo Environment: https://taskana.mybluemix.net/taskana
 * Getting Started: https://taskana.atlassian.net/wiki/spaces/TAS/pages/228655109/Getting+started
 * Issue Tracker: https://taskana.atlassian.net
-* Contribution Guildelines: https://taskana.atlassian.net/wiki/spaces/TAS/pages/274202625/Contribution+Guide
+* Contribution Guildelines: [CONTRIBUTING.adoc](CONTRIBUTING.adoc)
 * License: Apache License, Version 2.0  https://www.apache.org/licenses/LICENSE-2.0
+* References: [References.adoc](docs/references.adoc)
 
 Components
 ----------
