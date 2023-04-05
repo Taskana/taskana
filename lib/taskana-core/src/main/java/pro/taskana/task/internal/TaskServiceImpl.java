@@ -1255,14 +1255,6 @@ public class TaskServiceImpl implements TaskService {
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
-    String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
-    String userLongName = null;
-    if (taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
-      User user = userMapper.findById(userId);
-      if (user != null) {
-        userLongName = user.getLongName();
-      }
-    }
     TaskImpl task;
     try {
       taskanaEngine.openConnection();
@@ -1272,6 +1264,16 @@ public class TaskServiceImpl implements TaskService {
       Instant now = Instant.now();
 
       checkPreconditionsForClaimTask(task, forceClaim);
+
+      String userId = taskanaEngine.getEngine().getCurrentUserContext().getUserid();
+      String userLongName = null;
+      if (taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
+        User user = userMapper.findById(userId);
+        if (user != null) {
+          userLongName = user.getLongName();
+        }
+      }
+
       claimActionsOnTask(task, userId, userLongName, now);
       taskMapper.update(task);
       if (LOGGER.isDebugEnabled()) {
