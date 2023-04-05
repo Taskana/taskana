@@ -10,7 +10,11 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 import java.time.Instant;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.task.api.TaskService;
@@ -18,11 +22,14 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.UserBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
+import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
@@ -33,6 +40,7 @@ class ClaimTaskAccTest {
   @TaskanaInject TaskService taskService;
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
+  @TaskanaInject UserService userService;
 
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
@@ -54,6 +62,13 @@ class ClaimTaskAccTest {
         .buildAndStore(workbasketService);
 
     defaultObjectReference = defaultTestObjectReference().build();
+
+    UserBuilder.newUser()
+        .id("user-1-2")
+        .firstName("Max")
+        .lastName("Mustermann")
+        .longName("Long name of user-1-2")
+        .buildAndStore(userService);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -393,5 +408,41 @@ class ClaimTaskAccTest {
     assertThat(unclaimedTask.getClaimed()).isNull();
     assertThat(unclaimedTask.isRead()).isTrue();
     assertThat(unclaimedTask.getOwner()).isNull();
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class WithAdditionalUserInfoEnabled implements TaskanaConfigurationModifier {
+
+    @TaskanaInject TaskService taskService;
+
+    @Override
+    public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+      return builder.addAdditionalUserInfo(true);
+    }
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_SetOwnerLongName() throws Exception {
+
+      Task task =
+          TaskBuilder.newTask()
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .primaryObjRef(defaultObjectReference)
+              .buildAndStore(taskService);
+
+      Task claimedTask = taskService.claim(task.getId());
+
+      assertThat(claimedTask).isNotNull();
+      assertThat(claimedTask.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(claimedTask.getClaimed()).isNotNull();
+      assertThat(claimedTask.getModified())
+          .isNotEqualTo(claimedTask.getCreated())
+          .isEqualTo(claimedTask.getClaimed());
+      assertThat(claimedTask.isRead()).isTrue();
+      assertThat(claimedTask.getOwner()).isEqualTo("user-1-2");
+      assertThat(claimedTask.getOwnerLongName()).isEqualTo("Long name of user-1-2");
+    }
   }
 }
