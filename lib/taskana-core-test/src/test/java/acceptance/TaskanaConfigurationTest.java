@@ -4,6 +4,7 @@ import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -155,7 +156,8 @@ class TaskanaConfigurationTest {
 
       verifyConfigurationValuesDifferFromDefaultConfiguration(configuration);
       // general configuration
-      assertThat(configuration.getDomains()).isEqualTo(Set.of("DOMAIN_A", "DOMAIN_B"));
+      assertThat(configuration.getDomains())
+          .isEqualTo(List.of("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN));
       assertThat(configuration.isEnforceServiceLevel()).isFalse();
       // authentication configuration
       assertThat(configuration.getRoleMap())

@@ -1,5 +1,7 @@
 package pro.taskana;
 
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -890,12 +892,11 @@ public class TaskanaConfiguration {
         throw new SystemException("separator file can't be null or empty");
       }
 
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
-      }
+      LOGGER.debug(
+          "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
       properties = loadProperties(propertiesFile);
       configureAnnotatedFields(separator, properties);
+      addMasterDomain();
       return this;
     }
 
@@ -1134,6 +1135,14 @@ public class TaskanaConfiguration {
     }
 
     // endregion
+
+    private void addMasterDomain() {
+      // Master Domain is treat as empty string
+      // it must be always added to the configuration
+      if (!this.domains.contains(MASTER_DOMAIN)) {
+        this.domains.add(MASTER_DOMAIN);
+      }
+    }
 
     private void configureAnnotatedFields(String separator, Map<String, String> props) {
       final List<Field> fields = ReflectionUtil.retrieveAllFields(getClass());

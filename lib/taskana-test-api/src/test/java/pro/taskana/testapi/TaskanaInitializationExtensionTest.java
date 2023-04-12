@@ -1,6 +1,7 @@
 package pro.taskana.testapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import java.util.OptionalInt;
 import java.util.Set;
@@ -22,7 +23,8 @@ class TaskanaInitializationExtensionTest {
 
   @Test
   void should_UseDefaultTaskanaEngine_When_TestIsCreated() {
-    assertThat(taskanaConfiguration.getDomains()).containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+    assertThat(taskanaConfiguration.getDomains())
+        .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN);
   }
 
   @Nested
@@ -77,7 +79,7 @@ class TaskanaInitializationExtensionTest {
     @Test
     void should_UseDefaultTaskanaEngine_When_NestedClassDoesNotImplementModifier() {
       assertThat(taskanaConfiguration.getDomains())
-          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN);
     }
   }
 
@@ -107,7 +109,7 @@ class TaskanaInitializationExtensionTest {
     @Test
     void should_UseDefaultTaskanaEngine_When_NestedClassDoesNotImplementModifier() {
       assertThat(taskanaConfiguration.getDomains())
-          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN);
     }
 
     class DummyPriorityServiceProvider implements PriorityServiceProvider {
@@ -150,7 +152,7 @@ class TaskanaInitializationExtensionTest {
     @Test
     void should_UseDefaultTaskanaEngine_When_NestedClassDoesNotImplementModifier() {
       assertThat(taskanaConfiguration.getDomains())
-          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+          .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN);
     }
 
     class DummyPriorityServiceProvider implements PriorityServiceProvider {
