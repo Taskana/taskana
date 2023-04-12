@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,7 +58,7 @@ public class TaskanaConfiguration {
   private final String schemaName;
   private final boolean securityEnabled;
 
-  private final Set<String> domains;
+  private final List<String> domains;
   private final boolean enforceServiceLevel;
   // endregion
 
@@ -132,7 +133,7 @@ public class TaskanaConfiguration {
     this.useManagedTransactions = builder.useManagedTransactions;
     this.schemaName = builder.schemaName;
     this.securityEnabled = builder.securityEnabled;
-    this.domains = Collections.unmodifiableSet(builder.domains);
+    this.domains = Collections.unmodifiableList(builder.domains);
     this.enforceServiceLevel = builder.enforceServiceLevel;
     // authentication configuration
     this.roleMap =
@@ -239,7 +240,7 @@ public class TaskanaConfiguration {
     return securityEnabled;
   }
 
-  public Set<String> getDomains() {
+  public List<String> getDomains() {
     return domains;
   }
 
@@ -615,7 +616,7 @@ public class TaskanaConfiguration {
     private final boolean securityEnabled;
 
     @TaskanaProperty("taskana.domains")
-    private Set<String> domains = new HashSet<>();
+    private List<String> domains = new ArrayList<>();
 
     @TaskanaProperty("taskana.servicelevel.validation.enforce")
     private boolean enforceServiceLevel = true;
@@ -904,7 +905,7 @@ public class TaskanaConfiguration {
 
     // region general configuration
 
-    public Builder domains(Set<String> domains) {
+    public Builder domains(List<String> domains) {
       this.domains = domains;
       return this;
     }
@@ -1139,6 +1140,7 @@ public class TaskanaConfiguration {
     private void addMasterDomain() {
       // Master Domain is treat as empty string
       // it must be always added to the configuration
+      // add the master domain always at the end of the list
       if (!this.domains.contains(MASTER_DOMAIN)) {
         this.domains.add(MASTER_DOMAIN);
       }
@@ -1167,7 +1169,7 @@ public class TaskanaConfiguration {
     }
 
     private void adjustConfiguration() {
-      domains = domains.stream().map(String::toUpperCase).collect(Collectors.toSet());
+      domains = domains.stream().map(String::toUpperCase).collect(Collectors.toList());
       classificationTypes =
           classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toSet());
       classificationCategoriesByType =

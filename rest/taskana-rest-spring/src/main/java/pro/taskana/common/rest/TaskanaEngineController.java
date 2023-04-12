@@ -1,5 +1,6 @@
 package pro.taskana.common.rest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_DOMAIN)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<Set<String>> getDomains() {
+  public ResponseEntity<List<String>> getDomains() {
     return ResponseEntity.ok(taskanaConfiguration.getDomains());
   }
 
