@@ -100,7 +100,7 @@ class TaskanaConfigurationTest {
               Arrays.stream(TaskanaRole.values())
                   .collect(Collectors.toMap(Function.identity(), r -> Set.of())));
       // classification configuration
-      assertThat(configuration.getClassificationTypes()).isEqualTo(Collections.emptySet());
+      assertThat(configuration.getClassificationTypes()).isEqualTo(Collections.emptyList());
       assertThat(configuration.getClassificationCategoriesByType())
           .isEqualTo(Collections.emptyMap());
       // working time configuration
@@ -171,7 +171,7 @@ class TaskanaConfigurationTest {
                   Map.entry(TaskanaRole.TASK_ADMIN, Set.of("taskadmin-1", "taskadmin-2")),
                   Map.entry(TaskanaRole.TASK_ROUTER, Set.of("taskrouter-1", "taskrouter-2"))));
       // classification configuration
-      assertThat(configuration.getClassificationTypes()).isEqualTo(Set.of("TASK", "DOCUMENT"));
+      assertThat(configuration.getClassificationTypes()).isEqualTo(List.of("TASK", "DOCUMENT"));
       assertThat(configuration.getClassificationCategoriesByType())
           .isEqualTo(
               Map.ofEntries(
@@ -247,7 +247,7 @@ class TaskanaConfigurationTest {
               Map.entry(TaskanaRole.TASK_ADMIN, Set.of("task_admin")),
               Map.entry(TaskanaRole.TASK_ROUTER, Set.of("task_router")));
       // classification configuration
-      Set<String> expectedClassificationTypes = Set.of("TYPE_A", "TYPE_B");
+      List<String> expectedClassificationTypes = List.of("TYPE_A", "TYPE_B");
       Map<String, Set<String>> expectedClassificationCategories =
           Map.of("TYPE_A", Set.of("CATEGORY_A"), "TYPE_B", Set.of("CATEGORY_B"));
       // working time configuration
@@ -435,7 +435,7 @@ class TaskanaConfigurationTest {
               // authentication configuration
               .roleMap(Map.of(TaskanaRole.ADMIN, Set.of("admin")))
               // classification configuration
-              .classificationTypes(Set.of("typeA", "typeB"))
+              .classificationTypes(List.of("typeA", "typeB"))
               .classificationCategoriesByType(
                   Map.of("typeA", Set.of("categoryA"), "typeB", Set.of("categoryB")))
               // working time configuration
@@ -624,7 +624,7 @@ class TaskanaConfigurationTest {
           new TaskanaConfiguration.Builder(
                   TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
               // necessary to bypass validation since Classification Categories will be an empty Map
-              .classificationTypes(Set.of(""));
+              .classificationTypes(List.of(""));
       initializeWithMutableCollectionsAsMapValues(builder);
       Stream<Field> fields =
           ReflectionUtil.retrieveAllFields(TaskanaConfiguration.class).stream()
@@ -672,7 +672,7 @@ class TaskanaConfigurationTest {
           new TaskanaConfiguration.Builder(
                   TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
               // necessary to bypass validation since Classification Categories will be an empty Map
-              .classificationTypes(Set.of());
+              .classificationTypes(List.of());
       initializeWithMutableMaps(builder);
       Stream<Field> fields =
           ReflectionUtil.retrieveAllFields(TaskanaConfiguration.class).stream()
@@ -919,7 +919,7 @@ class TaskanaConfigurationTest {
       TaskanaConfiguration.Builder builder =
           new TaskanaConfiguration.Builder(
                   TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
-              .classificationTypes(Set.of("valid"))
+              .classificationTypes(List.of("valid"))
               .classificationCategoriesByType(Map.of("does_not_exist", Set.of("a", "b")));
 
       ThrowingCallable call = builder::build;
@@ -938,7 +938,7 @@ class TaskanaConfigurationTest {
       TaskanaConfiguration.Builder builder =
           new TaskanaConfiguration.Builder(
                   TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
-              .classificationTypes(Set.of("type1", "type2"))
+              .classificationTypes(List.of("type1", "type2"))
               .classificationCategoriesByType(Map.of("type1", Set.of("a", "b")));
 
       ThrowingCallable call = builder::build;
@@ -948,7 +948,7 @@ class TaskanaConfigurationTest {
           .hasMessageContaining(
               "Some Classification Categories for parameter classificationTypes "
                   + "(taskana.classification.types) are missing. "
-                  + "configured: [TYPE2, TYPE1] detected: [TYPE1]");
+                  + "configured: [TYPE1, TYPE2] detected: [TYPE1]");
     }
 
     @ParameterizedTest
@@ -988,7 +988,7 @@ class TaskanaConfigurationTest {
     void should_MakeClassificationTypesUpperCase() {
       TaskanaConfiguration configuration =
           new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
-              .classificationTypes(Set.of("a", "b"))
+              .classificationTypes(List.of("a", "b"))
               .classificationCategoriesByType(
                   Map.ofEntries(Map.entry("a", Set.of()), Map.entry("b", Set.of())))
               .build();
@@ -1000,7 +1000,7 @@ class TaskanaConfigurationTest {
     void should_MakeClassificationCategoriesUpperCase() {
       TaskanaConfiguration configuration =
           new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
-              .classificationTypes(Set.of("type_a", "type_b"))
+              .classificationTypes(List.of("type_a", "type_b"))
               .classificationCategoriesByType(
                   Map.ofEntries(
                       Map.entry("type_a", Set.of("a", "b")), Map.entry("type_b", Set.of("c", "d"))))

@@ -67,7 +67,7 @@ public class TaskanaConfiguration {
   // endregion
 
   // region classification configuration
-  private final Set<String> classificationTypes;
+  private final List<String> classificationTypes;
 
   private final Map<String, Set<String>> classificationCategoriesByType;
   // endregion
@@ -142,7 +142,7 @@ public class TaskanaConfiguration {
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
     // classification configuration
-    this.classificationTypes = Collections.unmodifiableSet(builder.classificationTypes);
+    this.classificationTypes = Collections.unmodifiableList(builder.classificationTypes);
     this.classificationCategoriesByType =
         builder.classificationCategoriesByType.entrySet().stream()
             .collect(
@@ -252,7 +252,7 @@ public class TaskanaConfiguration {
     return roleMap;
   }
 
-  public Set<String> getClassificationTypes() {
+  public List<String> getClassificationTypes() {
     return classificationTypes;
   }
 
@@ -629,7 +629,7 @@ public class TaskanaConfiguration {
 
     // region classification configuration
     @TaskanaProperty("taskana.classification.types")
-    private Set<String> classificationTypes = new HashSet<>();
+    private List<String> classificationTypes = new ArrayList<>();
 
     @TaskanaProperty("taskana.classification.categories")
     private Map<String, Set<String>> classificationCategoriesByType = new HashMap<>();
@@ -928,7 +928,7 @@ public class TaskanaConfiguration {
 
     // region classification configuration
 
-    public Builder classificationTypes(Set<String> classificationTypes) {
+    public Builder classificationTypes(List<String> classificationTypes) {
       this.classificationTypes = classificationTypes;
       return this;
     }
@@ -1171,7 +1171,7 @@ public class TaskanaConfiguration {
     private void adjustConfiguration() {
       domains = domains.stream().map(String::toUpperCase).collect(Collectors.toList());
       classificationTypes =
-          classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toSet());
+          classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toList());
       classificationCategoriesByType =
           classificationCategoriesByType.entrySet().stream()
               .map(
