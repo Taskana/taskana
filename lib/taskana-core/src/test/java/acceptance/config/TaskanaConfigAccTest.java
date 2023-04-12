@@ -1,6 +1,7 @@
 package acceptance.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,7 +35,8 @@ class TaskanaConfigAccTest {
 
   @Test
   void should_ConfigureDomains_For_DefaultPropertiesFile() {
-    assertThat(taskanaConfiguration.getDomains()).containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B");
+    assertThat(taskanaConfiguration.getDomains())
+        .containsExactlyInAnyOrder("DOMAIN_A", "DOMAIN_B", MASTER_DOMAIN);
   }
 
   @Test
