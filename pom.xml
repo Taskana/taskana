@@ -72,7 +72,7 @@
     <version.wildfly>15.0.1.Final</version.wildfly>
 
     <!-- camunda dependencies -->
-    <version.camunda.dmn>7.18.0</version.camunda.dmn>
+    <version.camunda.dmn>7.19.0</version.camunda.dmn>
 
     <!-- java ee dependencies -->
     <version.thorntail>2.7.0.Final</version.thorntail>
