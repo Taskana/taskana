@@ -78,7 +78,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_TYPES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<Set<String>> getClassificationTypes() {
+  public ResponseEntity<List<String>> getClassificationTypes() {
     return ResponseEntity.ok(taskanaConfiguration.getClassificationTypes());
   }
 
