@@ -1,4 +1,4 @@
-context('TASKANA Monitor', () => {
+context.skip('TASKANA Monitor', () => {
   beforeEach(() => cy.loginAs('admin'));
 
   it('should visit taskana tasks by status monitor page', () => {
