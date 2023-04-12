@@ -92,7 +92,7 @@ class TaskanaConfigurationTest {
 
       // general configuration
       assertThat(configuration.isSecurityEnabled()).isTrue();
-      assertThat(configuration.getDomains()).isEqualTo(Collections.emptySet());
+      assertThat(configuration.getDomains()).isEqualTo(Collections.emptyList());
       assertThat(configuration.isEnforceServiceLevel()).isTrue();
       // authentication configuration
       assertThat(configuration.getRoleMap())
@@ -234,7 +234,7 @@ class TaskanaConfigurationTest {
       boolean expectedUseManagedTransactions = false;
       String expectedSchemaName = "TASKANA";
       boolean expectedSecurityEnabled = false;
-      Set<String> expectedDomains = Set.of("A", "B");
+      List<String> expectedDomains = List.of("A", "B");
       boolean expectedEnforceServiceLevel = false;
 
       // authentication configuration
@@ -430,7 +430,7 @@ class TaskanaConfigurationTest {
       TaskanaConfiguration configuration =
           new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA", false)
               // general configuration
-              .domains(Set.of("A", "B"))
+              .domains(List.of("A", "B"))
               .enforceServiceLevel(false)
               // authentication configuration
               .roleMap(Map.of(TaskanaRole.ADMIN, Set.of("admin")))
@@ -978,7 +978,7 @@ class TaskanaConfigurationTest {
     void should_MakeDomainUpperCase() {
       TaskanaConfiguration configuration =
           new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
-              .domains(Set.of("a", "b"))
+              .domains(List.of("a", "b"))
               .build();
 
       assertThat(configuration.getDomains()).containsExactlyInAnyOrder("A", "B");

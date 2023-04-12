@@ -3,8 +3,8 @@ package pro.taskana.testapi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 
+import java.util.List;
 import java.util.OptionalInt;
-import java.util.Set;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -48,7 +48,7 @@ class TaskanaInitializationExtensionTest {
 
     @Override
     public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
-      return builder.domains(Set.of("A", "B"));
+      return builder.domains(List.of("A", "B"));
     }
 
     @Test
