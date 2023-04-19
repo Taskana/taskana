@@ -52,7 +52,7 @@ class TaskanaEngineControllerIntTest {
   }
 
   @Test
-  void testClassificationCategories() {
+  void should_ReturnAllClassifications_When_GetClassificationCategories_isCalledWithoutType() {
     String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES);
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
@@ -60,7 +60,29 @@ class TaskanaEngineControllerIntTest {
         TEMPLATE.exchange(
             url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
     assertThat(response.getBody())
-        .containsExactlyInAnyOrder("MANUAL", "EXTERNAL", "AUTOMATIC", "PROCESS");
+        .containsExactlyInAnyOrder("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS", "EXTERNAL");
+  }
+
+  @Test
+  void should_ReturnOnlyClassificationsForTypeTask_When_GetClassificationCategories_isCalled() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES) + "?type=TASK";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<List<String>> response =
+        TEMPLATE.exchange(
+            url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
+    assertThat(response.getBody()).containsExactly("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS");
+  }
+
+  @Test
+  void should_ReturnOnlyClassificationsForTypeDocument_When_GetClassificationCategories_isCalled() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES) + "?type=DOCUMENT";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<List<String>> response =
+        TEMPLATE.exchange(
+            url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(List.class));
+    assertThat(response.getBody()).containsExactly("EXTERNAL");
   }
 
   @Test

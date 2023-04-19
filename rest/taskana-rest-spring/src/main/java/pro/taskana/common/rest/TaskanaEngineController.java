@@ -2,7 +2,6 @@ package pro.taskana.common.rest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +62,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<Set<String>> getClassificationCategories(
+  public ResponseEntity<List<String>> getClassificationCategories(
       @RequestParam(required = false) String type) {
     if (type != null) {
       return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType(type));
@@ -90,7 +89,7 @@ public class TaskanaEngineController {
    */
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<Map<String, Set<String>>> getClassificationCategoriesByTypeMap() {
+  public ResponseEntity<Map<String, List<String>>> getClassificationCategoriesByTypeMap() {
     return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType());
   }
 
