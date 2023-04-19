@@ -69,7 +69,7 @@ public class TaskanaConfiguration {
   // region classification configuration
   private final List<String> classificationTypes;
 
-  private final Map<String, Set<String>> classificationCategoriesByType;
+  private final Map<String, List<String>> classificationCategoriesByType;
   // endregion
 
   // region working time configuration
@@ -147,7 +147,7 @@ public class TaskanaConfiguration {
         builder.classificationCategoriesByType.entrySet().stream()
             .collect(
                 Collectors.toUnmodifiableMap(
-                    Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
+                    Entry::getKey, e -> Collections.unmodifiableList(e.getValue())));
     // working time configuration
     this.workingTimeSchedule =
         builder.workingTimeSchedule.entrySet().stream()
@@ -208,17 +208,17 @@ public class TaskanaConfiguration {
     return true;
   }
 
-  public Set<String> getAllClassificationCategories() {
+  public List<String> getAllClassificationCategories() {
     return this.classificationCategoriesByType.values().stream()
         .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 
-  public Set<String> getClassificationCategoriesByType(String type) {
-    return classificationCategoriesByType.getOrDefault(type, Collections.emptySet());
+  public List<String> getClassificationCategoriesByType(String type) {
+    return classificationCategoriesByType.getOrDefault(type, Collections.emptyList());
   }
 
-  public Map<String, Set<String>> getClassificationCategoriesByType() {
+  public Map<String, List<String>> getClassificationCategoriesByType() {
     return this.classificationCategoriesByType;
   }
 
@@ -632,7 +632,7 @@ public class TaskanaConfiguration {
     private List<String> classificationTypes = new ArrayList<>();
 
     @TaskanaProperty("taskana.classification.categories")
-    private Map<String, Set<String>> classificationCategoriesByType = new HashMap<>();
+    private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
     // endregion
 
     // region working time configuration
@@ -934,7 +934,7 @@ public class TaskanaConfiguration {
     }
 
     public Builder classificationCategoriesByType(
-        Map<String, Set<String>> classificationCategoriesByType) {
+        Map<String, List<String>> classificationCategoriesByType) {
       this.classificationCategoriesByType = classificationCategoriesByType;
       return this;
     }
@@ -1180,7 +1180,7 @@ public class TaskanaConfiguration {
                           e.getKey().toUpperCase(),
                           e.getValue().stream()
                               .map(String::toUpperCase)
-                              .collect(Collectors.toSet())))
+                              .collect(Collectors.toList())))
               .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
       roleMap =
           Arrays.stream(TaskanaRole.values())

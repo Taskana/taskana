@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,8 +72,8 @@ class TaskanaConfigAccTest {
     assertThat(taskanaConfiguration.getClassificationCategoriesByType())
         .containsExactlyInAnyOrderEntriesOf(
             Map.ofEntries(
-                Map.entry("TASK", Set.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
-                Map.entry("DOCUMENT", Set.of("EXTERNAL"))));
+                Map.entry("TASK", List.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
+                Map.entry("DOCUMENT", List.of("EXTERNAL"))));
   }
 
   private String createNewConfigFile(

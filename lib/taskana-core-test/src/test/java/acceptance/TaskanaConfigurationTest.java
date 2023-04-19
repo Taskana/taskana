@@ -175,8 +175,8 @@ class TaskanaConfigurationTest {
       assertThat(configuration.getClassificationCategoriesByType())
           .isEqualTo(
               Map.ofEntries(
-                  Map.entry("TASK", Set.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
-                  Map.entry("DOCUMENT", Set.of("EXTERNAL"))));
+                  Map.entry("TASK", List.of("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS")),
+                  Map.entry("DOCUMENT", List.of("EXTERNAL"))));
       // working time configuration
       //
       // assertThat(configuration.getWorkingTimeSchedule()).isEqualTo(defaultWorkingTimeSchedule);
@@ -248,8 +248,8 @@ class TaskanaConfigurationTest {
               Map.entry(TaskanaRole.TASK_ROUTER, Set.of("task_router")));
       // classification configuration
       List<String> expectedClassificationTypes = List.of("TYPE_A", "TYPE_B");
-      Map<String, Set<String>> expectedClassificationCategories =
-          Map.of("TYPE_A", Set.of("CATEGORY_A"), "TYPE_B", Set.of("CATEGORY_B"));
+      Map<String, List<String>> expectedClassificationCategories =
+          Map.of("TYPE_A", List.of("CATEGORY_A"), "TYPE_B", List.of("CATEGORY_B"));
       // working time configuration
       Map<DayOfWeek, Set<LocalTimeInterval>> expectedWorkingTimeSchedule =
           Map.of(DayOfWeek.MONDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.NOON)));
@@ -437,7 +437,7 @@ class TaskanaConfigurationTest {
               // classification configuration
               .classificationTypes(List.of("typeA", "typeB"))
               .classificationCategoriesByType(
-                  Map.of("typeA", Set.of("categoryA"), "typeB", Set.of("categoryB")))
+                  Map.of("typeA", List.of("categoryA"), "typeB", List.of("categoryB")))
               // working time configuration
               .workingTimeSchedule(
                   Map.of(
@@ -920,7 +920,7 @@ class TaskanaConfigurationTest {
           new TaskanaConfiguration.Builder(
                   TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
               .classificationTypes(List.of("valid"))
-              .classificationCategoriesByType(Map.of("does_not_exist", Set.of("a", "b")));
+              .classificationCategoriesByType(Map.of("does_not_exist", List.of("a", "b")));
 
       ThrowingCallable call = builder::build;
 
@@ -939,7 +939,7 @@ class TaskanaConfigurationTest {
           new TaskanaConfiguration.Builder(
                   TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
               .classificationTypes(List.of("type1", "type2"))
-              .classificationCategoriesByType(Map.of("type1", Set.of("a", "b")));
+              .classificationCategoriesByType(Map.of("type1", List.of("a", "b")));
 
       ThrowingCallable call = builder::build;
 
@@ -990,7 +990,7 @@ class TaskanaConfigurationTest {
           new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
               .classificationTypes(List.of("a", "b"))
               .classificationCategoriesByType(
-                  Map.ofEntries(Map.entry("a", Set.of()), Map.entry("b", Set.of())))
+                  Map.ofEntries(Map.entry("a", List.of()), Map.entry("b", List.of())))
               .build();
 
       assertThat(configuration.getClassificationTypes()).containsExactlyInAnyOrder("A", "B");
@@ -1003,13 +1003,14 @@ class TaskanaConfigurationTest {
               .classificationTypes(List.of("type_a", "type_b"))
               .classificationCategoriesByType(
                   Map.ofEntries(
-                      Map.entry("type_a", Set.of("a", "b")), Map.entry("type_b", Set.of("c", "d"))))
+                      Map.entry("type_a", List.of("a", "b")),
+                      Map.entry("type_b", List.of("c", "d"))))
               .build();
 
       assertThat(configuration.getClassificationCategoriesByType())
           .containsExactlyInAnyOrderEntriesOf(
               Map.ofEntries(
-                  Map.entry("TYPE_A", Set.of("A", "B")), Map.entry("TYPE_B", Set.of("C", "D"))));
+                  Map.entry("TYPE_A", List.of("A", "B")), Map.entry("TYPE_B", List.of("C", "D"))));
     }
 
     @Test
