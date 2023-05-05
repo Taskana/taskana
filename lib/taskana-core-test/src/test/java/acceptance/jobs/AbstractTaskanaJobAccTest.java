@@ -1,12 +1,14 @@
 package acceptance.jobs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,9 +20,11 @@ import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.jobs.JobRunner;
+import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
@@ -125,5 +129,47 @@ class AbstractTaskanaJobAccTest {
       List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
       assertThat(nextJobs).isEmpty();
     }
+  }
+
+  @Test
+  void should_CreateSampleTaskanaJob_When_JobHasMoreThenOneConstructor() {
+
+    ScheduledJob scheduledJob = new ScheduledJob();
+    scheduledJob.setType(SampleTaskanaJob.class.getName());
+
+    ThrowingCallable call =
+        () -> AbstractTaskanaJob.createFromScheduledJob(taskanaEngine, null, scheduledJob);
+
+    assertThatCode(call).doesNotThrowAnyException();
+  }
+
+  public static class SampleTaskanaJob extends AbstractTaskanaJob {
+
+    public SampleTaskanaJob() {
+      super(null, null, null, true);
+    }
+
+    public SampleTaskanaJob(
+        TaskanaEngine taskanaEngine,
+        TaskanaTransactionProvider txProvider,
+        ScheduledJob scheduledJob) {
+      super(taskanaEngine, txProvider, scheduledJob, true);
+    }
+
+    public SampleTaskanaJob(
+        TaskanaEngine taskanaEngine,
+        TaskanaTransactionProvider txProvider,
+        ScheduledJob job,
+        boolean async) {
+      super(taskanaEngine, txProvider, job, async);
+    }
+
+    @Override
+    protected String getType() {
+      return SampleTaskanaJob.class.getName();
+    }
+
+    @Override
+    protected void execute() throws TaskanaException {}
   }
 }

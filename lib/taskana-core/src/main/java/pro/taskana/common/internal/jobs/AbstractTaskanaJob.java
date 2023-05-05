@@ -36,18 +36,17 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
   }
 
   public static TaskanaJob createFromScheduledJob(
-      TaskanaEngine engine, TaskanaTransactionProvider txProvider, ScheduledJob job)
-      throws ClassNotFoundException,
-          IllegalAccessException,
-          InstantiationException,
-          InvocationTargetException {
+      TaskanaEngine engine, TaskanaTransactionProvider txProvider, ScheduledJob job) {
 
-    return (TaskanaJob)
-        Thread.currentThread()
-            .getContextClassLoader()
-            .loadClass(job.getType())
-            .getConstructors()[0]
-            .newInstance(engine, txProvider, job);
+    Class<?> jobClass;
+    try {
+      jobClass = Thread.currentThread().getContextClassLoader().loadClass(job.getType());
+    } catch (ClassNotFoundException e) {
+      throw new SystemException(
+          String.format("Can't load class '%s'", job.getType()));
+    }
+
+    return initTaskanaJob(engine, jobClass, txProvider, job);
   }
 
   @Override
@@ -67,6 +66,21 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
    * @throws SystemException if the jobClass could not be scheduled.
    */
   public static void initializeSchedule(TaskanaEngine taskanaEngine, Class<?> jobClass) {
+    AbstractTaskanaJob job = initTaskanaJob(taskanaEngine, jobClass, null, null);
+    if (!job.async) {
+      throw new SystemException(
+          String.format("Job '%s' is not an async job. Please declare it as async", jobClass));
+    }
+    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
+    jobService.deleteJobs(job.getType());
+    job.scheduleNextJob();
+  }
+
+  private static AbstractTaskanaJob initTaskanaJob(
+      TaskanaEngine taskanaEngine,
+      Class<?> jobClass,
+      TaskanaTransactionProvider txProvider,
+      ScheduledJob scheduledJob) {
     if (!AbstractTaskanaJob.class.isAssignableFrom(jobClass)) {
       throw new SystemException(
           String.format("Job '%s' is not a subclass of '%s'", jobClass, AbstractTaskanaJob.class));
@@ -84,7 +98,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     }
     AbstractTaskanaJob job;
     try {
-      job = (AbstractTaskanaJob) constructor.newInstance(taskanaEngine, null, null);
+      job = (AbstractTaskanaJob) constructor.newInstance(taskanaEngine, txProvider, scheduledJob);
     } catch (InvocationTargetException e) {
       throw new SystemException(
           String.format(
@@ -104,13 +118,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
               TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class, jobClass),
           e);
     }
-    if (!job.async) {
-      throw new SystemException(
-          String.format("Job '%s' is not an async job. Please declare it as async", jobClass));
-    }
-    JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
-    jobService.deleteJobs(job.getType());
-    job.scheduleNextJob();
+    return job;
   }
 
   public boolean isAsync() {
