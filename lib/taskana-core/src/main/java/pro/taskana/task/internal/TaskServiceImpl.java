@@ -1233,7 +1233,13 @@ public class TaskServiceImpl implements TaskService {
     TaskImpl task = (TaskImpl) getTask(taskId);
     TaskState state = task.getState();
     if (state.isEndState()) {
-      throw new InvalidTaskStateException(taskId, state, TaskState.READY);
+      throw new InvalidTaskStateException(
+          taskId,
+          state,
+          TaskState.READY,
+          TaskState.CLAIMED,
+          TaskState.READY_FOR_REVIEW,
+          TaskState.IN_REVIEW);
     }
 
     Instant now = Instant.now();
