@@ -22,6 +22,7 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
@@ -408,6 +409,44 @@ class ClaimTaskAccTest {
     assertThat(unclaimedTask.getClaimed()).isNull();
     assertThat(unclaimedTask.isRead()).isTrue();
     assertThat(unclaimedTask.getOwner()).isNull();
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_ClaimTask_When_OwnerOfReadyForReviewTaskIsSet() throws Exception {
+    String anyUserName = "TestUser28";
+    Task taskReadyForReview =
+        TaskBuilder.newTask()
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+            .state(TaskState.READY_FOR_REVIEW)
+            .owner(anyUserName)
+            .buildAndStore(taskService);
+
+    Task taskClaimed = taskService.claim(taskReadyForReview.getId());
+
+    assertThat(taskClaimed.getState()).isEqualTo(TaskState.IN_REVIEW);
+    assertThat(taskClaimed.getOwner()).isEqualTo("user-1-2");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_ClaimTask_When_OwnerOfReadyTaskIsSet() throws Exception {
+    String anyUserName = "TestUser28";
+    Task taskReadyForReview =
+        TaskBuilder.newTask()
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+            .state(TaskState.READY)
+            .owner(anyUserName)
+            .buildAndStore(taskService);
+
+    Task taskClaimed = taskService.claim(taskReadyForReview.getId());
+
+    assertThat(taskClaimed.getState()).isEqualTo(TaskState.CLAIMED);
+    assertThat(taskClaimed.getOwner()).isEqualTo("user-1-2");
   }
 
   @Nested
