@@ -459,6 +459,12 @@ jobs:
           IBM_CLOUD_CF_SPACE: ${{ secrets.IBM_CLOUD_CF_SPACE }}
           RESOURCE_GROUP: default
           APP_MANIFEST_FILE: ci/ibm_cf_manifest.yml
+      - name: Deploy to Microsoft Azure
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: taskana
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
       - name: Smoke test documentation
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
