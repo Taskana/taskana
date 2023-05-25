@@ -364,9 +364,12 @@ class CreateTaskAccTest {
     assertThat(readTask.getAttachments()).hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
     assertThat(readTask.getAttachments().get(1).getModified()).isNotNull();
+    assertThat(readTask.getAttachments().get(0).getCreated()).isNotNull();
+    assertThat(readTask.getAttachments().get(0).getModified()).isNotNull();
     assertThat(readTask.getAttachments().get(1).getModified())
+        .isEqualTo(readTask.getAttachments().get(1).getCreated());
+    assertThat(readTask.getAttachments().get(0).getModified())
         .isEqualTo(readTask.getAttachments().get(0).getCreated());
-    // assertThat(readTask.getAttachments().get(0).getClassification()).isNotNull();
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
     assertThat(readTask.getReceived()).isEqualTo(earlierInstant);
   }
