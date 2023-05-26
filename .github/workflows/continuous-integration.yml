@@ -411,9 +411,9 @@ jobs:
         if: failure()
         uses: andymckay/cancel-action@0.3
 
-  deploy_to_bluemix:
+  deploy_to_azure:
     runs-on: ubuntu-20.04
-    name: Deploy demo app to IBM Cloud Foundry
+    name: Deploy demo app to Microsoft Azure
     if: github.repository == 'Taskana/taskana' && github.ref == 'refs/heads/master' && github.head_ref == ''
     needs: [ test_frontend, test_e2e, test_backend ]
     steps:
@@ -450,20 +450,14 @@ jobs:
         run: ./mvnw -B install -P history.plugin -P dmn-routing.plugin -pl :taskana-rest-spring-example-boot -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Djacoco.skip
       - name: Verify Example Application contains documentation
         run: ci/verify_docs_jar.sh
-      - name: Deploy to IBM Cloud Foundry
-        uses: IBM/cloudfoundry-deploy@v2.1
+      - name: Login to Microsoft Azure
+        uses: Azure/login@v1
         with:
-          IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
-          IBM_CLOUD_CF_API: ${{ secrets.IBM_CLOUD_CF_API }}
-          IBM_CLOUD_CF_ORG: ${{ secrets.IBM_CLOUD_CF_ORG }}
-          IBM_CLOUD_CF_SPACE: ${{ secrets.IBM_CLOUD_CF_SPACE }}
-          RESOURCE_GROUP: default
-          APP_MANIFEST_FILE: ci/ibm_cf_manifest.yml
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
       - name: Deploy to Microsoft Azure
         uses: Azure/webapps-deploy@v2
         with:
           app-name: taskana
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
       - name: Smoke test documentation
         run: ci/verify_docs_alive.sh
