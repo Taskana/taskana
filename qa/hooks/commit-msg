@@ -1,15 +1,15 @@
 #!/bin/bash
 MSG_FILE=$1
 COMMIT_MESSAGE="$(cat $MSG_FILE)"
-REGEX='^(TSK-[0-9]+):'
+REGEX='^(Close|Closes|Closed|Fix|Fixes|Fixed|Resolve|Resolves|Resolved) #([0-9]+)'
 if [[ $COMMIT_MESSAGE =~ $REGEX ]]; then
- TICKET=${BASH_REMATCH[1]}
- RESULT=$(curl -s https://taskana.atlassian.net/rest/api/3/issue/$TICKET)
- if [[ $RESULT =~ "errorMessages" ]]; then
-  echo -e "\033[0;31mERROR:\033[0m $TICKET is not a valid ticket number"
+ TICKET=${BASH_REMATCH[2]}
+ RESULT=$(curl -s https://api.github.com/repos/Taskana/taskana/issues/$TICKET)
+ if [[ $RESULT =~ "\"message\": \"Not Found\"" ]]; then
+  echo -e "\033[0;31mERROR:\033[0m $TICKET is not a valid GitHub issue"
   exit 1
  fi
 else
- echo -e "\033[0;31mERROR:\033[0m Prefix Git commit messages with the ticket number, e.g. TSK-140: xyz..."
+ echo -e "\033[0;31mERROR:\033[0m Prefix Git commit messages with the GitHub issue, e.g. Closes #2271: xyz..."
  exit 1
 fi
