@@ -1,5 +1,7 @@
 package pro.taskana.simplehistory.impl;
 
+import static pro.taskana.common.api.BaseQuery.toLowerCopy;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
