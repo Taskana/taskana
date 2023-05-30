@@ -5,6 +5,8 @@ import pro.taskana.workbasket.api.models.Workbasket;
 /** This enum contains all permission values for the {@linkplain Workbasket Workbaskets}. */
 public enum WorkbasketPermission {
   READ,
+  READTASKS,
+  EDITTASKS,
   OPEN,
   APPEND,
   TRANSFER,

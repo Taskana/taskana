@@ -14,6 +14,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
   private String accessId;
   private String accessName;
   private boolean permRead;
+  private boolean permReadTasks;
+  private boolean permEditTasks;
   private boolean permOpen;
   private boolean permAppend;
   private boolean permTransfer;
@@ -39,6 +41,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     accessId = copyFrom.accessId;
     accessName = copyFrom.accessName;
     permRead = copyFrom.permRead;
+    permReadTasks = copyFrom.permReadTasks;
+    permEditTasks = copyFrom.permEditTasks;
     permOpen = copyFrom.permOpen;
     permAppend = copyFrom.permAppend;
     permTransfer = copyFrom.permTransfer;
@@ -109,6 +113,12 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
       case READ:
         permRead = value;
         break;
+      case READTASKS:
+        permReadTasks = value;
+        break;
+      case EDITTASKS:
+        permEditTasks = value;
+        break;
       case OPEN:
         permOpen = value;
         break;
@@ -167,6 +177,10 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     switch (permission) {
       case READ:
         return permRead;
+      case READTASKS:
+        return permReadTasks;
+      case EDITTASKS:
+        return permEditTasks;
       case OPEN:
         return permOpen;
       case APPEND:
@@ -210,6 +224,22 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
 
   public void setPermRead(boolean permRead) {
     this.permRead = permRead;
+  }
+
+  public boolean isPermReadTasks() {
+    return permReadTasks;
+  }
+
+  public void setPermReadTasks(boolean permReadTasks) {
+    this.permReadTasks = permReadTasks;
+  }
+
+  public boolean isPermEditTasks() {
+    return permEditTasks;
+  }
+
+  public void setPermEditTasks(boolean permEditTasks) {
+    this.permEditTasks = permEditTasks;
   }
 
   public boolean isPermOpen() {
@@ -354,6 +384,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         accessId,
         accessName,
         permRead,
+        permReadTasks,
+        permEditTasks,
         permOpen,
         permAppend,
         permTransfer,
@@ -382,6 +414,8 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
     }
     WorkbasketAccessItemImpl other = (WorkbasketAccessItemImpl) obj;
     return permRead == other.permRead
+        && permReadTasks == other.permReadTasks
+        && permEditTasks == other.permEditTasks
         && permOpen == other.permOpen
         && permAppend == other.permAppend
         && permTransfer == other.permTransfer
@@ -417,6 +451,10 @@ public class WorkbasketAccessItemImpl implements WorkbasketAccessItem {
         + this.accessId
         + ", permRead="
         + this.permRead
+        + ", permReadTasks="
+        + this.permReadTasks
+        + ", permEditTasks="
+        + this.permEditTasks
         + ", permOpen="
         + this.permOpen
         + ", permAppend="
