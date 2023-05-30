@@ -21,6 +21,8 @@ public class WorkbasketAccessSqlProvider {
   private static final List<Pair<String, String>> PERMISSIONS =
       Arrays.asList(
           Pair.of("PERM_READ", "#{workbasketAccessItem.permRead}"),
+          Pair.of("PERM_READTASKS", "#{workbasketAccessItem.permReadTasks}"),
+          Pair.of("PERM_EDITTASKS", "#{workbasketAccessItem.permEditTasks}"),
           Pair.of("PERM_OPEN", "#{workbasketAccessItem.permOpen}"),
           Pair.of("PERM_APPEND", "#{workbasketAccessItem.permAppend}"),
           Pair.of("PERM_TRANSFER", "#{workbasketAccessItem.permTransfer}"),

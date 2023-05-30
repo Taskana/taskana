@@ -107,11 +107,13 @@ class GetWorkbasketAccTest extends AbstractAccTest {
     List<WorkbasketPermission> permissions =
         WORKBASKET_SERVICE.getPermissionsForWorkbasket("WBI:100000000000000000000000000000000007");
 
-    assertThat(permissions).hasSize(4);
+    assertThat(permissions).hasSize(6);
     assertThat(permissions.contains(WorkbasketPermission.READ)).isTrue();
     assertThat(permissions.contains(WorkbasketPermission.OPEN)).isTrue();
     assertThat(permissions.contains(WorkbasketPermission.TRANSFER)).isTrue();
     assertThat(permissions.contains(WorkbasketPermission.APPEND)).isTrue();
+    assertThat(permissions.contains(WorkbasketPermission.READTASKS)).isTrue();
+    assertThat(permissions.contains(WorkbasketPermission.EDITTASKS)).isTrue();
   }
 
   @WithAccessId(user = "user-1-1")
